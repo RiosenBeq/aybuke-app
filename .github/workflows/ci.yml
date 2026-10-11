@@ -1,0 +1,60 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  core:
+    name: AppCore tests (Linux)
+    runs-on: ubuntu-latest
+    container: swift:6.1-noble
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run unit tests
+        run: swift test --package-path ios/Packages/AppCore
+
+  backend:
+    name: Backend (Deno + PostgreSQL)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+      - name: Format, lint and type-check Edge Functions
+        working-directory: backend/supabase/functions
+        run: |
+          deno fmt --check
+          deno lint
+          deno check ai-image/index.ts credits-redeem/index.ts account/index.ts
+      - name: Credit ledger tests on PostgreSQL
+        run: backend/scripts/test-db.sh
+
+  ios:
+    name: iOS app build (Xcode)
+    runs-on: macos-15
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - name: Toolchain
+        run: xcodebuild -version && swift --version
+      - name: Build Glowlit (unsigned)
+        run: |
+          xcodebuild build \
+            -project ios/Glowlit.xcodeproj \
+            -scheme Glowlit \
+            -configuration Debug \
+            -destination 'generic/platform=iOS' \
+            -derivedDataPath build/DerivedData \
+            CODE_SIGNING_ALLOWED=NO \
+            -quiet
