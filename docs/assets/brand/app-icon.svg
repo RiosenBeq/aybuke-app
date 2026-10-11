@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <!-- Glowlit app icon — "Sunrise Split": before (graphite) / after (light), divided by the compare handle. -->
+  <defs>
+    <linearGradient id="tile" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#FFC25C"/>
+      <stop offset="1" stop-color="#FF7A3D"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.28" cy="0.2" r="0.75">
+      <stop offset="0" stop-color="#FFE3A6" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#FFE3A6" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="after" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFFBF3"/>
+      <stop offset="1" stop-color="#FFEBCC"/>
+    </linearGradient>
+    <clipPath id="disc"><circle cx="512" cy="512" r="300"/></clipPath>
+  </defs>
+  <rect width="1024" height="1024" fill="url(#tile)"/>
+  <rect width="1024" height="1024" fill="url(#glow)"/>
+  <g clip-path="url(#disc)">
+    <rect x="212" y="212" width="300" height="600" fill="#2A2622"/>
+    <rect x="512" y="212" width="300" height="600" fill="url(#after)"/>
+  </g>
+  <rect x="499" y="150" width="26" height="724" rx="13" fill="#1A1206"/>
+  <circle cx="512" cy="512" r="70" fill="#1A1206"/>
+  <path d="M488 488 L466 512 L488 536" fill="none" stroke="#FFC25C" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M536 488 L558 512 L536 536" fill="none" stroke="#FFC25C" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
