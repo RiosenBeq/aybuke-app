@@ -1,0 +1,27 @@
+# macOS
+.DS_Store
+
+# Xcode / SwiftPM
+build/
+DerivedData/
+xcuserdata/
+*.xcuserstate
+*.xcscmblueprint
+*.xccheckout
+.build/
+.swiftpm/
+
+# Secrets — never commit keys
+.env
+.env.*
+!.env.example
+*.p8
+*.p12
+*.mobileprovision
+
+# Supabase CLI
+backend/supabase/.temp/
+backend/supabase/.branches/
+
+# Node / Deno
+node_modules/
