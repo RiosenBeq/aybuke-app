@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "strict": true
+  },
+  "fmt": {
+    "lineWidth": 120,
+    "exclude": ["_shared/catalog.json"]
+  },
+  "lint": {
+    "rules": {
+      "tags": ["recommended"]
+    }
+  }
+}

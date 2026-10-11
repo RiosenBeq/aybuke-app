@@ -1,0 +1,125 @@
+{
+  "_comment" : "Generated from ios/Packages/AppCore (TemplateCatalog/StyleCatalog). Do not edit by hand: run scripts/export-catalog.sh.",
+  "proStyles" : [
+    "fantasy",
+    "oil",
+    "neon",
+    "clay"
+  ],
+  "templates" : [
+    {
+      "id" : "figurine",
+      "isPro" : true,
+      "prompt" : "Create a 1/7 scale commercialized collectible figure of the person in this photo, realistic style, standing on a round transparent acrylic base on a computer desk. Behind it, show the figure's colorful retail packaging box with matching artwork, and a monitor displaying the figure's 3D modeling process. Keep the person's face, identity, skin tone and expression exactly the same.",
+      "title" : "3D Figurine"
+    },
+    {
+      "id" : "action-figure",
+      "isPro" : true,
+      "prompt" : "Turn the person in this photo into a realistic action figure sealed in a clear blister-pack toy box, with three small accessories that match their personal style placed beside the figure. Bold toy-brand header at the top of the box. Keep the person's face, identity, skin tone and expression exactly the same.",
+      "title" : "Action Figure"
+    },
+    {
+      "id" : "anime-film",
+      "isPro" : false,
+      "prompt" : "Redraw this photo as a hand-painted anime film still with soft pastel colors, warm sunlight, painterly clouds and lush backgrounds. Keep the composition and each person's recognizable features.",
+      "title" : "Anime Film"
+    },
+    {
+      "id" : "polaroid",
+      "isPro" : false,
+      "prompt" : "Make this look like an authentic 1990s instant-film photo: direct on-camera flash, soft focus, warm color shift, light grain and a white instant-film border. Keep the person's face, identity, skin tone and expression exactly the same.",
+      "title" : "Retro Polaroid"
+    },
+    {
+      "id" : "spooky",
+      "isPro" : true,
+      "prompt" : "Transform this photo into a cinematic Halloween portrait: moody candle-lit atmosphere, carved glowing pumpkins, light fog, autumn leaves and a subtle gothic costume. Keep the person's face, identity, skin tone and expression exactly the same.",
+      "title" : "Spooky Portrait"
+    },
+    {
+      "id" : "vampire",
+      "isPro" : true,
+      "prompt" : "Restyle the person as an elegant vampire in a dark velvet outfit inside a candle-lit gothic castle hall, cinematic lighting, dramatic shadows. Keep the person's face, identity, skin tone and expression exactly the same.",
+      "title" : "Vampire Glam"
+    },
+    {
+      "id" : "headshot",
+      "isPro" : true,
+      "prompt" : "Turn this into a professional corporate headshot of the same person wearing a tailored navy blazer, soft studio lighting, neutral gray backdrop, shallow depth of field, natural skin texture. Keep the person's face, identity, skin tone and expression exactly the same.",
+      "title" : "Pro Headshot"
+    },
+    {
+      "id" : "old-money",
+      "isPro" : true,
+      "prompt" : "Restyle as an 'old money' editorial portrait: tailored neutral-toned clothing, elegant estate garden background, golden-hour light, 35mm film look. Keep the person's face, identity, skin tone and expression exactly the same.",
+      "title" : "Old Money"
+    },
+    {
+      "id" : "glam",
+      "isPro" : false,
+      "prompt" : "Create a studio beauty portrait with soft glam makeup, glossy hair, rim lighting and a seamless pastel backdrop. Preserve natural skin texture. Keep the person's face, identity, skin tone and expression exactly the same.",
+      "title" : "Glam Studio"
+    },
+    {
+      "id" : "restore",
+      "isPro" : true,
+      "prompt" : "Restore this old photograph: remove scratches, dust, stains and creases, fix fading, sharpen faces naturally and colorize with realistic, period-accurate colors. Do not change anyone's features.",
+      "title" : "Restore Old Photo"
+    },
+    {
+      "id" : "3d-cartoon",
+      "isPro" : false,
+      "prompt" : "Turn the person into a cute 3D animated movie character with big expressive eyes, soft subsurface lighting and a colorful background. Keep their hairstyle, outfit and recognizable features.",
+      "title" : "3D Cartoon"
+    },
+    {
+      "id" : "superhero",
+      "isPro" : true,
+      "prompt" : "Turn the person into a cinematic superhero with an original suit design, a dramatic city skyline at dusk behind them and dynamic rim lighting. Keep the person's face, identity, skin tone and expression exactly the same.",
+      "title" : "Superhero"
+    },
+    {
+      "id" : "claymation",
+      "isPro" : false,
+      "prompt" : "Recreate this photo as a handmade claymation scene with plasticine textures, visible fingerprints and soft stop-motion lighting. Keep the composition.",
+      "title" : "Claymation"
+    },
+    {
+      "id" : "oil-painting",
+      "isPro" : false,
+      "prompt" : "Repaint this photo as a classical oil painting with visible brush strokes, rich chiaroscuro lighting and a museum-quality finish. Keep the composition and likeness.",
+      "title" : "Oil Painting"
+    },
+    {
+      "id" : "watercolor",
+      "isPro" : false,
+      "prompt" : "Turn this photo into a loose watercolor illustration with soft bleeding edges, paper texture and a light pastel palette. Keep the composition.",
+      "title" : "Watercolor"
+    },
+    {
+      "id" : "comic",
+      "isPro" : false,
+      "prompt" : "Redraw this photo as a bold comic book panel with confident ink outlines, halftone shading and vibrant flat colors. Keep the composition and likeness.",
+      "title" : "Comic Book"
+    },
+    {
+      "id" : "neon-city",
+      "isPro" : true,
+      "prompt" : "Restyle this photo with a neon-noir cyberpunk look: rainy night street, glowing pink and teal neon reflections and cinematic haze. Keep the person's face, identity, skin tone and expression exactly the same.",
+      "title" : "Neon City"
+    },
+    {
+      "id" : "product-studio",
+      "isPro" : true,
+      "prompt" : "Place the main product from this photo on a clean seamless studio background with soft natural shadows and premium e-commerce lighting. Keep the product's shape, label, text and colors exactly the same.",
+      "title" : "Product Studio"
+    },
+    {
+      "id" : "golden-sky",
+      "isPro" : false,
+      "prompt" : "Replace the sky with a dramatic golden-hour sunset and match the lighting, color temperature and reflections of the rest of the scene. Change nothing else.",
+      "title" : "Golden Sky"
+    }
+  ]
+}

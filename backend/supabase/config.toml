@@ -1,0 +1,16 @@
+# Supabase CLI configuration (partial; the CLI fills in defaults).
+# See backend/README.md for the full setup.
+project_id = "glowlit"
+
+[auth]
+# Every user starts as an anonymous user (no sign-up wall, Guideline 5.1.1(v)).
+enable_anonymous_sign_ins = true
+
+[functions.ai-image]
+verify_jwt = true
+
+[functions.credits-redeem]
+verify_jwt = true
+
+[functions.account]
+verify_jwt = true
