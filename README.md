@@ -19,6 +19,31 @@ The app is built on research into the market's most popular apps. It differentia
 
 > 🇹🇷 Türkçe özet: [docs/00-ozet-TR.md](docs/00-ozet-TR.md)
 
+## Screenshots
+
+<table>
+  <tr>
+    <td align="center"><img src="docs/assets/screenshots/home.jpg" width="200" alt="Explore screen with trending templates"><br><sub>Explore</sub></td>
+    <td align="center"><img src="docs/assets/screenshots/create.jpg" width="200" alt="Create screen with a text prompt, styles and sizes"><br><sub>Create from text</sub></td>
+    <td align="center"><img src="docs/assets/screenshots/results.jpg" width="200" alt="Generated result with save and share actions"><br><sub>Results</sub></td>
+    <td align="center"><img src="docs/assets/screenshots/edit.jpg" width="200" alt="Edit hub listing the editing tools"><br><sub>Edit hub</sub></td>
+  </tr>
+  <tr>
+    <td align="center"><img src="docs/assets/screenshots/editor.jpg" width="200" alt="Editor with the Magic Edit prompt panel"><br><sub>Magic Edit</sub></td>
+    <td align="center"><img src="docs/assets/screenshots/result.jpg" width="200" alt="Before and after comparison slider"><br><sub>Before / after</sub></td>
+    <td align="center"><img src="docs/assets/screenshots/library.jpg" width="200" alt="My Works library grid"><br><sub>My Works</sub></td>
+    <td align="center"><img src="docs/assets/screenshots/paywall.jpg" width="200" alt="Paywall with yearly and monthly plans"><br><sub>Paywall</sub></td>
+  </tr>
+  <tr>
+    <td align="center"><img src="docs/assets/screenshots/onboarding.jpg" width="200" alt="Onboarding first page"><br><sub>Onboarding</sub></td>
+    <td align="center"><img src="docs/assets/screenshots/consent.jpg" width="200" alt="AI processing consent sheet"><br><sub>AI consent</sub></td>
+    <td align="center"><img src="docs/assets/screenshots/settings.jpg" width="200" alt="Settings with membership, credits and privacy"><br><sub>Settings</sub></td>
+    <td></td>
+  </tr>
+</table>
+
+These were captured on an iPhone Pro simulator in demo mode by the [Screenshots workflow](.github/workflows/screenshots.yml). The newest full-resolution set is on the [`screenshots` branch](https://github.com/RiosenBeq/furkan/tree/screenshots). To refresh this gallery, run `scripts/screenshot-gallery.py`.
+
 ## Quick start
 
 **Requirements:** Xcode 16 or newer, iOS 17+ simulator or device.
@@ -36,7 +61,7 @@ The app is built on research into the market's most popular apps. It differentia
 ios/        SwiftUI app (Glowlit.xcodeproj) + AppCore Swift package (business logic, 48 tests)
 backend/    Supabase: Postgres schema + credit ledger, Edge Functions (fal.ai, Apple JWS), tests
 docs/       Research, brand, product spec, architecture, compliance, roadmap
-scripts/    Tooling (template-catalog export for the backend)
+scripts/    Tooling (template-catalog export for the backend, README screenshot gallery)
 .github/    CI: AppCore tests · Deno checks · SQL ledger tests · Xcode build · simulator screenshots
 ```
 

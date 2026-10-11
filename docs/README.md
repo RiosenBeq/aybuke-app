@@ -21,4 +21,5 @@
 
 **Visual assets:**
 - [`assets/brand/`](assets/brand/): icon and brand board
+- [`assets/screenshots/`](assets/screenshots/): app screens from the iOS Simulator, plus an overview image
 - [`assets/research/`](assets/research/): palette mock-ups, font specimens, icon concepts

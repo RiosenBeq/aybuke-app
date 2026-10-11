@@ -25,3 +25,7 @@ backend/supabase/.branches/
 
 # Node / Deno
 node_modules/
+
+# Python
+__pycache__/
+*.pyc

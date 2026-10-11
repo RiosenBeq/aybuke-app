@@ -28,6 +28,12 @@ Bu brief'i üç paralel araştırmayla (pazar, marka/tasarım, teknoloji/uyumlul
    - Gerçek PostgreSQL üzerinde kredi defteri testleri.
    - macOS'ta Xcode derlemesi ve simülatör ekran görüntüleri.
 
+## Uygulamadan görüntüler
+
+![Glowlit uygulama ekranları](assets/screenshots/overview.jpg)
+
+Görüntüler, CI'daki Screenshots iş akışında iPhone Pro simülatöründe demo modunda alındı. Ekranların tek tek hâlleri `assets/screenshots/` klasöründe; en güncel tam çözünürlüklü set ise `screenshots` dalında.
+
 ## Temel kararlar ve nedenleri
 
 ### İsim: Glowlit
