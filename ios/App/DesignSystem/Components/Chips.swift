@@ -13,7 +13,10 @@ struct SelectableChip: View {
                 if let symbolName {
                     Image(systemName: symbolName).font(.footnote.weight(.semibold))
                 }
-                Text(title).font(.subheadline.weight(.semibold))
+                Text(title)
+                    .font(.subheadline.weight(.semibold))
+                    .lineLimit(1)
+                    .fixedSize(horizontal: true, vertical: false)
                 if isLocked {
                     Image(systemName: "lock.fill").font(.caption2)
                 }

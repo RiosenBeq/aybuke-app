@@ -123,7 +123,7 @@ struct SettingsView: View {
             Toggle(isOn: Binding(get: { app.hasAIConsent }, set: { app.setAIConsent($0) })) {
                 VStack(alignment: .leading, spacing: 2) {
                     Text("Cloud AI processing")
-                    Text("Sends selected photos to \(app.config.aiProviderName) for AI edits")
+                    Text("Selected photos are processed by \(app.config.aiProviderName).")
                         .font(.caption)
                         .foregroundStyle(Palette.textSecondary)
                 }
