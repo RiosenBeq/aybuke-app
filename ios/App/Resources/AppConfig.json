@@ -1,0 +1,11 @@
+{
+  "backendBaseURL": "",
+  "supabaseAnonKey": "",
+  "forceDemoMode": false,
+  "aiProviderName": "fal.ai and the model providers it runs, such as Google",
+  "dataRetentionHours": 24,
+  "privacyPolicyURL": "https://glowlit.app/privacy",
+  "termsURL": "https://glowlit.app/terms",
+  "supportEmail": "support@glowlit.app",
+  "appStoreID": ""
+}
