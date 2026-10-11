@@ -1,0 +1,175 @@
+import XCTest
+@testable import AppCore
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
+
+final class BackendAPITests: XCTestCase {
+    private let config = BackendConfiguration(baseURL: URL(string: "https://demo.supabase.co")!, anonKey: "anon-key")
+
+    func testRequestEncodesSnakeCaseContract() throws {
+        let body = GenerationRequest(operation: .textToImage, prompt: "a fox", styleID: "anime", aspectRatio: .story, numOutputs: 2)
+        let json = try XCTUnwrap(JSONSerialization.jsonObject(with: JSONEncoder().encode(body)) as? [String: Any])
+        XCTAssertEqual(json["operation"] as? String, "text_to_image")
+        XCTAssertEqual(json["style_id"] as? String, "anime")
+        XCTAssertEqual(json["aspect_ratio"] as? String, "9:16")
+        XCTAssertEqual(json["num_outputs"] as? Int, 2)
+        XCTAssertNil(json["image"])
+        XCTAssertNil(json["retry_of"])
+
+        let retry = GenerationRequest(operation: .restyle, templateID: "figurine", image: "data:x", retryOf: "req-1")
+        let retryJSON = try XCTUnwrap(JSONSerialization.jsonObject(with: JSONEncoder().encode(retry)) as? [String: Any])
+        XCTAssertEqual(retryJSON["retry_of"] as? String, "req-1")
+    }
+
+    func testValidation() {
+        XCTAssertThrowsError(try GenerationRequest(operation: .magicEdit, prompt: "sunset").validate())
+        XCTAssertThrowsError(try GenerationRequest(operation: .textToImage, prompt: "  ").validate())
+        XCTAssertThrowsError(try GenerationRequest(operation: .eraseObject, image: "data:x").validate())
+        XCTAssertThrowsError(try GenerationRequest(operation: .textToImage, prompt: "a", numOutputs: 5).validate())
+        XCTAssertNoThrow(try GenerationRequest(operation: .restyle, templateID: "figurine", image: "data:x").validate())
+        XCTAssertNoThrow(try GenerationRequest(operation: .enhance, image: "data:x").validate())
+    }
+
+    func testDataURI() {
+        XCTAssertEqual(GenerationRequest.dataURI(Data([0xFF, 0xD8]), mimeType: "image/jpeg"), "data:image/jpeg;base64,/9g=")
+    }
+
+    func testGenerationRequestHeaders() throws {
+        let request = try RequestFactory.generation(
+            GenerationRequest(operation: .enhance, image: "data:x"),
+            config: config, accessToken: "user-jwt", entitlementJWS: "jws"
+        )
+        XCTAssertEqual(request.url?.absoluteString, "https://demo.supabase.co/functions/v1/ai-image")
+        XCTAssertEqual(request.httpMethod, "POST")
+        XCTAssertEqual(request.value(forHTTPHeaderField: "Authorization"), "Bearer user-jwt")
+        XCTAssertEqual(request.value(forHTTPHeaderField: "apikey"), "anon-key")
+        XCTAssertEqual(request.value(forHTTPHeaderField: RequestFactory.entitlementHeader), "jws")
+    }
+
+    func testRefreshRequestURL() throws {
+        let request = try RequestFactory.refreshSession(refreshToken: "r1", config: config)
+        XCTAssertEqual(request.url?.absoluteString, "https://demo.supabase.co/auth/v1/token?grant_type=refresh_token")
+    }
+
+    func testDecodesCompletedJob() throws {
+        let data = Data("""
+        {"job_id":"abc","status":"completed","credits_remaining":2,
+         "outputs":[{"url":"https://cdn.example.com/1.png","width":1024,"height":1024,"content_type":"image/png"}]}
+        """.utf8)
+        let response = try ResponseDecoder.decodeGeneration(data: data, statusCode: 200)
+        XCTAssertEqual(response.jobID, "abc")
+        XCTAssertEqual(response.status, .completed)
+        XCTAssertTrue(response.isFinished)
+        XCTAssertEqual(response.creditsRemaining, 2)
+        XCTAssertEqual(response.outputs.first?.url?.host, "cdn.example.com")
+    }
+
+    func testQueuedJobIsReturnedForPolling() throws {
+        let data = Data(#"{"job_id":"j1","status":"queued","credits_remaining":4}"#.utf8)
+        let response = try ResponseDecoder.decodeGeneration(data: data, statusCode: 202)
+        XCTAssertEqual(response.status, .queued)
+        XCTAssertFalse(response.isFinished)
+        XCTAssertTrue(response.outputs.isEmpty)
+    }
+
+    func testOutputsWithoutStatusMeanCompleted() throws {
+        let data = Data(#"{"outputs":[{"url":"https://cdn.example.com/1.png"}]}"#.utf8)
+        XCTAssertEqual(try ResponseDecoder.decodeGeneration(data: data, statusCode: 200).status, .completed)
+    }
+
+    func testCompletedWithoutOutputsIsInvalid() {
+        let data = Data(#"{"status":"completed","outputs":[]}"#.utf8)
+        XCTAssertThrowsError(try ResponseDecoder.decodeGeneration(data: data, statusCode: 200)) { error in
+            XCTAssertEqual(error as? AIServiceError, .invalidResponse)
+        }
+    }
+
+    func testFailedJobMapsItsError() {
+        let blocked = Data(#"{"job_id":"j1","status":"failed","error":{"code":"content_blocked","message":"Not allowed"}}"#.utf8)
+        XCTAssertThrowsError(try ResponseDecoder.decodeGeneration(data: blocked, statusCode: 200)) { error in
+            XCTAssertEqual(error as? AIServiceError, .contentBlocked("Not allowed"))
+        }
+        let generic = Data(#"{"job_id":"j1","status":"failed"}"#.utf8)
+        XCTAssertThrowsError(try ResponseDecoder.decodeGeneration(data: generic, statusCode: 200)) { error in
+            XCTAssertEqual(error as? AIServiceError, .server(code: "job_failed", message: "This creation failed. Your credit was refunded."))
+        }
+    }
+
+    func testCancelledJobThrowsCancellation() {
+        let data = Data(#"{"job_id":"j1","status":"cancelled"}"#.utf8)
+        XCTAssertThrowsError(try ResponseDecoder.decodeGeneration(data: data, statusCode: 200)) { error in
+            XCTAssertTrue(error is CancellationError)
+        }
+    }
+
+    func testDecodesBalance() throws {
+        XCTAssertEqual(try ResponseDecoder.decodeBalance(data: Data(#"{"credits_remaining":7}"#.utf8), statusCode: 200), 7)
+        XCTAssertThrowsError(try ResponseDecoder.decodeBalance(data: Data(), statusCode: 401))
+    }
+
+    func testJobRequests() throws {
+        let status = try RequestFactory.jobStatus(jobID: "j 1", config: config, accessToken: "t")
+        XCTAssertEqual(status.httpMethod, "GET")
+        XCTAssertEqual(status.url?.absoluteString, "https://demo.supabase.co/functions/v1/ai-image?job_id=j%201")
+        XCTAssertEqual(status.value(forHTTPHeaderField: "Authorization"), "Bearer t")
+
+        let cancel = try RequestFactory.cancelJob(jobID: "j1", config: config, accessToken: "t")
+        XCTAssertEqual(cancel.httpMethod, "DELETE")
+
+        let balance = try RequestFactory.balance(config: config, accessToken: "t", entitlementJWS: "jws")
+        XCTAssertEqual(balance.url?.absoluteString, "https://demo.supabase.co/functions/v1/ai-image")
+        XCTAssertEqual(balance.value(forHTTPHeaderField: RequestFactory.entitlementHeader), "jws")
+
+        let redeem = try RequestFactory.redeemCreditPack(signedTransaction: "sig", config: config, accessToken: "t")
+        XCTAssertEqual(redeem.url?.path, "/functions/v1/credits-redeem")
+        let body = try XCTUnwrap(redeem.httpBody.flatMap { try JSONSerialization.jsonObject(with: $0) as? [String: String] })
+        XCTAssertEqual(body["signed_transaction"], "sig")
+
+        let delete = try RequestFactory.deleteAccount(config: config, accessToken: "t")
+        XCTAssertEqual(delete.httpMethod, "DELETE")
+        XCTAssertEqual(delete.url?.path, "/functions/v1/account")
+    }
+
+    func testPollingScheduleBacksOff() {
+        let schedule = PollingSchedule.standard
+        XCTAssertEqual(schedule.delay(forAttempt: 0), 1)
+        XCTAssertEqual(schedule.delay(forAttempt: 6), 2.5)
+        XCTAssertEqual(schedule.delay(forAttempt: 50), 3)
+        let total = (0..<80).map(schedule.delay(forAttempt:)).reduce(0, +)
+        XCTAssertGreaterThan(total, schedule.timeout, "the deadline, not the attempt count, ends polling")
+    }
+
+    func testMapsErrors() {
+        let credits = Data(#"{"error":{"code":"insufficient_credits","message":"No credits","credits_remaining":0}}"#.utf8)
+        XCTAssertEqual(ResponseDecoder.error(from: credits, statusCode: 402), .insufficientCredits(remaining: 0))
+
+        let blocked = Data(#"{"error":{"code":"content_blocked","message":"Nope"}}"#.utf8)
+        XCTAssertEqual(ResponseDecoder.error(from: blocked, statusCode: 422), .contentBlocked("Nope"))
+
+        XCTAssertEqual(ResponseDecoder.error(from: Data(), statusCode: 401), .unauthorized)
+        XCTAssertEqual(ResponseDecoder.error(from: Data(), statusCode: 429, retryAfter: "7"), .rateLimited(retryAfter: 7))
+        XCTAssertEqual(ResponseDecoder.error(from: Data("oops".utf8), statusCode: 503),
+                       .server(code: "http_503", message: "The AI service is busy. Please try again."))
+    }
+
+    func testDecodesSupabaseSession() throws {
+        let now = Date(timeIntervalSince1970: 1_000)
+        let data = Data("""
+        {"access_token":"at","token_type":"bearer","expires_in":3600,"refresh_token":"rt","user":{"id":"u-1","is_anonymous":true}}
+        """.utf8)
+        let session = try ResponseDecoder.decodeSession(data: data, statusCode: 200, now: now)
+        XCTAssertEqual(session.userID, "u-1")
+        XCTAssertEqual(session.expiresAt, Date(timeIntervalSince1970: 4_600))
+        XCTAssertFalse(session.isExpired(at: now))
+        XCTAssertTrue(session.isExpired(at: Date(timeIntervalSince1970: 4_560)))
+    }
+
+    func testDigitalSourceTypes() {
+        XCTAssertEqual(AIOperation.textToImage.digitalSourceType.uri,
+                       "http://cv.iptc.org/newscodes/digitalsourcetype/trainedAlgorithmicMedia")
+        XCTAssertEqual(AIOperation.eraseObject.digitalSourceType, .compositeWithTrainedAlgorithmicMedia)
+        XCTAssertTrue(AIOperation.removeBackground.runsOnDevice)
+        XCTAssertFalse(AIOperation.magicEdit.runsOnDevice)
+    }
+}

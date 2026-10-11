@@ -1,0 +1,119 @@
+import XCTest
+@testable import AppCore
+
+final class CreditsTests: XCTestCase {
+    private let policy = CreditPolicy.standard
+    private var calendar: Calendar {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = TimeZone(identifier: "UTC")!
+        return calendar
+    }
+
+    private func date(_ month: Int, _ day: Int, _ hour: Int = 9) -> Date {
+        calendar.date(from: DateComponents(year: 2026, month: month, day: day, hour: hour))!
+    }
+
+    func testCosts() {
+        XCTAssertEqual(policy.cost(of: .removeBackground), 0)
+        XCTAssertEqual(policy.cost(of: .textToImage, outputs: 4), 4)
+        XCTAssertEqual(policy.cost(of: .magicEdit, outputs: 0), 1)
+    }
+
+    func testFreeDailyAllowanceRefillsWithoutAccumulating() throws {
+        var wallet = CreditWallet.fresh(now: date(10, 11), policy: policy)
+        XCTAssertEqual(wallet.balance, 3)
+        try wallet.spend(3)
+        wallet.refresh(now: date(10, 11, 23), isPro: false, policy: policy, calendar: calendar)
+        XCTAssertEqual(wallet.balance, 0, "same day: no refill")
+        wallet.refresh(now: date(10, 12, 1), isPro: false, policy: policy, calendar: calendar)
+        XCTAssertEqual(wallet.balance, 3)
+        wallet.refresh(now: date(10, 15, 1), isPro: false, policy: policy, calendar: calendar)
+        XCTAssertEqual(wallet.balance, 3, "unused daily credits don't roll over")
+    }
+
+    func testInsufficientAndInvalidAmounts() throws {
+        var wallet = CreditWallet.fresh(now: date(10, 11), policy: policy)
+        try wallet.spend(2)
+        XCTAssertThrowsError(try wallet.spend(2)) { error in
+            XCTAssertEqual(error as? CreditError, .insufficient(needed: 2, available: 1))
+        }
+        XCTAssertThrowsError(try wallet.spend(-1)) { error in
+            XCTAssertEqual(error as? CreditError, .invalidAmount)
+        }
+    }
+
+    func testSubscribingGrantsMonthlyAllowanceThatRollsOverUpToCap() {
+        var wallet = CreditWallet.fresh(now: date(10, 11), policy: policy)
+        wallet.refresh(now: date(10, 11, 10), isPro: true, policy: policy, calendar: calendar)
+        XCTAssertEqual(wallet.subscription, 100)
+        XCTAssertEqual(wallet.balance, 103, "today's free credits stay until midnight")
+
+        wallet.refresh(now: date(10, 12), isPro: true, policy: policy, calendar: calendar)
+        XCTAssertEqual(wallet.daily, 0, "Pro doesn't also accrue free daily credits")
+
+        wallet.refresh(now: date(11, 12), isPro: true, policy: policy, calendar: calendar)
+        XCTAssertEqual(wallet.subscription, 200, "one month of rollover")
+
+        wallet.refresh(now: date(12, 13), isPro: true, policy: policy, calendar: calendar)
+        XCTAssertEqual(wallet.subscription, 200, "capped at allowance + one month")
+    }
+
+    func testLosingProExpiresSubscriptionCreditsButKeepsPurchased() {
+        var wallet = CreditWallet.fresh(now: date(10, 11), policy: policy)
+        wallet.addPurchased(30)
+        wallet.refresh(now: date(10, 11, 10), isPro: true, policy: policy, calendar: calendar)
+        wallet.refresh(now: date(10, 20), isPro: false, policy: policy, calendar: calendar)
+        XCTAssertEqual(wallet.subscription, 0)
+        XCTAssertFalse(wallet.isSubscribed)
+        XCTAssertEqual(wallet.purchased, 30)
+        XCTAssertEqual(wallet.daily, 3, "back on the free daily allowance")
+    }
+
+    func testSpendsExpiringCreditsFirstAndRefundsExactly() throws {
+        var wallet = CreditWallet(daily: 2, dailyPeriodStart: date(10, 11), subscription: 1, subscriptionPeriodStart: date(10, 1), purchased: 10)
+        let charge = try wallet.spend(4)
+        XCTAssertEqual(charge, CreditCharge(daily: 2, subscription: 1, purchased: 1))
+        XCTAssertEqual(wallet.balance, 9)
+        wallet.refund(charge, policy: policy)
+        XCTAssertEqual(wallet, CreditWallet(daily: 2, dailyPeriodStart: date(10, 11), subscription: 1, subscriptionPeriodStart: date(10, 1), purchased: 10))
+    }
+
+    func testRefundNeverExceedsDailyAllowance() throws {
+        var wallet = CreditWallet.fresh(now: date(10, 11), policy: policy)
+        let charge = try wallet.spend(1)
+        wallet.refresh(now: date(10, 12), isPro: false, policy: policy, calendar: calendar)
+        wallet.refund(charge, policy: policy)
+        XCTAssertEqual(wallet.daily, 3)
+    }
+
+    func testNextDailyRefillIsNextMidnight() {
+        let wallet = CreditWallet.fresh(now: date(10, 11, 15), policy: policy)
+        XCTAssertEqual(wallet.nextDailyRefill(calendar: calendar), date(10, 12, 0))
+    }
+
+    func testWalletRoundTripsThroughCodable() throws {
+        var wallet = CreditWallet.fresh(now: date(10, 11), policy: policy)
+        wallet.refresh(now: date(10, 11, 10), isPro: true, policy: policy, calendar: calendar)
+        wallet.addPurchased(5)
+        let decoded = try JSONDecoder().decode(CreditWallet.self, from: JSONEncoder().encode(wallet))
+        XCTAssertEqual(decoded, wallet)
+    }
+}
+
+final class SizingTests: XCTestCase {
+    func testAspectRatioPixelSizesAreMultiplesOf64() {
+        for ratio in AspectRatio.allCases {
+            let size = ratio.pixelSize()
+            XCTAssertEqual(size.width % 64, 0, ratio.rawValue)
+            XCTAssertEqual(size.height % 64, 0, ratio.rawValue)
+            XCTAssertEqual(size.longEdge, 1536, ratio.rawValue)
+        }
+        XCTAssertEqual(AspectRatio.story.pixelSize(), PixelSize(width: 896, height: 1536)) // 864 → nearest multiple of 64
+    }
+
+    func testFitNeverUpscales() {
+        XCTAssertEqual(ImageSizing.fit(PixelSize(width: 800, height: 600), maxLongEdge: 1536), PixelSize(width: 800, height: 600))
+        XCTAssertEqual(ImageSizing.fit(PixelSize(width: 4032, height: 3024), maxLongEdge: 1536), PixelSize(width: 1536, height: 1152))
+        XCTAssertEqual(ImageSizing.fit(PixelSize(width: 3024, height: 4032), maxLongEdge: 1024), PixelSize(width: 768, height: 1024))
+    }
+}
