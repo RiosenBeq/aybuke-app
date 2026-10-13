@@ -1,7 +1,7 @@
 import UIKit
 import AppCore
 
-/// DEBUG-only developer mode: calls fal.ai, OpenAI or Google Gemini directly
+/// DEBUG-only developer mode: calls xAI, fal.ai, OpenAI or Google Gemini directly
 /// with the key from `ios/Config/Secrets.xcconfig`, so a key can be tried in
 /// the simulator before the backend is deployed. Credits stay local. Release
 /// builds never use this — the backend holds provider keys in production.
@@ -27,6 +27,9 @@ final class DirectAIImageService: AIImageService {
         let input = try await makeInput(for: job)
         let images: [UIImage]
         switch config.provider {
+        case .xai:
+            let (data, response) = try await load(XAIImagesAPI.request(input, config: config))
+            images = try XAIImagesAPI.decode(data: data, statusCode: response.statusCode).compactMap(UIImage.init(data:))
         case .fal:
             images = try await runFal(input)
         case .openai:
@@ -89,7 +92,11 @@ final class DirectAIImageService: AIImageService {
         case .enhance:
             return DirectAIPrompts.enhance
         case .eraseObject:
-            return config.provider == .gemini ? DirectAIPrompts.eraseWithMaskImage : DirectAIPrompts.eraseWithMask
+            switch config.provider {
+            case .xai: return DirectAIPrompts.eraseWithMaskImages
+            case .gemini: return DirectAIPrompts.eraseWithMaskImage
+            case .fal, .openai: return DirectAIPrompts.eraseWithMask
+            }
         case .removeBackground:
             return ""
         }

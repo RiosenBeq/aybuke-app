@@ -6,6 +6,7 @@ struct HomeView: View {
     @State private var showSettings = false
     @State private var legalDocument: LegalDocument?
     @State private var openCategory: TemplateCategory?
+    @State private var showInvite = false
 
     var body: some View {
         NavigationStack {
@@ -36,6 +37,10 @@ struct HomeView: View {
                     createBanner
                         .padding(.horizontal, Metrics.gutter)
                         .reveal(8)
+
+                    inviteBanner
+                        .padding(.horizontal, Metrics.gutter)
+                        .reveal(9)
                 }
                 .padding(.vertical, 12)
                 .readableWidth()
@@ -51,10 +56,16 @@ struct HomeView: View {
                 SettingsView()
                     .environment(app)
             }
+            .sheet(isPresented: $showInvite) {
+                InviteView()
+                    .environment(app)
+                    .pageSheetSizing()
+            }
             .legalSheet($legalDocument)
             #if DEBUG
             .onAppear {
                 if ScreenshotScene.current == .settings { showSettings = true }
+                if ScreenshotScene.current == .invite { showInvite = true }
                 if ScreenshotScene.current == .legal { legalDocument = .privacy }
             }
             #endif
@@ -139,17 +150,17 @@ struct HomeView: View {
                 .padding(.horizontal, Metrics.gutter)
             ScrollView(.horizontal) {
                 HStack(spacing: 12) {
-                    ForEach(EditorTool.quickTools) { tool in
-                        QuickToolTile(title: tool.title, caption: tool.caption, symbolName: tool.symbolName) {
+                    ForEach(Array(EditorTool.quickTools.enumerated()), id: \.element) { index, tool in
+                        QuickToolTile(title: tool.title, caption: tool.caption, symbolName: tool.symbolName, palette: Self.toolPalettes[index % Self.toolPalettes.count]) {
                             Haptics.tap()
                             app.startEditing(tool: tool)
                         }
                     }
-                    QuickToolTile(title: "Video", caption: "Cut silences · effects", symbolName: "video.fill") {
+                    QuickToolTile(title: "Video", caption: "Cut silences · effects", symbolName: "video.fill", palette: .sunset) {
                         Haptics.tap()
                         app.isVideoPickerPresented = true
                     }
-                    QuickToolTile(title: "Best shot", caption: "Free · ranks selfies", symbolName: "photo.stack") {
+                    QuickToolTile(title: "Best shot", caption: "Free · ranks selfies", symbolName: "photo.stack", palette: .lilac) {
                         Haptics.tap()
                         app.isBestShotPresented = true
                     }
@@ -160,6 +171,9 @@ struct HomeView: View {
             .scrollClipDisabled()
         }
     }
+
+    /// Light aura palettes only: tool icons stay ink on colour.
+    private static let toolPalettes: [AuraPalette] = [.bubblegum, .lilac, .mint, .sunset, .butter]
 
     private func templateRow(_ category: TemplateCategory) -> some View {
         VStack(alignment: .leading, spacing: 14) {
@@ -215,6 +229,40 @@ struct HomeView: View {
         .buttonStyle(PressableButtonStyle(scale: 0.97))
     }
 
+    /// "Glow together": share the app with friends (a story card with a QR code).
+    private var inviteBanner: some View {
+        Button {
+            Haptics.tap()
+            showInvite = true
+        } label: {
+            HStack(spacing: 14) {
+                Image(systemName: "heart.circle.fill")
+                    .font(.title2.weight(.semibold))
+                    .foregroundStyle(.white)
+                    .frame(width: 52, height: 52)
+                    .background(
+                        LinearGradient(colors: [Palette.auraMint, Palette.auraLilac, Palette.auraPink, Palette.auraPeach],
+                                       startPoint: .topLeading, endPoint: .bottomTrailing),
+                        in: RoundedRectangle(cornerRadius: 16, style: .continuous)
+                    )
+                VStack(alignment: .leading, spacing: 3) {
+                    Text("Glow together")
+                        .font(.cardTitle)
+                        .foregroundStyle(Palette.textPrimary)
+                    Text("Invite your besties with a story card")
+                        .font(.footnote)
+                        .foregroundStyle(Palette.textSecondary)
+                }
+                Spacer()
+                Image(systemName: "chevron.right")
+                    .foregroundStyle(Palette.textTertiary)
+            }
+            .padding(14)
+            .cardStyle()
+        }
+        .buttonStyle(PressableButtonStyle(scale: 0.97))
+    }
+
     /// Puts the categories that match onboarding interests first.
     private var orderedCategories: [TemplateCategory] {
         let preferred: [String: TemplateCategory] = [
@@ -236,6 +284,7 @@ private struct QuickToolTile: View {
     let title: String
     let caption: String
     let symbolName: String
+    var palette: AuraPalette = .bubblegum
     let action: () -> Void
 
     var body: some View {
@@ -243,9 +292,9 @@ private struct QuickToolTile: View {
             VStack(alignment: .leading, spacing: 10) {
                 Image(systemName: symbolName)
                     .font(.title3.weight(.semibold))
-                    .foregroundStyle(Palette.ink)
+                    .foregroundStyle(palette.isDark ? Palette.white : Palette.ink)
                     .frame(width: 44, height: 44)
-                    .background(Palette.blush, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+                    .background(AuraFill(palette: palette).clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous)))
                 VStack(alignment: .leading, spacing: 2) {
                     Text(title)
                         .font(.subheadline.weight(.bold))

@@ -44,7 +44,7 @@
 <li><strong>No sharing for marketing.</strong> We don't sell personal information or share it for advertising or marketing, and we don't work with data brokers. We don't send you marketing messages.</li>
 <li><strong>Your library stays on your device.</strong> The creations you keep are stored only on your iPhone.</li>
 <li><strong>Cloud processing only after you opt in.</strong> Nothing leaves your device for a cloud AI feature until you agree.</li>
-<li><strong>No AI training.</strong> We never use your photos, prompts or results to train AI models, and we use only AI provider plans whose terms prohibit training on customer content.</li>
+<li><strong>No AI training.</strong> We never use your photos, prompts or results to train AI models, and we use only AI provider plans whose terms don't allow training on customer content without our permission, which we never give.</li>
 <li><strong>No face recognition.</strong> We don't perform face recognition, create biometric templates or face embeddings, or try to identify the people in your photos.</li>
 </ul>
 <p>We follow the standards of the UK Age Appropriate Design Code (the "Children's Code") for all users. Section 18 explains how.</p>
@@ -99,12 +99,12 @@
 <li><strong>Your consent comes first.</strong> Before any photo or prompt leaves your device for a cloud AI feature, the app shows an opt-in screen that names the companies that process it. Nothing is sent until you agree. If you're under the age required by law, a parent or guardian must give or approve this consent (sections 3, 17 and 19). You can withdraw consent at any time in <strong>Settings → Cloud AI processing</strong>, and on-device features keep working.</li>
 <li><strong>Upload.</strong> The app sends your input over an encrypted connection to our backend (Supabase Edge Functions; hosting region: [Supabase region, e.g. EU (Frankfurt)]).</li>
 <li><strong>Safety checks.</strong> Your prompt is checked by our safety filters before the request is processed (section 9).</li>
-<li><strong>AI processing.</strong> Our backend passes your input to our AI inference provider for that request only. By default, this is fal.ai (Features &amp; Labels, Inc., USA), which runs third-party models. Where fal.ai uses a model developer's own service to run a model (for example Google for its Gemini image models), that developer also processes the request. If we change providers, jobs may instead go directly to Google (Gemini API) or OpenAI (Images API). The current list is in section 12.</li>
-<li><strong>No storage of inputs.</strong> We don't store your photo, mask or prompt. We instruct fal.ai not to keep request history, which means no storage of inputs or outputs.</li>
-<li><strong>Delivery.</strong> The result is checked by an automated safety filter and held temporarily, for at most 1 hour, on the provider's content delivery network or in our database, only so the app can download it. It is then deleted.</li>
+<li><strong>AI processing.</strong> Our backend passes your input to our AI inference provider for that request only. By default, this is xAI (X.AI LLC and its affiliates, USA), which runs its Grok Imagine image models. If we change providers, jobs may instead go to fal.ai (Features &amp; Labels, Inc., USA), which runs third-party models (where fal.ai uses a model developer's own service to run a model, for example Google for its Gemini image models, that developer also processes the request), or directly to Google (Gemini API) or OpenAI (Images API). The current list is in section 12.</li>
+<li><strong>No storage of inputs.</strong> We don't store your photo, mask or prompt. We use xAI's Zero Data Retention option, under which xAI deletes requests and results within 1 hour and keeps no stored copies. When fal.ai is used, we instruct it not to keep request history, which means no storage of inputs or outputs.</li>
+<li><strong>Delivery.</strong> The result is checked by automated safety filters and held temporarily in our database or on the provider's content delivery network, only so the app can download it. It is deleted as soon as the app confirms the download, and after 1 hour at the latest.</li>
 <li><strong>On your device.</strong> If you keep the result, it's saved to your library on your iPhone.</li>
 </ol>
-<p>We use only provider plans whose terms prohibit using customer content to train their models. We never use your photos, prompts or results to train AI models, sell them, or use them for advertising, marketing or data mining.</p>
+<p>We use only provider plans whose terms don't allow using customer content to train their models without our permission, and we never give that permission. We never use your photos, prompts or results to train AI models, sell them, or use them for advertising, marketing or data mining.</p>
 <h2>7. Why we use your data and our legal bases</h2>
 <p>The GDPR and the UK GDPR require us to tell you the legal basis for each purpose. The corresponding conditions under Türkiye's KVKK are in section 19 and in our <a href="../tr/kvkk-aydinlatma-metni.html">KVKK Information Notice</a>.</p>
 <ul>
@@ -154,10 +154,11 @@
 <p>These companies process personal data on our behalf. We keep this list up to date. If we add or replace an AI provider, we'll update this list and the cloud AI consent screen before the change takes effect, and ask for your consent again where required.</p>
 <ul>
 <li><strong>Supabase Inc.</strong> (USA): backend hosting, database, anonymous authentication and optional Sign in with Apple, server functions and server logs. Hosting region: [Supabase region, e.g. EU (Frankfurt)]. Data: anonymous user ID or account (Apple user identifier, email or relay address if shared), session data, job records, credits, entitlements, reports and server logs. Your inputs pass through in transit only.</li>
-<li><strong>Features &amp; Labels, Inc. (fal.ai)</strong> (USA): AI inference, meaning it runs the AI models for cloud AI features and the automated output safety check. Data: photos, masks, prompts and results, for the duration of the request. Request history is disabled, and results are deleted within 1 hour.</li>
+<li><strong>xAI (X.AI LLC and its affiliates)</strong> (USA): AI inference, meaning it runs the Grok Imagine models for cloud AI features and checks their results with its own moderation. Data: photos, masks, prompts and results, for the duration of the request. Zero Data Retention is on: requests and results are deleted within 1 hour, and nothing is used to train models.</li>
+<li><strong>Features &amp; Labels, Inc. (fal.ai)</strong> (USA): the automated output safety check where we use it, and an alternative AI provider. Data: results (and, if we route jobs to fal.ai, photos, masks and prompts), for the duration of the request. Request history is disabled, and results are deleted within 1 hour.</li>
 <li><strong>Developers of the models that fal.ai runs</strong>, for example <strong>Google LLC</strong> (USA) for Gemini image models: where fal.ai uses the developer's own service to run a model, that developer processes the inputs and results of the request on fal.ai's behalf.</li>
-<li><strong>Google LLC</strong> (USA), Gemini API: alternative AI provider, used only if we route jobs directly to Google instead of fal.ai.</li>
-<li><strong>OpenAI</strong> (USA), Images API: alternative AI provider, used only if we route jobs directly to OpenAI instead of fal.ai.</li>
+<li><strong>Google LLC</strong> (USA), Gemini API: alternative AI provider, used only if we route jobs directly to Google.</li>
+<li><strong>OpenAI</strong> (USA), Images API: alternative AI provider, used only if we route jobs directly to OpenAI.</li>
 <li><strong>Our email service provider</strong>: receives and stores the emails you send us.</li>
 </ul>
 <h2>13. International data transfers</h2>
@@ -176,7 +177,7 @@
 <h2>14. How long we keep data</h2>
 <ul>
 <li><strong>Photos, masks and prompts sent to cloud AI features</strong>: not stored by us. They are passed to the AI provider for that request only.</li>
-<li><strong>Generated results in the cloud</strong>: at most 1 hour on the provider's content delivery network or in our database, only to deliver them to the app. Then they are deleted.</li>
+<li><strong>Generated results in the cloud</strong>: only until the app confirms the download, and at most 1 hour, in our database or on the provider's content delivery network. Then they are deleted.</li>
 <li><strong>Job records</strong>: 30 days, then deleted.</li>
 <li><strong>Credit wallet and credit ledger</strong>: as long as your account exists. Deleted when you delete your account.</li>
 <li><strong>Entitlement records</strong>: as long as your account exists. Deleted when you delete your account.</li>

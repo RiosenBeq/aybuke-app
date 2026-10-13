@@ -11,6 +11,7 @@ struct SettingsView: View {
     @State private var confirmDeleteAccount = false
     @State private var isRestoring = false
     @State private var confirmSignOut = false
+    @State private var showInvite = false
 
     var body: some View {
         NavigationStack {
@@ -246,28 +247,28 @@ struct SettingsView: View {
         .listRowBackground(Palette.surface)
     }
 
-    @ViewBuilder
     private var shareSection: some View {
-        if let link = app.config.shareLinkURL {
-            Section {
-                ShareLink(
-                    item: link,
-                    subject: Text(Brand.storeTitle),
-                    message: Text("I've been making my photos glow with \(Brand.name) — try it:")
-                ) {
-                    Label("Share \(Brand.name) with friends", systemImage: "heart.circle")
-                }
-                if let review = app.config.appStoreReviewURL {
-                    Button {
-                        openURL(review)
-                    } label: {
-                        Label("Rate \(Brand.name)", systemImage: "star")
-                    }
-                }
-            } header: {
-                Text("Spread the glow")
+        Section {
+            Button {
+                showInvite = true
+            } label: {
+                Label("Share \(Brand.name) with friends", systemImage: "heart.circle")
             }
-            .listRowBackground(Palette.surface)
+            if let review = app.config.appStoreReviewURL {
+                Button {
+                    openURL(review)
+                } label: {
+                    Label("Rate \(Brand.name)", systemImage: "star")
+                }
+            }
+        } header: {
+            Text("Spread the glow")
+        }
+        .listRowBackground(Palette.surface)
+        .sheet(isPresented: $showInvite) {
+            InviteView()
+                .environment(app)
+                .pageSheetSizing()
         }
     }
 

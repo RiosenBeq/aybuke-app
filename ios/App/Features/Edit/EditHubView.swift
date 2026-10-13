@@ -7,6 +7,8 @@ struct EditHubView: View {
 
     /// Two columns on iPhone, more on iPad.
     private let columns = [GridItem(.adaptive(minimum: 136), spacing: 12)]
+    /// Light aura palettes only: tool icons stay ink on colour.
+    private static let toolPalettes: [AuraPalette] = [.bubblegum, .lilac, .mint, .sunset, .butter]
 
     var body: some View {
         NavigationStack {
@@ -98,7 +100,7 @@ struct EditHubView: View {
                                         .foregroundStyle(Palette.textPrimary)
                                     NewBadge()
                                 }
-                                Text("Auto-cut silences, 80s & 90s effects · free")
+                                Text("Cut silences, 80s & 90s effects · free")
                                     .font(.footnote)
                                     .foregroundStyle(Palette.textSecondary)
                                     .fixedSize(horizontal: false, vertical: true)
@@ -124,7 +126,10 @@ struct EditHubView: View {
                                         .font(.title3.weight(.semibold))
                                         .foregroundStyle(Palette.ink)
                                         .frame(width: 40, height: 40)
-                                        .background(Palette.blush, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+                                        .background(
+                                            AuraFill(palette: Self.toolPalettes[index % Self.toolPalettes.count])
+                                                .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                                        )
                                     VStack(alignment: .leading, spacing: 3) {
                                         Text(tool.title)
                                             .font(.cardTitle)

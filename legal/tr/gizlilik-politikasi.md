@@ -36,7 +36,7 @@ Bu politika Hizmeti kapsar. {{APP_NAME}} ile birlikte kullandığınız üçünc
 - **Pazarlama için paylaşım yok.** Kişisel verileri satmayız, reklam veya pazarlama amacıyla paylaşmayız ve veri simsarlarıyla çalışmayız. Size pazarlama mesajı göndermeyiz.
 - **Kütüphaneniz cihazınızda kalır.** Sakladığınız görseller yalnızca iPhone'unuzda tutulur.
 - **Bulut işleme yalnızca onayınızla.** Siz kabul edene kadar bir bulut yapay zekâ özelliği için cihazınızdan hiçbir şey çıkmaz.
-- **Yapay zekâ eğitimi yok.** Fotoğraflarınızı, istemlerinizi veya sonuçlarınızı yapay zekâ modellerini eğitmek için asla kullanmayız; yalnızca müşteri içeriğiyle model eğitilmesini yasaklayan yapay zekâ sağlayıcı planlarını kullanırız.
+- **Yapay zekâ eğitimi yok.** Fotoğraflarınızı, istemlerinizi veya sonuçlarınızı yapay zekâ modellerini eğitmek için asla kullanmayız; yalnızca müşteri içeriğiyle iznimiz olmadan model eğitilmesine izin vermeyen yapay zekâ sağlayıcı planlarını kullanırız ve bu izni asla vermeyiz.
 - **Yüz tanıma yok.** Yüz tanıma yapmayız, biyometrik şablon veya yüz vektörü (embedding) oluşturmayız, fotoğraflarınızdaki kişileri tanımlamaya çalışmayız.
 
 Birleşik Krallık Yaşa Uygun Tasarım Kuralları'nın ("Children's Code") standartlarını tüm kullanıcılara uygularız. Nasıl uyguladığımızı 18. bölüm açıklar.
@@ -120,12 +120,12 @@ Bize e-posta gönderirseniz e-posta adresinizi, mesajınızın içeriğini ve ek
 1. **Önce onayınız.** Bir bulut yapay zekâ özelliği için herhangi bir fotoğraf veya istem cihazınızdan çıkmadan önce uygulama, içeriği işleyecek şirketlerin adlarını gösteren bir onay ekranı açar. Siz kabul etmeden hiçbir şey gönderilmez. Kanunun öngördüğü yaşın altındaysanız bu onayı veliniz veya vasiniz vermeli ya da onaylamalıdır (3., 17. ve 19. bölümler). Onayınızı **Ayarlar → Cloud AI processing** üzerinden istediğiniz zaman geri alabilirsiniz; cihaz üzerindeki özellikler çalışmaya devam eder.
 2. **Yükleme.** Uygulama girdinizi şifreli bir bağlantıyla arka ucumuza gönderir (Supabase Edge Functions; barındırma bölgesi: {{HOSTING_REGION}}).
 3. **Güvenlik kontrolleri.** İsteminiz, işlenmeden önce güvenlik filtrelerimizden geçer (9. bölüm).
-4. **Yapay zekâ işleme.** Arka ucumuz girdinizi yalnızca o istek için yapay zekâ çıkarım (inference) sağlayıcımıza iletir. Varsayılan sağlayıcı, üçüncü taraf modelleri çalıştıran fal.ai'dir (Features & Labels, Inc., ABD). fal.ai bir modeli çalıştırmak için model geliştiricisinin kendi hizmetini kullanıyorsa (örneğin Gemini görsel modelleri için Google), o geliştirici de isteği işler. Sağlayıcı değiştirirsek işler doğrudan Google'a (Gemini API) veya OpenAI'a (Images API) gidebilir. Güncel liste 12. bölümdedir.
-5. **Girdiler saklanmaz.** Fotoğrafınızı, maskenizi veya isteminizi saklamayız. fal.ai'a istek geçmişi tutmamasını, yani girdileri ve çıktıları saklamamasını bildiririz.
-6. **Teslim.** Sonuç otomatik bir güvenlik filtresinden geçer ve yalnızca uygulamanın indirebilmesi için sağlayıcının içerik dağıtım ağında veya veritabanımızda en fazla 1 saat geçici olarak tutulur; ardından silinir.
+4. **Yapay zekâ işleme.** Arka ucumuz girdinizi yalnızca o istek için yapay zekâ çıkarım (inference) sağlayıcımıza iletir. Varsayılan sağlayıcı, Grok Imagine görsel modellerini çalıştıran xAI'dır (X.AI LLC ve bağlı şirketleri, ABD). Sağlayıcı değiştirirsek işler, üçüncü taraf modelleri çalıştıran fal.ai'a (Features & Labels, Inc., ABD; fal.ai bir modeli çalıştırmak için model geliştiricisinin kendi hizmetini kullanıyorsa, örneğin Gemini görsel modelleri için Google, o geliştirici de isteği işler) ya da doğrudan Google'a (Gemini API) veya OpenAI'a (Images API) gidebilir. Güncel liste 12. bölümdedir.
+5. **Girdiler saklanmaz.** Fotoğrafınızı, maskenizi veya isteminizi saklamayız. xAI'ın Sıfır Veri Saklama (Zero Data Retention) seçeneğini kullanırız; bu seçenekte xAI istekleri ve sonuçları 1 saat içinde siler ve kayıtlı kopya tutmaz. fal.ai kullanıldığında ona istek geçmişi tutmamasını, yani girdileri ve çıktıları saklamamasını bildiririz.
+6. **Teslim.** Sonuç otomatik güvenlik filtrelerinden geçer ve yalnızca uygulamanın indirebilmesi için veritabanımızda veya sağlayıcının içerik dağıtım ağında geçici olarak tutulur. Uygulama indirdiğini bildirdiği anda, en geç de 1 saat sonra silinir.
 7. **Cihazınızda.** Sonucu saklamayı seçerseniz, iPhone'unuzdaki kütüphanenize kaydedilir.
 
-Yalnızca müşteri içeriğinin model eğitiminde kullanılmasını yasaklayan sağlayıcı planlarını kullanırız. Fotoğraflarınızı, istemlerinizi veya sonuçlarınızı yapay zekâ eğitmek, satmak ya da reklam, pazarlama veya veri madenciliği için asla kullanmayız.
+Yalnızca müşteri içeriğinin iznimiz olmadan model eğitiminde kullanılmasına izin vermeyen sağlayıcı planlarını kullanırız ve bu izni asla vermeyiz. Fotoğraflarınızı, istemlerinizi veya sonuçlarınızı yapay zekâ eğitmek, satmak ya da reklam, pazarlama veya veri madenciliği için asla kullanmayız.
 
 ## 7. Verilerinizi neden kullanıyoruz ve hukuki dayanaklarımız
 
@@ -190,10 +190,11 @@ Verilerinizi satmayız, kiralamayız ve kimseyle onların kendi reklam veya paza
 Aşağıdaki şirketler kişisel verileri bizim adımıza işler. Bu listeyi güncel tutarız. Bir yapay zekâ sağlayıcısı ekler veya değiştirirsek, değişiklik yürürlüğe girmeden önce bu listeyi ve bulut yapay zekâ onay ekranını güncelleriz; gerektiğinde rızanızı yeniden isteriz.
 
 - **Supabase Inc.** (ABD): arka uç barındırma, veritabanı, anonim kimlik doğrulama ve isteğe bağlı Apple ile giriş, sunucu fonksiyonları ve sunucu kayıtları. Barındırma bölgesi: {{HOSTING_REGION}}. Veriler: anonim kullanıcı kimliği veya hesap (Apple kullanıcı tanımlayıcısı, paylaşıldıysa e-posta veya aktarma adresi), oturum verileri, iş kayıtları, krediler, haklar, bildirimler ve sunucu kayıtları. Girdileriniz yalnızca aktarım sırasında geçer.
-- **Features & Labels, Inc. (fal.ai)** (ABD): yapay zekâ çıkarımı; yani bulut yapay zekâ özellikleri için modelleri ve otomatik çıktı güvenlik kontrolünü çalıştırır. Veriler: istek süresince fotoğraflar, maskeler, istemler ve sonuçlar. İstek geçmişi kapalıdır; sonuçlar 1 saat içinde silinir.
+- **xAI (X.AI LLC ve bağlı şirketleri)** (ABD): yapay zekâ çıkarımı; yani bulut yapay zekâ özellikleri için Grok Imagine modellerini çalıştırır ve sonuçlarını kendi denetimiyle (moderasyon) kontrol eder. Veriler: istek süresince fotoğraflar, maskeler, istemler ve sonuçlar. Sıfır Veri Saklama açıktır: istekler ve sonuçlar 1 saat içinde silinir ve hiçbiri model eğitiminde kullanılmaz.
+- **Features & Labels, Inc. (fal.ai)** (ABD): kullandığımız durumlarda otomatik çıktı güvenlik kontrolü ve alternatif yapay zekâ sağlayıcısı. Veriler: istek süresince sonuçlar (işleri fal.ai'a yönlendirirsek fotoğraflar, maskeler ve istemler de). İstek geçmişi kapalıdır; sonuçlar 1 saat içinde silinir.
 - **fal.ai'ın çalıştırdığı modellerin geliştiricileri**, örneğin Gemini görsel modelleri için **Google LLC** (ABD): fal.ai bir modeli çalıştırmak için geliştiricinin kendi hizmetini kullandığında, o geliştirici isteğin girdilerini ve sonuçlarını fal.ai adına işler.
-- **Google LLC** (ABD), Gemini API: alternatif yapay zekâ sağlayıcısı; yalnızca işleri fal.ai yerine doğrudan Google'a yönlendirirsek kullanılır.
-- **OpenAI** (ABD), Images API: alternatif yapay zekâ sağlayıcısı; yalnızca işleri fal.ai yerine doğrudan OpenAI'a yönlendirirsek kullanılır.
+- **Google LLC** (ABD), Gemini API: alternatif yapay zekâ sağlayıcısı; yalnızca işleri doğrudan Google'a yönlendirirsek kullanılır.
+- **OpenAI** (ABD), Images API: alternatif yapay zekâ sağlayıcısı; yalnızca işleri doğrudan OpenAI'a yönlendirirsek kullanılır.
 - **E-posta hizmet sağlayıcımız**: bize gönderdiğiniz e-postaları alır ve saklar.
 
 ## 13. Yurt dışına veri aktarımı
@@ -219,7 +220,7 @@ Kullandığımız güvencelerin bir örneğini [{{PRIVACY_EMAIL}}](mailto:{{PRIV
 ## 14. Verileri ne kadar süre saklıyoruz?
 
 - **Bulut yapay zekâ özelliklerine gönderilen fotoğraflar, maskeler ve istemler**: tarafımızca saklanmaz; yalnızca o istek için yapay zekâ sağlayıcısına iletilir.
-- **Bulutta üretilen sonuçlar**: yalnızca uygulamaya teslim edilmek üzere sağlayıcının içerik dağıtım ağında veya veritabanımızda en fazla 1 saat; ardından silinir.
+- **Bulutta üretilen sonuçlar**: yalnızca uygulama indirdiğini bildirene kadar, en fazla 1 saat, veritabanımızda veya sağlayıcının içerik dağıtım ağında; ardından silinir.
 - **İş kayıtları**: 30 gün; ardından silinir.
 - **Kredi cüzdanı ve kredi defteri**: hesabınız var olduğu sürece; hesabınızı sildiğinizde silinir.
 - **Hak kayıtları**: hesabınız var olduğu sürece; hesabınızı sildiğinizde silinir.

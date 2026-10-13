@@ -1,35 +1,56 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
-  <!-- Glowlit app icon, "Glow Print": a sharp-cornered white print, tilted on a blush tile, showing a
-       white sparkle glowing pink on ink, with a blush heart on the print's chin.
+  <!-- Glowlit app icon, "Glow Print" (Aura edition): a sharp-cornered white print, tilted on an aura
+       tile (mint, lilac, pink, peach, with a butter glow), showing a white sparkle glowing pink on plum,
+       with a pink heart on the print's chin.
        The PNGs (default, dark, tinted) are rendered by scripts/render-brand-assets.py. -->
   <defs>
-    <radialGradient id="glowA" cx="0.22" cy="0.16" r="0.62">
-      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.6"/>
+    <linearGradient id="aura" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#78E1CD"/>
+      <stop offset="0.4" stop-color="#A78BFA"/>
+      <stop offset="0.75" stop-color="#FF5CA1"/>
+      <stop offset="1" stop-color="#FFAA78"/>
+    </linearGradient>
+    <radialGradient id="glowA" cx="0.15" cy="0.1" r="0.55">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.55"/>
       <stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/>
     </radialGradient>
-    <radialGradient id="glowB" cx="0.86" cy="0.9" r="0.55">
-      <stop offset="0" stop-color="#F8E0EA" stop-opacity="0.75"/>
-      <stop offset="1" stop-color="#F8E0EA" stop-opacity="0"/>
+    <radialGradient id="glowB" cx="0.95" cy="0.95" r="0.45">
+      <stop offset="0" stop-color="#FFDE6E" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#FFDE6E" stop-opacity="0"/>
     </radialGradient>
+    <linearGradient id="plum" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#3C185A"/>
+      <stop offset="1" stop-color="#140A1E"/>
+    </linearGradient>
     <radialGradient id="halo" cx="0.5" cy="0.5" r="0.5">
-      <stop offset="0" stop-color="#F7C1D9" stop-opacity="0.9"/>
-      <stop offset="1" stop-color="#F7C1D9" stop-opacity="0"/>
+      <stop offset="0" stop-color="#FF5CA1" stop-opacity="0.95"/>
+      <stop offset="1" stop-color="#FF5CA1" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="lilacGlow" cx="0.37" cy="0.65" r="0.33">
+      <stop offset="0" stop-color="#A78BFA" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#A78BFA" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="butterGlow" cx="0.66" cy="0.68" r="0.24">
+      <stop offset="0" stop-color="#FFDE6E" stop-opacity="0.45"/>
+      <stop offset="1" stop-color="#FFDE6E" stop-opacity="0"/>
     </radialGradient>
     <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
-      <feDropShadow dx="0" dy="26" stdDeviation="30" flood-color="#121212" flood-opacity="0.28"/>
+      <feDropShadow dx="0" dy="26" stdDeviation="30" flood-color="#140A1E" flood-opacity="0.3"/>
     </filter>
     <path id="sparkle" d="M0,-1 Q0.18,-0.18 1,0 Q0.18,0.18 0,1 Q-0.18,0.18 -1,0 Q-0.18,-0.18 0,-1 Z"/>
   </defs>
-  <rect width="1024" height="1024" fill="#F7C1D9"/>
+  <rect width="1024" height="1024" fill="url(#aura)"/>
   <rect width="1024" height="1024" fill="url(#glowA)"/>
   <rect width="1024" height="1024" fill="url(#glowB)"/>
   <g transform="rotate(-7 512 512)" filter="url(#shadow)">
     <rect x="236" y="194" width="553" height="655" fill="#FFFFFF"/>
-    <rect x="282" y="240" width="461" height="476" fill="#121212"/>
+    <rect x="282" y="240" width="461" height="476" fill="url(#plum)"/>
     <rect x="282" y="240" width="461" height="476" fill="url(#halo)"/>
+    <rect x="282" y="240" width="461" height="476" fill="url(#lilacGlow)"/>
+    <rect x="282" y="240" width="461" height="476" fill="url(#butterGlow)"/>
     <use href="#sparkle" transform="translate(512 478) scale(133)" fill="#FFFFFF"/>
-    <use href="#sparkle" transform="translate(620 376) scale(36)" fill="#F7C1D9"/>
-    <path d="M512,812 L463,768 A25,25 0 1 1 512,742 A25,25 0 1 1 561,768 Z" fill="#F7C1D9"/>
+    <use href="#sparkle" transform="translate(620 376) scale(36)" fill="#FFDE6E"/>
+    <path d="M512,812 L463,768 A25,25 0 1 1 512,742 A25,25 0 1 1 561,768 Z" fill="#FF5CA1"/>
   </g>
   <use href="#sparkle" transform="translate(865 159) scale(67)" fill="#FFFFFF"/>
   <use href="#sparkle" transform="translate(932 261) scale(29)" fill="#FFFFFF"/>

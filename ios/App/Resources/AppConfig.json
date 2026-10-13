@@ -2,7 +2,7 @@
   "backendBaseURL": "",
   "supabaseAnonKey": "",
   "forceDemoMode": false,
-  "aiProviderName": "fal.ai and the model providers it runs, such as Google",
+  "aiProviderName": "xAI (Grok Imagine)",
   "dataRetentionHours": 1,
   "privacyPolicyURL": "https://github.com/RiosenBeq/furkan/blob/main/docs/legal/en/privacy-policy.md",
   "termsURL": "https://github.com/RiosenBeq/furkan/blob/main/docs/legal/en/terms-of-use.md",

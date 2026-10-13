@@ -88,8 +88,10 @@ export interface QueuedRequest {
   cancel_url: string;
 }
 
+/** A result: a provider CDN link (fal) or the image itself, base64 (xAI). */
 export interface Output {
-  url: string;
+  url?: string;
+  base64?: string;
   width?: number;
   height?: number;
   content_type?: string;
@@ -172,10 +174,13 @@ export function normalizeOutputs(payload: unknown): Output[] {
  */
 export async function outputsLookUnsafe(outputs: Output[]): Promise<boolean> {
   if (Deno.env.get("OUTPUT_MODERATION") === "off" || outputs.length === 0) return false;
+  // With xAI alone (no fal key) its own moderation is the output check.
+  if (!Deno.env.get("FAL_KEY")) return false;
+  const imageUrls = outputs.map((o) => o.url ?? `data:${o.content_type ?? "image/jpeg"};base64,${o.base64 ?? ""}`);
   const response = await fetch("https://fal.run/fal-ai/x-ailab/nsfw", {
     method: "POST",
     headers: headers(),
-    body: JSON.stringify({ image_urls: outputs.map((o) => o.url) }),
+    body: JSON.stringify({ image_urls: imageUrls }),
   });
   if (!response.ok) return false;
   const body = await response.json() as { has_nsfw_concepts?: boolean[] };

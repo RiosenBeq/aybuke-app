@@ -3,9 +3,15 @@
 //   POST   /ai-image            enqueue a job        → 202 { job_id, status: "queued", credits_remaining }
 //   GET    /ai-image?job_id=ID  poll a job            → { job_id, status, outputs?, error?, credits_remaining? }
 //   DELETE /ai-image?job_id=ID  cancel + refund a job → { job_id, status: "cancelled", credits_remaining }
+//                               (on a completed job: "got it", the results are cleared)
 //   GET    /ai-image            current balance       → { credits_remaining, is_pro }
 //
 // Contract: ios/Packages/AppCore/Sources/AppCore/BackendAPI.swift
+//
+// Providers: xAI (default when XAI_API_KEY is set) or fal (AI_PROVIDER=fal).
+// fal jobs are queued at fal and advanced while the app polls; xAI answers in
+// one request, which runs in the background after the 202. A DELETE on a
+// completed job confirms the app has the images, and clears them right away.
 import type { SupabaseClient } from "npm:@supabase/supabase-js@2.117.3";
 import { resolveEntitlement } from "../_shared/apple.ts";
 import { requireUser, serviceClient } from "../_shared/auth.ts";
@@ -13,12 +19,15 @@ import * as fal from "../_shared/fal.ts";
 import { corsHeaders, errorResponse, HttpError, json } from "../_shared/http.ts";
 import { evaluatePrompt } from "../_shared/policy.ts";
 import { PRO_STYLES, templateRecipe } from "../_shared/templates.ts";
+import * as xai from "../_shared/xai.ts";
 
 const MAX_BODY_BYTES = 8 * 1024 * 1024;
 const MAX_PROMPT_LENGTH = 1000;
 const MAX_OUTPUTS = 4;
 const FREE_RETRY_WINDOW_MINUTES = 15;
 const JOB_TIMEOUT_MS = 10 * 60 * 1000;
+/** xAI requests are synchronous; a job still pending after this has stalled. */
+const XAI_JOB_TIMEOUT_MS = 3 * 60 * 1000;
 const RATE_LIMIT_PER_MINUTE = { free: 6, pro: 20 };
 const ASPECT_RATIOS = new Set(["1:1", "3:4", "9:16", "4:3", "16:9"]);
 
@@ -39,6 +48,7 @@ interface JobRow {
   user_id: string;
   operation: string;
   status: "queued" | "processing" | "completed" | "failed" | "cancelled";
+  endpoint: string | null;
   status_url: string | null;
   response_url: string | null;
   cancel_url: string | null;
@@ -106,8 +116,11 @@ async function createJob(db: SupabaseClient, userId: string, isPro: boolean, req
     throw new HttpError(402, "pro_required", "This style is part of Pro.");
   }
 
+  const useXAI = provider() === "xai";
+  if (useXAI && !xai.supports(op)) throw new HttpError(400, "bad_request", "Background removal runs on your iPhone.");
+
   let prompt = (body.prompt ?? "").trim().slice(0, MAX_PROMPT_LENGTH);
-  let endpoint = fal.ENDPOINTS[op];
+  let endpoint = useXAI ? `xai/${xai.model(op)}` : fal.ENDPOINTS[op];
   if (op === "restyle") {
     const recipe = templateRecipe(body.template_id ?? "");
     if (!recipe) {
@@ -115,7 +128,7 @@ async function createJob(db: SupabaseClient, userId: string, isPro: boolean, req
     }
     if (recipe.isPro && !isPro) throw new HttpError(402, "pro_required", "This template is part of Pro.");
     prompt = recipe.prompt;
-    endpoint = recipe.endpoint ?? endpoint;
+    if (!useXAI) endpoint = recipe.endpoint ?? endpoint;
   }
   if ((op === "text_to_image" || op === "magic_edit") && !prompt) {
     throw new HttpError(400, "bad_request", "Describe what you want to see.");
@@ -171,19 +184,22 @@ async function createJob(db: SupabaseClient, userId: string, isPro: boolean, req
     throw new HttpError(500, "internal", "Couldn't reserve credits.");
   }
 
+  const input: fal.JobInput = {
+    operation: op,
+    prompt,
+    aspectRatio: body.aspect_ratio && ASPECT_RATIOS.has(body.aspect_ratio) ? body.aspect_ratio : undefined,
+    numOutputs,
+    image: body.image,
+    mask: body.mask,
+    isPro,
+  };
+  if (useXAI) {
+    background(runXAI(db, job.id, input, await xai.userTag(userId)));
+    return json({ job_id: job.id, status: "queued", credits_remaining: remaining }, 202);
+  }
+
   try {
-    const queued = await fal.submit(
-      endpoint,
-      fal.buildFalInput({
-        operation: op,
-        prompt,
-        aspectRatio: body.aspect_ratio && ASPECT_RATIOS.has(body.aspect_ratio) ? body.aspect_ratio : undefined,
-        numOutputs,
-        image: body.image,
-        mask: body.mask,
-        isPro,
-      }),
-    );
+    const queued = await fal.submit(endpoint, fal.buildFalInput(input));
     await db.from("jobs").update({
       fal_request_id: queued.request_id,
       status_url: queued.status_url,
@@ -199,6 +215,35 @@ async function createJob(db: SupabaseClient, userId: string, isPro: boolean, req
   return json({ job_id: job.id, status: "queued", credits_remaining: remaining }, 202);
 }
 
+/** xAI answers in one request: mark the job processing, run it, keep the outcome. */
+async function runXAI(db: SupabaseClient, jobId: string, input: fal.JobInput, userTag: string): Promise<void> {
+  try {
+    await db.from("jobs").update({ status: "processing", updated_at: new Date().toISOString() })
+      .eq("id", jobId).eq("status", "queued");
+    await finish(db, jobId, await xai.generate(input, userTag));
+  } catch (error) {
+    console.error("xai job failed", error);
+    await failJob(db, jobId, "provider_failed", "This creation failed. Your credit was refunded.");
+  }
+}
+
+/** Keeps work running after the response is sent (Supabase Edge Runtime). */
+function background(work: Promise<void>): void {
+  const runtime = (globalThis as { EdgeRuntime?: { waitUntil(promise: Promise<unknown>): void } }).EdgeRuntime;
+  if (runtime) {
+    runtime.waitUntil(work);
+  } else {
+    work.catch((error) => console.error("background work failed", error));
+  }
+}
+
+/** "xai" (the default when XAI_API_KEY is set) or "fal". */
+function provider(): "xai" | "fal" {
+  const chosen = Deno.env.get("AI_PROVIDER");
+  if (chosen === "xai" || chosen === "fal") return chosen;
+  return Deno.env.get("XAI_API_KEY") ? "xai" : "fal";
+}
+
 // MARK: - Poll
 
 async function pollJob(db: SupabaseClient, userId: string, jobId: string): Promise<Response> {
@@ -212,7 +257,8 @@ async function pollJob(db: SupabaseClient, userId: string, jobId: string): Promi
 
 /** Moves a pending job forward by asking the provider (no webhook needed). */
 async function advance(db: SupabaseClient, job: JobRow): Promise<void> {
-  if (Date.now() - new Date(job.created_at).getTime() > JOB_TIMEOUT_MS) {
+  const timeout = job.endpoint?.startsWith("xai/") ? XAI_JOB_TIMEOUT_MS : JOB_TIMEOUT_MS;
+  if (Date.now() - new Date(job.created_at).getTime() > timeout) {
     if (job.cancel_url) await fal.cancel(job.cancel_url);
     await failJob(db, job.id, "timeout", "This took too long. Your credit was refunded.");
     return;
@@ -227,15 +273,19 @@ async function advance(db: SupabaseClient, job: JobRow): Promise<void> {
   }
   if (state !== "COMPLETED") return;
 
-  const outcome = await fal.result(job.response_url);
+  await finish(db, job.id, await fal.result(job.response_url));
+}
+
+/** Stores a provider's outcome: results (after the output safety check) or a refund. */
+async function finish(db: SupabaseClient, jobId: string, outcome: fal.ResultOutcome): Promise<void> {
   if (!outcome.ok) {
-    await failJob(db, job.id, outcome.code, outcome.message);
+    await failJob(db, jobId, outcome.code, outcome.message);
     return;
   }
   if (await fal.outputsLookUnsafe(outcome.outputs)) {
     await failJob(
       db,
-      job.id,
+      jobId,
       "content_blocked",
       "This result was blocked by our safety filters. Your credit was refunded.",
     );
@@ -243,7 +293,7 @@ async function advance(db: SupabaseClient, job: JobRow): Promise<void> {
   }
   await db.from("jobs")
     .update({ status: "completed", outputs: outcome.outputs, updated_at: new Date().toISOString() })
-    .eq("id", job.id)
+    .eq("id", jobId)
     .in("status", ["queued", "processing"]);
 }
 
@@ -251,6 +301,12 @@ async function advance(db: SupabaseClient, job: JobRow): Promise<void> {
 
 async function cancelJob(db: SupabaseClient, userId: string, jobId: string): Promise<Response> {
   const job = await loadJob(db, userId, jobId);
+  if (job.status === "completed") {
+    // The app has its images: don't keep them a minute longer.
+    await db.from("jobs").update({ outputs: null, updated_at: new Date().toISOString() })
+      .eq("id", job.id).eq("status", "completed");
+    return json({ job_id: job.id, status: "completed" });
+  }
   if (job.status === "queued" || job.status === "processing") {
     if (job.cancel_url) await fal.cancel(job.cancel_url);
     const { data } = await db.from("jobs")

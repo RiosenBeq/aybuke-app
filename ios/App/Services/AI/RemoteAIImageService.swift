@@ -53,6 +53,8 @@ final class RemoteAIImageService: AIImageService {
             }
         }
         guard !images.isEmpty else { throw AIServiceError.invalidResponse }
+        // Tell the server we have them, so it clears the results right away.
+        if let jobID = finished.jobID { cancelInBackground(jobID: jobID) }
         return AIJobResult(images: images, creditsRemaining: finished.creditsRemaining, requestID: finished.jobID)
     }
 
@@ -98,6 +100,8 @@ final class RemoteAIImageService: AIImageService {
     }
 
     /// Fire-and-forget so it still runs when the calling task was cancelled.
+    /// On a pending job it cancels and refunds; on a finished one it confirms
+    /// the download, and the server deletes the results.
     private func cancelInBackground(jobID: String) {
         let config = config
         let auth = auth

@@ -138,6 +138,77 @@ final class DirectAITests: XCTestCase {
         }
     }
 
+    // MARK: xAI
+
+    func testXAIDefaults() throws {
+        let config = try config("xai")
+        XCTAssertEqual(config.provider, .xai)
+        XCTAssertEqual(config.imageModel, "grok-imagine-image-2.0")
+        XCTAssertEqual(config.editModel, "grok-imagine-image-2.0")
+        XCTAssertEqual(DirectAIProvider.xai.maskFormat, .whiteAreasEdit)
+    }
+
+    func testXAIGenerationRequest() throws {
+        let input = DirectAIInput(operation: .textToImage, prompt: "A fox", aspectRatio: .story, numOutputs: 2)
+        let request = try XAIImagesAPI.request(input, config: config("xai"))
+        XCTAssertEqual(request.url?.absoluteString, "https://api.x.ai/v1/images/generations")
+        XCTAssertEqual(request.value(forHTTPHeaderField: "Authorization"), "Bearer test-key")
+        let body = try json(request)
+        XCTAssertEqual(body["model"] as? String, "grok-imagine-image-2.0")
+        XCTAssertEqual(body["n"] as? Int, 2)
+        XCTAssertEqual(body["aspect_ratio"] as? String, "9:16")
+        XCTAssertEqual(body["resolution"] as? String, "1k")
+        XCTAssertEqual(body["quality"] as? String, "low", "Free runs at low quality")
+        XCTAssertEqual(body["response_format"] as? String, "b64_json")
+    }
+
+    func testXAIEditSendsTheImageAsJSON() throws {
+        let input = DirectAIInput(operation: .magicEdit, prompt: "Golden hour light.", image: jpeg, isPro: true)
+        let request = try XAIImagesAPI.request(input, config: config("xai"))
+        XCTAssertEqual(request.url?.absoluteString, "https://api.x.ai/v1/images/edits")
+        XCTAssertEqual(request.value(forHTTPHeaderField: "Content-Type"), "application/json")
+        let body = try json(request)
+        XCTAssertEqual(body["quality"] as? String, "medium", "Pro runs at medium quality")
+        XCTAssertNil(body["aspect_ratio"], "Edits keep the photo's own aspect ratio")
+        let image = try XCTUnwrap(body["image"] as? [String: String])
+        XCTAssertEqual(image["type"], "image_url")
+        XCTAssertEqual(image["url"], "data:image/jpeg;base64,/9j/4A==")
+    }
+
+    func testXAIEraseSendsPhotoAndMask() throws {
+        let input = DirectAIInput(operation: .eraseObject, prompt: DirectAIPrompts.eraseWithMaskImages, image: jpeg, mask: png)
+        let body = try json(XAIImagesAPI.request(input, config: config("xai")))
+        let images = try XCTUnwrap(body["images"] as? [[String: String]])
+        XCTAssertEqual(images.map { $0["url"]?.prefix(15) }, ["data:image/jpeg", "data:image/png;"])
+        XCTAssertTrue((body["prompt"] as? String ?? "").contains("<IMAGE_1>"))
+        XCTAssertNil(body["image"])
+    }
+
+    func testXAILegacyModelHasNoQuality() throws {
+        let input = DirectAIInput(operation: .textToImage, prompt: "A fox")
+        let body = try json(XAIImagesAPI.request(input, config: config("xai", image: "grok-imagine-image")))
+        XCTAssertNil(body["quality"])
+    }
+
+    func testXAIDecoding() throws {
+        let ok = Data(#"{"data":[{"b64_json":"/9j/4A==","respect_moderation":true}],"usage":{"cost_in_usd_ticks":500000000}}"#.utf8)
+        XCTAssertEqual(try XAIImagesAPI.decode(data: ok, statusCode: 200), [jpeg])
+
+        let filtered = Data(#"{"data":[{"b64_json":"/9j/4A==","respect_moderation":false}]}"#.utf8)
+        XCTAssertThrowsError(try XAIImagesAPI.decode(data: filtered, statusCode: 200)) { error in
+            guard case AIServiceError.contentBlocked = error else { return XCTFail("\(error)") }
+        }
+        let badKey = Data(#"{"code":"Client specified an invalid argument","error":"Incorrect API key provided"}"#.utf8)
+        XCTAssertThrowsError(try XAIImagesAPI.decode(data: badKey, statusCode: 401)) { error in
+            guard case AIServiceError.server(let code, _) = error else { return XCTFail("\(error)") }
+            XCTAssertEqual(code, "provider_auth")
+        }
+        let busy = Data(#"{"error":{"message":"Too many requests","code":"rate_limit_exceeded"}}"#.utf8)
+        XCTAssertThrowsError(try XAIImagesAPI.decode(data: busy, statusCode: 429)) { error in
+            guard case AIServiceError.rateLimited = error else { return XCTFail("\(error)") }
+        }
+    }
+
     // MARK: Gemini
 
     func testGeminiEditRequest() throws {

@@ -702,7 +702,7 @@ extension AppModel {
         hasCompletedOnboarding = scene != .onboarding
         hasAIConsent = scene != .consent
         switch scene {
-        case .onboarding, .home, .settings, .legal:
+        case .onboarding, .home, .settings, .legal, .invite:
             selectedTab = .home
         case .create, .results:
             selectedTab = .create

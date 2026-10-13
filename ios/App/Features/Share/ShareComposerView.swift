@@ -25,7 +25,8 @@ struct ShareComposerView: View {
             switch format {
             case .beforeAfter: return payload.original != nil
             case .pick: return payload.pickPair != nil
-            case .photo, .story: return true
+            case .strip: return payload.stripImages.count >= 2
+            case .photo, .story, .cover: return true
             }
         }
     }
@@ -243,7 +244,7 @@ struct ShareComposerView: View {
         let appID = app.config.instagramAppID
         if InstagramStories.isAvailable(appID: appID) {
             UIPasteboard.general.string = caption
-            let opened = await InstagramStories.share(rendered, asBackground: format == .story, appID: appID)
+            let opened = await InstagramStories.share(rendered, asBackground: format.isStory, appID: appID)
             if opened {
                 app.countHappyMoment()
             } else {
@@ -252,9 +253,17 @@ struct ShareComposerView: View {
             return
         }
         // No Meta App ID configured (or Instagram missing): the system sheet
-        // still offers Instagram → Stories / Feed / Messages.
-        app.showToast("Pick Instagram, then Stories.", style: .info)
-        shareToApps()
+        // still offers Instagram → Stories / Feed / Messages. Just the image,
+        // so Instagram opens straight in its share options; the caption is on
+        // the clipboard to paste.
+        do {
+            let file = try encodedFile()
+            UIPasteboard.general.string = caption
+            app.showToast("Tap Instagram, then Stories ✨", style: .info)
+            activityItems = ActivityItems(items: [file])
+        } catch {
+            app.handle(error)
+        }
     }
 
     private func save() async {

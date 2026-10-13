@@ -14,6 +14,15 @@ enum Palette {
     static let paper = Color(hex: 0xF8F8F6)
     static let white = Color(hex: 0xFFFFFF)
 
+    // MARK: Aura accents — the colorful side of the brand (app icon, share
+    // cards, template art). Decorative only; never for text or controls.
+    static let auraPink = Color(hex: 0xFF5CA1)
+    static let auraLilac = Color(hex: 0xA78BFA)
+    static let auraPeach = Color(hex: 0xFFAA78)
+    static let auraButter = Color(hex: 0xFFDE6E)
+    static let auraMint = Color(hex: 0x78E1CD)
+    static let plum = Color(hex: 0x3C185A)
+
     // MARK: Surfaces — petal-pink canvas, white cards
     static let background = Color(light: 0xF8E0EA, dark: 0x121212)
     static let surface = Color(light: 0xFFFFFF, dark: 0x24272A)
@@ -97,6 +106,12 @@ extension UIColor {
     static let brandInk = UIColor(hex: 0x121212)
     static let brandCharcoal = UIColor(hex: 0x24272A)
     static let brandPaper = UIColor(hex: 0xF8F8F6)
+    static let auraPink = UIColor(hex: 0xFF5CA1)
+    static let auraLilac = UIColor(hex: 0xA78BFA)
+    static let auraPeach = UIColor(hex: 0xFFAA78)
+    static let auraButter = UIColor(hex: 0xFFDE6E)
+    static let auraMint = UIColor(hex: 0x78E1CD)
+    static let plum = UIColor(hex: 0x3C185A)
 }
 
 /// Flat pairings of brand swatches for artwork without a photo (template

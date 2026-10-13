@@ -1,16 +1,17 @@
-# Glowlit backend (Supabase + fal.ai)
+# Glowlit backend (Supabase + xAI)
 
 The iOS app never talks to an AI provider directly and never ships provider
 keys. This backend authenticates each (anonymous) user, verifies purchases with
 Apple, meters credits in Postgres, moderates prompts and outputs, and forwards
-an allow-listed set of operations to [fal.ai](https://fal.ai).
+an allow-listed set of operations to [xAI](https://docs.x.ai) (Grok Imagine),
+or to [fal.ai](https://fal.ai) with `AI_PROVIDER=fal`.
 
 ```
 iOS app ──► Supabase Auth (anonymous JWT; optional Sign in with Apple ID token)
    │
-   ├─► POST   /functions/v1/ai-image            enqueue job  ──► fal.ai queue (model per operation)
-   ├─► GET    /functions/v1/ai-image?job_id=…   poll job     ──► fal status / result (+ output NSFW check)
-   ├─► DELETE /functions/v1/ai-image?job_id=…   cancel job   ──► fal cancel + exact credit refund
+   ├─► POST   /functions/v1/ai-image            enqueue job  ──► xAI request in the background (or fal's queue)
+   ├─► GET    /functions/v1/ai-image?job_id=…   poll job     ──► job status / results (+ output safety check)
+   ├─► DELETE /functions/v1/ai-image?job_id=…   cancel job   ──► exact credit refund; on a finished job: results cleared
    ├─► GET    /functions/v1/ai-image            balance
    ├─► POST   /functions/v1/credits-redeem      credit pack  ──► Apple JWS verification → grant once
    ├─► POST   /functions/v1/report              "Report this image" (reason, job id) → public.reports
@@ -25,14 +26,18 @@ The wire contract is defined (and unit-tested) in
 
 | Decision | Reason |
 |---|---|
-| **Async jobs + polling** | Edge Functions time out after ~150 s idle; generations take 5–40 s. The function enqueues on fal's durable queue and returns in < 1 s; the app polls (1 s → 3 s back-off). Webhooks are an easy later upgrade. |
-| **Operations, not endpoints** | The app sends `operation` + `template_id`; the server picks the model (`_shared/fal.ts`) and the prompt recipe (`_shared/catalog.json`). Models can be swapped without an app release, and nobody can use our fal key for arbitrary models. |
+| **Async jobs + polling** | Edge Functions time out after ~150 s idle; generations take 5–40 s. The function answers in < 1 s and the app polls (1 s → 3 s back-off). xAI requests run in the background (`EdgeRuntime.waitUntil`); fal jobs sit on fal's durable queue. |
+| **Operations, not endpoints** | The app sends `operation` + `template_id`; the server picks the model (`_shared/xai.ts`, `_shared/fal.ts`) and the prompt recipe (`_shared/catalog.json`). Models can be swapped without an app release, and nobody can use our keys for arbitrary models. |
 | **Server-side credit ledger** | `reserve_credits` → job → `release_credits` on any failure, cancel or timeout. Exact per-bucket refunds, idempotent, append-only audit trail (`credit_ledger`). |
 | **Apple-verified entitlements** | Pro status comes from a StoreKit 2 signed transaction verified with Apple's App Store Server Library, then bound to one user at a time. |
-| **No input storage** | Photos are passed to fal as data URIs and never written to our database or storage. fal outputs expire after 1 hour (`X-Fal-Object-Lifecycle-Preference`) and request I/O history is disabled (`X-Fal-Store-IO: 0`). |
-| **Layered safety** | Prompt policy (client + server) → strict model `safety_tolerance` → output NSFW check (on by default) → in-app reporting. Documented for EU AI Act Art. 5(1)(ba) (from 2 Dec 2026). |
+| **No input storage** | Photos are passed to the provider as data URIs and never written to our database or storage. xAI results come back as base64, are held on the job only until the app confirms the download (then cleared; `sweep_jobs()` clears any left after an hour). With xAI Zero Data Retention on, xAI deletes requests within an hour and never trains on them. fal outputs expire after 1 hour (`X-Fal-Object-Lifecycle-Preference`) and request I/O history is disabled (`X-Fal-Store-IO: 0`). |
+| **Layered safety** | Prompt policy (client + server) → provider moderation (xAI filters outputs; fal's strict `safety_tolerance`) → output NSFW check (when `FAL_KEY` is set) → in-app reporting. Documented for EU AI Act Art. 5(1)(ba) (from 2 Dec 2026). |
 
 ## Models (late 2026 picks)
+
+**xAI (default).** Every operation runs on `grok-imagine-image-2.0` at 1k: low quality for free users, medium for Pro (about $0.04 per created image and $0.05–0.07 per edit, input included). Enhance and Erase are edits with a fixed instruction (Erase sends the photo and the brush mask as two images). Background removal stays on the device. Override with `XAI_IMAGE_MODEL` / `XAI_EDIT_MODEL`; `grok-imagine-image` costs about $0.02 but ranks lower. In the [xAI console](https://console.x.ai), turn on **Zero Data Retention** for the team: selfies are personal data, and xAI's terms expect it.
+
+**fal (`AI_PROVIDER=fal`).**
 
 | Operation | fal endpoint | Notes |
 |---|---|---|
@@ -86,9 +91,9 @@ Photos are not synced: the library stays on each iPhone.
 
 ## Which AI key goes where
 
-- **Production (this backend):** the provider key lives only in Edge Function secrets (`FAL_KEY` in `.env`, then `supabase secrets set --env-file .env`). It never ships in the app.
-- **Trying a key before the backend exists:** put it in `ios/Config/Secrets.xcconfig` (git-ignored, DEBUG builds only). The app then calls fal.ai, OpenAI or Google Gemini directly. See the repository README, "Connect an AI provider".
-- The backend currently runs jobs on fal.ai. OpenAI and Gemini work in the app's developer mode; add a backend adapter for them in `_shared/` before using them in production.
+- **Production (this backend):** the provider key lives only in Edge Function secrets (`XAI_API_KEY`, or `FAL_KEY`, in `.env`, then `supabase secrets set --env-file .env`; or paste it under Edge Functions → Secrets in the dashboard). It never ships in the app.
+- **Trying a key before the backend exists:** put it in `ios/Config/Secrets.xcconfig` (git-ignored, DEBUG builds only), for example `GL_AI_PROVIDER = xai`. The app then calls xAI, fal.ai, OpenAI or Google Gemini directly. See the repository README, "Connect an AI provider".
+- The backend runs jobs on xAI or fal.ai. OpenAI and Gemini work in the app's developer mode; add a backend adapter for them in `_shared/` before using them in production.
 
 ## Credit rules
 

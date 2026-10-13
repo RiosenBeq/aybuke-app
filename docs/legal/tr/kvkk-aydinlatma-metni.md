@@ -64,7 +64,7 @@ Kişisel verileriniz, Glowlit mobil uygulaması aracılığıyla elektronik orta
 
 Kişisel verileriniz, yukarıdaki amaçlarla sınırlı olarak ve KVKK md. 8 ve 9'a uygun şekilde şu alıcılara aktarılabilir:
 
-- **Yurt dışındaki hizmet sağlayıcılarımız (veri işleyenler):** arka uç barındırma, veritabanı ve anonim kimlik doğrulama için Supabase Inc. (ABD; barındırma bölgesi: [Supabase bölgesi, örn. AB (Frankfurt)]); yapay zekâ çıkarımı ve otomatik çıktı güvenlik kontrolü için Features & Labels, Inc. (fal.ai, ABD) ve fal.ai'ın çalıştırdığı modellerin geliştiricileri (örneğin Google LLC); sağlayıcı değiştirmemiz hâlinde Google LLC (Gemini API) veya OpenAI (Images API); e-posta hizmet sağlayıcımız.
+- **Yurt dışındaki hizmet sağlayıcılarımız (veri işleyenler):** arka uç barındırma, veritabanı ve anonim kimlik doğrulama için Supabase Inc. (ABD; barındırma bölgesi: [Supabase bölgesi, örn. AB (Frankfurt)]); yapay zekâ çıkarımı için xAI (X.AI LLC ve bağlı şirketleri, ABD; Sıfır Veri Saklama açık); otomatik çıktı güvenlik kontrolü için ve sağlayıcı değiştirmemiz hâlinde Features & Labels, Inc. (fal.ai, ABD) ve fal.ai'ın çalıştırdığı modellerin geliştiricileri (örneğin Google LLC), Google LLC (Gemini API) veya OpenAI (Images API); e-posta hizmet sağlayıcımız.
 - **Apple:** satın alma ve abonelik işlemlerinin yürütülmesi ile Apple ile girişin doğrulanması ve hesap silindiğinde iptal edilmesi amacıyla; Apple bu işlemleri satıcı ve bağımsız veri sorumlusu sıfatıyla yürütür. Fotoğraflarınızı veya istemlerinizi Apple'a göndermeyiz.
 - **Yetkili kamu kurum ve kuruluşları ile adli makamlar:** kanunen yetkili oldukları hâllerde ve hukuki yükümlülüklerimizin gerektirdiği ölçüde.
 

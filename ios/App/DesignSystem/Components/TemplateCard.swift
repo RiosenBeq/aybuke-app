@@ -1,9 +1,9 @@
 import SwiftUI
 import AppCore
 
-/// Card for a one-tap template. Uses the remote thumbnail when available and a
-/// flat brand-tone swatch with the template's symbol otherwise. Sharp-edged,
-/// like a print.
+/// Card for a one-tap template. Uses the remote thumbnail when available and
+/// illustrated aura art (the template's symbol as a sticker) otherwise.
+/// Sharp-edged, like a print.
 struct TemplateCard: View {
     let template: PhotoTemplate
     var width: CGFloat = 148
@@ -12,13 +12,13 @@ struct TemplateCard: View {
     /// Lookbook number ("N°03") shown on collection pages.
     var number: Int?
 
-    private var tone: PaletteTone {
-        PaletteTone.at(TemplateCatalog.all.firstIndex(of: template) ?? 0)
+    private var palette: AuraPalette {
+        AuraPalette.at(TemplateCatalog.all.firstIndex(of: template) ?? 0)
     }
 
     /// Photo thumbnails get a dark scrim, so their labels are always light.
-    private var isOnDark: Bool { template.thumbnailURL != nil || tone.isDark }
-    private var labelColor: Color { template.thumbnailURL != nil ? Palette.white : tone.foreground }
+    private var isOnDark: Bool { template.thumbnailURL != nil || palette.isDark }
+    private var labelColor: Color { template.thumbnailURL != nil ? Palette.white : palette.foreground }
 
     var body: some View {
         ZStack(alignment: .bottomLeading) {
@@ -80,22 +80,12 @@ struct TemplateCard: View {
                 if let image = phase.image {
                     image.resizable().scaledToFill()
                 } else {
-                    tone.fill
+                    AuraFill(palette: palette)
                 }
             }
             .overlay(LinearGradient(colors: [.clear, Palette.ink.opacity(0.7)], startPoint: .center, endPoint: .bottom))
         } else {
-            ZStack {
-                tone.fill
-                Circle()
-                    .fill(tone.foreground.opacity(0.08))
-                    .frame(width: width * 0.72, height: width * 0.72)
-                    .offset(y: -height * 0.08)
-                Image(systemName: template.symbolName)
-                    .font(.system(size: min(52, width * 0.36), weight: .semibold))
-                    .foregroundStyle(tone.foreground)
-                    .offset(y: -height * 0.08)
-            }
+            TemplateArt(symbolName: template.symbolName, palette: palette, seed: template.id)
         }
     }
 }

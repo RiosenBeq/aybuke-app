@@ -13,12 +13,14 @@ import FoundationNetworking
 // MARK: - Configuration
 
 public enum DirectAIProvider: String, CaseIterable, Sendable {
+    case xai
     case fal
     case openai
     case gemini
 
     public var displayName: String {
         switch self {
+        case .xai: return "xAI"
         case .fal: return "fal.ai"
         case .openai: return "OpenAI"
         case .gemini: return "Google Gemini"
@@ -28,6 +30,7 @@ public enum DirectAIProvider: String, CaseIterable, Sendable {
     /// Named on the AI consent screen as the party that processes photos.
     public var processorName: String {
         switch self {
+        case .xai: return XAIImagesAPI.processorName
         case .fal: return "fal.ai and the model providers it runs, such as Google"
         case .openai: return "OpenAI"
         case .gemini: return "Google (Gemini API)"
@@ -36,6 +39,7 @@ public enum DirectAIProvider: String, CaseIterable, Sendable {
 
     public var defaultImageModel: String {
         switch self {
+        case .xai: return XAIImagesAPI.defaultModel
         case .fal: return FalDirectAPI.defaultEndpoints[.textToImage] ?? ""
         case .openai: return "gpt-image-1"
         case .gemini: return "gemini-2.5-flash-image"
@@ -44,6 +48,7 @@ public enum DirectAIProvider: String, CaseIterable, Sendable {
 
     public var defaultEditModel: String {
         switch self {
+        case .xai: return XAIImagesAPI.defaultModel
         case .fal: return FalDirectAPI.defaultEndpoints[.magicEdit] ?? ""
         case .openai: return "gpt-image-1"
         case .gemini: return "gemini-2.5-flash-image"
@@ -56,7 +61,7 @@ public enum DirectAIProvider: String, CaseIterable, Sendable {
     }
 
     public enum MaskFormat: Sendable {
-        /// Opaque PNG: white = remove, black = keep (fal, Gemini).
+        /// Opaque PNG: white = remove, black = keep (xAI, fal, Gemini).
         case whiteAreasEdit
         /// RGBA PNG: fully transparent = edit (OpenAI Images API).
         case transparentAreasEdit
@@ -123,6 +128,9 @@ public enum DirectAIPrompts {
 
     /// OpenAI applies the edit only inside the transparent mask area.
     public static let eraseWithMask = "Remove the object in the masked area and fill it naturally so it blends with the surroundings. Keep everything else unchanged."
+
+    /// xAI receives the photo and the mask as two images.
+    public static let eraseWithMaskImages = "<IMAGE_1> is a mask. Remove everything covered by its white area from <IMAGE_0> and fill that area naturally so it matches the surroundings. Keep everything else in <IMAGE_0> unchanged, with the same framing, and return only the edited <IMAGE_0>."
 
     /// Gemini receives the mask as a second image.
     public static let eraseWithMaskImage = "The second image is a mask. Remove everything covered by its white area from the first image and fill that area naturally so it matches the surroundings. Keep everything else in the first image unchanged and return only the edited first image."
@@ -499,6 +507,101 @@ public enum GeminiImageAPI {
             throw AIServiceError.contentBlocked("This request was blocked by the AI provider's safety filters. Try a different idea.")
         }
         throw AIServiceError.server(code: "no_image", message: "Google Gemini didn't return an image. Try rephrasing your request.")
+    }
+}
+
+// MARK: - xAI Images API (Grok Imagine)
+
+/// `POST /v1/images/generations` and `/v1/images/edits`, JSON in and out.
+/// Mirrors backend/supabase/functions/_shared/xai.ts.
+public enum XAIImagesAPI {
+    public static let baseURL = URL(string: "https://api.x.ai/v1/images")!
+    /// Best quality for the price (docs/03-product-spec.md, "AI provider").
+    public static let defaultModel = "grok-imagine-image-2.0"
+    public static let processorName = "xAI (Grok Imagine)"
+
+    /// Free runs at low quality and Pro at medium; both at 1k, which keeps a
+    /// cloud operation near the ~$0.06 the credit plan is sized for.
+    public static func quality(isPro: Bool) -> String { isPro ? "medium" : "low" }
+
+    public static func body(for input: DirectAIInput, config: DirectAIConfiguration) throws -> [String: Any] {
+        let model = input.operation == .textToImage ? config.imageModel : config.editModel
+        var body: [String: Any] = [
+            "model": model,
+            "prompt": input.prompt,
+            "n": 1,
+            "resolution": "1k",
+            "response_format": "b64_json",
+        ]
+        // Only the 2.x models take a quality setting.
+        if model.hasPrefix("grok-imagine-image-2") {
+            body["quality"] = quality(isPro: input.isPro)
+        }
+        func imageObject(_ data: Data, mimeType: String) -> [String: Any] {
+            ["url": GenerationRequest.dataURI(data, mimeType: mimeType), "type": "image_url"]
+        }
+        switch input.operation {
+        case .textToImage:
+            body["n"] = min(max(1, input.numOutputs), 10)
+            body["aspect_ratio"] = (input.aspectRatio ?? .square).rawValue
+        case .magicEdit, .restyle, .enhance:
+            guard let image = input.image else { throw AIServiceError.invalidRequest("Pick a photo first.") }
+            body["image"] = imageObject(image, mimeType: "image/jpeg")
+        case .eraseObject:
+            guard let image = input.image else { throw AIServiceError.invalidRequest("Pick a photo first.") }
+            guard let mask = input.mask else { throw AIServiceError.invalidRequest("Brush over the area you want to erase.") }
+            body["images"] = [imageObject(image, mimeType: "image/jpeg"), imageObject(mask, mimeType: "image/png")]
+        case .removeBackground:
+            // Always on the device.
+            throw AIServiceError.invalidRequest("Background removal runs on your iPhone.")
+        }
+        return body
+    }
+
+    public static func request(_ input: DirectAIInput, config: DirectAIConfiguration) throws -> URLRequest {
+        let path = input.operation == .textToImage ? "generations" : "edits"
+        var request = URLRequest(url: baseURL.appendingPathComponent(path))
+        request.httpMethod = "POST"
+        request.timeoutInterval = 180
+        request.setValue("Bearer \(config.apiKey)", forHTTPHeaderField: "Authorization")
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpBody = try JSONSerialization.data(withJSONObject: try body(for: input, config: config), options: [.sortedKeys])
+        return request
+    }
+
+    /// Images from `data[].b64_json`. Outputs the provider's moderation
+    /// filtered (`respect_moderation: false`) are dropped.
+    public static func decode(data: Data, statusCode: Int) throws -> [Data] {
+        guard (200..<300).contains(statusCode) else {
+            let (message, code) = errorDetail(data)
+            throw DirectAIErrors.map(status: statusCode, message: message, code: code, provider: .xai)
+        }
+        struct Item: Decodable {
+            let b64_json: String?
+            let respect_moderation: Bool?
+        }
+        struct Payload: Decodable { let data: [Item]? }
+        guard let payload = try? JSONDecoder().decode(Payload.self, from: data) else { throw AIServiceError.invalidResponse }
+        let items = payload.data ?? []
+        let images = items
+            .filter { $0.respect_moderation != false }
+            .compactMap { $0.b64_json.flatMap { Data(base64Encoded: $0) } }
+        if images.isEmpty, items.contains(where: { $0.respect_moderation == false }) {
+            throw AIServiceError.contentBlocked("This request was blocked by the AI provider's safety filters. Try a different idea.")
+        }
+        guard !images.isEmpty else { throw AIServiceError.invalidResponse }
+        return images
+    }
+
+    /// `{"error": {"message", "code"}}` (OpenAI style) or `{"error": "…", "code": "…"}`.
+    static func errorDetail(_ data: Data) -> (message: String?, code: String?) {
+        guard let object = (try? JSONSerialization.jsonObject(with: data)) as? [String: Any] else {
+            return (String(data: data, encoding: .utf8).flatMap { $0.isEmpty ? nil : String($0.prefix(200)) }, nil)
+        }
+        if let error = object["error"] as? [String: Any] {
+            return (error["message"] as? String, (error["code"] as? String) ?? (error["type"] as? String))
+        }
+        return (object["error"] as? String ?? object["message"] as? String, object["code"] as? String)
     }
 }
 

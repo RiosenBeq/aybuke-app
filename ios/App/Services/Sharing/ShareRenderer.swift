@@ -11,6 +11,12 @@ struct SharePayload: Identifiable {
     /// Other variations from the same creation, for "Help me pick".
     var alternatives: [UIImage] = []
 
+    /// Photo strip frames: the original first, then the glow-up and its
+    /// variations (up to four).
+    var stripImages: [UIImage] {
+        Array(([original].compactMap { $0 } + [image] + alternatives).prefix(4))
+    }
+
     /// "Help me pick": two variations, or the original and the glow-up.
     var pickPair: (a: UIImage, b: UIImage)? {
         if let other = alternatives.first { return (image, other) }
@@ -30,16 +36,20 @@ enum ShareFormat: String, CaseIterable, Identifiable {
     case photo
     case beforeAfter
     case story
+    case cover
+    case strip
     case pick
 
     var id: String { rawValue }
 
     var title: String {
         switch self {
-        case .photo: return "Photo"
-        case .beforeAfter: return "Before / After"
-        case .story: return "Story card"
-        case .pick: return "Help me pick"
+        case .photo: return String(localized: "Photo")
+        case .beforeAfter: return String(localized: "Before / After")
+        case .story: return String(localized: "Story card")
+        case .cover: return String(localized: "Cover star")
+        case .strip: return String(localized: "Photo strip")
+        case .pick: return String(localized: "Help me pick")
         }
     }
 
@@ -48,9 +58,14 @@ enum ShareFormat: String, CaseIterable, Identifiable {
         case .photo: return "photo"
         case .beforeAfter: return "square.split.2x1"
         case .story: return "rectangle.portrait"
+        case .cover: return "magazine"
+        case .strip: return "film"
         case .pick: return "a.circle"
         }
     }
+
+    /// 9:16 formats that go into Stories as the background.
+    var isStory: Bool { self == .story || self == .strip || self == .pick }
 }
 
 /// Renders share formats. Free exports carry Glowlit branding (the corner
@@ -60,7 +75,7 @@ enum ShareRenderer {
     static func render(_ payload: SharePayload, format: ShareFormat, branded: Bool, showPrompt: Bool, aiLabel: Bool = false) -> UIImage {
         let rendered = render(payload, format: format, branded: branded, showPrompt: showPrompt)
         guard aiLabel, let operation = payload.operation else { return rendered }
-        let reservedBottom: CGFloat = (format == .story || format == .pick) ? 300 : 0
+        let reservedBottom: CGFloat = format.isStory ? 300 : format == .cover ? 70 : 0
         return addAILabel(to: rendered, text: operation == .textToImage ? "Made with AI" : "AI-edited", reservedBottom: reservedBottom)
     }
 
@@ -74,6 +89,12 @@ enum ShareRenderer {
             return beforeAfter(before: ImageUtilities.normalized(original, maxLongEdge: 2048), after: image, branded: branded)
         case .story:
             return storyCard(image, prompt: showPrompt ? payload.shareablePrompt : nil, branded: branded)
+        case .cover:
+            return magazineCover(image, branded: branded)
+        case .strip:
+            let frames = payload.stripImages.map { ImageUtilities.normalized($0, maxLongEdge: 1400) }
+            guard frames.count >= 2 else { return storyCard(image, prompt: nil, branded: branded) }
+            return photoStrip(frames, branded: branded)
         case .pick:
             guard let pair = payload.pickPair else { return storyCard(image, prompt: nil, branded: branded) }
             return pickCard(
@@ -255,7 +276,7 @@ enum ShareRenderer {
 
     // MARK: Drawing helpers
 
-    private static func renderer(_ size: CGSize, opaque: Bool) -> UIGraphicsImageRenderer {
+    static func renderer(_ size: CGSize, opaque: Bool) -> UIGraphicsImageRenderer {
         let format = UIGraphicsImageRendererFormat()
         format.scale = 1
         format.opaque = opaque
@@ -268,7 +289,7 @@ enum ShareRenderer {
         return CGSize(width: (size.width * scale).rounded(), height: (size.height * scale).rounded())
     }
 
-    private static func drawRounded(_ image: UIImage, in rect: CGRect, radius: CGFloat, context: CGContext) {
+    static func drawRounded(_ image: UIImage, in rect: CGRect, radius: CGFloat, context: CGContext) {
         context.saveGState()
         UIBezierPath(roundedRect: rect, cornerRadius: radius).addClip()
         image.draw(in: rect)
@@ -290,7 +311,7 @@ enum ShareRenderer {
         label.draw(at: CGPoint(x: rect.minX + size * 0.6, y: rect.minY + size * 0.3), withAttributes: attributes)
     }
 
-    private static func drawText(_ text: String, font: UIFont, color: UIColor, centeredIn rect: CGRect, lines: Int = 1) {
+    static func drawText(_ text: String, font: UIFont, color: UIColor, centeredIn rect: CGRect, lines: Int = 1) {
         let paragraph = NSMutableParagraphStyle()
         paragraph.alignment = .center
         paragraph.lineBreakMode = lines == 1 ? .byTruncatingTail : .byWordWrapping
@@ -302,7 +323,7 @@ enum ShareRenderer {
                     options: [.usesLineFragmentOrigin, .usesFontLeading, .truncatesLastVisibleLine], context: nil)
     }
 
-    private static func radialGlow(_ context: CGContext, center: CGPoint, radius: CGFloat, color: UIColor, alpha: CGFloat) {
+    static func radialGlow(_ context: CGContext, center: CGPoint, radius: CGFloat, color: UIColor, alpha: CGFloat) {
         let colors = [color.withAlphaComponent(alpha).cgColor, color.withAlphaComponent(0).cgColor] as CFArray
         guard let gradient = CGGradient(colorsSpace: CGColorSpaceCreateDeviceRGB(), colors: colors, locations: [0, 1]) else { return }
         context.drawRadialGradient(gradient, startCenter: center, startRadius: 0, endCenter: center, endRadius: radius, options: [])
