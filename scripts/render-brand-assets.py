@@ -133,13 +133,13 @@ def icon(variant: str = "default") -> Image.Image:
 
 
 def font(cut: str, size: int) -> ImageFont.FreeTypeFont:
-    return ImageFont.truetype(str(FONTS / f"BricolageGrotesque-{cut}.ttf"), size)
+    return ImageFont.truetype(str(FONTS / f"Poppins-{cut}.ttf"), size)
 
 
 def serif(size: int) -> ImageFont.FreeTypeFont:
     if SERIF_ITALIC.exists():
         return ImageFont.truetype(str(SERIF_ITALIC), size)
-    return font("TextSemiBold", size)
+    return font("SemiBold", size)
 
 
 def brand_board(app_icon: Image.Image) -> Image.Image:
@@ -161,18 +161,18 @@ def brand_board(app_icon: Image.Image) -> Image.Image:
     board.paste(app_icon.resize((side, side), Image.LANCZOS), (ix, iy), mask)
 
     x = 600
-    draw.text((x, 150), "Glowlit", font=font("DisplayExtraBold", 150), fill=INK)
-    make = font("DisplayBold", 64)
+    draw.text((x, 150), "Glowlit", font=font("ExtraBold", 150), fill=INK)
+    make = font("Bold", 64)
     draw.text((x + 4, 335), "Make it ", font=make, fill=INK)
     offset = draw.textlength("Make it ", font=make)
     draw.text((x + 4 + offset, 322), "glow.", font=serif(76), fill=INK)
-    draw.text((x + 6, 440), "AI photo editor & generator — made for girls who glow.", font=font("TextSemiBold", 30), fill=(92, 84, 87))
+    draw.text((x + 6, 440), "AI photo editor & generator — made for girls who glow.", font=font("SemiBold", 30), fill=(92, 84, 87))
 
     swatches = [("Blush", BLUSH, "#F7C1D9"), ("Petal", PETAL, "#F8E0EA"), ("Ink", INK, "#121212"),
                 ("Charcoal", CHARCOAL, "#24272A"), ("Paper", PAPER, "#F8F8F6"), ("White", WHITE, "#FFFFFF")]
     sx, sy, sw = 140, 640, 205
-    label_font = font("TextSemiBold", 26)
-    hex_font = font("TextSemiBold", 22)
+    label_font = font("SemiBold", 26)
+    hex_font = font("SemiBold", 22)
     for index, (name, color, hex_value) in enumerate(swatches):
         left = sx + index * (sw + 18)
         draw.rounded_rectangle((left, sy, left + sw, sy + 120), radius=26, fill=color, outline=(226, 196, 208), width=2)

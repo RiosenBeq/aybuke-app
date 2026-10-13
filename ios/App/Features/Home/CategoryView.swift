@@ -9,7 +9,8 @@ struct CategoryView: View {
     @Environment(AppModel.self) private var app
 
     private var templates: [PhotoTemplate] { TemplateCatalog.templates(in: category) }
-    private let columns = [GridItem(.flexible(), spacing: 12), GridItem(.flexible(), spacing: 12)]
+    /// Two columns on iPhone, up to eight on a big iPad in landscape.
+    private let columns = [GridItem(.adaptive(minimum: 136), spacing: 12)]
 
     var body: some View {
         ScrollView {

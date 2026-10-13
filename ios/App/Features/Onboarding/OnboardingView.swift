@@ -85,6 +85,7 @@ struct OnboardingView: View {
                         return .handled
                     })
             }
+            .readableWidth(Metrics.compactWidth, alignment: .center)
         }
         .legalSheet($legalDocument)
     }

@@ -43,6 +43,13 @@ final class EditorViewModel {
     private(set) var editsOnlyMainPerson = false
     @ObservationIgnored private var likenessTask: Task<Void, Never>?
 
+    // Effects (on-device, 80s / 90s / Y2K)
+    private(set) var effect: RetroEffect?
+    var effectDateStamp = true
+    private(set) var effectPreview: UIImage?
+    private(set) var effectThumbnails: [RetroEffect: UIImage] = [:]
+    @ObservationIgnored private var effectTask: Task<Void, Never>?
+
     @ObservationIgnored private var undoStack: [Step] = []
     @ObservationIgnored private var redoStack: [Step] = []
     @ObservationIgnored private var jobTask: Task<Void, Never>?
@@ -77,6 +84,7 @@ final class EditorViewModel {
     var displayImage: UIImage {
         if isHoldingOriginal { return original }
         if activeTool == .adjust, let adjustPreview { return adjustPreview }
+        if activeTool == .effects, let effectPreview { return effectPreview }
         return current
     }
 
@@ -85,6 +93,7 @@ final class EditorViewModel {
     func select(_ tool: EditorTool) {
         guard tool != activeTool else { return }
         if activeTool == .adjust { resetAdjustments() }
+        if activeTool == .effects { clearEffect() }
         if activeTool == .erase { strokes.removeAll() }
         isComparing = false
         activeTool = tool
@@ -124,6 +133,7 @@ final class EditorViewModel {
         historyVersion += 1
         likenessTask?.cancel()
         likeness = nil
+        effectThumbnails = [:]
         retryRequestID = nil
         lastRequestID = nil
         strokes.removeAll()
@@ -170,7 +180,7 @@ final class EditorViewModel {
             }
             let size = ImageUtilities.pixelSize(of: current)
             job.mask = MaskRenderer.render(strokes, size: CGSize(width: size.width, height: size.height))
-        case .enhance, .removeBackground, .adjust:
+        case .enhance, .removeBackground, .adjust, .effects:
             break
         }
 
@@ -291,6 +301,64 @@ final class EditorViewModel {
             guard !Task.isCancelled else { return }
             adjustPreview = rendered
         }
+    }
+
+    /// "Auto": the best light and colour for this photo, on the sliders.
+    func autoAdjust() {
+        let proxy = adjustProxy()
+        Task {
+            let settings = await Task.detached(priority: .userInitiated) { AutoDevelop.settings(for: proxy) }.value
+            withAnimation(.snappy) { adjustments = settings }
+            updateAdjustPreview()
+            Haptics.success()
+        }
+    }
+
+    // MARK: Effects (on-device)
+
+    func loadEffectThumbnails() async {
+        guard effectThumbnails.isEmpty else { return }
+        let source = ImageUtilities.normalized(current, maxLongEdge: 240)
+        let thumbnails = await Task.detached(priority: .userInitiated) {
+            Dictionary(uniqueKeysWithValues: RetroEffect.allCases.map { ($0, $0.apply(to: source)) })
+        }.value
+        effectThumbnails = thumbnails
+    }
+
+    func previewEffect(_ effect: RetroEffect) {
+        self.effect = effect
+        effectTask?.cancel()
+        let proxy = adjustProxy()
+        let stamp = effectDateStamp
+        Haptics.selection()
+        effectTask = Task {
+            let rendered = await Task.detached(priority: .userInitiated) { effect.apply(to: proxy, dateStamp: stamp) }.value
+            guard !Task.isCancelled else { return }
+            effectPreview = rendered
+        }
+    }
+
+    func clearEffect() {
+        effectTask?.cancel()
+        effect = nil
+        effectPreview = nil
+    }
+
+    /// Applies the chosen effect at full size. Effects are free for everyone.
+    func applyEffect() async {
+        guard let effect, !isProcessing else { return }
+        let source = current
+        let stamp = effectDateStamp
+        processingTitle = "Adding \(effect.title)…"
+        isProcessingInCloud = false
+        isProcessing = true
+        let output = await Task.detached(priority: .userInitiated) { effect.apply(to: source, dateStamp: stamp) }.value
+        isProcessing = false
+        clearEffect()
+        commit(output, operation: nil)
+        lastStepTitle = effect.title
+        celebration += 1
+        Haptics.success()
     }
 
     func resetAdjustments() {

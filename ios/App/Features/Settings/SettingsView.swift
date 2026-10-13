@@ -311,9 +311,9 @@ struct SettingsView: View {
 /// Third-party notices required by the SIL Open Font License.
 struct AcknowledgementsView: View {
     private var fontLicense: String {
-        guard let url = Bundle.main.url(forResource: "BricolageGrotesque-OFL", withExtension: "txt"),
+        guard let url = Bundle.main.url(forResource: "Poppins-OFL", withExtension: "txt"),
               let text = try? String(contentsOf: url, encoding: .utf8) else {
-            return "Bricolage Grotesque is licensed under the SIL Open Font License 1.1."
+            return "Poppins is licensed under the SIL Open Font License 1.1."
         }
         return text
     }
@@ -321,7 +321,7 @@ struct AcknowledgementsView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 12) {
-                Text("Bricolage Grotesque")
+                Text("Poppins")
                     .font(.headline)
                 Text(fontLicense)
                     .font(.caption.monospaced())

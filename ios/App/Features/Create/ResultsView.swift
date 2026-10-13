@@ -71,6 +71,7 @@ struct ResultsView: View {
             }
             .padding(.horizontal, Metrics.gutter)
             .padding(.bottom, 12)
+            .readableWidth(Metrics.compactWidth, alignment: .center)
             .reveal(2)
         }
         .background(AuroraBackground(intensity: 0.35))

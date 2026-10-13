@@ -2,18 +2,19 @@ import SwiftUI
 import UIKit
 import CoreText
 
-/// Display typeface: Bricolage Grotesque (SIL Open Font License 1.1), bundled
-/// as static cuts generated from the variable font — display optical size
-/// (opsz 96) for headlines, text optical size (opsz 24) for small titles.
-/// Body text uses SF Pro so it inherits Dynamic Type and Apple's legibility tuning.
+/// Display typeface: Poppins (SIL Open Font License 1.1), a geometric sans
+/// with round, friendly forms, the same face as the website. Medium,
+/// SemiBold, Bold and ExtraBold are bundled. Body text uses SF Pro so it
+/// inherits Dynamic Type and Apple's legibility tuning.
 enum BrandFont {
-    static let familyName = "Bricolage Grotesque"
+    static let familyName = "Poppins"
 
     static func postScriptName(for weight: Font.Weight) -> String {
         switch weight {
-        case .black, .heavy: return "BricolageGrotesque-DisplayExtraBold"
-        case .bold: return "BricolageGrotesque-DisplayBold"
-        default: return "BricolageGrotesque-TextSemiBold"
+        case .black, .heavy: return "Poppins-ExtraBold"
+        case .bold: return "Poppins-Bold"
+        case .medium, .regular, .light, .thin, .ultraLight: return "Poppins-Medium"
+        default: return "Poppins-SemiBold"
         }
     }
 }

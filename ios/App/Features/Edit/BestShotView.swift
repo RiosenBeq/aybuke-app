@@ -129,7 +129,7 @@ struct BestShotView: View {
 
     private var results: some View {
         VStack(alignment: .leading, spacing: 14) {
-            LazyVGrid(columns: [GridItem(.flexible(), spacing: 10), GridItem(.flexible(), spacing: 10), GridItem(.flexible(), spacing: 10)], spacing: 10) {
+            LazyVGrid(columns: [GridItem(.adaptive(minimum: 96), spacing: 10)], spacing: 10) {
                 ForEach(Array(shots.enumerated()), id: \.element.id) { index, shot in
                     Button {
                         Haptics.selection()

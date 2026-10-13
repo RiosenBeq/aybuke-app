@@ -15,8 +15,8 @@ Writes:
   web/assets/screens/<scene>.jpg                     screens for the landing page
 
 Headlines come from docs/marketing/screenshot-captions.json. Requires Pillow.
-Uses the app's bundled display font (Poppins if present, else Bricolage
-Grotesque) and macOS's New York Italic for the accent word, if available.
+Uses the app's bundled display font (Poppins) and macOS's New York Italic for
+the accent word, if available.
 """
 
 from __future__ import annotations
@@ -46,8 +46,8 @@ WHITE = (255, 255, 255)
 
 def display_font(size: int, heavy: bool = True) -> ImageFont.FreeTypeFont:
     candidates = (
-        ["Poppins-ExtraBold.ttf", "Poppins-Bold.ttf", "BricolageGrotesque-DisplayExtraBold.ttf"]
-        if heavy else ["Poppins-SemiBold.ttf", "Poppins-Medium.ttf", "BricolageGrotesque-TextSemiBold.ttf"]
+        ["Poppins-ExtraBold.ttf", "Poppins-Bold.ttf"]
+        if heavy else ["Poppins-SemiBold.ttf", "Poppins-Medium.ttf"]
     )
     for name in candidates:
         path = FONTS / name

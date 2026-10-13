@@ -29,15 +29,18 @@ struct EditorView: View {
                     .padding(.horizontal, 12)
                     .padding(.vertical, 8)
                     .overlay { SparkleBurst(trigger: model.celebration) }
-                if model.showsKindnessNote && !model.isProcessing {
-                    kindnessNote
+                Group {
+                    if model.showsKindnessNote && !model.isProcessing {
+                        kindnessNote
+                    }
+                    if model.lastRequestID != nil && !model.isProcessing {
+                        resultActions
+                    }
+                    toolPanel
+                        .padding(.horizontal, Metrics.gutter)
+                        .padding(.bottom, 8)
                 }
-                if model.lastRequestID != nil && !model.isProcessing {
-                    resultActions
-                }
-                toolPanel
-                    .padding(.horizontal, Metrics.gutter)
-                    .padding(.bottom, 8)
+                .readableWidth(Metrics.compactWidth, alignment: .center)
                 toolBar
             }
 
@@ -318,10 +321,27 @@ struct EditorView: View {
         case .adjust?:
             AdjustPanel(
                 settings: $model.adjustments,
+                onAuto: { model.autoAdjust() },
                 onChange: { model.updateAdjustPreview() },
                 onReset: { model.resetAdjustments() },
                 onApply: { Task { await model.applyAdjustments() } }
             )
+        case .effects?:
+            EffectsPanel(
+                thumbnails: model.effectThumbnails,
+                selected: model.effect,
+                dateStamp: Binding(
+                    get: { model.effectDateStamp },
+                    set: { value in
+                        model.effectDateStamp = value
+                        if let effect = model.effect { model.previewEffect(effect) }
+                    }
+                ),
+                onSelect: { model.previewEffect($0) },
+                onReset: { model.clearEffect() },
+                onApply: { Task { await model.applyEffect() } }
+            )
+            .task(id: model.historyVersion) { await model.loadEffectThumbnails() }
         case nil:
             EmptyView()
         }
@@ -329,38 +349,42 @@ struct EditorView: View {
 
     // MARK: Tool bar
 
+    /// Every tool in one row on any iPhone or iPad (no scrolling), on a
+    /// floating Liquid Glass bar.
     private var toolBar: some View {
-        ScrollView(.horizontal) {
-            HStack(spacing: 4) {
-                ForEach(EditorTool.allCases) { tool in
-                    let isActive = model.activeTool == tool
-                    Button {
-                        model.select(tool)
-                    } label: {
-                        VStack(spacing: 6) {
-                            Image(systemName: tool.symbolName)
-                                .font(.system(size: 19, weight: .semibold))
-                            Text(tool.title)
-                                .font(.caption2.weight(.semibold))
-                                .lineLimit(1)
-                        }
-                        .foregroundStyle(isActive ? Palette.onPrimary : Palette.textSecondary)
-                        .frame(width: 72, height: 58)
-                        .background(isActive ? Palette.primary : Color.clear, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+        HStack(spacing: 2) {
+            ForEach(EditorTool.allCases) { tool in
+                let isActive = model.activeTool == tool
+                Button {
+                    model.select(tool)
+                } label: {
+                    VStack(spacing: 4) {
+                        Image(systemName: tool.symbolName)
+                            .font(.system(size: 18, weight: .semibold))
+                            .symbolEffect(.bounce, value: isActive)
+                        Text(tool.shortTitle)
+                            .font(.system(size: 10.5, weight: .semibold))
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.7)
                     }
-                    .buttonStyle(.plain)
-                    .accessibilityAddTraits(isActive ? .isSelected : [])
+                    .foregroundStyle(isActive ? Palette.onPrimary : Palette.textSecondary)
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 54)
+                    .background(isActive ? Palette.primary : Color.clear, in: Capsule())
+                    .contentShape(Capsule())
                 }
+                .buttonStyle(.plain)
+                .accessibilityLabel(tool.title)
+                .accessibilityAddTraits(isActive ? .isSelected : [])
             }
-            .padding(.horizontal, 12)
         }
-        .scrollIndicators(.hidden)
-        .padding(.vertical, 8)
-        .background {
-            Palette.surface
-                .overlay(alignment: .top) { Palette.stroke.frame(height: 1) }
-                .ignoresSafeArea(edges: .bottom)
-        }
+        .padding(5)
+        .liquidGlass(in: Capsule(), tint: Palette.white.opacity(0.4))
+        .frame(maxWidth: 560)
+        .padding(.horizontal, 10)
+        .padding(.bottom, 4)
+        .shadow(color: Palette.shadow, radius: 14, y: 6)
+        .animation(.snappy, value: model.activeTool)
     }
 
     // MARK: Export

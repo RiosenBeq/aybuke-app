@@ -27,6 +27,7 @@ struct CreateView: View {
                 .padding(.horizontal, Metrics.gutter)
                 .padding(.top, 12)
                 .padding(.bottom, 120)
+                .readableWidth()
             }
             .scrollIndicators(.hidden)
             .scrollDismissesKeyboard(.interactively)
@@ -169,6 +170,7 @@ struct CreateView: View {
         .padding(.horizontal, Metrics.gutter)
         .padding(.top, 10)
         .padding(.bottom, 8)
+        .readableWidth(Metrics.compactWidth, alignment: .center)
         .background(
             LinearGradient(colors: [Palette.background.opacity(0), Palette.background], startPoint: .top, endPoint: .center)
                 .ignoresSafeArea()

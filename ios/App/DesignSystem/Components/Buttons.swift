@@ -43,7 +43,7 @@ struct SecondaryButtonStyle: ButtonStyle {
     }
 }
 
-/// Round icon button used in toolbars and over photos.
+/// Round Liquid Glass icon button used in toolbars and over photos.
 struct IconButtonStyle: ButtonStyle {
     var size: CGFloat = 40
 
@@ -52,8 +52,7 @@ struct IconButtonStyle: ButtonStyle {
             .font(.system(size: size * 0.42, weight: .semibold))
             .foregroundStyle(Palette.textPrimary)
             .frame(width: size, height: size)
-            .background(Palette.surface, in: Circle())
-            .overlay(Circle().strokeBorder(Palette.stroke, lineWidth: 1))
+            .liquidGlass(in: Circle(), tint: Palette.white.opacity(0.35))
             .shadow(color: Palette.shadow, radius: 8, y: 3)
             .scaleEffect(configuration.isPressed ? 0.92 : 1)
             .animation(.spring(response: 0.25, dampingFraction: 0.7), value: configuration.isPressed)

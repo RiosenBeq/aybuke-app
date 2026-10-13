@@ -12,6 +12,7 @@ struct PaywallView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var selectedID = StoreProducts.yearly
     @State private var trialEligible = false
+    @State private var monthlyIntroEligible = false
     @State private var errorMessage: String?
     @State private var errorTitle = "Purchase failed"
     @State private var showPacks = false
@@ -50,7 +51,7 @@ struct PaywallView: View {
                     if showsTrial, let yearly = purchases.yearly {
                         TrialTimeline(days: yearly.freeTrialDays ?? 7, price: yearly.displayPrice)
                     } else if isScreenshotPreview {
-                        TrialTimeline(days: 7, price: "$59.99")
+                        TrialTimeline(days: 7, price: "$39.99")
                     }
                     purchaseButton
                     packsLink
@@ -60,6 +61,7 @@ struct PaywallView: View {
                 .padding(.horizontal, Metrics.gutter)
                 .padding(.top, 56)
                 .padding(.bottom, 24)
+                .readableWidth(Metrics.compactWidth, alignment: .center)
             }
             .scrollIndicators(.hidden)
 
@@ -76,6 +78,9 @@ struct PaywallView: View {
             await purchases.loadProducts()
             if let yearly = purchases.yearly {
                 trialEligible = await purchases.isEligibleForTrial(yearly)
+            }
+            if let monthly = purchases.monthly {
+                monthlyIntroEligible = await purchases.isEligibleForTrial(monthly)
             }
         }
         .sheet(isPresented: $showSignIn) {
@@ -151,15 +156,22 @@ struct PaywallView: View {
                 PlanCard(
                     title: "Monthly",
                     price: "\(monthly.displayPrice) / month",
-                    detail: "Cancel anytime",
-                    badge: nil,
+                    detail: monthlyDetail(monthly),
+                    badge: monthlyIntroEligible && monthly.introOfferText != nil ? "TRY IT" : nil,
                     isSelected: selectedID == monthly.id
                 ) { selectedID = monthly.id }
             }
             if isScreenshotPreview {
-                PlanCard(title: "Yearly", price: "$59.99 / year", detail: "7 days free, then $59.99/year · ≈ $1.15/week",
+                PlanCard(title: "Yearly", price: "$39.99 / year", detail: "7 days free, then $39.99/year · just $3.33/month",
                          badge: "BEST VALUE", isSelected: true) {}
-                PlanCard(title: "Monthly", price: "$9.99 / month", detail: "Cancel anytime", badge: nil, isSelected: false) {}
+                PlanCard(title: "Monthly", price: "$5.99 / month", detail: "First month $1.99 · cancel anytime", badge: "TRY IT", isSelected: false) {}
+            }
+            if !purchases.products.isEmpty || isScreenshotPreview {
+                Label("About half what most AI photo apps charge. No weekly plans, ever.", systemImage: "heart.fill")
+                    .font(.footnote.weight(.semibold))
+                    .foregroundStyle(Palette.textSecondary)
+                    .multilineTextAlignment(.center)
+                    .padding(.top, 2)
             } else if purchases.products.isEmpty {
                 VStack(spacing: 8) {
                     ProgressView().tint(Palette.textSecondary)
@@ -179,10 +191,17 @@ struct PaywallView: View {
         if trialEligible, let days = product.freeTrialDays {
             parts.append("\(days) days free, then \(product.displayPrice)/year")
         }
-        if let weekly = product.weeklyEquivalentPrice {
-            parts.append("≈ \(weekly)/week")
+        if let monthly = product.monthlyEquivalentPrice {
+            parts.append("just \(monthly)/month")
         }
         return parts.joined(separator: " · ")
+    }
+
+    private func monthlyDetail(_ product: Product) -> String {
+        if monthlyIntroEligible, let intro = product.introOfferText {
+            return "\(intro), then \(product.displayPrice)/month · cancel anytime"
+        }
+        return "Cancel anytime"
     }
 
     private var purchaseButton: some View {
@@ -204,6 +223,10 @@ struct PaywallView: View {
         guard let product = selectedProduct else { return "Continue" }
         if showsTrial, let days = product.freeTrialDays {
             return "Start my \(days)-day free trial"
+        }
+        if product.id == StoreProducts.monthly, monthlyIntroEligible, let intro = product.subscription?.introductoryOffer,
+           intro.paymentMode != .freeTrial {
+            return "Start for \(intro.displayPrice)"
         }
         return "Continue — \(product.displayPrice)/\(product.periodLabel)"
     }

@@ -61,6 +61,7 @@ struct ShareComposerView: View {
                 }
                 .padding(.horizontal, Metrics.gutter)
                 .padding(.bottom, 24)
+                .readableWidth(Metrics.compactWidth)
             }
             .scrollIndicators(.hidden)
             .background(AuroraBackground(intensity: 0.45))

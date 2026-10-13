@@ -4,6 +4,7 @@ import AppCore
 enum EditorTool: String, CaseIterable, Identifiable {
     case magicEdit
     case styles
+    case effects
     case enhance
     case removeBackground
     case erase
@@ -15,8 +16,22 @@ enum EditorTool: String, CaseIterable, Identifiable {
         switch self {
         case .magicEdit: return "Magic Edit"
         case .styles: return "Styles"
+        case .effects: return "Effects"
         case .enhance: return "Enhance"
         case .removeBackground: return "Remove BG"
+        case .erase: return "Erase"
+        case .adjust: return "Adjust"
+        }
+    }
+
+    /// One word for the editor's bottom bar.
+    var shortTitle: String {
+        switch self {
+        case .magicEdit: return "Magic"
+        case .styles: return "Styles"
+        case .effects: return "Effects"
+        case .enhance: return "Enhance"
+        case .removeBackground: return "Cut out"
         case .erase: return "Erase"
         case .adjust: return "Adjust"
         }
@@ -26,6 +41,7 @@ enum EditorTool: String, CaseIterable, Identifiable {
         switch self {
         case .magicEdit: return "Describe a change"
         case .styles: return "One-tap looks"
+        case .effects: return "80s · 90s · Y2K"
         case .enhance: return "Sharpen & restore"
         case .removeBackground: return "Free · on-device"
         case .erase: return "Brush to remove"
@@ -36,6 +52,7 @@ enum EditorTool: String, CaseIterable, Identifiable {
     var symbolName: String {
         switch self {
         case .adjust: return "slider.horizontal.3"
+        case .effects: return "camera.filters"
         default: return operation?.symbolName ?? "wand.and.stars"
         }
     }
@@ -47,10 +64,10 @@ enum EditorTool: String, CaseIterable, Identifiable {
         case .enhance: return .enhance
         case .removeBackground: return .removeBackground
         case .erase: return .eraseObject
-        case .adjust: return nil
+        case .adjust, .effects: return nil
         }
     }
 
     /// Tools surfaced on the home screen (Magic Edit has its own hero card).
-    static let quickTools: [EditorTool] = [.enhance, .removeBackground, .erase, .styles, .adjust]
+    static let quickTools: [EditorTool] = [.effects, .enhance, .removeBackground, .erase, .styles, .adjust]
 }

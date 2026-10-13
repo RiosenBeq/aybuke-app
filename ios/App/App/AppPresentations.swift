@@ -16,6 +16,7 @@ struct AppPresentations: ViewModifier {
             )) {
                 PaywallView(source: app.paywallSource)
                     .environment(app)
+                    .pageSheetSizing()
             }
             .sheet(isPresented: Binding(
                 get: { isActive && app.isBestShotPresented },
@@ -23,6 +24,7 @@ struct AppPresentations: ViewModifier {
             )) {
                 BestShotView()
                     .environment(app)
+                    .pageSheetSizing()
             }
             .sheet(isPresented: Binding(
                 get: { isActive && app.isAccountPromptPresented && !app.isPaywallPresented },
@@ -56,6 +58,7 @@ struct AppPresentations: ViewModifier {
                     .environment(app)
                     .presentationDetents([.large])
                     .presentationBackground(Palette.background)
+                    .pageSheetSizing()
             }
             .toast(Binding(
                 get: { isActive ? app.toast : nil },

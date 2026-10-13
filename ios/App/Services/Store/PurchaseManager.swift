@@ -136,6 +136,27 @@ extension Product {
         return offer.period.dayCount
     }
 
+    /// Monthly equivalent of a yearly price ("just $3.33/month").
+    var monthlyEquivalentPrice: String? {
+        guard let period = subscription?.subscriptionPeriod, period.unit == .year else { return nil }
+        return (price / Decimal(12 * period.value)).formatted(priceFormatStyle)
+    }
+
+    /// A paid introductory offer ("First month $1.99"), when there is one.
+    var introOfferText: String? {
+        guard let offer = subscription?.introductoryOffer, offer.paymentMode != .freeTrial else { return nil }
+        let unit: String
+        switch offer.period.unit {
+        case .day: unit = "day"
+        case .week: unit = "week"
+        case .month: unit = "month"
+        case .year: unit = "year"
+        @unknown default: return nil
+        }
+        let count = offer.period.value * max(offer.periodCount, 1)
+        return count == 1 ? "First \(unit) \(offer.displayPrice)" : "First \(count) \(unit)s \(offer.displayPrice) each"
+    }
+
     /// Weekly equivalent of the price, for "just $0.96/week" anchoring.
     var weeklyEquivalentPrice: String? {
         guard let period = subscription?.subscriptionPeriod else { return nil }

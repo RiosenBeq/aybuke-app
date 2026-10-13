@@ -164,6 +164,7 @@ struct ErasePanel: View {
 /// Classic manual adjustments, rendered on device for free.
 struct AdjustPanel: View {
     @Binding var settings: AdjustmentSettings
+    let onAuto: () -> Void
     let onChange: () -> Void
     let onReset: () -> Void
     let onApply: () -> Void
@@ -215,6 +216,16 @@ struct AdjustPanel: View {
         VStack(spacing: 12) {
             ScrollView(.horizontal) {
                 HStack(spacing: 8) {
+                    Button(action: onAuto) {
+                        Label("Auto", systemImage: "wand.and.sparkles")
+                            .font(.subheadline.weight(.bold))
+                            .foregroundStyle(Palette.onAccent)
+                            .padding(.horizontal, 14)
+                            .padding(.vertical, 9)
+                            .background(Palette.accent, in: Capsule())
+                    }
+                    .buttonStyle(.pressable)
+                    .accessibilityHint("Picks the best light and colour for this photo")
                     ForEach(Parameter.allCases) { parameter in
                         SelectableChip(title: parameter.title, symbolName: parameter.symbol, isSelected: selected == parameter) {
                             selected = parameter
@@ -247,5 +258,102 @@ struct AdjustPanel: View {
                     .disabled(settings.isNeutral)
             }
         }
+    }
+}
+
+/// 80s, 90s and Y2K effects: live thumbnails of her own photo, a date stamp
+/// switch for the cameras that had one, and Apply (or Unlock with Pro).
+struct EffectsPanel: View {
+    let thumbnails: [RetroEffect: UIImage]
+    let selected: RetroEffect?
+    @Binding var dateStamp: Bool
+    let onSelect: (RetroEffect) -> Void
+    let onReset: () -> Void
+    let onApply: () -> Void
+
+    var body: some View {
+        VStack(spacing: 12) {
+            ScrollView(.horizontal) {
+                HStack(spacing: 10) {
+                    ForEach(RetroEffect.allCases) { effect in
+                        Button {
+                            onSelect(effect)
+                        } label: {
+                            EffectTile(effect: effect, thumbnail: thumbnails[effect], isSelected: selected == effect)
+                        }
+                        .buttonStyle(.pressable)
+                    }
+                }
+                .padding(.vertical, 4)
+            }
+            .scrollIndicators(.hidden)
+            .scrollClipDisabled()
+
+            if selected?.hasDateStamp == true {
+                Toggle(isOn: $dateStamp) {
+                    Label("Date stamp", systemImage: "calendar")
+                        .font(.subheadline.weight(.semibold))
+                }
+                .tint(Palette.accent)
+            }
+
+            HStack(spacing: 12) {
+                Button("Reset", action: onReset)
+                    .buttonStyle(.secondary)
+                    .disabled(selected == nil)
+                Button("Apply", action: onApply)
+                    .buttonStyle(.primary)
+                    .disabled(selected == nil)
+            }
+            Text("Free for everyone · on your iPhone · no credits")
+                .font(.caption2)
+                .foregroundStyle(Palette.textTertiary)
+        }
+    }
+}
+
+private struct EffectTile: View {
+    let effect: RetroEffect
+    let thumbnail: UIImage?
+    let isSelected: Bool
+
+    var body: some View {
+        VStack(spacing: 6) {
+            ZStack {
+                Palette.petal
+                if let thumbnail {
+                    Image(uiImage: thumbnail)
+                        .resizable()
+                        .scaledToFill()
+                } else {
+                    ProgressView().tint(Palette.accent)
+                }
+            }
+            .frame(width: 76, height: 96)
+            .clipShape(RoundedRectangle(cornerRadius: Metrics.printRadius))
+            .overlay(
+                RoundedRectangle(cornerRadius: Metrics.printRadius)
+                    .strokeBorder(isSelected ? Palette.accent : Palette.stroke, lineWidth: isSelected ? 3 : 1)
+            )
+            .overlay(alignment: .topLeading) {
+                Text(effect.era)
+                    .font(.system(size: 9, weight: .heavy, design: .rounded))
+                    .foregroundStyle(Palette.white)
+                    .padding(.horizontal, 5)
+                    .padding(.vertical, 2)
+                    .background(Palette.ink.opacity(0.7))
+                    .padding(4)
+            }
+            .shadow(color: Palette.shadow, radius: 6, y: 3)
+            Text(effect.title)
+                .font(.caption2.weight(isSelected ? .bold : .semibold))
+                .foregroundStyle(isSelected ? Palette.textPrimary : Palette.textSecondary)
+                .lineLimit(1)
+                .minimumScaleFactor(0.8)
+        }
+        .frame(width: 80)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("\(effect.title), \(effect.era)")
+        .accessibilityAddTraits(isSelected ? [.isButton, .isSelected] : .isButton)
     }
 }

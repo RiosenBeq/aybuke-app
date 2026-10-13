@@ -59,7 +59,7 @@ GAP = 44
 
 
 def load_font(cut: str, size: int) -> ImageFont.FreeTypeFont:
-    return ImageFont.truetype(str(FONTS / f"BricolageGrotesque-{cut}.ttf"), size)
+    return ImageFont.truetype(str(FONTS / f"Poppins-{cut}.ttf"), size)
 
 
 def rounded_mask(size: tuple[int, int], radius: int, scale: int = 4) -> Image.Image:
@@ -117,8 +117,8 @@ def overview(screens: list[tuple[Image.Image, str]]) -> Image.Image:
     tile_width, tile_height = tiles[0][0].size
     rows = [tiles[i:i + PER_ROW] for i in range(0, len(tiles), PER_ROW)]
 
-    title, tagline, subtitle = load_font("DisplayExtraBold", 104), load_font("DisplayBold", 46), load_font("TextSemiBold", 30)
-    caption_font = load_font("TextSemiBold", 28)
+    title, tagline, subtitle = load_font("ExtraBold", 104), load_font("Bold", 46), load_font("SemiBold", 30)
+    caption_font = load_font("SemiBold", 28)
     header_height, caption_height, row_gap = 330, 64, 40
 
     width = 2 * MARGIN + PER_ROW * tile_width + (PER_ROW - 1) * GAP

@@ -38,6 +38,7 @@ struct HomeView: View {
                         .reveal(8)
                 }
                 .padding(.vertical, 12)
+                .readableWidth()
             }
             .scrollIndicators(.hidden)
             .background(AuroraBackground(intensity: 0.55))
@@ -143,6 +144,10 @@ struct HomeView: View {
                             Haptics.tap()
                             app.startEditing(tool: tool)
                         }
+                    }
+                    QuickToolTile(title: "Video", caption: "Cut silences · effects", symbolName: "video.fill") {
+                        Haptics.tap()
+                        app.isVideoPickerPresented = true
                     }
                     QuickToolTile(title: "Best shot", caption: "Free · ranks selfies", symbolName: "photo.stack") {
                         Haptics.tap()

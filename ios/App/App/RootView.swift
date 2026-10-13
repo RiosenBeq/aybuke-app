@@ -5,6 +5,7 @@ import AppCore
 struct RootView: View {
     @Environment(AppModel.self) private var app
     @State private var pickerItem: PhotosPickerItem?
+    @State private var videoItem: PhotosPickerItem?
 
     var body: some View {
         @Bindable var app = app
@@ -24,11 +25,23 @@ struct RootView: View {
                 pickerItem = nil
             }
         }
+        .photosPicker(isPresented: $app.isVideoPickerPresented, selection: $videoItem, matching: .videos)
+        .onChange(of: videoItem) { _, newItem in
+            guard let newItem else { return }
+            Task {
+                await app.handlePickedVideo(newItem)
+                videoItem = nil
+            }
+        }
         .fullScreenCover(item: $app.editorLaunch) { launch in
             EditorView(launch: launch)
                 .environment(app)
         }
-        .modifier(AppPresentations(isActive: app.editorLaunch == nil))
+        .fullScreenCover(item: $app.videoSource) { source in
+            VideoEditorView(source: source)
+                .environment(app)
+        }
+        .modifier(AppPresentations(isActive: app.editorLaunch == nil && app.videoSource == nil))
         .onOpenURL { url in
             if let link = GlowDeepLink(url: url) { app.handle(link) }
         }
@@ -56,6 +69,7 @@ struct MainTabView: View {
                 .tabItem { Label("My Works", systemImage: "square.grid.2x2") }
                 .tag(AppTab.library)
         }
+        .minimizingTabBar()
         .onChange(of: app.selectedTab) { _, _ in Haptics.selection() }
     }
 }

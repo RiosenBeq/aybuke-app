@@ -180,9 +180,9 @@ Satın alımlar, cihazınızda kullanılan Apple Hesabından tahsil edilir. 18 y
 
 ### Planlar ve fiyatlar
 
-- **Glowlit Pro Yearly (Yıllık)**: Yıllık 59,99 ABD doları; uygun yeni aboneler için 7 günlük ücretsiz deneme süresiyle.
-- **Glowlit Pro Monthly (Aylık)**: Aylık 9,99 ABD doları; ücretsiz deneme süresi yoktur.
-- **Kredi paketleri**: 30 kredi 4,99 ABD doları; 100 kredi 12,99 ABD doları.
+- **Glowlit Pro Yearly (Yıllık)**: Yıllık 39,99 ABD doları; uygun yeni aboneler için 7 günlük ücretsiz deneme süresiyle.
+- **Glowlit Pro Monthly (Aylık)**: Aylık 5,99 ABD doları. Uygun yeni aboneler ilk ay için 1,99 ABD doları, sonrasında aylık 5,99 ABD doları öder.
+- **Kredi paketleri**: 30 kredi 2,99 ABD doları; 100 kredi 7,99 ABD doları.
 
 Bunlar ABD doları cinsinden referans fiyatlardır. Uygulama, satın almadan önce fiyatı yerel para biriminizde gösterir. Fiyatlar ülkeden ülkeye farklılık gösterebilir ve vergileri içerebilir. Satın alımınızı onayladığınız anda gösterilen fiyat, ödeyeceğiniz fiyattır.
 

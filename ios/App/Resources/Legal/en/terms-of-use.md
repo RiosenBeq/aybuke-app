@@ -178,9 +178,9 @@ Purchases are charged to the Apple Account used on your device. If you're under 
 
 ### Plans and prices
 
-- **Glowlit Pro Yearly**: USD 59.99 per year, with a 7-day free trial for eligible new subscribers.
-- **Glowlit Pro Monthly**: USD 9.99 per month, without a free trial.
-- **Credit packs**: 30 credits for USD 4.99, or 100 credits for USD 12.99.
+- **Glowlit Pro Yearly**: USD 39.99 per year, with a 7-day free trial for eligible new subscribers.
+- **Glowlit Pro Monthly**: USD 5.99 per month. Eligible new subscribers pay USD 1.99 for their first month, then USD 5.99 per month.
+- **Credit packs**: 30 credits for USD 2.99, or 100 credits for USD 7.99.
 
 These are reference prices in US dollars. The app shows the price in your local currency before you buy. Prices can differ between countries and may include taxes. The price shown when you confirm your purchase is the price you pay.
 

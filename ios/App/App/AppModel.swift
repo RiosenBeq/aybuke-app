@@ -79,6 +79,9 @@ final class AppModel {
     var isAccountPromptPresented = false
     /// "Find your best shot" (on-device selfie ranking).
     var isBestShotPresented = false
+    /// The simple video editor: picker, then the editor itself.
+    var isVideoPickerPresented = false
+    var videoSource: VideoSource?
     var toast: ToastMessage?
     @ObservationIgnored private var pendingEditorRequest: EditorRequest?
 
@@ -586,6 +589,21 @@ final class AppModel {
         editorLaunch = EditorLaunch(image: ImageUtilities.normalized(image), tool: tool, template: template)
     }
 
+    /// Copies a picked video to a temporary file and opens the video editor.
+    func handlePickedVideo(_ item: PhotosPickerItem) async {
+        do {
+            guard let file = try await item.loadTransferable(type: VideoFile.self) else {
+                throw AIServiceError.invalidRequest("Couldn't open that video.")
+            }
+            // Let the picker finish dismissing first, so the editor is laid out
+            // inside the screen's safe area.
+            try? await Task.sleep(for: .milliseconds(450))
+            videoSource = VideoSource(url: file.url)
+        } catch {
+            showToast("Couldn't open that video. Try another one.", style: .error)
+        }
+    }
+
     func handlePickedPhoto(_ item: PhotosPickerItem) async {
         let request = pendingEditorRequest ?? EditorRequest()
         pendingEditorRequest = nil
@@ -593,12 +611,20 @@ final class AppModel {
             guard let data = try await item.loadTransferable(type: Data.self) else {
                 throw AIServiceError.invalidRequest("Couldn't open that photo.")
             }
+            // RAW (ProRAW, DNG) is developed with Auto, since it looks flat out of the camera.
+            let isRAW = AutoDevelop.isRAW(data)
             let image = await Task.detached(priority: .userInitiated) { () -> UIImage? in
+                if isRAW, let developed = AutoDevelop.developRAW(data) {
+                    return ImageUtilities.normalized(developed)
+                }
                 guard let image = UIImage(data: data) else { return nil }
                 return ImageUtilities.normalized(image)
             }.value
             guard let image else { throw AIServiceError.invalidRequest("That file isn't a supported photo.") }
             editorLaunch = EditorLaunch(image: image, tool: request.tool, template: request.template)
+            if isRAW {
+                showToast("RAW photo developed with the best settings ✨", style: .success)
+            }
         } catch {
             showToast("Couldn't open that photo. Try another one.", style: .error)
         }

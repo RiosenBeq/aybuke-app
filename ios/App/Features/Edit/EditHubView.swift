@@ -5,7 +5,8 @@ import AppCore
 struct EditHubView: View {
     @Environment(AppModel.self) private var app
 
-    private let columns = [GridItem(.flexible(), spacing: 12), GridItem(.flexible(), spacing: 12)]
+    /// Two columns on iPhone, more on iPad.
+    private let columns = [GridItem(.adaptive(minimum: 136), spacing: 12)]
 
     var body: some View {
         NavigationStack {
@@ -80,6 +81,38 @@ struct EditHubView: View {
                     .buttonStyle(PressableButtonStyle(scale: 0.97))
                     .reveal(2)
 
+                    Button {
+                        Haptics.tap()
+                        app.isVideoPickerPresented = true
+                    } label: {
+                        HStack(spacing: 14) {
+                            Image(systemName: "video.fill")
+                                .font(.title3.weight(.semibold))
+                                .foregroundStyle(Palette.blush)
+                                .frame(width: 54, height: 54)
+                                .background(Palette.ink, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+                            VStack(alignment: .leading, spacing: 3) {
+                                HStack(spacing: 6) {
+                                    Text("Edit a video")
+                                        .font(.cardTitle)
+                                        .foregroundStyle(Palette.textPrimary)
+                                    NewBadge()
+                                }
+                                Text("Auto-cut silences, 80s & 90s effects · free")
+                                    .font(.footnote)
+                                    .foregroundStyle(Palette.textSecondary)
+                                    .fixedSize(horizontal: false, vertical: true)
+                            }
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .foregroundStyle(Palette.textTertiary)
+                        }
+                        .padding(14)
+                        .cardStyle()
+                    }
+                    .buttonStyle(PressableButtonStyle(scale: 0.97))
+                    .reveal(2)
+
                     LazyVGrid(columns: columns, spacing: 12) {
                         ForEach(Array(EditorTool.allCases.enumerated()), id: \.element) { index, tool in
                             Button {
@@ -121,6 +154,7 @@ struct EditHubView: View {
                 }
                 .padding(.horizontal, Metrics.gutter)
                 .padding(.vertical, 12)
+                .readableWidth()
             }
             .scrollIndicators(.hidden)
             .background(AuroraBackground(intensity: 0.3))
