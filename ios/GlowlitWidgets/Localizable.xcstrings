@@ -57,6 +57,12 @@
             "value" : "%lld"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -119,6 +125,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Кредитов на сегодня: %lld"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bugün %lld ücretsiz kredi"
           }
         },
         "zh-Hans" : {
@@ -185,6 +197,12 @@
             "value" : "Кредиты Pro: %lld"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld Pro kredisi"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -244,6 +262,12 @@
           }
         },
         "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "∞"
+          }
+        },
+        "tr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "∞"
@@ -314,6 +338,12 @@
             "value" : "3D-мультик"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "3D Çizgi Film"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -377,6 +407,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "3D-фигурка"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "3D Figür"
           }
         },
         "zh-Hans" : {
@@ -444,6 +480,12 @@
             "value" : "Моментальное фото 90-х"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "90'lar usulü şipşak"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -509,6 +551,12 @@
             "value" : "Цифровик из нулевых"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "2000'lerin dijital makinesi"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -571,6 +619,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Новый образ в один тап каждый день."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Her gün tek dokunuşla yeni bir görünüm."
           }
         },
         "zh-Hans" : {
@@ -638,6 +692,12 @@
             "value" : "Эстетичные фото"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Estetik kareler"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -701,6 +761,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ты как из мультика"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Animasyondaki sen"
           }
         },
         "zh-Hans" : {
@@ -768,6 +834,12 @@
             "value" : "Аниме-фильм"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anime Filmi"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -833,6 +905,12 @@
             "value" : "Арт-стили"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sanat stilleri"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -893,6 +971,12 @@
           }
         },
         "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ballet Core"
+          }
+        },
+        "tr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ballet Core"
@@ -963,6 +1047,12 @@
             "value" : "Шарики и конфетти"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Balonlar ve konfeti"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1026,6 +1116,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Свет бьюти-съёмки"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kozmetik reklamı ışığı"
           }
         },
         "zh-Hans" : {
@@ -1093,6 +1189,12 @@
             "value" : "Полароид подружек"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kanka Polaroid"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1156,6 +1258,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Праздничный глэм"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Doğum Günü"
           }
         },
         "zh-Hans" : {
@@ -1223,6 +1331,12 @@
             "value" : "Пышные локоны"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bukle Bukle"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1286,6 +1400,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Оживи воспоминания"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anıları canlandır"
           }
         },
         "zh-Hans" : {
@@ -1353,6 +1473,12 @@
             "value" : "Свидание в кафе"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kafe Keyfi"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1416,6 +1542,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Хеллоуин при свечах"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mum ışıklı Halloween"
           }
         },
         "zh-Hans" : {
@@ -1483,6 +1615,12 @@
             "value" : "Сакура"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kiraz Çiçeği"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1548,6 +1686,12 @@
             "value" : "Пластилин"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Plastilin"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1608,6 +1752,12 @@
           }
         },
         "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clean Girl"
+          }
+        },
+        "tr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Clean Girl"
@@ -1678,6 +1828,12 @@
             "value" : "Коллекционная игрушка"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Koleksiyonluk oyuncak"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1741,6 +1897,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Комикс"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Çizgi Roman"
           }
         },
         "zh-Hans" : {
@@ -1808,6 +1970,12 @@
             "value" : "Уютный вайб с латте"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sıcacık latte havası"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1817,6 +1985,7 @@
       }
     },
     "Create" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1870,6 +2039,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Создать"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oluştur"
           }
         },
         "zh-Hans" : {
@@ -1936,6 +2111,12 @@
             "value" : "творение"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "eser"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1945,6 +2126,7 @@
       }
     },
     "Cut out" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -2000,10 +2182,86 @@
             "value" : "Вырезать"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dekupe"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "抠图"
+          }
+        }
+      }
+    },
+    "Cut the silences and add retro effects. Free." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schneide Pausen raus und füge Retro-Effekte hinzu. Gratis."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Corta los silencios y añade efectos retro. Gratis."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Coupe les silences et ajoute des effets rétro. Gratuit."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Potong bagian hening dan tambahkan efek retro. Gratis."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Taglia i silenzi e aggiungi effetti rétro. Gratis."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "無音部分をカットして、レトロエフェクトを追加。無料です。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "무음 구간을 자르고 레트로 효과를 더해요. 무료예요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Corte os silêncios e adicione efeitos retrô. Grátis."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вырежи паузы и добавь ретро-эффекты. Бесплатно."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sessiz kısımları kes, retro efektler ekle. Ücretsiz."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "剪掉静音片段，加上复古特效。免费。"
           }
         }
       }
@@ -2063,6 +2321,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Мило и чуть жутко"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tatlı ve biraz ürpertici"
           }
         },
         "zh-Hans" : {
@@ -2125,6 +2389,12 @@
           }
         },
         "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Doll Box"
+          }
+        },
+        "tr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Doll Box"
@@ -2195,10 +2465,156 @@
             "value" : "Сказочные портреты"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rüya gibi portreler"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "梦幻人像"
+          }
+        }
+      }
+    },
+    "Edit a video" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Video bearbeiten"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Editar un video"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Monter une vidéo"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Edit video"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Modifica un video"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "動画を編集"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "동영상 편집"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Editar um vídeo"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Редактировать видео"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Video düzenle"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "编辑视频"
+          }
+        }
+      }
+    },
+    "Effects" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Effekte"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Efectos"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Effets"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Efek"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Effetti"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "エフェクト"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "효과"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Efeitos"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Эффекты"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Efektler"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "特效"
           }
         }
       }
@@ -2258,6 +2674,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Волшебно и воздушно"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Büyülü ve masalsı"
           }
         },
         "zh-Hans" : {
@@ -2325,6 +2747,12 @@
             "value" : "Принцесса-фея"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Peri Prenses"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2388,6 +2816,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Для магазина и карьеры"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "İşin ve mağazan için"
           }
         },
         "zh-Hans" : {
@@ -2455,10 +2889,86 @@
             "value" : "Свежая сияющая кожа"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Taze, ışıltılı, zahmetsiz"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "清透水光，自然不刻意"
+          }
+        }
+      }
+    },
+    "Give a photo an 80s or 90s look. Free." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gib einem Foto einen 80er- oder 90er-Look. Gratis."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dale a una foto un look de los 80 o 90. Gratis."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Donne à une photo un look années 80 ou 90. Gratuit."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kasih foto gaya tahun 80-an atau 90-an. Gratis."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dai a una foto un look anni '80 o '90. Gratis."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "写真を80年代・90年代風に。無料です。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "사진에 80년대·90년대 감성을 더해요. 무료예요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dê a uma foto um visual anos 80 ou 90. Grátis."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Придай фото стиль 80-х или 90-х. Бесплатно."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fotoğrafına 80'ler ya da 90'lar havası kat. Ücretsiz."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "给照片加上80、90年代风格。免费。"
           }
         }
       }
@@ -2518,6 +3028,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Глэм-студия"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Glam Stüdyo"
           }
         },
         "zh-Hans" : {
@@ -2582,6 +3098,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "сиять ✨"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ışılda ✨"
           }
         },
         "zh-Hans" : {
@@ -2649,6 +3171,12 @@
             "value" : "Образы для преображения"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Işıltılı görünümler"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2713,6 +3241,12 @@
             "value" : "сияния."
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ışıldasın."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2772,6 +3306,12 @@
           }
         },
         "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Glowlit"
+          }
+        },
+        "tr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Glowlit"
@@ -2842,6 +3382,12 @@
             "value" : "Золотой час"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gün Batımı Işıltısı"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2905,6 +3451,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Золотое небо"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Altın Gökyüzü"
           }
         },
         "zh-Hans" : {
@@ -2972,6 +3524,12 @@
             "value" : "Рисованный кинокадр"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El çizimi film karesi"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3035,6 +3593,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Чернила и растр"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mürekkep ve noktalar"
           }
         },
         "zh-Hans" : {
@@ -3102,6 +3666,12 @@
             "value" : "Мгновенный закат"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anında gün batımı"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3165,6 +3735,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Для резюме за секунды"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anında LinkedIn'e hazır"
           }
         },
         "zh-Hans" : {
@@ -3231,10 +3807,86 @@
             "value" : "Магия"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sihir"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "魔法"
+          }
+        }
+      }
+    },
+    "Magic Edit" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zauber-Edit"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Edición mágica"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Retouche magique"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Edit Ajaib"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Modifica magica"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "マジック編集"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "매직 편집"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Edição Mágica"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Волшебная правка"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sihirli Düzenleme"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "魔法编辑"
           }
         }
       }
@@ -3293,6 +3945,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Добавь"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bırak"
           }
         },
         "zh-Hans" : {
@@ -3357,6 +4015,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Начни"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "İlk eserinle"
           }
         },
         "zh-Hans" : {
@@ -3424,6 +4088,12 @@
             "value" : "Музейный шедевр"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Müzelik başyapıt"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3486,6 +4156,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Моё сияние"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Işıltım"
           }
         },
         "zh-Hans" : {
@@ -3553,6 +4229,12 @@
             "value" : "Неоновый город"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Neon Şehir"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3617,6 +4299,12 @@
             "value" : "НОВОЕ"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "YENİ"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3679,6 +4367,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Новые кредиты через %@"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yeni kredi %@ sonra"
           }
         },
         "zh-Hans" : {
@@ -3746,6 +4440,12 @@
             "value" : "Картина маслом"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yağlı Boya"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3806,6 +4506,12 @@
           }
         },
         "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Old Money"
+          }
+        },
+        "tr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Old Money"
@@ -3876,10 +4582,86 @@
             "value" : "Поездка в Париж"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paris Gezisi"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "巴黎之旅"
+          }
+        }
+      }
+    },
+    "Pick a photo and say what to change." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wähle ein Foto und sag, was sich ändern soll."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elige una foto y di qué cambiar."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choisis une photo et dis ce qu'il faut changer."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pilih foto dan bilang apa yang mau diubah."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scegli una foto e di' cosa cambiare."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "写真を選んで、変えたいことを伝えよう。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "사진을 고르고 바꾸고 싶은 걸 말해 보세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escolha uma foto e diga o que mudar."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Выбери фото и скажи, что изменить."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bir fotoğraf seç, neyin değişeceğini söyle."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "选一张照片，说出想改的地方。"
           }
         }
       }
@@ -3939,6 +4721,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Розовые волосы"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pembe Saç"
           }
         },
         "zh-Hans" : {
@@ -4006,6 +4794,12 @@
             "value" : "Ночи в розовом неоне"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pembe neon geceler"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4071,6 +4865,12 @@
             "value" : "Нежный нюдовый макияж"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zarif, doğal makyaj"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4130,6 +4930,12 @@
           }
         },
         "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PRO"
+          }
+        },
+        "tr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "PRO"
@@ -4200,6 +5006,12 @@
             "value" : "Деловой портрет"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CV Fotoğrafı"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4263,6 +5075,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Предметная съёмка"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ürün Stüdyosu"
           }
         },
         "zh-Hans" : {
@@ -4330,6 +5148,12 @@
             "value" : "Тихая роскошь"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sessiz lüks editoryal"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4395,10 +5219,86 @@
             "value" : "Реставрация фото"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eski Fotoğrafı Onar"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "老照片修复"
+          }
+        }
+      }
+    },
+    "Retro effects" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Retro-Effekte"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Efectos retro"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Effets rétro"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Efek retro"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Effetti rétro"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "レトロエフェクト"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "레트로 효과"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Efeitos retrô"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ретро-эффекты"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Retro efektler"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "复古特效"
           }
         }
       }
@@ -4458,6 +5358,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Салонный объём"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kuaför çıkışı hacim"
           }
         },
         "zh-Hans" : {
@@ -4525,6 +5431,12 @@
             "value" : "Атлас, банты и фатин"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Saten fiyonklar ve tül"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4588,6 +5500,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Готовые фото товаров"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Satışa hazır kareler"
           }
         },
         "zh-Hans" : {
@@ -4655,6 +5573,12 @@
             "value" : "Нежно и мечтательно"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yumuşak ve rüya gibi"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4715,6 +5639,12 @@
           }
         },
         "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Soft Glam"
+          }
+        },
+        "tr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Soft Glam"
@@ -4785,6 +5715,12 @@
             "value" : "Хеллоуин-портрет"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ürpertici Portre"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4848,6 +5784,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Сезон Хеллоуина"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Halloween havası"
           }
         },
         "zh-Hans" : {
@@ -4915,6 +5857,12 @@
             "value" : "Весна в самом цвету"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Baharın en çiçekli hâli"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4978,6 +5926,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Шарм стоп-моушена"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stop-motion büyüsü"
           }
         },
         "zh-Hans" : {
@@ -5045,6 +5999,12 @@
             "value" : "Солнечный уикенд"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Güneşli bir kaçamak"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5107,6 +6067,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Тренд дня"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Günün trendi"
           }
         },
         "zh-Hans" : {
@@ -5173,6 +6139,12 @@
             "value" : "ТРЕНД ДНЯ"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GÜNÜN TRENDİ"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5235,6 +6207,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Тренд: %@"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trend: %@"
           }
         },
         "zh-Hans" : {
@@ -5302,6 +6280,12 @@
             "value" : "Сейчас в тренде"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Şu an trend"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5366,6 +6350,12 @@
             "value" : "Попробовать"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dene"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5428,6 +6418,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Примерь на себя"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kendinde dene"
           }
         },
         "zh-Hans" : {
@@ -5495,10 +6491,86 @@
             "value" : "Примерь нежно-розовый"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pastel pembeyi dene"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "试试马卡龙粉"
+          }
+        }
+      }
+    },
+    "Video" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Video"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Video"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vidéo"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Video"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Video"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "動画"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "동영상"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vídeo"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Видео"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Video"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "视频"
           }
         }
       }
@@ -5558,6 +6630,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Тёплый закатный свет"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sıcak, altın tonlu ışık"
           }
         },
         "zh-Hans" : {
@@ -5625,6 +6703,12 @@
             "value" : "Акварель"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suluboya"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5688,6 +6772,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ведьмин глэм"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Şık Cadı"
           }
         },
         "zh-Hans" : {
@@ -5755,6 +6845,12 @@
             "value" : "Y2K-мыльница"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Y2K Digicam"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5818,6 +6914,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ты — кукла в коробке"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oyuncak bebek olarak sen"
           }
         },
         "zh-Hans" : {
@@ -5884,6 +6986,12 @@
             "value" : "Твоё новое"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Son yaptığın"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5946,6 +7054,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Твоё новое творение, остаток кредитов и быстрые действия."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Son eserin, kalan kredilerin ve hızlı işlemler."
           }
         },
         "zh-Hans" : {

@@ -4,6 +4,8 @@
 
 **Glowlit** is an iPhone and iPad app for AI photo editing and AI image generation, with free on-device effects and video editing, **made for girls who glow**.
 
+> Working on this repository with an AI agent (or new to it)? Start with [AGENTS.md](AGENTS.md): what the app is, where the code lives, how to build and test, the rules and what's next.
+
 - **Say it, see it:** "give me pink hair", "add soft glam makeup", "put me in a pink dress".
 - **One-tap looks:** 30 trends such as Doll Box, Y2K Digicam, Ballet Core, Fairy Princess and Restore Old Photo.
 - **Dream it, create it:** turn any idea into art with 14 styles, from Pastel Dream and Kawaii to Watercolor.

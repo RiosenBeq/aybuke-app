@@ -435,7 +435,8 @@ enum InviteCard {
         let size = CGSize(width: 238, height: 300)
         let placements: [(dx: CGFloat, dy: CGFloat, angle: CGFloat, style: Int)] = [(-236, 34, -10, 0), (236, 34, 10, 2), (0, 0, 0, 1)]
         for placement in placements {
-            let art = DemoArt.render(prompt: "Glowlit invite", style: styles[placement.style], size: AspectRatio.portrait.pixelSize(longEdge: 600), variant: placement.style)
+            let art = DemoArt.render(prompt: "Glowlit invite", style: styles[placement.style], size: AspectRatio.portrait.pixelSize(longEdge: 600),
+                                     variant: placement.style, stamped: false)
             let frame = CGRect(x: width / 2 + placement.dx - size.width / 2, y: top + placement.dy, width: size.width, height: size.height)
             cg.saveGState()
             cg.translateBy(x: frame.midX, y: frame.midY)

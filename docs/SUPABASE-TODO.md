@@ -1,0 +1,75 @@
+# Supabase kurulumu — sonraya bırakıldı
+
+Bu dosya, Glowlit'in arka ucunu (Supabase) canlıya almak için kalan adımları listeler. Kod hazır: `backend/` klasöründe veritabanı geçişleri, Edge Functions ve testler var. Ayrıntılı İngilizce rehber: [`backend/README.md`](../backend/README.md).
+
+> **Önemli:** Arka uç canlı olmadan uygulamadaki yapay zekâ özellikleri **demo modunda** çalışır (sonuçlar simüle edilir). App Store'a incelemeye göndermeden önce aşağıdaki adımlar tamamlanmalı; yoksa inceleme ekibi gerçek sonuç göremez ve uygulama "eksik" (Guideline 2.1) gerekçesiyle reddedilebilir.
+
+## 1. Giriş ve temizlik
+
+- [ ] Chrome'da Supabase'e giriş yap: **Continue with ChatGPT** → **Okan Berk Manavoğlu** hesabı.
+- [ ] Eski **envanter** projesini sil: Project Settings → General → Delete project. (Kalıcı silme olduğu için bunu hesap sahibi yapmalı.)
+
+## 2. Yeni proje
+
+- [ ] **New project** → ad: `Glowlit`, bölge: **Central EU (Frankfurt)** (KVKK/GDPR açısından AB önerilir).
+- [ ] Veritabanı şifresi: "Generate a password" ile oluştur ve şifre yöneticisine kaydet.
+
+## 3. Veritabanı (SQL Editor)
+
+- [ ] `backend/supabase/migrations/` içindeki dosyaları sırayla çalıştır:
+  1. `20261011000000_init.sql`
+  2. `20261012000000_reports_and_retention.sql`
+  3. `20261013000000_accounts.sql`
+- [ ] Zamanlanmış temizlik (takılan işleri iade eder, sonuçları 1 saat sonra siler):
+  ```sql
+  create extension if not exists pg_cron;
+  select cron.schedule('sweep-jobs', '*/5 * * * *', 'select public.sweep_jobs()');
+  ```
+
+## 4. Kimlik doğrulama (Authentication)
+
+- [ ] **Anonymous sign-ins** açık olsun (kayıt ekranı yok; Apple yönergesi 5.1.1(v)).
+- [ ] Kötüye kullanıma karşı **CAPTCHA (Turnstile)** önerilir.
+- [ ] **Apple** sağlayıcısı: Client IDs alanına `app.glowlit.ios` ekle.
+- [ ] Apple Developer'da App ID için **Sign in with Apple** açık olsun; hesap silmede token iptali için bir "Sign in with Apple" anahtarı (.p8) oluştur.
+
+## 5. Edge Functions
+
+Terminalde (Supabase CLI kurulu):
+
+```bash
+cd backend
+supabase login
+supabase link --project-ref <proje-ref>
+supabase functions deploy ai-image credits-redeem account report
+```
+
+## 6. Gizli anahtarlar (Edge Functions → Secrets)
+
+Bu değerleri hesap sahibi yapıştırmalı (anahtarları ben giremem). Şablon: `backend/.env.example`.
+
+- [ ] `XAI_API_KEY` — xAI anahtarı (yapay zekâ için)
+- [ ] `APPLE_BUNDLE_ID` = `app.glowlit.ios`
+- [ ] `APPLE_APP_ID` — App Store Connect'teki sayısal uygulama kimliği (uygulama kaydı oluşunca)
+- [ ] `APPLE_TEAM_ID` = `CBTKNY3LFC`
+- [ ] `APPLE_SIGNIN_KEY_ID` ve `APPLE_SIGNIN_PRIVATE_KEY` — Sign in with Apple anahtarı
+- [ ] `OUTPUT_MODERATION` = `on`
+- [ ] (İsteğe bağlı) `FAL_KEY` — ek çıktı güvenlik kontrolü ve yedek sağlayıcı
+
+## 7. xAI konsolu
+
+- [ ] [console.x.ai](https://console.x.ai) → ekip ayarlarında **Zero Data Retention**'ı aç. Selfie'ler kişisel veri; gizlilik politikamız ve xAI şartları bunu bekliyor.
+- [ ] Faturalandırma ve harcama limiti tanımla.
+
+## 8. Uygulamayı arka uca bağla
+
+- [ ] `ios/App/Resources/AppConfig.json`:
+  - `backendBaseURL`: `https://<proje-ref>.supabase.co`
+  - `supabaseAnonKey`: projenin publishable (anon) anahtarı (herkese açık olması tasarım gereği sorun değil)
+- [ ] Commit → yeni build → TestFlight'ta gerçek bir Magic Edit ile uçtan uca test.
+- [ ] Sonra App Store'a incelemeye gönder.
+
+## Notlar
+
+- Çözülemeyen engel: Chrome uzantısı OpenAI giriş sayfasına güvenlik gereği erişemiyor; ChatGPT ile girişte hesap seçimini kullanıcı yapmalı.
+- Arka uç tasarımı, maliyetler ve kredi kuralları: [`backend/README.md`](../backend/README.md), [`docs/03-product-spec.md`](03-product-spec.md).

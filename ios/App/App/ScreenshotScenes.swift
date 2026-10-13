@@ -41,7 +41,7 @@ enum ScreenshotFixtures {
         let styles = ["pastel", "kawaii", "anime", "watercolor", "fantasy", "neon"].map { StyleCatalog.style(id: $0) }
         return (0..<count).map { index in
             let style = styles[index % styles.count]
-            return DemoArt.render(prompt: "\(createPrompt) \(index)", style: style, size: AspectRatio.portrait.pixelSize(longEdge: 1024), variant: index)
+            return DemoArt.render(prompt: "\(createPrompt) \(index)", style: style, size: AspectRatio.portrait.pixelSize(longEdge: 1024), variant: index, stamped: false)
         }
     }
 

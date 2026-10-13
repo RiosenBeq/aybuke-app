@@ -67,7 +67,8 @@ final class DemoAIImageService: AIImageService {
 
 /// Procedural "art" for demo text-to-image results.
 enum DemoArt {
-    static func render(prompt: String, style: ImageStyle, size: PixelSize, variant: Int) -> UIImage {
+    /// `stamped: false` is for brand art (the invite card, screenshots), never for results.
+    static func render(prompt: String, style: ImageStyle, size: PixelSize, variant: Int, stamped: Bool = true) -> UIImage {
         var generator = SplitMix64(seed: UInt64(truncatingIfNeeded: stableHash(prompt + style.id)) &+ UInt64(variant) &* 7919)
         let swatch = style.swatch.compactMap { UIColor(hexString: $0) }
         let accents: [UIColor] = [.brandBlush, .brandPetal, .white]
@@ -98,7 +99,7 @@ enum DemoArt {
                 }
             }
         }
-        return stamp(image)
+        return stamped ? stamp(image) : image
     }
 
     /// Adds a small "DEMO" label so simulated results are never mistaken for real output.
