@@ -251,6 +251,9 @@ def main() -> None:
             if not base.exists():
                 continue
             folder.mkdir(parents=True, exist_ok=True)
+            # Start clean so a shorter or reordered list leaves no stale images.
+            for old in folder.glob("[0-9][0-9]-*.jpg"):
+                old.unlink()
             for index, item in enumerate(items, start=1):
                 # The app in the listing's language when captured, else the plain capture.
                 capture = next((path for path in (base / lang / f"{item['scene']}.png", base / f"{item['scene']}.png") if path.exists()), None)
@@ -260,6 +263,8 @@ def main() -> None:
                 store_screenshot(capture, item["title"], item["subtitle"], index, ipad=ipad).save(
                     folder / f"{index:02d}-{item['scene']}.jpg", quality=92, subsampling=0
                 )
+    # Social and web images use the English captures when they're in en/.
+    captures = captures / "en" if (captures / "en" / "home.png").exists() else captures
     OUT_SOCIAL.mkdir(parents=True, exist_ok=True)
     OUT_WEB.mkdir(parents=True, exist_ok=True)
     screens = OUT_WEB / "screens"

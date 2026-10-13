@@ -138,5 +138,6 @@ Legend: ✅ done in this repository · ⏳ next · 🔭 later
 - ✅ Control Center controls on iOS 18 (Magic Edit, Retro effects, Edit a video), also for the Lock Screen and the Action button; the "My glow" widget's shortcuts are now Magic, Effects and Video
 - ✅ Free on-device edits (effects, adjustments, cut-outs) save without a watermark; free cloud AI results keep the small mark
 - ⏳ Native-speaker review of the 11 translations
-- ⏳ Screenshots of the new screens (effects, video editor, Cover star, invite card, tour) for the README gallery and the App Store
+- ✅ App Store screenshots in English and Turkish for iPhone 6.9" and iPad 13" (Magic Edit, trends, effects, Cover star, sharing, gallery, privacy, pricing)
+- ⏳ Refresh the README gallery with the new screens (video editor, invite card, tour)
 
