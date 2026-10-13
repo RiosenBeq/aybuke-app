@@ -75,6 +75,10 @@ backend/scripts/test-db.sh
 # Generated files must stay in sync (CI checks both)
 python3 scripts/build-legal.py --check
 python3 scripts/export-core-strings.py --check
+
+# Archive and upload to App Store Connect / TestFlight with an API key
+# (key file in ~/.appstoreconnect/private_keys/; ids from Users and Access → Integrations)
+ASC_KEY_ID=<key id> ASC_ISSUER_ID=<issuer id> scripts/upload-app-store.sh
 ```
 
 Deterministic screens for QA and marketing (DEBUG builds): launch with `-GLScreenshotScene <scene>` (see `ScreenshotScenes.swift`; e.g. `home`, `editor`, `effects`, `share -GLShareFormat cover`, `tour`, `invite`), and `-AppleLanguages "(tr)" -AppleLocale tr` for another language. `scripts/marketing-images.py` turns captures into App Store images (iPhone 1290×2796, iPad 2064×2752).
@@ -105,7 +109,7 @@ Done: the app, widgets, Live Activity, controls, video editor, effects, share de
 
 Next, in order:
 1. **Supabase** — postponed by the owner; every step is in [`docs/SUPABASE-TODO.md`](docs/SUPABASE-TODO.md). Until it's live, AI runs in demo mode, so don't submit to App Review before it is.
-2. **Signing** — Xcode has no Apple account signed in. Sign in (Xcode → Settings → Accounts) or use an App Store Connect API key with its Issuer ID; team `CBTKNY3LFC`, bundle ids `app.glowlit.ios` and `app.glowlit.ios.widgets`, capabilities: App Groups, Sign in with Apple.
+2. **Signing and upload** — Xcode has no Apple account signed in, so builds go up with an App Store Connect API key: `scripts/upload-app-store.sh` (automatic signing; it registers the bundle ids `app.glowlit.ios` / `app.glowlit.ios.widgets`, the App Group and Sign in with Apple for team `CBTKNY3LFC`). It needs the key's Issuer ID and an existing app record (the API can't create apps). Free disk space first: an archive needs about 2 GB.
 3. **App Store Connect** (owner signs in; every field is in [`docs/marketing/app-store-connect-setup.md`](docs/marketing/app-store-connect-setup.md)): app record, subscriptions group "Glowlit Pro" (`app.glowlit.pro.yearly` with a 7-day free trial, `app.glowlit.pro.monthly` with a $1.99 first month), consumables `app.glowlit.credits.30` / `.100`, metadata from the JSON above, screenshots, App Privacy answers, age rating, and exclude mainland China (generative-AI apps need a government licence there). Final "Submit for Review" needs the owner's go-ahead.
 4. **Website / legal URLs** — enable GitHub Pages for `web/` (owner approval) so the privacy policy and support URLs resolve; then set `websiteURL`, `privacyPolicyURL`, `termsURL` and, after release, `appStoreID` in `AppConfig.json`.
 5. Native-speaker review of translations; a remote template catalog; free on-device captions for videos (see [`docs/06-roadmap.md`](docs/06-roadmap.md)).

@@ -72,7 +72,7 @@ No tracking. Matches `ios/App/Resources/PrivacyInfo.xcprivacy`.
 | Marketing URL | same as Support URL |
 | Copyright | `2026 Glowlit` |
 | App Review information | Contact name, phone and email of the owner; no demo account needed; notes from [`app-store-listing.md`](app-store-listing.md) ("App Review notes") |
-| Build | Upload from Xcode (Product › Archive › Distribute) or `xcodebuild -exportArchive` with an App Store Connect API key. `ITSAppUsesNonExemptEncryption` is `NO` (HTTPS only), so no export-compliance documents are needed |
+| Build | `ASC_KEY_ID=… ASC_ISSUER_ID=… scripts/upload-app-store.sh` (App Store Connect API key, automatic signing), or Xcode › Product › Archive › Distribute. `ITSAppUsesNonExemptEncryption` is `NO` (HTTPS only), so no export-compliance documents are needed |
 | Release | Manual release after approval |
 
 ## 7. Before pressing "Submit for Review"
