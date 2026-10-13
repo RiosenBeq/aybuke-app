@@ -1,0 +1,35 @@
+{
+  "_comment": "Values for the {{TOKENS}} in legal/en and legal/tr. Replace every [bracketed] value before publishing, then run: python3 scripts/build-legal.py",
+  "shared": {
+    "APP_NAME": "Glowlit",
+    "CONTACT_EMAIL": "support@glowlit.app",
+    "PRIVACY_EMAIL": "privacy@glowlit.app",
+    "MIN_AGE": "13"
+  },
+  "en": {
+    "EFFECTIVE_DATE": "12 October 2026",
+    "COMPANY_NAME": "[Company legal name]",
+    "COMPANY_ADDRESS": "[Registered address]",
+    "COMPANY_COUNTRY": "Türkiye",
+    "COMPANY_REGISTRY": "[Trade registry and MERSİS number]",
+    "KEP_ADDRESS": "[KEP address]",
+    "EU_REPRESENTATIVE": "[EU representative: name and address]",
+    "UK_REPRESENTATIVE": "[UK representative: name and address]",
+    "GOVERNING_LAW": "the laws of the Republic of Türkiye",
+    "VENUE": "the courts and enforcement offices of Istanbul (Çağlayan), Türkiye",
+    "HOSTING_REGION": "[Supabase region, e.g. EU (Frankfurt)]"
+  },
+  "tr": {
+    "EFFECTIVE_DATE": "12 Ekim 2026",
+    "COMPANY_NAME": "[Şirket unvanı]",
+    "COMPANY_ADDRESS": "[Kayıtlı adres]",
+    "COMPANY_COUNTRY": "Türkiye",
+    "COMPANY_REGISTRY": "[Ticaret sicil ve MERSİS numarası]",
+    "KEP_ADDRESS": "[KEP adresi]",
+    "EU_REPRESENTATIVE": "[AB temsilcisi: unvan ve adres]",
+    "UK_REPRESENTATIVE": "[Birleşik Krallık temsilcisi: unvan ve adres]",
+    "GOVERNING_LAW": "Türkiye Cumhuriyeti hukuku",
+    "VENUE": "İstanbul (Çağlayan) Mahkemeleri ve İcra Daireleri",
+    "HOSTING_REGION": "[Supabase bölgesi, örn. AB (Frankfurt)]"
+  }
+}
