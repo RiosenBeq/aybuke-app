@@ -48,13 +48,6 @@ final class OnDeviceImageService: AIImageService {
         return output
     }
 
-    /// Classic auto-enhance (exposure, color, sharpening) used for previews and
-    /// as an offline fallback.
-    static func autoEnhance(_ image: UIImage) -> UIImage {
-        guard let input = ImageFilters.ciImage(image) else { return image }
-        return ImageFilters.render(ImageFilters.autoEnhance(input), extent: input.extent) ?? image
-    }
-
     /// Auto-enhance plus a gentle warm grade — the onboarding "aha" moment.
     static func quickGlow(_ image: UIImage) -> UIImage {
         guard let input = ImageFilters.ciImage(image) else { return image }

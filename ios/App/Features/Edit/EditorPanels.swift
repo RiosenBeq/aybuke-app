@@ -11,10 +11,11 @@ struct MagicEditPanel: View {
 
     private let suggestions = [
         "Golden hour light",
-        "Add falling snow",
-        "Put me in a black suit",
-        "Add stylish sunglasses",
-        "Turn day into night",
+        "Give me pink hair",
+        "Add soft glam makeup",
+        "Put me in a pink dress",
+        "Add cherry blossoms",
+        "Add sparkles everywhere",
         "Make it a watercolor",
         "Remove the people behind me",
     ]
@@ -44,10 +45,10 @@ struct MagicEditPanel: View {
                     .submitLabel(.go)
                     .padding(.horizontal, 14)
                     .padding(.vertical, 12)
-                    .background(Palette.surfaceRaised, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+                    .background(Palette.surface, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
                     .overlay(
                         RoundedRectangle(cornerRadius: 18, style: .continuous)
-                            .strokeBorder(isFocused ? Palette.primary.opacity(0.6) : Palette.stroke, lineWidth: 1)
+                            .strokeBorder(isFocused ? Palette.accent : Palette.strokeStrong, lineWidth: isFocused ? 1.5 : 1)
                     )
                 Button {
                     isFocused = false
@@ -55,9 +56,9 @@ struct MagicEditPanel: View {
                 } label: {
                     Image(systemName: "arrow.up")
                         .font(.headline.weight(.bold))
-                        .foregroundStyle(canSubmit ? Palette.onPrimary : Palette.textTertiary)
+                        .foregroundStyle(canSubmit ? Palette.onAccent : Palette.textTertiary)
                         .frame(width: 46, height: 46)
-                        .background(canSubmit ? AnyShapeStyle(Palette.brandGradient) : AnyShapeStyle(Palette.surfaceRaised), in: Circle())
+                        .background(canSubmit ? Palette.accent : Palette.strokeStrong, in: Circle())
                 }
                 .disabled(!canSubmit)
                 .accessibilityLabel("Apply edit")
@@ -87,8 +88,10 @@ struct StylesPanel: View {
                     .buttonStyle(.plain)
                 }
             }
+            .padding(.vertical, 4)
         }
         .scrollIndicators(.hidden)
+        .scrollClipDisabled()
     }
 }
 
@@ -132,7 +135,7 @@ struct ErasePanel: View {
                 Image(systemName: "circle.fill").font(.system(size: 8))
                     .foregroundStyle(Palette.textSecondary)
                 Slider(value: $brushSize, in: 0.02...0.16)
-                    .tint(Palette.primary)
+                    .tint(Palette.accent)
                     .accessibilityLabel("Brush size")
                 Image(systemName: "circle.fill").font(.system(size: 20))
                     .foregroundStyle(Palette.textSecondary)
@@ -232,7 +235,7 @@ struct AdjustPanel: View {
                 ),
                 in: selected.range
             )
-            .tint(Palette.primary)
+            .tint(Palette.accent)
             .accessibilityLabel(selected.title)
 
             HStack(spacing: 12) {

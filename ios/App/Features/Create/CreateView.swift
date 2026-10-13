@@ -11,11 +11,10 @@ struct CreateView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: Metrics.sectionSpacing) {
                     VStack(alignment: .leading, spacing: 6) {
-                        Text("Create")
-                            .font(.screenTitle)
+                        Text(styled: "Create *anything*", size: 28)
                             .foregroundStyle(Palette.textPrimary)
                             .accessibilityAddTraits(.isHeader)
-                        Text("Describe anything. We'll handle the magic words.")
+                        Text("Describe it, pick a vibe — we'll handle the magic words.")
                             .font(.subheadline)
                             .foregroundStyle(Palette.textSecondary)
                     }
@@ -35,7 +34,7 @@ struct CreateView: View {
             .toolbar(.hidden, for: .navigationBar)
             .safeAreaInset(edge: .bottom) { generateBar }
             .navigationDestination(isPresented: $model.showResults) {
-                ResultsView(images: model.results, prompt: model.prompt, operation: .textToImage)
+                ResultsView(images: model.results, prompt: model.prompt, operation: .textToImage, requestID: model.requestID)
             }
             .overlay {
                 if model.isGenerating {
@@ -50,7 +49,7 @@ struct CreateView: View {
             .onAppear {
                 guard let scene = ScreenshotScene.current, scene == .create || scene == .results, model.prompt.isEmpty else { return }
                 model.prompt = ScreenshotFixtures.createPrompt
-                model.style = StyleCatalog.style(id: "cinematic")
+                model.style = StyleCatalog.style(id: "pastel")
                 if scene == .results {
                     model.results = ScreenshotFixtures.generatedArt(count: 3)
                     model.showResults = true
@@ -64,14 +63,14 @@ struct CreateView: View {
 
     private var promptCard: some View {
         VStack(alignment: .leading, spacing: 12) {
-            TextField("A cozy cabin in a snowy forest at dusk, warm lights in the windows…", text: $model.prompt, axis: .vertical)
+            TextField("A dreamy pastel bedroom with fairy lights and a canopy bed…", text: $model.prompt, axis: .vertical)
                 .lineLimit(4...8)
                 .focused($isPromptFocused)
                 .font(.body)
                 .foregroundStyle(Palette.textPrimary)
 
             HStack(spacing: 8) {
-                SelectableChip(title: "Surprise me", symbolName: "dice", isSelected: false) {
+                SelectableChip(title: "Inspire me", symbolName: "sparkles", isSelected: false) {
                     model.surpriseMe()
                 }
                 SelectableChip(title: "Enhance prompt", symbolName: "wand.and.stars", isSelected: false) {
@@ -94,7 +93,7 @@ struct CreateView: View {
         .cardStyle()
         .overlay(
             RoundedRectangle(cornerRadius: Metrics.cardRadius, style: .continuous)
-                .strokeBorder(isPromptFocused ? Palette.primary.opacity(0.6) : Color.clear, lineWidth: 1.5)
+                .strokeBorder(isPromptFocused ? Palette.accent : Color.clear, lineWidth: 1.5)
         )
     }
 
@@ -103,11 +102,11 @@ struct CreateView: View {
             SectionHeader(title: "Style")
             ScrollView(.horizontal) {
                 HStack(spacing: 10) {
-                    ForEach(StyleCatalog.all) { style in
-                        StyleSwatchChip(
+                    ForEach(Array(StyleCatalog.all.enumerated()), id: \.element.id) { index, style in
+                        StyleTile(
                             name: style.name,
-                            colors: style.swatch.gradientColors,
                             symbolName: style.symbolName,
+                            tone: PaletteTone.at(index),
                             isSelected: model.style == style,
                             isLocked: style.isPro && !app.purchases.isPro
                         ) {
@@ -119,6 +118,7 @@ struct CreateView: View {
                 .padding(.horizontal, 2)
             }
             .scrollIndicators(.hidden)
+            .scrollClipDisabled()
         }
     }
 

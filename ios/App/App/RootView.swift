@@ -28,7 +28,7 @@ struct RootView: View {
                 .environment(app)
         }
         .modifier(AppPresentations(isActive: app.editorLaunch == nil))
-        .tint(Palette.primary)
+        .tint(Palette.accent)
     }
 }
 

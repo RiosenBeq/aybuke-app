@@ -8,6 +8,8 @@ enum Metrics {
     static let buttonHeight: CGFloat = 56
 }
 
+/// White card on the petal canvas: a soft shadow in light mode, a hairline
+/// stroke in dark mode.
 struct CardBackground: ViewModifier {
     var radius: CGFloat = Metrics.cardRadius
     var fill: Color = Palette.surface
@@ -19,6 +21,7 @@ struct CardBackground: ViewModifier {
                 RoundedRectangle(cornerRadius: radius, style: .continuous)
                     .strokeBorder(Palette.stroke, lineWidth: 1)
             )
+            .shadow(color: Palette.shadow, radius: 14, y: 6)
     }
 }
 
@@ -29,10 +32,19 @@ extension View {
 
     /// Frosted panel used for floating controls over photos.
     func glassPanel(radius: CGFloat = Metrics.cardRadius) -> some View {
-        background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: radius, style: .continuous))
+        background(.regularMaterial, in: RoundedRectangle(cornerRadius: radius, style: .continuous))
             .overlay(
                 RoundedRectangle(cornerRadius: radius, style: .continuous)
                     .strokeBorder(Palette.strokeStrong, lineWidth: 1)
             )
+            .shadow(color: Palette.shadow, radius: 18, y: 8)
+    }
+
+    /// Small uppercase label above a headline ("MAGIC EDIT").
+    func eyebrowStyle(_ color: Color = Palette.textSecondary) -> some View {
+        font(.caption.weight(.heavy))
+            .tracking(1.4)
+            .textCase(.uppercase)
+            .foregroundStyle(color)
     }
 }

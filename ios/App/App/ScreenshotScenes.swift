@@ -16,6 +16,8 @@ enum ScreenshotScene: String, CaseIterable {
     case paywall
     case consent
     case settings
+    case share
+    case legal
 
     static var current: ScreenshotScene? {
         UserDefaults.standard.string(forKey: "GLScreenshotScene").flatMap(ScreenshotScene.init(rawValue:))
@@ -30,10 +32,10 @@ enum ScreenshotFixtures {
     /// The same scene at golden hour — what "Golden hour light" produces.
     static let goldenLandscape = landscape(golden: true)
 
-    static let createPrompt = "A cozy cabin in a snowy forest at dusk, warm lights glowing in the windows"
+    static let createPrompt = "A dreamy pastel bedroom with fairy lights and a canopy bed at sunset"
 
     static func generatedArt(count: Int) -> [UIImage] {
-        let styles = ["cinematic", "anime", "3d", "watercolor", "neon", "fantasy"].map { StyleCatalog.style(id: $0) }
+        let styles = ["pastel", "kawaii", "anime", "watercolor", "fantasy", "neon"].map { StyleCatalog.style(id: $0) }
         return (0..<count).map { index in
             let style = styles[index % styles.count]
             return DemoArt.render(prompt: "\(createPrompt) \(index)", style: style, size: AspectRatio.portrait.pixelSize(longEdge: 1024), variant: index)

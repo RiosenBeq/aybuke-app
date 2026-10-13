@@ -1,27 +1,32 @@
 import SwiftUI
 
+/// Ink capsule with blush lettering; flips to blush-on-ink over dark artwork.
 struct ProBadge: View {
+    var onDark = false
+
     var body: some View {
         HStack(spacing: 3) {
             Image(systemName: "crown.fill").font(.system(size: 9, weight: .bold))
             Text("PRO").font(.system(size: 10, weight: .heavy, design: .rounded))
         }
-        .foregroundStyle(Palette.onPrimary)
+        .foregroundStyle(onDark ? Palette.ink : Palette.blush)
         .padding(.horizontal, 7)
         .padding(.vertical, 4)
-        .background(Palette.brandGradient, in: Capsule())
+        .background(onDark ? Palette.blush : Palette.ink, in: Capsule())
         .accessibilityLabel("Pro")
     }
 }
 
 struct NewBadge: View {
+    var onDark = false
+
     var body: some View {
         Text("NEW")
             .font(.system(size: 10, weight: .heavy, design: .rounded))
-            .foregroundStyle(Palette.background)
+            .foregroundStyle(onDark ? Palette.ink : Palette.white)
             .padding(.horizontal, 7)
             .padding(.vertical, 4)
-            .background(Palette.textPrimary, in: Capsule())
+            .background(onDark ? Palette.white : Palette.ink, in: Capsule())
     }
 }
 
@@ -35,19 +40,17 @@ struct CreditPill: View {
         Button(action: action) {
             HStack(spacing: 5) {
                 Image(systemName: isPro ? "crown.fill" : "bolt.fill")
-                    .foregroundStyle(Palette.brandGradient)
                 Text(isPro ? "PRO" : "\(balance)")
                     .font(.subheadline.weight(.bold))
                     .monospacedDigit()
-                    .foregroundStyle(Palette.textPrimary)
             }
+            .foregroundStyle(Palette.onAccent)
             .padding(.horizontal, 12)
             .padding(.vertical, 7)
-            .background(Palette.surfaceRaised, in: Capsule())
-            .overlay(Capsule().strokeBorder(Palette.stroke, lineWidth: 1))
+            .background(Palette.accent, in: Capsule())
         }
         .buttonStyle(.plain)
-        .accessibilityLabel(isPro ? "Pro member" : "\(balance) credits left today")
+        .accessibilityLabel(isPro ? "Pro member" : "\(balance) credits left")
     }
 }
 
@@ -72,7 +75,7 @@ struct SectionHeader: View {
             if let actionTitle, let action {
                 Button(actionTitle, action: action)
                     .font(.subheadline.weight(.semibold))
-                    .foregroundStyle(Palette.primary)
+                    .foregroundStyle(Palette.accent)
             }
         }
     }

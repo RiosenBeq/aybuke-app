@@ -7,12 +7,13 @@ struct ResultsView: View {
     let images: [UIImage]
     let prompt: String?
     let operation: AIOperation
+    var requestID: String?
 
     @Environment(AppModel.self) private var app
     @Environment(\.requestReview) private var requestReview
     @State private var selection = 0
-    @State private var shareItem: ShareItem?
     @State private var showReport = false
+    @State private var celebrate = 0
 
     private var current: UIImage? {
         images.indices.contains(selection) ? images[selection] : images.first
@@ -26,12 +27,14 @@ struct ResultsView: View {
                         .resizable()
                         .scaledToFit()
                         .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+                        .shadow(color: Palette.shadow, radius: 16, y: 8)
                         .padding(.horizontal, Metrics.gutter)
                         .tag(index)
                         .accessibilityLabel("Generated image \(index + 1) of \(images.count)")
                 }
             }
             .tabViewStyle(.page(indexDisplayMode: images.count > 1 ? .always : .never))
+            .overlay { SparkleBurst(trigger: celebrate) }
 
             if let prompt, !prompt.isEmpty {
                 Text(prompt)
@@ -43,19 +46,19 @@ struct ResultsView: View {
 
             HStack(spacing: 12) {
                 Button {
-                    save()
+                    share()
                 } label: {
-                    Label("Save", systemImage: "square.and.arrow.down")
+                    Label("Share", systemImage: "paperplane.fill")
                 }
                 .buttonStyle(.primary)
 
                 Button {
-                    share()
+                    save()
                 } label: {
-                    Image(systemName: "square.and.arrow.up")
+                    Image(systemName: "square.and.arrow.down")
                 }
                 .buttonStyle(IconButtonStyle(size: 56))
-                .accessibilityLabel("Share")
+                .accessibilityLabel("Save to Photos")
 
                 Button {
                     guard let current else { return }
@@ -69,7 +72,7 @@ struct ResultsView: View {
             .padding(.horizontal, Metrics.gutter)
             .padding(.bottom, 12)
         }
-        .background(Palette.background.ignoresSafeArea())
+        .background(AuroraBackground(intensity: 0.35))
         .navigationTitle("Your creation")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
@@ -83,19 +86,13 @@ struct ResultsView: View {
                 } label: {
                     Image(systemName: "ellipsis.circle")
                 }
+                .accessibilityLabel("More")
             }
         }
-        .sheet(item: $shareItem) { item in
-            ShareSheet(items: [item.url])
-                .presentationDetents([.medium, .large])
-        }
-        .confirmationDialog("Report this image", isPresented: $showReport, titleVisibility: .visible) {
-            Button("Offensive or harmful") { report() }
-            Button("Sexual content") { report() }
-            Button("Doesn't match my request") { report() }
-            Button("Cancel", role: .cancel) {}
-        } message: {
-            Text("Reports help us improve our safety filters.")
+        .reportDialog(isPresented: $showReport, requestID: requestID)
+        .task {
+            try? await Task.sleep(for: .milliseconds(250))
+            celebrate += 1
         }
     }
 
@@ -117,15 +114,33 @@ struct ResultsView: View {
 
     private func share() {
         guard let current else { return }
-        do {
-            shareItem = ShareItem(url: try ImageExporter.temporaryFile(for: current, operation: operation, watermark: !app.purchases.isPro))
-        } catch {
-            app.handle(error)
-        }
+        Haptics.tap()
+        app.share(SharePayload(image: current, operation: operation, prompt: prompt))
     }
+}
 
-    private func report() {
-        // TODO(backend): POST the request id + reason to /functions/v1/report.
-        app.showToast("Thanks — we'll review this image.", style: .success)
+extension View {
+    /// "Report this image" reasons; sends the report with the result's request id.
+    func reportDialog(isPresented: Binding<Bool>, requestID: String?) -> some View {
+        modifier(ReportDialog(isPresented: isPresented, requestID: requestID))
+    }
+}
+
+private struct ReportDialog: ViewModifier {
+    @Binding var isPresented: Bool
+    let requestID: String?
+    @Environment(AppModel.self) private var app
+
+    func body(content: Content) -> some View {
+        content.confirmationDialog("Report this image", isPresented: $isPresented, titleVisibility: .visible) {
+            ForEach(ReportReason.allCases) { reason in
+                Button(reason.title) {
+                    Task { await app.report(reason, requestID: requestID) }
+                }
+            }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("Reports help us review results and improve our safety filters.")
+        }
     }
 }

@@ -4,8 +4,16 @@
   "forceDemoMode": false,
   "aiProviderName": "fal.ai and the model providers it runs, such as Google",
   "dataRetentionHours": 24,
-  "privacyPolicyURL": "https://glowlit.app/privacy",
-  "termsURL": "https://glowlit.app/terms",
+  "privacyPolicyURL": "https://github.com/RiosenBeq/furkan/blob/main/docs/legal/en/privacy-policy.md",
+  "termsURL": "https://github.com/RiosenBeq/furkan/blob/main/docs/legal/en/terms-of-use.md",
   "supportEmail": "support@glowlit.app",
-  "appStoreID": ""
+  "appStoreID": "",
+  "websiteURL": "",
+  "instagramAppID": "",
+  "shareHashtags": [
+    "Glowlit",
+    "GlowUp",
+    "AIphoto",
+    "MadeWithAI"
+  ]
 }

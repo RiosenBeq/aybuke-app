@@ -1,6 +1,7 @@
 import SwiftUI
 
-/// Gradient capsule for the one primary action on a screen.
+/// Ink capsule with a blush label (blush with ink on the dark canvas) for the
+/// one primary action on a screen.
 struct PrimaryButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         PrimaryButtonBody(configuration: configuration)
@@ -13,23 +14,21 @@ struct PrimaryButtonStyle: ButtonStyle {
         var body: some View {
             configuration.label
                 .font(.buttonLabel)
-                .foregroundStyle(Palette.onPrimary)
+                .foregroundStyle(isEnabled ? Palette.onAccent : Palette.textTertiary)
                 .frame(maxWidth: .infinity, minHeight: Metrics.buttonHeight)
                 .padding(.horizontal, 20)
                 .background {
                     Capsule()
-                        .fill(isEnabled ? AnyShapeStyle(Palette.brandGradient) : AnyShapeStyle(Palette.surfaceRaised))
+                        .fill(isEnabled ? Palette.accent : Palette.strokeStrong)
                 }
-                .overlay(Capsule().strokeBorder(Color.white.opacity(isEnabled ? 0.18 : 0.06), lineWidth: 1))
-                .shadow(color: Palette.primary.opacity(isEnabled ? 0.35 : 0), radius: 18, y: 8)
-                .opacity(isEnabled ? 1 : 0.6)
+                .shadow(color: Palette.ink.opacity(isEnabled ? 0.18 : 0), radius: 16, y: 8)
                 .scaleEffect(configuration.isPressed ? 0.97 : 1)
                 .animation(.spring(response: 0.25, dampingFraction: 0.7), value: configuration.isPressed)
         }
     }
 }
 
-/// Quiet capsule for secondary actions.
+/// White capsule for secondary actions.
 struct SecondaryButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
@@ -37,14 +36,14 @@ struct SecondaryButtonStyle: ButtonStyle {
             .foregroundStyle(Palette.textPrimary)
             .frame(maxWidth: .infinity, minHeight: 50)
             .padding(.horizontal, 18)
-            .background(Palette.surfaceRaised, in: Capsule())
-            .overlay(Capsule().strokeBorder(Palette.stroke, lineWidth: 1))
+            .background(Palette.surface, in: Capsule())
+            .overlay(Capsule().strokeBorder(Palette.strokeStrong, lineWidth: 1))
             .scaleEffect(configuration.isPressed ? 0.97 : 1)
             .animation(.spring(response: 0.25, dampingFraction: 0.7), value: configuration.isPressed)
     }
 }
 
-/// Round icon button used in toolbars over photos.
+/// Round icon button used in toolbars and over photos.
 struct IconButtonStyle: ButtonStyle {
     var size: CGFloat = 40
 
@@ -53,8 +52,9 @@ struct IconButtonStyle: ButtonStyle {
             .font(.system(size: size * 0.42, weight: .semibold))
             .foregroundStyle(Palette.textPrimary)
             .frame(width: size, height: size)
-            .background(.ultraThinMaterial, in: Circle())
+            .background(Palette.surface, in: Circle())
             .overlay(Circle().strokeBorder(Palette.stroke, lineWidth: 1))
+            .shadow(color: Palette.shadow, radius: 8, y: 3)
             .scaleEffect(configuration.isPressed ? 0.92 : 1)
             .animation(.spring(response: 0.25, dampingFraction: 0.7), value: configuration.isPressed)
     }
@@ -81,7 +81,7 @@ struct CostLabel: View {
     var body: some View {
         HStack(spacing: 10) {
             if isLoading {
-                ProgressView().tint(Palette.onPrimary)
+                ProgressView().tint(Palette.onAccent)
             } else {
                 Image(systemName: "sparkles")
             }
@@ -94,7 +94,7 @@ struct CostLabel: View {
                 .font(.subheadline.weight(.bold))
                 .padding(.horizontal, 8)
                 .padding(.vertical, 3)
-                .background(Palette.onPrimary.opacity(0.12), in: Capsule())
+                .background(Palette.onAccent.opacity(0.18), in: Capsule())
             }
         }
     }

@@ -47,4 +47,46 @@ extension Font {
     static var sectionTitle: Font { .display(20, weight: .semibold, relativeTo: .title3) }
     static var cardTitle: Font { .display(17, weight: .semibold, relativeTo: .headline) }
     static var buttonLabel: Font { .display(17, weight: .semibold, relativeTo: .headline) }
+
+    /// Editorial accent: Apple's New York serif in italic — the one soft,
+    /// elegant word in a headline ("Make it *glow*"). Scales with Dynamic Type.
+    static func accent(_ size: CGFloat, relativeTo style: Font.TextStyle = .title) -> Font {
+        let scaled = UIFontMetrics(forTextStyle: style.uiTextStyle).scaledValue(for: size)
+        return .system(size: scaled, weight: .medium, design: .serif).italic()
+    }
+}
+
+private extension Font.TextStyle {
+    var uiTextStyle: UIFont.TextStyle {
+        switch self {
+        case .largeTitle: return .largeTitle
+        case .title: return .title1
+        case .title2: return .title2
+        case .title3: return .title3
+        case .headline: return .headline
+        case .subheadline: return .subheadline
+        case .callout: return .callout
+        case .footnote: return .footnote
+        case .caption: return .caption1
+        case .caption2: return .caption2
+        default: return .body
+        }
+    }
+}
+
+extension Text {
+    /// Display headline where words wrapped in `*asterisks*` are set in the
+    /// italic serif accent: `Text(styled: "Your photos, in their *best light*", size: 34)`.
+    init(styled source: String, size: CGFloat, weight: Font.Weight = .bold, relativeTo style: Font.TextStyle = .largeTitle) {
+        let parts = source.components(separatedBy: "*")
+        var text = Text(verbatim: "")
+        for (index, part) in parts.enumerated() where !part.isEmpty {
+            let isAccent = !index.isMultiple(of: 2)
+            let piece = Text(verbatim: part).font(isAccent
+                ? .accent(size * 1.06, relativeTo: style)
+                : .display(size, weight: weight, relativeTo: style))
+            text = Text("\(text)\(piece)")
+        }
+        self = text
+    }
 }

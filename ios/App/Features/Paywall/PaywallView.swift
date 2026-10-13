@@ -10,11 +10,12 @@ struct PaywallView: View {
 
     @Environment(AppModel.self) private var app
     @Environment(\.dismiss) private var dismiss
-    @Environment(\.openURL) private var openURL
     @State private var selectedID = StoreProducts.yearly
     @State private var trialEligible = false
     @State private var errorMessage: String?
+    @State private var errorTitle = "Purchase failed"
     @State private var showPacks = false
+    @State private var legalDocument: LegalDocument?
 
     private var purchases: PurchaseManager { app.purchases }
 
@@ -81,7 +82,8 @@ struct PaywallView: View {
                 .presentationDetents([.medium])
                 .presentationBackground(Palette.background)
         }
-        .alert("Purchase failed", isPresented: Binding(get: { errorMessage != nil }, set: { if !$0 { errorMessage = nil } })) {
+        .legalSheet($legalDocument)
+        .alert(errorTitle, isPresented: Binding(get: { errorMessage != nil }, set: { if !$0 { errorMessage = nil } })) {
             Button("OK", role: .cancel) {}
         } message: {
             Text(errorMessage ?? "")
@@ -92,12 +94,15 @@ struct PaywallView: View {
 
     private var header: some View {
         VStack(spacing: 10) {
-            Image(systemName: "sun.max.fill")
-                .font(.system(size: 44, weight: .semibold))
-                .foregroundStyle(Palette.brandGradient)
+            Image(systemName: "sparkles")
+                .font(.system(size: 34, weight: .semibold))
+                .foregroundStyle(Palette.ink)
+                .frame(width: 76, height: 76)
+                .background(Palette.blush, in: Circle())
+                .overlay(Circle().strokeBorder(Palette.white.opacity(0.7), lineWidth: 3))
+                .shadow(color: Palette.blush.opacity(0.8), radius: 18, y: 8)
                 .symbolEffect(.pulse)
-            Text("Your photos,\nin their best light")
-                .font(.heroTitle)
+            Text(styled: "Your photos,\nin their *best light*", size: 34)
                 .multilineTextAlignment(.center)
                 .foregroundStyle(Palette.textPrimary)
             Text("\(Brand.name) Pro unlocks every tool and trend.")
@@ -171,7 +176,7 @@ struct PaywallView: View {
             Task { await buy() }
         } label: {
             if purchases.isPurchasing {
-                ProgressView().tint(Palette.onPrimary)
+                ProgressView().tint(Palette.onAccent)
             } else {
                 Text(ctaTitle)
             }
@@ -209,12 +214,13 @@ struct PaywallView: View {
                             app.credits.refresh(isPro: true)
                             dismiss()
                         } else {
+                            errorTitle = "Nothing to restore"
                             errorMessage = "No active subscription found for this Apple Account."
                         }
                     }
                 }
-                Button("Terms") { openURL(app.config.termsURL) }
-                Button("Privacy") { openURL(app.config.privacyPolicyURL) }
+                Button("Terms") { legalDocument = .terms }
+                Button("Privacy") { legalDocument = .privacy }
             }
             .font(.footnote.weight(.semibold))
             .foregroundStyle(Palette.textSecondary)
@@ -243,6 +249,7 @@ struct PaywallView: View {
             app.showToast("Welcome to \(Brand.name) Pro ✦", style: .success)
             dismiss()
         } catch {
+            errorTitle = "Purchase failed"
             errorMessage = error.localizedDescription
         }
     }
@@ -258,9 +265,10 @@ private struct Benefit: View {
     var body: some View {
         HStack(alignment: .top, spacing: 12) {
             Image(systemName: symbol)
-                .font(.body.weight(.semibold))
-                .foregroundStyle(Palette.primary)
-                .frame(width: 26)
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(Palette.ink)
+                .frame(width: 30, height: 30)
+                .background(Palette.blush, in: Circle())
             VStack(alignment: .leading, spacing: 2) {
                 Text(title)
                     .font(.subheadline.weight(.semibold))
@@ -289,7 +297,7 @@ private struct PlanCard: View {
             HStack(spacing: 14) {
                 Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
                     .font(.title3)
-                    .foregroundStyle(isSelected ? Palette.primary : Palette.textTertiary)
+                    .foregroundStyle(isSelected ? Palette.accent : Palette.textTertiary)
                 VStack(alignment: .leading, spacing: 4) {
                     HStack(spacing: 8) {
                         Text(title)
@@ -301,7 +309,7 @@ private struct PlanCard: View {
                                 .foregroundStyle(Palette.onPrimary)
                                 .padding(.horizontal, 7)
                                 .padding(.vertical, 3)
-                                .background(Palette.brandGradient, in: Capsule())
+                                .background(Palette.primary, in: Capsule())
                         }
                     }
                     // The billed amount is the most prominent price element.
@@ -320,8 +328,9 @@ private struct PlanCard: View {
             .background(Palette.surface, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
             .overlay(
                 RoundedRectangle(cornerRadius: 18, style: .continuous)
-                    .strokeBorder(isSelected ? Palette.primary : Palette.stroke, lineWidth: isSelected ? 2 : 1)
+                    .strokeBorder(isSelected ? Palette.accent : Palette.stroke, lineWidth: isSelected ? 2 : 1)
             )
+            .shadow(color: Palette.shadow, radius: isSelected ? 14 : 8, y: 5)
         }
         .buttonStyle(.plain)
         .accessibilityAddTraits(isSelected ? .isSelected : [])
@@ -366,10 +375,10 @@ private struct TrialTimeline: View {
                         .font(.caption.weight(.bold))
                         .foregroundStyle(Palette.onPrimary)
                         .frame(width: 28, height: 28)
-                        .background(Palette.brandGradient, in: Circle())
+                        .background(Palette.primary, in: Circle())
                     if !isLast {
                         Rectangle()
-                            .fill(Palette.primary.opacity(0.35))
+                            .fill(Palette.primary)
                             .frame(width: 2, height: 26)
                     }
                 }
@@ -431,10 +440,10 @@ struct CreditPacksView: View {
                         Spacer()
                         Text(product.displayPrice)
                             .font(.headline)
-                            .foregroundStyle(Palette.onPrimary)
+                            .foregroundStyle(Palette.onAccent)
                             .padding(.horizontal, 14)
                             .padding(.vertical, 8)
-                            .background(Palette.brandGradient, in: Capsule())
+                            .background(Palette.accent, in: Capsule())
                     }
                     .padding(14)
                     .cardStyle(radius: 18)

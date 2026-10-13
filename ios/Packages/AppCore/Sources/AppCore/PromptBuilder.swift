@@ -54,18 +54,18 @@ public enum PromptBuilder {
 
     /// Ideas for the "Surprise me" button.
     public static let surprisePrompts: [String] = [
-        "A cozy reading nook inside a giant teacup, autumn afternoon light",
-        "A red fox astronaut floating above a neon city at night",
-        "Tiny island with a lighthouse inside a glass bottle on a wooden desk",
-        "Portrait of an elderly fisherman with a weathered smile, golden hour",
-        "A futuristic sneaker made of glass and moss, product shot",
-        "Paper-cut diorama of a mountain village during a snowfall",
-        "A koi pond seen from above with floating lanterns, ink wash style",
-        "Retro diner on Mars with astronauts eating pancakes",
-        "A cathedral made of coral under a turquoise sea",
-        "Corgi wearing a tiny raincoat in a rainy Tokyo alley",
-        "Minimalist poster of a hot-air balloon over lavender fields",
-        "Steampunk owl made of brass gears, macro photo",
+        "A dreamy pastel bedroom with a canopy bed, fairy lights and a window seat at sunset",
+        "A cat wearing a tiny strawberry hat in a field of pink tulips",
+        "A cozy Parisian café at sunrise, painted in soft watercolor",
+        "A unicorn made of cotton-candy clouds above a glittering lake",
+        "A bakery window full of pink macarons and heart-shaped cupcakes",
+        "A tiny fairy house inside a teacup with glowing mushrooms",
+        "A vintage pink convertible parked by the sea at golden hour",
+        "A cherry blossom street in Kyoto in the rain, soft reflections",
+        "A reading nook full of plants and pastel books, cozy afternoon light",
+        "A corgi wearing a pink raincoat in a rainy Tokyo alley",
+        "A minimalist poster of a hot-air balloon over lavender fields",
+        "A pastel macaron tower on a marble table, product shot",
     ]
 
     public static func surprisePrompt<G: RandomNumberGenerator>(using generator: inout G) -> String {

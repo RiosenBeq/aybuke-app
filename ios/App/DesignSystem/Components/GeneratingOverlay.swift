@@ -6,36 +6,41 @@ struct GeneratingOverlay: View {
     var title = "Creating magic…"
     var onCancel: (() -> Void)?
 
+    @Environment(AppModel.self) private var app
     @State private var tipIndex = 0
     @State private var spin = false
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
-    private let tips = [
-        "Tip: be specific — lighting, mood and style words help a lot.",
-        "Tip: hold the compare button to see your original.",
-        "Background removal runs on your phone and is always free.",
-        "Your photos are deleted from our servers within 24 hours.",
-        "Tip: try “golden hour”, “film grain” or “studio light”.",
-    ]
+    private var tips: [String] {
+        [
+            "Tip: be specific — lighting, mood and style words help a lot.",
+            "Tip: hold the photo to compare with your original.",
+            "Background removal runs on your phone and is always free.",
+            "Your photos are never used to train AI and are deleted from our servers within \(app.config.dataRetentionHours) hours.",
+            "Tip: try “soft glam”, “pink hair” or “golden hour”.",
+            "Share straight to Instagram Stories or as a before/after collage.",
+        ]
+    }
 
     var body: some View {
         ZStack {
             Rectangle().fill(.ultraThinMaterial).ignoresSafeArea()
-            Palette.background.opacity(0.55).ignoresSafeArea()
+            Palette.background.opacity(0.6).ignoresSafeArea()
 
             VStack(spacing: 28) {
                 ZStack {
                     Circle()
-                        .fill(AngularGradient(colors: Palette.auroraColors + [Palette.primary], center: .center))
-                        .frame(width: 132, height: 132)
-                        .blur(radius: 22)
+                        .fill(AngularGradient(colors: Palette.glowColors + [Palette.blush], center: .center))
+                        .frame(width: 140, height: 140)
+                        .blur(radius: 18)
                         .rotationEffect(.degrees(spin ? 360 : 0))
                     Circle()
-                        .fill(Palette.background.opacity(0.6))
+                        .fill(Palette.surface)
                         .frame(width: 92, height: 92)
+                        .shadow(color: Palette.shadow, radius: 12, y: 6)
                     Image(systemName: "sparkles")
                         .font(.system(size: 38, weight: .semibold))
-                        .foregroundStyle(.white)
+                        .foregroundStyle(Palette.accent)
                         .symbolEffect(.pulse, options: .repeating)
                 }
                 .accessibilityHidden(true)
@@ -44,7 +49,8 @@ struct GeneratingOverlay: View {
                     Text(title)
                         .font(.display(24, weight: .bold))
                         .foregroundStyle(Palette.textPrimary)
-                    Text(tips[tipIndex])
+                        .multilineTextAlignment(.center)
+                    Text(tips[tipIndex % tips.count])
                         .font(.subheadline)
                         .foregroundStyle(Palette.textSecondary)
                         .multilineTextAlignment(.center)
@@ -73,7 +79,7 @@ struct GeneratingOverlay: View {
             while !Task.isCancelled {
                 try? await Task.sleep(for: .seconds(3.2))
                 withAnimation(.easeInOut(duration: 0.35)) {
-                    tipIndex = (tipIndex + 1) % tips.count
+                    tipIndex += 1
                 }
             }
         }

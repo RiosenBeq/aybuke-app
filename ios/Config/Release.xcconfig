@@ -1,0 +1,8 @@
+// Release build settings for the Glowlit target.
+//
+// Shipping builds never carry AI provider keys: cloud jobs go through the
+// backend (backend/README.md), which holds the keys server-side.
+GL_AI_PROVIDER =
+GL_AI_API_KEY =
+GL_AI_IMAGE_MODEL =
+GL_AI_EDIT_MODEL =

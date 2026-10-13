@@ -29,17 +29,6 @@ public enum AIOperation: String, Codable, CaseIterable, Sendable, Identifiable {
         }
     }
 
-    public var tagline: String {
-        switch self {
-        case .textToImage: return "Type it. See it."
-        case .magicEdit: return "Describe any edit"
-        case .enhance: return "Sharpen & restore"
-        case .removeBackground: return "Free, on-device cut-out"
-        case .eraseObject: return "Brush away anything"
-        case .restyle: return "One-tap transformations"
-        }
-    }
-
     /// SF Symbol used across the UI.
     public var symbolName: String {
         switch self {

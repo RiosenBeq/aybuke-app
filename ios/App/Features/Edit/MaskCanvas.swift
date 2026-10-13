@@ -66,7 +66,7 @@ struct MaskCanvas: View {
                     for stroke in all {
                         context.stroke(
                             stroke.path(in: canvasSize),
-                            with: .color(Palette.primary.opacity(0.55)),
+                            with: .color(Palette.blush.opacity(0.75)),
                             style: StrokeStyle(lineWidth: stroke.width * canvasSize.width, lineCap: .round, lineJoin: .round)
                         )
                     }

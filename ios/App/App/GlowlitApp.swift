@@ -22,7 +22,7 @@ struct GlowlitApp: App {
         WindowGroup {
             RootView()
                 .environment(app)
-                .preferredColorScheme(.dark)
+                .preferredColorScheme(app.appearance.colorScheme)
                 .task { await app.start() }
         }
         .modelContainer(container)

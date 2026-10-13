@@ -137,6 +137,17 @@ final class RemoteAIImageService: AIImageService {
         await auth.signOut()
     }
 
+    /// Sends a "Report this image" to the backend for review.
+    func report(_ reason: ReportReason, jobID: String?) async throws {
+        let token = try await auth.validAccessToken()
+        let request = try RequestFactory.report(reason, jobID: jobID, config: config, accessToken: token)
+        let (data, response) = try await load(request)
+        let status = (response as? HTTPURLResponse)?.statusCode ?? 0
+        guard (200..<300).contains(status) else {
+            throw ResponseDecoder.error(from: data, statusCode: status)
+        }
+    }
+
     /// Supabase user id, used as the StoreKit `appAccountToken`.
     func currentUserID() async -> UUID? {
         _ = try? await auth.validAccessToken()

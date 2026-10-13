@@ -179,6 +179,39 @@ public struct PollingSchedule: Equatable, Sendable {
     }
 }
 
+// MARK: - Reports
+
+/// Why a user reported a result. Raw values are the wire format of the
+/// backend `report` function.
+public enum ReportReason: String, CaseIterable, Codable, Sendable, Identifiable {
+    case offensive
+    case sexual
+    case mismatch
+    case other
+
+    public var id: String { rawValue }
+
+    public var title: String {
+        switch self {
+        case .offensive: return "Offensive or harmful"
+        case .sexual: return "Sexual content"
+        case .mismatch: return "Doesn't match my request"
+        case .other: return "Something else"
+        }
+    }
+}
+
+struct ReportBody: Encodable {
+    let reason: ReportReason
+    let jobID: String?
+    let details: String?
+
+    enum CodingKeys: String, CodingKey {
+        case reason, details
+        case jobID = "job_id"
+    }
+}
+
 // MARK: - Errors
 
 public enum AIServiceError: Error, Equatable, Sendable {
@@ -293,6 +326,16 @@ public enum RequestFactory {
     /// Deletes the anonymous account and all server-side data (Guideline 5.1.1(v)).
     public static func deleteAccount(config: BackendConfiguration, accessToken: String?) throws -> URLRequest {
         try authorized(config: config, path: "functions/v1/account", method: "DELETE", query: [], accessToken: accessToken)
+    }
+
+    /// Reports a result for review (Guideline 1.2). `jobID` links it to the job row when known.
+    public static func report(
+        _ reason: ReportReason, jobID: String?, details: String? = nil,
+        config: BackendConfiguration, accessToken: String?
+    ) throws -> URLRequest {
+        var request = try authorized(config: config, path: "functions/v1/report", method: "POST", query: [], accessToken: accessToken)
+        request.httpBody = try JSONEncoder().encode(ReportBody(reason: reason, jobID: jobID, details: details))
+        return request
     }
 
     static func authorized(config: BackendConfiguration, path: String, method: String, query: [URLQueryItem], accessToken: String?) throws -> URLRequest {

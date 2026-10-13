@@ -30,6 +30,29 @@ struct ConsentRequest: Identifiable {
     let onAccept: () -> Void
 }
 
+/// Settings › Appearance. Light (the pink "Blush" look) is the default.
+enum AppearancePreference: String, CaseIterable, Identifiable {
+    case light, dark, system
+
+    var id: String { rawValue }
+
+    var title: String {
+        switch self {
+        case .light: return "Light"
+        case .dark: return "Dark"
+        case .system: return "Automatic"
+        }
+    }
+
+    var colorScheme: ColorScheme? {
+        switch self {
+        case .light: return .light
+        case .dark: return .dark
+        case .system: return nil
+        }
+    }
+}
+
 /// App-wide state, navigation and the gates (consent → Pro → credits) that
 /// every AI action passes through.
 @MainActor
@@ -39,6 +62,9 @@ final class AppModel {
     private(set) var hasCompletedOnboarding: Bool
     private(set) var hasAIConsent: Bool
     private(set) var interests: Set<String>
+    var appearance: AppearancePreference {
+        didSet { defaults.set(appearance.rawValue, forKey: Keys.appearance) }
+    }
 
     // MARK: Navigation
     var selectedTab: AppTab = .home
@@ -47,6 +73,7 @@ final class AppModel {
     var isPhotoPickerPresented = false
     var editorLaunch: EditorLaunch?
     var consentRequest: ConsentRequest?
+    var shareRequest: SharePayload?
     var toast: ToastMessage?
     @ObservationIgnored private var pendingEditorRequest: EditorRequest?
 
@@ -65,6 +92,7 @@ final class AppModel {
         static let consent = "ai.consent.v1"
         static let interests = "onboarding.interests"
         static let successfulSaves = "stats.successfulSaves"
+        static let appearance = "appearance"
     }
 
     init(container: ModelContainer, config: AppConfig = .current, defaults: UserDefaults = .standard) {
@@ -74,19 +102,27 @@ final class AppModel {
         self.hasCompletedOnboarding = defaults.bool(forKey: Keys.onboarding)
         self.hasAIConsent = defaults.bool(forKey: Keys.consent)
         self.interests = Set(defaults.stringArray(forKey: Keys.interests) ?? [])
+        self.appearance = defaults.string(forKey: Keys.appearance).flatMap(AppearancePreference.init(rawValue:)) ?? .light
 
         let purchases = PurchaseManager()
         self.purchases = purchases
         self.credits = CreditsManager(isServerAuthoritative: config.backend != nil)
 
-        if let backend = config.backend {
+        switch config.aiMode {
+        case .backend(let backend):
             let auth = AuthSessionManager(config: backend)
             let remote = RemoteAIImageService(config: backend, auth: auth) { [weak purchases] in
-                await purchases?.entitlementJWS
+                purchases?.entitlementJWS
             }
             self.remote = remote
             self.ai = AIServiceRouter(cloud: remote, onDevice: OnDeviceImageService())
-        } else {
+        case .direct(let direct):
+            self.remote = nil
+            let cloud = DirectAIImageService(config: direct) { [weak purchases] in
+                purchases?.isPro ?? false
+            }
+            self.ai = AIServiceRouter(cloud: cloud, onDevice: OnDeviceImageService())
+        case .demo:
             self.remote = nil
             self.ai = AIServiceRouter(cloud: DemoAIImageService(), onDevice: OnDeviceImageService())
         }
@@ -103,6 +139,22 @@ final class AppModel {
     }
 
     var isDemoMode: Bool { config.isDemoMode }
+
+    /// Banner on Explore explaining simulated (demo) or developer-key results.
+    var modeBanner: String? {
+        #if DEBUG
+        // Marketing and QA screenshots show the app as people will see it.
+        if ScreenshotScene.current != nil { return nil }
+        #endif
+        switch config.aiMode {
+        case .backend:
+            return nil
+        case .direct(let direct):
+            return "Developer mode — AI runs directly on \(direct.provider.displayName) with your key from Secrets.xcconfig. Release builds use the backend."
+        case .demo:
+            return "Demo mode — AI results are simulated on device. Add an AI key (see README → “Connect an AI provider”) to see real results."
+        }
+    }
 
     /// Called once from the root view's `.task`.
     func start() async {
@@ -132,6 +184,22 @@ final class AppModel {
     /// Binds purchases to the backend user (StoreKit `appAccountToken`).
     func appAccountToken() async -> UUID? {
         await remote?.currentUserID()
+    }
+
+    /// "Report this image": sent to the backend for review; logged locally in
+    /// demo and developer mode, where there is no server.
+    func report(_ reason: ReportReason, requestID: String?) async {
+        guard let remote else {
+            showToast("Thanks — your report was noted.", style: .success)
+            return
+        }
+        do {
+            try await remote.report(reason, jobID: requestID.flatMap { UUID(uuidString: $0) == nil ? nil : $0 })
+            Haptics.success()
+            showToast("Thanks — we'll review this image.", style: .success)
+        } catch {
+            handle(error)
+        }
     }
 
     /// Settings › Delete my data: local library, server account and credits.
@@ -230,7 +298,7 @@ final class AppModel {
                 credits.sync(serverBalance: remaining)
             }
             if saveToLibrary {
-                await save(result.images, for: job)
+                await self.saveToLibrary(result.images, operation: job.operation, title: job.title, prompt: job.prompt)
             }
             Haptics.success()
             return result
@@ -245,7 +313,8 @@ final class AppModel {
     }
 
     /// Adds images to the library (SwiftData metadata + files on disk).
-    func save(_ images: [UIImage], for job: AIJob) async {
+    /// `operation == nil` marks a manually adjusted photo (no AI claim).
+    func saveToLibrary(_ images: [UIImage], operation: AIOperation?, title: String, prompt: String?) async {
         let context = container.mainContext
         for image in images {
             let stored = await Task.detached(priority: .utility) { () -> (String, PixelSize)? in
@@ -255,9 +324,9 @@ final class AppModel {
             guard let stored else { continue }
             let (name, size) = stored
             context.insert(Creation(
-                operation: job.operation,
-                title: job.title,
-                prompt: job.prompt ?? job.template?.prompt,
+                operation: operation,
+                title: title,
+                prompt: prompt,
                 imageFileName: name,
                 pixelWidth: size.width,
                 pixelHeight: size.height
@@ -313,6 +382,12 @@ final class AppModel {
         }
     }
 
+    // MARK: Sharing
+
+    func share(_ payload: SharePayload) {
+        shareRequest = payload
+    }
+
     // MARK: Feedback
 
     func showToast(_ text: String, style: ToastMessage.Style = .info) {
@@ -351,7 +426,7 @@ extension AppModel {
         hasCompletedOnboarding = scene != .onboarding
         hasAIConsent = scene != .consent
         switch scene {
-        case .onboarding, .home, .settings:
+        case .onboarding, .home, .settings, .legal:
             selectedTab = .home
         case .create, .results:
             selectedTab = .create
@@ -377,6 +452,13 @@ extension AppModel {
         case .consent:
             selectedTab = .home
             consentRequest = ConsentRequest {}
+        case .share:
+            selectedTab = .home
+            shareRequest = SharePayload(
+                image: ScreenshotFixtures.goldenLandscape,
+                original: ScreenshotFixtures.overcastLandscape,
+                operation: .magicEdit
+            )
         }
     }
 

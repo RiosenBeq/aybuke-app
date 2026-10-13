@@ -14,11 +14,16 @@ final class Creation {
     var imageFileName: String
     var pixelWidth: Int
     var pixelHeight: Int
+    /// Hearted in My Works.
+    var isFavorite: Bool = false
+
+    /// Stored for images that only received manual adjustments (no AI).
+    static let manualEditRaw = "adjust"
 
     init(
         id: UUID = UUID(),
         createdAt: Date = Date(),
-        operation: AIOperation,
+        operation: AIOperation?,
         title: String,
         prompt: String?,
         imageFileName: String,
@@ -27,7 +32,7 @@ final class Creation {
     ) {
         self.id = id
         self.createdAt = createdAt
-        self.operationRaw = operation.rawValue
+        self.operationRaw = operation?.rawValue ?? Self.manualEditRaw
         self.title = title
         self.prompt = prompt
         self.imageFileName = imageFileName
@@ -35,9 +40,9 @@ final class Creation {
         self.pixelHeight = pixelHeight
     }
 
-    var operation: AIOperation { AIOperation(rawValue: operationRaw) ?? .textToImage }
+    /// The AI operation behind this image; `nil` when it was only adjusted
+    /// by hand (so exports make no AI claim).
+    var operation: AIOperation? { AIOperation(rawValue: operationRaw) }
 
-    var aspectRatio: CGFloat {
-        pixelHeight > 0 ? CGFloat(pixelWidth) / CGFloat(pixelHeight) : 1
-    }
+    var kindTitle: String { operation?.displayName ?? "Adjusted" }
 }

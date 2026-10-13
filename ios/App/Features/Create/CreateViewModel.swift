@@ -11,6 +11,8 @@ final class CreateViewModel {
     var count = 1
     private(set) var isGenerating = false
     var results: [UIImage] = []
+    /// Server request id of the latest results, attached to reports.
+    private(set) var requestID: String?
     var showResults = false
     @ObservationIgnored private var task: Task<Void, Never>?
 
@@ -54,6 +56,7 @@ final class CreateViewModel {
             do {
                 let result = try await app.run(job, saveToLibrary: true)
                 results = result.images
+                requestID = result.requestID
                 showResults = true
             } catch {
                 app.handle(error)

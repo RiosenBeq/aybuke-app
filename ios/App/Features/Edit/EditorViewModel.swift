@@ -27,6 +27,12 @@ final class EditorViewModel {
     private(set) var processingTitle = ""
     /// Request id of the latest people edit that can still be re-rolled for free.
     private(set) var retryRequestID: String?
+    /// Request id of the cloud result on screen, attached to reports.
+    private(set) var lastRequestID: String?
+    /// Title of the latest AI step, used when saving to the library.
+    private var lastStepTitle: String?
+    /// Bumped after each finished AI step to play the sparkle burst.
+    private(set) var celebration = 0
 
     @ObservationIgnored private var undoStack: [Step] = []
     @ObservationIgnored private var redoStack: [Step] = []
@@ -52,6 +58,11 @@ final class EditorViewModel {
     var hasChanges: Bool { canUndo }
     var hasTransparency: Bool { ImageUtilities.hasAlpha(current) }
     var canRetryFree: Bool { retryRequestID != nil && !isProcessing }
+
+    /// Library title: the latest AI step, or the tool that was used.
+    var libraryTitle: String {
+        lastStepTitle ?? appliedOperation?.displayName ?? "Adjusted photo"
+    }
 
     /// What the canvas shows right now.
     var displayImage: UIImage {
@@ -103,6 +114,7 @@ final class EditorViewModel {
     private func afterHistoryChange() {
         historyVersion += 1
         retryRequestID = nil
+        lastRequestID = nil
         strokes.removeAll()
         adjustments = .neutral
         adjustPreview = nil
@@ -163,6 +175,9 @@ final class EditorViewModel {
                 let result = try await app.run(job, saveToLibrary: false)
                 guard let image = result.images.first else { return }
                 commit(ImageUtilities.normalized(image), operation: job.operation)
+                lastRequestID = result.requestID
+                lastStepTitle = job.title
+                celebration += 1
                 if job.operation == .magicEdit { magicPrompt = "" }
                 isComparing = job.operation != .removeBackground
                 // Likeness Lock: one free re-roll for edits that involve people.

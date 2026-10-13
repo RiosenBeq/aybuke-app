@@ -60,11 +60,7 @@ enum DemoArt {
     static func render(prompt: String, style: ImageStyle, size: PixelSize, variant: Int) -> UIImage {
         var generator = SplitMix64(seed: UInt64(truncatingIfNeeded: stableHash(prompt + style.id)) &+ UInt64(variant) &* 7919)
         let swatch = style.swatch.compactMap { UIColor(hexString: $0) }
-        let accents: [UIColor] = [
-            UIColor(red: 1.0, green: 0.76, blue: 0.36, alpha: 1),  // #FFC25C
-            UIColor(red: 1.0, green: 0.48, blue: 0.24, alpha: 1),  // #FF7A3D
-            UIColor(red: 0.36, green: 0.55, blue: 1.0, alpha: 1),  // #5B8CFF
-        ]
+        let accents: [UIColor] = [.brandBlush, .brandPetal, .white]
         let colors = swatch + accents
         let canvas = CGSize(width: size.width, height: size.height)
 
@@ -144,18 +140,5 @@ struct SplitMix64: RandomNumberGenerator {
         z = (z ^ (z >> 30)) &* 0xBF58_476D_1CE4_E5B9
         z = (z ^ (z >> 27)) &* 0x94D0_49BB_1331_11EB
         return z ^ (z >> 31)
-    }
-}
-
-extension UIColor {
-    convenience init?(hexString: String) {
-        let digits = hexString.hasPrefix("#") ? String(hexString.dropFirst()) : hexString
-        guard digits.count == 6, let value = UInt32(digits, radix: 16) else { return nil }
-        self.init(
-            red: CGFloat((value >> 16) & 0xFF) / 255,
-            green: CGFloat((value >> 8) & 0xFF) / 255,
-            blue: CGFloat(value & 0xFF) / 255,
-            alpha: 1
-        )
     }
 }

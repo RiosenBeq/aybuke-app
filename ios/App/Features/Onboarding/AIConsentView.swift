@@ -8,8 +8,7 @@ struct AIConsentView: View {
     let onAccept: () -> Void
     let onDecline: () -> Void
 
-    @Environment(AppModel.self) private var app
-    @Environment(\.openURL) private var openURL
+    @State private var legalDocument: LegalDocument?
 
     var body: some View {
         VStack(alignment: .leading, spacing: 22) {
@@ -20,11 +19,12 @@ struct AIConsentView: View {
                 .padding(.top, 8)
 
             Image(systemName: "lock.shield.fill")
-                .font(.system(size: 44))
-                .foregroundStyle(Palette.brandGradient)
+                .font(.system(size: 32, weight: .semibold))
+                .foregroundStyle(Palette.ink)
+                .frame(width: 68, height: 68)
+                .background(Palette.blush, in: Circle())
 
-            Text("Your photos, your call")
-                .font(.screenTitle)
+            Text(styled: "Your photos, *your call*", size: 28)
                 .foregroundStyle(Palette.textPrimary)
 
             Text("To create and edit images with AI, we send the photo and text you choose to our servers and to \(providerName), who process them on our behalf.")
@@ -40,10 +40,11 @@ struct AIConsentView: View {
             }
 
             Button("Read our Privacy Policy") {
-                openURL(app.config.privacyPolicyURL)
+                legalDocument = .privacy
             }
             .font(.subheadline.weight(.semibold))
-            .foregroundStyle(Palette.primary)
+            .foregroundStyle(Palette.accent)
+            .underline()
 
             Spacer(minLength: 0)
 
@@ -53,13 +54,14 @@ struct AIConsentView: View {
                 .font(.subheadline.weight(.semibold))
                 .foregroundStyle(Palette.textSecondary)
                 .frame(maxWidth: .infinity)
-            Text("You can change this anytime in Settings.")
+            Text("Under 16? Check with a parent or guardian first. You can change this anytime in Settings.")
                 .font(.caption)
                 .foregroundStyle(Palette.textTertiary)
                 .frame(maxWidth: .infinity)
         }
         .padding(.horizontal, 24)
         .padding(.bottom, 12)
+        .legalSheet($legalDocument)
     }
 }
 
@@ -70,12 +72,14 @@ private struct ConsentPoint: View {
     var body: some View {
         HStack(spacing: 12) {
             Image(systemName: symbol)
-                .font(.body.weight(.semibold))
-                .foregroundStyle(Palette.primary)
-                .frame(width: 28)
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(Palette.ink)
+                .frame(width: 32, height: 32)
+                .background(Palette.blush, in: Circle())
             Text(text)
                 .font(.subheadline)
                 .foregroundStyle(Palette.textPrimary)
+                .fixedSize(horizontal: false, vertical: true)
         }
     }
 }

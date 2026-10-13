@@ -77,7 +77,7 @@ struct BeforeAfterSlider: View {
                 .overlay(
                     Image(systemName: "chevron.left.chevron.right")
                         .font(.system(size: 13, weight: .bold))
-                        .foregroundStyle(Palette.background)
+                        .foregroundStyle(Palette.ink)
                 )
         }
     }

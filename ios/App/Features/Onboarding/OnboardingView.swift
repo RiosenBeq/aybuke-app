@@ -10,25 +10,26 @@ struct OnboardingView: View {
     @Environment(AppModel.self) private var app
     @State private var page = 0
     @State private var interests: Set<String> = []
+    @State private var legalDocument: LegalDocument?
 
     private let pages: [OnboardingPage] = [
         OnboardingPage(
             symbol: "wand.and.stars",
-            title: "Edit photos by\njust saying it",
-            body: "“Make it golden hour.” “Put me in a suit.” Describe any change and watch it happen.",
-            colors: [Palette.primary, Palette.gradientEnd]
+            title: "Your glow-up,\n*just by saying it*",
+            body: "“Give me pink hair.” “Add soft glam.” Describe any change and watch it happen.",
+            tone: .blush
         ),
         OnboardingPage(
-            symbol: "theatermask.and.paintbrush",
-            title: "One tap.\nTotally new you.",
-            body: "Figurines, pro headshots, anime, old-photo restore and fresh trends every week.",
-            colors: [Palette.gradientEnd, Palette.secondary]
+            symbol: "heart.text.square",
+            title: "One tap.\nA whole new *aesthetic*",
+            body: "Doll box, Y2K, ballet core, fairy princess — and fresh trends every week.",
+            tone: .ink
         ),
         OnboardingPage(
             symbol: "sparkles",
-            title: "Create anything\nyou can imagine",
-            body: "Type an idea, pick a style and get stunning images in seconds — no prompt skills needed.",
-            colors: [Palette.secondary, Palette.primary]
+            title: "Dream it.\n*See it.*",
+            body: "Type an idea, pick a style and get gorgeous images in seconds — no prompt skills needed.",
+            tone: .charcoal
         ),
     ]
 
@@ -71,14 +72,31 @@ struct OnboardingView: View {
                 .buttonStyle(.primary)
                 .padding(.horizontal, Metrics.gutter)
 
-                Text("By continuing you agree to our Terms and Privacy Policy.")
+                Text(consentText)
                     .font(.caption2)
                     .foregroundStyle(Palette.textTertiary)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, 32)
                     .padding(.top, 12)
                     .padding(.bottom, 8)
                     .opacity(isLastPage ? 1 : 0)
+                    .environment(\.openURL, OpenURLAction { url in
+                        legalDocument = LegalDocument(link: url)
+                        return .handled
+                    })
             }
         }
+        .legalSheet($legalDocument)
+    }
+
+    private var consentText: AttributedString {
+        let markdown = "By continuing you confirm you're at least 13 and agree to our [Terms of Use](\(LegalDocument.linkScheme)://terms) and [Privacy Policy](\(LegalDocument.linkScheme)://privacy)."
+        var text = (try? AttributedString(markdown: markdown)) ?? AttributedString(markdown)
+        for run in text.runs where run.link != nil {
+            text[run.range].foregroundColor = Palette.textPrimary
+            text[run.range].underlineStyle = .single
+        }
+        return text
     }
 
     private func advance() {
@@ -99,7 +117,7 @@ private struct OnboardingPage {
     let symbol: String
     let title: String
     let body: String
-    let colors: [Color]
+    let tone: PaletteTone
 }
 
 private struct OnboardingPageView: View {
@@ -111,27 +129,35 @@ private struct OnboardingPageView: View {
             Spacer(minLength: 12)
             ZStack {
                 RoundedRectangle(cornerRadius: 40, style: .continuous)
-                    .fill(LinearGradient(colors: page.colors, startPoint: .topLeading, endPoint: .bottomTrailing))
+                    .fill(page.tone.fill)
                     .frame(width: 250, height: 310)
-                    .rotationEffect(.degrees(appeared ? -6 : 0))
-                    .shadow(color: page.colors[0].opacity(0.45), radius: 40, y: 20)
+                    .rotationEffect(.degrees(appeared ? -7 : 0))
+                    .shadow(color: Palette.ink.opacity(0.16), radius: 30, y: 18)
                 RoundedRectangle(cornerRadius: 40, style: .continuous)
-                    .fill(.ultraThinMaterial)
+                    .fill(Palette.white)
                     .frame(width: 250, height: 310)
-                    .rotationEffect(.degrees(appeared ? 5 : 0))
                     .overlay(
-                        Image(systemName: page.symbol)
-                            .font(.system(size: 92, weight: .semibold))
-                            .foregroundStyle(.white)
-                            .symbolEffect(.bounce, value: appeared)
-                            .rotationEffect(.degrees(appeared ? 5 : 0))
+                        RoundedRectangle(cornerRadius: 40, style: .continuous)
+                            .strokeBorder(Palette.ink.opacity(0.06), lineWidth: 1)
                     )
+                    .overlay(
+                        ZStack {
+                            Circle()
+                                .fill(Palette.blush)
+                                .frame(width: 168, height: 168)
+                            Image(systemName: page.symbol)
+                                .font(.system(size: 80, weight: .semibold))
+                                .foregroundStyle(Palette.ink)
+                                .symbolEffect(.bounce, value: appeared)
+                        }
+                    )
+                    .rotationEffect(.degrees(appeared ? 4 : 0))
+                    .shadow(color: Palette.ink.opacity(0.10), radius: 24, y: 12)
             }
             .accessibilityHidden(true)
 
             VStack(spacing: 12) {
-                Text(page.title)
-                    .font(.heroTitle)
+                Text(styled: page.title, size: 34)
                     .multilineTextAlignment(.center)
                     .foregroundStyle(Palette.textPrimary)
                 Text(page.body)
@@ -158,21 +184,22 @@ private struct InterestPicker: View {
     }
 
     private let options: [Option] = [
-        Option(id: "selfies", title: "Better selfies", symbol: "person.crop.circle"),
-        Option(id: "art", title: "AI art & ideas", symbol: "paintpalette"),
-        Option(id: "social", title: "Content for social", symbol: "heart.text.square"),
-        Option(id: "memories", title: "Restore old photos", symbol: "clock.arrow.circlepath"),
-        Option(id: "business", title: "Product photos", symbol: "bag"),
-        Option(id: "fun", title: "Just for fun", symbol: "face.smiling"),
+        Option(id: "selfies", title: "Selfie glow-ups", symbol: "camera.fill"),
+        Option(id: "looks", title: "Makeup & hair looks", symbol: "sparkles"),
+        Option(id: "aesthetic", title: "Aesthetic edits", symbol: "heart.fill"),
+        Option(id: "besties", title: "Bestie pics", symbol: "person.2.fill"),
+        Option(id: "art", title: "Dreamy AI art", symbol: "paintpalette.fill"),
+        Option(id: "social", title: "Content for my socials", symbol: "heart.text.square.fill"),
+        Option(id: "memories", title: "Restore family photos", symbol: "clock.arrow.circlepath"),
+        Option(id: "business", title: "Shots for my shop", symbol: "bag.fill"),
     ]
 
     var body: some View {
         VStack(alignment: .leading, spacing: 18) {
             Spacer(minLength: 8)
-            Text("What will you\ncreate first?")
-                .font(.heroTitle)
+            Text(styled: "What are you\n*here for?*", size: 34)
                 .foregroundStyle(Palette.textPrimary)
-            Text("Pick any — we'll tailor your home screen.")
+            Text("Pick as many as you like — we'll tailor your feed.")
                 .font(.body)
                 .foregroundStyle(Palette.textSecondary)
 
@@ -185,8 +212,10 @@ private struct InterestPicker: View {
                     } label: {
                         VStack(alignment: .leading, spacing: 10) {
                             Image(systemName: option.symbol)
-                                .font(.title2)
-                                .foregroundStyle(isSelected ? AnyShapeStyle(Palette.brandGradient) : AnyShapeStyle(Palette.textSecondary))
+                                .font(.title3.weight(.semibold))
+                                .foregroundStyle(Palette.ink)
+                                .frame(width: 40, height: 40)
+                                .background(isSelected ? Palette.blush : Palette.paper, in: Circle())
                             Text(option.title)
                                 .font(.subheadline.weight(.semibold))
                                 .foregroundStyle(Palette.textPrimary)
@@ -197,8 +226,16 @@ private struct InterestPicker: View {
                         .background(Palette.surface, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
                         .overlay(
                             RoundedRectangle(cornerRadius: 18, style: .continuous)
-                                .strokeBorder(isSelected ? Palette.primary : Palette.stroke, lineWidth: isSelected ? 2 : 1)
+                                .strokeBorder(isSelected ? Palette.accent : Palette.stroke, lineWidth: isSelected ? 2 : 1)
                         )
+                        .overlay(alignment: .topTrailing) {
+                            if isSelected {
+                                Image(systemName: "checkmark.circle.fill")
+                                    .foregroundStyle(Palette.onAccent, Palette.accent)
+                                    .padding(10)
+                            }
+                        }
+                        .shadow(color: Palette.shadow, radius: 10, y: 4)
                     }
                     .buttonStyle(.plain)
                     .accessibilityAddTraits(isSelected ? .isSelected : [])
@@ -221,8 +258,7 @@ private struct TryItPage: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             Spacer(minLength: 8)
-            Text("See the glow on\nyour own photo")
-                .font(.heroTitle)
+            Text(styled: "See the *glow*\non your own photo", size: 34)
                 .foregroundStyle(Palette.textPrimary)
             Text("A free enhance that runs on your iPhone — nothing is uploaded.")
                 .font(.body)
@@ -238,11 +274,13 @@ private struct TryItPage: View {
                 PhotosPicker(selection: $item, matching: .images) {
                     VStack(spacing: 12) {
                         if isWorking {
-                            ProgressView().tint(Palette.primary)
+                            ProgressView().tint(Palette.accent)
                         } else {
                             Image(systemName: "photo.badge.plus")
-                                .font(.system(size: 40, weight: .semibold))
-                                .foregroundStyle(Palette.brandGradient)
+                                .font(.system(size: 34, weight: .semibold))
+                                .foregroundStyle(Palette.ink)
+                                .frame(width: 76, height: 76)
+                                .background(Palette.blush, in: Circle())
                         }
                         Text(isWorking ? "Adding the glow…" : "Choose a photo")
                             .font(.headline)
@@ -287,7 +325,7 @@ private struct PageDots: View {
         HStack(spacing: 6) {
             ForEach(0..<count, id: \.self) { index in
                 Capsule()
-                    .fill(index == current ? AnyShapeStyle(Palette.brandGradient) : AnyShapeStyle(Palette.strokeStrong))
+                    .fill(index == current ? Palette.accent : Palette.strokeStrong)
                     .frame(width: index == current ? 22 : 7, height: 7)
             }
         }

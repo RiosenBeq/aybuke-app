@@ -66,14 +66,3 @@ extension View {
         modifier(ToastModifier(message: message))
     }
 }
-
-/// UIKit share sheet (lets us share files that carry provenance metadata).
-struct ShareSheet: UIViewControllerRepresentable {
-    let items: [Any]
-
-    func makeUIViewController(context: Context) -> UIActivityViewController {
-        UIActivityViewController(activityItems: items, applicationActivities: nil)
-    }
-
-    func updateUIViewController(_ controller: UIActivityViewController, context: Context) {}
-}

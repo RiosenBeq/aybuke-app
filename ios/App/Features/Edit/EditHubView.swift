@@ -12,8 +12,7 @@ struct EditHubView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 20) {
                     VStack(alignment: .leading, spacing: 6) {
-                        Text("Edit")
-                            .font(.screenTitle)
+                        Text(styled: "Edit & *glow up*", size: 28)
                             .foregroundStyle(Palette.textPrimary)
                             .accessibilityAddTraits(.isHeader)
                         Text("Choose a tool, then a photo.")
@@ -28,23 +27,23 @@ struct EditHubView: View {
                         HStack(spacing: 14) {
                             Image(systemName: "photo.on.rectangle.angled")
                                 .font(.title2.weight(.semibold))
-                                .foregroundStyle(Palette.onPrimary)
+                                .foregroundStyle(Palette.blush)
                                 .frame(width: 54, height: 54)
-                                .background(Palette.brandGradient, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+                                .background(Palette.ink, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
                             VStack(alignment: .leading, spacing: 3) {
                                 Text("Open a photo")
                                     .font(.cardTitle)
-                                    .foregroundStyle(Palette.textPrimary)
+                                    .foregroundStyle(Palette.ink)
                                 Text("All tools in one editor")
                                     .font(.footnote)
-                                    .foregroundStyle(Palette.textSecondary)
+                                    .foregroundStyle(Palette.ink.opacity(0.7))
                             }
                             Spacer()
                             Image(systemName: "chevron.right")
-                                .foregroundStyle(Palette.textTertiary)
+                                .foregroundStyle(Palette.ink.opacity(0.6))
                         }
                         .padding(14)
-                        .cardStyle()
+                        .cardStyle(fill: Palette.blush)
                     }
                     .buttonStyle(.plain)
 
@@ -56,8 +55,10 @@ struct EditHubView: View {
                             } label: {
                                 VStack(alignment: .leading, spacing: 12) {
                                     Image(systemName: tool.symbolName)
-                                        .font(.title2.weight(.semibold))
-                                        .foregroundStyle(Palette.brandGradient)
+                                        .font(.title3.weight(.semibold))
+                                        .foregroundStyle(Palette.ink)
+                                        .frame(width: 40, height: 40)
+                                        .background(Palette.blush, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
                                     VStack(alignment: .leading, spacing: 3) {
                                         Text(tool.title)
                                             .font(.cardTitle)
@@ -78,7 +79,7 @@ struct EditHubView: View {
                     HStack(alignment: .top, spacing: 10) {
                         Image(systemName: "lock.shield")
                             .foregroundStyle(Palette.success)
-                        Text("Background removal and adjustments run on your iPhone. Cloud edits are deleted from our servers within \(app.config.dataRetentionHours) hours.")
+                        Text("Background removal and adjustments run on your iPhone. Cloud edits are never used to train AI and are deleted from our servers within \(app.config.dataRetentionHours) hours.")
                             .font(.footnote)
                             .foregroundStyle(Palette.textSecondary)
                     }
@@ -88,7 +89,7 @@ struct EditHubView: View {
                 .padding(.vertical, 12)
             }
             .scrollIndicators(.hidden)
-            .background(Palette.background.ignoresSafeArea())
+            .background(AuroraBackground(intensity: 0.3))
             .toolbar(.hidden, for: .navigationBar)
         }
     }

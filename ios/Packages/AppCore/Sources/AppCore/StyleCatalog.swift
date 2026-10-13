@@ -7,7 +7,7 @@ public struct ImageStyle: Identifiable, Hashable, Codable, Sendable {
     public let name: String
     public let promptSuffix: String
     public let symbolName: String
-    /// Two hex colors used to render the style chip's preview swatch.
+    /// Two hex colours that tint the offline demo artwork for this style.
     public let swatch: [String]
     public let isPro: Bool
 
@@ -35,9 +35,15 @@ public enum StyleCatalog {
         ImageStyle(id: "cinematic", name: "Cinematic",
                    promptSuffix: "cinematic film still, dramatic lighting, shallow depth of field, anamorphic lens, subtle film grain",
                    symbolName: "film", swatch: ["#0F172A", "#F59E0B"]),
+        ImageStyle(id: "pastel", name: "Pastel Dream",
+                   promptSuffix: "dreamy pastel aesthetic, soft pink and lavender palette, gentle glow, airy and whimsical",
+                   symbolName: "cloud", swatch: ["#F7C1D9", "#E9D5FF"]),
         ImageStyle(id: "anime", name: "Anime",
                    promptSuffix: "anime illustration, clean line art, vibrant cel shading, expressive eyes, detailed background",
                    symbolName: "sparkle", swatch: ["#F472B6", "#60A5FA"]),
+        ImageStyle(id: "kawaii", name: "Kawaii",
+                   promptSuffix: "kawaii illustration, cute rounded shapes, soft pastel colors, tiny sparkles, cheerful and adorable",
+                   symbolName: "heart", swatch: ["#FBCFE8", "#FDE68A"]),
         ImageStyle(id: "3d", name: "3D Toon",
                    promptSuffix: "3D animated movie render, soft global illumination, subsurface scattering, playful character design",
                    symbolName: "cube", swatch: ["#22D3EE", "#A78BFA"]),

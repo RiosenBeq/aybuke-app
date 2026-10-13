@@ -1,8 +1,9 @@
 import SwiftUI
 
-/// Paywall, AI-consent sheet and toasts. Attached to the root view and to the
-/// full-screen editor; only the topmost (`isActive`) one presents, because a
-/// view that is already presenting a full-screen cover can't present a sheet.
+/// Paywall, AI-consent sheet, share composer and toasts. Attached to the root
+/// view and to the full-screen editor; only the topmost (`isActive`) one
+/// presents, because a view that is already presenting a full-screen cover
+/// can't present a sheet.
 struct AppPresentations: ViewModifier {
     let isActive: Bool
     @Environment(AppModel.self) private var app
@@ -21,7 +22,7 @@ struct AppPresentations: ViewModifier {
                 set: { app.consentRequest = $0 }
             )) { request in
                 AIConsentView(
-                    providerName: app.config.aiProviderName,
+                    providerName: app.config.processorName,
                     retentionHours: app.config.dataRetentionHours,
                     onAccept: {
                         app.consentRequest = nil
@@ -32,6 +33,15 @@ struct AppPresentations: ViewModifier {
                 .environment(app)
                 .presentationDetents([.large])
                 .presentationBackground(Palette.background)
+            }
+            .sheet(item: Binding(
+                get: { isActive ? app.shareRequest : nil },
+                set: { app.shareRequest = $0 }
+            )) { payload in
+                ShareComposerView(payload: payload)
+                    .environment(app)
+                    .presentationDetents([.large])
+                    .presentationBackground(Palette.background)
             }
             .toast(Binding(
                 get: { isActive ? app.toast : nil },

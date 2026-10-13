@@ -12,7 +12,6 @@ final class CatalogTests: XCTestCase {
             XCTAssertFalse(template.title.isEmpty, template.id)
             XCTAssertGreaterThan(template.prompt.count, 40, template.id)
             XCTAssertLessThanOrEqual(template.prompt.count, PromptBuilder.maxPromptLength, template.id)
-            XCTAssertEqual(template.gradient.count, 2, template.id)
             XCTAssertTrue(ContentPolicy.evaluate(template.prompt).isAllowed, template.id)
         }
     }
@@ -40,7 +39,7 @@ final class CatalogTests: XCTestCase {
     }
 
     func testHexColorsAreWellFormed() {
-        let colors = TemplateCatalog.all.flatMap(\.gradient) + StyleCatalog.all.flatMap(\.swatch)
+        let colors = StyleCatalog.all.flatMap(\.swatch)
         for hex in colors {
             XCTAssertTrue(hex.hasPrefix("#") && hex.count == 7, hex)
             XCTAssertNotNil(UInt32(hex.dropFirst(), radix: 16), hex)

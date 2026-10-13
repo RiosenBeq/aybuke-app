@@ -15,7 +15,9 @@ struct SettingsView: View {
             List {
                 membershipSection
                 creditsSection
+                appearanceSection
                 privacySection
+                shareSection
                 aboutSection
             }
             .scrollContentBackground(.hidden)
@@ -47,6 +49,7 @@ struct SettingsView: View {
                 Text("Deletes your creations, your anonymous account and its credits from our servers. Subscriptions are managed by Apple and must be cancelled separately.")
             }
         }
+        .tint(Palette.accent)
     }
 
     // MARK: Sections
@@ -60,7 +63,7 @@ struct SettingsView: View {
                         Text("Thank you for supporting us ✦").font(.caption).foregroundStyle(Palette.textSecondary)
                     }
                 } icon: {
-                    Image(systemName: "crown.fill").foregroundStyle(Palette.brandGradient)
+                    Image(systemName: "crown.fill").foregroundStyle(Palette.accent)
                 }
                 Button("Manage subscription") { showManageSubscription = true }
             } else {
@@ -69,8 +72,8 @@ struct SettingsView: View {
                     app.presentPaywall(source: "settings")
                 } label: {
                     Label("Upgrade to \(Brand.name) Pro", systemImage: "crown.fill")
+                        .fontWeight(.semibold)
                 }
-                .foregroundStyle(Palette.primary)
             }
             Button {
                 isRestoring = true
@@ -118,17 +121,35 @@ struct SettingsView: View {
         .listRowBackground(Palette.surface)
     }
 
+    private var appearanceSection: some View {
+        @Bindable var app = app
+        return Section {
+            Picker("Appearance", selection: $app.appearance) {
+                ForEach(AppearancePreference.allCases) { option in
+                    Text(option.title).tag(option)
+                }
+            }
+            .pickerStyle(.segmented)
+            .listRowInsets(EdgeInsets(top: 10, leading: 12, bottom: 10, trailing: 12))
+        } header: {
+            Text("Appearance")
+        } footer: {
+            Text("Light is our signature pink look. Automatic follows your iPhone.")
+        }
+        .listRowBackground(Palette.surface)
+    }
+
     private var privacySection: some View {
         Section {
             Toggle(isOn: Binding(get: { app.hasAIConsent }, set: { app.setAIConsent($0) })) {
                 VStack(alignment: .leading, spacing: 2) {
                     Text("Cloud AI processing")
-                    Text("Selected photos are processed by \(app.config.aiProviderName).")
+                    Text("Selected photos are processed by \(app.config.processorName).")
                         .font(.caption)
                         .foregroundStyle(Palette.textSecondary)
                 }
             }
-            .tint(Palette.primary)
+            .tint(Palette.accent)
             Button("Delete all creations", role: .destructive) { confirmDeleteCreations = true }
             Button("Delete my data & account", role: .destructive) { confirmDeleteAccount = true }
         } header: {
@@ -139,24 +160,52 @@ struct SettingsView: View {
         .listRowBackground(Palette.surface)
     }
 
+    @ViewBuilder
+    private var shareSection: some View {
+        if let link = app.config.shareLinkURL {
+            Section {
+                ShareLink(
+                    item: link,
+                    subject: Text(Brand.storeTitle),
+                    message: Text("I've been making my photos glow with \(Brand.name) — try it:")
+                ) {
+                    Label("Share \(Brand.name) with friends", systemImage: "heart.circle")
+                }
+                if let review = app.config.appStoreReviewURL {
+                    Button {
+                        openURL(review)
+                    } label: {
+                        Label("Rate \(Brand.name)", systemImage: "star")
+                    }
+                }
+            } header: {
+                Text("Spread the glow")
+            }
+            .listRowBackground(Palette.surface)
+        }
+    }
+
     private var aboutSection: some View {
         Section {
-            Button("Privacy Policy") { openURL(app.config.privacyPolicyURL) }
-            Button("Terms of Use") { openURL(app.config.termsURL) }
+            NavigationLink {
+                LegalCenterView()
+            } label: {
+                Label("Terms, privacy & legal", systemImage: "doc.text")
+            }
             if let support = app.config.supportURL {
-                Button("Contact support") { openURL(support) }
+                Button {
+                    openURL(support)
+                } label: {
+                    Label("Contact support", systemImage: "envelope")
+                }
             }
-            if let review = app.config.appStoreReviewURL {
-                Button("Rate \(Brand.name)") { openURL(review) }
-            }
-            NavigationLink("Acknowledgements") { AcknowledgementsView() }
             HStack {
                 Text("Version")
                 Spacer()
                 Text(appVersion).foregroundStyle(Palette.textSecondary)
             }
-            if app.isDemoMode {
-                Label("Demo mode — AI results are simulated", systemImage: "testtube.2")
+            if let banner = app.modeBanner {
+                Label(banner, systemImage: "testtube.2")
                     .font(.footnote)
                     .foregroundStyle(Palette.warning)
             }
