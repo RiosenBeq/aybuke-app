@@ -12,8 +12,10 @@
 │   ├─ PurchaseManager: StoreKit 2 subscriptions + consumable credit packs            │
 │   ├─ CreditsManager: local ledger (demo) / server balance (production)              │
 │   ├─ ImageExporter: IPTC DigitalSourceType XMP + free-tier wordmark                 │
+│   ├─ GlowActivityController / GlowWidgetBridge: Live Activity + widget snapshot     │
 │   └─ SwiftData `Creation` + ImageStore (Application Support, file protection)        │
 │  AppCore (Swift package, Linux-testable): API contract, credits, catalogs, policy   │
+│  GlowlitWidgets (extension): widgets + Live Activity, reads the App Group snapshot  │
 └───────────────┬─────────────────────────────────────────────────────────────────────┘
                 │ HTTPS (anonymous JWT, optional X-Entitlement-JWS)
 ┌───────────────▼───────────── Supabase ───────────────────────────────────────────────┐
@@ -38,9 +40,11 @@ ios/
     App/                    entry point, AppModel, RootView, AppConfig, AppPresentations
     DesignSystem/           Palette, Typography, Metrics, Brand, Components/
     Features/               Onboarding, Home, Create, Edit, Library, Paywall, Settings
-    Services/               AI, Auth, Store, Persistence, Photos, Support
+    Services/               AI, Auth, Store, Persistence, Photos, Sharing, Widgets, Support
     Resources/              Assets.xcassets, Fonts/, AppConfig.json, PrivacyInfo.xcprivacy
-  Packages/AppCore/         platform-independent logic + 48 unit tests (runs on Linux too)
+  Packages/AppCore/         platform-independent logic + 71 unit tests (runs on Linux too)
+  GlowlitWidgets/           widget extension: Today's trend, My glow, GlowLiveActivity (Dynamic Island + Lock Screen)
+  Config/                   Info.plist additions, xcconfigs, entitlements (App Group group.app.glowlit.shared)
   StoreKit/Products.storekit local StoreKit testing configuration (scheme-linked)
 backend/
   supabase/migrations/      schema, RLS, credit functions
@@ -117,7 +121,7 @@ App                          ai-image (Edge)                         Postgres   
 
 | Layer | How | Where |
 |---|---|---|
-| AppCore (contract, credits, catalog sync, policy, polling) | 48 XCTest cases, run on Linux (Swift 6.1 container) | `ci.yml › core` |
+| AppCore (contract, credits, catalog sync, policy, polling, deep links, widget snapshot) | 71 XCTest cases, run on Linux (Swift 6.1 container) | `ci.yml › core` |
 | Edge Functions | `deno fmt --check`, `deno lint`, `deno check` (strict) | `ci.yml › backend` |
 | SQL ledger | Migration + behavioural tests on PostgreSQL: holds, refunds, packs, rollover, sweeper, RLS | `ci.yml › backend` |
 | iOS app | `xcodebuild build` (unsigned, generic iOS) on macOS | `ci.yml › ios` |

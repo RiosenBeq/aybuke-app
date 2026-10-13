@@ -27,8 +27,9 @@ struct SelectableChip: View {
             .foregroundStyle(isSelected ? Palette.onPrimary : Palette.textPrimary)
             .background(isSelected ? Palette.primary : Palette.surface, in: Capsule())
             .overlay(Capsule().strokeBorder(isSelected ? Palette.ink.opacity(0.12) : Palette.stroke, lineWidth: 1))
+            .animation(Motion.press, value: isSelected)
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.pressable)
         .accessibilityAddTraits(isSelected ? .isSelected : [])
     }
 }
@@ -89,7 +90,7 @@ struct StyleTile: View {
             .frame(width: 80)
             .animation(.snappy, value: isSelected)
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.pressable)
         .accessibilityLabel(name)
         .accessibilityAddTraits(isSelected ? .isSelected : [])
     }

@@ -1,0 +1,205 @@
+import SwiftUI
+import UIKit
+import WidgetKit
+import AppCore
+
+/// "My glow": the newest creation, credits left and quick actions.
+struct GlowEntry: TimelineEntry {
+    let date: Date
+    let snapshot: GlowWidgetSnapshot
+    let latestImage: UIImage?
+}
+
+struct GlowProvider: TimelineProvider {
+    func placeholder(in context: Context) -> GlowEntry {
+        GlowEntry(date: Date(), snapshot: .placeholder, latestImage: nil)
+    }
+
+    func getSnapshot(in context: Context, completion: @escaping (GlowEntry) -> Void) {
+        completion(currentEntry())
+    }
+
+    func getTimeline(in context: Context, completion: @escaping (Timeline<GlowEntry>) -> Void) {
+        let entry = currentEntry()
+        // The app reloads this widget whenever credits or the library change;
+        // otherwise refresh when free credits refill.
+        let refresh = entry.snapshot.nextRefill ?? Date().addingTimeInterval(6 * 3600)
+        completion(Timeline(entries: [entry], policy: .after(max(refresh, Date().addingTimeInterval(900)))))
+    }
+
+    private func currentEntry() -> GlowEntry {
+        let snapshot = GlowSharedStore.load() ?? .placeholder
+        let image = GlowSharedStore.latestImageURL.flatMap { UIImage(contentsOfFile: $0.path) }
+        return GlowEntry(date: Date(), snapshot: snapshot, latestImage: image)
+    }
+}
+
+struct GlowWidgetView: View {
+    let entry: GlowEntry
+    @Environment(\.widgetFamily) private var family
+
+    private var snapshot: GlowWidgetSnapshot { entry.snapshot }
+
+    var body: some View {
+        switch family {
+        case .accessoryCircular:
+            circular
+        case .systemMedium:
+            medium
+        default:
+            small
+        }
+    }
+
+    // MARK: Pieces
+
+    private var creditsPill: some View {
+        HStack(spacing: 4) {
+            Image(systemName: snapshot.isPro ? "crown.fill" : "bolt.fill")
+            Text(snapshot.isPro ? "PRO" : "\(snapshot.credits)")
+                .monospacedDigit()
+        }
+        .font(.system(size: 12, weight: .bold, design: .rounded))
+        .foregroundStyle(WidgetPalette.blush)
+        .padding(.horizontal, 9)
+        .padding(.vertical, 5)
+        .background(WidgetPalette.ink, in: Capsule())
+    }
+
+    @ViewBuilder
+    private var artwork: some View {
+        if let image = entry.latestImage {
+            Image(uiImage: image)
+                .resizable()
+                .scaledToFill()
+        } else {
+            ZStack {
+                GlowWash()
+                Image(systemName: "wand.and.stars")
+                    .font(.system(size: 34, weight: .semibold))
+                    .foregroundStyle(WidgetPalette.ink)
+                    .frame(width: 66, height: 66)
+                    .background(.white, in: Circle())
+            }
+        }
+    }
+
+    private var small: some View {
+        ZStack(alignment: .bottomLeading) {
+            Color.clear
+            if entry.latestImage != nil {
+                LinearGradient(colors: [.clear, WidgetPalette.ink.opacity(0.55)], startPoint: .center, endPoint: .bottom)
+            }
+            VStack(alignment: .leading, spacing: 2) {
+                Text(entry.latestImage == nil ? "Make your first" : "Your latest")
+                    .font(.system(size: 12, weight: .semibold, design: .rounded))
+                Text(entry.latestImage == nil ? "glow ✨" : (snapshot.latestTitle ?? "creation"))
+                    .font(entry.latestImage == nil ? .widgetAccent(20) : .widgetTitle(15))
+                    .lineLimit(2)
+            }
+            .foregroundStyle(entry.latestImage == nil ? WidgetPalette.ink : .white)
+        }
+        .overlay(alignment: .topLeading) { creditsPill }
+        .overlay(alignment: .topTrailing) {
+            if snapshot.latestIsFavorite && entry.latestImage != nil {
+                Image(systemName: "heart.fill")
+                    .font(.system(size: 13, weight: .bold))
+                    .foregroundStyle(WidgetPalette.blush)
+                    .padding(6)
+                    .background(WidgetPalette.ink.opacity(0.55), in: Circle())
+            }
+        }
+        .containerBackground(for: .widget) { artwork }
+        .widgetURL(entry.latestImage == nil ? GlowDeepLink.magicEdit.url : GlowDeepLink.library.url)
+    }
+
+    private var medium: some View {
+        HStack(spacing: 14) {
+            Link(destination: GlowDeepLink.library.url) {
+                artwork
+                    .frame(width: 118, height: 132)
+                    .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 22, style: .continuous)
+                            .strokeBorder(.white.opacity(0.8), lineWidth: 2)
+                    )
+                    .shadow(color: WidgetPalette.ink.opacity(0.15), radius: 8, y: 4)
+            }
+            VStack(alignment: .leading, spacing: 8) {
+                HStack(alignment: .firstTextBaseline, spacing: 4) {
+                    Text("Make it")
+                        .font(.widgetTitle(17))
+                    Text("glow.")
+                        .font(.widgetAccent(19))
+                }
+                .foregroundStyle(WidgetPalette.ink)
+                creditsLine
+                Spacer(minLength: 0)
+                HStack(spacing: 8) {
+                    action("wand.and.stars", "Magic", .magicEdit)
+                    action("sparkles", "Create", .create)
+                    action("scissors", "Cut out", .removeBackground)
+                }
+            }
+            Spacer(minLength: 0)
+        }
+        .containerBackground(for: .widget) { GlowWash() }
+    }
+
+    @ViewBuilder
+    private var creditsLine: some View {
+        if snapshot.isPro {
+            Label("\(snapshot.credits) Pro credits", systemImage: "crown.fill")
+                .font(.system(size: 12, weight: .semibold, design: .rounded))
+                .foregroundStyle(WidgetPalette.inkSoft)
+        } else if let refill = snapshot.nextRefill, snapshot.credits == 0 {
+            Text("New credits in \(Text(refill, style: .relative))")
+                .font(.system(size: 12, weight: .semibold, design: .rounded))
+                .foregroundStyle(WidgetPalette.inkSoft)
+        } else {
+            Label("\(snapshot.credits) free credits today", systemImage: "bolt.fill")
+                .font(.system(size: 12, weight: .semibold, design: .rounded))
+                .foregroundStyle(WidgetPalette.inkSoft)
+        }
+    }
+
+    private func action(_ symbol: String, _ title: String, _ link: GlowDeepLink) -> some View {
+        Link(destination: link.url) {
+            VStack(spacing: 4) {
+                Image(systemName: symbol)
+                    .font(.system(size: 15, weight: .semibold))
+                    .foregroundStyle(WidgetPalette.blush)
+                    .frame(width: 36, height: 36)
+                    .background(WidgetPalette.ink, in: Circle())
+                Text(title)
+                    .font(.system(size: 10, weight: .semibold, design: .rounded))
+                    .foregroundStyle(WidgetPalette.ink)
+                    .lineLimit(1)
+            }
+        }
+    }
+
+    private var circular: some View {
+        Gauge(value: Double(min(snapshot.credits, 3)), in: 0...3) {
+            Image(systemName: "bolt.fill")
+        } currentValueLabel: {
+            Text(snapshot.isPro ? "∞" : "\(snapshot.credits)")
+                .font(.system(.title3, design: .rounded).weight(.bold))
+        }
+        .gaugeStyle(.accessoryCircular)
+        .widgetAccentable()
+        .containerBackground(for: .widget) { Color.clear }
+        .widgetURL(GlowDeepLink.magicEdit.url)
+    }
+}
+
+struct GlowWidget: Widget {
+    var body: some WidgetConfiguration {
+        StaticConfiguration(kind: "app.glowlit.glow", provider: GlowProvider()) { entry in
+            GlowWidgetView(entry: entry)
+        }
+        .configurationDisplayName("My glow")
+        .description("Your latest creation, credits left and quick actions.")
+        .supportedFamilies([.systemSmall, .systemMedium, .accessoryCircular])
+    }
+}

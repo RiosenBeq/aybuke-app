@@ -86,6 +86,8 @@ final class AppModel {
     private let remote: RemoteAIImageService?
     private let container: ModelContainer
     private let defaults: UserDefaults
+    /// Dynamic Island / Lock Screen progress for cloud jobs.
+    private let liveActivity = GlowActivityController()
 
     private enum Keys {
         static let onboarding = "onboarding.completed"
@@ -158,9 +160,11 @@ final class AppModel {
 
     /// Called once from the root view's `.task`.
     func start() async {
+        liveActivity.endLeftovers()
         await purchases.refreshEntitlements()
         credits.refresh(isPro: purchases.isPro)
         await refreshServerBalance()
+        syncWidgets()
         await purchases.loadProducts()
     }
 
@@ -282,7 +286,33 @@ final class AppModel {
     // MARK: Running jobs
 
     /// Spends credits optimistically, runs the job and refunds on failure.
+    /// Cloud jobs show a Live Activity and keep running briefly in the
+    /// background, so people can switch apps while they wait.
     func run(_ job: AIJob, saveToLibrary: Bool) async throws -> AIJobResult {
+        let isCloud = !job.operation.runsOnDevice
+        if isCloud {
+            liveActivity.start(
+                title: job.title.shortened(to: 34),
+                symbolName: job.template?.symbolName ?? job.operation.symbolName,
+                expectedSeconds: GlowActivityController.expectedSeconds(for: job.operation, outputs: job.numOutputs)
+            )
+        }
+        let backgroundTask = UIApplication.shared.beginBackgroundTask(withName: "glowlit.job")
+        defer {
+            if backgroundTask != .invalid { UIApplication.shared.endBackgroundTask(backgroundTask) }
+            syncWidgets()
+        }
+        do {
+            let result = try await perform(job, saveToLibrary: saveToLibrary)
+            if isCloud { liveActivity.finish(success: true) }
+            return result
+        } catch {
+            if isCloud { liveActivity.finish(success: false) }
+            throw error
+        }
+    }
+
+    private func perform(_ job: AIJob, saveToLibrary: Bool) async throws -> AIJobResult {
         let verdict = ContentPolicy.evaluate([job.prompt, job.template?.prompt].compactMap { $0 }.joined(separator: " "))
         if case .blocked(let reason) = verdict {
             throw AIServiceError.contentBlocked(reason)
@@ -333,6 +363,26 @@ final class AppModel {
             ))
         }
         try? context.save()
+        if let newest = images.last {
+            GlowWidgetBridge.updateLatestImage(newest)
+        }
+        syncWidgets()
+    }
+
+    /// Writes credits and the newest creation for the Home Screen widgets.
+    func syncWidgets() {
+        let context = container.mainContext
+        var newest = FetchDescriptor<Creation>(sortBy: [SortDescriptor(\.createdAt, order: .reverse)])
+        newest.fetchLimit = 1
+        let count = (try? context.fetchCount(FetchDescriptor<Creation>())) ?? 0
+        if count == 0 { GlowWidgetBridge.updateLatestImage(nil) }
+        GlowWidgetBridge.update(
+            credits: credits.balance,
+            isPro: purchases.isPro,
+            nextRefill: credits.nextDailyRefill,
+            latest: (try? context.fetch(newest))?.first,
+            creationsCount: count
+        )
     }
 
     func deleteAllCreations() {
@@ -340,6 +390,8 @@ final class AppModel {
         try? context.delete(model: Creation.self)
         try? context.save()
         ImageStore.deleteAll()
+        GlowWidgetBridge.updateLatestImage(nil)
+        syncWidgets()
     }
 
     /// Counts successful saves; returns true when it's a good moment to ask for a review.
@@ -379,6 +431,28 @@ final class AppModel {
             editorLaunch = EditorLaunch(image: image, tool: request.tool, template: request.template)
         } catch {
             showToast("Couldn't open that photo. Try another one.", style: .error)
+        }
+    }
+
+    // MARK: Deep links (widgets, Live Activities)
+
+    func handle(_ link: GlowDeepLink) {
+        guard hasCompletedOnboarding, editorLaunch == nil else { return }
+        isPaywallPresented = false
+        switch link {
+        case .magicEdit:
+            selectedTab = .home
+            startEditing(tool: .magicEdit)
+        case .removeBackground:
+            selectedTab = .edit
+            startEditing(tool: .removeBackground)
+        case .template(let id):
+            selectedTab = .home
+            startEditing(tool: .styles, template: TemplateCatalog.template(id: id))
+        case .create:
+            selectedTab = .create
+        case .library:
+            selectedTab = .library
         }
     }
 
@@ -480,6 +554,8 @@ extension AppModel {
             ))
         }
         try? context.save()
+        GlowWidgetBridge.updateLatestImage(images.first)
+        syncWidgets()
     }
 }
 #endif

@@ -9,6 +9,8 @@ struct BeforeAfterSlider: View {
     var showsTransparencyGrid = false
 
     @State private var position: CGFloat = 0.5
+    @State private var hasPeeked = false
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
         GeometryReader { proxy in
@@ -61,6 +63,17 @@ struct BeforeAfterSlider: View {
             }
         }
         .aspectRatio(after.size.width / max(after.size.height, 1), contentMode: .fit)
+        .task {
+            // A little "peek" so people discover the handle.
+            guard !hasPeeked, !reduceMotion else { return }
+            hasPeeked = true
+            try? await Task.sleep(for: .milliseconds(450))
+            withAnimation(.easeInOut(duration: 0.45)) { position = 0.3 }
+            try? await Task.sleep(for: .milliseconds(450))
+            withAnimation(.easeInOut(duration: 0.6)) { position = 0.7 }
+            try? await Task.sleep(for: .milliseconds(600))
+            withAnimation(.spring(response: 0.5, dampingFraction: 0.7)) { position = 0.5 }
+        }
     }
 
     private var handle: some View {

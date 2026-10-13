@@ -12,6 +12,11 @@
   - Tüm şablonlar yüzü, ten rengini ve **vücut şeklini** korur.
   - Vücut inceltme veya cilt açma gibi özellikler bilinçli olarak yok.
 - **Paylaşım (tanıtım için):** Yeni Paylaş ekranından Instagram Hikâyeler, Önce/Sonra kolajı, 9:16 hikâye kartı, görsel kopyalama, hazır açıklama ve hashtag'ler kullanılabiliyor. Ücretsiz paylaşımlarda küçük "Made with Glowlit" işareti var (Pro'da yok). Her dosyada görünmez "yapay zekâ ile yapıldı" etiketi korunuyor.
+- **Animasyonlar ve süslemeler:** Kartlar sırayla belirir, butonlar dokununca yaylanır. Kalp ve parıltılar yanıp söner, ana karttan ışık geçer. Beklerken kalpler ve yıldızlar ışığın etrafında döner. Önce/sonra kaydırıcısı kendini kısaca gösterir, kredi sayısı animasyonla değişir. "Hareketi azalt" açıksa animasyonlar kapanır.
+- **Widget'lar ve Dynamic Island:**
+  - "Günün trendi" ve "My glow" widget'ları (ana ekran ve kilit ekranı). My glow son görseli, kalan krediyi ve Magic / Create / Cut out kısayollarını gösterir.
+  - AI çalışırken Dynamic Island'da pembe parıltı ve ilerleme halkası görünür; kilit ekranında da ilerleme kartı vardır ("Creating your glow…" → "Your glow-up is ready").
+  - Gerçek cihazda çalıştırmak için geliştirici hesabında `group.app.glowlit.shared` App Group'unu iki paket kimliğine de eklemek gerekir.
 - **Diğer yeni özellikler:** Galeride kalpli favoriler. "Bu görseli bildir" artık gerçekten backend'e gidiyor (`report` fonksiyonu ve `reports` tablosu).
 - **Yasal metinler:** Kullanım Koşulları, Gizlilik Politikası, Kabul Edilebilir Kullanım Politikası (İngilizce ve Türkçe) ve KVKK Aydınlatma Metni hazırlandı. GDPR, KVKK (7499 sayılı Kanun değişiklikleri dahil), CCPA, COPPA, Birleşik Krallık Yaşa Uygun Tasarım Kuralları, AB Yapay Zekâ Tüzüğü md. 50 ve Apple'ın EULA şartları kapsanıyor.
   - Metinler uygulamanın içinde okunabiliyor ve ayrıca `docs/legal/` ile `web/legal/` altında yayınlanıyor.
@@ -45,7 +50,7 @@ Bu brief'i üç paralel araştırmayla (pazar, marka/tasarım, teknoloji/uyumlul
 4. **Backend (Supabase + fal.ai):**
    - Kimlik doğrulama, kredi defteri, Apple satın alma doğrulaması, güvenlik filtreleri ve asenkron AI iş kuyruğu.
 5. **Testler ve CI:**
-   - 65 Swift birim testi.
+   - 71 Swift birim testi.
    - Deno tip kontrolü ve lint.
    - Gerçek PostgreSQL üzerinde kredi defteri testleri.
    - macOS'ta Xcode derlemesi ve simülatör ekran görüntüleri.

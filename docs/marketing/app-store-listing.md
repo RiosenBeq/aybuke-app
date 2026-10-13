@@ -22,7 +22,7 @@ Rules followed: no prices in the name, subtitle or keywords; no other platforms,
 
     selfie,makeup,beauty,filter,aesthetic,headshot,anime,doll,restore,retouch,background,art,pink,y2k
 
-**Description** (2618/4000)
+**Description** (2791/4000)
 
 ```text
 Glowlit is the AI photo editor made for girls who glow. Type what you want to change, tap a trend or turn an idea into art, then share it to your Stories in one tap.
@@ -55,6 +55,10 @@ MADE TO SHARE
 • Ready-made captions and hashtags
 • Heart your favorites in your gallery
 
+ON YOUR HOME SCREEN
+• Today's trend and My glow widgets for your Home Screen and Lock Screen
+• Watch your glow-up come to life in the Dynamic Island and on the Lock Screen
+
 PRIVATE BY DEFAULT
 • Nothing goes to the cloud until you say yes
 • Your photos are never used to train AI, never sold and never used for ads
@@ -75,9 +79,9 @@ Terms of Use: {{TERMS_URL}}
 Privacy Policy: {{PRIVACY_URL}}
 ```
 
-**What's New in 1.0** (204/4000)
+**What's New in 1.0** (257/4000)
 
-> Welcome to Glowlit ✨ Edit photos just by saying it, try 30 one-tap looks, create art from text and share before/after collages and story cards in one tap. Private by default, fair pricing, no weekly plan.
+> Welcome to Glowlit ✨ Edit photos just by saying it, try 30 one-tap looks, create art from text and share before/after collages and story cards in one tap. Widgets and a Dynamic Island Live Activity included. Private by default, fair pricing, no weekly plan.
 
 **App Review notes** (1612/4000)
 
@@ -115,7 +119,7 @@ Contact: {{SUPPORT_EMAIL}}
 
     selfie,makyaj,güzellik,filtre,estetik,vesikalık,anime,bebek,onarım,rötuş,arka plan,yapay zeka
 
-**Description** (2810/4000)
+**Description** (2965/4000)
 
 ```text
 Glowlit, ışıldayan kızlar için tasarlanmış yapay zekâlı fotoğraf editörü. Ne değişsin istiyorsan yaz, bir trende dokun ya da bir fikri sanata dönüştür; sonra tek dokunuşla Hikâyene paylaş.
@@ -148,6 +152,10 @@ PAYLAŞMAK İÇİN YAPILDI
 • Hazır açıklamalar ve hashtag'ler
 • Galerinde favorilerini kalple işaretle
 
+ANA EKRANINDA
+• Ana ekran ve kilit ekranı için Günün Trendi ve My glow widget'ları
+• Glow-up'ının hazırlanışını Dynamic Island'da ve kilit ekranında izle
+
 VARSAYILAN OLARAK GİZLİ
 • Sen "evet" demeden hiçbir şey buluta gitmez
 • Fotoğrafların asla yapay zekâ eğitiminde kullanılmaz, satılmaz, reklam için kullanılmaz
@@ -168,9 +176,9 @@ Kullanım Koşulları: {{TERMS_URL}}
 Gizlilik Politikası: {{PRIVACY_URL}}
 ```
 
-**What's New in 1.0** (243/4000)
+**What's New in 1.0** (288/4000)
 
-> Glowlit'e hoş geldin ✨ Fotoğraflarını sadece söyleyerek düzenle, 30 tek dokunuşluk görünümü dene, metinden sanat oluştur, önce/sonra kolajlarını ve hikâye kartlarını tek dokunuşla paylaş. Varsayılan olarak gizli, adil fiyat, haftalık plan yok.
+> Glowlit'e hoş geldin ✨ Fotoğraflarını sadece söyleyerek düzenle, 30 tek dokunuşluk görünümü dene, metinden sanat oluştur, önce/sonra kolajlarını ve hikâye kartlarını tek dokunuşla paylaş. Widget'lar ve Dynamic Island desteği de var. Varsayılan olarak gizli, adil fiyat, haftalık plan yok.
 
 ## Product Page Optimization: alternatives to A/B test
 

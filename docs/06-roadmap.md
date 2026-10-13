@@ -15,7 +15,7 @@ Legend: ✅ done in this repository · ⏳ next · 🔭 later
 - ✅ Xcode 16+ project (synchronized folder), shared scheme, StoreKit test configuration
 - ✅ `AppCore` package
   - API contract, credit wallet, catalogs, prompt builder, content policy, polling
-  - 65 unit tests (incl. developer-mode AI providers and the legal Markdown parser), run on Linux and macOS
+  - 71 unit tests (incl. developer-mode AI providers, the legal Markdown parser and the widget/deep-link helpers), run on Linux and macOS
 - ✅ Design system
   - Tokens: palette, type, metrics
   - Components: buttons, chips, badges, cards, aurora background, generating overlay, before/after slider, template card, toast, share sheet
@@ -39,6 +39,9 @@ Legend: ✅ done in this repository · ⏳ next · 🔭 later
   - Compliant copy (3.1.2)
 - ✅ Settings: membership, credits, consent, delete creations, delete account, legal, acknowledgements
 - ✅ Demo mode: the full app works offline with simulated, clearly labelled results
+- ✅ Motion and details: staggered reveals, springy buttons, twinkling hearts and sparkles, orbiting charms while generating, a before/after "peek"; all respect Reduce Motion
+- ✅ Widgets: Today's trend and My glow (Home and Lock Screen), App Group snapshot, `glowlit://` deep links
+- ✅ Live Activity: Dynamic Island (compact, expanded, minimal) and Lock Screen progress for cloud jobs
 
 ## Phase 3 — Backend ✅ (code) / ⏳ (deploy)
 
@@ -90,7 +93,8 @@ Legend: ✅ done in this repository · ⏳ next · 🔭 later
 - 🔭 Motion: short video versions of templates (figurine → spin, polaroid → develop)
 - 🔭 Remote template catalog with thumbnails, A/B tests and a "Trending this week" CPP feed
 - 🔭 C2PA Content Credentials (server-signed); optional visible "AI-edited" label
-- 🔭 Fal webhooks instead of polling; Realtime push to the app
+- 🔭 Fal webhooks instead of polling; Realtime push to the app; push-updated Live Activities
+- 🔭 Control Center control and interactive widgets (iOS 18+)
 - 🔭 Localization (ES, PT-BR, DE, FR, TR); iPhone Duo adaptive layouts; iPad
 - 🔭 Swift 6 strict concurrency; UI tests; snapshot tests
 - 🔭 Analytics (privacy-friendly), paywall experiments, Apple Ads

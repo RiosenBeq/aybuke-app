@@ -1,0 +1,212 @@
+import Foundation
+#if canImport(ActivityKit) && os(iOS)
+import ActivityKit
+#endif
+
+// Types shared by the app and the GlowlitWidgets extension (Home and Lock
+// Screen widgets, the generation Live Activity in the Dynamic Island).
+
+// MARK: - Deep links
+
+/// `glowlit://…` links opened from widgets and Live Activities.
+public enum GlowDeepLink: Equatable, Sendable {
+    case magicEdit
+    case create
+    case removeBackground
+    case template(String)
+    case library
+
+    public static let scheme = "glowlit"
+
+    public var url: URL {
+        switch self {
+        case .magicEdit: return URL(string: "\(Self.scheme)://edit/magic")!
+        case .create: return URL(string: "\(Self.scheme)://create")!
+        case .removeBackground: return URL(string: "\(Self.scheme)://edit/remove-background")!
+        case .template(let id): return URL(string: "\(Self.scheme)://template/\(id)")!
+        case .library: return URL(string: "\(Self.scheme)://library")!
+        }
+    }
+
+    public init?(url: URL) {
+        guard url.scheme?.lowercased() == Self.scheme, let host = url.host?.lowercased() else { return nil }
+        let path = url.pathComponents.filter { $0 != "/" }
+        switch (host, path.first) {
+        case ("edit", "magic"?): self = .magicEdit
+        case ("edit", "remove-background"?): self = .removeBackground
+        case ("create", nil): self = .create
+        case ("library", nil): self = .library
+        case ("template", let id?) where TemplateCatalog.template(id: id) != nil: self = .template(id)
+        default: return nil
+        }
+    }
+}
+
+// MARK: - Trend of the day
+
+extension TemplateCatalog {
+    /// Free-to-try and trending looks first, one per calendar day, so the
+    /// widget and the app agree on "today's" trend without any network call.
+    public static func trendOfTheDay(on date: Date = Date(), calendar: Calendar = .current) -> PhotoTemplate {
+        let pool = all.filter { $0.category == .trending || $0.category == .glowUp || $0.category == .aesthetic }
+        let day = calendar.ordinality(of: .day, in: .era, for: date) ?? 0
+        return pool[day % pool.count]
+    }
+}
+
+// MARK: - Widget snapshot (written by the app, read by the widgets)
+
+public struct GlowWidgetSnapshot: Codable, Equatable, Sendable {
+    public var credits: Int
+    public var isPro: Bool
+    /// When free daily credits refill next (nil for Pro).
+    public var nextRefill: Date?
+    public var latestTitle: String?
+    public var latestIsFavorite: Bool
+    public var creationsCount: Int
+    public var updatedAt: Date
+
+    public init(
+        credits: Int, isPro: Bool, nextRefill: Date?, latestTitle: String?,
+        latestIsFavorite: Bool = false, creationsCount: Int, updatedAt: Date = Date()
+    ) {
+        self.credits = credits
+        self.isPro = isPro
+        self.nextRefill = nextRefill
+        self.latestTitle = latestTitle
+        self.latestIsFavorite = latestIsFavorite
+        self.creationsCount = creationsCount
+        self.updatedAt = updatedAt
+    }
+
+    public static let placeholder = GlowWidgetSnapshot(
+        credits: 3, isPro: false, nextRefill: nil, latestTitle: nil, creationsCount: 0
+    )
+}
+
+/// The App Group container both targets can read. Without the entitlement
+/// (e.g. unsigned CI builds) every call degrades to "no data".
+public enum GlowSharedStore {
+    public static let appGroup = "group.app.glowlit.shared"
+    static let snapshotFile = "widget-snapshot.json"
+    static let latestImageFile = "latest-creation.jpg"
+
+    public static var containerURL: URL? {
+        #if canImport(Darwin)
+        return FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: appGroup)
+        #else
+        return nil
+        #endif
+    }
+
+    public static var latestImageURL: URL? {
+        containerURL?.appendingPathComponent(latestImageFile)
+    }
+
+    public static func save(_ snapshot: GlowWidgetSnapshot, in directory: URL? = containerURL) {
+        guard let directory, let data = try? encoder.encode(snapshot) else { return }
+        try? data.write(to: directory.appendingPathComponent(snapshotFile), options: .atomic)
+    }
+
+    public static func load(from directory: URL? = containerURL) -> GlowWidgetSnapshot? {
+        guard let directory, let data = try? Data(contentsOf: directory.appendingPathComponent(snapshotFile)) else { return nil }
+        return try? decoder.decode(GlowWidgetSnapshot.self, from: data)
+    }
+
+    /// Small JPEG of the newest creation for the "My glow" widget (nil removes it).
+    public static func saveLatestImage(_ jpeg: Data?, in directory: URL? = containerURL) {
+        guard let directory else { return }
+        let url = directory.appendingPathComponent(latestImageFile)
+        if let jpeg {
+            try? jpeg.write(to: url, options: .atomic)
+        } else {
+            try? FileManager.default.removeItem(at: url)
+        }
+    }
+
+    private static var encoder: JSONEncoder {
+        let encoder = JSONEncoder()
+        encoder.dateEncodingStrategy = .iso8601
+        return encoder
+    }
+
+    private static var decoder: JSONDecoder {
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+        return decoder
+    }
+}
+
+// MARK: - Live Activity (Dynamic Island)
+
+/// Progress of one cloud AI job, shown in the Dynamic Island and on the Lock
+/// Screen while the user waits (or switches apps).
+public enum GlowJobStage: String, Codable, Hashable, Sendable {
+    case creating
+    case finishing
+    case ready
+    case failed
+
+    public var headline: String {
+        switch self {
+        case .creating: return "Creating your glow…"
+        case .finishing: return "Adding the final sparkle…"
+        case .ready: return "Your glow-up is ready"
+        case .failed: return "That one didn't work"
+        }
+    }
+
+    public var detail: String {
+        switch self {
+        case .creating, .finishing: return "You can leave the app — we'll keep going."
+        case .ready: return "Tap to see it ✨"
+        case .failed: return "No credit was used. Tap to try again."
+        }
+    }
+}
+
+extension String {
+    /// Shortens text to at most `limit` characters at a word boundary, ending
+    /// with "…" — for Live Activity titles, where a prompt is often too long.
+    public func shortened(to limit: Int) -> String {
+        let text = components(separatedBy: .newlines).joined(separator: " ")
+            .trimmingCharacters(in: .whitespaces)
+        guard limit > 1, text.count > limit else { return text }
+        let head = text.prefix(limit - 1)
+        var cut = head
+        if let space = head.lastIndex(of: " "), head.distance(from: head.startIndex, to: space) >= limit / 2 {
+            cut = head[..<space]
+        }
+        while let last = cut.last, last.isWhitespace || last.isPunctuation {
+            cut = cut.dropLast()
+        }
+        return (cut.isEmpty ? head : cut) + "…"
+    }
+}
+
+#if canImport(ActivityKit) && os(iOS)
+public struct GlowActivityAttributes: ActivityAttributes {
+    public struct ContentState: Codable, Hashable, Sendable {
+        public var stage: GlowJobStage
+        public var startedAt: Date
+        /// Expected finish time, used for the self-animating progress bar.
+        public var expectedEnd: Date
+
+        public init(stage: GlowJobStage, startedAt: Date, expectedEnd: Date) {
+            self.stage = stage
+            self.startedAt = startedAt
+            self.expectedEnd = expectedEnd
+        }
+    }
+
+    /// "Pink Hair", "Magic Edit"…
+    public var title: String
+    /// SF Symbol of the tool or template.
+    public var symbolName: String
+
+    public init(title: String, symbolName: String) {
+        self.title = title
+        self.symbolName = symbolName
+    }
+}
+#endif

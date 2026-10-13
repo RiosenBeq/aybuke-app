@@ -40,10 +40,13 @@ struct CreditPill: View {
         Button(action: action) {
             HStack(spacing: 5) {
                 Image(systemName: isPro ? "crown.fill" : "bolt.fill")
+                    .symbolEffect(.bounce, value: balance)
                 Text(isPro ? "PRO" : "\(balance)")
                     .font(.subheadline.weight(.bold))
                     .monospacedDigit()
+                    .contentTransition(.numericText(value: Double(balance)))
             }
+            .animation(Motion.bouncy, value: balance)
             .foregroundStyle(Palette.onAccent)
             .padding(.horizontal, 12)
             .padding(.vertical, 7)

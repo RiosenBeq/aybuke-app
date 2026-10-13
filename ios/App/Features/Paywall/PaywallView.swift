@@ -102,6 +102,14 @@ struct PaywallView: View {
                 .overlay(Circle().strokeBorder(Palette.white.opacity(0.7), lineWidth: 3))
                 .shadow(color: Palette.blush.opacity(0.8), radius: 18, y: 8)
                 .symbolEffect(.pulse)
+                .overlay(alignment: .topTrailing) {
+                    Image(systemName: "sparkle")
+                        .font(.system(size: 18, weight: .bold))
+                        .foregroundStyle(Palette.ink)
+                        .twinkle()
+                        .offset(x: 12, y: -6)
+                }
+                .floating(distance: 4)
             Text(styled: "Your photos,\nin their *best light*", size: 34)
                 .multilineTextAlignment(.center)
                 .foregroundStyle(Palette.textPrimary)

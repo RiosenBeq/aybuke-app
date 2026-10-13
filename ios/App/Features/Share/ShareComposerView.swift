@@ -82,7 +82,7 @@ struct ShareComposerView: View {
                     .scaledToFit()
                     .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
                     .shadow(color: Palette.shadow, radius: 18, y: 10)
-                    .transition(.opacity)
+                    .transition(.scale(scale: 0.94).combined(with: .opacity))
                     .id(rendered)
             } else {
                 ProgressView().tint(Palette.accent)
@@ -284,6 +284,6 @@ private struct ShareTarget: View {
             }
             .frame(maxWidth: .infinity)
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.pressable)
     }
 }

@@ -7,13 +7,23 @@ import AppCore
 /// local Core Image approximations — not real AI output.
 final class DemoAIImageService: AIImageService {
     func perform(_ job: AIJob) async throws -> AIJobResult {
-        try await Task.sleep(for: .milliseconds(Int.random(in: 1600...2800)))
+        try await Task.sleep(for: .milliseconds(Self.simulatedDelayMilliseconds))
         try Task.checkCancellation()
 
         let images: [UIImage] = try await Task.detached(priority: .userInitiated) {
             try Self.render(job)
         }.value
         return AIJobResult(images: images, creditsRemaining: nil, requestID: "demo-\(UUID().uuidString)")
+    }
+
+    /// 1.6–2.8 s. DEBUG builds accept `-GLDemoDelaySeconds 15` to demo the
+    /// Live Activity in the Dynamic Island.
+    private static var simulatedDelayMilliseconds: Int {
+        #if DEBUG
+        let override = UserDefaults.standard.double(forKey: "GLDemoDelaySeconds")
+        if override > 0 { return Int(override * 1000) }
+        #endif
+        return Int.random(in: 1600...2800)
     }
 
     private static func render(_ job: AIJob) throws -> [UIImage] {

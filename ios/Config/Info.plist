@@ -3,6 +3,17 @@
 <plist version="1.0">
 <dict>
 	<!-- Merged with the keys Xcode generates from the INFOPLIST_KEY_* build settings. -->
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>app.glowlit.ios</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>glowlit</string>
+			</array>
+		</dict>
+	</array>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>instagram-stories</string>

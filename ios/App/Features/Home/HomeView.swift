@@ -12,23 +12,29 @@ struct HomeView: View {
                 VStack(alignment: .leading, spacing: Metrics.sectionSpacing) {
                     header
                         .padding(.horizontal, Metrics.gutter)
+                        .reveal(0)
 
                     if let banner = app.modeBanner {
                         ModeBanner(text: banner)
                             .padding(.horizontal, Metrics.gutter)
+                            .reveal(1)
                     }
 
                     heroCard
                         .padding(.horizontal, Metrics.gutter)
+                        .reveal(1)
 
                     quickTools
+                        .reveal(2)
 
-                    ForEach(orderedCategories) { category in
+                    ForEach(Array(orderedCategories.enumerated()), id: \.element) { index, category in
                         templateRow(category)
+                            .reveal(3 + index)
                     }
 
                     createBanner
                         .padding(.horizontal, Metrics.gutter)
+                        .reveal(8)
                 }
                 .padding(.vertical, 12)
             }
@@ -110,13 +116,14 @@ struct HomeView: View {
             }
             .frame(height: 220)
             .clipShape(RoundedRectangle(cornerRadius: Metrics.cardRadius, style: .continuous))
+            .glowSweep()
             .overlay(
                 RoundedRectangle(cornerRadius: Metrics.cardRadius, style: .continuous)
                     .strokeBorder(Palette.stroke, lineWidth: 1)
             )
             .shadow(color: Palette.blush.opacity(0.6), radius: 24, y: 12)
         }
-        .buttonStyle(.plain)
+        .buttonStyle(PressableButtonStyle(scale: 0.97))
         .accessibilityLabel("Magic Edit. Describe any change to your photo.")
     }
 
@@ -153,7 +160,7 @@ struct HomeView: View {
                         } label: {
                             TemplateCard(template: template)
                         }
-                        .buttonStyle(.plain)
+                        .buttonStyle(.pressable)
                     }
                 }
                 .padding(.horizontal, Metrics.gutter)
@@ -188,7 +195,7 @@ struct HomeView: View {
             .padding(14)
             .cardStyle()
         }
-        .buttonStyle(.plain)
+        .buttonStyle(PressableButtonStyle(scale: 0.97))
     }
 
     /// Puts the categories that match onboarding interests first.
@@ -234,7 +241,7 @@ private struct QuickToolTile: View {
             .padding(14)
             .cardStyle(radius: 20)
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.pressable)
     }
 }
 
@@ -244,11 +251,12 @@ private struct HeroSparkles: View {
         GeometryReader { proxy in
             let size = proxy.size
             ZStack {
-                ForEach(Array(Self.items.enumerated()), id: \.offset) { _, item in
+                ForEach(Array(Self.items.enumerated()), id: \.offset) { index, item in
                     Image(systemName: item.symbol)
                         .font(.system(size: item.size, weight: .bold))
                         .foregroundStyle(item.isWhite ? Palette.white : Palette.ink.opacity(0.85))
                         .rotationEffect(.degrees(item.rotation))
+                        .twinkle(phase: Double(index) * 0.35)
                         .position(x: size.width * item.x, y: size.height * item.y)
                 }
             }

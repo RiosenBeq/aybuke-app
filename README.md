@@ -9,6 +9,7 @@
 - **Dream it, create it:** turn any idea into art with 14 styles, from Pastel Dream and Kawaii to Watercolor.
 - **Made to share:** one tap to Instagram Stories, before/after collages, 9:16 story cards and ready-made captions.
 - **Free on your iPhone:** background removal and adjustments run on-device.
+- **Lives on your Home Screen:** "Today's trend" and "My glow" widgets, plus a Live Activity in the Dynamic Island and on the Lock Screen while the AI works.
 
 | Promise | What it means |
 |---|---|
@@ -76,6 +77,13 @@ Deploy the Supabase backend ([backend/README.md](backend/README.md)) and set `FA
 - **Marketing kit:** [docs/marketing/](docs/marketing/README.md) contains App Store copy (EN/TR) with measured character counts, a social media kit, a 30-day launch plan, generated App Store screenshots and social images.
 - **Website:** [web/](web/README.md) is a static landing page with the legal pages, ready for GitHub Pages (`.github/workflows/website.yml`).
 
+## Widgets and Live Activity
+
+- **Widgets** (`ios/GlowlitWidgets/`): *Today's trend* (small, medium and Lock Screen) picks one look per day and opens it in one tap. *My glow* (small, medium and Lock Screen) shows the newest creation, the credits left and shortcuts to Magic Edit, Create and Cut out.
+- **Live Activity:** cloud jobs show progress in the Dynamic Island and on the Lock Screen ("Creating your glow…" → "Adding the final sparkle…" → "Your glow-up is ready"). The bar animates on its own, so it keeps moving while the app is in the background.
+- **Plumbing:** the app writes a small snapshot and a 600 px thumbnail to the App Group `group.app.glowlit.shared` (`GlowWidgetBridge`). Taps open `glowlit://` deep links (`GlowDeepLink` in AppCore).
+- **Signing:** before running on a device, enable the App Groups capability for both `app.glowlit.ios` and `app.glowlit.ios.widgets` in your developer account and add `group.app.glowlit.shared`. The simulator works as is.
+
 ## Legal
 
 Terms of Use, Privacy Policy, Acceptable Use & AI Content Policy (English and Turkish) and the KVKK Aydınlatma Metni are in [legal/](legal/README.md). `scripts/build-legal.py` renders them into the app (shown natively in Settings, onboarding, the paywall and the consent screen), to [docs/legal/](docs/legal/) and to `web/legal/`. **They are drafts for legal review.** Fill in `legal/config.json` and follow the checklist in `legal/README.md` before publishing.
@@ -83,7 +91,8 @@ Terms of Use, Privacy Policy, Acceptable Use & AI Content Policy (English and Tu
 ## Repository
 
 ```
-ios/        SwiftUI app (Glowlit.xcodeproj) + AppCore Swift package (business logic, 65 tests)
+ios/        SwiftUI app (Glowlit.xcodeproj) + AppCore Swift package (business logic, 71 tests)
+  GlowlitWidgets/  WidgetKit extension: Home and Lock Screen widgets, Dynamic Island Live Activity
   Config/   Info.plist additions and xcconfigs (developer AI key slot: Secrets.xcconfig)
 backend/    Supabase: Postgres schema, credit ledger and reports; Edge Functions (fal.ai, Apple JWS, reports); SQL tests
 legal/      Source texts of the legal documents (EN/TR) and their config
@@ -97,7 +106,7 @@ scripts/    Tooling: catalog export, legal build, brand assets, marketing images
 
 | Layer | Technology |
 |---|---|
-| iOS app | SwiftUI · Observation · SwiftData · StoreKit 2 · Vision · Core Image · PhotosUI · iOS 17+ |
+| iOS app | SwiftUI · Observation · SwiftData · StoreKit 2 · Vision · Core Image · PhotosUI · WidgetKit · ActivityKit · iOS 17+ |
 | Design | "Blush" palette (blush `#F7C1D9`, petal `#F8E0EA`, ink `#121212`) · Bricolage Grotesque (OFL) with New York Italic accents · light-first, with Dark and Automatic appearances |
 | AI | Backend: fal.ai (Nano Banana 2, SeedVR2, object removal). Developer mode: fal.ai, OpenAI Images or Google Gemini directly |
 | Backend | Supabase (anonymous Auth, Postgres with RLS, Edge Functions/Deno) · Apple App Store Server Library |

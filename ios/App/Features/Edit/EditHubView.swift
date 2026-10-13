@@ -44,11 +44,13 @@ struct EditHubView: View {
                         }
                         .padding(14)
                         .cardStyle(fill: Palette.blush)
+                        .glowSweep()
                     }
-                    .buttonStyle(.plain)
+                    .buttonStyle(PressableButtonStyle(scale: 0.97))
+                    .reveal(1)
 
                     LazyVGrid(columns: columns, spacing: 12) {
-                        ForEach(EditorTool.allCases) { tool in
+                        ForEach(Array(EditorTool.allCases.enumerated()), id: \.element) { index, tool in
                             Button {
                                 Haptics.tap()
                                 app.startEditing(tool: tool)
@@ -72,7 +74,8 @@ struct EditHubView: View {
                                 .padding(16)
                                 .cardStyle()
                             }
-                            .buttonStyle(.plain)
+                            .buttonStyle(.pressable)
+                            .reveal(2 + index)
                         }
                     }
 

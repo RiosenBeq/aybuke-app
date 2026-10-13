@@ -153,7 +153,19 @@ private struct OnboardingPageView: View {
                     )
                     .rotationEffect(.degrees(appeared ? 4 : 0))
                     .shadow(color: Palette.ink.opacity(0.10), radius: 24, y: 12)
+                Image(systemName: "sparkle")
+                    .font(.system(size: 30, weight: .bold))
+                    .foregroundStyle(Palette.white)
+                    .shadow(color: Palette.ink.opacity(0.15), radius: 6, y: 2)
+                    .twinkle()
+                    .offset(x: 118, y: -150)
+                Image(systemName: "heart.fill")
+                    .font(.system(size: 18, weight: .bold))
+                    .foregroundStyle(Palette.ink)
+                    .twinkle(phase: 0.6)
+                    .offset(x: -122, y: 128)
             }
+            .floating()
             .accessibilityHidden(true)
 
             VStack(spacing: 12) {
@@ -236,8 +248,9 @@ private struct InterestPicker: View {
                             }
                         }
                         .shadow(color: Palette.shadow, radius: 10, y: 4)
+                        .animation(Motion.bouncy, value: isSelected)
                     }
-                    .buttonStyle(.plain)
+                    .buttonStyle(.pressable)
                     .accessibilityAddTraits(isSelected ? .isSelected : [])
                 }
             }

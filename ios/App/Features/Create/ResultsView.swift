@@ -71,6 +71,7 @@ struct ResultsView: View {
             }
             .padding(.horizontal, Metrics.gutter)
             .padding(.bottom, 12)
+            .reveal(2)
         }
         .background(AuroraBackground(intensity: 0.35))
         .navigationTitle("Your creation")

@@ -23,6 +23,7 @@ struct AIConsentView: View {
                 .foregroundStyle(Palette.ink)
                 .frame(width: 68, height: 68)
                 .background(Palette.blush, in: Circle())
+                .floating(distance: 3)
 
             Text(styled: "Your photos, *your call*", size: 28)
                 .foregroundStyle(Palette.textPrimary)

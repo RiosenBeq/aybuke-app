@@ -1,5 +1,34 @@
 import SwiftUI
 
+/// Hearts and sparkles circling the progress glow.
+private struct OrbitingCharms: View {
+    let radius: CGFloat
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    private let charms: [(symbol: String, size: CGFloat, ink: Bool)] = [
+        ("heart.fill", 15, true), ("sparkle", 18, false), ("star.fill", 11, true),
+        ("sparkle", 13, true), ("heart.fill", 12, false), ("sparkles", 15, true),
+    ]
+
+    var body: some View {
+        TimelineView(.animation(paused: reduceMotion)) { timeline in
+            let time = timeline.date.timeIntervalSinceReferenceDate
+            ZStack {
+                ForEach(Array(charms.enumerated()), id: \.offset) { index, charm in
+                    let angle = (time * 0.55).truncatingRemainder(dividingBy: 2 * .pi) + Double(index) / Double(charms.count) * 2 * .pi
+                    let wobble = sin(time * 2 + Double(index)) * 6
+                    Image(systemName: charm.symbol)
+                        .font(.system(size: charm.size, weight: .bold))
+                        .foregroundStyle(charm.ink ? Palette.ink : Palette.white)
+                        .shadow(color: Palette.ink.opacity(0.12), radius: 3, y: 1)
+                        .scaleEffect(0.85 + 0.25 * (sin(time * 2.4 + Double(index) * 1.3) + 1) / 2)
+                        .offset(x: cos(angle) * (radius + wobble), y: sin(angle) * (radius + wobble))
+                }
+            }
+        }
+    }
+}
+
 /// Full-screen progress state shown while the AI works. Rotating tips keep the
 /// 5–20 s wait feeling shorter.
 struct GeneratingOverlay: View {
@@ -25,7 +54,7 @@ struct GeneratingOverlay: View {
     var body: some View {
         ZStack {
             Rectangle().fill(.ultraThinMaterial).ignoresSafeArea()
-            Palette.background.opacity(0.6).ignoresSafeArea()
+            Palette.background.opacity(0.86).ignoresSafeArea()
 
             VStack(spacing: 28) {
                 ZStack {
@@ -42,7 +71,9 @@ struct GeneratingOverlay: View {
                         .font(.system(size: 38, weight: .semibold))
                         .foregroundStyle(Palette.accent)
                         .symbolEffect(.pulse, options: .repeating)
+                    OrbitingCharms(radius: 96)
                 }
+                .frame(width: 230, height: 230)
                 .accessibilityHidden(true)
 
                 VStack(spacing: 10) {

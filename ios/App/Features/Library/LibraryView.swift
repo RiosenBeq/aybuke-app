@@ -42,6 +42,7 @@ struct LibraryView: View {
                                     .foregroundStyle(Palette.ink)
                                     .frame(width: 72, height: 72)
                                     .background(Palette.blush, in: Circle())
+                                    .floating(distance: 4)
                                 Text("Tap ♡ on a creation to keep it here.")
                                     .font(.subheadline)
                                     .foregroundStyle(Palette.textSecondary)
@@ -92,6 +93,14 @@ struct LibraryView: View {
                 .foregroundStyle(Palette.ink)
                 .frame(width: 104, height: 104)
                 .background(Palette.blush, in: Circle())
+                .overlay(alignment: .topTrailing) {
+                    Image(systemName: "sparkle")
+                        .font(.system(size: 22, weight: .bold))
+                        .foregroundStyle(Palette.white)
+                        .twinkle()
+                        .offset(x: 4, y: -4)
+                }
+                .floating()
             Text("Nothing here yet")
                 .font(.sectionTitle)
                 .foregroundStyle(Palette.textPrimary)
@@ -202,6 +211,7 @@ struct CreationDetailView: View {
                     creation.isFavorite.toggle()
                     try? modelContext.save()
                     Haptics.selection()
+                    app.syncWidgets()
                 } label: {
                     Image(systemName: creation.isFavorite ? "heart.fill" : "heart")
                         .symbolEffect(.bounce, value: creation.isFavorite)
@@ -248,6 +258,7 @@ struct CreationDetailView: View {
         ImageStore.delete(creation.imageFileName)
         modelContext.delete(creation)
         try? modelContext.save()
+        app.syncWidgets()
         dismiss()
     }
 }

@@ -1,5 +1,6 @@
 import SwiftUI
 import PhotosUI
+import AppCore
 
 struct RootView: View {
     @Environment(AppModel.self) private var app
@@ -28,6 +29,9 @@ struct RootView: View {
                 .environment(app)
         }
         .modifier(AppPresentations(isActive: app.editorLaunch == nil))
+        .onOpenURL { url in
+            if let link = GlowDeepLink(url: url) { app.handle(link) }
+        }
         .tint(Palette.accent)
     }
 }
