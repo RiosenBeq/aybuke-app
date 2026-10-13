@@ -69,7 +69,7 @@ jobs:
             --cellularMode active --cellularBars 4 --batteryState charged --batteryLevel 100
           xcrun simctl install "$UDID" build/DerivedData/Build/Products/Debug-iphonesimulator/Glowlit.app
           mkdir -p screenshots
-          for scene in onboarding home create results edit editor result library paywall consent settings; do
+          for scene in onboarding home create results edit editor result share library paywall consent settings legal; do
             xcrun simctl terminate "$UDID" app.glowlit.ios >/dev/null 2>&1 || true
             xcrun simctl launch "$UDID" app.glowlit.ios -GLScreenshotScene "$scene"
             sleep 8

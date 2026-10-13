@@ -1,0 +1,86 @@
+{
+  "en": [
+    {
+      "scene": "result",
+      "title": "Type it. Watch it glow",
+      "subtitle": "Say “give me pink hair” and slide to see the glow-up"
+    },
+    {
+      "scene": "home",
+      "title": "Every trend, one tap away",
+      "subtitle": "Doll Box, Y2K Digicam, Ballet Core and more"
+    },
+    {
+      "scene": "results",
+      "title": "Create anything from text",
+      "subtitle": "14 styles and 5 sizes, up to 4 images at once with Pro"
+    },
+    {
+      "scene": "editor",
+      "title": "Just say what to change",
+      "subtitle": "Pink dress, soft glam, cherry blossoms — you name it"
+    },
+    {
+      "scene": "share",
+      "title": "Share-ready in one tap",
+      "subtitle": "Stories, before/after collages and 9:16 story cards"
+    },
+    {
+      "scene": "library",
+      "title": "Your gallery, your iPhone",
+      "subtitle": "Heart your favorites, all kept on your device"
+    },
+    {
+      "scene": "consent",
+      "title": "Your photos, your call",
+      "subtitle": "Explicit consent, on-device tools, never used to train AI"
+    },
+    {
+      "scene": "paywall",
+      "title": "Pricing that plays fair",
+      "subtitle": "No weekly plan, packs never expire, failed edits refunded"
+    }
+  ],
+  "tr": [
+    {
+      "scene": "result",
+      "title": "Yaz, ışıldasın",
+      "subtitle": "Pembe saç, soft glam, ışıltı: yaz, kaydır, farkı gör"
+    },
+    {
+      "scene": "home",
+      "title": "Her trend tek dokunuşta",
+      "subtitle": "Doll Box, Y2K Digicam, Ballet Core ve daha fazlası"
+    },
+    {
+      "scene": "results",
+      "title": "Hayal et, yaz, oluştur",
+      "subtitle": "14 stil, 5 boyut; Pro ile tek seferde 4 görsele kadar"
+    },
+    {
+      "scene": "editor",
+      "title": "Ne değişsin, sen söyle",
+      "subtitle": "Pembe elbise, soft glam, kiraz çiçekleri… ne istersen"
+    },
+    {
+      "scene": "share",
+      "title": "Paylaşmaya hazır",
+      "subtitle": "Hikâye, önce/sonra kolajı ve 9:16 kart tek dokunuşta"
+    },
+    {
+      "scene": "library",
+      "title": "Galerin sende kalır",
+      "subtitle": "Favorilerini kalple işaretle, hepsi cihazında saklanır"
+    },
+    {
+      "scene": "consent",
+      "title": "Karar her zaman senin",
+      "subtitle": "Onayın olmadan buluta gitmez, AI eğitiminde kullanılmaz"
+    },
+    {
+      "scene": "paywall",
+      "title": "Adil fiyat, sürpriz yok",
+      "subtitle": "Haftalık plan yok, paketler süresiz, hata olursa kredi iade"
+    }
+  ]
+}

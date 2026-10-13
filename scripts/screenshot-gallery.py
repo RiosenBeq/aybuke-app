@@ -38,16 +38,18 @@ SCENES = [
     ("paywall", "Paywall"),
     ("consent", "AI consent"),
     ("settings", "Settings"),
+    ("share", "Share"),
+    ("legal", "Privacy Policy"),
 ]
 
-# Golden Hour tokens (ios/App/DesignSystem/Palette.swift).
-BACKGROUND = (12, 12, 14)
-TEXT_PRIMARY = (245, 243, 238)
-TEXT_SECONDARY = (169, 167, 162)
-STROKE = (51, 51, 53)
-BEZEL = (28, 28, 32)
-GLOW = (255, 154, 61)
-GRADIENT = ((255, 194, 92), (255, 122, 61))
+# "Blush" tokens (ios/App/DesignSystem/Palette.swift).
+BACKGROUND = (248, 224, 234)
+TEXT_PRIMARY = (18, 18, 18)
+TEXT_SECONDARY = (92, 84, 87)
+STROKE = (226, 196, 208)
+BEZEL = (18, 18, 18)
+GLOW = (255, 255, 255)
+GRADIENT = ((18, 18, 18), (36, 39, 42))
 
 SCREEN_WIDTH = 600  # per-screen JPEGs shown in the README
 TILE_WIDTH = 300  # screen width inside overview.jpg
@@ -123,14 +125,14 @@ def overview(screens: list[tuple[Image.Image, str]]) -> Image.Image:
     height = header_height + len(rows) * (tile_height + caption_height) + (len(rows) - 1) * row_gap + MARGIN
     canvas = Image.new("RGB", (width, height), BACKGROUND)
 
-    # Warm "golden hour" glow behind the header.
+    # Soft white glow behind the header.
     glow = Image.new("L", (width, height), 0)
-    ImageDraw.Draw(glow).ellipse((width * 0.22, -height * 0.32, width * 0.78, height * 0.2), fill=80)
+    ImageDraw.Draw(glow).ellipse((width * 0.22, -height * 0.32, width * 0.78, height * 0.2), fill=170)
     canvas.paste(GLOW, (0, 0, width, height), glow.filter(ImageFilter.GaussianBlur(width * 0.07)))
 
     centered_text(canvas, 64, "Glowlit", title, TEXT_PRIMARY)
     centered_text(canvas, 188, "Make it glow.", tagline)
-    centered_text(canvas, 256, "AI photo editor & generator for iOS  ·  iOS Simulator, demo mode", subtitle, TEXT_SECONDARY)
+    centered_text(canvas, 256, "AI photo editor made for girls who glow  ·  iOS Simulator, demo mode", subtitle, TEXT_SECONDARY)
 
     y = header_height
     for row in rows:

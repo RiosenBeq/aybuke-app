@@ -7,7 +7,7 @@ Legend: ✅ done in this repository · ⏳ next · 🔭 later
 - ✅ Market & competitor research: 15 apps, user loves and pains, trends, monetization benchmarks → [01](01-market-research.md)
 - ✅ Brand & design research: hue map, palettes with WCAG checks, typography, naming, UX patterns, icon → [research](research/brand-and-design.md)
 - ✅ AI technology & compliance research: models, fal.ai, Supabase, Apple frameworks, App Review, EU AI Act → [research](research/tech-and-compliance.md)
-- ✅ Name decision: **Glowlit** (domain screen) · palette **Golden Hour** · **Bricolage Grotesque** · icon **Sunrise Split** → [02](02-brand-identity.md)
+- ✅ Name decision: **Glowlit** (domain screen) · palette **Blush** (pink, replacing the original Golden Hour amber) · **Bricolage Grotesque** + New York Italic accents · icon **Sunrise Split** in pink → [02](02-brand-identity.md)
 - ✅ Product spec: positioning, features, flows, pricing, unit economics, KPIs → [03](03-product-spec.md)
 
 ## Phase 1 — Foundation ✅
@@ -15,7 +15,7 @@ Legend: ✅ done in this repository · ⏳ next · 🔭 later
 - ✅ Xcode 16+ project (synchronized folder), shared scheme, StoreKit test configuration
 - ✅ `AppCore` package
   - API contract, credit wallet, catalogs, prompt builder, content policy, polling
-  - 48 unit tests, run on Linux and macOS
+  - 65 unit tests (incl. developer-mode AI providers and the legal Markdown parser), run on Linux and macOS
 - ✅ Design system
   - Tokens: palette, type, metrics
   - Components: buttons, chips, badges, cards, aurora background, generating overlay, before/after slider, template card, toast, share sheet
@@ -61,7 +61,8 @@ Legend: ✅ done in this repository · ⏳ next · 🔭 later
 **Legal and brand**
 - ⏳ Clear the name **Glowlit**: App Store/Play search; USPTO/EUIPO classes 9 and 42; social handles
 - ⏳ Register `glowlit.app`
-- ⏳ Publish Privacy Policy, Terms of Use (EULA) and the support email
+- ✅ Drafted Terms of Use (EULA), Privacy Policy, Acceptable Use Policy (EN/TR) and the KVKK notice, bundled in the app and published under `docs/legal/` → [legal/README.md](../legal/README.md)
+- ⏳ Lawyer review, fill in `legal/config.json`, publish at stable URLs, sign DPAs and KVKK standard contracts
 
 **App Store**
 - ⏳ App Store Connect setup
@@ -70,14 +71,17 @@ Legend: ✅ done in this repository · ⏳ next · 🔭 later
   - Set `APPLE_APP_ID`
 - ⏳ App Store Server Notifications V2 endpoint for refunds and revocations
 - ⏳ Age rating questionnaire (target 13+/16+) and the Declared Age Range API
-- ⏳ Build with the latest SDK (iOS 26/27); Icon Composer icon with dark, clear and tinted variants
-- ⏳ App Store assets: title, subtitle, keywords, 6 screenshots, header asset, Custom Product Pages
+- ✅ Pink app icon with dark and tinted variants (`scripts/render-brand-assets.py`)
+- ⏳ Build with the latest SDK (iOS 26/27); Icon Composer `.icon` with clear variants
+- ✅ App Store copy (EN/TR), 8 generated screenshots per language, social images → [marketing](marketing/README.md)
+- ⏳ Recapture the screenshots with real AI results (needs an AI key), header asset, Custom Product Pages
 
 **Hardening and quality**
 - ⏳ App Attest + DeviceCheck + `appTransactionID` binding against free-credit farming
 - ⏳ QA identity fidelity across skin tones and hair textures; red-team the safety filters and keep evidence logs
 - ⏳ Replace the template card art with real before/after thumbnails (diverse casting)
-- ⏳ Backend `report` endpoint, ban list and abuse inbox (1.2)
+- ✅ Backend `report` endpoint + `reports` table (12-month retention) wired to "Report this image"
+- ⏳ Ban list and an abuse inbox/review routine (1.2)
 
 ## Phase 5 — Growth 🔭
 
@@ -90,3 +94,17 @@ Legend: ✅ done in this repository · ⏳ next · 🔭 later
 - 🔭 Localization (ES, PT-BR, DE, FR, TR); iPhone Duo adaptive layouts; iPad
 - 🔭 Swift 6 strict concurrency; UI tests; snapshot tests
 - 🔭 Analytics (privacy-friendly), paywall experiments, Apple Ads
+
+## Phase 5 — Girls-first redesign and growth ✅ (October 2026)
+
+- ✅ Pink "Blush" palette (sampled from the owner's reference brand), light-first with Dark and Automatic appearances
+- ✅ Girls-first catalog: 30 looks in Trending, Glow-up looks, Aesthetic edits, Dreamy portraits, Spooky season, Art and For your shop; 14 styles incl. Pastel Dream and Kawaii; identity clause now protects body shape too
+- ✅ Share composer: Instagram Stories, before/after collage, 9:16 story card, caption and hashtags, copy image, AI-label tip
+- ✅ Favorites in My Works, sparkle celebration, editorial serif accents, Settings › Appearance and "Spread the glow"
+- ✅ Developer AI key slot (`ios/Config/Secrets.xcconfig`, DEBUG only) with direct fal.ai, OpenAI and Gemini adapters
+- ✅ Landing page (`web/`) with legal pages and a manual GitHub Pages workflow
+- ⏳ Add the owner's AI key and verify real results end to end; recapture marketing screenshots
+- ⏳ Meta App ID for direct Instagram Stories sharing (`instagramAppID`)
+- ⏳ Typeface: switch the display font to Poppins once the font files are approved for download
+- 🔭 Backend adapters for OpenAI/Gemini if production moves off fal.ai
+

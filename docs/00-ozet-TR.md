@@ -2,6 +2,28 @@
 
 > Bu belge, araştırmayla alınan tüm kararların Türkçe özetidir. Ayrıntılar ve kaynaklar İngilizce belgelerdedir ([docs/README.md](README.md)).
 
+## Ekim 2026 güncellemesi: kızlara özel pembe Glowlit
+
+**Ne değişti?**
+- **Hedef kitle:** Glowlit artık kızlar ve genç kadınlar için tasarlandı ("made for girls who glow").
+- **Renkler:** Talep üzerine tamamen pembe, açık tonlu "Blush" paleti kullanılıyor: blush `#F7C1D9`, petal `#F8E0EA`, ink `#121212`, antrasit `#24272A`, kırık beyaz `#F8F8F6` ve beyaz. Ana butonlar siyah üzerine pembe yazı. Ayarlar'dan Açık (varsayılan), Koyu veya Otomatik görünüm seçilebiliyor.
+- **Tasarım detayları:** Başlıklarda zarif italik serif vurgular ("Watch it *glow.*"), kalp ve parıltı motifleri, başarı anında parıltı animasyonu, gölgeli beyaz kartlar. Pembe uygulama ikonunun koyu ve renklendirilmiş varyantları da var.
+- **Yeni şablonlar:** 30 görünüm. Örneğin Doll Box, Pembe Saç, Soft Glam, Bouncy Curls, Clean Girl, Ballet Core, Kiraz Çiçeği, Kafe Buluşması, Paris Gezisi, Peri Prensesi, Doğum Günü Glam ve Witchy Glam. 14 stil var (Pastel Dream ve Kawaii eklendi).
+  - Tüm şablonlar yüzü, ten rengini ve **vücut şeklini** korur.
+  - Vücut inceltme veya cilt açma gibi özellikler bilinçli olarak yok.
+- **Paylaşım (tanıtım için):** Yeni Paylaş ekranından Instagram Hikâyeler, Önce/Sonra kolajı, 9:16 hikâye kartı, görsel kopyalama, hazır açıklama ve hashtag'ler kullanılabiliyor. Ücretsiz paylaşımlarda küçük "Made with Glowlit" işareti var (Pro'da yok). Her dosyada görünmez "yapay zekâ ile yapıldı" etiketi korunuyor.
+- **Diğer yeni özellikler:** Galeride kalpli favoriler. "Bu görseli bildir" artık gerçekten backend'e gidiyor (`report` fonksiyonu ve `reports` tablosu).
+- **Yasal metinler:** Kullanım Koşulları, Gizlilik Politikası, Kabul Edilebilir Kullanım Politikası (İngilizce ve Türkçe) ve KVKK Aydınlatma Metni hazırlandı. GDPR, KVKK (7499 sayılı Kanun değişiklikleri dahil), CCPA, COPPA, Birleşik Krallık Yaşa Uygun Tasarım Kuralları, AB Yapay Zekâ Tüzüğü md. 50 ve Apple'ın EULA şartları kapsanıyor.
+  - Metinler uygulamanın içinde okunabiliyor ve ayrıca `docs/legal/` ile `web/legal/` altında yayınlanıyor.
+  - **Bunlar avukat incelemesi gereken taslaklardır.** Şirket bilgilerini `legal/config.json` dosyasına girin ve `legal/README.md` kontrol listesini uygulayın.
+- **AI API anahtarı yeri:**
+  - **Denemek için:** `ios/Config/Secrets.xcconfig` dosyasına `GL_AI_PROVIDER` (fal, openai veya gemini) ve `GL_AI_API_KEY` yazılır. Bu dosya git'e girmez ve yalnızca geliştirme derlemelerinde okunur.
+  - **Canlı sürüm için:** Anahtar backend'de `FAL_KEY` olarak saklanır.
+- **Tanıtım kiti (`docs/marketing/`):** App Store metinleri (İngilizce ve Türkçe, karakter sayılı), sosyal medya kiti (biyografiler, hashtag'ler, 20 gönderi, 10 video senaryosu, influencer şablonları), 30 günlük lansman planı, 8'er App Store ekran görüntüsü ve sosyal medya görselleri.
+- **Web sitesi (`web/`):** Tanıtım sayfası ve yasal sayfalar hazır. GitHub Pages ile yayınlanabilir (`.github/workflows/website.yml`).
+
+**Sizin yapmanız gerekenler:** Yasal metinleri avukata inceletin ve şirket bilgilerini girin. AI API anahtarını iletin. Instagram Hikâyeler'e doğrudan paylaşım için bir Meta App ID alın. `glowlit.app` alan adını ve marka tescilini kontrol edin.
+
 ![Glowlit marka panosu](assets/brand/brand-board.png)
 
 ## Ne yaptık?
@@ -16,14 +38,14 @@ Bu brief'i üç paralel araştırmayla (pazar, marka/tasarım, teknoloji/uyumlul
    - 2025–2026 viral trendleri ve fiyatlandırma kıyasları (RevenueCat, Adapty) derlendi.
    - Renk haritası, yazı tipi ve isim çalışması yapıldı.
    - AI modelleri, maliyetler, App Store kuralları ve AB Yapay Zeka Yasası incelendi.
-2. **Marka:** isim **Glowlit**, slogan *"Make it glow."*, "Golden Hour" amber paleti, Bricolage Grotesque yazı tipi, "Sunrise Split" ikonu.
+2. **Marka:** isim **Glowlit**, slogan *"Make it glow."*, pembe "Blush" paleti (Ekim 2026'dan beri; başlangıçta "Golden Hour" amberdi), Bricolage Grotesque + New York Italic yazı tipleri, pembe "Sunrise Split" ikonu.
 3. **iOS uygulaması (SwiftUI):**
    - Ekranlar: onboarding, AI onayı, keşfet, metinden görsel oluşturma, editör (Magic Edit, stiller, iyileştirme, arka plan silme, nesne silme, ayarlar), kütüphane, paywall, ayarlar.
    - Backend olmadan da tamamen çalışan **demo modu** var.
 4. **Backend (Supabase + fal.ai):**
    - Kimlik doğrulama, kredi defteri, Apple satın alma doğrulaması, güvenlik filtreleri ve asenkron AI iş kuyruğu.
 5. **Testler ve CI:**
-   - 48 Swift birim testi.
+   - 65 Swift birim testi.
    - Deno tip kontrolü ve lint.
    - Gerçek PostgreSQL üzerinde kredi defteri testleri.
    - macOS'ta Xcode derlemesi ve simülatör ekran görüntüleri.
@@ -43,11 +65,11 @@ Görüntüler, CI'daki Screenshots iş akışında iPhone Pro simülatöründe d
 - **Mağaza başlığı:** `Glowlit: AI Photo Editor`.
 - ⚠️ Lansmandan önce App Store, USPTO ve EUIPO marka taraması yapılmalı ve `glowlit.app` alınmalı.
 
-### Renk: "Golden Hour" amber
-- **Boş alan:** İncelenen 34 AI görsel markasının **hiçbiri** turuncu/amber ile öne çıkmıyor. Mor ("AI moru"), mavi, pembe ve siyah çok kalabalık.
-- **Anlam:** Fotoğrafçılığın özü ışık; altın saat ışığı cildi en güzel gösteren ışık.
-- **Koyu tema:** Arayüz koyu (#0C0C0E). Foto/Video paywall'larının yaklaşık %79'u koyu ve fotoğraflar koyu zeminde öne çıkıyor.
-- **Kural:** Her ekranda yalnızca **bir** amber eleman bulunur (ana aksiyon). Amber üzerine beyaz yazı **yazılmaz** (kontrast 2.1:1); her zaman koyu mürekkep (#1A1206) kullanılır, kontrast 8.8:1.
+### Renk: "Blush" (pembe, açık tema)
+- **Ekim 2026'dan itibaren:** Talep üzerine uygulama tamamen pembe tonlarda. Arka plan petal `#F8E0EA`, kartlar beyaz, vurgu blush `#F7C1D9`, yazılar ink `#121212`.
+- **Kontrast:** Pembe zeminde siyah yazı 15:1, siyah buton üzerinde pembe yazı 12:1. Pembe üzerine beyaz yazı **kullanılmaz** (1.6:1).
+- **Kural:** Her ekranda tek bir ana aksiyon vardır: siyah, hap biçimli buton ve pembe yazı. Seçili öğeler pembe, fotoğrafların üzerine renk filtresi konmaz.
+- **Önceki tercih:** Araştırmadaki "Golden Hour" amber ve koyu tema emekliye ayrıldı; gerekçeleri İngilizce belgede kayıtlı.
 
 ### Yazı tipi: Bricolage Grotesque + SF Pro
 - **Seçim:** Başlıklarda karakterli, sıcak bir grotesk; gövde metinlerinde Apple'ın SF Pro'su (Dynamic Type desteği için).
@@ -55,7 +77,7 @@ Görüntüler, CI'daki Screenshots iş akışında iPhone Pro simülatöründe d
 - **Elenenler:** Space Grotesk ve Sora sıradan "AI/web3" görünümü veriyor (Sora ayrıca OpenAI ile karışıyor); Unbounded kripto çağrışımı taşıyor.
 
 ### İkon: "Sunrise Split"
-Amber zemin üzerinde yarısı karanlık (öncesi), yarısı aydınlık (sonrası) bir disk ve ortada karşılaştırma tutamacı. Hem ışığı, hem önce/sonra dönüşümünü, hem de uygulamanın imza etkileşimini anlatıyor. 29 piksele küçültüldüğünde de okunuyor.
+Pembe zemin üzerinde yarısı siyah (öncesi), yarısı beyaz (sonrası) bir disk, ortada karşılaştırma tutamacı ve iki parıltı. Hem ışığı, hem önce/sonra dönüşümünü, hem de uygulamanın imza etkileşimini anlatıyor. 29 piksele küçültüldüğünde de okunuyor.
 
 ### Fiyatlandırma: "Adil Fiyat Sözü"
 Araştırmanın en net bulgusu: kullanıcıların **1 numaralı şikâyeti haftalık deneme tuzakları ve sürpriz ücretler**. Yıllık plan ise kurulum başına yaklaşık **5 kat** daha fazla gelir getiriyor; haftalık abonelerin bir yıl sonra yalnızca %1–2'si kalıyor.

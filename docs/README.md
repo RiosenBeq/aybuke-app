@@ -4,11 +4,13 @@
 |---|---|---|
 | 00 | [Yönetici özeti (TR)](00-ozet-TR.md) | Turkish executive summary of every decision |
 | 01 | [Market research](01-market-research.md) | Market size, 15 competitors, user loves/pains, trends, monetization benchmarks → implications |
-| 02 | [Brand identity](02-brand-identity.md) | Name (Glowlit) and domain screen, Golden Hour palette with contrast, typography, icon, voice, App Store copy |
+| 02 | [Brand identity](02-brand-identity.md) | Name (Glowlit) and domain screen, the pink "Blush" palette with contrast, typography, icon, voice, App Store copy |
 | 03 | [Product spec](03-product-spec.md) | The expanded brief: positioning, users, features, flows, pricing, unit economics, KPIs, launch |
 | 04 | [Architecture](04-architecture.md) | iOS app, AppCore, Supabase backend, AI job lifecycle, security, testing |
 | 05 | [Compliance](05-compliance.md) | App Store Review Guidelines, EU AI Act, GDPR and US laws — status per item |
 | 06 | [Roadmap](06-roadmap.md) | Task breakdown by phase: done / next / later |
+| — | [Marketing kit](marketing/README.md) | App Store copy (EN/TR), social media kit, launch plan, App Store screenshots and social images |
+| — | [Legal (published copies)](legal/) | Terms, Privacy Policy, Acceptable Use (EN/TR) and the KVKK notice; sources and checklist in [`/legal`](../legal/README.md) |
 
 **Full research reports** (with sources and confidence tags):
 

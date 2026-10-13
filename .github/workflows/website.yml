@@ -1,0 +1,34 @@
+name: Website
+
+# Publishes web/ (landing page + legal pages) to GitHub Pages.
+# One-time setup: Settings → Pages → Source: GitHub Actions. Run it manually
+# from the Actions tab whenever the site or the legal documents change.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    name: Deploy to GitHub Pages
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Legal pages are up to date
+        run: python3 scripts/build-legal.py --check
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: web
+      - id: deployment
+        uses: actions/deploy-pages@v4
