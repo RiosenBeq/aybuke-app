@@ -53,7 +53,7 @@ struct AccountPromptSheet: View {
 
     var body: some View {
         VStack(spacing: 20) {
-            Image(systemName: "iphone.gen3.radiowaves.left.and.right")
+            Image(systemName: Platform.isMac ? "macbook.and.iphone" : "iphone.gen3.radiowaves.left.and.right")
                 .font(.system(size: 30, weight: .semibold))
                 .foregroundStyle(Palette.ink)
                 .frame(width: 72, height: 72)
@@ -61,20 +61,22 @@ struct AccountPromptSheet: View {
                 .padding(.top, 28)
 
             VStack(spacing: 8) {
-                Text(styled: "Keep your glow on *every iPhone*", size: 26)
+                Text(styled: Platform.isMac ? "Keep your glow on *every device*" : "Keep your glow on *every iPhone*", size: 26)
                     .multilineTextAlignment(.center)
                     .foregroundStyle(Palette.textPrimary)
-                Text("Sign in with Apple and Pro and your credits come with you when you switch or add a phone.")
+                Text(Platform.isMac
+                     ? "Sign in with Apple and Pro and your credits come with you when you switch or add a device."
+                     : "Sign in with Apple and Pro and your credits come with you when you switch or add a phone.")
                     .font(.subheadline)
                     .multilineTextAlignment(.center)
                     .foregroundStyle(Palette.textSecondary)
             }
 
             VStack(alignment: .leading, spacing: 10) {
-                AccountPoint(symbol: "crown.fill", text: "Pro on all your iPhones")
-                AccountPoint(symbol: "bolt.fill", text: "Credits never get stuck on an old phone")
+                AccountPoint(symbol: "crown.fill", text: Platform.isMac ? "Pro on all your devices" : "Pro on all your iPhones")
+                AccountPoint(symbol: "bolt.fill", text: Platform.isMac ? "Credits never get stuck on an old device" : "Credits never get stuck on an old phone")
                 AccountPoint(symbol: "eye.slash.fill", text: "Hide your email if you like")
-                AccountPoint(symbol: "photo.on.rectangle", text: "Your photos stay on this iPhone")
+                AccountPoint(symbol: "photo.on.rectangle", text: Platform.isMac ? "Your photos stay on this Mac" : "Your photos stay on this iPhone")
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(16)

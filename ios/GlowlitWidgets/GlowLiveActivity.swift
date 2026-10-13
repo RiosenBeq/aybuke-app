@@ -1,3 +1,5 @@
+// Live Activities are iPhone and iPad only (ActivityKit is unavailable in Mac Catalyst).
+#if !targetEnvironment(macCatalyst)
 import ActivityKit
 import SwiftUI
 import WidgetKit
@@ -201,3 +203,4 @@ private struct GlowProgressBar: View {
         .background(Capsule().fill(track).frame(height: 4))
     }
 }
+#endif

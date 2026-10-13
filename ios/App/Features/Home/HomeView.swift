@@ -3,7 +3,6 @@ import AppCore
 
 struct HomeView: View {
     @Environment(AppModel.self) private var app
-    @State private var showSettings = false
     @State private var legalDocument: LegalDocument?
     @State private var openCategory: TemplateCategory?
     @State private var showInvite = false
@@ -54,10 +53,6 @@ struct HomeView: View {
                 CategoryView(category: category)
                     .environment(app)
             }
-            .sheet(isPresented: $showSettings) {
-                SettingsView()
-                    .environment(app)
-            }
             .sheet(isPresented: $showInvite) {
                 InviteView()
                     .environment(app)
@@ -66,7 +61,7 @@ struct HomeView: View {
             .legalSheet($legalDocument)
             #if DEBUG
             .onAppear {
-                if ScreenshotScene.current == .settings { showSettings = true }
+                if ScreenshotScene.current == .settings { app.isSettingsPresented = true }
                 if ScreenshotScene.current == .invite { showInvite = true }
                 if ScreenshotScene.current == .legal { legalDocument = .privacy }
             }
@@ -93,7 +88,7 @@ struct HomeView: View {
             }
             .tourAnchor(.credits)
             Button {
-                showSettings = true
+                app.isSettingsPresented = true
             } label: {
                 Image(systemName: "gearshape.fill")
             }

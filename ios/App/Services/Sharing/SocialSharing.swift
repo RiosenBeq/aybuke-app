@@ -77,3 +77,55 @@ struct ActivityItems: Identifiable {
     let id = UUID()
     let items: [Any]
 }
+
+extension View {
+    /// The system share sheet for `item`: a sheet on iPhone and iPad. The Mac
+    /// shows a share popover instead of a sheet, so there it's presented from
+    /// an invisible view behind this one and `item` is cleared when it closes.
+    func shareSheet(item: Binding<ActivityItems?>) -> some View {
+        #if targetEnvironment(macCatalyst)
+        background(MacSharePresenter(item: item))
+        #else
+        sheet(item: item) { item in
+            ShareSheet(items: item.items)
+                .presentationDetents([.medium, .large])
+        }
+        #endif
+    }
+}
+
+#if targetEnvironment(macCatalyst)
+/// Presents the share popover once per request; the request is cleared when
+/// she picks an app or closes it.
+private struct MacSharePresenter: UIViewControllerRepresentable {
+    @Binding var item: ActivityItems?
+
+    final class Coordinator {
+        var shownID: UUID?
+    }
+
+    func makeCoordinator() -> Coordinator { Coordinator() }
+
+    func makeUIViewController(context: Context) -> UIViewController {
+        let anchor = UIViewController()
+        anchor.view.isUserInteractionEnabled = false
+        return anchor
+    }
+
+    func updateUIViewController(_ anchor: UIViewController, context: Context) {
+        guard let request = item, request.id != context.coordinator.shownID, anchor.view.window != nil else { return }
+        context.coordinator.shownID = request.id
+        let share = UIActivityViewController(activityItems: request.items, applicationActivities: nil)
+        share.completionWithItemsHandler = { _, _, _, _ in
+            if item?.id == request.id { item = nil }
+        }
+        if let popover = share.popoverPresentationController {
+            let bounds = anchor.view.bounds
+            popover.sourceView = anchor.view
+            popover.sourceRect = CGRect(x: bounds.midX, y: bounds.midY, width: 1, height: 1)
+            popover.permittedArrowDirections = []
+        }
+        anchor.present(share, animated: true)
+    }
+}
+#endif

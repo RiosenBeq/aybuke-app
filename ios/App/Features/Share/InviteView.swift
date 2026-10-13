@@ -52,10 +52,7 @@ struct InviteView: View {
             let link = link
             card = await Task.detached(priority: .userInitiated) { InviteCard.render(link: link) }.value
         }
-        .sheet(item: $activityItems) { item in
-            ShareSheet(items: item.items)
-                .presentationDetents([.medium, .large])
-        }
+        .shareSheet(item: $activityItems)
     }
 
     private var preview: some View {
@@ -79,12 +76,15 @@ struct InviteView: View {
 
     private var actions: some View {
         VStack(spacing: 12) {
-            Button {
-                Task { await shareToStories() }
-            } label: {
-                Label("Share to Stories", systemImage: "camera.circle.fill")
+            // No Instagram app on the Mac: the message (with the card) is the way there.
+            if !Platform.isMac {
+                Button {
+                    Task { await shareToStories() }
+                } label: {
+                    Label("Share to Stories", systemImage: "camera.circle.fill")
+                }
+                .buttonStyle(.primary)
             }
-            .buttonStyle(.primary)
 
             HStack(spacing: 12) {
                 Button {

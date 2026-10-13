@@ -1,5 +1,5 @@
 import Foundation
-#if canImport(ActivityKit) && os(iOS)
+#if canImport(ActivityKit) && os(iOS) && !targetEnvironment(macCatalyst)
 import ActivityKit
 #endif
 
@@ -191,7 +191,8 @@ extension String {
     }
 }
 
-#if canImport(ActivityKit) && os(iOS)
+// Live Activities are iPhone and iPad only: ActivityKit is unavailable in Mac Catalyst.
+#if canImport(ActivityKit) && os(iOS) && !targetEnvironment(macCatalyst)
 public struct GlowActivityAttributes: ActivityAttributes {
     public struct ContentState: Codable, Hashable, Sendable {
         public var stage: GlowJobStage

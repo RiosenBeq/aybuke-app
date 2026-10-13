@@ -45,14 +45,20 @@ struct GeneratingOverlay: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     private var tips: [String] {
-        [
+        var tips = [
             String(localized: "Tip: be specific — lighting, mood and style words help a lot."),
             String(localized: "Tip: hold the photo to compare with your original."),
-            String(localized: "Background removal runs on your phone and is always free."),
+            Platform.isMac
+                ? String(localized: "Background removal runs on your Mac and is always free.")
+                : String(localized: "Background removal runs on your phone and is always free."),
             String(localized: "Your photos are never used to train AI and are deleted from our servers within \(app.config.retentionPhrase)."),
             String(localized: "Tip: try “soft glam”, “pink hair” or “golden hour”."),
-            String(localized: "Share straight to Instagram Stories or as a before/after collage."),
         ]
+        // There's no Instagram app on the Mac.
+        if !Platform.isMac {
+            tips.append(String(localized: "Share straight to Instagram Stories or as a before/after collage."))
+        }
+        return tips
     }
 
     var body: some View {

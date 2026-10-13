@@ -152,7 +152,9 @@ struct EditHubView: View {
                     HStack(alignment: .top, spacing: 10) {
                         Image(systemName: "lock.shield")
                             .foregroundStyle(Palette.success)
-                        Text("Background removal and adjustments run on your iPhone. Cloud edits are never used to train AI and are deleted from our servers within \(app.config.retentionPhrase).")
+                        Text(Platform.isMac
+                             ? "Background removal and adjustments run on your Mac. Cloud edits are never used to train AI and are deleted from our servers within \(app.config.retentionPhrase)."
+                             : "Background removal and adjustments run on your iPhone. Cloud edits are never used to train AI and are deleted from our servers within \(app.config.retentionPhrase).")
                             .font(.footnote)
                             .foregroundStyle(Palette.textSecondary)
                     }

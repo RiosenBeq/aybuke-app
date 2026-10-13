@@ -161,12 +161,14 @@ struct VideoEditorView: View {
                         dismiss()
                     } label: { Image(systemName: "xmark") }
                     .accessibilityLabel("Close")
+                    .macKeyboardShortcut(.cancelAction)
                 }
                 ToolbarItemGroup(placement: .primaryAction) {
                     Button { Task { await shareVideo() } } label: { Image(systemName: "paperplane.fill") }
                         .accessibilityLabel("Share")
                     Button("Save") { Task { await saveVideo() } }
                         .fontWeight(.bold)
+                        .macKeyboardShortcut(KeyboardShortcut("s"))
                 }
             }
         }
@@ -180,10 +182,7 @@ struct VideoEditorView: View {
         .animation(.easeInOut(duration: 0.25), value: model.isExporting)
         .task { await model.load() }
         .onDisappear { model.stop() }
-        .sheet(item: $shareItems) { item in
-            ShareSheet(items: item.items)
-                .presentationDetents([.medium, .large])
-        }
+        .shareSheet(item: $shareItems)
     }
 
     private var playerCard: some View {

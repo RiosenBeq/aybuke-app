@@ -274,7 +274,9 @@ private struct TryItPage: View {
             Spacer(minLength: 8)
             Text(styled: "See the *glow*\non your own photo", size: 34)
                 .foregroundStyle(Palette.textPrimary)
-            Text("A free enhance that runs on your iPhone — nothing is uploaded.")
+            Text(Platform.isMac
+                 ? "A free enhance that runs on your Mac — nothing is uploaded."
+                 : "A free enhance that runs on your iPhone — nothing is uploaded.")
                 .font(.body)
                 .foregroundStyle(Palette.textSecondary)
 

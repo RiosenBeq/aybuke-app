@@ -52,7 +52,9 @@ struct SettingsView: View {
                 }
                 Button("Cancel", role: .cancel) {}
             } message: {
-                Text("This removes every image saved in \(Brand.name) on this iPhone. Photos you saved to your library stay there.")
+                Text(Platform.isMac
+                     ? "This removes every image saved in \(Brand.name) on this Mac. Photos you saved to your library stay there."
+                     : "This removes every image saved in \(Brand.name) on this iPhone. Photos you saved to your library stay there.")
             }
             .confirmationDialog("Delete my data?", isPresented: $confirmDeleteAccount, titleVisibility: .visible) {
                 Button("Delete my data", role: .destructive) {
@@ -128,7 +130,9 @@ struct SettingsView: View {
                 Button("Sign out", role: .destructive) { confirmSignOut = true }
             } else {
                 VStack(alignment: .leading, spacing: 12) {
-                    Text("Keep Pro and your credits when you switch or add an iPhone. Signing in is optional.")
+                    Text(Platform.isMac
+                         ? "Keep Pro and your credits when you switch or add a device. Signing in is optional."
+                         : "Keep Pro and your credits when you switch or add an iPhone. Signing in is optional.")
                         .font(.subheadline)
                         .foregroundStyle(Palette.textSecondary)
                     AppleSignInButton()
@@ -138,9 +142,13 @@ struct SettingsView: View {
         } header: {
             Text("Account")
         } footer: {
-            Text(app.canUseAccounts
-                 ? "Your photos stay on each iPhone and are never uploaded to sync. We only learn your Apple ID email if you share it, and you can hide it."
-                 : "Accounts need the \(Brand.name) server, which isn't connected in this demo build.")
+            if !app.canUseAccounts {
+                Text("Accounts need the \(Brand.name) server, which isn't connected in this demo build.")
+            } else if Platform.isMac {
+                Text("Your photos stay on each device and are never uploaded to sync. We only learn your Apple ID email if you share it, and you can hide it.")
+            } else {
+                Text("Your photos stay on each iPhone and are never uploaded to sync. We only learn your Apple ID email if you share it, and you can hide it.")
+            }
         }
         .listRowBackground(Palette.surface)
     }
@@ -176,7 +184,7 @@ struct SettingsView: View {
             }
             notificationToggle(.weeklyLook, title: "One new look a week", detail: "Fridays at 5 pm.")
             if app.notifier.authorization == .denied, let settings = URL(string: UIApplication.openNotificationSettingsURLString) {
-                Button("Allow notifications in iOS Settings") { openURL(settings) }
+                Button(Platform.isMac ? "Allow notifications in System Settings" : "Allow notifications in iOS Settings") { openURL(settings) }
             }
         } header: {
             Text("Notifications")
@@ -222,17 +230,20 @@ struct SettingsView: View {
         } header: {
             Text("Appearance")
         } footer: {
-            Text("Light is our signature pink look. Automatic follows your iPhone.")
+            Text(Platform.isMac
+                 ? "Light is our signature pink look. Automatic follows your Mac."
+                 : "Light is our signature pink look. Automatic follows your iPhone.")
         }
         .listRowBackground(Palette.surface)
     }
 
     /// iOS keeps a language per app: this opens Glowlit's page in Settings,
-    /// where "Language" lists every language the app speaks.
+    /// where "Language" lists every language the app speaks. The Mac keeps
+    /// it under System Settings › General › Language & Region › Applications.
     private var languageSection: some View {
         Section {
             Button {
-                if let url = URL(string: UIApplication.openSettingsURLString) { openURL(url) }
+                if let url = URL(string: Platform.isMac ? Self.macLanguageSettings : UIApplication.openSettingsURLString) { openURL(url) }
             } label: {
                 HStack {
                     Label("Language", systemImage: "globe")
@@ -246,10 +257,14 @@ struct SettingsView: View {
                 }
             }
         } footer: {
-            Text("Glowlit follows your iPhone's language. To pick another one, tap Language, then choose it in iOS Settings.")
+            Text(Platform.isMac
+                 ? "Glowlit follows your Mac's language. To pick another one, click Language, then add Glowlit under Applications."
+                 : "Glowlit follows your iPhone's language. To pick another one, tap Language, then choose it in iOS Settings.")
         }
         .listRowBackground(Palette.surface)
     }
+
+    private static let macLanguageSettings = "x-apple.systempreferences:com.apple.Localization-Settings.extension"
 
     private var currentLanguage: String {
         let code = Bundle.main.preferredLocalizations.first ?? "en"

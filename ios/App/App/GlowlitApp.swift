@@ -25,10 +25,19 @@ struct GlowlitApp: App {
                 .environment(app)
                 .preferredColorScheme(app.appearance.colorScheme)
                 .task { await app.start() }
+                #if targetEnvironment(macCatalyst)
+                // One window on the Mac: links from widgets and notifications
+                // go to the open window instead of opening another one.
+                .handlesExternalEvents(preferring: ["*"], allowing: ["*"])
+                .background { MacWindowSetup() }
+                #endif
         }
         .onChange(of: scenePhase) { _, phase in
             if phase == .active { app.becameActive() }
         }
         .modelContainer(container)
+        #if targetEnvironment(macCatalyst)
+        .commands { GlowlitCommands(app: app) }
+        #endif
     }
 }

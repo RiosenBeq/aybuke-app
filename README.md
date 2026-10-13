@@ -2,7 +2,7 @@
 
 ![Glowlit](docs/assets/brand/brand-board.png)
 
-**Glowlit** is an iPhone and iPad app for AI photo editing and AI image generation, with free on-device effects and video editing, **made for girls who glow**.
+**Glowlit** is an iPhone and iPad app, also built for the Mac with Mac Catalyst, for AI photo editing and AI image generation, with free on-device effects and video editing, **made for girls who glow**.
 
 > Working on this repository with an AI agent (or new to it)? Start with [AGENTS.md](AGENTS.md): what the app is, where the code lives, how to build and test, the rules and what's next.
 
@@ -16,6 +16,7 @@
 - **Lives on your Home Screen:** "Today's trend" and "My glow" widgets, plus a Live Activity in the Dynamic Island and on the Lock Screen while the AI works.
 - **Things other apps don't do:** an on-device **likeness check** after every people edit, **Best shot** (ranks your selfies by light and focus, never by looks), **Help me pick** ("A or B?" cards for friends), a **kindness reminder** when friends are in the photo, and an optional visible **AI-edited** label. See [the audit](docs/07-audit-and-differentiators.md).
 - **Speaks your language, on iPhone and iPad:** 12 languages, a universal layout with adaptive grids and readable widths, and the iOS 26 Liquid Glass tab bar and editor toolbar (with a frosted fallback on iOS 17–18).
+- **On the Mac too:** the same app on macOS 14+ (Mac Catalyst), with a menu bar (⌘N New Creation, ⌘O Open Photo…, ⌘1–⌘4 for the tabs, ⌘, Settings), drag and drop of photo files, Esc and ⌘S in the editors, and a resizable window. One purchase covers iPhone, iPad and Mac. The Live Activity and Instagram Stories sharing are iPhone and iPad only.
 - **Easy to find your way:** a 7-step guided tour after onboarding spotlights Magic Edit, the daily credits, the free tools, Create, photos and videos, the private gallery and Settings. Replay it from Settings → "Show me around".
 - **Optional account:** Sign in with Apple keeps Pro and credits on every iPhone. No sign-up wall.
 
@@ -55,7 +56,7 @@ Captured on an iPhone simulator in demo mode (AI results are simulated). The [Sc
 
 ## Quick start
 
-**Requirements:** Xcode 16 or newer (Xcode 26 for the iOS 26 Liquid Glass look; older SDKs build a frosted fallback) and an iOS 17+ iPhone or iPad, simulator or device.
+**Requirements:** Xcode 16 or newer (Xcode 26 for the iOS 26 Liquid Glass look; older SDKs build a frosted fallback) and an iOS 17+ iPhone or iPad, simulator or device. For the Mac app, pick the **My Mac (Mac Catalyst)** destination (macOS 14+); [AGENTS.md](AGENTS.md#3-build-run-test) explains running it without an Apple account.
 
 1. Open `ios/Glowlit.xcodeproj` and run the **Glowlit** scheme. Xcode resolves the RevenueCat Swift package on first open.
 2. With no AI key or backend configured, the app runs in **demo mode**: every screen works offline and AI results are simulated on-device and stamped "DEMO PREVIEW".
@@ -103,7 +104,7 @@ Cloud jobs run on xAI Grok Imagine (`grok-imagine-image-2.0` at 1k): low quality
 
 ## Languages
 
-The app speaks 12 languages: English, Turkish, Spanish, Brazilian Portuguese, French, German, Italian, Russian, Japanese, Korean, Simplified Chinese and Indonesian. It follows the iPhone's language. Settings → **Language** opens iOS Settings, where Glowlit can have a language of its own. The legal documents are in English and Turkish only; every other language shows the English versions.
+The app speaks 12 languages: English, Turkish, Spanish, Brazilian Portuguese, French, German, Italian, Russian, Japanese, Korean, Simplified Chinese and Indonesian. It follows the iPhone's language. Settings → **Language** opens iOS Settings, where Glowlit can have a language of its own; on the Mac it opens System Settings → Language & Region, where Glowlit can be added under Applications. The legal documents are in English and Turkish only; every other language shows the English versions.
 
 **Add or change a string**
 - **App and widget text:** write it in English in SwiftUI (`Text("…")`, `String(localized:)`). Xcode adds it to a String Catalog when you build: `ios/App/Resources/Localizable.xcstrings` (app), `ios/GlowlitWidgets/Localizable.xcstrings` (widgets) or `ios/App/Resources/InfoPlist.xcstrings` (permission prompts and other Info.plist text). Translate it in Xcode's catalog editor.
@@ -146,7 +147,7 @@ scripts/    Tooling: catalog export, core strings for translation, legal build, 
 
 | Layer | Technology |
 |---|---|
-| iOS app | SwiftUI · Observation · SwiftData · StoreKit 2 · Vision · Core Image · AVFoundation · PhotosUI · WidgetKit · ActivityKit · String Catalogs (12 languages) · RevenueCat (observer mode) · iOS 17+, iPhone and iPad, Liquid Glass on iOS 26 |
+| iOS app | SwiftUI · Observation · SwiftData · StoreKit 2 · Vision · Core Image · AVFoundation · PhotosUI · WidgetKit · ActivityKit · String Catalogs (12 languages) · RevenueCat (observer mode) · iOS 17+, iPhone and iPad, Mac Catalyst (macOS 14+), Liquid Glass on iOS 26 |
 | Design | "Blush" palette (blush `#F7C1D9`, petal `#F8E0EA`, ink `#121212`) for text and controls · "Aura" accents (pink `#FF5CA1`, lilac `#A78BFA`, peach `#FFAA78`, butter `#FFDE6E`, mint `#78E1CD`) for the app icon, share cards and template art · Poppins (OFL) with New York Italic accents · light-first, with Dark and Automatic appearances |
 | AI | Backend: xAI Grok Imagine (`grok-imagine-image-2.0`), or fal.ai (Nano Banana 2, SeedVR2, object removal) with `AI_PROVIDER=fal`. Developer mode: xAI, fal.ai, OpenAI Images or Google Gemini directly |
 | Backend | Supabase (anonymous Auth, Postgres with RLS, Edge Functions/Deno) · Apple App Store Server Library |

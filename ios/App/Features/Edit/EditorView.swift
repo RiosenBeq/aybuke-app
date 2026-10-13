@@ -80,6 +80,7 @@ struct EditorView: View {
             }
             .buttonStyle(.icon)
             .accessibilityLabel("Close editor")
+            .macKeyboardShortcut(.cancelAction)
 
             Button { model.undo() } label: { Image(systemName: "arrow.uturn.backward") }
                 .buttonStyle(.icon)
@@ -121,6 +122,7 @@ struct EditorView: View {
             .buttonStyle(.plain)
             .disabled(isSaving)
             .accessibilityLabel("Save to Photos")
+            .macKeyboardShortcut(KeyboardShortcut("s"))
         }
         .padding(.horizontal, Metrics.gutter)
         .padding(.top, 6)
@@ -305,7 +307,7 @@ struct EditorView: View {
         case .removeBackground?:
             OneTapPanel(
                 title: "Remove background",
-                message: "Runs privately on your iPhone. Always free.",
+                message: Platform.isMac ? "Runs privately on your Mac. Always free." : "Runs privately on your iPhone. Always free.",
                 buttonTitle: "Remove background",
                 cost: 0
             ) {

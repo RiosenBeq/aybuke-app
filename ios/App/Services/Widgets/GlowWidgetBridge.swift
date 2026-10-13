@@ -1,27 +1,17 @@
 import UIKit
+#if !targetEnvironment(macCatalyst)
 import ActivityKit
+#endif
 import WidgetKit
 import AppCore
 
+#if !targetEnvironment(macCatalyst)
 /// Starts, updates and ends the generation Live Activity (Dynamic Island and
 /// Lock Screen) for cloud AI jobs.
 @MainActor
 final class GlowActivityController {
     private var activity: Activity<GlowActivityAttributes>?
     private var overtime: Task<Void, Never>?
-
-    /// Typical duration per operation, used for the self-animating progress bar.
-    static func expectedSeconds(for operation: AIOperation, outputs: Int) -> TimeInterval {
-        let base: TimeInterval
-        switch operation {
-        case .textToImage: base = 14
-        case .magicEdit, .restyle: base = 12
-        case .enhance: base = 10
-        case .eraseObject: base = 8
-        case .removeBackground: base = 3
-        }
-        return base + Double(max(0, outputs - 1)) * 4
-    }
 
     /// Returns false when Live Activities are off or couldn't start.
     @discardableResult
@@ -84,6 +74,33 @@ final class GlowActivityController {
         guard let activity else { return }
         self.activity = nil
         Task { await activity.end(nil, dismissalPolicy: .immediate) }
+    }
+}
+#else
+/// Macs have no Live Activities: `start` reports false, so a finished job is
+/// announced with a notification instead (if she opted in).
+@MainActor
+final class GlowActivityController {
+    @discardableResult
+    func start(title: String, symbolName: String, expectedSeconds: TimeInterval) -> Bool { false }
+    func finish(success: Bool, lingers: Bool) {}
+    func endLeftovers() {}
+    func cancel() {}
+}
+#endif
+
+extension GlowActivityController {
+    /// Typical duration per operation, used for the self-animating progress bar.
+    static func expectedSeconds(for operation: AIOperation, outputs: Int) -> TimeInterval {
+        let base: TimeInterval
+        switch operation {
+        case .textToImage: base = 14
+        case .magicEdit, .restyle: base = 12
+        case .enhance: base = 10
+        case .eraseObject: base = 8
+        case .removeBackground: base = 3
+        }
+        return base + Double(max(0, outputs - 1)) * 4
     }
 }
 

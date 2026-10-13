@@ -8,7 +8,7 @@ Every value needed to create Glowlit in App Store Connect, in the order the form
 
 | Field | Value |
 |---|---|
-| Platform | iOS |
+| Platform | iOS (add macOS to the same record later, see section 8) |
 | Name | `Glowlit: AI Photo Editor` |
 | Primary language | English (U.S.) |
 | Bundle ID | `app.glowlit.ios` (register it first in Certificates, Identifiers & Profiles with **App Groups** `group.app.glowlit.shared` and **Sign in with Apple**; the widget extension is `app.glowlit.ios.widgets` with the same App Group). Team `CBTKNY3LFC` |
@@ -72,7 +72,7 @@ No tracking. Matches `ios/App/Resources/PrivacyInfo.xcprivacy`.
 | Marketing URL | same as Support URL |
 | Copyright | `2026 Glowlit` |
 | App Review information | Contact name, phone and email of the owner; no demo account needed; notes from [`app-store-listing.md`](app-store-listing.md) ("App Review notes") |
-| Build | `ASC_KEY_ID=… ASC_ISSUER_ID=… scripts/upload-app-store.sh` (App Store Connect API key, automatic signing), or Xcode › Product › Archive › Distribute. `ITSAppUsesNonExemptEncryption` is `NO` (HTTPS only), so no export-compliance documents are needed |
+| Build | `ASC_KEY_ID=… ASC_ISSUER_ID=… scripts/upload-app-store.sh` (App Store Connect API key, automatic signing; `PLATFORM=mac` for the Mac build), or Xcode › Product › Archive › Distribute. `ITSAppUsesNonExemptEncryption` is `NO` (HTTPS only), so no export-compliance documents are needed |
 | Release | Manual release after approval |
 
 ## 7. Before pressing "Submit for Review"
@@ -82,3 +82,16 @@ No tracking. Matches `ios/App/Resources/PrivacyInfo.xcprivacy`.
 - [ ] Paid Apps Agreement, tax and banking complete (Business section)
 - [ ] All in-app purchases "Ready to Submit" and attached to the version
 - [ ] The owner's final go-ahead
+
+## 8. Mac App Store (Mac Catalyst)
+
+The Mac app is the same app built with Mac Catalyst, with the same bundle IDs (`app.glowlit.ios`, widgets `app.glowlit.ios.widgets`). That makes it a **universal purchase**: one app record, and the subscriptions and credit packs from section 4 cover iPhone, iPad and Mac with no new products.
+
+| Step | What to do |
+|---|---|
+| Platform | On the app's page in App Store Connect, add the **macOS** platform (the "+" next to the platform names). Pricing, availability (still no China mainland), age rating, App Privacy and in-app purchases are shared with iOS |
+| Signing | `PLATFORM=mac ASC_KEY_ID=… ASC_ISSUER_ID=… scripts/upload-app-store.sh`. Automatic signing makes the Mac Catalyst profiles for the same App IDs; the App Group and Sign in with Apple carry over. The Mac build is sandboxed (`ios/Config/*-macOS.entitlements`), as the Mac App Store requires |
+| Category | Set once in App Information and shared with iOS. The Mac build also declares `LSApplicationCategoryType` = `public.app-category.photography`, which the Mac App Store requires |
+| Version page | The macOS version has its own description, keywords and screenshots. Start from `app-store-metadata.json`, but drop the Lock Screen and Dynamic Island lines and say Mac where it says iPhone or iPad: there is no Live Activity or Instagram Stories sharing on the Mac |
+| Screenshots | At least one Mac screenshot, 16:10: 1280×800, 1440×900, 2560×1600 or 2880×1800. `scripts/marketing-images.py` doesn't make them yet; capture the window on a Mac (⇧⌘5) in the `-GLScreenshotScene` scenes |
+| Review notes | Add: "On the Mac, Instagram Stories sharing and the Live Activity aren't offered; everything else matches the iOS app." |

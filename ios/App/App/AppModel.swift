@@ -71,6 +71,8 @@ final class AppModel {
 
     // MARK: Navigation
     var selectedTab: AppTab = .home
+    /// Settings: the gear on Explore, or Glowlit › Settings… on the Mac.
+    var isSettingsPresented = false
     var isPaywallPresented = false
     private(set) var paywallSource = "unknown"
     var isPhotoPickerPresented = false
@@ -384,6 +386,13 @@ final class AppModel {
             || shareRequest != nil || isAccountPromptPresented || isBestShotPresented
     }
 
+    /// Mac menu commands and dropped photos only act on the main screens:
+    /// never during onboarding or the tour, or over a sheet, a picker or the editor.
+    var acceptsCommands: Bool {
+        hasCompletedOnboarding && !tour.isRunning && !isPresentingSomething
+            && !isSettingsPresented && !isPhotoPickerPresented && !isVideoPickerPresented
+    }
+
     func setAIConsent(_ granted: Bool) {
         hasAIConsent = granted
         defaults.set(granted, forKey: Keys.consent)
@@ -641,22 +650,37 @@ final class AppModel {
             guard let data = try await item.loadTransferable(type: Data.self) else {
                 throw AIServiceError.invalidRequest(String(localized: "Couldn't open that photo."))
             }
-            // RAW (ProRAW, DNG) is developed with Auto, since it looks flat out of the camera.
-            let isRAW = AutoDevelop.isRAW(data)
-            let image = await Task.detached(priority: .userInitiated) { () -> UIImage? in
-                if isRAW, let developed = AutoDevelop.developRAW(data) {
-                    return ImageUtilities.normalized(developed)
-                }
-                guard let image = UIImage(data: data) else { return nil }
-                return ImageUtilities.normalized(image)
-            }.value
-            guard let image else { throw AIServiceError.invalidRequest(String(localized: "That file isn't a supported photo.")) }
-            editorLaunch = EditorLaunch(image: image, tool: request.tool, template: request.template)
-            if isRAW {
-                showToast("RAW photo developed with the best settings ✨", style: .success)
-            }
+            try await openPhoto(data, request: request)
         } catch {
             showToast("Couldn't open that photo. Try another one.", style: .error)
+        }
+    }
+
+    /// A photo file dropped on the window (Mac): opens in Magic Edit, like a
+    /// photo picked from Explore's hero card.
+    func openDroppedPhoto(_ data: Data) async {
+        guard acceptsCommands else { return }
+        do {
+            try await openPhoto(data, request: EditorRequest(tool: .magicEdit))
+        } catch {
+            showToast("Couldn't open that photo. Try another one.", style: .error)
+        }
+    }
+
+    private func openPhoto(_ data: Data, request: EditorRequest) async throws {
+        // RAW (ProRAW, DNG) is developed with Auto, since it looks flat out of the camera.
+        let isRAW = AutoDevelop.isRAW(data)
+        let image = await Task.detached(priority: .userInitiated) { () -> UIImage? in
+            if isRAW, let developed = AutoDevelop.developRAW(data) {
+                return ImageUtilities.normalized(developed)
+            }
+            guard let image = UIImage(data: data) else { return nil }
+            return ImageUtilities.normalized(image)
+        }.value
+        guard let image else { throw AIServiceError.invalidRequest(String(localized: "That file isn't a supported photo.")) }
+        editorLaunch = EditorLaunch(image: image, tool: request.tool, template: request.template)
+        if isRAW {
+            showToast("RAW photo developed with the best settings ✨", style: .success)
         }
     }
 

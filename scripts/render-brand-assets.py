@@ -5,6 +5,7 @@
 
 Writes:
   ios/App/Resources/Assets.xcassets/AppIcon.appiconset/AppIcon{,-Dark,-Tinted}.png
+  ios/App/Resources/Assets.xcassets/AppIcon.appiconset/AppIcon-Mac-{16…1024}.png (Mac Catalyst)
   ios/App/Resources/Assets.xcassets/BrandIcon.imageset/BrandIcon.png (in-app use: invite card)
   web/assets/icon.png
   docs/assets/brand/app-icon-1024.png
@@ -179,6 +180,30 @@ def icon(variant: str = "default") -> Image.Image:
     return out.convert("RGB")
 
 
+MAC_ICON_SIZES = (16, 32, 64, 128, 256, 512, 1024)
+
+
+def mac_icon(art: Image.Image) -> Image.Image:
+    """The icon on Apple's macOS grid for the Mac Catalyst build: a rounded
+    tile with a soft shadow on a transparent canvas, as Xcode would generate
+    it. iOS masks the square icon itself; macOS shows the file as drawn, and
+    the Mac App Store needs every size up to 1024 in the app's .icns."""
+    inset, radius = 96, 186
+    s = SIZE * SCALE
+    mask = Image.new("L", (s, s), 0)
+    ImageDraw.Draw(mask).rounded_rectangle(
+        (inset * SCALE, inset * SCALE, s - inset * SCALE, s - inset * SCALE), radius=radius * SCALE, fill=255
+    )
+    mask = mask.resize((SIZE, SIZE), Image.LANCZOS)
+    tile = Image.new("RGBA", (SIZE, SIZE), (0, 0, 0, 0))
+    tile.paste(art.convert("RGBA").resize((SIZE - 2 * inset, SIZE - 2 * inset), Image.LANCZOS), (inset, inset))
+    tile.putalpha(mask)
+    out = Image.new("RGBA", (SIZE, SIZE), (0, 0, 0, 0))
+    out.paste((0, 0, 0, 255), (0, 20), mask.filter(ImageFilter.GaussianBlur(10)).point(lambda value: int(value * 0.32)))
+    out.alpha_composite(tile)
+    return out
+
+
 def font(cut: str, size: int) -> ImageFont.FreeTypeFont:
     return ImageFont.truetype(str(FONTS / f"Poppins-{cut}.ttf"), size)
 
@@ -237,6 +262,9 @@ def main() -> None:
     default.save(ICONSET / "AppIcon.png")
     icon("dark").save(ICONSET / "AppIcon-Dark.png")
     icon("tinted").convert("L").save(ICONSET / "AppIcon-Tinted.png")
+    mac = mac_icon(default)
+    for size in MAC_ICON_SIZES:
+        mac.resize((size, size), Image.LANCZOS).save(ICONSET / f"AppIcon-Mac-{size}.png")
     default.save(BRAND / "app-icon-1024.png")
     default.resize((512, 512), Image.LANCZOS).save(BRAND_ICON / "BrandIcon.png")
     default.resize((256, 256), Image.LANCZOS).save(WEB_ICON)

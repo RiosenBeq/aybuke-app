@@ -53,7 +53,7 @@ jobs:
   ios:
     name: iOS app build (Xcode)
     runs-on: macos-15
-    timeout-minutes: 40
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
       - name: Toolchain
@@ -65,6 +65,16 @@ jobs:
             -scheme Glowlit \
             -configuration Debug \
             -destination 'generic/platform=iOS' \
+            -derivedDataPath build/DerivedData \
+            CODE_SIGNING_ALLOWED=NO \
+            -quiet
+      - name: Build Glowlit for Mac Catalyst (unsigned)
+        run: |
+          xcodebuild build \
+            -project ios/Glowlit.xcodeproj \
+            -scheme Glowlit \
+            -configuration Debug \
+            -destination 'generic/platform=macOS,variant=Mac Catalyst' \
             -derivedDataPath build/DerivedData \
             CODE_SIGNING_ALLOWED=NO \
             -quiet

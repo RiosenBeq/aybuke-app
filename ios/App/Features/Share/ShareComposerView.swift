@@ -90,10 +90,7 @@ struct ShareComposerView: View {
             }
             #endif
         }
-        .sheet(item: $activityItems) { item in
-            ShareSheet(items: item.items)
-                .presentationDetents([.medium, .large])
-        }
+        .shareSheet(item: $activityItems)
     }
 
     // MARK: Sections
@@ -135,10 +132,18 @@ struct ShareComposerView: View {
         .padding(.horizontal, -Metrics.gutter)
     }
 
+    /// The Mac has no Instagram app, so there the share menu takes the
+    /// Stories spot.
     private var destinations: some View {
         HStack(alignment: .top, spacing: 0) {
-            ShareTarget(title: "Stories", symbol: "camera.circle.fill", isPrimary: true) {
-                Task { await shareToStories() }
+            if Platform.isMac {
+                ShareTarget(title: "Share", symbol: "square.and.arrow.up", isPrimary: true) {
+                    shareToApps()
+                }
+            } else {
+                ShareTarget(title: "Stories", symbol: "camera.circle.fill", isPrimary: true) {
+                    Task { await shareToStories() }
+                }
             }
             ShareTarget(title: "Save", symbol: "square.and.arrow.down") {
                 Task { await save() }
@@ -146,8 +151,10 @@ struct ShareComposerView: View {
             ShareTarget(title: "Copy image", symbol: "doc.on.doc") {
                 copyImage()
             }
-            ShareTarget(title: "More apps", symbol: "ellipsis") {
-                shareToApps()
+            if !Platform.isMac {
+                ShareTarget(title: "More apps", symbol: "ellipsis") {
+                    shareToApps()
+                }
             }
         }
         .disabled(rendered == nil || isWorking)

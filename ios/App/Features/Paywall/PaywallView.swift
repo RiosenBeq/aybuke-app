@@ -264,7 +264,9 @@ struct PaywallView: View {
                             app.showToast("We'll remind you when your free credits are back ✨", style: .success)
                             dismiss()
                         } else {
-                            app.showToast("Turn on notifications for \(Brand.name) in iOS Settings to get reminders.", style: .info)
+                            app.showToast(Platform.isMac
+                                ? "Turn on notifications for \(Brand.name) in System Settings to get reminders."
+                                : "Turn on notifications for \(Brand.name) in iOS Settings to get reminders.", style: .info)
                         }
                     }
                 } label: {

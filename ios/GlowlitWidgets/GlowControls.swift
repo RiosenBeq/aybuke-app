@@ -4,7 +4,9 @@ import WidgetKit
 import AppCore
 
 // Controls for Control Center, the Lock Screen and the Action button
-// (iOS 18). Each opens the app right where it's needed.
+// (iOS 18). Each opens the app right where it's needed. The Mac build only
+// gets them with the Xcode 26 SDK, which declares controls for Mac Catalyst.
+#if !targetEnvironment(macCatalyst) || compiler(>=6.2)
 
 @available(iOS 18.0, *)
 struct MagicEditControl: ControlWidget {
@@ -44,3 +46,4 @@ struct VideoControl: ControlWidget {
         .description("Cut the silences and add retro effects. Free.")
     }
 }
+#endif

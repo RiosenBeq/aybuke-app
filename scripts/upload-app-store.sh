@@ -3,6 +3,11 @@
 # App Store Connect API key, so Xcode needs no Apple ID signed in.
 #
 #   ASC_KEY_ID=<key id> ASC_ISSUER_ID=<issuer id> scripts/upload-app-store.sh
+#   PLATFORM=mac ASC_KEY_ID=<key id> ASC_ISSUER_ID=<issuer id> scripts/upload-app-store.sh
+#
+# PLATFORM=mac uploads the Mac app (Mac Catalyst) to the same app record; the
+# record needs the macOS platform added first (see
+# docs/marketing/app-store-connect-setup.md).
 #
 # Both ids are on App Store Connect → Users and Access → Integrations →
 # App Store Connect API (the Issuer ID sits above the key list). The private
@@ -24,7 +29,12 @@ KEY_PATH="${ASC_KEY_PATH:-$HOME/.appstoreconnect/private_keys/AuthKey_${ASC_KEY_
 [[ -f "$KEY_PATH" ]] || { echo "API key not found: $KEY_PATH" >&2; exit 1; }
 
 BUILD_NUMBER="${BUILD_NUMBER:-$(date +%Y%m%d).$((10#$(date +%H%M)))}"
-OUT="$ROOT/build/app-store"
+PLATFORM="${PLATFORM:-ios}"
+case "$PLATFORM" in
+  ios) DESTINATION='generic/platform=iOS'; OUT="$ROOT/build/app-store" ;;
+  mac) DESTINATION='generic/platform=macOS,variant=Mac Catalyst'; OUT="$ROOT/build/app-store-mac" ;;
+  *) echo "PLATFORM must be ios or mac" >&2; exit 1 ;;
+esac
 ARCHIVE="$OUT/Glowlit.xcarchive"
 AUTH=(
   -allowProvisioningUpdates
@@ -36,10 +46,10 @@ AUTH=(
 rm -rf "$OUT"
 mkdir -p "$OUT"
 
-echo "Archiving build $BUILD_NUMBER…"
+echo "Archiving $PLATFORM build $BUILD_NUMBER…"
 xcodebuild archive \
   -project "$ROOT/ios/Glowlit.xcodeproj" -scheme Glowlit -configuration Release \
-  -destination 'generic/platform=iOS' \
+  -destination "$DESTINATION" \
   -archivePath "$ARCHIVE" \
   -derivedDataPath "$OUT/DerivedData" \
   CURRENT_PROJECT_VERSION="$BUILD_NUMBER" \
@@ -76,4 +86,4 @@ xcodebuild -exportArchive \
   -exportPath "$OUT/export" \
   "${AUTH[@]}"
 
-echo "Uploaded Glowlit build $BUILD_NUMBER. It appears in App Store Connect → TestFlight once Apple finishes processing it (usually 10–30 minutes)."
+echo "Uploaded Glowlit $PLATFORM build $BUILD_NUMBER. It appears in App Store Connect → TestFlight once Apple finishes processing it (usually 10–30 minutes)."
