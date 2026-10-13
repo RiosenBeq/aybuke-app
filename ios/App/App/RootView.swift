@@ -41,6 +41,13 @@ struct RootView: View {
             VideoEditorView(source: source)
                 .environment(app)
         }
+        .overlay {
+            if app.tour.isRunning {
+                TourOverlay()
+                    .transition(.opacity)
+            }
+        }
+        .animation(.easeInOut(duration: 0.25), value: app.tour.isRunning)
         .modifier(AppPresentations(isActive: app.editorLaunch == nil && app.videoSource == nil))
         .onOpenURL { url in
             if let link = GlowDeepLink(url: url) { app.handle(link) }
@@ -71,5 +78,10 @@ struct MainTabView: View {
         }
         .minimizingTabBar()
         .onChange(of: app.selectedTab) { _, _ in Haptics.selection() }
+        .task {
+            // Let the first screen settle, then offer the tour once.
+            try? await Task.sleep(for: .seconds(0.8))
+            app.offerTourIfNeeded()
+        }
     }
 }

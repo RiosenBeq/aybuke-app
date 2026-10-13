@@ -98,6 +98,8 @@ final class AppModel {
     private let liveActivity = GlowActivityController()
     /// Opt-in local reminders (glow ready, credits back, the weekly look).
     let notifier = GlowNotifier()
+    /// The first-run tour ("Next, Next…" through every tab).
+    let tour = TourGuide()
 
     // MARK: Account (optional Sign in with Apple)
     /// Signed in with Apple: Pro and credits follow her to other iPhones.
@@ -352,6 +354,28 @@ final class AppModel {
         hasCompletedOnboarding = true
         defaults.set(Array(interests), forKey: Keys.interests)
         defaults.set(true, forKey: Keys.onboarding)
+    }
+
+    /// Shows the tour once, after onboarding, when nothing else is on screen.
+    func offerTourIfNeeded() {
+        #if DEBUG
+        if let scene = ScreenshotScene.current {
+            if scene == .tour { startTour() }
+            return
+        }
+        #endif
+        guard hasCompletedOnboarding, !tour.hasSeen, !tour.isRunning, !isPresentingSomething else { return }
+        startTour()
+    }
+
+    func startTour() {
+        selectedTab = TourStep.allCases.first?.tab ?? .home
+        tour.start()
+    }
+
+    private var isPresentingSomething: Bool {
+        isPaywallPresented || editorLaunch != nil || videoSource != nil || consentRequest != nil
+            || shareRequest != nil || isAccountPromptPresented || isBestShotPresented
     }
 
     func setAIConsent(_ granted: Bool) {
@@ -702,7 +726,7 @@ extension AppModel {
         hasCompletedOnboarding = scene != .onboarding
         hasAIConsent = scene != .consent
         switch scene {
-        case .onboarding, .home, .settings, .legal, .invite:
+        case .onboarding, .home, .settings, .legal, .invite, .tour:
             selectedTab = .home
         case .create, .results:
             selectedTab = .create

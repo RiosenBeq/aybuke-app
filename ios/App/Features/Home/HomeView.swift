@@ -23,10 +23,12 @@ struct HomeView: View {
                     }
 
                     heroCard
+                        .tourAnchor(.hero)
                         .padding(.horizontal, Metrics.gutter)
                         .reveal(1)
 
                     quickTools
+                        .tourAnchor(.quickTools)
                         .reveal(2)
 
                     ForEach(Array(orderedCategories.enumerated()), id: \.element) { index, category in
@@ -89,6 +91,7 @@ struct HomeView: View {
             CreditPill(balance: app.credits.balance, isPro: app.purchases.isPro) {
                 if !app.purchases.isPro { app.presentPaywall(source: "home_credits") }
             }
+            .tourAnchor(.credits)
             Button {
                 showSettings = true
             } label: {
@@ -96,6 +99,7 @@ struct HomeView: View {
             }
             .buttonStyle(.icon)
             .accessibilityLabel("Settings")
+            .tourAnchor(.settings)
         }
     }
 

@@ -20,6 +20,7 @@ struct CreateView: View {
                     }
 
                     promptCard
+                        .tourAnchor(.create)
                     styleSection
                     ratioSection
                     countSection

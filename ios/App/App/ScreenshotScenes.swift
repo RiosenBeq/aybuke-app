@@ -18,6 +18,7 @@ enum ScreenshotScene: String, CaseIterable {
     case settings
     case share
     case invite
+    case tour
     case legal
 
     static var current: ScreenshotScene? {

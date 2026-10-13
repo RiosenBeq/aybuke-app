@@ -113,6 +113,7 @@ struct EditHubView: View {
                         .cardStyle()
                     }
                     .buttonStyle(PressableButtonStyle(scale: 0.97))
+                    .tourAnchor(.edit)
                     .reveal(2)
 
                     LazyVGrid(columns: columns, spacing: 12) {

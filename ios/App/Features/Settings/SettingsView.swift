@@ -274,6 +274,16 @@ struct SettingsView: View {
 
     private var aboutSection: some View {
         Section {
+            Button {
+                dismiss()
+                Task {
+                    // After the sheet is gone, so the tour can spotlight the screen.
+                    try? await Task.sleep(for: .seconds(0.5))
+                    app.startTour()
+                }
+            } label: {
+                Label("Show me around", systemImage: "sparkles")
+            }
             NavigationLink {
                 LegalCenterView()
             } label: {

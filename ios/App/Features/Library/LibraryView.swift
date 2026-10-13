@@ -34,6 +34,7 @@ struct LibraryView: View {
                         }
                         .padding(.horizontal, 12)
                         .padding(.bottom, 6)
+                        .tourAnchor(.library)
 
                         if visible.isEmpty {
                             VStack(spacing: 10) {
@@ -88,6 +89,22 @@ struct LibraryView: View {
 
     private var emptyState: some View {
         VStack(spacing: 16) {
+            emptyStateMessage
+                .tourAnchor(.library)
+            Button("Create something") {
+                app.selectedTab = .create
+            }
+            .buttonStyle(.primary)
+            .frame(maxWidth: 260)
+            .padding(.top, 8)
+        }
+        .padding(32)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(AuroraBackground(intensity: 0.4))
+    }
+
+    private var emptyStateMessage: some View {
+        VStack(spacing: 16) {
             Image(systemName: "photo.stack")
                 .font(.system(size: 44, weight: .semibold))
                 .foregroundStyle(Palette.ink)
@@ -108,16 +125,7 @@ struct LibraryView: View {
                 .font(.subheadline)
                 .foregroundStyle(Palette.textSecondary)
                 .multilineTextAlignment(.center)
-            Button("Create something") {
-                app.selectedTab = .create
-            }
-            .buttonStyle(.primary)
-            .frame(maxWidth: 260)
-            .padding(.top, 8)
         }
-        .padding(32)
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(AuroraBackground(intensity: 0.4))
     }
 }
 
