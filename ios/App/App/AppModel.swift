@@ -2,6 +2,7 @@ import SwiftUI
 import SwiftData
 import PhotosUI
 import Observation
+import AuthenticationServices
 import AppCore
 
 enum AppTab: Hashable {
@@ -74,6 +75,10 @@ final class AppModel {
     var editorLaunch: EditorLaunch?
     var consentRequest: ConsentRequest?
     var shareRequest: SharePayload?
+    /// "Keep your glow on every iPhone": offered after a purchase.
+    var isAccountPromptPresented = false
+    /// "Find your best shot" (on-device selfie ranking).
+    var isBestShotPresented = false
     var toast: ToastMessage?
     @ObservationIgnored private var pendingEditorRequest: EditorRequest?
 
@@ -88,12 +93,25 @@ final class AppModel {
     private let defaults: UserDefaults
     /// Dynamic Island / Lock Screen progress for cloud jobs.
     private let liveActivity = GlowActivityController()
+    /// Opt-in local reminders (glow ready, credits back, the weekly look).
+    let notifier = GlowNotifier()
+
+    // MARK: Account (optional Sign in with Apple)
+    /// Signed in with Apple: Pro and credits follow her to other iPhones.
+    private(set) var isSignedIn = false
+    /// The Apple ID email or its private relay address, if she shared it.
+    private(set) var accountEmail: String?
+    @ObservationIgnored private var reviewPolicy: ReviewPromptPolicy
+    /// The last paywall or permission prompt; no rating prompt for 30 minutes after.
+    @ObservationIgnored private var lastInterruption: Date?
 
     private enum Keys {
         static let onboarding = "onboarding.completed"
         static let consent = "ai.consent.v1"
         static let interests = "onboarding.interests"
         static let successfulSaves = "stats.successfulSaves"
+        static let reviewPolicy = "review.policy.v1"
+        static let appleUserID = "auth.appleUserID"
         static let appearance = "appearance"
     }
 
@@ -105,6 +123,14 @@ final class AppModel {
         self.hasAIConsent = defaults.bool(forKey: Keys.consent)
         self.interests = Set(defaults.stringArray(forKey: Keys.interests) ?? [])
         self.appearance = defaults.string(forKey: Keys.appearance).flatMap(AppearancePreference.init(rawValue:)) ?? .light
+        if let data = defaults.data(forKey: Keys.reviewPolicy),
+           let saved = try? JSONDecoder().decode(ReviewPromptPolicy.self, from: data) {
+            self.reviewPolicy = saved
+        } else {
+            var fresh = ReviewPromptPolicy(firstSeen: Date())
+            fresh.happyMoments = defaults.integer(forKey: Keys.successfulSaves)
+            self.reviewPolicy = fresh
+        }
 
         let purchases = PurchaseManager()
         self.purchases = purchases
@@ -132,6 +158,7 @@ final class AppModel {
         purchases.creditPackHandler = { [weak self] credits, signedTransaction in
             await self?.grantCreditPack(credits, signedTransaction: signedTransaction) ?? false
         }
+        notifier.onOpenLink = { [weak self] link in self?.handle(link) }
 
         #if DEBUG
         if let scene = ScreenshotScene.current {
@@ -161,11 +188,19 @@ final class AppModel {
     /// Called once from the root view's `.task`.
     func start() async {
         liveActivity.endLeftovers()
+        await refreshAccount()
+        watchAppleCredentialRevocation()
         await purchases.refreshEntitlements()
         credits.refresh(isPro: purchases.isPro)
         await refreshServerBalance()
         syncWidgets()
+        syncReminders()
         await purchases.loadProducts()
+    }
+
+    /// Back in the foreground: notification permission may have changed.
+    func becameActive() {
+        syncReminders()
     }
 
     /// Adds a purchased pack: locally in demo mode, verified by the server in production.
@@ -193,6 +228,7 @@ final class AppModel {
     /// "Report this image": sent to the backend for review; logged locally in
     /// demo and developer mode, where there is no server.
     func report(_ reason: ReportReason, requestID: String?) async {
+        registerSetback()
         guard let remote else {
             showToast("Thanks — your report was noted.", style: .success)
             return
@@ -217,9 +253,86 @@ final class AppModel {
                 return
             }
         }
+        Keychain.delete(key: Keys.appleUserID)
+        isSignedIn = false
+        accountEmail = nil
         setAIConsent(false)
         TrialReminder.cancel()
         showToast("Your data has been deleted.", style: .success)
+    }
+
+    // MARK: Account
+
+    /// Accounts live on the backend, so demo and developer modes can't offer them.
+    var canUseAccounts: Bool { remote != nil }
+
+    /// Reads the session, finishes a credit merge that failed earlier, and
+    /// signs out if the Apple ID stopped using Glowlit.
+    func refreshAccount() async {
+        guard let remote else { return }
+        let account = await remote.account()
+        isSignedIn = account != nil
+        accountEmail = account?.email
+        guard isSignedIn else { return }
+        try? await remote.linkAccount()
+        if let appleUserID = Keychain.load(String.self, key: Keys.appleUserID),
+           let state = try? await ASAuthorizationAppleIDProvider().credentialState(forUserID: appleUserID),
+           state == .revoked || state == .notFound {
+            await signOut(quietly: true)
+        }
+    }
+
+    func signInWithApple(_ credential: ASAuthorizationAppleIDCredential, nonce: String) async {
+        guard let remote else { return }
+        guard let tokenData = credential.identityToken, let idToken = String(data: tokenData, encoding: .utf8) else {
+            showToast("Apple didn't send a sign-in token. Please try again.", style: .error)
+            return
+        }
+        let code = credential.authorizationCode.flatMap { String(data: $0, encoding: .utf8) }
+        do {
+            try await remote.signInWithApple(idToken: idToken, nonce: nonce, authorizationCode: code)
+        } catch {
+            handle(error)
+            return
+        }
+        Keychain.save(credential.user, key: Keys.appleUserID)
+        await refreshAccount()
+        await purchases.refreshEntitlements()
+        credits.refresh(isPro: purchases.isPro)
+        await refreshServerBalance()
+        syncWidgets()
+        Haptics.success()
+        showToast("You're signed in ✨ Pro and your credits now come with you.", style: .success)
+    }
+
+    /// Back to an anonymous session on this iPhone. Pro stays tied to the
+    /// Apple Account that bought it.
+    func signOut(quietly: Bool = false) async {
+        await remote?.signOut()
+        Keychain.delete(key: Keys.appleUserID)
+        isSignedIn = false
+        accountEmail = nil
+        await refreshServerBalance()
+        syncWidgets()
+        if !quietly { showToast("Signed out. Sign in again anytime in Settings.", style: .info) }
+    }
+
+    /// After a purchase, offer (never require) an account, so the purchase
+    /// isn't stuck on this iPhone.
+    func offerAccountAfterPurchase() {
+        guard canUseAccounts, !isSignedIn else { return }
+        Task {
+            try? await Task.sleep(for: .milliseconds(700))
+            isAccountPromptPresented = true
+        }
+    }
+
+    private func watchAppleCredentialRevocation() {
+        Task { [weak self] in
+            for await _ in NotificationCenter.default.notifications(named: ASAuthorizationAppleIDProvider.credentialRevokedNotification) {
+                await self?.signOut(quietly: true)
+            }
+        }
     }
 
     func refreshServerBalance() async {
@@ -246,6 +359,7 @@ final class AppModel {
     // MARK: Paywall
 
     func presentPaywall(source: String) {
+        lastInterruption = Date() // never ask for a rating right after a paywall
         paywallSource = source
         isPaywallPresented = true
     }
@@ -290,25 +404,39 @@ final class AppModel {
     /// background, so people can switch apps while they wait.
     func run(_ job: AIJob, saveToLibrary: Bool) async throws -> AIJobResult {
         let isCloud = !job.operation.runsOnDevice
-        if isCloud {
-            liveActivity.start(
-                title: job.title.shortened(to: 34),
-                symbolName: job.template?.symbolName ?? job.operation.symbolName,
-                expectedSeconds: GlowActivityController.expectedSeconds(for: job.operation, outputs: job.numOutputs)
-            )
-        }
+        let showsActivity = isCloud && liveActivity.start(
+            title: job.title.shortened(to: 34),
+            symbolName: job.template?.symbolName ?? job.operation.symbolName,
+            expectedSeconds: GlowActivityController.expectedSeconds(for: job.operation, outputs: job.numOutputs)
+        )
         let backgroundTask = UIApplication.shared.beginBackgroundTask(withName: "glowlit.job")
         defer {
             if backgroundTask != .invalid { UIApplication.shared.endBackgroundTask(backgroundTask) }
             syncWidgets()
+            syncReminders()
         }
         do {
             let result = try await perform(job, saveToLibrary: saveToLibrary)
-            if isCloud { liveActivity.finish(success: true) }
+            if isCloud { finishCloudJob(success: true, title: job.title, showsActivity: showsActivity) }
             return result
         } catch {
-            if isCloud { liveActivity.finish(success: false) }
+            if Self.isCancellation(error) {
+                if showsActivity { liveActivity.cancel() }
+            } else if isCloud {
+                finishCloudJob(success: false, title: job.title, showsActivity: showsActivity)
+            }
             throw error
+        }
+    }
+
+    /// The Live Activity shows the outcome; without one (switched off in
+    /// Settings, say) a notification does, if she opted in.
+    private func finishCloudJob(success: Bool, title: String, showsActivity: Bool) {
+        let inBackground = UIApplication.shared.applicationState != .active
+        if showsActivity {
+            liveActivity.finish(success: success, lingers: inBackground)
+        } else {
+            notifier.notifyJobFinished(success: success, title: title)
         }
     }
 
@@ -379,7 +507,7 @@ final class AppModel {
         GlowWidgetBridge.update(
             credits: credits.balance,
             isPro: purchases.isPro,
-            nextRefill: credits.nextDailyRefill,
+            nextRefill: credits.nextFreeRefill,
             latest: (try? context.fetch(newest))?.first,
             creationsCount: count
         )
@@ -394,11 +522,53 @@ final class AppModel {
         syncWidgets()
     }
 
-    /// Counts successful saves; returns true when it's a good moment to ask for a review.
-    func registerSuccessfulSave() -> Bool {
-        let count = defaults.integer(forKey: Keys.successfulSaves) + 1
-        defaults.set(count, forKey: Keys.successfulSaves)
-        return count == 2 || count == 10
+    // MARK: Ratings and reminders
+
+    static var appVersion: String {
+        Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0"
+    }
+
+    /// Saving or hearting a creation. Returns true when it's a good moment to
+    /// ask for a rating (see `ReviewPromptPolicy`).
+    func registerHappyMoment() -> Bool {
+        if let lastInterruption, Date().timeIntervalSince(lastInterruption) < 1800 {
+            countHappyMoment()
+            return false
+        }
+        let ask = reviewPolicy.recordHappyMoment(at: Date(), appVersion: Self.appVersion)
+        persistReviewPolicy()
+        return ask
+    }
+
+    /// Sharing counts as a happy moment too, but a share is never interrupted.
+    func countHappyMoment() {
+        reviewPolicy.happyMoments += 1
+        persistReviewPolicy()
+    }
+
+    /// A failed job, a report or a "doesn't look like you" retry: no rating
+    /// prompts for a few days.
+    func registerSetback() {
+        reviewPolicy.recordSetback(at: Date())
+        persistReviewPolicy()
+    }
+
+    private func persistReviewPolicy() {
+        if let data = try? JSONEncoder().encode(reviewPolicy) {
+            defaults.set(data, forKey: Keys.reviewPolicy)
+        }
+    }
+
+    /// Reschedules the opt-in reminders for the current credits.
+    func syncReminders() {
+        Task {
+            await notifier.reschedule(
+                credits: credits.balance,
+                isPro: purchases.isPro,
+                nextRefill: credits.nextFreeRefill,
+                dailyCredits: credits.policy.freeDailyAllowance
+            )
+        }
     }
 
     // MARK: Editor routing
@@ -469,9 +639,14 @@ final class AppModel {
     }
 
     /// Maps any error to a friendly toast, opening the paywall when relevant.
+    static func isCancellation(_ error: Error) -> Bool {
+        error is CancellationError || (error as? URLError)?.code == .cancelled
+    }
+
     func handle(_ error: Error) {
-        if error is CancellationError { return }
+        if Self.isCancellation(error) { return }
         Haptics.error()
+        registerSetback()
         if case AIServiceError.insufficientCredits = error {
             if purchases.isPro {
                 showToast("You've reached today's fair-use limit.", style: .info)
@@ -497,6 +672,7 @@ final class AppModel {
 extension AppModel {
     /// Puts the app into a deterministic state for screenshots (DEBUG only).
     func applyScreenshotScene(_ scene: ScreenshotScene) {
+        credits.resetForScreenshots()
         hasCompletedOnboarding = scene != .onboarding
         hasAIConsent = scene != .consent
         switch scene {

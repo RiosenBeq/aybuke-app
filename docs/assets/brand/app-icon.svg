@@ -1,28 +1,36 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
-  <!-- Glowlit app icon — "Sunrise Split" in the Blush palette: before (ink) / after (white), divided by the compare handle, with sparkles.
-       The PNGs are rendered by scripts/render-brand-assets.py. -->
+  <!-- Glowlit app icon, "Glow Print": a sharp-cornered white print, tilted on a blush tile, showing a
+       white sparkle glowing pink on ink, with a blush heart on the print's chin.
+       The PNGs (default, dark, tinted) are rendered by scripts/render-brand-assets.py. -->
   <defs>
-    <radialGradient id="glowA" cx="0.24" cy="0.18" r="0.62">
-      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.55"/>
+    <radialGradient id="glowA" cx="0.22" cy="0.16" r="0.62">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.6"/>
       <stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/>
     </radialGradient>
     <radialGradient id="glowB" cx="0.86" cy="0.9" r="0.55">
-      <stop offset="0" stop-color="#F8E0EA" stop-opacity="0.7"/>
+      <stop offset="0" stop-color="#F8E0EA" stop-opacity="0.75"/>
       <stop offset="1" stop-color="#F8E0EA" stop-opacity="0"/>
     </radialGradient>
-    <clipPath id="disc"><circle cx="512" cy="512" r="300"/></clipPath>
+    <radialGradient id="halo" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#F7C1D9" stop-opacity="0.9"/>
+      <stop offset="1" stop-color="#F7C1D9" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="26" stdDeviation="30" flood-color="#121212" flood-opacity="0.28"/>
+    </filter>
+    <path id="sparkle" d="M0,-1 Q0.18,-0.18 1,0 Q0.18,0.18 0,1 Q-0.18,0.18 -1,0 Q-0.18,-0.18 0,-1 Z"/>
   </defs>
   <rect width="1024" height="1024" fill="#F7C1D9"/>
   <rect width="1024" height="1024" fill="url(#glowA)"/>
   <rect width="1024" height="1024" fill="url(#glowB)"/>
-  <g clip-path="url(#disc)">
-    <rect x="212" y="212" width="300" height="600" fill="#121212"/>
-    <rect x="512" y="212" width="300" height="600" fill="#FFFFFF"/>
+  <g transform="rotate(-7 512 512)" filter="url(#shadow)">
+    <rect x="236" y="194" width="553" height="655" fill="#FFFFFF"/>
+    <rect x="282" y="240" width="461" height="476" fill="#121212"/>
+    <rect x="282" y="240" width="461" height="476" fill="url(#halo)"/>
+    <use href="#sparkle" transform="translate(512 478) scale(133)" fill="#FFFFFF"/>
+    <use href="#sparkle" transform="translate(620 376) scale(36)" fill="#F7C1D9"/>
+    <path d="M512,812 L463,768 A25,25 0 1 1 512,742 A25,25 0 1 1 561,768 Z" fill="#F7C1D9"/>
   </g>
-  <rect x="499" y="150" width="26" height="724" rx="13" fill="#121212"/>
-  <circle cx="512" cy="512" r="70" fill="#121212"/>
-  <path d="M488 488 L466 512 L488 536" fill="none" stroke="#F7C1D9" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M536 488 L558 512 L536 536" fill="none" stroke="#F7C1D9" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M794 133 L807 205 L881 220 L807 235 L794 307 L781 235 L707 220 L781 205 Z" fill="#FFFFFF"/>
-  <path d="M881 299 L887 332 L920 338 L887 344 L881 377 L875 344 L842 338 L875 332 Z" fill="#FFFFFF"/>
+  <use href="#sparkle" transform="translate(865 159) scale(67)" fill="#FFFFFF"/>
+  <use href="#sparkle" transform="translate(932 261) scale(29)" fill="#FFFFFF"/>
 </svg>

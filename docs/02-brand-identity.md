@@ -11,7 +11,7 @@
 | **Positioning** | The AI photo studio made for girls who glow: trend-ready, true-to-you photos, with honest pricing and private-by-default face data. |
 | **Palette** | "Blush": blush pink `#F7C1D9` and petal `#F8E0EA` with ink `#121212`, charcoal `#24272A`, paper `#F8F8F6` and white; light-first |
 | **Display type** | Bricolage Grotesque (SIL OFL 1.1) + New York Italic accents + SF Pro |
-| **Icon** | "Sunrise Split" — a half-ink/half-white disc divided by a compare handle, on a blush tile with a sparkle |
+| **Icon** | "Glow Print" — a sharp-cornered white print, tilted on a blush tile, showing a sparkle glowing pink on ink, with a heart on its chin (until Oct 2026: "Sunrise Split") |
 
 Full evidence: [research/brand-and-design.md](research/brand-and-design.md).
 
@@ -124,15 +124,16 @@ The first brand used Golden Hour amber `#FF9A3D` (gradient `#FFC25C → #FF7A3D`
 
 ---
 
-## 4. App icon — "Sunrise Split"
+## 4. App icon — "Glow Print"
 
 ![App icon](assets/brand/app-icon-1024.png)
 
-**The idea:** the left half of a disc is ink (*before*), the right half is white light (*after*), and the app's signature **compare-slider handle** divides them. Since the October 2026 redesign the tile is blush pink with two white sparkles; dark and tinted variants ship for iOS 18+ Home Screens.
-- It reads as a sunrise or eclipse (light), as before → after (enhance), and as the app's core interaction.
-- The blush tile stands out on a Home Screen full of black and purple AI icons.
-- It stays legible at 29 px.
-- It follows Apple's icon guidance: a minimal number of shapes, a solid gradient background, no text and no photo.
+**The idea:** a printed photo, tilted as if pinned to a mood board, shows a white sparkle glowing pink on ink. A small blush heart sits on the print's chin, like a note written on a photo. It replaced "Sunrise Split" (a before/after disc) in October 2026, because the app is now girl-first and the old icon read as a technical tool.
+- The **sharp print** is the same language as the app's template cards and collection pages ("looks are prints, controls are soft").
+- The **sparkle glowing** is "Make it glow." and the ✦ mark used in widgets, the Live Activity and share cards.
+- The **blush tile** stands out on a Home Screen full of black and purple AI icons. Dark (ink tile, blush print) and tinted variants ship for iOS 18+ Home Screens.
+- It stays legible at 29 px: a white rectangle with a bright centre.
+- It follows Apple's icon guidance: few shapes, a soft gradient background, no text and no real photo.
 
 **Files**
 - Source: [`assets/brand/app-icon.svg`](assets/brand/app-icon.svg)
@@ -140,7 +141,7 @@ The first brand used Golden Hour amber `#FF9A3D` (gradient `#FFC25C → #FF7A3D`
 
 **To do**
 - Build an **Icon Composer** `.icon` with Default / Dark / Clear / Tinted appearances. iOS 26+ renders Liquid Glass icons, and the iOS 27 SDK is required from April 2027.
-- A/B test it against concept C ("Light Monogram") with Product Page Optimization.
+- A/B test it against "Sunrise Split" with Product Page Optimization.
 
 Concepts considered: [`assets/research/icon_concepts.png`](assets/research/icon_concepts.png).
 

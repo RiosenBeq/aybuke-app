@@ -323,9 +323,38 @@ public enum RequestFactory {
         return request
     }
 
-    /// Deletes the anonymous account and all server-side data (Guideline 5.1.1(v)).
+    /// Deletes the account and all server-side data (Guideline 5.1.1(v)); the
+    /// server also revokes the Sign in with Apple token.
     public static func deleteAccount(config: BackendConfiguration, accessToken: String?) throws -> URLRequest {
         try authorized(config: config, path: "functions/v1/account", method: "DELETE", query: [], accessToken: accessToken)
+    }
+
+    /// Supabase's native Sign in with Apple: exchanges Apple's identity token
+    /// (requested with the SHA-256 of `nonce`) for a session. `nonce` is the raw value.
+    public static func signInWithApple(idToken: String, nonce: String, config: BackendConfiguration) throws -> URLRequest {
+        var components = URLComponents(url: config.baseURL.appendingPathComponent("auth/v1/token"), resolvingAgainstBaseURL: false)
+        components?.queryItems = [URLQueryItem(name: "grant_type", value: "id_token")]
+        guard let url = components?.url else { throw AIServiceError.notConfigured }
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue(config.anonKey, forHTTPHeaderField: "apikey")
+        request.httpBody = try JSONEncoder().encode(["provider": "apple", "id_token": idToken, "nonce": nonce])
+        return request
+    }
+
+    /// Right after Sign in with Apple: merges the previous anonymous user into
+    /// the account and hands over Apple's one-time authorization code.
+    public static func linkAccount(
+        anonymousToken: String?, authorizationCode: String?,
+        config: BackendConfiguration, accessToken: String?
+    ) throws -> URLRequest {
+        var request = try authorized(config: config, path: "functions/v1/account/link", method: "POST", query: [], accessToken: accessToken)
+        var body: [String: String] = [:]
+        body["anonymous_token"] = anonymousToken
+        body["authorization_code"] = authorizationCode
+        request.httpBody = try JSONEncoder().encode(body)
+        return request
     }
 
     /// Reports a result for review (Guideline 1.2). `jobID` links it to the job row when known.
@@ -451,7 +480,10 @@ public enum ResponseDecoder {
         }
         let expiresAt = dto.expiresAt.map { Date(timeIntervalSince1970: $0) }
             ?? now.addingTimeInterval(dto.expiresIn ?? 3600)
-        return AuthSession(accessToken: dto.accessToken, refreshToken: dto.refreshToken, expiresAt: expiresAt, userID: dto.user.id)
+        return AuthSession(
+            accessToken: dto.accessToken, refreshToken: dto.refreshToken, expiresAt: expiresAt, userID: dto.user.id,
+            isAnonymous: dto.user.isAnonymous, email: dto.user.email
+        )
     }
 }
 
@@ -462,13 +494,26 @@ public struct AuthSession: Codable, Equatable, Sendable {
     public var refreshToken: String
     public var expiresAt: Date
     public var userID: String
+    /// False once signed in with Apple. Optional so sessions saved before
+    /// accounts existed (all anonymous) still decode.
+    public var isAnonymous: Bool?
+    /// The Apple ID email or its private relay address, if shared.
+    public var email: String?
 
-    public init(accessToken: String, refreshToken: String, expiresAt: Date, userID: String) {
+    public init(
+        accessToken: String, refreshToken: String, expiresAt: Date, userID: String,
+        isAnonymous: Bool? = nil, email: String? = nil
+    ) {
         self.accessToken = accessToken
         self.refreshToken = refreshToken
         self.expiresAt = expiresAt
         self.userID = userID
+        self.isAnonymous = isAnonymous
+        self.email = email
     }
+
+    /// Signed in with Apple (a permanent account), rather than anonymous.
+    public var isAccount: Bool { isAnonymous == false }
 
     /// Refresh a minute early to avoid racing the expiry.
     public func isExpired(at date: Date = Date(), leeway: TimeInterval = 60) -> Bool {
@@ -477,7 +522,16 @@ public struct AuthSession: Codable, Equatable, Sendable {
 }
 
 struct SupabaseSessionDTO: Decodable {
-    struct User: Decodable { let id: String }
+    struct User: Decodable {
+        let id: String
+        let isAnonymous: Bool?
+        let email: String?
+
+        enum CodingKeys: String, CodingKey {
+            case id, email
+            case isAnonymous = "is_anonymous"
+        }
+    }
 
     let accessToken: String
     let refreshToken: String

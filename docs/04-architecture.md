@@ -22,7 +22,7 @@
 │  Auth (anonymous)   Edge Functions (Deno)                 Postgres (RLS)               │
 │                     ├─ ai-image: create/poll/cancel/balance  credit_wallets            │
 │                     ├─ credits-redeem: Apple JWS → pack      credit_ledger (append-only)│
-│                     └─ account: delete user                  jobs · entitlements        │
+│                     └─ account: link (merge) · delete user    jobs · entitlements        │
 └───────────────┬──────────────────────────────┬─────────────────────────────────────────┘
                 │ queue.fal.run (Key auth)      │ Apple root CAs (JWS verification)
           ┌─────▼──────┐                   ┌────▼─────┐
@@ -121,7 +121,7 @@ App                          ai-image (Edge)                         Postgres   
 
 | Layer | How | Where |
 |---|---|---|
-| AppCore (contract, credits, catalog sync, policy, polling, deep links, widget snapshot) | 71 XCTest cases, run on Linux (Swift 6.1 container) | `ci.yml › core` |
+| AppCore (contract, credits, catalog sync, policy, polling, deep links, widget snapshot) | 82 XCTest cases, run on Linux (Swift 6.1 container) | `ci.yml › core` |
 | Edge Functions | `deno fmt --check`, `deno lint`, `deno check` (strict) | `ci.yml › backend` |
 | SQL ledger | Migration + behavioural tests on PostgreSQL: holds, refunds, packs, rollover, sweeper, RLS | `ci.yml › backend` |
 | iOS app | `xcodebuild build` (unsigned, generic iOS) on macOS | `ci.yml › ios` |

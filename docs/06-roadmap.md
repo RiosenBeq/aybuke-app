@@ -7,7 +7,7 @@ Legend: ✅ done in this repository · ⏳ next · 🔭 later
 - ✅ Market & competitor research: 15 apps, user loves and pains, trends, monetization benchmarks → [01](01-market-research.md)
 - ✅ Brand & design research: hue map, palettes with WCAG checks, typography, naming, UX patterns, icon → [research](research/brand-and-design.md)
 - ✅ AI technology & compliance research: models, fal.ai, Supabase, Apple frameworks, App Review, EU AI Act → [research](research/tech-and-compliance.md)
-- ✅ Name decision: **Glowlit** (domain screen) · palette **Blush** (pink, replacing the original Golden Hour amber) · **Bricolage Grotesque** + New York Italic accents · icon **Sunrise Split** in pink → [02](02-brand-identity.md)
+- ✅ Name decision: **Glowlit** (domain screen) · palette **Blush** (pink, replacing the original Golden Hour amber) · **Bricolage Grotesque** + New York Italic accents · icon **Glow Print** (Oct 2026; was Sunrise Split) → [02](02-brand-identity.md)
 - ✅ Product spec: positioning, features, flows, pricing, unit economics, KPIs → [03](03-product-spec.md)
 
 ## Phase 1 — Foundation ✅
@@ -15,7 +15,7 @@ Legend: ✅ done in this repository · ⏳ next · 🔭 later
 - ✅ Xcode 16+ project (synchronized folder), shared scheme, StoreKit test configuration
 - ✅ `AppCore` package
   - API contract, credit wallet, catalogs, prompt builder, content policy, polling
-  - 71 unit tests (incl. developer-mode AI providers, the legal Markdown parser and the widget/deep-link helpers), run on Linux and macOS
+  - 82 unit tests (incl. developer-mode AI providers, the legal Markdown parser, widget/deep-link helpers, notification and rating rules, and accounts), run on Linux and macOS
 - ✅ Design system
   - Tokens: palette, type, metrics
   - Components: buttons, chips, badges, cards, aurora background, generating overlay, before/after slider, template card, toast, share sheet
@@ -42,6 +42,9 @@ Legend: ✅ done in this repository · ⏳ next · 🔭 later
 - ✅ Motion and details: staggered reveals, springy buttons, twinkling hearts and sparkles, orbiting charms while generating, a before/after "peek"; all respect Reduce Motion
 - ✅ Widgets: Today's trend and My glow (Home and Lock Screen), App Group snapshot, `glowlit://` deep links
 - ✅ Live Activity: Dynamic Island (compact, expanded, minimal) and Lock Screen progress for cloud jobs
+- ✅ Audit → [07](07-audit-and-differentiators.md): sharp lookbook collection pages, double-tap to heart, opt-in notifications with quiet and school hours, happy-moment rating prompts
+- ✅ Differentiators: likeness check, Best shot, Help me pick, kindness reminder, visible AI-edited label
+- ✅ Optional Sign in with Apple: account merge (`merge_accounts`), Apple token revocation on deletion
 
 ## Phase 3 — Backend ✅ (code) / ⏳ (deploy)
 
@@ -73,8 +76,9 @@ Legend: ✅ done in this repository · ⏳ next · 🔭 later
   - Products: `app.glowlit.pro.yearly` ($59.99, 7-day trial), `app.glowlit.pro.monthly` ($9.99), `app.glowlit.credits.30` ($4.99), `app.glowlit.credits.100` ($12.99)
   - Set `APPLE_APP_ID`
 - ⏳ App Store Server Notifications V2 endpoint for refunds and revocations
+- ⏳ Turn on Sign in with Apple for the app id, enable the Apple provider in Supabase, set `APPLE_TEAM_ID` / `APPLE_SIGNIN_KEY_ID` / `APPLE_SIGNIN_PRIVATE_KEY`, and test sign-in and the merge on two devices
 - ⏳ Age rating questionnaire (target 13+/16+) and the Declared Age Range API
-- ✅ Pink app icon with dark and tinted variants (`scripts/render-brand-assets.py`)
+- ✅ "Glow Print" app icon with dark and tinted variants (`scripts/render-brand-assets.py`)
 - ⏳ Build with the latest SDK (iOS 26/27); Icon Composer `.icon` with clear variants
 - ✅ App Store copy (EN/TR), 8 generated screenshots per language, social images → [marketing](marketing/README.md)
 - ⏳ Recapture the screenshots with real AI results (needs an AI key), header asset, Custom Product Pages
@@ -95,6 +99,8 @@ Legend: ✅ done in this repository · ⏳ next · 🔭 later
 - 🔭 C2PA Content Credentials (server-signed); optional visible "AI-edited" label
 - 🔭 Fal webhooks instead of polling; Realtime push to the app; push-updated Live Activities
 - 🔭 Control Center control and interactive widgets (iOS 18+)
+- 🔭 Steal the look (reference photo) with Likeness Lock; one look across a whole photo dump; alternate app icons
+- 🔭 Optional iCloud sync of My Works (the user's own iCloud, never our servers)
 - 🔭 Localization (ES, PT-BR, DE, FR, TR); iPhone Duo adaptive layouts; iPad
 - 🔭 Swift 6 strict concurrency; UI tests; snapshot tests
 - 🔭 Analytics (privacy-friendly), paywall experiments, Apple Ads

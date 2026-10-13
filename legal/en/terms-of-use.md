@@ -58,11 +58,15 @@ This section is a plain-language summary for younger users. The rest of these Te
 - **Think before you share.** Your creations stay on your phone unless you share them. Once something is online, it can be hard to take back.
 - **Help is here.** If something goes wrong, or someone uses {{APP_NAME}} to hurt you, tell a trusted adult and report it to us (see the [AUP]({{LINK_AUP}})). Parents and guardians can contact us at [{{PRIVACY_EMAIL}}](mailto:{{PRIVACY_EMAIL}}), including to delete their child's data.
 
-## 5. Your anonymous account
+## 5. Your account
 
 ### No sign-up
 
 {{APP_NAME}} doesn't ask you to sign up or give us your name, email address or a password. When you first use a cloud AI feature or your credit balance on our servers, the app automatically creates an anonymous account, identified by a random user ID, with our backend provider. The app stores the session tokens for this account in the iOS Keychain on your device.
+
+### Optional Sign in with Apple
+
+You can choose to sign in with Apple, for example to keep Pro and your credits when you switch or add an iPhone. Signing in is never required to use {{APP_NAME}}. When you sign in, the anonymous account on that iPhone is merged into your account, including its purchased credits. Signing out returns that iPhone to a new anonymous account; your credits stay with your account, and an active subscription stays with the Apple Account that bought it. Your photos and library are not synced between devices.
 
 ### Keep your device secure
 
@@ -70,11 +74,11 @@ Anyone who can use your unlocked iPhone can use your account, your credits and y
 
 ### If you lose access
 
-Because your account is anonymous, access to it depends on your device. If you lose access, for example after erasing your iPhone without restoring a backup, we may not be able to recover the account or its credit balance. You can restore an active Pro subscription with "Restore purchases" in the app. If you need help, contact us with the Order ID from your Apple purchase receipt and we'll do what we reasonably can.
+If you haven't signed in with Apple, access to your account depends on your device. If you lose access, for example after erasing your iPhone without restoring a backup, we may not be able to recover the account or its credit balance. You can restore an active Pro subscription with "Restore purchases" in the app. If you signed in with Apple, sign in again on your new iPhone to get your credits back. If you need help, contact us with the Order ID from your Apple purchase receipt and we'll do what we reasonably can.
 
 ### Deleting your account
 
-You can delete your account at any time in **Settings → Delete my data & account**. This permanently deletes your server account and all server-side records linked to it (credit wallet, credit ledger, job records, entitlement records and reports), as well as the creations library on your device.
+You can delete your account at any time in **Settings → Delete my data & account**. This permanently deletes your server account and all server-side records linked to it (credit wallet, credit ledger, job records, entitlement records and reports), as well as the creations library on your device. If you signed in with Apple, we also revoke {{APP_NAME}}'s access to your Apple ID.
 
 Any remaining credits, including purchased credits, are lost when you delete your account and cannot be restored or refunded. If you use a cloud AI feature again later, a new anonymous account is created.
 

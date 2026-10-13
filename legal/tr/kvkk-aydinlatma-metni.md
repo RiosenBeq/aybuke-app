@@ -21,13 +21,14 @@ Bu Aydınlatma Metni, 6698 sayılı Kişisel Verilerin Korunması Kanunu ("**KVK
 
 ## 2. İşlenen kişisel veri kategorileri
 
+- **Kimlik / iletişim (isteğe bağlı hesap):** Apple ile giriş yaparsanız Apple kullanıcı tanımlayıcısı ve paylaşmayı seçerseniz e-posta adresiniz (Apple'ın gizli aktarma adresi olabilir) ile hesabınızı silerken erişimi iptal edebilmek için Apple'dan alınan anahtar.
 - **İşlem güvenliği:** anonim kullanıcı kimliği, oturum anahtarları (cihazınızın Anahtar Zinciri'nde saklanır), IP adresi, istek üst verileri ve zaman bilgilerini içeren sunucu kayıtları.
 - **Müşteri işlem:** bulut yapay zekâ iş kayıtları (iş kimliği, işlem türü, şablon kimliği, model uç noktası, kredi tutarı, durum, hata kodu, sağlayıcı istek kimliği, zaman bilgileri), kredi cüzdanı ve kredi defteri kayıtları, Apple tarafından imzalanmış satın alma ve abonelik verileri (işlem kimlikleri, ürün kimliği, tarihler, ortam, uygulama hesap anahtarı).
 - **Görsel kayıtlar:** bulut yapay zekâ özelliklerine gönderdiğiniz fotoğraflar, çizdiğiniz maskeler ve üretilen sonuç görselleri.
 - **Diğer (kullanıcı içeriği):** yazdığınız metin istemleri (prompt).
 - **Talep / şikâyet yönetimi:** "Bu görseli bildir" kayıtları (neden, isteğe bağlı açıklama, ilgili iş kimliği) ile bize ilettiğiniz e-postalar ve başvurular.
 - **İletişim:** bize yazdığınızda e-posta adresiniz.
-- **Özel nitelikli kişisel veriler:** Bu tür verileri işleme amacımız yoktur. Bir fotoğraf tesadüfen sağlık, din veya etnik köken gibi bilgiler ortaya koyabilir; bu durumda veriler yalnızca istediğiniz düzenleme için ve açık rızanıza dayanılarak işlenir. Biyometrik veri oluşturmayız; yüz tanıma yapmayız.
+- **Özel nitelikli kişisel veriler:** Bu tür verileri işleme amacımız yoktur. Bir fotoğraf tesadüfen sağlık, din veya etnik köken gibi bilgiler ortaya koyabilir; bu durumda veriler yalnızca istediğiniz düzenleme için ve açık rızanıza dayanılarak işlenir. Biyometrik veri oluşturmayız; yüz tanıma yapmayız. Best shot, nezaket hatırlatması ve benzerlik kontrolü yüzleri yalnızca cihazınızda, kimseyi tanımadan ve hiçbir şey saklamadan inceler.
 
 Kütüphaneniz ("My Works"), uygulama ayarlarınız ve seçtiğiniz ilgi alanları yalnızca cihazınızda saklanır; bunlara erişimimiz yoktur. Arka plan kaldırma ve elle ayarlama gibi cihaz üzerindeki özellikler fotoğraflarınızı tamamen iPhone'unuzda işler.
 
@@ -49,7 +50,7 @@ Kişisel verilerinizi reklam, pazarlama, profilleme veya yapay zekâ modellerini
 
 Kişisel verileriniz, {{APP_NAME}} mobil uygulaması aracılığıyla elektronik ortamda ve otomatik yollarla; satın alımlara ilişkin veriler Apple'dan imzalı işlem bilgisi olarak; bize yazdığınızda e-posta yoluyla toplanır. Bu veriler aşağıdaki hukuki sebeplere dayanılarak işlenir:
 
-- **Bir sözleşmenin kurulması veya ifasıyla doğrudan ilgili olması (md. 5/2-c):** anonim hesabın işletilmesi, iş kayıtları, krediler, satın alımlar ve abonelikler, destek talepleri.
+- **Bir sözleşmenin kurulması veya ifasıyla doğrudan ilgili olması (md. 5/2-c):** anonim hesabın ve isteğe bağlı Apple ile giriş hesabının işletilmesi (hesapların birleştirilmesi dahil), iş kayıtları, krediler, satın alımlar ve abonelikler, destek talepleri.
 - **Açık rıza (md. 5/1):** bulut yapay zekâ işleme kapsamında fotoğraf, maske ve istemlerin işlenmesi. Bu rızayı uygulama içindeki onay ekranında verirsiniz ve **Ayarlar → Cloud AI processing** seçeneğiyle dilediğiniz zaman geri alabilirsiniz. Bir fotoğraf özel nitelikli kişisel veri ortaya koyuyorsa md. 6/3 kapsamındaki açık rızanıza dayanırız.
 - **Veri sorumlusunun meşru menfaati (md. 5/2-f):** güvenlik filtreleri, kötüye kullanımın önlenmesi, sunucu ve güvenlik kayıtları, bildirimlerin incelenmesi ve fotoğraflarınızda görünen diğer kişilerin görüntülerinin yalnızca istenen düzenleme için kısa süreli işlenmesi. Meşru menfaatimiz, genç kullanıcıların verilerinin korunmasına ilişkin menfaatlerin önüne geçmez.
 - **Hukuki yükümlülüğün yerine getirilmesi (md. 5/2-ç):** başvuruların yanıtlanması, mevzuatın gerektirdiği kayıtlar ve yetkili makamlara bildirimler (örneğin çocukların cinsel istismarı materyali).
@@ -62,7 +63,7 @@ Kişisel verileriniz, {{APP_NAME}} mobil uygulaması aracılığıyla elektronik
 Kişisel verileriniz, yukarıdaki amaçlarla sınırlı olarak ve KVKK md. 8 ve 9'a uygun şekilde şu alıcılara aktarılabilir:
 
 - **Yurt dışındaki hizmet sağlayıcılarımız (veri işleyenler):** arka uç barındırma, veritabanı ve anonim kimlik doğrulama için Supabase Inc. (ABD; barındırma bölgesi: {{HOSTING_REGION}}); yapay zekâ çıkarımı ve otomatik çıktı güvenlik kontrolü için Features & Labels, Inc. (fal.ai, ABD) ve fal.ai'ın çalıştırdığı modellerin geliştiricileri (örneğin Google LLC); sağlayıcı değiştirmemiz hâlinde Google LLC (Gemini API) veya OpenAI (Images API); e-posta hizmet sağlayıcımız.
-- **Apple:** satın alma ve abonelik işlemlerinin yürütülmesi amacıyla; Apple bu işlemleri satıcı ve bağımsız veri sorumlusu sıfatıyla yürütür. Fotoğraflarınızı veya istemlerinizi Apple'a göndermeyiz.
+- **Apple:** satın alma ve abonelik işlemlerinin yürütülmesi ile Apple ile girişin doğrulanması ve hesap silindiğinde iptal edilmesi amacıyla; Apple bu işlemleri satıcı ve bağımsız veri sorumlusu sıfatıyla yürütür. Fotoğraflarınızı veya istemlerinizi Apple'a göndermeyiz.
 - **Yetkili kamu kurum ve kuruluşları ile adli makamlar:** kanunen yetkili oldukları hâllerde ve hukuki yükümlülüklerimizin gerektirdiği ölçüde.
 
 **Yurt dışına aktarım.** Hizmet sağlayıcılarımızın çoğu yurt dışında bulunduğundan kişisel verileriniz yurt dışına aktarılır. 7499 sayılı Kanun ile değişik KVKK md. 9 uyarınca bu aktarımlar, Kişisel Verileri Koruma Kurulu tarafından ilan edilen standart sözleşmeler gibi uygun güvencelere dayanır; standart sözleşmeler imzalandıktan sonra beş iş günü içinde Kişisel Verileri Koruma Kurumuna bildirilir. Düzenli aktarımlarımız açık rızanıza dayanmaz. Yalnızca yeterlilik kararı veya uygun güvence bulunmayan istisnai ve arızi hâllerde, olası riskler hakkında bilgilendirilmeniz kaydıyla md. 9/6'daki şartlardan birine dayanılabilir.
@@ -74,7 +75,7 @@ Kişisel verilerinizi satmayız ve üçüncü kişilerin kendi reklam veya pazar
 - Bulut yapay zekâ özelliklerine gönderilen fotoğraf, maske ve istemler: tarafımızca saklanmaz.
 - Bulutta üretilen sonuçlar: en fazla 1 saat.
 - İş kayıtları: 30 gün.
-- Hesap, kredi ve hak kayıtları: hesabınız var olduğu sürece; hesabınızı sildiğinizde silinir.
+- Hesap, kredi ve hak kayıtları (Apple ile giriş bilgileri dahil): hesabınız var olduğu sürece; hesabınızı sildiğinizde silinir ve Apple anahtarı iptal edilir.
 - Bildirimler: en fazla 12 ay.
 - Sunucu ve güvenlik kayıtları: genellikle en fazla 90 gün.
 - E-postalar ve başvurular: talebin sonuçlandırılması ve belgelenmesi için gereken süre boyunca.

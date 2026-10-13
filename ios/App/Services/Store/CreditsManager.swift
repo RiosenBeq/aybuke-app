@@ -35,7 +35,14 @@ final class CreditsManager {
         return wallet.balance
     }
 
-    var nextDailyRefill: Date { wallet.nextDailyRefill() }
+    /// When the free daily credits come back: midnight UTC on the server,
+    /// local midnight in demo mode.
+    var nextFreeRefill: Date {
+        guard isServerAuthoritative else { return wallet.nextDailyRefill() }
+        var utc = Calendar(identifier: .gregorian)
+        utc.timeZone = TimeZone(identifier: "UTC") ?? .current
+        return utc.date(byAdding: .day, value: 1, to: utc.startOfDay(for: Date())) ?? Date().addingTimeInterval(86_400)
+    }
 
     func cost(of operation: AIOperation, outputs: Int = 1) -> Int {
         policy.cost(of: operation, outputs: outputs)
@@ -79,6 +86,13 @@ final class CreditsManager {
         wallet.addPurchased(amount)
         persist()
     }
+
+    #if DEBUG
+    /// Screenshots always show a fresh day's free credits.
+    func resetForScreenshots() {
+        wallet = .fresh(now: Date(), policy: policy)
+    }
+    #endif
 
     private func persist() {
         if let data = try? JSONEncoder().encode(wallet) {

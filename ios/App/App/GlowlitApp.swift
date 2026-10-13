@@ -4,6 +4,7 @@ import SwiftData
 @main
 struct GlowlitApp: App {
     @State private var app: AppModel
+    @Environment(\.scenePhase) private var scenePhase
     private let container: ModelContainer
 
     init() {
@@ -24,6 +25,9 @@ struct GlowlitApp: App {
                 .environment(app)
                 .preferredColorScheme(app.appearance.colorScheme)
                 .task { await app.start() }
+        }
+        .onChange(of: scenePhase) { _, phase in
+            if phase == .active { app.becameActive() }
         }
         .modelContainer(container)
     }

@@ -29,6 +29,9 @@ struct EditorView: View {
                     .padding(.horizontal, 12)
                     .padding(.vertical, 8)
                     .overlay { SparkleBurst(trigger: model.celebration) }
+                if model.showsKindnessNote && !model.isProcessing {
+                    kindnessNote
+                }
                 if model.lastRequestID != nil && !model.isProcessing {
                     resultActions
                 }
@@ -39,12 +42,14 @@ struct EditorView: View {
             }
 
             if model.isProcessing {
-                GeneratingOverlay(title: model.processingTitle, onCancel: { model.cancelProcessing() })
+                GeneratingOverlay(title: model.processingTitle, offersReadyPing: model.isProcessingInCloud, onCancel: { model.cancelProcessing() })
                     .transition(.opacity)
             }
         }
         .animation(.easeInOut(duration: 0.25), value: model.isProcessing)
         .animation(.snappy, value: model.activeTool)
+        .task { await model.checkForOtherPeople() }
+        .animation(.snappy, value: model.showsKindnessNote)
         .task {
             // Launched from a template card: run it right away (one-tap).
             if let template = launch.template {
@@ -157,41 +162,117 @@ struct EditorView: View {
     }
 
     /// Under a fresh cloud result: Likeness Lock's free retry (people edits)
-    /// and reporting.
+    /// and reporting. The on-device likeness check speaks up first when the
+    /// result drifted from her.
     private var resultActions: some View {
-        HStack(spacing: 8) {
-            if model.canRetryFree {
-                Button {
-                    model.retryFree(app: app)
-                } label: {
-                    HStack(spacing: 6) {
-                        Image(systemName: "arrow.triangle.2.circlepath")
-                        Text("Doesn't look like you? Retry free")
-                    }
+        VStack(spacing: 8) {
+            if let likeness = model.likeness, likeness.needsAttention, model.canRetryFree {
+                HStack(spacing: 10) {
+                    Image(systemName: "person.crop.circle.badge.exclamationmark")
+                        .font(.title3)
+                        .foregroundStyle(Palette.accent)
+                    Text(likeness.message)
+                        .font(.footnote.weight(.semibold))
+                        .foregroundStyle(Palette.textPrimary)
+                        .fixedSize(horizontal: false, vertical: true)
+                    Spacer(minLength: 0)
+                }
+                .padding(12)
+                .background(Palette.blush.opacity(0.55), in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+                .padding(.horizontal, Metrics.gutter)
+                .transition(.move(edge: .bottom).combined(with: .opacity))
+            }
+            HStack(spacing: 8) {
+                if model.likeness == .stillYou {
+                    Label("Still you", systemImage: "checkmark.seal.fill")
+                        .font(.footnote.weight(.semibold))
+                        .foregroundStyle(Palette.textPrimary)
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 8)
+                        .background(Palette.blush, in: Capsule())
+                        .accessibilityLabel("Likeness check: still looks like you")
+                        .transition(.scale.combined(with: .opacity))
+                }
+                if model.canRetryFree {
+                    retryButton(emphasised: model.likeness?.needsAttention == true)
+                }
+                reportButton
+            }
+        }
+        .padding(.bottom, 6)
+        .transition(.opacity)
+    }
+
+    private func retryButton(emphasised: Bool) -> some View {
+        Button {
+            app.registerSetback()
+            model.retryFree(app: app)
+        } label: {
+            HStack(spacing: 6) {
+                Image(systemName: "arrow.triangle.2.circlepath")
+                Text(emphasised ? "Retry free" : model.likeness == .stillYou ? "Retry free" : "Doesn't look like you? Retry free")
+            }
+            .font(.footnote.weight(.semibold))
+            .foregroundStyle(emphasised ? Palette.onAccent : Palette.textPrimary)
+            .padding(.horizontal, 14)
+            .padding(.vertical, 8)
+            .background(emphasised ? Palette.accent : Palette.surface, in: Capsule())
+            .overlay(Capsule().strokeBorder(emphasised ? Color.clear : Palette.stroke, lineWidth: 1))
+        }
+        .buttonStyle(.pressable)
+    }
+
+    /// Kindness check: friends in the photo get a say. Skippable, once per photo.
+    private var kindnessNote: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            HStack(alignment: .top, spacing: 10) {
+                Image(systemName: "person.2.fill")
+                    .foregroundStyle(Palette.accent)
+                Text("Friends in this photo? Ask them before you edit them 💗")
                     .font(.footnote.weight(.semibold))
+                    .foregroundStyle(Palette.textPrimary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            HStack(spacing: 8) {
+                Button("Only edit me") { model.editOnlyMe() }
+                    .buttonStyle(.pressable)
+                    .font(.footnote.weight(.bold))
+                    .foregroundStyle(Palette.onAccent)
+                    .padding(.horizontal, 14)
+                    .padding(.vertical, 8)
+                    .background(Palette.accent, in: Capsule())
+                Button("They're OK with it") { model.dismissKindnessNote() }
+                    .buttonStyle(.pressable)
+                    .font(.footnote.weight(.bold))
                     .foregroundStyle(Palette.textPrimary)
                     .padding(.horizontal, 14)
                     .padding(.vertical, 8)
                     .background(Palette.surface, in: Capsule())
                     .overlay(Capsule().strokeBorder(Palette.stroke, lineWidth: 1))
-                }
-                .buttonStyle(.plain)
             }
-            Button {
-                showReport = true
-            } label: {
-                Image(systemName: "flag")
-                    .font(.footnote.weight(.semibold))
-                    .foregroundStyle(Palette.textSecondary)
-                    .frame(width: 34, height: 34)
-                    .background(Palette.surface, in: Circle())
-                    .overlay(Circle().strokeBorder(Palette.stroke, lineWidth: 1))
-            }
-            .buttonStyle(.plain)
-            .accessibilityLabel("Report this result")
         }
+        .padding(12)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Palette.surface, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+        .overlay(RoundedRectangle(cornerRadius: 16, style: .continuous).strokeBorder(Palette.stroke, lineWidth: 1))
+        .padding(.horizontal, Metrics.gutter)
         .padding(.bottom, 6)
-        .transition(.opacity)
+        .transition(.move(edge: .bottom).combined(with: .opacity))
+    }
+
+    private var reportButton: some View {
+        Button {
+            showReport = true
+        } label: {
+            Image(systemName: "flag")
+                .font(.footnote.weight(.semibold))
+                .foregroundStyle(Palette.textSecondary)
+                .frame(width: 34, height: 34)
+                .background(Palette.surface, in: Circle())
+                .overlay(Circle().strokeBorder(Palette.stroke, lineWidth: 1))
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel("Report this result")
     }
 
     // MARK: Tool panel
@@ -293,7 +374,7 @@ struct EditorView: View {
                 await app.saveToLibrary([model.current], operation: model.appliedOperation, title: model.libraryTitle, prompt: nil)
                 app.showToast("Saved to Photos", style: .success)
                 Haptics.success()
-                if app.registerSuccessfulSave() {
+                if app.registerHappyMoment() {
                     requestReview()
                 }
             } catch {

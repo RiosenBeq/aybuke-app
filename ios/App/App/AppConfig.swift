@@ -51,7 +51,7 @@ struct AppConfig: Decodable {
         supabaseAnonKey: "",
         forceDemoMode: true,
         aiProviderName: "our AI processing partners",
-        dataRetentionHours: 24,
+        dataRetentionHours: 1,
         privacyPolicyURL: URL(string: "https://github.com/RiosenBeq/furkan/blob/main/docs/legal/en/privacy-policy.md")!,
         termsURL: URL(string: "https://github.com/RiosenBeq/furkan/blob/main/docs/legal/en/terms-of-use.md")!,
         supportEmail: "support@glowlit.app",
@@ -141,6 +141,11 @@ struct AppConfig: Decodable {
     var isDemoMode: Bool {
         if case .demo = aiMode { return true }
         return false
+    }
+
+    /// "an hour" or "N hours", matching the privacy policy's 1-hour promise.
+    var retentionPhrase: String {
+        dataRetentionHours <= 1 ? "an hour" : "\(dataRetentionHours) hours"
     }
 
     /// Who processes photos, as named on the consent screen and in Settings.

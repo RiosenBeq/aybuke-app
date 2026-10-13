@@ -1,5 +1,6 @@
 import SwiftUI
 import StoreKit
+import AppCore
 
 struct SettingsView: View {
     @Environment(AppModel.self) private var app
@@ -9,12 +10,15 @@ struct SettingsView: View {
     @State private var confirmDeleteCreations = false
     @State private var confirmDeleteAccount = false
     @State private var isRestoring = false
+    @State private var confirmSignOut = false
 
     var body: some View {
         NavigationStack {
             List {
                 membershipSection
+                accountSection
                 creditsSection
+                notificationsSection
                 appearanceSection
                 privacySection
                 shareSection
@@ -31,6 +35,14 @@ struct SettingsView: View {
                 }
             }
             .manageSubscriptionsSheet(isPresented: $showManageSubscription)
+            .confirmationDialog("Sign out?", isPresented: $confirmSignOut, titleVisibility: .visible) {
+                Button("Sign out", role: .destructive) {
+                    Task { await app.signOut() }
+                }
+                Button("Cancel", role: .cancel) {}
+            } message: {
+                Text("Your credits stay with your account. Pro stays with the Apple Account that bought it, and Restore purchases brings it back.")
+            }
             .confirmationDialog("Delete all creations?", isPresented: $confirmDeleteCreations, titleVisibility: .visible) {
                 Button("Delete all", role: .destructive) {
                     app.deleteAllCreations()
@@ -98,6 +110,39 @@ struct SettingsView: View {
         .listRowBackground(Palette.surface)
     }
 
+    private var accountSection: some View {
+        Section {
+            if app.isSignedIn {
+                Label {
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("Signed in with Apple")
+                        Text(app.accountEmail ?? "Email hidden")
+                            .font(.caption)
+                            .foregroundStyle(Palette.textSecondary)
+                    }
+                } icon: {
+                    Image(systemName: "apple.logo").foregroundStyle(Palette.textPrimary)
+                }
+                Button("Sign out", role: .destructive) { confirmSignOut = true }
+            } else {
+                VStack(alignment: .leading, spacing: 12) {
+                    Text("Keep Pro and your credits when you switch or add an iPhone. Signing in is optional.")
+                        .font(.subheadline)
+                        .foregroundStyle(Palette.textSecondary)
+                    AppleSignInButton()
+                }
+                .padding(.vertical, 6)
+            }
+        } header: {
+            Text("Account")
+        } footer: {
+            Text(app.canUseAccounts
+                 ? "Your photos stay on each iPhone and are never uploaded to sync. We only learn your Apple ID email if you share it, and you can hide it."
+                 : "Accounts need the \(Brand.name) server, which isn't connected in this demo build.")
+        }
+        .listRowBackground(Palette.surface)
+    }
+
     private var creditsSection: some View {
         Section {
             HStack {
@@ -119,6 +164,47 @@ struct SettingsView: View {
                  : "You get \(app.credits.policy.freeDailyAllowance) free credits every day. Background removal and adjustments are always free.")
         }
         .listRowBackground(Palette.surface)
+    }
+
+    private var notificationsSection: some View {
+        Section {
+            notificationToggle(.glowReady, title: "When my glow is ready", detail: "If I leave the app while it's working.")
+            if !app.purchases.isPro {
+                notificationToggle(.creditsBack, title: "When my free credits are back", detail: "Only after I run out.")
+            }
+            notificationToggle(.weeklyLook, title: "One new look a week", detail: "Fridays at 5 pm.")
+            if app.notifier.authorization == .denied, let settings = URL(string: UIApplication.openNotificationSettingsURLString) {
+                Button("Allow notifications in iOS Settings") { openURL(settings) }
+            }
+        } header: {
+            Text("Notifications")
+        } footer: {
+            Text("All off until you turn them on. Never at night (9 pm–9 am) or during school hours on weekdays. No streaks, no spam.")
+        }
+        .listRowBackground(Palette.surface)
+        .task { await app.notifier.refreshAuthorization() }
+    }
+
+    private func notificationToggle(_ kind: GlowNotificationKind, title: String, detail: String) -> some View {
+        Toggle(isOn: Binding(
+            get: { app.notifier.preferences.isOn(kind) && app.notifier.isAllowedBySystem },
+            set: { on in
+                Task {
+                    if await app.notifier.set(kind, on: on) {
+                        app.syncReminders()
+                    }
+                }
+            }
+        )) {
+            VStack(alignment: .leading, spacing: 2) {
+                Text(title)
+                Text(detail)
+                    .font(.caption)
+                    .foregroundStyle(Palette.textSecondary)
+            }
+        }
+        .tint(Palette.accent)
+        .disabled(app.notifier.authorization == .denied)
     }
 
     private var appearanceSection: some View {
@@ -155,7 +241,7 @@ struct SettingsView: View {
         } header: {
             Text("Privacy")
         } footer: {
-            Text("Uploaded photos are deleted from our servers within \(app.config.dataRetentionHours) hours and are never used to train AI models. Exports include an invisible “made with AI” label (IPTC metadata) as required by the EU AI Act.")
+            Text("Uploaded photos are deleted from our servers within \(app.config.retentionPhrase) and are never used to train AI models. Exports include an invisible “made with AI” label (IPTC metadata) as required by the EU AI Act.")
         }
         .listRowBackground(Palette.surface)
     }

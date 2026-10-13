@@ -2,7 +2,7 @@
 
 # Kabul Edilebilir Kullanım ve Yapay Zekâ İçerik Politikası
 
-Son güncelleme: 12 Ekim 2026
+Son güncelleme: 13 Ekim 2026
 
 > **Kısaca**
 > - Yalnızca kullanma hakkınız olan fotoğrafları yükleyin ve yalnızca buna onay veren kişileri düzenleyin. Çocuklar için onayı velisi veya vasisi vermelidir.

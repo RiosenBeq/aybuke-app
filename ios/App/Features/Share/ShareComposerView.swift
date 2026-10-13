@@ -12,6 +12,7 @@ struct ShareComposerView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var format: ShareFormat = .photo
     @State private var showPrompt = false
+    @State private var showsAILabel = false
     @State private var caption = ""
     @State private var rendered: UIImage?
     @State private var isWorking = false
@@ -20,7 +21,13 @@ struct ShareComposerView: View {
     private var branded: Bool { !app.purchases.isPro }
 
     private var formats: [ShareFormat] {
-        ShareFormat.allCases.filter { $0 != .beforeAfter || payload.original != nil }
+        ShareFormat.allCases.filter { format in
+            switch format {
+            case .beforeAfter: return payload.original != nil
+            case .pick: return payload.pickPair != nil
+            case .photo, .story: return true
+            }
+        }
     }
 
     private var instagramReady: Bool { InstagramStories.isAvailable(appID: app.config.instagramAppID) }
@@ -37,6 +44,18 @@ struct ShareComposerView: View {
                             .tint(Palette.accent)
                     }
                     destinations
+                    if payload.operation != nil {
+                        Toggle(isOn: $showsAILabel) {
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text("Add a visible “AI-edited” label")
+                                    .font(.subheadline.weight(.semibold))
+                                Text("Be real with your followers. A small label goes in the corner.")
+                                    .font(.caption)
+                                    .foregroundStyle(Palette.textSecondary)
+                            }
+                        }
+                        .tint(Palette.accent)
+                    }
                     captionCard
                     notes
                 }
@@ -55,7 +74,7 @@ struct ShareComposerView: View {
             }
         }
         .tint(Palette.accent)
-        .task(id: RenderKey(format: format, showPrompt: showPrompt, branded: branded)) {
+        .task(id: RenderKey(format: format, showPrompt: showPrompt, branded: branded, aiLabel: showsAILabel)) {
             await render()
         }
         .onAppear {
@@ -63,7 +82,10 @@ struct ShareComposerView: View {
                 caption = ShareCaption.make(for: payload, hashtags: app.config.shareHashtags, link: app.config.shareLinkURL)
             }
             #if DEBUG
-            if ScreenshotScene.current == .share, payload.original != nil { format = .beforeAfter }
+            if ScreenshotScene.current == .share, payload.original != nil {
+                // `-GLShareFormat pick` shows another format in screenshots.
+                format = UserDefaults.standard.string(forKey: "GLShareFormat").flatMap(ShareFormat.init(rawValue:)) ?? .beforeAfter
+            }
             #endif
         }
         .sheet(item: $activityItems) { item in
@@ -96,15 +118,19 @@ struct ShareComposerView: View {
     }
 
     private var formatPicker: some View {
-        HStack(spacing: 8) {
-            ForEach(formats) { option in
-                SelectableChip(title: option.title, symbolName: option.symbolName, isSelected: format == option) {
-                    Haptics.selection()
-                    format = option
+        ScrollView(.horizontal) {
+            HStack(spacing: 8) {
+                ForEach(formats) { option in
+                    SelectableChip(title: option.title, symbolName: option.symbolName, isSelected: format == option) {
+                        Haptics.selection()
+                        withAnimation(.snappy) { format = option }
+                    }
                 }
             }
+            .padding(.horizontal, Metrics.gutter)
         }
-        .frame(maxWidth: .infinity)
+        .scrollIndicators(.hidden)
+        .padding(.horizontal, -Metrics.gutter)
     }
 
     private var destinations: some View {
@@ -187,6 +213,7 @@ struct ShareComposerView: View {
         let format: ShareFormat
         let showPrompt: Bool
         let branded: Bool
+        let aiLabel: Bool
     }
 
     private func render() async {
@@ -194,8 +221,9 @@ struct ShareComposerView: View {
         let format = format
         let showPrompt = showPrompt
         let branded = branded
+        let aiLabel = showsAILabel
         let image = await Task.detached(priority: .userInitiated) {
-            ShareRenderer.render(payload, format: format, branded: branded, showPrompt: showPrompt)
+            ShareRenderer.render(payload, format: format, branded: branded, showPrompt: showPrompt, aiLabel: aiLabel)
         }.value
         guard !Task.isCancelled else { return }
         rendered = image
@@ -215,7 +243,11 @@ struct ShareComposerView: View {
         if InstagramStories.isAvailable(appID: appID) {
             UIPasteboard.general.string = caption
             let opened = await InstagramStories.share(rendered, asBackground: format == .story, appID: appID)
-            if !opened { app.showToast("Couldn't open Instagram.", style: .error) }
+            if opened {
+                app.countHappyMoment()
+            } else {
+                app.showToast("Couldn't open Instagram.", style: .error)
+            }
             return
         }
         // No Meta App ID configured (or Instagram missing): the system sheet
@@ -231,6 +263,7 @@ struct ShareComposerView: View {
         do {
             try await PhotoLibrarySaver.save(rendered, operation: payload.operation, watermark: false)
             Haptics.success()
+            app.countHappyMoment()
             app.showToast("Saved to Photos", style: .success)
         } catch {
             app.handle(error)

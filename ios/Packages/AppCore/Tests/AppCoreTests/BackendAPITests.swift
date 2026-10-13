@@ -163,6 +163,39 @@ final class BackendAPITests: XCTestCase {
         XCTAssertEqual(session.expiresAt, Date(timeIntervalSince1970: 4_600))
         XCTAssertFalse(session.isExpired(at: now))
         XCTAssertTrue(session.isExpired(at: Date(timeIntervalSince1970: 4_560)))
+        XCTAssertEqual(session.isAnonymous, true)
+        XCTAssertFalse(session.isAccount)
+    }
+
+    func testSignInWithAppleRequestAndAccountSession() throws {
+        let request = try RequestFactory.signInWithApple(idToken: "id.token", nonce: "raw-nonce", config: config)
+        XCTAssertEqual(request.httpMethod, "POST")
+        XCTAssertEqual(request.url?.absoluteString, "https://demo.supabase.co/auth/v1/token?grant_type=id_token")
+        XCTAssertEqual(request.value(forHTTPHeaderField: "apikey"), "anon-key")
+        let body = try JSONDecoder().decode([String: String].self, from: request.httpBody ?? Data())
+        XCTAssertEqual(body, ["provider": "apple", "id_token": "id.token", "nonce": "raw-nonce"])
+
+        let data = Data("""
+        {"access_token":"at","expires_in":3600,"refresh_token":"rt","user":{"id":"u-2","is_anonymous":false,"email":"x@privaterelay.appleid.com"}}
+        """.utf8)
+        let session = try ResponseDecoder.decodeSession(data: data, statusCode: 200)
+        XCTAssertTrue(session.isAccount)
+        XCTAssertEqual(session.email, "x@privaterelay.appleid.com")
+    }
+
+    func testLinkAccountRequestOmitsMissingFields() throws {
+        let request = try RequestFactory.linkAccount(anonymousToken: "anon.jwt", authorizationCode: nil, config: config, accessToken: "account.jwt")
+        XCTAssertEqual(request.url?.path, "/functions/v1/account/link")
+        XCTAssertEqual(request.value(forHTTPHeaderField: "Authorization"), "Bearer account.jwt")
+        let body = try JSONDecoder().decode([String: String].self, from: request.httpBody ?? Data())
+        XCTAssertEqual(body, ["anonymous_token": "anon.jwt"])
+    }
+
+    func testSessionsSavedBeforeAccountsStillDecode() throws {
+        let legacy = Data(#"{"accessToken":"a","refreshToken":"r","expiresAt":0,"userID":"u"}"#.utf8)
+        let session = try JSONDecoder().decode(AuthSession.self, from: legacy)
+        XCTAssertNil(session.isAnonymous)
+        XCTAssertFalse(session.isAccount)
     }
 
     func testDigitalSourceTypes() {

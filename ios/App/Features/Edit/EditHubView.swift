@@ -49,6 +49,37 @@ struct EditHubView: View {
                     .buttonStyle(PressableButtonStyle(scale: 0.97))
                     .reveal(1)
 
+                    Button {
+                        Haptics.tap()
+                        app.isBestShotPresented = true
+                    } label: {
+                        HStack(spacing: 14) {
+                            Image(systemName: "photo.stack")
+                                .font(.title3.weight(.semibold))
+                                .foregroundStyle(Palette.ink)
+                                .frame(width: 54, height: 54)
+                                .background(Palette.petal, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+                            VStack(alignment: .leading, spacing: 3) {
+                                HStack(spacing: 6) {
+                                    Text("Find your best shot")
+                                        .font(.cardTitle)
+                                        .foregroundStyle(Palette.textPrimary)
+                                    NewBadge()
+                                }
+                                Text("Ranks your selfies · free, on-device")
+                                    .font(.footnote)
+                                    .foregroundStyle(Palette.textSecondary)
+                            }
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .foregroundStyle(Palette.textTertiary)
+                        }
+                        .padding(14)
+                        .cardStyle()
+                    }
+                    .buttonStyle(PressableButtonStyle(scale: 0.97))
+                    .reveal(2)
+
                     LazyVGrid(columns: columns, spacing: 12) {
                         ForEach(Array(EditorTool.allCases.enumerated()), id: \.element) { index, tool in
                             Button {
@@ -82,7 +113,7 @@ struct EditHubView: View {
                     HStack(alignment: .top, spacing: 10) {
                         Image(systemName: "lock.shield")
                             .foregroundStyle(Palette.success)
-                        Text("Background removal and adjustments run on your iPhone. Cloud edits are never used to train AI and are deleted from our servers within \(app.config.dataRetentionHours) hours.")
+                        Text("Background removal and adjustments run on your iPhone. Cloud edits are never used to train AI and are deleted from our servers within \(app.config.retentionPhrase).")
                             .font(.footnote)
                             .foregroundStyle(Palette.textSecondary)
                     }

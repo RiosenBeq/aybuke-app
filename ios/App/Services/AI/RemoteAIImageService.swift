@@ -148,6 +148,40 @@ final class RemoteAIImageService: AIImageService {
         }
     }
 
+    // MARK: Sign in with Apple
+
+    /// Signs in with Apple, then moves the anonymous user's credits into the account.
+    func signInWithApple(idToken: String, nonce: String, authorizationCode: String?) async throws {
+        try await auth.signInWithApple(idToken: idToken, nonce: nonce)
+        try await linkAccount(authorizationCode: authorizationCode)
+    }
+
+    /// Merges a leftover anonymous user into the account. Safe to retry.
+    func linkAccount(authorizationCode: String? = nil) async throws {
+        let anonymous = await auth.pendingAnonymousToken()
+        guard anonymous != nil || authorizationCode != nil else { return }
+        let token = try await auth.validAccessToken()
+        let request = try RequestFactory.linkAccount(
+            anonymousToken: anonymous, authorizationCode: authorizationCode, config: config, accessToken: token
+        )
+        let (data, response) = try await load(request)
+        let status = (response as? HTTPURLResponse)?.statusCode ?? 0
+        guard (200..<300).contains(status) else {
+            throw ResponseDecoder.error(from: data, statusCode: status)
+        }
+        await auth.clearPendingMerge()
+    }
+
+    /// The signed-in account (nil while anonymous).
+    func account() async -> AuthSession? {
+        await auth.account
+    }
+
+    /// Back to a fresh anonymous session on this iPhone.
+    func signOut() async {
+        await auth.signOut()
+    }
+
     /// Supabase user id, used as the StoreKit `appAccountToken`.
     func currentUserID() async -> UUID? {
         _ = try? await auth.validAccessToken()

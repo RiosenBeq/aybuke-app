@@ -104,7 +104,7 @@ struct ResultsView: View {
                 try await PhotoLibrarySaver.save(current, operation: operation, watermark: !app.purchases.isPro)
                 app.showToast("Saved to Photos", style: .success)
                 Haptics.success()
-                if app.registerSuccessfulSave() {
+                if app.registerHappyMoment() {
                     requestReview()
                 }
             } catch {
@@ -116,7 +116,8 @@ struct ResultsView: View {
     private func share() {
         guard let current else { return }
         Haptics.tap()
-        app.share(SharePayload(image: current, operation: operation, prompt: prompt))
+        let others = images.indices.filter { $0 != selection }.map { images[$0] }
+        app.share(SharePayload(image: current, operation: operation, prompt: prompt, alternatives: others))
     }
 }
 

@@ -22,7 +22,7 @@ Rules followed: no prices in the name, subtitle or keywords; no other platforms,
 
     selfie,makeup,beauty,filter,aesthetic,headshot,anime,doll,restore,retouch,background,art,pink,y2k
 
-**Description** (2791/4000)
+**Description** (2932/4000)
 
 ```text
 Glowlit is the AI photo editor made for girls who glow. Type what you want to change, tap a trend or turn an idea into art, then share it to your Stories in one tap.
@@ -48,10 +48,12 @@ FREE ON YOUR IPHONE
 • Remove backgrounds instantly, on-device and always free
 • Adjust light and color with simple sliders
 • Brush to erase anything, and sharpen blurry photos with AI Enhance
+• Best shot: pick up to 12 selfies and see which one has the best light and focus
 
 MADE TO SHARE
 • Share straight to Instagram Stories
 • Before / After collages and 9:16 story cards
+• Help me pick: an "A or B?" card your friends can vote on
 • Ready-made captions and hashtags
 • Heart your favorites in your gallery
 
@@ -119,7 +121,7 @@ Contact: {{SUPPORT_EMAIL}}
 
     selfie,makyaj,güzellik,filtre,estetik,vesikalık,anime,bebek,onarım,rötuş,arka plan,yapay zeka
 
-**Description** (2965/4000)
+**Description** (3102/4000)
 
 ```text
 Glowlit, ışıldayan kızlar için tasarlanmış yapay zekâlı fotoğraf editörü. Ne değişsin istiyorsan yaz, bir trende dokun ya da bir fikri sanata dönüştür; sonra tek dokunuşla Hikâyene paylaş.
@@ -145,10 +147,12 @@ IPHONE'UNDA ÜCRETSİZ
 • Arka planı anında kaldır; cihazında çalışır, her zaman ücretsiz
 • Işığı ve rengi basit kaydırıcılarla ayarla
 • Fırçayla istediğini sil, bulanık fotoğrafları AI Enhance ile netleştir
+• Best shot: 12 selfie'ye kadar seç, ışığı ve netliği en iyi olanı gör
 
 PAYLAŞMAK İÇİN YAPILDI
 • Doğrudan Instagram Hikâyeler'e paylaş
 • Önce/sonra kolajları ve 9:16 hikâye kartları
+• Help me pick: arkadaşlarının oy verebileceği "A mı B mi?" kartı
 • Hazır açıklamalar ve hashtag'ler
 • Galerinde favorilerini kalple işaretle
 

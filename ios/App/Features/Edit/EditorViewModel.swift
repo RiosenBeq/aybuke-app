@@ -25,6 +25,8 @@ final class EditorViewModel {
     var isHoldingOriginal = false
     private(set) var isProcessing = false
     private(set) var processingTitle = ""
+    /// Cloud jobs take a while, so the overlay offers a "ready" notification.
+    private(set) var isProcessingInCloud = false
     /// Request id of the latest people edit that can still be re-rolled for free.
     private(set) var retryRequestID: String?
     /// Request id of the cloud result on screen, attached to reports.
@@ -33,6 +35,13 @@ final class EditorViewModel {
     private var lastStepTitle: String?
     /// Bumped after each finished AI step to play the sparkle burst.
     private(set) var celebration = 0
+    /// On-device likeness check of the latest people edit (nil: not checked).
+    private(set) var likeness: LikenessResult?
+    /// Kindness check: other people are in the photo.
+    private(set) var showsKindnessNote = false
+    /// "Only edit me": Magic Edit leaves everyone else as they are.
+    private(set) var editsOnlyMainPerson = false
+    @ObservationIgnored private var likenessTask: Task<Void, Never>?
 
     @ObservationIgnored private var undoStack: [Step] = []
     @ObservationIgnored private var redoStack: [Step] = []
@@ -113,6 +122,8 @@ final class EditorViewModel {
 
     private func afterHistoryChange() {
         historyVersion += 1
+        likenessTask?.cancel()
+        likeness = nil
         retryRequestID = nil
         lastRequestID = nil
         strokes.removeAll()
@@ -146,7 +157,9 @@ final class EditorViewModel {
                 app.showToast("Describe the change you want first.")
                 return
             }
-            job.prompt = prompt
+            job.prompt = editsOnlyMainPerson
+                ? prompt + ". Only change the main person in front; keep everyone else exactly as they are."
+                : prompt
         case .styles:
             guard let template else { return }
             job.template = template
@@ -168,13 +181,16 @@ final class EditorViewModel {
 
     private func execute(_ job: AIJob, app: AppModel) {
         processingTitle = Self.progressTitle(for: job)
+        isProcessingInCloud = !job.operation.runsOnDevice
         isProcessing = true
         jobTask = Task {
             defer { isProcessing = false }
             do {
                 let result = try await app.run(job, saveToLibrary: false)
                 guard let image = result.images.first else { return }
-                commit(ImageUtilities.normalized(image), operation: job.operation)
+                let edited = ImageUtilities.normalized(image)
+                commit(edited, operation: job.operation)
+                checkLikeness(of: job, edited: edited)
                 lastRequestID = result.requestID
                 lastStepTitle = job.title
                 celebration += 1
@@ -193,6 +209,41 @@ final class EditorViewModel {
 
     func cancelProcessing() {
         jobTask?.cancel()
+    }
+
+    // MARK: Kindness and likeness checks (on-device)
+
+    /// Other people in the photo? A gentle, skippable reminder to ask first.
+    func checkForOtherPeople() async {
+        guard await FaceAnalysis.faceCount(in: original) >= 2 else { return }
+        showsKindnessNote = true
+    }
+
+    func editOnlyMe() {
+        editsOnlyMainPerson = true
+        showsKindnessNote = false
+        Haptics.selection()
+    }
+
+    func dismissKindnessNote() {
+        showsKindnessNote = false
+    }
+
+    /// Edits meant to keep the person (not stylised ones like anime or a
+    /// figurine) are compared with the photo she started from.
+    private func checkLikeness(of job: AIJob, edited: UIImage) {
+        let keepsPerson: Bool
+        switch job.operation {
+        case .magicEdit: keepsPerson = true
+        case .restyle: keepsPerson = [.glowUp, .aesthetic, .dreamy, .business].contains(job.template?.category)
+        default: keepsPerson = false
+        }
+        guard keepsPerson, let source = job.sourceImage else { return }
+        likenessTask = Task {
+            let result = await FaceAnalysis.likeness(original: source, edited: edited)
+            guard !Task.isCancelled else { return }
+            withAnimation(.snappy) { likeness = result }
+        }
     }
 
     /// Reverts the unsatisfying result and runs the same job again at no cost.

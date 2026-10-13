@@ -6,7 +6,7 @@ Apple, meters credits in Postgres, moderates prompts and outputs, and forwards
 an allow-listed set of operations to [fal.ai](https://fal.ai).
 
 ```
-iOS app ──► Supabase Auth (anonymous JWT)
+iOS app ──► Supabase Auth (anonymous JWT; optional Sign in with Apple ID token)
    │
    ├─► POST   /functions/v1/ai-image            enqueue job  ──► fal.ai queue (model per operation)
    ├─► GET    /functions/v1/ai-image?job_id=…   poll job     ──► fal status / result (+ output NSFW check)
@@ -14,7 +14,8 @@ iOS app ──► Supabase Auth (anonymous JWT)
    ├─► GET    /functions/v1/ai-image            balance
    ├─► POST   /functions/v1/credits-redeem      credit pack  ──► Apple JWS verification → grant once
    ├─► POST   /functions/v1/report              "Report this image" (reason, job id) → public.reports
-   └─► DELETE /functions/v1/account             delete user and all data (cascades)
+   ├─► POST   /functions/v1/account/link        after Sign in with Apple: merge the anonymous user in
+   └─► DELETE /functions/v1/account             revoke the Apple token, delete user and all data (cascades)
 ```
 
 The wire contract is defined (and unit-tested) in
@@ -48,6 +49,7 @@ Prices, latency and alternatives: [`docs/research/tech-and-compliance.md`](../do
 
 1. **Create a Supabase project** and install the [Supabase CLI](https://supabase.com/docs/guides/cli).
 2. **Enable anonymous sign-ins**: Authentication → Sign In / Providers → Anonymous. Turn on CAPTCHA (Turnstile) protection for sign-ups to limit abuse.
+   **Enable Sign in with Apple** (optional accounts): Authentication → Sign In / Providers → Apple, and add the bundle id `app.glowlit.ios` under Client IDs. In the Apple Developer account, turn on the Sign in with Apple capability for the app id and create a Sign in with Apple key for `APPLE_SIGNIN_KEY_ID` / `APPLE_SIGNIN_PRIVATE_KEY`.
 3. **Link and migrate**
    ```bash
    cd backend
@@ -67,6 +69,16 @@ Prices, latency and alternatives: [`docs/research/tech-and-compliance.md`](../do
    select cron.schedule('sweep-jobs', '*/5 * * * *', 'select public.sweep_jobs()');
    ```
 7. **Point the app at it** — in `ios/App/Resources/AppConfig.json` set `backendBaseURL` to `https://<project-ref>.supabase.co` and `supabaseAnonKey` to the project's publishable (anon) key. Both are public by design; access is enforced by JWTs, RLS and the functions themselves.
+
+## Accounts (Sign in with Apple)
+
+Everyone starts anonymous, so nobody has to sign up. Signing in is optional and is offered mainly to Pro members and credit-pack buyers, so their membership and credits follow them to another iPhone:
+
+1. The app gets an identity token from Apple and signs in with Supabase's native Apple provider (`POST /auth/v1/token?grant_type=id_token`).
+2. It then calls `POST /account/link` with the new session, the previous anonymous session and Apple's one-time authorization code. `merge_accounts()` moves purchased credits, the subscription, jobs and reports into the account (daily free credits never move), and the anonymous user is deleted. Running it twice is safe.
+3. Apple's refresh token is kept in `public.apple_accounts` (service role only), so `DELETE /account` can revoke it, as Apple requires for account deletion.
+
+Photos are not synced: the library stays on each iPhone.
 
 ## Reports
 

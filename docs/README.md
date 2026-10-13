@@ -9,6 +9,7 @@
 | 04 | [Architecture](04-architecture.md) | iOS app, AppCore, Supabase backend, AI job lifecycle, security, testing |
 | 05 | [Compliance](05-compliance.md) | App Store Review Guidelines, EU AI Act, GDPR and US laws — status per item |
 | 06 | [Roadmap](06-roadmap.md) | Task breakdown by phase: done / next / later |
+| 07 | [Audit & differentiators](07-audit-and-differentiators.md) | User-review research, what we shipped (design → technical → features) and what we cut |
 | — | [Marketing kit](marketing/README.md) | App Store copy (EN/TR), social media kit, launch plan, App Store screenshots and social images |
 | — | [Legal (published copies)](legal/) | Terms, Privacy Policy, Acceptable Use (EN/TR) and the KVKK notice; sources and checklist in [`/legal`](../legal/README.md) |
 

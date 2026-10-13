@@ -5,6 +5,8 @@ enum Metrics {
     static let sectionSpacing: CGFloat = 28
     static let cardRadius: CGFloat = 22
     static let controlRadius: CGFloat = 16
+    /// Template cards are sharp-edged like prints; controls stay soft.
+    static let printRadius: CGFloat = 0
     static let buttonHeight: CGFloat = 56
 }
 

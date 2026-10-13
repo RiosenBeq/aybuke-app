@@ -2,7 +2,7 @@
 
 # Gizlilik Politikası
 
-Son güncelleme: 12 Ekim 2026
+Son güncelleme: 13 Ekim 2026
 
 > **Kısaca gizlilik**
 > - Glowlit gençler düşünülerek tasarlandığı için herkese yüksek gizlilik sağlayan varsayılan ayarlar uygulanır: reklam yok, takip yok, profilleme yok, herkese açık profil veya akış yok.
@@ -60,11 +60,14 @@ Bu bölüm 18 yaşından küçükseniz sizin için. Politikanın geri kalanı da
 Glowlit uygulamasının büyük bölümü bize hiçbir şey göndermeden çalışır. Aşağıdaki veriler yalnızca cihazınızda saklanır ve bizim bunlara erişimimiz yoktur:
 
 - **Kütüphaneniz ("My Works")**: Sakladığınız görseller ile başlıkları, düzenleme türü, kullandığınız metin istemi (Create from text ve Magic Edit için), favori işareti ve zaman bilgileri. Kütüphane, uygulamanın özel depolama alanında tutulur ve iOS Veri Koruma (Data Protection) ile korunur.
-- **Uygulama ayarları** (iOS UserDefaults içinde): tanıtım adımlarını tamamlayıp tamamlamadığınız; seçtiğiniz ilgi alanları (örneğin "Selfie glow-ups" veya "Shots for my shop"; yalnızca cihazınızda ana ekranın sıralamasında kullanılır); bulut yapay zekâ onay tercihiniz; görünüm tercihiniz; Apple'ın değerlendirme isteminin zamanlamasında kullanılan başarılı kaydetme sayacı ve yalnızca çevrim dışı veya demo modunda yerel kredi bakiyesi.
+- **Uygulama ayarları** (iOS UserDefaults içinde): tanıtım adımlarını tamamlayıp tamamlamadığınız; seçtiğiniz ilgi alanları (örneğin "Selfie glow-ups" veya "Shots for my shop"; yalnızca cihazınızda ana ekranın sıralamasında kullanılır); bulut yapay zekâ onay tercihiniz; görünüm tercihiniz; bildirim tercihleriniz; yalnızca Apple'ın değerlendirme isteminin zamanlamasında kullanılan küçük bir mutlu an sayacı (bir görseli kaydetmek, paylaşmak veya kalplemek) ve uygulamanın en son ne zaman sorduğu; yalnızca çevrim dışı veya demo modunda yerel kredi bakiyesi.
 - Anonim hesabınızın **oturum anahtarları**, iOS Anahtar Zinciri'nde (Keychain).
-- **Deneme hatırlatıcısı**: Ücretsiz deneme başlatır ve bildirimlere izin verirseniz, uygulama deneme bitmeden bir gün önce cihazınızda yerel bir hatırlatma planlar. Bunun için herhangi bir bildirim (push) sunucusu kullanılmaz.
+- **Hatırlatmalar**: Bildirimler, siz izin verip açana kadar kapalıdır. Açtığınızda uygulama bunları cihazınızda yerel olarak planlar: ücretsiz deneme bitmeden bir gün önce bir hatırlatma; siz başka bir uygulamadayken bir görsel tamamlandığında "glow-up'ın hazır"; ücretsiz kredileriniz yenilendiğinde "ücretsiz kredilerin geri geldi" (yalnızca krediniz bittikten sonra) ve isterseniz haftada bir yeni görünüm. Hatırlatmalar saat 21:00 ile 09:00 arasında ve hafta içi okul saatlerinde (08:00–15:00) asla gönderilmez. Bunun için herhangi bir bildirim (push) sunucusu veya cihaz anahtarı kullanılmaz.
+- **Widget'lar ve Live Activity**: Kredilerinizi, son görselinizi ve hazırlanma durumunu ana ekranda, kilit ekranında ve Dynamic Island'da göstermek için uygulama, cihazınızdaki bir kapsayıcı aracılığıyla widget'larıyla küçük bir özet paylaşır: kredi bakiyesi, son görselinizin başlığı ve küçük bir önizlemesi ve kaç görseliniz olduğu. Bu veriler iPhone'unuzdan hiç çıkmaz.
 
 **Cihaz üzerindeki özellikler.** Remove background (Apple'ın Vision çerçevesiyle), Adjust ve tanıtım sırasındaki "quick glow" iyileştirmesi fotoğraflarınızı tamamen iPhone'unuzda işler.
+
+**Cihaz üzerindeki yüz kontrolleri.** Üç özellik, yalnızca iPhone'unuzda ve Apple'ın Vision çerçevesiyle yüzlere bakar: **Best shot**, seçtiğiniz selfie'leri ışık, netlik ve yüzün ne kadar net göründüğüne göre sıralar; **nezaket hatırlatması** bir fotoğrafta kaç kişi olduğunu sayar; **benzerlik kontrolü** ise sonuç sizden uzaklaşmışsa ücretsiz yeniden deneme sunabilmek için bir yapay zekâ düzenlemesini orijinal fotoğrafınızla karşılaştırır (yüz oranları ve cilt açıklığı). Hiçbir şey saklanmaz veya bize gönderilmez, kimse tanınmaz veya kimliği belirlenmez ve hiçbir şey kimsenin görünüşünü puanlamaz.
 
 **Fotoğraf erişimi.** Fotoğrafları Apple'ın sistem fotoğraf seçicisiyle seçersiniz; bu nedenle Glowlit tüm kitaplığınızı değil, yalnızca seçtiğiniz fotoğrafları görebilir. Sonuçları Fotoğraflar kitaplığınıza kaydetmek için uygulama yalnızca ekleme izni ister; bu izin görsel eklemeye olanak tanır, kitaplığınızı okumaya değil.
 
@@ -77,6 +80,10 @@ Kütüphanenizi **Ayarlar → Tüm oluşturduklarımı sil** ile silebilirsiniz.
 ### Anonim hesap
 
 Bir bulut yapay zekâ özelliğini veya sunucularımızdaki kredi bakiyenizi ilk kez kullandığınızda uygulama, arka uç (backend) hizmet sağlayıcımız Supabase nezdinde anonim bir hesap oluşturur. Hesap rastgele bir kullanıcı kimliğiyle tanımlanır. Adınızı, e-posta adresinizi, telefon numaranızı veya bir şifre toplamayız.
+
+### İsteğe bağlı hesap (Apple ile giriş)
+
+Giriş yapmak isteğe bağlıdır. Pro üyeliğiniz ve kredileriniz başka bir iPhone'a da gelsin diye sunulan **Apple ile giriş** seçeneğini kullanırsanız, kimliğinizi Apple doğrular ve arka uç sağlayıcımız sabit bir Apple kullanıcı tanımlayıcısı ile, paylaşmayı seçerseniz e-posta adresinizi alır; bu adres size yönlendiren gizli bir aktarma (relay) adresi olabilir. Adınızı istemeyiz ve Apple Kimliği şifrenizi asla görmeyiz. O iPhone'da kullandığınız anonim hesap hesabınızla birleştirilir: ücretli krediler, abonelik kayıtları, iş kayıtları ve bildirimler taşınır, anonim hesap silinir. Apple'ın şart koştuğu üzere, hesabınızı sildiğinizde Glowlit'in Apple Kimliğinize erişimini iptal edebilmek için Apple'dan aldığımız bir anahtarı da saklarız. Fotoğraflarınız ve kütüphaneniz eşitlenmez; her iPhone'da kalır.
 
 ### Bulut yapay zekâ özelliklerine gönderdiğiniz içerik
 
@@ -173,7 +180,7 @@ Bu filtreler, istekleriniz hakkında verdiğimiz tek otomatik kararlardır. GDPR
 Kişisel verileri yalnızca aşağıda açıklandığı şekilde paylaşırız. Verilerinizi alan her hizmet sağlayıcısının, verilerinizi en az bu politikada açıklandığı kadar korumasını; yazılı sözleşmelerle (veri işleme sözleşmeleri) ve yalnızca bize hizmet sunmak için kullanmasını şart koşarız.
 
 - **Hizmet sağlayıcılar (veri işleyenler)**: 12. bölümde listelenen arka uç ve barındırma sağlayıcımız ile yapay zekâ çıkarım sağlayıcılarımız. Verileri yalnızca talimatlarımız doğrultusunda işlerler.
-- **Apple**: Apple, ödemelerinizi ve aboneliklerinizi satıcı sıfatıyla ve bağımsız veri sorumlusu olarak, [Apple Gizlilik Politikası](https://www.apple.com/legal/privacy/) kapsamında işler. İçeriğinizi Apple'a göndermeyiz; satın alımları doğrulamak için Apple tarafından imzalanmış işlem verilerini alırız.
+- **Apple**: Apple, ödemelerinizi ve aboneliklerinizi satıcı sıfatıyla ve bağımsız veri sorumlusu olarak, [Apple Gizlilik Politikası](https://www.apple.com/legal/privacy/) kapsamında işler. İçeriğinizi Apple'a göndermeyiz; satın alımları doğrulamak için Apple tarafından imzalanmış işlem verilerini alırız. Apple ile giriş yaparsanız girişinizi Apple doğrular; hesabınızı sildiğinizde bu girişi iptal etmek için Apple ile iletişime geçeriz.
 - **Yetkili makamlar**: Kanunun gerektirdiği hâllerde (örneğin geçerli bir hukuki karara yanıt olarak) veya bir kişinin güvenliğini korumak için gerekli olduğunda verileri mahkemelere, kolluğa veya diğer yetkili makamlara açıklarız. Kanunun gerektirdiği hâllerde çocukların cinsel istismarı materyalini yetkili makamlara (örneğin ABD'de NCMEC) bildiririz.
 - **İşletme devirleri**: Birleşme, devralma veya işletmemizin tamamının ya da bir kısmının satışı söz konusu olursa, kişisel veriler yeni sahibe devredilebilir; yeni sahip verileri bu politikaya uygun şekilde korumaya devam etmek zorundadır. Kanunun gerektirdiği hâllerde sizi bilgilendiririz.
 - **Paylaşmayı seçtiğiniz hizmetler**: Bir sonucu paylaşım menüsü, Instagram veya başka bir uygulama aracılığıyla paylaştığınızda, içeriği o hizmete siz göndermiş olursunuz ve o hizmetin kendi koşulları ile gizlilik politikası geçerli olur.
@@ -184,7 +191,7 @@ Verilerinizi satmayız, kiralamayız ve kimseyle onların kendi reklam veya paza
 
 Aşağıdaki şirketler kişisel verileri bizim adımıza işler. Bu listeyi güncel tutarız. Bir yapay zekâ sağlayıcısı ekler veya değiştirirsek, değişiklik yürürlüğe girmeden önce bu listeyi ve bulut yapay zekâ onay ekranını güncelleriz; gerektiğinde rızanızı yeniden isteriz.
 
-- **Supabase Inc.** (ABD): arka uç barındırma, veritabanı, anonim kimlik doğrulama, sunucu fonksiyonları ve sunucu kayıtları. Barındırma bölgesi: [Supabase bölgesi, örn. AB (Frankfurt)]. Veriler: anonim kullanıcı kimliği, oturum verileri, iş kayıtları, krediler, haklar, bildirimler ve sunucu kayıtları. Girdileriniz yalnızca aktarım sırasında geçer.
+- **Supabase Inc.** (ABD): arka uç barındırma, veritabanı, anonim kimlik doğrulama ve isteğe bağlı Apple ile giriş, sunucu fonksiyonları ve sunucu kayıtları. Barındırma bölgesi: [Supabase bölgesi, örn. AB (Frankfurt)]. Veriler: anonim kullanıcı kimliği veya hesap (Apple kullanıcı tanımlayıcısı, paylaşıldıysa e-posta veya aktarma adresi), oturum verileri, iş kayıtları, krediler, haklar, bildirimler ve sunucu kayıtları. Girdileriniz yalnızca aktarım sırasında geçer.
 - **Features & Labels, Inc. (fal.ai)** (ABD): yapay zekâ çıkarımı; yani bulut yapay zekâ özellikleri için modelleri ve otomatik çıktı güvenlik kontrolünü çalıştırır. Veriler: istek süresince fotoğraflar, maskeler, istemler ve sonuçlar. İstek geçmişi kapalıdır; sonuçlar 1 saat içinde silinir.
 - **fal.ai'ın çalıştırdığı modellerin geliştiricileri**, örneğin Gemini görsel modelleri için **Google LLC** (ABD): fal.ai bir modeli çalıştırmak için geliştiricinin kendi hizmetini kullandığında, o geliştirici isteğin girdilerini ve sonuçlarını fal.ai adına işler.
 - **Google LLC** (ABD), Gemini API: alternatif yapay zekâ sağlayıcısı; yalnızca işleri fal.ai yerine doğrudan Google'a yönlendirirsek kullanılır.
@@ -218,7 +225,8 @@ Kullandığımız güvencelerin bir örneğini [privacy@glowlit.app](mailto:priv
 - **İş kayıtları**: 30 gün; ardından silinir.
 - **Kredi cüzdanı ve kredi defteri**: hesabınız var olduğu sürece; hesabınızı sildiğinizde silinir.
 - **Hak kayıtları**: hesabınız var olduğu sürece; hesabınızı sildiğinizde silinir.
-- **Anonim hesap (kullanıcı kimliği)**: hesabınız var olduğu sürece; hesabınızı sildiğinizde silinir.
+- **Anonim hesap (kullanıcı kimliği)**: hesabınız var olduğu sürece; hesabınızı sildiğinizde veya Apple ile giriş sonrasında hesabınızla birleştirildiğinde silinir.
+- **Hesap (Apple kullanıcı tanımlayıcısı, e-posta veya aktarma adresi, Apple anahtarı)**: hesabınız var olduğu sürece; hesabınızı sildiğinizde anahtar Apple nezdinde iptal edilir ve tümü silinir.
 - **Bildirimler**: güvenlik incelemesi ve filtrelerimizi geliştirmek için en fazla 12 ay; ardından veya hesabınızı daha önce silerseniz o zaman silinir.
 - **Sunucu ve güvenlik kayıtları**: güvenlik ve kötüye kullanımın önlenmesi için kısa bir süre, genellikle en fazla 90 gün. Bu kayıtlar hesabınızı sildikten sonra da bu takvime göre silinir.
 - **E-postalar ve gizlilik talepleri**: talebinizi karşılamak ve nasıl karşıladığımızı belgelemek için gereken süre boyunca; bir hakkın tesisi, kullanılması veya savunulması için daha uzun saklamamız gerekmedikçe.

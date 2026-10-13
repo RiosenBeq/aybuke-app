@@ -2,12 +2,15 @@ import SwiftUI
 import AppCore
 
 /// Card for a one-tap template. Uses the remote thumbnail when available and a
-/// flat brand-tone swatch with the template's symbol otherwise.
+/// flat brand-tone swatch with the template's symbol otherwise. Sharp-edged,
+/// like a print.
 struct TemplateCard: View {
     let template: PhotoTemplate
     var width: CGFloat = 148
     var height: CGFloat = 196
     var showsLock = false
+    /// Lookbook number ("N°03") shown on collection pages.
+    var number: Int?
 
     private var tone: PaletteTone {
         PaletteTone.at(TemplateCatalog.all.firstIndex(of: template) ?? 0)
@@ -33,9 +36,9 @@ struct TemplateCard: View {
             .padding(12)
         }
         .frame(width: width, height: height)
-        .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+        .clipShape(RoundedRectangle(cornerRadius: Metrics.printRadius))
         .overlay(
-            RoundedRectangle(cornerRadius: 20, style: .continuous)
+            RoundedRectangle(cornerRadius: Metrics.printRadius)
                 .strokeBorder(Palette.stroke, lineWidth: 1)
         )
         .shadow(color: Palette.shadow, radius: 12, y: 6)
@@ -57,6 +60,12 @@ struct TemplateCard: View {
                     .padding(7)
                     .background(isOnDark ? Palette.blush : Palette.ink, in: Circle())
                     .padding(10)
+            } else if let number {
+                Text(String(format: "N°%02d", number))
+                    .font(.system(size: 11, weight: .heavy, design: .rounded))
+                    .tracking(0.6)
+                    .foregroundStyle(labelColor.opacity(0.7))
+                    .padding(12)
             }
         }
         .accessibilityElement(children: .ignore)

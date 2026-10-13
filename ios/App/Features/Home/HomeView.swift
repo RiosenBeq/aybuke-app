@@ -5,6 +5,7 @@ struct HomeView: View {
     @Environment(AppModel.self) private var app
     @State private var showSettings = false
     @State private var legalDocument: LegalDocument?
+    @State private var openCategory: TemplateCategory?
 
     var body: some View {
         NavigationStack {
@@ -41,6 +42,10 @@ struct HomeView: View {
             .scrollIndicators(.hidden)
             .background(AuroraBackground(intensity: 0.55))
             .toolbar(.hidden, for: .navigationBar)
+            .navigationDestination(item: $openCategory) { category in
+                CategoryView(category: category)
+                    .environment(app)
+            }
             .sheet(isPresented: $showSettings) {
                 SettingsView()
                     .environment(app)
@@ -134,10 +139,14 @@ struct HomeView: View {
             ScrollView(.horizontal) {
                 HStack(spacing: 12) {
                     ForEach(EditorTool.quickTools) { tool in
-                        QuickToolTile(tool: tool) {
+                        QuickToolTile(title: tool.title, caption: tool.caption, symbolName: tool.symbolName) {
                             Haptics.tap()
                             app.startEditing(tool: tool)
                         }
+                    }
+                    QuickToolTile(title: "Best shot", caption: "Free · ranks selfies", symbolName: "photo.stack") {
+                        Haptics.tap()
+                        app.isBestShotPresented = true
                     }
                 }
                 .padding(.horizontal, Metrics.gutter)
@@ -149,8 +158,11 @@ struct HomeView: View {
 
     private func templateRow(_ category: TemplateCategory) -> some View {
         VStack(alignment: .leading, spacing: 14) {
-            SectionHeader(title: category.title)
-                .padding(.horizontal, Metrics.gutter)
+            SectionHeader(title: category.title, actionTitle: "See all") {
+                Haptics.tap()
+                openCategory = category
+            }
+            .padding(.horizontal, Metrics.gutter)
             ScrollView(.horizontal) {
                 HStack(spacing: 12) {
                     ForEach(TemplateCatalog.templates(in: category)) { template in
@@ -216,22 +228,24 @@ struct HomeView: View {
 }
 
 private struct QuickToolTile: View {
-    let tool: EditorTool
+    let title: String
+    let caption: String
+    let symbolName: String
     let action: () -> Void
 
     var body: some View {
         Button(action: action) {
             VStack(alignment: .leading, spacing: 10) {
-                Image(systemName: tool.symbolName)
+                Image(systemName: symbolName)
                     .font(.title3.weight(.semibold))
                     .foregroundStyle(Palette.ink)
                     .frame(width: 44, height: 44)
                     .background(Palette.blush, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(tool.title)
+                    Text(title)
                         .font(.subheadline.weight(.bold))
                         .foregroundStyle(Palette.textPrimary)
-                    Text(tool.caption)
+                    Text(caption)
                         .font(.caption)
                         .foregroundStyle(Palette.textSecondary)
                         .lineLimit(1)

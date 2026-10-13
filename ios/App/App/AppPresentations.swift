@@ -17,13 +17,27 @@ struct AppPresentations: ViewModifier {
                 PaywallView(source: app.paywallSource)
                     .environment(app)
             }
+            .sheet(isPresented: Binding(
+                get: { isActive && app.isBestShotPresented },
+                set: { app.isBestShotPresented = $0 }
+            )) {
+                BestShotView()
+                    .environment(app)
+            }
+            .sheet(isPresented: Binding(
+                get: { isActive && app.isAccountPromptPresented && !app.isPaywallPresented },
+                set: { app.isAccountPromptPresented = $0 }
+            )) {
+                AccountPromptSheet()
+                    .environment(app)
+            }
             .sheet(item: Binding(
                 get: { isActive ? app.consentRequest : nil },
                 set: { app.consentRequest = $0 }
             )) { request in
                 AIConsentView(
                     providerName: app.config.processorName,
-                    retentionHours: app.config.dataRetentionHours,
+                    retention: app.config.retentionPhrase,
                     onAccept: {
                         app.consentRequest = nil
                         request.onAccept()

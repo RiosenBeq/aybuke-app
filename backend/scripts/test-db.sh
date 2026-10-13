@@ -28,6 +28,6 @@ for migration in "$ROOT"/supabase/migrations/*.sql; do
   "${PSQL[@]}" -f "$migration"
 done
 "${PSQL[@]}" -c "grant select on all tables in schema public to authenticated;"
-for test in "$ROOT/supabase/tests/credits_test.sql" "$ROOT/supabase/tests/reports_test.sql"; do
+for test in "$ROOT/supabase/tests/credits_test.sql" "$ROOT/supabase/tests/reports_test.sql" "$ROOT/supabase/tests/accounts_test.sql"; do
   "${PSQL[@]}" -f "$test"
 done

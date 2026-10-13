@@ -16,6 +16,7 @@ struct PaywallView: View {
     @State private var errorTitle = "Purchase failed"
     @State private var showPacks = false
     @State private var legalDocument: LegalDocument?
+    @State private var showSignIn = false
 
     private var purchases: PurchaseManager { app.purchases }
 
@@ -53,6 +54,7 @@ struct PaywallView: View {
                     }
                     purchaseButton
                     packsLink
+                    freeCreditsReminder
                     footer
                 }
                 .padding(.horizontal, Metrics.gutter)
@@ -75,6 +77,10 @@ struct PaywallView: View {
             if let yearly = purchases.yearly {
                 trialEligible = await purchases.isEligibleForTrial(yearly)
             }
+        }
+        .sheet(isPresented: $showSignIn) {
+            AccountPromptSheet()
+                .environment(app)
         }
         .sheet(isPresented: $showPacks) {
             CreditPacksView()
@@ -212,6 +218,36 @@ struct PaywallView: View {
         }
     }
 
+    /// Out of free credits? Paying is optional: offer a reminder instead.
+    @ViewBuilder
+    private var freeCreditsReminder: some View {
+        if source == "out_of_credits", !purchases.isPro {
+            if app.notifier.preferences.creditsBack, app.notifier.isAllowedBySystem {
+                Label("We'll remind you when your free credits are back", systemImage: "bell.badge")
+                    .font(.footnote)
+                    .foregroundStyle(Palette.textSecondary)
+            } else {
+                Button {
+                    Task {
+                        if await app.notifier.set(.creditsBack, on: true) {
+                            app.syncReminders()
+                            Haptics.success()
+                            app.showToast("We'll remind you when your free credits are back ✨", style: .success)
+                            dismiss()
+                        } else {
+                            app.showToast("Turn on notifications for \(Brand.name) in iOS Settings to get reminders.", style: .info)
+                        }
+                    }
+                } label: {
+                    Text("Or wait for your free daily credits. **Remind me when they're back**")
+                        .font(.footnote)
+                        .foregroundStyle(Palette.textSecondary)
+                        .multilineTextAlignment(.center)
+                }
+            }
+        }
+    }
+
     private var footer: some View {
         VStack(spacing: 10) {
             HStack(spacing: 18) {
@@ -226,6 +262,9 @@ struct PaywallView: View {
                             errorMessage = "No active subscription found for this Apple Account."
                         }
                     }
+                }
+                if app.canUseAccounts, !app.isSignedIn {
+                    Button("Sign in") { showSignIn = true }
                 }
                 Button("Terms") { legalDocument = .terms }
                 Button("Privacy") { legalDocument = .privacy }
@@ -256,6 +295,7 @@ struct PaywallView: View {
             Haptics.success()
             app.showToast("Welcome to \(Brand.name) Pro ✦", style: .success)
             dismiss()
+            app.offerAccountAfterPurchase()
         } catch {
             errorTitle = "Purchase failed"
             errorMessage = error.localizedDescription
@@ -430,6 +470,7 @@ struct CreditPacksView: View {
                                 Haptics.success()
                                 app.showToast("Credits added ✦", style: .success)
                                 dismiss()
+                                app.offerAccountAfterPurchase()
                             }
                         } catch {
                             errorMessage = error.localizedDescription

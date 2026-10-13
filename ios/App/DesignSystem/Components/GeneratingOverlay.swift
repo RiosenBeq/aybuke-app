@@ -33,9 +33,12 @@ private struct OrbitingCharms: View {
 /// 5–20 s wait feeling shorter.
 struct GeneratingOverlay: View {
     var title = "Creating magic…"
+    /// Cloud jobs: offer "Ping me when it's ready" the first time.
+    var offersReadyPing = false
     var onCancel: (() -> Void)?
 
     @Environment(AppModel.self) private var app
+    @State private var pingAnswer: Bool?
     @State private var tipIndex = 0
     @State private var spin = false
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
@@ -45,7 +48,7 @@ struct GeneratingOverlay: View {
             "Tip: be specific — lighting, mood and style words help a lot.",
             "Tip: hold the photo to compare with your original.",
             "Background removal runs on your phone and is always free.",
-            "Your photos are never used to train AI and are deleted from our servers within \(app.config.dataRetentionHours) hours.",
+            "Your photos are never used to train AI and are deleted from our servers within \(app.config.retentionPhrase).",
             "Tip: try “soft glam”, “pink hair” or “golden hour”.",
             "Share straight to Instagram Stories or as a before/after collage.",
         ]
@@ -90,6 +93,10 @@ struct GeneratingOverlay: View {
                         .transition(.opacity)
                 }
 
+                if offersReadyPing {
+                    readyPing
+                }
+
                 if let onCancel {
                     Button("Cancel", action: onCancel)
                         .font(.subheadline.weight(.semibold))
@@ -100,6 +107,14 @@ struct GeneratingOverlay: View {
         }
         .accessibilityElement(children: .contain)
         .accessibilityLabel("\(title). Please wait.")
+        .onAppear {
+            guard pingAnswer == nil else { return }
+            if app.notifier.preferences.glowReady, app.notifier.isAllowedBySystem {
+                pingAnswer = true
+            } else if !app.notifier.offersReadyPing {
+                pingAnswer = false
+            }
+        }
         .onAppear {
             guard !reduceMotion else { return }
             withAnimation(.linear(duration: 3.5).repeatForever(autoreverses: false)) {
@@ -113,6 +128,41 @@ struct GeneratingOverlay: View {
                     tipIndex += 1
                 }
             }
+        }
+    }
+
+    /// Asks for notification permission in context: she's waiting and may
+    /// want to leave the app.
+    @ViewBuilder
+    private var readyPing: some View {
+        switch pingAnswer {
+        case nil:
+            Button {
+                Task {
+                    let on = await app.notifier.set(.glowReady, on: true)
+                    withAnimation(Motion.bouncy) { pingAnswer = on }
+                    if on { Haptics.success() }
+                }
+            } label: {
+                Label("Ping me when it's ready", systemImage: "bell.fill")
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(Palette.textPrimary)
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 10)
+                    .background(Palette.surface, in: Capsule())
+                    .overlay(Capsule().strokeBorder(Palette.stroke, lineWidth: 1))
+                    .shadow(color: Palette.shadow, radius: 8, y: 3)
+            }
+            .buttonStyle(.pressable)
+            .transition(.scale.combined(with: .opacity))
+        case true?:
+            Label("We'll ping you when it's ready", systemImage: "bell.badge.fill")
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(Palette.textSecondary)
+                .symbolEffect(.bounce, value: pingAnswer)
+                .transition(.scale.combined(with: .opacity))
+        case false?:
+            EmptyView()
         }
     }
 }

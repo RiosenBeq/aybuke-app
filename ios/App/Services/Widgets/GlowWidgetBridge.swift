@@ -23,8 +23,10 @@ final class GlowActivityController {
         return base + Double(max(0, outputs - 1)) * 4
     }
 
-    func start(title: String, symbolName: String, expectedSeconds: TimeInterval) {
-        guard ActivityAuthorizationInfo().areActivitiesEnabled else { return }
+    /// Returns false when Live Activities are off or couldn't start.
+    @discardableResult
+    func start(title: String, symbolName: String, expectedSeconds: TimeInterval) -> Bool {
+        guard ActivityAuthorizationInfo().areActivitiesEnabled else { return false }
         endImmediately()
         let now = Date()
         let state = GlowActivityAttributes.ContentState(stage: .creating, startedAt: now, expectedEnd: now.addingTimeInterval(expectedSeconds))
@@ -33,7 +35,7 @@ final class GlowActivityController {
             content: ActivityContent(state: state, staleDate: now.addingTimeInterval(600)),
             pushType: nil
         )
-        guard let started = activity else { return }
+        guard let started = activity else { return false }
         // Running long: once the bar is full, say "Adding the final sparkle…"
         // so a full bar never looks stuck.
         overtime = Task { [weak self] in
@@ -43,9 +45,12 @@ final class GlowActivityController {
             finishing.stage = .finishing
             await started.update(ActivityContent(state: finishing, staleDate: now.addingTimeInterval(600)))
         }
+        return true
     }
 
-    func finish(success: Bool) {
+    /// Shows "ready" (or "didn't work"). In the foreground it clears after a
+    /// few seconds; if she's away it stays on the Lock Screen for an hour.
+    func finish(success: Bool, lingers: Bool) {
         overtime?.cancel()
         overtime = nil
         guard let activity else { return }
@@ -55,7 +60,7 @@ final class GlowActivityController {
         Task {
             await activity.end(
                 ActivityContent(state: state, staleDate: nil),
-                dismissalPolicy: .after(Date().addingTimeInterval(success ? 8 : 5))
+                dismissalPolicy: .after(Date().addingTimeInterval(lingers ? 3600 : success ? 8 : 5))
             )
         }
     }
@@ -66,6 +71,11 @@ final class GlowActivityController {
         for leftover in Activity<GlowActivityAttributes>.activities where leftover.id != activity?.id {
             Task { await leftover.end(nil, dismissalPolicy: .immediate) }
         }
+    }
+
+    /// She cancelled: no "didn't work" state, just go.
+    func cancel() {
+        endImmediately()
     }
 
     private func endImmediately() {

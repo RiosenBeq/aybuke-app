@@ -7,7 +7,7 @@
     "MIN_AGE": "13"
   },
   "en": {
-    "EFFECTIVE_DATE": "12 October 2026",
+    "EFFECTIVE_DATE": "13 October 2026",
     "COMPANY_NAME": "[Company legal name]",
     "COMPANY_ADDRESS": "[Registered address]",
     "COMPANY_COUNTRY": "Türkiye",
@@ -20,7 +20,7 @@
     "HOSTING_REGION": "[Supabase region, e.g. EU (Frankfurt)]"
   },
   "tr": {
-    "EFFECTIVE_DATE": "12 Ekim 2026",
+    "EFFECTIVE_DATE": "13 Ekim 2026",
     "COMPANY_NAME": "[Şirket unvanı]",
     "COMPANY_ADDRESS": "[Kayıtlı adres]",
     "COMPANY_COUNTRY": "Türkiye",

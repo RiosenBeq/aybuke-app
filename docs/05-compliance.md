@@ -66,4 +66,9 @@ Glowlit is now designed for girls and young women, so many users will be 13–17
 | **Sharing** | ✅ Instagram Stories via the documented pasteboard handoff (needs a Meta App ID); captions remind users to switch on platform AI labels; free exports carry a small brand mark; all exports keep IPTC provenance. |
 | **Developer AI keys** | ✅ Only in the git-ignored `ios/Config/Secrets.xcconfig`, read only by DEBUG builds and blanked by `Release.xcconfig`. Production keys stay in backend secrets. |
 | **Retention** | ✅ `sweep_jobs` now clears job outputs after 1 hour and deletes reports after 12 months (migration `20261012000000`). |
+| **Notifications (teens)** | ✅ Every kind is off until she switches it on, and permission is asked in context, never at launch. Nothing between 21:00 and 09:00 or during school hours on weekdays. No streaks, no Time Sensitive interruptions, no push server. These follow UK Children's Code standards 5 and 13, and we use the EU DSA minors guidelines and California SB 976 as benchmarks. |
+| **Rating prompts** | ✅ Apple's prompt only (5.6.1), only after real happy moments, never after failures, reports, retries or paywalls (`ReviewPromptPolicy`). |
+| **Accounts** | ✅ Optional Sign in with Apple, never required (5.1.1(v)). Email scope only (hide-my-email works), no name. In-app deletion revokes the Apple token (Apple's account-deletion requirement). Privacy Policy, Terms and KVKK notice updated. ⏳ Enable the capability and the Supabase Apple provider; set the Apple key secrets. |
+| **On-device face checks** | ✅ The likeness check, Best shot and kindness reminder use Vision on the device only. No identification or recognition, nothing stored or sent, no attractiveness scores. Disclosed in Privacy Policy §4 and the KVKK notice. |
+| **Data consistency** | ✅ The in-app retention text now says "within an hour", matching the policy, website and backend (it said 24 hours before). |
 

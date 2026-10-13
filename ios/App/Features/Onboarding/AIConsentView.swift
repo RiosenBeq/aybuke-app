@@ -4,7 +4,8 @@ import SwiftUI
 /// third-party AI processing (App Store Review Guideline 5.1.2(i), GDPR).
 struct AIConsentView: View {
     let providerName: String
-    let retentionHours: Int
+    /// "an hour", "24 hours"…
+    let retention: String
     let onAccept: () -> Void
     let onDecline: () -> Void
 
@@ -34,7 +35,7 @@ struct AIConsentView: View {
                 .fixedSize(horizontal: false, vertical: true)
 
             VStack(alignment: .leading, spacing: 14) {
-                ConsentPoint(symbol: "trash", text: "Deleted from our servers within \(retentionHours) hours")
+                ConsentPoint(symbol: "trash", text: "Deleted from our servers within \(retention)")
                 ConsentPoint(symbol: "brain", text: "Never used to train AI models")
                 ConsentPoint(symbol: "eye.slash", text: "Never sold or shared for advertising")
                 ConsentPoint(symbol: "iphone", text: "Background removal always stays on your iPhone")

@@ -38,7 +38,7 @@ struct CreateView: View {
             }
             .overlay {
                 if model.isGenerating {
-                    GeneratingOverlay(title: "Creating \(model.count > 1 ? "\(model.count) images" : "your image")…") {
+                    GeneratingOverlay(title: "Creating \(model.count > 1 ? "\(model.count) images" : "your image")…", offersReadyPing: true) {
                         model.cancel()
                     }
                     .transition(.opacity)

@@ -17,6 +17,24 @@
   - "Günün trendi" ve "My glow" widget'ları (ana ekran ve kilit ekranı). My glow son görseli, kalan krediyi ve Magic / Create / Cut out kısayollarını gösterir.
   - AI çalışırken Dynamic Island'da pembe parıltı ve ilerleme halkası görünür; kilit ekranında da ilerleme kartı vardır ("Creating your glow…" → "Your glow-up is ready").
   - Gerçek cihazda çalıştırmak için geliştirici hesabında `group.app.glowlit.shared` App Group'unu iki paket kimliğine de eklemek gerekir.
+- **Denetim ve rakiplerde olmayanlar (Ekim 2026, ayrıntı: [07](07-audit-and-differentiators.md)):** Kullanıcı yorumları ve 20 rakip uygulama incelendi. Önce tasarım, sonra teknik, sonra özellikler eklendi; gereksiz bulunanlar çıkarıldı.
+  - *Tasarım:*
+    - Kategori kartları keskin köşeli; "See all" ile dergi tarzı, numaralı koleksiyon sayfaları açılıyor.
+    - Galeride çift dokunarak kalp bırakılabiliyor.
+  - *Teknik:*
+    - İsteğe bağlı bildirimler (hazır olunca, krediler gelince, haftada bir görünüm). Gece 21:00–09:00 arasında ve hafta içi okul saatlerinde gönderilmez.
+    - Değerlendirme yalnızca mutlu anlarda isteniyor.
+    - Uygulamadaki "24 saatte silinir" yazısı, politikadaki "1 saat" ile eşitlendi.
+  - *Özellik (rakiplerde yok):*
+    - Benzerlik kontrolü ("Still you" / cilt tonu değiştiyse ücretsiz tekrar).
+    - Best shot (selfie'leri ışık ve netliğe göre sıralar, asla görünüşe göre değil).
+    - Help me pick (A mı B mi kartı).
+    - Arkadaş yüzü varsa nezaket hatırlatması ("Only edit me").
+    - İsteğe bağlı görünür "AI-edited" etiketi.
+  - *Çıkarılanlar:*
+    - Rakiplerde zaten olduğu için: "Steal the look", feed önizlemesi ve fotoğraf dökümü.
+    - Doğum günü, doğum tarihi gerektirdiği için.
+- **Apple ile giriş (isteğe bağlı):** Premium üyelik ve krediler başka iPhone'da da kullanılabiliyor. Anonim hesap otomatik olarak Apple hesabına birleştiriliyor, hesap silinince Apple erişimi iptal ediliyor. Fotoğraflar eşitlenmiyor, her iPhone'da kalıyor. Gerçek cihazda çalışması için Apple Developer hesabında "Sign in with Apple" özelliğinin ve Supabase'de Apple sağlayıcısının açılması gerekiyor.
 - **Diğer yeni özellikler:** Galeride kalpli favoriler. "Bu görseli bildir" artık gerçekten backend'e gidiyor (`report` fonksiyonu ve `reports` tablosu).
 - **Yasal metinler:** Kullanım Koşulları, Gizlilik Politikası, Kabul Edilebilir Kullanım Politikası (İngilizce ve Türkçe) ve KVKK Aydınlatma Metni hazırlandı. GDPR, KVKK (7499 sayılı Kanun değişiklikleri dahil), CCPA, COPPA, Birleşik Krallık Yaşa Uygun Tasarım Kuralları, AB Yapay Zekâ Tüzüğü md. 50 ve Apple'ın EULA şartları kapsanıyor.
   - Metinler uygulamanın içinde okunabiliyor ve ayrıca `docs/legal/` ile `web/legal/` altında yayınlanıyor.
@@ -43,14 +61,14 @@ Bu brief'i üç paralel araştırmayla (pazar, marka/tasarım, teknoloji/uyumlul
    - 2025–2026 viral trendleri ve fiyatlandırma kıyasları (RevenueCat, Adapty) derlendi.
    - Renk haritası, yazı tipi ve isim çalışması yapıldı.
    - AI modelleri, maliyetler, App Store kuralları ve AB Yapay Zeka Yasası incelendi.
-2. **Marka:** isim **Glowlit**, slogan *"Make it glow."*, pembe "Blush" paleti (Ekim 2026'dan beri; başlangıçta "Golden Hour" amberdi), Bricolage Grotesque + New York Italic yazı tipleri, pembe "Sunrise Split" ikonu.
+2. **Marka:** isim **Glowlit**, slogan *"Make it glow."*, pembe "Blush" paleti (Ekim 2026'dan beri; başlangıçta "Golden Hour" amberdi), Bricolage Grotesque + New York Italic yazı tipleri, pembe "Glow Print" ikonu.
 3. **iOS uygulaması (SwiftUI):**
    - Ekranlar: onboarding, AI onayı, keşfet, metinden görsel oluşturma, editör (Magic Edit, stiller, iyileştirme, arka plan silme, nesne silme, ayarlar), kütüphane, paywall, ayarlar.
    - Backend olmadan da tamamen çalışan **demo modu** var.
 4. **Backend (Supabase + fal.ai):**
    - Kimlik doğrulama, kredi defteri, Apple satın alma doğrulaması, güvenlik filtreleri ve asenkron AI iş kuyruğu.
 5. **Testler ve CI:**
-   - 71 Swift birim testi.
+   - 82 Swift birim testi.
    - Deno tip kontrolü ve lint.
    - Gerçek PostgreSQL üzerinde kredi defteri testleri.
    - macOS'ta Xcode derlemesi ve simülatör ekran görüntüleri.
@@ -81,8 +99,8 @@ Görüntüler, CI'daki Screenshots iş akışında iPhone Pro simülatöründe d
 - **Lisans ve kesimler:** Lisansı SIL OFL, yani ücretsiz ve uygulamaya gömülebilir. Değişken fonttan üç statik kesim üretildi.
 - **Elenenler:** Space Grotesk ve Sora sıradan "AI/web3" görünümü veriyor (Sora ayrıca OpenAI ile karışıyor); Unbounded kripto çağrışımı taşıyor.
 
-### İkon: "Sunrise Split"
-Pembe zemin üzerinde yarısı siyah (öncesi), yarısı beyaz (sonrası) bir disk, ortada karşılaştırma tutamacı ve iki parıltı. Hem ışığı, hem önce/sonra dönüşümünü, hem de uygulamanın imza etkileşimini anlatıyor. 29 piksele küçültüldüğünde de okunuyor.
+### İkon: "Glow Print" (Ekim 2026)
+Pembe zemin üzerinde, bir mood board'a iğnelenmiş gibi hafif eğik, keskin köşeli beyaz bir baskı fotoğraf. İçinde siyah zemin üzerinde pembe parlayan beyaz bir ışıltı, fotoğrafın altında küçük pembe bir kalp var. Keskin baskı, uygulamadaki şablon kartlarıyla aynı dili konuşuyor; ışıltı "Make it glow." demek. Önceki "Sunrise Split" (önce/sonra diski) fazla teknik kaldığı için değiştirildi. Koyu ve renklendirilmiş varyantları da var; 29 pikselde de okunuyor.
 
 ### Fiyatlandırma: "Adil Fiyat Sözü"
 Araştırmanın en net bulgusu: kullanıcıların **1 numaralı şikâyeti haftalık deneme tuzakları ve sürpriz ücretler**. Yıllık plan ise kurulum başına yaklaşık **5 kat** daha fazla gelir getiriyor; haftalık abonelerin bir yıl sonra yalnızca %1–2'si kalıyor.

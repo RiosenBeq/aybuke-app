@@ -6,6 +6,14 @@ project_id = "glowlit"
 # Every user starts as an anonymous user (no sign-up wall, Guideline 5.1.1(v)).
 enable_anonymous_sign_ins = true
 
+# Optional Sign in with Apple (native ID token from the app), so Pro and credits
+# follow the user to other iPhones. The client id is the app's bundle id. On the
+# hosted project: Authentication → Providers → Apple → add app.glowlit.ios.
+[auth.external.apple]
+enabled = true
+client_id = "app.glowlit.ios"
+secret = ""
+
 [functions.ai-image]
 verify_jwt = true
 

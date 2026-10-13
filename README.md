@@ -10,6 +10,8 @@
 - **Made to share:** one tap to Instagram Stories, before/after collages, 9:16 story cards and ready-made captions.
 - **Free on your iPhone:** background removal and adjustments run on-device.
 - **Lives on your Home Screen:** "Today's trend" and "My glow" widgets, plus a Live Activity in the Dynamic Island and on the Lock Screen while the AI works.
+- **Things other apps don't do:** an on-device **likeness check** after every people edit, **Best shot** (ranks your selfies by light and focus, never by looks), **Help me pick** ("A or B?" cards for friends), a **kindness reminder** when friends are in the photo, and an optional visible **AI-edited** label. See [the audit](docs/07-audit-and-differentiators.md).
+- **Optional account:** Sign in with Apple keeps Pro and credits on every iPhone. No sign-up wall.
 
 | Promise | What it means |
 |---|---|
@@ -77,6 +79,12 @@ Deploy the Supabase backend ([backend/README.md](backend/README.md)) and set `FA
 - **Marketing kit:** [docs/marketing/](docs/marketing/README.md) contains App Store copy (EN/TR) with measured character counts, a social media kit, a 30-day launch plan, generated App Store screenshots and social images.
 - **Website:** [web/](web/README.md) is a static landing page with the legal pages, ready for GitHub Pages (`.github/workflows/website.yml`).
 
+## Notifications, ratings and accounts
+
+- **Notifications** are local and opt-in (`GlowNotifier`, `NotificationPlanner` in AppCore): glow ready, free credits back, one look a week. Never at night (21:00–09:00) or during school hours on weekdays.
+- **Rating prompts** follow `ReviewPromptPolicy`: only after the third save, share or heart, from day 3, once per version, never after a failure, report, retry or paywall.
+- **Accounts** are optional: Sign in with Apple, then the backend merges the anonymous user (see [backend/README.md](backend/README.md#accounts-sign-in-with-apple)). Turn on the Sign in with Apple capability for `app.glowlit.ios` before running on a device.
+
 ## Widgets and Live Activity
 
 - **Widgets** (`ios/GlowlitWidgets/`): *Today's trend* (small, medium and Lock Screen) picks one look per day and opens it in one tap. *My glow* (small, medium and Lock Screen) shows the newest creation, the credits left and shortcuts to Magic Edit, Create and Cut out.
@@ -91,7 +99,7 @@ Terms of Use, Privacy Policy, Acceptable Use & AI Content Policy (English and Tu
 ## Repository
 
 ```
-ios/        SwiftUI app (Glowlit.xcodeproj) + AppCore Swift package (business logic, 71 tests)
+ios/        SwiftUI app (Glowlit.xcodeproj) + AppCore Swift package (business logic, 82 tests)
   GlowlitWidgets/  WidgetKit extension: Home and Lock Screen widgets, Dynamic Island Live Activity
   Config/   Info.plist additions and xcconfigs (developer AI key slot: Secrets.xcconfig)
 backend/    Supabase: Postgres schema, credit ledger and reports; Edge Functions (fal.ai, Apple JWS, reports); SQL tests
@@ -130,6 +138,7 @@ Start with [docs/README.md](docs/README.md). Highlights:
 - [Architecture](docs/04-architecture.md)
 - [Compliance](docs/05-compliance.md)
 - [Roadmap](docs/06-roadmap.md)
+- [Audit: girl-first details and differentiators](docs/07-audit-and-differentiators.md)
 - [Marketing kit](docs/marketing/README.md)
 
 ## Licences

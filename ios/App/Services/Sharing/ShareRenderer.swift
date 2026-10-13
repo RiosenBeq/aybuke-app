@@ -8,6 +8,15 @@ struct SharePayload: Identifiable {
     var original: UIImage?
     let operation: AIOperation?
     var prompt: String?
+    /// Other variations from the same creation, for "Help me pick".
+    var alternatives: [UIImage] = []
+
+    /// "Help me pick": two variations, or the original and the glow-up.
+    var pickPair: (a: UIImage, b: UIImage)? {
+        if let other = alternatives.first { return (image, other) }
+        if let original { return (original, image) }
+        return nil
+    }
 
     /// Prompts are only offered on the card for text-to-image creations;
     /// edit instructions can be personal.
@@ -21,6 +30,7 @@ enum ShareFormat: String, CaseIterable, Identifiable {
     case photo
     case beforeAfter
     case story
+    case pick
 
     var id: String { rawValue }
 
@@ -29,6 +39,7 @@ enum ShareFormat: String, CaseIterable, Identifiable {
         case .photo: return "Photo"
         case .beforeAfter: return "Before / After"
         case .story: return "Story card"
+        case .pick: return "Help me pick"
         }
     }
 
@@ -37,6 +48,7 @@ enum ShareFormat: String, CaseIterable, Identifiable {
         case .photo: return "photo"
         case .beforeAfter: return "square.split.2x1"
         case .story: return "rectangle.portrait"
+        case .pick: return "a.circle"
         }
     }
 }
@@ -45,7 +57,14 @@ enum ShareFormat: String, CaseIterable, Identifiable {
 /// watermark, or a "Made with Glowlit" line on collages and cards); Pro
 /// removes it everywhere. Pure functions, safe off the main thread.
 enum ShareRenderer {
-    static func render(_ payload: SharePayload, format: ShareFormat, branded: Bool, showPrompt: Bool) -> UIImage {
+    static func render(_ payload: SharePayload, format: ShareFormat, branded: Bool, showPrompt: Bool, aiLabel: Bool = false) -> UIImage {
+        let rendered = render(payload, format: format, branded: branded, showPrompt: showPrompt)
+        guard aiLabel, let operation = payload.operation else { return rendered }
+        let reservedBottom: CGFloat = (format == .story || format == .pick) ? 300 : 0
+        return addAILabel(to: rendered, text: operation == .textToImage ? "Made with AI" : "AI-edited", reservedBottom: reservedBottom)
+    }
+
+    private static func render(_ payload: SharePayload, format: ShareFormat, branded: Bool, showPrompt: Bool) -> UIImage {
         let image = ImageUtilities.normalized(payload.image, maxLongEdge: 2048)
         switch format {
         case .photo:
@@ -55,6 +74,97 @@ enum ShareRenderer {
             return beforeAfter(before: ImageUtilities.normalized(original, maxLongEdge: 2048), after: image, branded: branded)
         case .story:
             return storyCard(image, prompt: showPrompt ? payload.shareablePrompt : nil, branded: branded)
+        case .pick:
+            guard let pair = payload.pickPair else { return storyCard(image, prompt: nil, branded: branded) }
+            return pickCard(
+                a: ImageUtilities.normalized(pair.a, maxLongEdge: 1400),
+                b: ImageUtilities.normalized(pair.b, maxLongEdge: 1400),
+                branded: branded
+            )
+        }
+    }
+
+    // MARK: Visible AI label
+
+    /// An honest, visible "✦ AI-edited" pill in the bottom-left corner, for
+    /// people who want their followers to know (on top of the invisible
+    /// IPTC label every export already carries).
+    static func addAILabel(to image: UIImage, text: String, reservedBottom: CGFloat = 0) -> UIImage {
+        let size = image.size
+        let unit = min(size.width, size.height)
+        return renderer(size, opaque: false).image { _ in
+            image.draw(at: .zero)
+            let font = brandFont(max(unit * 0.03, 18), weight: .bold)
+            let attributes: [NSAttributedString.Key: Any] = [.font: font, .foregroundColor: UIColor.brandInk]
+            let label = "✦ \(text)" as NSString
+            let textSize = label.size(withAttributes: attributes)
+            let padding = CGSize(width: font.pointSize * 0.7, height: font.pointSize * 0.35)
+            let margin = unit * 0.035
+            let pill = CGRect(
+                x: margin,
+                y: size.height - reservedBottom - margin - textSize.height - padding.height * 2,
+                width: textSize.width + padding.width * 2,
+                height: textSize.height + padding.height * 2
+            )
+            UIColor.white.withAlphaComponent(0.88).setFill()
+            UIBezierPath(roundedRect: pill, cornerRadius: pill.height / 2).fill()
+            label.draw(at: CGPoint(x: pill.minX + padding.width, y: pill.minY + padding.height), withAttributes: attributes)
+        }
+    }
+
+    // MARK: Help me pick (9:16)
+
+    /// "A or B?" story card: two prints side by side for friends to vote on,
+    /// in a Story (with a poll sticker) or a group chat.
+    static func pickCard(a: UIImage, b: UIImage, branded: Bool) -> UIImage {
+        let canvas = storySize
+        return renderer(canvas, opaque: true).image { context in
+            let cg = context.cgContext
+            UIColor.brandPetal.setFill()
+            context.fill(CGRect(origin: .zero, size: canvas))
+            radialGlow(cg, center: CGPoint(x: 180, y: 300), radius: 800, color: .white, alpha: 0.8)
+            radialGlow(cg, center: CGPoint(x: 940, y: 1650), radius: 760, color: .brandBlush, alpha: 0.9)
+
+            // Instagram keeps ~250 px at the top and bottom for its own UI.
+            drawText("Help me pick", font: brandFont(96, weight: .heavy), color: .brandInk,
+                     centeredIn: CGRect(x: 0, y: 300, width: canvas.width, height: 120))
+            drawText("which one should I post?", font: accentFont(54), color: .brandInk,
+                     centeredIn: CGRect(x: 0, y: 420, width: canvas.width, height: 80))
+
+            let slot = CGSize(width: 430, height: 760)
+            let gap: CGFloat = 60
+            let top: CGFloat = 590
+            for (index, image) in [a, b].enumerated() {
+                let size = scaled(image.size, toFit: slot)
+                let slotX = (canvas.width - slot.width * 2 - gap) / 2 + CGFloat(index) * (slot.width + gap)
+                let frame = CGRect(x: slotX + (slot.width - size.width) / 2, y: top + (slot.height - size.height) / 2,
+                                   width: size.width, height: size.height)
+                cg.saveGState()
+                cg.translateBy(x: frame.midX, y: frame.midY)
+                cg.rotate(by: (index == 0 ? -3 : 3) * .pi / 180)
+                cg.translateBy(x: -frame.midX, y: -frame.midY)
+                cg.setShadow(offset: CGSize(width: 0, height: 20), blur: 40, color: UIColor.brandInk.withAlphaComponent(0.2).cgColor)
+                UIColor.white.setFill()
+                cg.fill(frame.insetBy(dx: -16, dy: -16))
+                cg.setShadow(offset: .zero, blur: 0, color: nil)
+                image.draw(in: frame)
+                cg.restoreGState()
+
+                let badge = CGRect(x: frame.midX - 62, y: frame.maxY - 30, width: 124, height: 124)
+                cg.setShadow(offset: CGSize(width: 0, height: 10), blur: 20, color: UIColor.brandInk.withAlphaComponent(0.25).cgColor)
+                (index == 0 ? UIColor.brandInk : UIColor.brandBlush).setFill()
+                cg.fillEllipse(in: badge)
+                cg.setShadow(offset: .zero, blur: 0, color: nil)
+                drawText(index == 0 ? "A" : "B", font: brandFont(68, weight: .heavy),
+                         color: index == 0 ? .brandBlush : .brandInk, centeredIn: badge)
+            }
+
+            drawText("Reply A or B ♡", font: brandFont(46, weight: .bold), color: .brandInk,
+                     centeredIn: CGRect(x: 0, y: 1500, width: canvas.width, height: 70))
+            if branded {
+                drawText("Made with \(Brand.name) ✦", font: brandFont(34, weight: .semibold), color: .brandInk,
+                         centeredIn: CGRect(x: 0, y: canvas.height - 300, width: canvas.width, height: 60))
+            }
         }
     }
 
@@ -196,6 +306,13 @@ enum ShareRenderer {
         let colors = [color.withAlphaComponent(alpha).cgColor, color.withAlphaComponent(0).cgColor] as CFArray
         guard let gradient = CGGradient(colorsSpace: CGColorSpaceCreateDeviceRGB(), colors: colors, locations: [0, 1]) else { return }
         context.drawRadialGradient(gradient, startCenter: center, startRadius: 0, endCenter: center, endRadius: radius, options: [])
+    }
+
+    /// The editorial italic accent (New York Italic), as in the app's headlines.
+    static func accentFont(_ size: CGFloat) -> UIFont {
+        let base = UIFont.systemFont(ofSize: size, weight: .medium)
+        guard let descriptor = base.fontDescriptor.withDesign(.serif)?.withSymbolicTraits(.traitItalic) else { return base }
+        return UIFont(descriptor: descriptor, size: size)
     }
 
     static func brandFont(_ size: CGFloat, weight: UIFont.Weight = .bold) -> UIFont {

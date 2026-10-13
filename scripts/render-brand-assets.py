@@ -8,10 +8,10 @@ Writes:
   docs/assets/brand/app-icon-1024.png
   docs/assets/brand/brand-board.png
 
-The icon follows docs/assets/brand/app-icon.svg ("Sunrise Split": a disc that
-is half ink (before) and half white (after), split by the compare handle, on a
-blush tile, plus a sparkle). Shapes are drawn at 4x and downsampled for clean
-anti-aliasing. Requires Pillow; the brand board uses macOS's New York Italic.
+The icon is "Glow Print" (docs/assets/brand/app-icon.svg): a sharp-cornered
+white print, tilted on a blush tile, showing a white sparkle glowing pink on
+ink, with a small heart on the print's chin. Shapes are drawn at 4x and
+downsampled for clean anti-aliasing. Requires Pillow; the brand board uses macOS's New York Italic.
 """
 
 from __future__ import annotations
@@ -68,48 +68,65 @@ def sparkle(draw: ImageDraw.ImageDraw, center: tuple[float, float], radius: floa
 
 
 def icon(variant: str = "default") -> Image.Image:
+    """ "Glow Print": a sharp-cornered white print, tilted like a photo on a
+    mood board, showing a sparkle glowing pink on ink. Sharp print = the
+    app's photo cards; sparkle = "make it glow"; blush tile = the palette."""
     s = SIZE * SCALE
-    tile, glow_a, glow_b = {
-        "default": (BLUSH, WHITE, PETAL),
-        "dark": (INK, BLUSH, CHARCOAL),
-        "tinted": ((0, 0, 0), (60, 60, 60), (30, 30, 30)),
+    tile, glow_a, glow_b, frame, photo, halo, star, small = {
+        "default": (BLUSH, WHITE, PETAL, WHITE, INK, BLUSH, WHITE, BLUSH),
+        "dark": (INK, BLUSH, CHARCOAL, BLUSH, INK, BLUSH, WHITE, BLUSH),
+        "tinted": ((0, 0, 0), (70, 70, 70), (30, 30, 30), WHITE, (0, 0, 0), (120, 120, 120), WHITE, (200, 200, 200)),
     }[variant]
-    before, after, handle, chevron, star = {
-        "default": (INK, WHITE, INK, BLUSH, WHITE),
-        "dark": ((46, 49, 52), BLUSH, BLUSH, INK, BLUSH),
-        "tinted": ((90, 90, 90), WHITE, WHITE, (0, 0, 0), WHITE),
-    }[variant]
+    glow_alpha = {"default": (0.6, 0.75), "dark": (0.18, 0.55), "tinted": (0.25, 0.3)}[variant]
 
     image = Image.new("RGBA", (s, s), tile + (255,))
-    glow_alpha = {"default": (0.55, 0.7), "dark": (0.16, 0.6), "tinted": (0.25, 0.3)}[variant]
-    image.alpha_composite(radial(s, (0.24 * s, 0.18 * s), 0.62 * s, glow_a, glow_alpha[0]))
+    image.alpha_composite(radial(s, (0.22 * s, 0.16 * s), 0.62 * s, glow_a, glow_alpha[0]))
     image.alpha_composite(radial(s, (0.86 * s, 0.9 * s), 0.55 * s, glow_b, glow_alpha[1]))
+
+    # The print, drawn upright on its own layer, then tilted.
+    print_w, print_h = 0.54 * s, 0.64 * s
+    border, chin = 0.045 * s, 0.13 * s
+    layer = Image.new("RGBA", (s, s), (0, 0, 0, 0))
+    x0, y0 = (s - print_w) / 2 - 0.02 * s, (s - print_h) / 2 + 0.01 * s
+    layer_draw = ImageDraw.Draw(layer)
+    layer_draw.rectangle((x0, y0, x0 + print_w, y0 + print_h), fill=frame + (255,))
+    px0, py0 = x0 + border, y0 + border
+    px1, py1 = x0 + print_w - border, y0 + print_h - chin
+    layer_draw.rectangle((px0, py0, px1, py1), fill=photo + (255,))
+    # Pink glow inside the photo, clipped to it.
+    glow = radial(s, ((px0 + px1) / 2, (py0 + py1) / 2), 0.21 * s, halo, 0.9 if variant != "tinted" else 0.7)
+    clip = Image.new("L", (s, s), 0)
+    ImageDraw.Draw(clip).rectangle((px0, py0, px1, py1), fill=255)
+    glow.putalpha(Image.composite(glow.getchannel("A"), Image.new("L", (s, s), 0), clip))
+    layer.alpha_composite(glow)
+    layer_draw = ImageDraw.Draw(layer)
+    cx, cy = (px0 + px1) / 2, (py0 + py1) / 2
+    sparkle(layer_draw, (cx, cy), 0.13 * s, star + (255,))
+    sparkle(layer_draw, (cx + 0.105 * s, cy - 0.1 * s), 0.035 * s, small + (255,))
+    # A small heart on the print's chin, like a note written on a photo.
+    heart_c = ((px0 + px1) / 2, y0 + print_h - chin / 2)
+    hr = 0.024 * s
+    hx, hy = heart_c
+    heart_color = {"default": BLUSH, "dark": INK, "tinted": (110, 110, 110)}[variant] + (255,)
+    hy -= hr * 0.55
+    for side in (-1, 1):
+        cx_heart = hx + side * hr
+        layer_draw.ellipse((cx_heart - hr, hy - hr * 1.2, cx_heart + hr, hy + hr * 0.8), fill=heart_color)
+    layer_draw.polygon([(hx - hr * 1.93, hy + hr * 0.05), (hx + hr * 1.93, hy + hr * 0.05), (hx, hy + hr * 2.05)], fill=heart_color)
+
+    shadow = layer.getchannel("A").filter(ImageFilter.GaussianBlur(0.035 * s))
+    shadow_layer = Image.new("RGBA", (s, s), INK + (0,))
+    shadow_layer.putalpha(shadow.point(lambda value: int(value * (0.28 if variant == "default" else 0.5))))
+    tilt = -7
+    shadow_layer = shadow_layer.rotate(tilt, resample=Image.BICUBIC, center=(s / 2, s / 2), translate=(0, 0.025 * s))
+    image.alpha_composite(shadow_layer)
+    image.alpha_composite(layer.rotate(tilt, resample=Image.BICUBIC, center=(s / 2, s / 2)))
+
+    # Sparkles on the tile, as in the app's hero card.
     draw = ImageDraw.Draw(image)
-
-    c = s / 2
-    r = 0.293 * s  # 300 px at 1024
-    disc = Image.new("L", (s, s), 0)
-    ImageDraw.Draw(disc).ellipse((c - r, c - r, c + r, c + r), fill=255)
-    halves = Image.new("RGBA", (s, s), (0, 0, 0, 0))
-    halves_draw = ImageDraw.Draw(halves)
-    halves_draw.rectangle((0, 0, c, s), fill=before + (255,))
-    halves_draw.rectangle((c, 0, s, s), fill=after + (255,))
-    image.paste(halves, (0, 0), disc)
-
-    bar = 0.0254 * s
-    draw.rounded_rectangle((c - bar / 2, 0.146 * s, c + bar / 2, 0.854 * s), radius=bar / 2, fill=handle)
-    knob = 0.068 * s
-    draw.ellipse((c - knob, c - knob, c + knob, c + knob), fill=handle)
-    width = int(0.0137 * s)
-    for direction in (-1, 1):
-        x0 = c + direction * 0.0234 * s
-        x1 = c + direction * 0.0449 * s
-        draw.line([(x0, c - 0.0234 * s), (x1, c), (x0, c + 0.0234 * s)], fill=chevron, width=width, joint="curve")
-        for point in [(x0, c - 0.0234 * s), (x1, c), (x0, c + 0.0234 * s)]:
-            draw.ellipse((point[0] - width / 2, point[1] - width / 2, point[0] + width / 2, point[1] + width / 2), fill=chevron)
-
-    sparkle(draw, (0.775 * s, 0.215 * s), 0.085 * s, star)
-    sparkle(draw, (0.86 * s, 0.33 * s), 0.038 * s, star)
+    corner = WHITE if variant != "dark" else BLUSH
+    sparkle(draw, (0.845 * s, 0.155 * s), 0.065 * s, corner)
+    sparkle(draw, (0.91 * s, 0.255 * s), 0.028 * s, corner)
 
     out = image.resize((SIZE, SIZE), Image.LANCZOS)
     return out.convert("RGB")

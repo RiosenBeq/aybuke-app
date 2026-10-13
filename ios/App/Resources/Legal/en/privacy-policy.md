@@ -1,6 +1,6 @@
 # Privacy Policy
 
-Last updated: 12 October 2026
+Last updated: 13 October 2026
 
 > **Privacy at a glance**
 > - Glowlit is designed with teens in mind, so everyone gets high-privacy defaults: no ads, no tracking, no profiling and no public profiles or feeds.
@@ -58,11 +58,14 @@ This section is for you if you're under 18. The rest of this policy applies to y
 Much of Glowlit works without sending anything to us. The following data is stored only on your device, and we can't access it:
 
 - **Your library ("My Works")**: the images you keep, with their title, the type of edit, the text prompt you used (for Create from text and Magic Edit), whether you marked them as a favourite, and timestamps. The library is stored in the app's private storage and protected by iOS Data Protection.
-- **App settings** (stored in iOS UserDefaults): whether you've completed onboarding; the interests you picked (for example "Selfie glow-ups" or "Shots for my shop"), which are used only to order the home screen on your device; your cloud AI consent choice; your appearance preference; a counter of successful saves, used to time Apple's rating prompt; and, only in offline or demo mode, a local credit balance.
+- **App settings** (stored in iOS UserDefaults): whether you've completed onboarding; the interests you picked (for example "Selfie glow-ups" or "Shots for my shop"), which are used only to order the home screen on your device; your cloud AI consent choice; your appearance preference; your notification choices; a small count of happy moments (saving, sharing or hearting a creation) and when the app last asked, used only to time Apple's rating prompt; and, only in offline or demo mode, a local credit balance.
 - **Session tokens** for your anonymous account, stored in the iOS Keychain.
-- **Trial reminder**: if you start a free trial and allow notifications, the app schedules a local reminder on your device one day before the trial ends. No push server is involved.
+- **Reminders**: notifications are off until you allow them and switch them on. The app then schedules them locally on your device: a reminder one day before a free trial ends; "your glow-up is ready" when a creation finishes while you're in another app; "your free credits are back" (only after you run out); and, if you choose, one new look a week. Reminders are never sent between 9 pm and 9 am, or during school hours (8 am to 3 pm) on weekdays. No push server or device token is involved.
+- **Widgets and Live Activity**: to show your credits, your latest creation and its progress on the Home Screen, the Lock Screen and in the Dynamic Island, the app shares a small snapshot (credit balance, the title and a small thumbnail of your latest creation, and how many creations you have) with its widgets through a container on your device. It never leaves your iPhone.
 
 **On-device features.** Remove background (using Apple's Vision framework), Adjust and the "quick glow" enhance during onboarding process your photos entirely on your iPhone.
+
+**On-device face checks.** Three features look at faces, only on your iPhone, with Apple's Vision framework: **Best shot** ranks the selfies you pick by light, focus and how clearly the face shows; the **kindness reminder** counts how many people are in a photo; and the **likeness check** compares an AI edit with your original photo (face proportions and skin lightness) so it can offer a free retry if the result drifted. Nothing is stored or sent to us, nobody is identified or recognised, and nothing rates anyone's looks.
 
 **Photo access.** You pick photos with Apple's system photo picker, so Glowlit can see only the photos you choose, not your whole library. To save results to your Photos library, the app asks for add-only permission, which lets it add images but not read your library.
 
@@ -75,6 +78,10 @@ You can delete your library in **Settings → Delete all creations**. It's also 
 ### Anonymous account
 
 When you first use a cloud AI feature or your credit balance on our servers, the app creates an anonymous account with our backend provider (Supabase). The account is identified by a random user ID. We don't collect your name, email address, phone number or password.
+
+### Optional account (Sign in with Apple)
+
+Signing in is optional. If you choose **Sign in with Apple** (offered so Pro and your credits follow you to another iPhone), Apple confirms your identity and our backend provider receives a stable Apple user identifier and, if you choose to share it, your email address, which can be a private relay address that forwards to you. We don't ask for your name and never see your Apple ID password. The anonymous account you used on that iPhone is merged into your account: paid credits, subscription records, job records and reports move over, and the anonymous account is deleted. We also keep a token from Apple so that, when you delete your account, we can revoke Glowlit's access to your Apple ID, as Apple requires. Your photos and library are not synced and stay on each iPhone.
 
 ### Content you send to cloud AI features
 
@@ -171,7 +178,7 @@ These filters are the only automated decisions we make about your requests. They
 We share personal data only as described below. We require every service provider that receives your data to protect it at least as well as described in this policy, under written contracts (data processing agreements) that allow them to use your data only to provide services to us.
 
 - **Service providers (processors)**: our backend and hosting provider and our AI inference providers, listed in section 12. They process data only on our instructions.
-- **Apple**: Apple processes your payments and subscriptions as the seller and as an independent controller, under [Apple's Privacy Policy](https://www.apple.com/legal/privacy/). We don't send your content to Apple. We receive Apple-signed transaction data to verify purchases.
+- **Apple**: Apple processes your payments and subscriptions as the seller and as an independent controller, under [Apple's Privacy Policy](https://www.apple.com/legal/privacy/). We don't send your content to Apple. We receive Apple-signed transaction data to verify purchases. If you sign in with Apple, Apple verifies your sign-in, and we contact Apple to revoke that sign-in when you delete your account.
 - **Authorities**: we disclose data to courts, law enforcement or other authorities where the law requires it, for example in response to a valid legal order, or where necessary to protect someone's safety. We report child sexual abuse material to the competent authorities (such as NCMEC in the United States) where the law requires it.
 - **Business transfers**: if we're involved in a merger, acquisition or sale of all or part of our business, personal data may be transferred to the new owner, who must continue to protect it in line with this policy. We'll inform you where the law requires it.
 - **Services you choose to share with**: when you share a result through the share sheet, Instagram or another app, you send it to that service yourself, and its own terms and privacy policy apply.
@@ -182,7 +189,7 @@ We don't sell your data, rent it, or share it with anyone for their own advertis
 
 These companies process personal data on our behalf. We keep this list up to date. If we add or replace an AI provider, we'll update this list and the cloud AI consent screen before the change takes effect, and ask for your consent again where required.
 
-- **Supabase Inc.** (USA): backend hosting, database, anonymous authentication, server functions and server logs. Hosting region: [Supabase region, e.g. EU (Frankfurt)]. Data: anonymous user ID, session data, job records, credits, entitlements, reports and server logs. Your inputs pass through in transit only.
+- **Supabase Inc.** (USA): backend hosting, database, anonymous authentication and optional Sign in with Apple, server functions and server logs. Hosting region: [Supabase region, e.g. EU (Frankfurt)]. Data: anonymous user ID or account (Apple user identifier, email or relay address if shared), session data, job records, credits, entitlements, reports and server logs. Your inputs pass through in transit only.
 - **Features & Labels, Inc. (fal.ai)** (USA): AI inference, meaning it runs the AI models for cloud AI features and the automated output safety check. Data: photos, masks, prompts and results, for the duration of the request. Request history is disabled, and results are deleted within 1 hour.
 - **Developers of the models that fal.ai runs**, for example **Google LLC** (USA) for Gemini image models: where fal.ai uses the developer's own service to run a model, that developer processes the inputs and results of the request on fal.ai's behalf.
 - **Google LLC** (USA), Gemini API: alternative AI provider, used only if we route jobs directly to Google instead of fal.ai.
@@ -216,7 +223,8 @@ You can ask for a copy of the safeguards we use by emailing [privacy@glowlit.app
 - **Job records**: 30 days, then deleted.
 - **Credit wallet and credit ledger**: as long as your account exists. Deleted when you delete your account.
 - **Entitlement records**: as long as your account exists. Deleted when you delete your account.
-- **Anonymous account (user ID)**: as long as your account exists. Deleted when you delete your account.
+- **Anonymous account (user ID)**: as long as your account exists. Deleted when you delete your account, or when it's merged into your account after Sign in with Apple.
+- **Account (Apple user identifier, email or relay address, Apple token)**: as long as your account exists. When you delete your account, the token is revoked with Apple and everything is deleted.
 - **Reports**: up to 12 months, for safety review and to improve our filters. Then deleted, or earlier if you delete your account.
 - **Server and security logs**: a short period, typically no more than 90 days, for security and abuse prevention. They are deleted on this schedule even after you delete your account.
 - **Emails and privacy requests**: as long as needed to handle your request and to document how we handled it, unless we must keep them longer to establish, exercise or defend legal claims.

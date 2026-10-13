@@ -2,7 +2,7 @@
 
 # Kullanım Koşulları
 
-Son güncelleme: 12 Ekim 2026
+Son güncelleme: 13 Ekim 2026
 
 > **Kısaca.** Bu özet, metinde yolunuzu bulmanıza yardımcı olur; aşağıdaki Koşulların yerine geçmez.
 > - Bu Koşullar, sizinle Glowlit uygulamasının geliştiricisi [Şirket unvanı] arasında yapılan bir sözleşmedir. Apple bu sözleşmenin tarafı değildir.
@@ -60,11 +60,15 @@ Bu bölüm, genç kullanıcılar için hazırlanmış sade bir özettir. Koşull
 - **Paylaşmadan önce düşünün.** Oluşturduklarınız, siz paylaşmadıkça telefonunuzda kalır. İnternete bir kez çıkan bir şeyi geri almak zor olabilir.
 - **Yardım her zaman var.** Bir şeyler ters giderse veya biri Glowlit uygulamasını size zarar vermek için kullanırsa, güvendiğiniz bir yetişkine anlatın ve durumu bize bildirin (bkz. [Politika](kabul-edilebilir-kullanim-politikasi.md)). Veliler ve vasiler, çocuklarının verilerini sildirmek dahil her konuda [privacy@glowlit.app](mailto:privacy@glowlit.app) adresinden bize ulaşabilir.
 
-## 5. Anonim hesabınız
+## 5. Hesabınız
 
 ### Kayıt gerekmez
 
 Glowlit sizden kayıt olmanızı veya adınızı, e-posta adresinizi ya da bir şifre vermenizi istemez. Bir bulut yapay zekâ özelliğini veya sunucularımızdaki kredi bakiyenizi ilk kez kullandığınızda uygulama, arka uç (backend) hizmet sağlayıcımız nezdinde rastgele bir kullanıcı kimliğiyle tanımlanan anonim bir hesabı otomatik olarak oluşturur. Uygulama, bu hesabın oturum anahtarlarını cihazınızdaki iOS Anahtar Zinciri'nde (Keychain) saklar.
+
+### İsteğe bağlı Apple ile giriş
+
+Örneğin iPhone değiştirdiğinizde veya yeni bir iPhone eklediğinizde Pro üyeliğinizi ve kredilerinizi korumak için Apple ile giriş yapmayı seçebilirsiniz. Glowlit uygulamasını kullanmak için giriş yapmak hiçbir zaman zorunlu değildir. Giriş yaptığınızda o iPhone'daki anonim hesap, satın aldığınız krediler dahil, hesabınızla birleştirilir. Çıkış yaptığınızda o iPhone yeni bir anonim hesaba döner; kredileriniz hesabınızda kalır, etkin bir abonelik ise onu satın alan Apple Hesabı'na bağlı kalır. Fotoğraflarınız ve kütüphaneniz cihazlar arasında eşitlenmez.
 
 ### Cihazınızı güvende tutun
 
@@ -72,11 +76,11 @@ Kilidi açık iPhone'unuzu kullanabilen herkes hesabınızı, kredilerinizi ve P
 
 ### Hesabınıza erişimi kaybederseniz
 
-Hesabınız anonim olduğundan hesabınıza erişim cihazınıza bağlıdır. Örneğin iPhone'unuzu bir yedekten geri yüklemeden sıfırlarsanız erişimi kaybedebilirsiniz; bu durumda hesabınızı veya kredi bakiyenizi kurtaramayabiliriz. Etkin bir Pro aboneliğini uygulamadaki "Restore purchases" (Satın alımları geri yükle) seçeneğiyle geri yükleyebilirsiniz. Yardıma ihtiyacınız olursa Apple satın alma makbuzunuzdaki Sipariş Numarası (Order ID) ile bize ulaşın; makul ölçüde elimizden geleni yaparız.
+Apple ile giriş yapmadıysanız hesabınıza erişim cihazınıza bağlıdır. Örneğin iPhone'unuzu bir yedekten geri yüklemeden sıfırlarsanız erişimi kaybedebilirsiniz; bu durumda hesabınızı veya kredi bakiyenizi kurtaramayabiliriz. Etkin bir Pro aboneliğini uygulamadaki "Restore purchases" (Satın alımları geri yükle) seçeneğiyle geri yükleyebilirsiniz. Apple ile giriş yaptıysanız, kredilerinizi geri almak için yeni iPhone'unuzda tekrar giriş yapın. Yardıma ihtiyacınız olursa Apple satın alma makbuzunuzdaki Sipariş Numarası (Order ID) ile bize ulaşın; makul ölçüde elimizden geleni yaparız.
 
 ### Hesabınızı silme
 
-Hesabınızı istediğiniz zaman **Settings → Delete my data & account** (Ayarlar → Verilerimi ve hesabımı sil) yoluyla silebilirsiniz. Bu işlem, sunucudaki hesabınızı ve ona bağlı tüm sunucu kayıtlarını (kredi cüzdanı, kredi hareketleri, iş kayıtları, abonelik hakkı kayıtları ve raporlar) ve cihazınızdaki görsel kütüphanesini kalıcı olarak siler.
+Hesabınızı istediğiniz zaman **Settings → Delete my data & account** (Ayarlar → Verilerimi ve hesabımı sil) yoluyla silebilirsiniz. Bu işlem, sunucudaki hesabınızı ve ona bağlı tüm sunucu kayıtlarını (kredi cüzdanı, kredi hareketleri, iş kayıtları, abonelik hakkı kayıtları ve raporlar) ve cihazınızdaki görsel kütüphanesini kalıcı olarak siler. Apple ile giriş yaptıysanız Glowlit uygulamasının Apple Kimliğinize erişimini de iptal ederiz.
 
 Hesabınızı sildiğinizde, satın aldığınız krediler dahil kalan tüm kredileriniz kaybolur; bunlar geri yüklenemez ve iade edilemez. Daha sonra bir bulut yapay zekâ özelliğini yeniden kullanırsanız yeni bir anonim hesap oluşturulur.
 

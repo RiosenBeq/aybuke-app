@@ -146,10 +146,12 @@ struct CreationDetailView: View {
     let creation: Creation
 
     @Environment(AppModel.self) private var app
+    @Environment(\.requestReview) private var requestReview
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
     @State private var image: UIImage?
     @State private var confirmDelete = false
+    @State private var heartPop = false
 
     var body: some View {
         VStack(spacing: 16) {
@@ -159,6 +161,28 @@ struct CreationDetailView: View {
                     .scaledToFit()
                     .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
                     .shadow(color: Palette.shadow, radius: 16, y: 8)
+                    .overlay {
+                        // Double-tap to heart, like everywhere else she posts.
+                        Image(systemName: "heart.fill")
+                            .font(.system(size: 96, weight: .bold))
+                            .foregroundStyle(Palette.white)
+                            .shadow(color: Palette.ink.opacity(0.25), radius: 12, y: 4)
+                            .scaleEffect(heartPop ? 1 : 0.3)
+                            .opacity(heartPop ? 1 : 0)
+                            .allowsHitTesting(false)
+                            .accessibilityHidden(true)
+                    }
+                    .onTapGesture(count: 2) {
+                        if !creation.isFavorite { toggleFavorite() } else { Haptics.heartbeat() }
+                        withAnimation(.spring(response: 0.3, dampingFraction: 0.55)) { heartPop = true }
+                        Task {
+                            try? await Task.sleep(for: .milliseconds(650))
+                            withAnimation(.easeOut(duration: 0.25)) { heartPop = false }
+                        }
+                    }
+                    .accessibilityAction(named: "Add to favorites") {
+                        if !creation.isFavorite { toggleFavorite() }
+                    }
                     .padding(.horizontal, Metrics.gutter)
                     .frame(maxHeight: .infinity)
             } else {
@@ -208,10 +232,7 @@ struct CreationDetailView: View {
         .toolbar {
             ToolbarItemGroup(placement: .topBarTrailing) {
                 Button {
-                    creation.isFavorite.toggle()
-                    try? modelContext.save()
-                    Haptics.selection()
-                    app.syncWidgets()
+                    toggleFavorite()
                 } label: {
                     Image(systemName: creation.isFavorite ? "heart.fill" : "heart")
                         .symbolEffect(.bounce, value: creation.isFavorite)
@@ -245,6 +266,16 @@ struct CreationDetailView: View {
             } catch {
                 app.handle(error)
             }
+        }
+    }
+
+    private func toggleFavorite() {
+        creation.isFavorite.toggle()
+        try? modelContext.save()
+        if creation.isFavorite { Haptics.heartbeat() } else { Haptics.selection() }
+        app.syncWidgets()
+        if creation.isFavorite, app.registerHappyMoment() {
+            requestReview()
         }
     }
 
