@@ -15,20 +15,20 @@ struct OnboardingView: View {
     private let pages: [OnboardingPage] = [
         OnboardingPage(
             symbol: "wand.and.stars",
-            title: "Your glow-up,\n*just by saying it*",
-            body: "“Give me pink hair.” “Add soft glam.” Describe any change and watch it happen.",
+            title: String(localized: "Your glow-up,\n*just by saying it*"),
+            body: String(localized: "“Give me pink hair.” “Add soft glam.” Describe any change and watch it happen."),
             tone: .blush
         ),
         OnboardingPage(
             symbol: "heart.text.square",
-            title: "One tap.\nA whole new *aesthetic*",
-            body: "Doll box, Y2K, ballet core, fairy princess — and fresh trends every week.",
+            title: String(localized: "One tap.\nA whole new *aesthetic*"),
+            body: String(localized: "Doll box, Y2K, ballet core, fairy princess — and fresh trends every week."),
             tone: .ink
         ),
         OnboardingPage(
             symbol: "sparkles",
-            title: "Dream it.\n*See it.*",
-            body: "Type an idea, pick a style and get gorgeous images in seconds — no prompt skills needed.",
+            title: String(localized: "Dream it.\n*See it.*"),
+            body: String(localized: "Type an idea, pick a style and get gorgeous images in seconds — no prompt skills needed."),
             tone: .charcoal
         ),
     ]
@@ -91,7 +91,7 @@ struct OnboardingView: View {
     }
 
     private var consentText: AttributedString {
-        let markdown = "By continuing you confirm you're at least 13 and agree to our [Terms of Use](\(LegalDocument.linkScheme)://terms) and [Privacy Policy](\(LegalDocument.linkScheme)://privacy)."
+        let markdown = String(localized: "By continuing you confirm you're at least 13 and agree to our [Terms of Use](\(LegalDocument.linkScheme)://terms) and [Privacy Policy](\(LegalDocument.linkScheme)://privacy).")
         var text = (try? AttributedString(markdown: markdown)) ?? AttributedString(markdown)
         for run in text.runs where run.link != nil {
             text[run.range].foregroundColor = Palette.textPrimary
@@ -197,14 +197,14 @@ private struct InterestPicker: View {
     }
 
     private let options: [Option] = [
-        Option(id: "selfies", title: "Selfie glow-ups", symbol: "camera.fill"),
-        Option(id: "looks", title: "Makeup & hair looks", symbol: "sparkles"),
-        Option(id: "aesthetic", title: "Aesthetic edits", symbol: "heart.fill"),
-        Option(id: "besties", title: "Bestie pics", symbol: "person.2.fill"),
-        Option(id: "art", title: "Dreamy AI art", symbol: "paintpalette.fill"),
-        Option(id: "social", title: "Content for my socials", symbol: "heart.text.square.fill"),
-        Option(id: "memories", title: "Restore family photos", symbol: "clock.arrow.circlepath"),
-        Option(id: "business", title: "Shots for my shop", symbol: "bag.fill"),
+        Option(id: "selfies", title: String(localized: "Selfie glow-ups"), symbol: "camera.fill"),
+        Option(id: "looks", title: String(localized: "Makeup & hair looks"), symbol: "sparkles"),
+        Option(id: "aesthetic", title: String(localized: "Aesthetic edits"), symbol: "heart.fill"),
+        Option(id: "besties", title: String(localized: "Bestie pics"), symbol: "person.2.fill"),
+        Option(id: "art", title: String(localized: "Dreamy AI art"), symbol: "paintpalette.fill"),
+        Option(id: "social", title: String(localized: "Content for my socials"), symbol: "heart.text.square.fill"),
+        Option(id: "memories", title: String(localized: "Restore family photos"), symbol: "clock.arrow.circlepath"),
+        Option(id: "business", title: String(localized: "Shots for my shop"), symbol: "bag.fill"),
     ]
 
     var body: some View {

@@ -58,9 +58,9 @@ struct CreditPill: View {
 }
 
 struct SectionHeader: View {
-    let title: String
-    var subtitle: String?
-    var actionTitle: String?
+    let title: LocalizedStringKey
+    var subtitle: LocalizedStringKey?
+    var actionTitle: LocalizedStringKey?
     var action: (() -> Void)?
 
     var body: some View {

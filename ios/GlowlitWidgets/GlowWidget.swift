@@ -93,7 +93,7 @@ struct GlowWidgetView: View {
             VStack(alignment: .leading, spacing: 2) {
                 Text(entry.latestImage == nil ? "Make your first" : "Your latest")
                     .font(.system(size: 12, weight: .semibold, design: .rounded))
-                Text(entry.latestImage == nil ? "glow ✨" : (snapshot.latestTitle ?? "creation"))
+                (entry.latestImage == nil ? Text("glow ✨") : Text(L10n.core(snapshot.latestTitle ?? String(localized: "creation"))))
                     .font(entry.latestImage == nil ? .widgetAccent(20) : .widgetTitle(15))
                     .lineLimit(2)
             }
@@ -137,8 +137,8 @@ struct GlowWidgetView: View {
                 Spacer(minLength: 0)
                 HStack(spacing: 8) {
                     action("wand.and.stars", "Magic", .magicEdit)
-                    action("sparkles", "Create", .create)
-                    action("scissors", "Cut out", .removeBackground)
+                    action("camera.filters", "Effects", .effects)
+                    action("video.fill", "Video", .video)
                 }
             }
             Spacer(minLength: 0)
@@ -163,7 +163,7 @@ struct GlowWidgetView: View {
         }
     }
 
-    private func action(_ symbol: String, _ title: String, _ link: GlowDeepLink) -> some View {
+    private func action(_ symbol: String, _ title: LocalizedStringKey, _ link: GlowDeepLink) -> some View {
         Link(destination: link.url) {
             VStack(spacing: 4) {
                 Image(systemName: symbol)

@@ -24,6 +24,8 @@ struct EditorLaunch: Identifiable {
     var prompt: String?
     /// An already-applied result to show in compare mode (screenshots).
     var previewResult: UIImage?
+    /// An effect to preview right away (screenshots).
+    var previewEffect: RetroEffect?
 }
 
 struct ConsentRequest: Identifiable {
@@ -39,9 +41,9 @@ enum AppearancePreference: String, CaseIterable, Identifiable {
 
     var title: String {
         switch self {
-        case .light: return "Light"
-        case .dark: return "Dark"
-        case .system: return "Automatic"
+        case .light: return String(localized: "Light")
+        case .dark: return String(localized: "Dark")
+        case .system: return String(localized: "Automatic")
         }
     }
 
@@ -193,6 +195,8 @@ final class AppModel {
     /// Called once from the root view's `.task`.
     func start() async {
         liveActivity.endLeftovers()
+        // Subscription analytics (observer mode), keyed to our account id.
+        RevenueCatBridge.configure(apiKey: config.revenueCatAPIKey, appUserID: await remote?.currentUserID()?.uuidString)
         await refreshAccount()
         watchAppleCredentialRevocation()
         await purchases.refreshEntitlements()
@@ -302,6 +306,7 @@ final class AppModel {
         }
         Keychain.save(credential.user, key: Keys.appleUserID)
         await refreshAccount()
+        if let userID = await remote.currentUserID() { await RevenueCatBridge.identify(userID.uuidString) }
         await purchases.refreshEntitlements()
         credits.refresh(isPro: purchases.isPro)
         await refreshServerBalance()
@@ -317,6 +322,7 @@ final class AppModel {
         Keychain.delete(key: Keys.appleUserID)
         isSignedIn = false
         accountEmail = nil
+        if let userID = await remote?.currentUserID() { await RevenueCatBridge.identify(userID.uuidString) }
         await refreshServerBalance()
         syncWidgets()
         if !quietly { showToast("Signed out. Sign in again anytime in Settings.", style: .info) }
@@ -617,7 +623,7 @@ final class AppModel {
     func handlePickedVideo(_ item: PhotosPickerItem) async {
         do {
             guard let file = try await item.loadTransferable(type: VideoFile.self) else {
-                throw AIServiceError.invalidRequest("Couldn't open that video.")
+                throw AIServiceError.invalidRequest(String(localized: "Couldn't open that video."))
             }
             // Let the picker finish dismissing first, so the editor is laid out
             // inside the screen's safe area.
@@ -633,7 +639,7 @@ final class AppModel {
         pendingEditorRequest = nil
         do {
             guard let data = try await item.loadTransferable(type: Data.self) else {
-                throw AIServiceError.invalidRequest("Couldn't open that photo.")
+                throw AIServiceError.invalidRequest(String(localized: "Couldn't open that photo."))
             }
             // RAW (ProRAW, DNG) is developed with Auto, since it looks flat out of the camera.
             let isRAW = AutoDevelop.isRAW(data)
@@ -644,7 +650,7 @@ final class AppModel {
                 guard let image = UIImage(data: data) else { return nil }
                 return ImageUtilities.normalized(image)
             }.value
-            guard let image else { throw AIServiceError.invalidRequest("That file isn't a supported photo.") }
+            guard let image else { throw AIServiceError.invalidRequest(String(localized: "That file isn't a supported photo.")) }
             editorLaunch = EditorLaunch(image: image, tool: request.tool, template: request.template)
             if isRAW {
                 showToast("RAW photo developed with the best settings ✨", style: .success)
@@ -671,6 +677,12 @@ final class AppModel {
             startEditing(tool: .styles, template: TemplateCatalog.template(id: id))
         case .create:
             selectedTab = .create
+        case .effects:
+            selectedTab = .edit
+            startEditing(tool: .effects)
+        case .video:
+            selectedTab = .edit
+            isVideoPickerPresented = true
         case .library:
             selectedTab = .library
         }
@@ -684,7 +696,12 @@ final class AppModel {
 
     // MARK: Feedback
 
-    func showToast(_ text: String, style: ToastMessage.Style = .info) {
+    func showToast(_ text: LocalizedStringResource, style: ToastMessage.Style = .info) {
+        toast = ToastMessage(text: String(localized: text), style: style)
+    }
+
+    /// For text that's already localized (or comes from the server).
+    func showToast(verbatim text: String, style: ToastMessage.Style = .info) {
         toast = ToastMessage(text: text, style: style)
     }
 
@@ -713,9 +730,36 @@ final class AppModel {
             consentRequest = ConsentRequest { [weak self] in self?.setAIConsent(true) }
             return
         }
-        let message = (error as? LocalizedError)?.errorDescription ?? "Something went wrong. Please try again."
-        showToast(message, style: .error)
+        showToast(verbatim: Self.localizedMessage(for: error), style: .error)
     }
+
+    /// The user's language for any error: known server codes get their own
+    /// sentence, AppCore's English messages are looked up in the catalog.
+    static func localizedMessage(for error: Error) -> String {
+        if case AIServiceError.server(let code, let message) = error {
+            return serverMessages[code] ?? L10n.core(message)
+        }
+        if let text = (error as? LocalizedError)?.errorDescription {
+            return L10n.core(text)
+        }
+        return String(localized: "Something went wrong. Please try again.")
+    }
+
+    private static let serverMessages: [String: String] = [
+        "provider_unavailable": String(localized: "The AI service is busy. Your credit was refunded."),
+        "provider_busy": String(localized: "The AI service is busy. Your credit was refunded. Please try again in a minute."),
+        "provider_failed": String(localized: "This creation failed. Your credit was refunded."),
+        "job_failed": String(localized: "This creation failed. Your credit was refunded."),
+        "empty_result": String(localized: "The AI returned no image. Your credit was refunded."),
+        "timeout": String(localized: "This took too long. Your credit was refunded."),
+        "rate_limited": String(localized: "Too many requests. Please wait a moment."),
+        "pro_required": String(localized: "This is part of Pro."),
+        "retry_unavailable": String(localized: "This result can't be retried for free anymore."),
+        "too_large": String(localized: "That photo is too large. Try a smaller one."),
+        "content_blocked": String(localized: "This was blocked by our safety filters. Your credit was refunded."),
+        "misconfigured": String(localized: "AI features aren't configured yet."),
+        "internal": String(localized: "Something went wrong. Please try again."),
+    ]
 }
 
 #if DEBUG
@@ -728,6 +772,9 @@ extension AppModel {
         switch scene {
         case .onboarding, .home, .settings, .legal, .invite, .tour:
             selectedTab = .home
+        case .effects:
+            selectedTab = .home
+            editorLaunch = EditorLaunch(image: ScreenshotFixtures.goldenLandscape, tool: .effects, previewEffect: .vhs)
         case .create, .results:
             selectedTab = .create
         case .edit:
@@ -737,7 +784,7 @@ extension AppModel {
             seedScreenshotLibrary()
         case .editor:
             selectedTab = .home
-            editorLaunch = EditorLaunch(image: ScreenshotFixtures.overcastLandscape, tool: .magicEdit, prompt: "Golden hour light")
+            editorLaunch = EditorLaunch(image: ScreenshotFixtures.overcastLandscape, tool: .magicEdit, prompt: String(localized: "Golden hour light"))
         case .result:
             selectedTab = .home
             editorLaunch = EditorLaunch(
@@ -772,7 +819,7 @@ extension AppModel {
             context.insert(Creation(
                 createdAt: Date().addingTimeInterval(TimeInterval(-index * 3600)),
                 operation: index == 0 ? .magicEdit : .textToImage,
-                title: index == 0 ? "Golden hour light" : ScreenshotFixtures.createPrompt,
+                title: index == 0 ? String(localized: "Golden hour light") : ScreenshotFixtures.createPrompt,
                 prompt: nil,
                 imageFileName: name,
                 pixelWidth: size.width,

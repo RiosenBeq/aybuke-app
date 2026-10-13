@@ -37,9 +37,9 @@ struct BeforeAfterSlider: View {
                     .position(x: width * position, y: proxy.size.height / 2)
 
                 HStack {
-                    tag("Before")
+                    tag(String(localized: "Before"))
                     Spacer()
-                    tag("After")
+                    tag(String(localized: "After"))
                 }
                 .padding(10)
                 .frame(maxHeight: .infinity, alignment: .top)

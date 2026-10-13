@@ -73,7 +73,7 @@ extension ButtonStyle where Self == IconButtonStyle {
 
 /// Label for a primary action that costs credits, e.g. "Generate · 1 ⚡︎".
 struct CostLabel: View {
-    let title: String
+    let title: LocalizedStringKey
     let cost: Int
     var isLoading = false
 

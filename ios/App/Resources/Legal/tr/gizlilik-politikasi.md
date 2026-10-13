@@ -103,6 +103,8 @@ Satın alımları doğrulamak için Apple tarafından imzalanmış işlem verile
 
 Abonelikler için bir hak kaydı tutarız: Apple orijinal işlem kimliği, ürün kimliği, bitiş tarihi, iptal/iade işareti ve ortam; bunlar anonim kullanıcı kimliğinize bağlıdır.
 
+Aboneliklerimizin nasıl gittiğini (deneme süreleri, yenilemeler, iptaller, iadeler) anlamak için uygulama aynı satın alma kayıtlarını, anonim kullanıcı kimliğiniz ve temel cihaz ve uygulama bilgileriyle (uygulama sürümü, iOS sürümü, ülke ve dil) birlikte abonelik analizi sağlayıcımız RevenueCat ile de paylaşır. RevenueCat fotoğraflarınızı, istemlerinizi veya sonuçlarınızı asla almaz.
+
 ### Bildirimler (raporlar)
 
 "Bu görseli bildir" özelliğini kullanırsanız, seçtiğiniz nedeni, eklemeyi seçtiğiniz ayrıntıları, ilgili iş kimliğini, anonim kullanıcı kimliğinizi ve zaman bilgilerini alırız.
@@ -193,6 +195,7 @@ Aşağıdaki şirketler kişisel verileri bizim adımıza işler. Bu listeyi gü
 - **xAI (X.AI LLC ve bağlı şirketleri)** (ABD): yapay zekâ çıkarımı; yani bulut yapay zekâ özellikleri için Grok Imagine modellerini çalıştırır ve sonuçlarını kendi denetimiyle (moderasyon) kontrol eder. Veriler: istek süresince fotoğraflar, maskeler, istemler ve sonuçlar. Sıfır Veri Saklama açıktır: istekler ve sonuçlar 1 saat içinde silinir ve hiçbiri model eğitiminde kullanılmaz.
 - **Features & Labels, Inc. (fal.ai)** (ABD): kullandığımız durumlarda otomatik çıktı güvenlik kontrolü ve alternatif yapay zekâ sağlayıcısı. Veriler: istek süresince sonuçlar (işleri fal.ai'a yönlendirirsek fotoğraflar, maskeler ve istemler de). İstek geçmişi kapalıdır; sonuçlar 1 saat içinde silinir.
 - **fal.ai'ın çalıştırdığı modellerin geliştiricileri**, örneğin Gemini görsel modelleri için **Google LLC** (ABD): fal.ai bir modeli çalıştırmak için geliştiricinin kendi hizmetini kullandığında, o geliştirici isteğin girdilerini ve sonuçlarını fal.ai adına işler.
+- **RevenueCat, Inc.** (ABD): abonelik analizi. Veriler: anonim kullanıcı kimliği, satın alma ve abonelik kayıtları (ürün, fiyat, tarihler, durum, işlem kimlikleri) ile temel cihaz ve uygulama bilgileri. Fotoğraf, istem veya sonuç içermez.
 - **Google LLC** (ABD), Gemini API: alternatif yapay zekâ sağlayıcısı; yalnızca işleri doğrudan Google'a yönlendirirsek kullanılır.
 - **OpenAI** (ABD), Images API: alternatif yapay zekâ sağlayıcısı; yalnızca işleri doğrudan OpenAI'a yönlendirirsek kullanılır.
 - **E-posta hizmet sağlayıcımız**: bize gönderdiğiniz e-postaları alır ve saklar.

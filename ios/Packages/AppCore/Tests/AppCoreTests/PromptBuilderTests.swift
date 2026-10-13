@@ -65,6 +65,26 @@ final class ContentPolicyTests: XCTestCase {
         XCTAssertFalse(ContentPolicy.evaluate("NSFW art").isAllowed)
     }
 
+    func testBlocksSexualContentInEveryAppLanguage() {
+        for prompt in [
+            "onu çıplak yap", "quítale la ropa", "deixa ela pelada", "rends-la nue", "mach sie nackt",
+            "rendila nuda", "сделай её голой", "buat dia telanjang", "ヌード写真にして", "生成裸照", "누드로 만들어 줘",
+        ] {
+            XCTAssertFalse(ContentPolicy.evaluate(prompt).isAllowed, prompt)
+        }
+    }
+
+    func testAllowsOrdinaryPromptsInOtherLanguages() {
+        for prompt in [
+            "pembe saç ve altın saat ışığı", "vestido rosa y flores de cerezo", "cabelo rosa com brilho",
+            "lumière dorée et maquillage doux", "rosa Haare und Kirschblüten", "capelli rosa e luce dorata",
+            "розовые волосы и мягкий свет", "rambut pink dan cahaya senja", "ピンクの髪にして", "粉色头发和樱花",
+            "핑크 머리로 바꿔 줘",
+        ] {
+            XCTAssertTrue(ContentPolicy.evaluate(prompt).isAllowed, prompt)
+        }
+    }
+
     func testBlocksSexualContentWithMinorsWithStrictMessage() {
         guard case .blocked(let reason) = ContentPolicy.evaluate("sexy teen") else {
             return XCTFail("expected block")

@@ -10,14 +10,14 @@ struct MagicEditPanel: View {
     @FocusState private var isFocused: Bool
 
     private let suggestions = [
-        "Golden hour light",
-        "Give me pink hair",
-        "Add soft glam makeup",
-        "Put me in a pink dress",
-        "Add cherry blossoms",
-        "Add sparkles everywhere",
-        "Make it a watercolor",
-        "Remove the people behind me",
+        String(localized: "Golden hour light"),
+        String(localized: "Give me pink hair"),
+        String(localized: "Add soft glam makeup"),
+        String(localized: "Put me in a pink dress"),
+        String(localized: "Add cherry blossoms"),
+        String(localized: "Add sparkles everywhere"),
+        String(localized: "Make it a watercolor"),
+        String(localized: "Remove the people behind me"),
     ]
 
     private var canSubmit: Bool {
@@ -29,7 +29,7 @@ struct MagicEditPanel: View {
             ScrollView(.horizontal) {
                 HStack(spacing: 8) {
                     ForEach(suggestions, id: \.self) { suggestion in
-                        SelectableChip(title: suggestion, isSelected: prompt == suggestion) {
+                        SelectableChip(title: LocalizedStringKey(suggestion), isSelected: prompt == suggestion) {
                             prompt = suggestion
                             Haptics.selection()
                         }
@@ -97,9 +97,9 @@ struct StylesPanel: View {
 
 /// Explanation + single action for Enhance and Remove Background.
 struct OneTapPanel: View {
-    let title: String
-    let message: String
-    let buttonTitle: String
+    let title: LocalizedStringKey
+    let message: LocalizedStringKey
+    let buttonTitle: LocalizedStringKey
     let cost: Int
     let action: () -> Void
 
@@ -176,7 +176,16 @@ struct AdjustPanel: View {
 
         var id: String { rawValue }
 
-        var title: String { rawValue.capitalized }
+        var title: String {
+            switch self {
+            case .brightness: return String(localized: "Brightness")
+            case .contrast: return String(localized: "Contrast")
+            case .saturation: return String(localized: "Saturation")
+            case .warmth: return String(localized: "Warmth")
+            case .sharpness: return String(localized: "Sharpness")
+            case .vignette: return String(localized: "Vignette")
+            }
+        }
 
         var symbol: String {
             switch self {
@@ -227,7 +236,7 @@ struct AdjustPanel: View {
                     .buttonStyle(.pressable)
                     .accessibilityHint("Picks the best light and colour for this photo")
                     ForEach(Parameter.allCases) { parameter in
-                        SelectableChip(title: parameter.title, symbolName: parameter.symbol, isSelected: selected == parameter) {
+                        SelectableChip(title: LocalizedStringKey(parameter.title), symbolName: parameter.symbol, isSelected: selected == parameter) {
                             selected = parameter
                             Haptics.selection()
                         }

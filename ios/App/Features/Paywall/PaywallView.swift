@@ -14,7 +14,7 @@ struct PaywallView: View {
     @State private var trialEligible = false
     @State private var monthlyIntroEligible = false
     @State private var errorMessage: String?
-    @State private var errorTitle = "Purchase failed"
+    @State private var errorTitle = String(localized: "Purchase failed")
     @State private var showPacks = false
     @State private var legalDocument: LegalDocument?
     @State private var showSignIn = false
@@ -133,8 +133,8 @@ struct PaywallView: View {
     private var benefits: some View {
         VStack(alignment: .leading, spacing: 14) {
             Benefit(symbol: "bolt.fill", title: "\(app.credits.policy.proMonthlyAllowance) credits every month", detail: "Unused credits roll over to next month")
-            Benefit(symbol: "sparkles", title: "Every trend & style, first", detail: "New templates within 48 hours of a trend")
-            Benefit(symbol: "photo.badge.checkmark", title: "HD exports, no watermark", detail: "Up to 4 images at once")
+            Benefit(symbol: "sparkles", title: "Every trend & style, first", detail: "Fresh looks added regularly")
+            Benefit(symbol: "photo.badge.checkmark", title: "Our best-quality AI, no watermark", detail: "Up to 4 images at once")
             Benefit(symbol: "arrow.uturn.backward.circle", title: "Failed edits are always refunded", detail: "Plus a free retry if it doesn't look like you")
         }
         .padding(18)
@@ -162,9 +162,11 @@ struct PaywallView: View {
                 ) { selectedID = monthly.id }
             }
             if isScreenshotPreview {
-                PlanCard(title: "Yearly", price: "$39.99 / year", detail: "7 days free, then $39.99/year · just $3.33/month",
+                PlanCard(title: "Yearly", price: "$39.99 / year",
+                         detail: String(localized: "7 days free, then $39.99/year · just $3.33/month"),
                          badge: "BEST VALUE", isSelected: true) {}
-                PlanCard(title: "Monthly", price: "$5.99 / month", detail: "First month $1.99 · cancel anytime", badge: "TRY IT", isSelected: false) {}
+                PlanCard(title: "Monthly", price: "$5.99 / month", detail: String(localized: "First month $1.99 · cancel anytime"),
+                         badge: "TRY IT", isSelected: false) {}
             }
             if !purchases.products.isEmpty || isScreenshotPreview {
                 Label("About half what most AI photo apps charge. No weekly plans, ever.", systemImage: "heart.fill")
@@ -189,19 +191,19 @@ struct PaywallView: View {
     private func yearlyDetail(_ product: Product) -> String {
         var parts: [String] = []
         if trialEligible, let days = product.freeTrialDays {
-            parts.append("\(days) days free, then \(product.displayPrice)/year")
+            parts.append(String(localized: "\(days) days free, then \(product.displayPrice)/year"))
         }
         if let monthly = product.monthlyEquivalentPrice {
-            parts.append("just \(monthly)/month")
+            parts.append(String(localized: "just \(monthly)/month"))
         }
         return parts.joined(separator: " · ")
     }
 
     private func monthlyDetail(_ product: Product) -> String {
         if monthlyIntroEligible, let intro = product.introOfferText {
-            return "\(intro), then \(product.displayPrice)/month · cancel anytime"
+            return String(localized: "\(intro), then \(product.displayPrice)/month · cancel anytime")
         }
-        return "Cancel anytime"
+        return String(localized: "Cancel anytime")
     }
 
     private var purchaseButton: some View {
@@ -219,16 +221,20 @@ struct PaywallView: View {
     }
 
     private var ctaTitle: String {
-        if isScreenshotPreview { return "Start my 7-day free trial" }
-        guard let product = selectedProduct else { return "Continue" }
+        if isScreenshotPreview { return String(localized: "Start my 7-day free trial") }
+        guard let product = selectedProduct else { return String(localized: "Continue") }
         if showsTrial, let days = product.freeTrialDays {
-            return "Start my \(days)-day free trial"
+            return String(localized: "Start my \(days)-day free trial")
         }
         if product.id == StoreProducts.monthly, monthlyIntroEligible, let intro = product.subscription?.introductoryOffer,
            intro.paymentMode != .freeTrial {
-            return "Start for \(intro.displayPrice)"
+            return String(localized: "Start for \(intro.displayPrice)")
         }
-        return "Continue — \(product.displayPrice)/\(product.periodLabel)"
+        switch product.periodLabel {
+        case "year": return String(localized: "Continue — \(product.displayPrice)/year")
+        case "week": return String(localized: "Continue — \(product.displayPrice)/week")
+        default: return String(localized: "Continue — \(product.displayPrice)/month")
+        }
     }
 
     private var packsLink: some View {
@@ -281,8 +287,8 @@ struct PaywallView: View {
                             app.credits.refresh(isPro: true)
                             dismiss()
                         } else {
-                            errorTitle = "Nothing to restore"
-                            errorMessage = "No active subscription found for this Apple Account."
+                            errorTitle = String(localized: "Nothing to restore")
+                            errorMessage = String(localized: "No active subscription found for this Apple Account.")
                         }
                     }
                 }
@@ -320,8 +326,8 @@ struct PaywallView: View {
             dismiss()
             app.offerAccountAfterPurchase()
         } catch {
-            errorTitle = "Purchase failed"
-            errorMessage = error.localizedDescription
+            errorTitle = String(localized: "Purchase failed")
+            errorMessage = AppModel.localizedMessage(for: error)
         }
     }
 }
@@ -330,8 +336,8 @@ struct PaywallView: View {
 
 private struct Benefit: View {
     let symbol: String
-    let title: String
-    let detail: String
+    let title: LocalizedStringKey
+    let detail: LocalizedStringKey
 
     var body: some View {
         HStack(alignment: .top, spacing: 12) {
@@ -353,10 +359,11 @@ private struct Benefit: View {
 }
 
 private struct PlanCard: View {
-    let title: String
-    let price: String
+    let title: LocalizedStringKey
+    let price: LocalizedStringKey
+    /// Already localized.
     let detail: String
-    let badge: String?
+    let badge: LocalizedStringKey?
     let isSelected: Bool
     let action: () -> Void
 
@@ -435,8 +442,8 @@ private struct TrialTimeline: View {
 
     private struct Step: View {
         let symbol: String
-        let title: String
-        let detail: String
+        let title: LocalizedStringKey
+        let detail: LocalizedStringKey
         let isLast: Bool
 
         var body: some View {

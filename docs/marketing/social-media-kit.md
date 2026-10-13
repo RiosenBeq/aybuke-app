@@ -18,7 +18,7 @@ Everything you need to launch and run Glowlit's social channels, in English and 
 **Three pillars**
 
 1. **Say it, see it** (Magic Edit): the magic of typing "give me pink hair" and watching it happen.
-2. **Trends first** (one-tap looks): Doll Box, Y2K Digicam, Ballet Core, Fairy Princess. New trends ship within 48 hours.
+2. **Trends first** (one-tap looks): Doll Box, Y2K Digicam, Ballet Core, Fairy Princess. Fresh looks added regularly.
 3. **Glow safely** (privacy and fair pricing): consent before cloud AI, never used to train AI, no weekly plan, failed edits refunded.
 
 **Voice: do**

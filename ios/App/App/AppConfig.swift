@@ -32,6 +32,8 @@ struct AppConfig: Decodable {
     var instagramAppID: String
     /// Hashtags suggested in share captions.
     var shareHashtags: [String]
+    /// RevenueCat public SDK key ("appl_…"; safe to ship). Empty: RevenueCat off.
+    var revenueCatAPIKey: String
 
     static let current: AppConfig = load()
 
@@ -50,7 +52,7 @@ struct AppConfig: Decodable {
         backendBaseURL: "",
         supabaseAnonKey: "",
         forceDemoMode: true,
-        aiProviderName: "our AI processing partners",
+        aiProviderName: String(localized: "our AI processing partners"),
         dataRetentionHours: 1,
         privacyPolicyURL: URL(string: "https://github.com/RiosenBeq/furkan/blob/main/docs/legal/en/privacy-policy.md")!,
         termsURL: URL(string: "https://github.com/RiosenBeq/furkan/blob/main/docs/legal/en/terms-of-use.md")!,
@@ -58,18 +60,20 @@ struct AppConfig: Decodable {
         appStoreID: "",
         websiteURL: "",
         instagramAppID: "",
-        shareHashtags: ["Glowlit", "AIphoto", "MadeWithAI"]
+        shareHashtags: ["Glowlit", "AIphoto", "MadeWithAI"],
+        revenueCatAPIKey: ""
     )
 
     private enum CodingKeys: String, CodingKey {
         case backendBaseURL, supabaseAnonKey, forceDemoMode, aiProviderName, dataRetentionHours
         case privacyPolicyURL, termsURL, supportEmail, appStoreID, websiteURL, instagramAppID, shareHashtags
+        case revenueCatAPIKey
     }
 
     init(
         backendBaseURL: String, supabaseAnonKey: String, forceDemoMode: Bool, aiProviderName: String,
         dataRetentionHours: Int, privacyPolicyURL: URL, termsURL: URL, supportEmail: String, appStoreID: String,
-        websiteURL: String, instagramAppID: String, shareHashtags: [String]
+        websiteURL: String, instagramAppID: String, shareHashtags: [String], revenueCatAPIKey: String = ""
     ) {
         self.backendBaseURL = backendBaseURL
         self.supabaseAnonKey = supabaseAnonKey
@@ -83,6 +87,7 @@ struct AppConfig: Decodable {
         self.websiteURL = websiteURL
         self.instagramAppID = instagramAppID
         self.shareHashtags = shareHashtags
+        self.revenueCatAPIKey = revenueCatAPIKey
     }
 
     /// Keys added after 1.0 are optional so older config files keep working.
@@ -101,6 +106,7 @@ struct AppConfig: Decodable {
         websiteURL = try container.decodeIfPresent(String.self, forKey: .websiteURL) ?? ""
         instagramAppID = try container.decodeIfPresent(String.self, forKey: .instagramAppID) ?? ""
         shareHashtags = try container.decodeIfPresent([String].self, forKey: .shareHashtags) ?? fallback.shareHashtags
+        revenueCatAPIKey = try container.decodeIfPresent(String.self, forKey: .revenueCatAPIKey) ?? ""
     }
 
     var backend: BackendConfiguration? {
@@ -145,7 +151,7 @@ struct AppConfig: Decodable {
 
     /// "an hour" or "N hours", matching the privacy policy's 1-hour promise.
     var retentionPhrase: String {
-        dataRetentionHours <= 1 ? "an hour" : "\(dataRetentionHours) hours"
+        dataRetentionHours <= 1 ? String(localized: "an hour") : String(localized: "\(dataRetentionHours) hours")
     }
 
     /// Who processes photos, as named on the consent screen and in Settings.

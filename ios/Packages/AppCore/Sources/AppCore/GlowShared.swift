@@ -8,11 +8,14 @@ import ActivityKit
 
 // MARK: - Deep links
 
-/// `glowlit://…` links opened from widgets and Live Activities.
+/// `glowlit://…` links opened from widgets, Control Center controls and
+/// Live Activities.
 public enum GlowDeepLink: Equatable, Sendable {
     case magicEdit
     case create
     case removeBackground
+    case effects
+    case video
     case template(String)
     case library
 
@@ -23,6 +26,8 @@ public enum GlowDeepLink: Equatable, Sendable {
         case .magicEdit: return URL(string: "\(Self.scheme)://edit/magic")!
         case .create: return URL(string: "\(Self.scheme)://create")!
         case .removeBackground: return URL(string: "\(Self.scheme)://edit/remove-background")!
+        case .effects: return URL(string: "\(Self.scheme)://edit/effects")!
+        case .video: return URL(string: "\(Self.scheme)://video")!
         case .template(let id): return URL(string: "\(Self.scheme)://template/\(id)")!
         case .library: return URL(string: "\(Self.scheme)://library")!
         }
@@ -34,6 +39,8 @@ public enum GlowDeepLink: Equatable, Sendable {
         switch (host, path.first) {
         case ("edit", "magic"?): self = .magicEdit
         case ("edit", "remove-background"?): self = .removeBackground
+        case ("edit", "effects"?): self = .effects
+        case ("video", nil): self = .video
         case ("create", nil): self = .create
         case ("library", nil): self = .library
         case ("template", let id?) where TemplateCatalog.template(id: id) != nil: self = .template(id)

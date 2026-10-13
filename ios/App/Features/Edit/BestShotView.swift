@@ -142,7 +142,7 @@ struct BestShotView: View {
                 }
             }
             if noFace > 0 {
-                Text("\(noFace) photo\(noFace == 1 ? "" : "s") without a clear face \(noFace == 1 ? "was" : "were") left out.")
+                Text(noFace == 1 ? "1 photo without a clear face was left out." : "\(noFace) photos without a clear face were left out.")
                     .font(.footnote)
                     .foregroundStyle(Palette.textTertiary)
             }

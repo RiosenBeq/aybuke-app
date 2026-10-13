@@ -21,6 +21,7 @@ struct SettingsView: View {
                 creditsSection
                 notificationsSection
                 appearanceSection
+                languageSection
                 privacySection
                 shareSection
                 aboutSection
@@ -117,7 +118,7 @@ struct SettingsView: View {
                 Label {
                     VStack(alignment: .leading, spacing: 2) {
                         Text("Signed in with Apple")
-                        Text(app.accountEmail ?? "Email hidden")
+                        Text(app.accountEmail ?? String(localized: "Email hidden"))
                             .font(.caption)
                             .foregroundStyle(Palette.textSecondary)
                     }
@@ -186,7 +187,7 @@ struct SettingsView: View {
         .task { await app.notifier.refreshAuthorization() }
     }
 
-    private func notificationToggle(_ kind: GlowNotificationKind, title: String, detail: String) -> some View {
+    private func notificationToggle(_ kind: GlowNotificationKind, title: LocalizedStringKey, detail: LocalizedStringKey) -> some View {
         Toggle(isOn: Binding(
             get: { app.notifier.preferences.isOn(kind) && app.notifier.isAllowedBySystem },
             set: { on in
@@ -224,6 +225,36 @@ struct SettingsView: View {
             Text("Light is our signature pink look. Automatic follows your iPhone.")
         }
         .listRowBackground(Palette.surface)
+    }
+
+    /// iOS keeps a language per app: this opens Glowlit's page in Settings,
+    /// where "Language" lists every language the app speaks.
+    private var languageSection: some View {
+        Section {
+            Button {
+                if let url = URL(string: UIApplication.openSettingsURLString) { openURL(url) }
+            } label: {
+                HStack {
+                    Label("Language", systemImage: "globe")
+                        .foregroundStyle(Palette.textPrimary)
+                    Spacer()
+                    Text(currentLanguage)
+                        .foregroundStyle(Palette.textSecondary)
+                    Image(systemName: "arrow.up.forward")
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(Palette.textTertiary)
+                }
+            }
+        } footer: {
+            Text("Glowlit follows your iPhone's language. To pick another one, tap Language, then choose it in iOS Settings.")
+        }
+        .listRowBackground(Palette.surface)
+    }
+
+    private var currentLanguage: String {
+        let code = Bundle.main.preferredLocalizations.first ?? "en"
+        let name = Locale.current.localizedString(forIdentifier: code) ?? code
+        return name.prefix(1).uppercased() + name.dropFirst()
     }
 
     private var privacySection: some View {
@@ -324,7 +355,7 @@ struct AcknowledgementsView: View {
     private var fontLicense: String {
         guard let url = Bundle.main.url(forResource: "Poppins-OFL", withExtension: "txt"),
               let text = try? String(contentsOf: url, encoding: .utf8) else {
-            return "Poppins is licensed under the SIL Open Font License 1.1."
+            return String(localized: "Poppins is licensed under the SIL Open Font License 1.1.")
         }
         return text
     }

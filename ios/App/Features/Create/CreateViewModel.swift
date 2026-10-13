@@ -21,7 +21,7 @@ final class CreateViewModel {
     }
 
     func surpriseMe() {
-        prompt = PromptBuilder.surprisePrompt()
+        prompt = L10n.core(PromptBuilder.surprisePrompt())
         Haptics.selection()
     }
 
@@ -35,7 +35,7 @@ final class CreateViewModel {
     func generate(app: AppModel) {
         let verdict = ContentPolicy.evaluate(prompt)
         if case .blocked(let reason) = verdict {
-            app.showToast(reason, style: .error)
+            app.showToast(verbatim: L10n.core(reason), style: .error)
             Haptics.error()
             return
         }

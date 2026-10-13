@@ -14,10 +14,10 @@ enum LikenessResult: Equatable {
 
     var message: String {
         switch self {
-        case .stillYou: return "Still you"
-        case .skinLighter: return "Your skin tone looks lighter than in your photo."
-        case .skinDarker: return "Your skin tone looks darker than in your photo."
-        case .faceShapeChanged: return "Your face shape looks different from your photo."
+        case .stillYou: return String(localized: "Still you")
+        case .skinLighter: return String(localized: "Your skin tone looks lighter than in your photo.")
+        case .skinDarker: return String(localized: "Your skin tone looks darker than in your photo.")
+        case .faceShapeChanged: return String(localized: "Your face shape looks different from your photo.")
         }
     }
 }

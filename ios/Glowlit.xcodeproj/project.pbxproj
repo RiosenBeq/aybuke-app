@@ -7,9 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		6A1B2C3D4E5F600000000101 /* AppCore in Frameworks */ = {isa = PBXBuildFile; productRef = 6A1B2C3D4E5F600000000301 /* AppCore */; };
 		6A1B2C3D4E5F6000000000A1 /* AppCore in Frameworks */ = {isa = PBXBuildFile; productRef = 6A1B2C3D4E5F6000000000A2 /* AppCore */; };
 		6A1B2C3D4E5F6000000000A3 /* GlowlitWidgetsExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 6A1B2C3D4E5F6000000000A4 /* GlowlitWidgetsExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		6A1B2C3D4E5F600000000101 /* AppCore in Frameworks */ = {isa = PBXBuildFile; productRef = 6A1B2C3D4E5F600000000301 /* AppCore */; };
+		6A1B2C3D4E5F600000000102 /* RevenueCat in Frameworks */ = {isa = PBXBuildFile; productRef = 6A1B2C3D4E5F600000000302 /* RevenueCat */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -79,6 +80,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6A1B2C3D4E5F600000000101 /* AppCore in Frameworks */,
+				6A1B2C3D4E5F600000000102 /* RevenueCat in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -103,6 +105,15 @@
 			);
 			sourceTree = "<group>";
 		};
+		6A1B2C3D4E5F600000000021 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				6A1B2C3D4E5F600000000001 /* Glowlit.app */,
+				6A1B2C3D4E5F6000000000A4 /* GlowlitWidgetsExtension.appex */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		6A1B2C3D4E5F600000000070 /* Config */ = {
 			isa = PBXGroup;
 			children = (
@@ -114,15 +125,6 @@
 				6A1B2C3D4E5F6000000000B2 /* GlowlitWidgets.entitlements */,
 			);
 			path = Config;
-			sourceTree = "<group>";
-		};
-		6A1B2C3D4E5F600000000021 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				6A1B2C3D4E5F600000000001 /* Glowlit.app */,
-				6A1B2C3D4E5F6000000000A4 /* GlowlitWidgetsExtension.appex */,
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -148,6 +150,7 @@
 			name = Glowlit;
 			packageProductDependencies = (
 				6A1B2C3D4E5F600000000301 /* AppCore */,
+				6A1B2C3D4E5F600000000302 /* RevenueCat */,
 			);
 			productName = Glowlit;
 			productReference = 6A1B2C3D4E5F600000000001 /* Glowlit.app */;
@@ -200,11 +203,23 @@
 			knownRegions = (
 				en,
 				Base,
+				tr,
+				es,
+				"pt-BR",
+				fr,
+				de,
+				it,
+				ru,
+				ja,
+				ko,
+				"zh-Hans",
+				id,
 			);
 			mainGroup = 6A1B2C3D4E5F600000000020;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				6A1B2C3D4E5F600000000201 /* XCLocalSwiftPackageReference "Packages/AppCore" */,
+				6A1B2C3D4E5F600000000202 /* XCRemoteSwiftPackageReference "purchases-ios-spm" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 6A1B2C3D4E5F600000000021 /* Products */;
@@ -385,26 +400,26 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Config/Glowlit.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = CBTKNY3LFC;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Config/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Glowlit;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.photography";
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Glowlit saves your creations to your photo library.";
+				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				CODE_SIGN_ENTITLEMENTS = Config/Glowlit.entitlements;
-				INFOPLIST_FILE = Config/Info.plist;
-				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.1.0;
+				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = app.glowlit.ios;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -423,26 +438,26 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Config/Glowlit.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = CBTKNY3LFC;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Config/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Glowlit;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.photography";
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Glowlit saves your creations to your photo library.";
+				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				CODE_SIGN_ENTITLEMENTS = Config/Glowlit.entitlements;
-				INFOPLIST_FILE = Config/Info.plist;
-				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.1.0;
+				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = app.glowlit.ios;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -463,7 +478,7 @@
 				CODE_SIGN_ENTITLEMENTS = Config/GlowlitWidgets.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = CBTKNY3LFC;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = GlowlitWidgets/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Glowlit;
@@ -474,7 +489,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 0.1.0;
+				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = app.glowlit.ios.widgets;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -494,7 +509,7 @@
 				CODE_SIGN_ENTITLEMENTS = Config/GlowlitWidgets.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = CBTKNY3LFC;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = GlowlitWidgets/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Glowlit;
@@ -505,7 +520,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 0.1.0;
+				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = app.glowlit.ios.widgets;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -556,16 +571,32 @@
 		};
 /* End XCLocalSwiftPackageReference section */
 
+/* Begin XCRemoteSwiftPackageReference section */
+		6A1B2C3D4E5F600000000202 /* XCRemoteSwiftPackageReference "purchases-ios-spm" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/RevenueCat/purchases-ios-spm";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.95.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
 /* Begin XCSwiftPackageProductDependency section */
+		6A1B2C3D4E5F6000000000A2 /* AppCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6A1B2C3D4E5F600000000201 /* XCLocalSwiftPackageReference "Packages/AppCore" */;
+			productName = AppCore;
+		};
 		6A1B2C3D4E5F600000000301 /* AppCore */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 6A1B2C3D4E5F600000000201 /* XCLocalSwiftPackageReference "Packages/AppCore" */;
 			productName = AppCore;
 		};
-		6A1B2C3D4E5F6000000000A2 /* AppCore */ = {
+		6A1B2C3D4E5F600000000302 /* RevenueCat */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 6A1B2C3D4E5F600000000201 /* XCLocalSwiftPackageReference "Packages/AppCore" */;
-			productName = AppCore;
+			package = 6A1B2C3D4E5F600000000202 /* XCRemoteSwiftPackageReference "purchases-ios-spm" */;
+			productName = RevenueCat;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

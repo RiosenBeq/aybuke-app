@@ -6,9 +6,13 @@
 <captures-dir> holds full-resolution simulator PNGs named after the app's
 screenshot scenes (home.png, result.png, share.png, …; see
 ios/App/App/ScreenshotScenes.swift and .github/workflows/screenshots.yml).
+Captures of the app in a given language go in <captures-dir>/<lang>/ and iPad
+captures in <captures-dir>/ipad/ (or ipad/<lang>/); the plain files are the
+fallback.
 
 Writes:
-  docs/marketing/app-store/{en,tr}/NN-<scene>.jpg   1290×2796 (6.9-inch iPhone)
+  docs/marketing/app-store/<lang>/NN-<scene>.jpg       1290×2796 (6.9-inch iPhone)
+  docs/marketing/app-store/<lang>/ipad/NN-<scene>.jpg  2064×2752 (13-inch iPad)
   docs/marketing/social/post-launch.png              1080×1350 feed post
   docs/marketing/social/story-launch.png             1080×1920 Story
   web/assets/og-image.png                            1200×630 link preview
@@ -130,20 +134,40 @@ def phone(screen: Image.Image, height: int) -> Image.Image:
     return canvas
 
 
-def store_screenshot(capture: Path, title: str, subtitle: str, index: int) -> Image.Image:
-    size = (1290, 2796)
+def store_screenshot(capture: Path, title: str, subtitle: str, index: int, ipad: bool = False) -> Image.Image:
+    size = (2064, 2752) if ipad else (1290, 2796)
+    scale = size[0] / 1290
     image = background(size, index)
     draw = ImageDraw.Draw(image)
-    title_font = display_font(108)
-    subtitle_font = display_font(48, heavy=False)
-    y = centered_lines(draw, wrap(draw, title, title_font, 1120), title_font, 200, size[0], INK, 18)
-    centered_lines(draw, wrap(draw, subtitle, subtitle_font, 1060), subtitle_font, y + 26, size[0], INK_SOFT, 12)
-    sparkle(draw, (1150, 104), 44, WHITE)
-    sparkle(draw, (1222, 168), 18, INK)
-    sparkle(draw, (120, 130), 24, WHITE)
-    device = phone(Image.open(capture), 1930)
+    title_font = display_font(round(108 * (1.25 if ipad else 1)))
+    subtitle_font = display_font(round(48 * (1.25 if ipad else 1)), heavy=False)
+    y = centered_lines(draw, wrap(draw, title, title_font, size[0] - 170), title_font, 170 if ipad else 200, size[0], INK, 18)
+    centered_lines(draw, wrap(draw, subtitle, subtitle_font, size[0] - 230), subtitle_font, y + 26, size[0], INK_SOFT, 12)
+    sparkle(draw, (size[0] - 140 * scale, 104), 44 * scale, WHITE)
+    sparkle(draw, (size[0] - 68 * scale, 168), 18 * scale, INK)
+    sparkle(draw, (120 * scale, 130), 24 * scale, WHITE)
+    device = (tablet if ipad else phone)(Image.open(capture), 2060 if ipad else 1930)
     image.alpha_composite(device, ((size[0] - device.width) // 2, size[1] - device.height + 150))
     return image.convert("RGB")
+
+
+def tablet(screen: Image.Image, height: int) -> Image.Image:
+    """iPad screenshot in a slim ink bezel with gently rounded corners."""
+    scale = height / screen.height
+    sw, sh = round(screen.width * scale), height
+    screen = screen.convert("RGB").resize((sw, sh), Image.LANCZOS)
+    bezel = round(sw * 0.018)
+    w, h = sw + bezel * 2, sh + bezel * 2
+    pad = 90
+    canvas = Image.new("RGBA", (w + pad * 2, h + pad * 2), (0, 0, 0, 0))
+    shadow = Image.new("RGBA", canvas.size, (0, 0, 0, 0))
+    ImageDraw.Draw(shadow).rounded_rectangle((pad, pad + 30, pad + w, pad + h + 30), radius=round(w * 0.045), fill=INK + (70,))
+    canvas.alpha_composite(shadow.filter(ImageFilter.GaussianBlur(40)))
+    ImageDraw.Draw(canvas).rounded_rectangle((pad, pad, pad + w, pad + h), radius=round(w * 0.045), fill=INK + (255,))
+    mask = Image.new("L", (sw * 2, sh * 2), 0)
+    ImageDraw.Draw(mask).rounded_rectangle((0, 0, sw * 2 - 1, sh * 2 - 1), radius=round(sw * 0.032) * 2, fill=255)
+    canvas.paste(screen, (pad + bezel, pad + bezel), mask.resize((sw, sh), Image.LANCZOS))
+    return canvas
 
 
 def headline(draw, x, y, plain: str, accent: str, size: int, fill=INK):
@@ -221,16 +245,21 @@ def main() -> None:
     captures = Path(sys.argv[1])
     captions = json.loads(CAPTIONS.read_text(encoding="utf-8"))
     for lang, items in captions.items():
-        folder = OUT_STORE / lang
-        folder.mkdir(parents=True, exist_ok=True)
-        for index, item in enumerate(items, start=1):
-            capture = captures / f"{item['scene']}.png"
-            if not capture.exists():
-                print(f"skip {lang}/{item['scene']}: {capture} missing")
+        for ipad in (False, True):
+            folder = OUT_STORE / lang / ("ipad" if ipad else "")
+            base = captures / "ipad" if ipad else captures
+            if not base.exists():
                 continue
-            store_screenshot(capture, item["title"], item["subtitle"], index).save(
-                folder / f"{index:02d}-{item['scene']}.jpg", quality=92, subsampling=0
-            )
+            folder.mkdir(parents=True, exist_ok=True)
+            for index, item in enumerate(items, start=1):
+                # The app in the listing's language when captured, else the plain capture.
+                capture = next((path for path in (base / lang / f"{item['scene']}.png", base / f"{item['scene']}.png") if path.exists()), None)
+                if capture is None:
+                    print(f"skip {lang}{'/ipad' if ipad else ''}/{item['scene']}: no capture")
+                    continue
+                store_screenshot(capture, item["title"], item["subtitle"], index, ipad=ipad).save(
+                    folder / f"{index:02d}-{item['scene']}.jpg", quality=92, subsampling=0
+                )
     OUT_SOCIAL.mkdir(parents=True, exist_ok=True)
     OUT_WEB.mkdir(parents=True, exist_ok=True)
     screens = OUT_WEB / "screens"

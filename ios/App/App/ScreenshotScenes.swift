@@ -11,6 +11,7 @@ enum ScreenshotScene: String, CaseIterable {
     case results
     case edit
     case editor
+    case effects
     case result
     case library
     case paywall

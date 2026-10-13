@@ -109,6 +109,8 @@ struct EditorView: View {
                 HStack(spacing: 6) {
                     if isSaving { ProgressView().tint(Palette.onAccent) }
                     Text("Save")
+                        .lineLimit(1)
+                        .fixedSize()
                 }
                 .font(.subheadline.weight(.bold))
                 .foregroundStyle(Palette.onAccent)
@@ -394,7 +396,9 @@ struct EditorView: View {
         Task {
             defer { isSaving = false }
             do {
-                try await PhotoLibrarySaver.save(model.current, operation: model.appliedOperation, watermark: !app.purchases.isPro)
+                // Free tools never add a mark; free cloud AI results carry a small one.
+                let usedCloudAI = model.appliedOperation.map { !$0.runsOnDevice } ?? false
+                try await PhotoLibrarySaver.save(model.current, operation: model.appliedOperation, watermark: !app.purchases.isPro && usedCloudAI)
                 await app.saveToLibrary([model.current], operation: model.appliedOperation, title: model.libraryTitle, prompt: nil)
                 app.showToast("Saved to Photos", style: .success)
                 Haptics.success()

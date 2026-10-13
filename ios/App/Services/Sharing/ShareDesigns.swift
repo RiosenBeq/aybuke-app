@@ -159,7 +159,7 @@ extension ShareRenderer {
             drawLeft(String(localized: "Glow-up secrets, unlocked"), font: brandFont(30, weight: .semibold), color: .white,
                      at: CGPoint(x: left, y: 1128), maxWidth: 640, shadow: true)
             if branded {
-                drawLeft("Made with \(Brand.name) ✦", font: brandFont(24, weight: .semibold), color: UIColor.white.withAlphaComponent(0.92),
+                drawLeft(String(localized: "Made with \(Brand.name) ✦"), font: brandFont(24, weight: .semibold), color: UIColor.white.withAlphaComponent(0.92),
                          at: CGPoint(x: left, y: canvas.height - 82), shadow: true)
             }
 

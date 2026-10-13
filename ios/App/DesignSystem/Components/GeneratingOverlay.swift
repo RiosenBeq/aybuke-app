@@ -32,7 +32,8 @@ private struct OrbitingCharms: View {
 /// Full-screen progress state shown while the AI works. Rotating tips keep the
 /// 5–20 s wait feeling shorter.
 struct GeneratingOverlay: View {
-    var title = "Creating magic…"
+    /// Already localized.
+    var title = String(localized: "Creating magic…")
     /// Cloud jobs: offer "Ping me when it's ready" the first time.
     var offersReadyPing = false
     var onCancel: (() -> Void)?
@@ -45,12 +46,12 @@ struct GeneratingOverlay: View {
 
     private var tips: [String] {
         [
-            "Tip: be specific — lighting, mood and style words help a lot.",
-            "Tip: hold the photo to compare with your original.",
-            "Background removal runs on your phone and is always free.",
-            "Your photos are never used to train AI and are deleted from our servers within \(app.config.retentionPhrase).",
-            "Tip: try “soft glam”, “pink hair” or “golden hour”.",
-            "Share straight to Instagram Stories or as a before/after collage.",
+            String(localized: "Tip: be specific — lighting, mood and style words help a lot."),
+            String(localized: "Tip: hold the photo to compare with your original."),
+            String(localized: "Background removal runs on your phone and is always free."),
+            String(localized: "Your photos are never used to train AI and are deleted from our servers within \(app.config.retentionPhrase)."),
+            String(localized: "Tip: try “soft glam”, “pink hair” or “golden hour”."),
+            String(localized: "Share straight to Instagram Stories or as a before/after collage."),
         ]
     }
 

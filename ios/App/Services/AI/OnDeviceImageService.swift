@@ -7,7 +7,7 @@ import AppCore
 final class OnDeviceImageService: AIImageService {
     func perform(_ job: AIJob) async throws -> AIJobResult {
         guard let source = job.sourceImage else {
-            throw AIServiceError.invalidRequest("Pick a photo first.")
+            throw AIServiceError.invalidRequest(String(localized: "Pick a photo first."))
         }
         switch job.operation {
         case .removeBackground:
@@ -16,7 +16,7 @@ final class OnDeviceImageService: AIImageService {
             }.value
             return AIJobResult(images: [cutout], creditsRemaining: nil)
         default:
-            throw AIServiceError.invalidRequest("\(job.operation.displayName) needs the cloud.")
+            throw AIServiceError.invalidRequest(String(localized: "\(L10n.core(job.operation.displayName)) needs the cloud."))
         }
     }
 
@@ -25,14 +25,14 @@ final class OnDeviceImageService: AIImageService {
     static func removeBackground(from image: UIImage) throws -> UIImage {
         let normalized = ImageUtilities.normalized(image, maxLongEdge: 2048)
         guard let cgImage = normalized.cgImage else {
-            throw AIServiceError.invalidRequest("This photo couldn't be read.")
+            throw AIServiceError.invalidRequest(String(localized: "This photo couldn't be read."))
         }
         let request = VNGenerateForegroundInstanceMaskRequest()
         let handler = VNImageRequestHandler(cgImage: cgImage, options: [:])
         do {
             try handler.perform([request])
         } catch {
-            throw AIServiceError.server(code: "vision_failed", message: "Background removal isn't available on this device.")
+            throw AIServiceError.server(code: "vision_failed", message: String(localized: "Background removal isn't available on this device."))
         }
         guard let observation = request.results?.first, !observation.allInstances.isEmpty else {
             throw AIServiceError.noSubjectFound

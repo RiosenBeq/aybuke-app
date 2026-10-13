@@ -40,7 +40,7 @@ struct CreateView: View {
             }
             .overlay {
                 if model.isGenerating {
-                    GeneratingOverlay(title: "Creating \(model.count > 1 ? "\(model.count) images" : "your image")…", offersReadyPing: true) {
+                    GeneratingOverlay(title: model.count > 1 ? String(localized: "Creating \(model.count) images…") : String(localized: "Creating your image…"), offersReadyPing: true) {
                         model.cancel()
                     }
                     .transition(.opacity)
@@ -106,7 +106,7 @@ struct CreateView: View {
                 HStack(spacing: 10) {
                     ForEach(Array(StyleCatalog.all.enumerated()), id: \.element.id) { index, style in
                         StyleTile(
-                            name: style.name,
+                            name: L10n.core(style.name),
                             symbolName: style.symbolName,
                             tone: PaletteTone.at(index),
                             isSelected: model.style == style,
@@ -130,7 +130,7 @@ struct CreateView: View {
             ScrollView(.horizontal) {
                 HStack(spacing: 8) {
                     ForEach(AspectRatio.allCases) { ratio in
-                        SelectableChip(title: "\(ratio.label) \(ratio.rawValue)", isSelected: model.aspectRatio == ratio) {
+                        SelectableChip(title: LocalizedStringKey(L10n.core(ratio.label) + " " + ratio.rawValue), isSelected: model.aspectRatio == ratio) {
                             Haptics.selection()
                             model.aspectRatio = ratio
                         }

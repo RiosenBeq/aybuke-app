@@ -53,9 +53,9 @@ final class PurchaseManager {
         guard products.isEmpty else { return }
         do {
             products = try await Product.products(for: StoreProducts.all)
-            loadError = products.isEmpty ? "Subscriptions are unavailable right now." : nil
+            loadError = products.isEmpty ? String(localized: "Subscriptions are unavailable right now.") : nil
         } catch {
-            loadError = "Couldn't reach the App Store. Check your connection."
+            loadError = String(localized: "Couldn't reach the App Store. Check your connection.")
         }
     }
 
@@ -70,6 +70,7 @@ final class PurchaseManager {
             options.insert(.appAccountToken(appAccountToken))
         }
         let result = try await product.purchase(options: options)
+        await RevenueCatBridge.record(result)
         switch result {
         case .success(let verification):
             return await handle(verification)
@@ -128,7 +129,7 @@ extension Product {
     /// "7-day free trial" when the product has a free introductory offer.
     var freeTrialDescription: String? {
         guard let offer = subscription?.introductoryOffer, offer.paymentMode == .freeTrial else { return nil }
-        return "\(offer.period.dayCount)-day free trial"
+        return String(localized: "\(offer.period.dayCount)-day free trial")
     }
 
     var freeTrialDays: Int? {
@@ -145,16 +146,20 @@ extension Product {
     /// A paid introductory offer ("First month $1.99"), when there is one.
     var introOfferText: String? {
         guard let offer = subscription?.introductoryOffer, offer.paymentMode != .freeTrial else { return nil }
-        let unit: String
-        switch offer.period.unit {
-        case .day: unit = "day"
-        case .week: unit = "week"
-        case .month: unit = "month"
-        case .year: unit = "year"
+        let count = offer.period.value * max(offer.periodCount, 1)
+        let price = offer.displayPrice
+        // Whole sentences per period, so every language can phrase them naturally.
+        switch (offer.period.unit, count == 1) {
+        case (.day, true): return String(localized: "First day \(price)")
+        case (.day, false): return String(localized: "First \(count) days \(price) each")
+        case (.week, true): return String(localized: "First week \(price)")
+        case (.week, false): return String(localized: "First \(count) weeks \(price) each")
+        case (.month, true): return String(localized: "First month \(price)")
+        case (.month, false): return String(localized: "First \(count) months \(price) each")
+        case (.year, true): return String(localized: "First year \(price)")
+        case (.year, false): return String(localized: "First \(count) years \(price) each")
         @unknown default: return nil
         }
-        let count = offer.period.value * max(offer.periodCount, 1)
-        return count == 1 ? "First \(unit) \(offer.displayPrice)" : "First \(count) \(unit)s \(offer.displayPrice) each"
     }
 
     /// Weekly equivalent of the price, for "just $0.96/week" anchoring.

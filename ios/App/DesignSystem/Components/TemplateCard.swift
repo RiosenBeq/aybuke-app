@@ -24,11 +24,11 @@ struct TemplateCard: View {
         ZStack(alignment: .bottomLeading) {
             artwork
             VStack(alignment: .leading, spacing: 2) {
-                Text(template.title)
+                Text(L10n.core(template.title))
                     .font(.cardTitle)
                     .foregroundStyle(labelColor)
                     .lineLimit(1)
-                Text(template.subtitle)
+                Text(L10n.core(template.subtitle))
                     .font(.caption)
                     .foregroundStyle(labelColor.opacity(0.75))
                     .lineLimit(1)
@@ -69,7 +69,7 @@ struct TemplateCard: View {
             }
         }
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("\(template.title). \(template.subtitle)\(template.isPro ? ". Pro" : "")")
+        .accessibilityLabel("\(L10n.core(template.title)). \(L10n.core(template.subtitle))\(template.isPro ? ". Pro" : "")")
         .accessibilityAddTraits(.isButton)
     }
 

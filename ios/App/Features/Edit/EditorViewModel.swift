@@ -67,6 +67,9 @@ final class EditorViewModel {
             commit(previewResult, operation: .magicEdit)
             isComparing = true
         }
+        if let effect = launch.previewEffect {
+            previewEffect(effect)
+        }
     }
 
     var canUndo: Bool { historyVersion >= 0 && !undoStack.isEmpty }
@@ -77,7 +80,7 @@ final class EditorViewModel {
 
     /// Library title: the latest AI step, or the tool that was used.
     var libraryTitle: String {
-        lastStepTitle ?? appliedOperation?.displayName ?? "Adjusted photo"
+        lastStepTitle ?? appliedOperation.map { L10n.core($0.displayName) } ?? String(localized: "Adjusted photo")
     }
 
     /// What the canvas shows right now.
@@ -269,12 +272,14 @@ final class EditorViewModel {
 
     private static func progressTitle(for job: AIJob) -> String {
         switch job.operation {
-        case .magicEdit: return "Applying your edit…"
-        case .restyle: return "Styling \(job.template?.title ?? "your photo")…"
-        case .enhance: return "Enhancing details…"
-        case .removeBackground: return "Cutting out the subject…"
-        case .eraseObject: return "Erasing…"
-        case .textToImage: return "Creating magic…"
+        case .magicEdit: return String(localized: "Applying your edit…")
+        case .restyle:
+            guard let title = job.template?.title else { return String(localized: "Styling your photo…") }
+            return String(localized: "Styling \(L10n.core(title))…")
+        case .enhance: return String(localized: "Enhancing details…")
+        case .removeBackground: return String(localized: "Cutting out the subject…")
+        case .eraseObject: return String(localized: "Erasing…")
+        case .textToImage: return String(localized: "Creating magic…")
         }
     }
 
@@ -349,7 +354,7 @@ final class EditorViewModel {
         guard let effect, !isProcessing else { return }
         let source = current
         let stamp = effectDateStamp
-        processingTitle = "Adding \(effect.title)…"
+        processingTitle = String(localized: "Adding \(effect.title)…")
         isProcessingInCloud = false
         isProcessing = true
         let output = await Task.detached(priority: .userInitiated) { effect.apply(to: source, dateStamp: stamp) }.value
@@ -371,7 +376,7 @@ final class EditorViewModel {
         guard !adjustments.isNeutral, !isProcessing else { return }
         let settings = adjustments
         let source = current
-        processingTitle = "Applying adjustments…"
+        processingTitle = String(localized: "Applying adjustments…")
         isProcessing = true
         let output = await Task.detached(priority: .userInitiated) {
             OnDeviceImageService.adjust(source, with: settings)

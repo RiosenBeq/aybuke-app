@@ -63,8 +63,8 @@ enum PhotoLibrarySaver {
 
         var errorDescription: String? {
             switch self {
-            case .denied: return "Allow photo access in Settings to save your creations."
-            case .encodingFailed: return "Couldn't prepare the image. Please try again."
+            case .denied: return String(localized: "Allow photo access in Settings to save your creations.")
+            case .encodingFailed: return String(localized: "Couldn't prepare the image. Please try again.")
             }
         }
     }

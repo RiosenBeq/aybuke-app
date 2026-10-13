@@ -2,12 +2,47 @@
 
 > Bu belge, araştırmayla alınan tüm kararların Türkçe özetidir. Ayrıntılar ve kaynaklar İngilizce belgelerdedir ([docs/README.md](README.md)).
 
+## Ekim 2026 güncellemesi (2): video, retro efektler, xAI ve 12 dil
+
+**Ne değişti?**
+- **Video düzenleme (ücretsiz, cihazda):** Sessiz kısımları otomatik kesme ("jump cut"), retro efektler, kırpma, ardından Fotoğraflar'a kaydetme veya paylaşma. Filigran ve kapanış klibi yok; 5 dakikaya kadar klipler.
+- **80'ler, 90'lar ve Y2K efektleri:** Yedi ücretsiz, cihaz içi efekt: VHS '86, Disposable '98, Kira Kira, Digicam '04, Instant '82, Glamour '92 ve Neon '84. Fotoğraflarda tarih damgası isteğe bağlı; efektlerin beşi videoda da çalışıyor.
+  - Adjust (ışık ve renk) aracında tek dokunuşla **Auto**: ışık ve renk otomatik ayarlanıyor.
+  - RAW (ProRAW, DNG) fotoğraflar açılırken en iyi ayarlarla otomatik banyo ediliyor.
+- **Yazı tipi:** Bricolage Grotesque'in yerini **Poppins** (SIL OFL) aldı; web sitesiyle aynı yazı tipi.
+- **iOS 26 ve iPad:** Sekme çubuğu ve editörün araç çubuğu iOS 26'da Liquid Glass; iOS 17–18'de buzlu cam görünümüne geçiyor. Uygulama artık iPhone ve iPad için evrensel (uyumlu ızgaralar, okunabilir genişlikler).
+- **Yeni fiyatlar:** Pro Yıllık $39.99 (7 gün ücretsiz deneme, ayda ≈ $3.33), Pro Aylık $5.99 (uygun kullanıcılara ilk ay $1.99), kredi paketleri 30 kredi $2.99 ve 100 kredi $7.99. Paywall'daki söz: çoğu AI fotoğraf uygulamasının yaklaşık yarı fiyatı, haftalık plan asla yok.
+- **AI sağlayıcısı artık xAI Grok Imagine:**
+  - Model `grok-imagine-image-2.0`, 1k çözünürlük: ücretsiz kullanıcılara düşük, Pro'ya orta kalite. Oluşturma başına yaklaşık $0.04, düzenleme başına $0.05–0.07; bulut işlemi başına ortalama ~$0.06.
+  - fal.ai alternatif olarak duruyor (`AI_PROVIDER=fal`).
+  - İstekler arka planda çalışıyor (`EdgeRuntime.waitUntil`). Sonuçlar yanıtın içinde (base64) geliyor ve uygulama indirdiğini onaylar onaylamaz siliniyor; kalanları `sweep_jobs()` bir saat sonra temizliyor.
+  - xAI, izin verilmeden API verileriyle model eğitmiyor.
+  - Pro'nun avantajı artık "en iyi kalitede AI, filigran yok" ("HD dışa aktarma" değil).
+- **Yeni paylaşım biçimleri:**
+  - "Cover star" dergi kapağı: dergi adı, cihaz içi Vision kişi ayırma sayesinde kişinin başının arkasına geçiyor.
+  - "Photo strip": tarih damgalı fotoğraf kabini şeridi.
+  - Instagram Hikâyeler artık Meta App ID olmadan da çalışıyor: sistem paylaşım sayfası yalnızca görselle açılıyor ve bir ipucu çıkıyor ("Tap Instagram, then Stories").
+  - "Glow together" davet kartı: uygulama ikonu ve App Store sayfasına (o yokken web sitesine) giden QR kodlu 9:16 hikâye kartı. Ayarlar'dan ve Keşfet ekranından açılıyor; kullanıcının fotoğraflarını asla içermiyor.
+- **Renkli "Aura" ikon:** Glow Print ikonunun renkli sürümü. Aura vurgu renkleri (pembe `#FF5CA1`, lila `#A78BFA`, şeftali `#FFAA78`, tereyağı sarısı `#FFDE6E`, nane `#78E1CD`) ikonda, paylaşım kartlarında ve çıkartma tarzı şablon görsellerinde kullanılıyor. Arayüz yazıları ve kontroller Blush paletinde kalıyor.
+- **İlk açılış turu:** Onboarding'den sonra bir kez gösterilen 7 adımlı rehberli tur (Next / Skip): Magic Edit, günlük krediler, ücretsiz araçlar, Create, fotoğraf ve videolar, özel galeri, Ayarlar. Ayarlar → "Show me around" ile tekrar izlenebiliyor.
+- **12 dil:** İngilizce, Türkçe, İspanyolca, Brezilya Portekizcesi, Fransızca, Almanca, İtalyanca, Rusça, Japonca, Korece, Basitleştirilmiş Çince ve Endonezce (String Catalog'lar).
+  - Uygulama iPhone'un dilini kullanıyor. Ayarlar'daki "Language" satırı, uygulamaya özel dil seçimi için iOS Ayarları'nı açıyor.
+  - AppCore metinleri çalışma anında `L10n.core` ile çevriliyor; `scripts/export-core-strings.py` bu metinleri çevirmenler için kaydediyor (CI'da `--check` ile).
+  - Yasal metinler yalnızca İngilizce ve Türkçe.
+  - İçerik politikası cinsel içerikli istekleri 12 dilin hepsinde engelliyor.
+- **RevenueCat (gözlemci modunda):** Abonelik analizi için. Satışı ve doğrulamayı yine StoreKit 2 ve backend yapıyor; RevenueCat yalnızca satın almaları kaydediyor. Herkese açık SDK anahtarı ("appl_…") `AppConfig.json` dosyasındaki `revenueCatAPIKey` alanına girildi, yani derlemelerde açık (anahtar boş bırakılırsa kapanır). Gizlilik politikasında alt işleyen olarak yer alıyor.
+
+**Sizin yapmanız gerekenler:**
+- Lansmandan önce xAI konsolunda **Zero Data Retention**'ı açın (selfie'ler kişisel veridir) ve `XAI_API_KEY` değerini Supabase Edge Function gizli anahtarı olarak girin.
+- RevenueCat projesi hazır ve herkese açık anahtar girildi. App Store Connect'te bir uygulama içi satın alma anahtarı (.p8) oluşturup RevenueCat'e siz yükleyin; bu dosya depoya girmemeli.
+- App Store Connect'te yeni fiyatları ve aylık planın ilk ay $1.99 teklifini tanımlayın.
+
 ## Ekim 2026 güncellemesi: kızlara özel pembe Glowlit
 
 **Ne değişti?**
 - **Hedef kitle:** Glowlit artık kızlar ve genç kadınlar için tasarlandı ("made for girls who glow").
 - **Renkler:** Talep üzerine tamamen pembe, açık tonlu "Blush" paleti kullanılıyor: blush `#F7C1D9`, petal `#F8E0EA`, ink `#121212`, antrasit `#24272A`, kırık beyaz `#F8F8F6` ve beyaz. Ana butonlar siyah üzerine pembe yazı. Ayarlar'dan Açık (varsayılan), Koyu veya Otomatik görünüm seçilebiliyor.
-- **Tasarım detayları:** Başlıklarda zarif italik serif vurgular ("Watch it *glow.*"), kalp ve parıltı motifleri, başarı anında parıltı animasyonu, gölgeli beyaz kartlar. Pembe uygulama ikonunun koyu ve renklendirilmiş varyantları da var.
+- **Tasarım detayları:** Başlıklarda zarif italik serif vurgular ("Watch it *glow.*"), kalp ve parıltı motifleri, başarı anında parıltı animasyonu, gölgeli beyaz kartlar. Uygulama ikonunun (artık renkli "Aura" sürümü) koyu ve renklendirilmiş varyantları da var.
 - **Yeni şablonlar:** 30 görünüm. Örneğin Doll Box, Pembe Saç, Soft Glam, Bouncy Curls, Clean Girl, Ballet Core, Kiraz Çiçeği, Kafe Buluşması, Paris Gezisi, Peri Prensesi, Doğum Günü Glam ve Witchy Glam. 14 stil var (Pastel Dream ve Kawaii eklendi).
   - Tüm şablonlar yüzü, ten rengini ve **vücut şeklini** korur.
   - Vücut inceltme veya cilt açma gibi özellikler bilinçli olarak yok.
@@ -40,12 +75,12 @@
   - Metinler uygulamanın içinde okunabiliyor ve ayrıca `docs/legal/` ile `web/legal/` altında yayınlanıyor.
   - **Bunlar avukat incelemesi gereken taslaklardır.** Şirket bilgilerini `legal/config.json` dosyasına girin ve `legal/README.md` kontrol listesini uygulayın.
 - **AI API anahtarı yeri:**
-  - **Denemek için:** `ios/Config/Secrets.xcconfig` dosyasına `GL_AI_PROVIDER` (fal, openai veya gemini) ve `GL_AI_API_KEY` yazılır. Bu dosya git'e girmez ve yalnızca geliştirme derlemelerinde okunur.
-  - **Canlı sürüm için:** Anahtar backend'de `FAL_KEY` olarak saklanır.
+  - **Denemek için:** `ios/Config/Secrets.xcconfig` dosyasına `GL_AI_PROVIDER` (xai, fal, openai veya gemini) ve `GL_AI_API_KEY` yazılır. Bu dosya git'e girmez ve yalnızca geliştirme derlemelerinde okunur.
+  - **Canlı sürüm için:** Anahtar backend'de `XAI_API_KEY` olarak saklanır (fal.ai kullanılacaksa `FAL_KEY` ve `AI_PROVIDER=fal`).
 - **Tanıtım kiti (`docs/marketing/`):** App Store metinleri (İngilizce ve Türkçe, karakter sayılı), sosyal medya kiti (biyografiler, hashtag'ler, 20 gönderi, 10 video senaryosu, influencer şablonları), 30 günlük lansman planı, 8'er App Store ekran görüntüsü ve sosyal medya görselleri.
 - **Web sitesi (`web/`):** Tanıtım sayfası ve yasal sayfalar hazır. GitHub Pages ile yayınlanabilir (`.github/workflows/website.yml`).
 
-**Sizin yapmanız gerekenler:** Yasal metinleri avukata inceletin ve şirket bilgilerini girin. AI API anahtarını iletin. Instagram Hikâyeler'e doğrudan paylaşım için bir Meta App ID alın. `glowlit.app` alan adını ve marka tescilini kontrol edin.
+**Sizin yapmanız gerekenler:** Yasal metinleri avukata inceletin ve şirket bilgilerini girin. AI API anahtarını iletin. İsterseniz Instagram Hikâyeler'e doğrudan paylaşım için bir Meta App ID alın (artık şart değil). `glowlit.app` alan adını ve marka tescilini kontrol edin.
 
 ![Glowlit marka panosu](assets/brand/brand-board.png)
 
@@ -61,14 +96,16 @@ Bu brief'i üç paralel araştırmayla (pazar, marka/tasarım, teknoloji/uyumlul
    - 2025–2026 viral trendleri ve fiyatlandırma kıyasları (RevenueCat, Adapty) derlendi.
    - Renk haritası, yazı tipi ve isim çalışması yapıldı.
    - AI modelleri, maliyetler, App Store kuralları ve AB Yapay Zeka Yasası incelendi.
-2. **Marka:** isim **Glowlit**, slogan *"Make it glow."*, pembe "Blush" paleti (Ekim 2026'dan beri; başlangıçta "Golden Hour" amberdi), Bricolage Grotesque + New York Italic yazı tipleri, pembe "Glow Print" ikonu.
-3. **iOS uygulaması (SwiftUI):**
-   - Ekranlar: onboarding, AI onayı, keşfet, metinden görsel oluşturma, editör (Magic Edit, stiller, iyileştirme, arka plan silme, nesne silme, ayarlar), kütüphane, paywall, ayarlar.
+2. **Marka:** isim **Glowlit**, slogan *"Make it glow."*, pembe "Blush" paleti (Ekim 2026'dan beri; başlangıçta "Golden Hour" amberdi) ve renkli "Aura" vurguları, Poppins + New York Italic yazı tipleri (Ekim 2026'ya kadar Bricolage Grotesque), "Glow Print" ikonunun renkli "Aura" sürümü.
+3. **iOS uygulaması (SwiftUI, iPhone ve iPad):**
+   - Ekranlar: onboarding, rehberli tur, AI onayı, keşfet, metinden görsel oluşturma, editör (Magic Edit, stiller, efektler, iyileştirme, arka plan silme, nesne silme, ayarlar), video editörü, paylaşım, kütüphane, paywall, ayarlar.
+   - 12 dil desteği.
    - Backend olmadan da tamamen çalışan **demo modu** var.
-4. **Backend (Supabase + fal.ai):**
+4. **Backend (Supabase + xAI; alternatif olarak fal.ai):**
    - Kimlik doğrulama, kredi defteri, Apple satın alma doğrulaması, güvenlik filtreleri ve asenkron AI iş kuyruğu.
 5. **Testler ve CI:**
-   - 82 Swift birim testi.
+   - 100 Swift birim testi.
+   - AppCore metinlerinin çeviri için kayıtlı olduğunun kontrolü (`export-core-strings.py --check`).
    - Deno tip kontrolü ve lint.
    - Gerçek PostgreSQL üzerinde kredi defteri testleri.
    - macOS'ta Xcode derlemesi ve simülatör ekran görüntüleri.
@@ -93,63 +130,68 @@ Görüntüler, CI'daki Screenshots iş akışında iPhone Pro simülatöründe d
 - **Kontrast:** Pembe zeminde siyah yazı 15:1, siyah buton üzerinde pembe yazı 12:1. Pembe üzerine beyaz yazı **kullanılmaz** (1.6:1).
 - **Kural:** Her ekranda tek bir ana aksiyon vardır: siyah, hap biçimli buton ve pembe yazı. Seçili öğeler pembe, fotoğrafların üzerine renk filtresi konmaz.
 - **Önceki tercih:** Araştırmadaki "Golden Hour" amber ve koyu tema emekliye ayrıldı; gerekçeleri İngilizce belgede kayıtlı.
+- **Aura vurguları:** Markanın renkli yüzü: pembe `#FF5CA1`, lila `#A78BFA`, şeftali `#FFAA78`, tereyağı sarısı `#FFDE6E`, nane `#78E1CD`. Yalnızca ikon, paylaşım kartları ve şablon görselleri gibi süslemelerde kullanılır; yazı ve kontroller her zaman Blush paletindedir.
 
-### Yazı tipi: Bricolage Grotesque + SF Pro
-- **Seçim:** Başlıklarda karakterli, sıcak bir grotesk; gövde metinlerinde Apple'ın SF Pro'su (Dynamic Type desteği için).
-- **Lisans ve kesimler:** Lisansı SIL OFL, yani ücretsiz ve uygulamaya gömülebilir. Değişken fonttan üç statik kesim üretildi.
+### Yazı tipi: Poppins + SF Pro
+- **Seçim:** Başlıklarda yuvarlak ve samimi formlara sahip geometrik bir sans olan Poppins (web sitesiyle aynı yazı tipi); gövde metinlerinde Apple'ın SF Pro'su (Dynamic Type desteği için). Vurgulu kelimeler New York Italic.
+- **Lisans ve kesimler:** Lisansı SIL OFL, yani ücretsiz ve uygulamaya gömülebilir. Medium, SemiBold, Bold ve ExtraBold kesimleri uygulamada.
+- **Önceki tercih:** Ekim 2026'ya kadar başlıklarda Bricolage Grotesque kullanılıyordu.
 - **Elenenler:** Space Grotesk ve Sora sıradan "AI/web3" görünümü veriyor (Sora ayrıca OpenAI ile karışıyor); Unbounded kripto çağrışımı taşıyor.
 
-### İkon: "Glow Print" (Ekim 2026)
-Pembe zemin üzerinde, bir mood board'a iğnelenmiş gibi hafif eğik, keskin köşeli beyaz bir baskı fotoğraf. İçinde siyah zemin üzerinde pembe parlayan beyaz bir ışıltı, fotoğrafın altında küçük pembe bir kalp var. Keskin baskı, uygulamadaki şablon kartlarıyla aynı dili konuşuyor; ışıltı "Make it glow." demek. Önceki "Sunrise Split" (önce/sonra diski) fazla teknik kaldığı için değiştirildi. Koyu ve renklendirilmiş varyantları da var; 29 pikselde de okunuyor.
+### İkon: "Glow Print", renkli "Aura" sürümü (Ekim 2026)
+Renkli bir "Aura" zemin (nane, lila, pembe, şeftali ve tereyağı sarısı bir ışıltı) üzerinde, bir mood board'a iğnelenmiş gibi hafif eğik, keskin köşeli beyaz bir baskı fotoğraf. İçinde koyu mor (plum) zemin üzerinde pembe parlayan beyaz bir ışıltı, fotoğrafın altında küçük pembe bir kalp var. Keskin baskı, uygulamadaki şablon kartlarıyla aynı dili konuşuyor; ışıltı "Make it glow." demek. Önceki "Sunrise Split" (önce/sonra diski) fazla teknik kaldığı için değiştirildi; ilk Glow Print pembe zeminliydi. Koyu ve renklendirilmiş varyantları da var; 29 pikselde de okunuyor.
 
 ### Fiyatlandırma: "Adil Fiyat Sözü"
 Araştırmanın en net bulgusu: kullanıcıların **1 numaralı şikâyeti haftalık deneme tuzakları ve sürpriz ücretler**. Yıllık plan ise kurulum başına yaklaşık **5 kat** daha fazla gelir getiriyor; haftalık abonelerin bir yıl sonra yalnızca %1–2'si kalıyor.
 
 | Plan | Fiyat | İçerik |
 |---|---|---|
-| Ücretsiz | 0 | Günde 3 kredi, cihaz içi araçlar (arka plan silme, ayarlar) sınırsız |
-| **Pro Yıllık** (varsayılan) | **$59.99/yıl**, 7 gün ücretsiz deneme | Ayda 100 kredi (kullanılmayan 1 ay devreder), tüm şablonlar, HD, filigransız |
-| Pro Aylık | $9.99/ay | Aynı içerik |
-| Kredi paketleri | 30 kredi $4.99 · 100 kredi $12.99 | **Süresiz** geçerli |
+| Ücretsiz | 0 | Günde 3 kredi; cihaz içi araçlar (efektler, video düzenleme, arka plan silme, ayarlar, Best shot) sınırsız |
+| **Pro Yıllık** (varsayılan) | **$39.99/yıl** (ayda ≈ $3.33), 7 gün ücretsiz deneme | Ayda 100 kredi (kullanılmayanlar 1 ay devreder, üst sınır 200), tüm şablonlar, en iyi kalitede AI, filigransız |
+| Pro Aylık | $5.99/ay (uygun kullanıcılara ilk ay $1.99) | Aynı içerik |
+| Kredi paketleri | 30 kredi $2.99 · 100 kredi $7.99 | **Süresiz** geçerli |
 
 Güven özellikleri:
-- **Haftalık plan yok.**
+- **Haftalık plan asla yok.** Fiyatlar çoğu AI fotoğraf uygulamasının yaklaşık yarısı.
 - Paywall'da deneme takvimi gösteriliyor ve deneme bitmeden 24 saat önce hatırlatma bildirimi geliyor.
 - Başarısız işlerin kredisi **otomatik iade ediliyor**.
 - Sahte geri sayım kullanılmıyor.
 
 ### Farklılaştırıcılar
 1. **Likeness Lock:** İnsan içeren her şablonda yüz ve kimlik korunuyor. Sonuç kullanıcıya benzemezse "Bana benzemiyor mu? Ücretsiz tekrar dene" seçeneği var (en duygusal kalite şikâyetine çözüm).
-2. **48 saatlik trend motoru:** Şablon tarifleri sunucuda duruyor. Yeni bir trend (figürin, aksiyon figürü, karikatür vb.) uygulama güncellemesi gerektirmeden 24–48 saatte yayına alınabiliyor.
+2. **Sunucudaki trend tarifleri:** Şablon talimatları sunucuda duruyor; mevcut görünümler uygulama güncellemesi olmadan iyileştirilebiliyor. Yeni görünümler uygulama güncellemeleriyle geliyor; uzaktan katalog yol haritasında.
 3. **Varsayılan olarak gizli:**
    - Bulut işlemesinden önce açık onay alınıyor (Apple 5.1.2(i)).
-   - Arka plan silme ve ayarlar cihaz içinde yapılıyor.
-   - Yüklenen fotoğraflar saklanmıyor; çıktılar 1 saatte siliniyor.
+   - Arka plan silme, ayarlar, efektler ve video düzenleme cihaz içinde yapılıyor.
+   - Yüklenen fotoğraflar saklanmıyor; çıktılar uygulama indirir indirmez, en geç 1 saatte siliniyor.
    - Dışa aktarılan her görsele AB Yapay Zeka Yasası için "AI ile üretildi" meta verisi (IPTC) ekleniyor.
 
 ## Mimari (kısaca)
 
 - **iOS:**
-  - SwiftUI, iOS 17+, @Observable, SwiftData, StoreKit 2.
-  - Arka plan silme Vision ile, ayarlar Core Image ile yapılıyor.
-  - İş mantığı Linux'ta da test edilebilen ayrı bir pakette (`AppCore`).
+  - SwiftUI, iOS 17+, iPhone ve iPad, @Observable, SwiftData, StoreKit 2; iOS 26'da Liquid Glass.
+  - Arka plan silme Vision ile; ayarlar, Auto, efektler ve RAW banyosu Core Image ile; video düzenleme AVFoundation ile yapılıyor.
+  - Metinler String Catalog'larda (12 dil). Abonelik analizi için RevenueCat gözlemci modunda.
+  - İş mantığı Linux'ta da test edilebilen ayrı bir pakette (`AppCore`); sessizlik kesme (`SilenceCutter`) ve Auto (`AutoAdjust`) da orada.
 - **Backend:**
   - Supabase: anonim oturum, Postgres kredi defteri (RLS), Edge Functions.
-  - fal.ai modelleri:
+  - Varsayılan sağlayıcı xAI Grok Imagine: her işlem `grok-imagine-image-2.0` ile 1k çözünürlükte (ücretsizde düşük, Pro'da orta kalite). Arka plan silme her zaman cihazda.
+  - Alternatif fal.ai modelleri (`AI_PROVIDER=fal`):
     - Metinden görsel ve düzenleme: Nano Banana 2
     - İyileştirme: SeedVR2
     - Nesne silme: object-removal
   - Uygulama yalnızca "işlem" adını gönderiyor; modeli sunucu seçiyor. Böylece model değiştirmek için uygulama güncellemesi gerekmiyor ve API anahtarı uygulamada hiç bulunmuyor.
 - **Maliyet:**
-  - Bulut işlemi başına ortalama yaklaşık $0.06.
+  - xAI'da oluşturma başına yaklaşık $0.04, düzenleme başına $0.05–0.07; bulut işlemi başına ortalama yaklaşık $0.06.
   - Kredi kuralları SQL'de tanımlı, uygulama güncellemesi olmadan değiştirilebiliyor.
 
 ## Nasıl çalıştırılır?
 
-1. Mac'te **Xcode 16 veya üzeri** ile `ios/Glowlit.xcodeproj` dosyasını açın ve bir iPhone simülatörü seçip ▶︎ ile çalıştırın.
+1. Mac'te **Xcode 16 veya üzeri** ile `ios/Glowlit.xcodeproj` dosyasını açın ve bir iPhone veya iPad simülatörü seçip ▶︎ ile çalıştırın. Liquid Glass görünümü için Xcode 26 gerekir; eski sürümler buzlu cam görünümünü derler.
 2. Backend tanımlı değilse uygulama **demo modunda** açılır. AI sonuçları cihazda simüle edilir ve "DEMO PREVIEW" etiketi taşır.
 3. Gerçek AI için `backend/README.md` adımlarını izleyin:
-   - Supabase projesi oluşturun ve `FAL_KEY` gizli anahtarını tanımlayın.
+   - Supabase projesi oluşturun ve `XAI_API_KEY` gizli anahtarını tanımlayın (fal.ai için `FAL_KEY` ve `AI_PROVIDER=fal`).
+   - xAI konsolunda Zero Data Retention'ı açın.
    - Fonksiyonları deploy edin.
    - `AppConfig.json` dosyasına Supabase adresini ve anahtarını yazın.
 
@@ -157,8 +199,9 @@ Güven özellikleri:
 
 1. İsmin hukuki kontrolü ve `glowlit.app` alan adının alınması.
 2. Gizlilik politikası ve kullanım şartları sayfalarının yayınlanması.
-3. Supabase'in kurulup deploy edilmesi ve TestFlight'ta uçtan uca test.
-4. App Store Connect'te ürünlerin ve abonelik fiyatlarının tanımlanması.
+3. xAI Zero Data Retention'ın açılması, Supabase'in kurulup deploy edilmesi ve TestFlight'ta uçtan uca test.
+4. App Store Connect'te ürünlerin ve abonelik fiyatlarının tanımlanması ($39.99 yıllık, $5.99 aylık ve ilk ay $1.99 teklifi, $2.99 ve $7.99 paketler); uygulama içi satın alma anahtarının RevenueCat'e yüklenmesi.
 5. App Attest ile ücretsiz kredi suistimaline karşı koruma; yaş doğrulama (Declared Age Range API).
 6. Şablon kartlarına gerçek önce/sonra görsellerinin eklenmesi (farklı ten renkleri ve yüz tiplerinden oluşan geniş bir oyuncu kadrosuyla).
-7. Büyüme aşaması: selfie profilli Likeness Lock v2, şablonların video versiyonları, C2PA içerik kimlik bilgileri, yerelleştirme.
+7. 11 çevirinin anadili konuşanlarca kontrolü; App Store metinlerinin ve ekran görüntülerinin bu dillere uyarlanması.
+8. Büyüme aşaması: selfie profilli Likeness Lock v2, şablonların video versiyonları, C2PA içerik kimlik bilgileri.

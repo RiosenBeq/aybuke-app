@@ -9,9 +9,9 @@
 | **App Store title** | `Glowlit: AI Photo Editor` (24/30 characters) |
 | **Subtitle (draft)** | `AI Headshots & Photo Trends` (27/30) |
 | **Positioning** | The AI photo studio made for girls who glow: trend-ready, true-to-you photos, with honest pricing and private-by-default face data. |
-| **Palette** | "Blush": blush pink `#F7C1D9` and petal `#F8E0EA` with ink `#121212`, charcoal `#24272A`, paper `#F8F8F6` and white; light-first |
-| **Display type** | Bricolage Grotesque (SIL OFL 1.1) + New York Italic accents + SF Pro |
-| **Icon** | "Glow Print" — a sharp-cornered white print, tilted on a blush tile, showing a sparkle glowing pink on ink, with a heart on its chin (until Oct 2026: "Sunrise Split") |
+| **Palette** | "Blush": blush pink `#F7C1D9` and petal `#F8E0EA` with ink `#121212`, charcoal `#24272A`, paper `#F8F8F6` and white; light-first. Decorative "Aura" accents (pink `#FF5CA1`, lilac `#A78BFA`, peach `#FFAA78`, butter `#FFDE6E`, mint `#78E1CD`) for the icon, share cards and template art only |
+| **Display type** | Poppins (SIL OFL 1.1) + New York Italic accents + SF Pro |
+| **Icon** | "Glow Print", Aura edition — a sharp-cornered white print, tilted on a colorful aura tile (mint, lilac, pink, peach), showing a sparkle glowing pink on plum, with a pink heart on its chin |
 
 Full evidence: [research/brand-and-design.md](research/brand-and-design.md).
 
@@ -107,13 +107,13 @@ The first brand used Golden Hour amber `#FF9A3D` (gradient `#FFC25C → #FF7A3D`
 
 | Role | Font | Notes |
 |---|---|---|
-| Wordmark, hero and screen titles | **Bricolage Grotesque Display** (opsz 96) ExtraBold / Bold | Characterful "collage" grotesque; ink traps at display sizes |
-| Card titles, buttons | **Bricolage Grotesque Text** (opsz 24) SemiBold | Calmer forms at small sizes |
+| Wordmark, hero and screen titles | **Poppins** ExtraBold / Bold | Round, friendly geometric sans; reads well in all 12 app languages that use Latin or Cyrillic script |
+| Card titles, buttons | **Poppins** SemiBold / Medium | Calm, even forms at small sizes |
 | Everything else (body, prices, legal) | **SF Pro** | Dynamic Type, Bold Text, Apple legibility tuning |
 | Editorial accent (one word per headline: "Watch it *glow.*") | **New York Italic** (Apple system serif) | `Text(styled:size:)` sets `*words*` in the accent; scales with Dynamic Type |
 
 - **Licence:** SIL Open Font License 1.1, with no Reserved Font Name. The licence ships in the app (Settings → Acknowledgements).
-- **Implementation:** the variable font (`opsz 12–96, wdth 75–100, wght 200–800`) was cut into three static TTFs (~90 KB each) with `fontTools.varLib.instancer` so iOS can address each weight by PostScript name. Fonts are registered at launch and scale with Dynamic Type (`Font.custom(_:size:relativeTo:)`), falling back to SF Pro Rounded if missing.
+- **Implementation:** four static Poppins cuts (Medium, SemiBold, Bold, ExtraBold) ship in the app. Fonts are registered at launch and scale with Dynamic Type (`Font.custom(_:size:relativeTo:)`). Japanese, Korean and Chinese text falls back to the system fonts automatically. Poppins replaced Bricolage Grotesque in October 2026.
   - Fonts: [`ios/App/Resources/Fonts/`](../ios/App/Resources/Fonts/)
   - Code: [`Typography.swift`](../ios/App/DesignSystem/Typography.swift)
 - **Rejected:**
@@ -124,14 +124,14 @@ The first brand used Golden Hour amber `#FF9A3D` (gradient `#FFC25C → #FF7A3D`
 
 ---
 
-## 4. App icon — "Glow Print"
+## 4. App icon — "Glow Print" (Aura edition)
 
 ![App icon](assets/brand/app-icon-1024.png)
 
-**The idea:** a printed photo, tilted as if pinned to a mood board, shows a white sparkle glowing pink on ink. A small blush heart sits on the print's chin, like a note written on a photo. It replaced "Sunrise Split" (a before/after disc) in October 2026, because the app is now girl-first and the old icon read as a technical tool.
+**The idea:** a printed photo, tilted as if pinned to a mood board, shows a white sparkle glowing pink on plum. A small pink heart sits on the print's chin, like a note written on a photo. The tile is a colorful aura (mint, lilac, pink and peach with a butter glow): the colors of a glow-up. It replaced "Sunrise Split" (a before/after disc) in October 2026; the colorful Aura edition replaced the all-blush tile the same month.
 - The **sharp print** is the same language as the app's template cards and collection pages ("looks are prints, controls are soft").
 - The **sparkle glowing** is "Make it glow." and the ✦ mark used in widgets, the Live Activity and share cards.
-- The **blush tile** stands out on a Home Screen full of black and purple AI icons. Dark (ink tile, blush print) and tinted variants ship for iOS 18+ Home Screens.
+- The **aura tile** stands out on a Home Screen full of black and purple AI icons. Dark (ink tile with lilac and pink glows) and tinted variants ship for iOS 18+ Home Screens.
 - It stays legible at 29 px: a white rectangle with a bright centre.
 - It follows Apple's icon guidance: few shapes, a soft gradient background, no text and no real photo.
 

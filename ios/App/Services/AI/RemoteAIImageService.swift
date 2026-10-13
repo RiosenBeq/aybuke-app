@@ -73,7 +73,7 @@ final class RemoteAIImageService: AIImageService {
             guard let jobID = response.jobID else { throw AIServiceError.invalidResponse }
             guard Date().timeIntervalSince(started) < schedule.timeout else {
                 cancelInBackground(jobID: jobID)
-                throw AIServiceError.server(code: "timeout", message: "This is taking longer than usual. Your credit was refunded — please try again.")
+                throw AIServiceError.server(code: "timeout", message: String(localized: "This is taking longer than usual. Your credit was refunded — please try again."))
             }
             do {
                 try await Task.sleep(for: .seconds(schedule.delay(forAttempt: attempt)))
@@ -213,7 +213,7 @@ final class RemoteAIImageService: AIImageService {
 
         if let source = job.sourceImage {
             guard let jpeg = ImageUtilities.jpegData(source, maxLongEdge: uploadLongEdge, quality: 0.9) else {
-                throw AIServiceError.invalidRequest("This photo couldn't be read.")
+                throw AIServiceError.invalidRequest(String(localized: "This photo couldn't be read."))
             }
             request.image = GenerationRequest.dataURI(jpeg, mimeType: "image/jpeg")
         }
@@ -233,7 +233,7 @@ final class RemoteAIImageService: AIImageService {
         } catch is CancellationError {
             throw CancellationError()
         } catch {
-            throw AIServiceError.network("Check your internet connection and try again.")
+            throw AIServiceError.network(String(localized: "Check your internet connection and try again."))
         }
     }
 

@@ -14,38 +14,38 @@ enum EditorTool: String, CaseIterable, Identifiable {
 
     var title: String {
         switch self {
-        case .magicEdit: return "Magic Edit"
-        case .styles: return "Styles"
-        case .effects: return "Effects"
-        case .enhance: return "Enhance"
-        case .removeBackground: return "Remove BG"
-        case .erase: return "Erase"
-        case .adjust: return "Adjust"
+        case .magicEdit: return String(localized: "Magic Edit")
+        case .styles: return String(localized: "Styles")
+        case .effects: return String(localized: "Effects")
+        case .enhance: return String(localized: "Enhance")
+        case .removeBackground: return String(localized: "Remove BG")
+        case .erase: return String(localized: "Erase")
+        case .adjust: return String(localized: "Adjust")
         }
     }
 
     /// One word for the editor's bottom bar.
     var shortTitle: String {
         switch self {
-        case .magicEdit: return "Magic"
-        case .styles: return "Styles"
-        case .effects: return "Effects"
-        case .enhance: return "Enhance"
-        case .removeBackground: return "Cut out"
-        case .erase: return "Erase"
-        case .adjust: return "Adjust"
+        case .magicEdit: return String(localized: "Magic")
+        case .styles: return String(localized: "Styles")
+        case .effects: return String(localized: "Effects")
+        case .enhance: return String(localized: "Enhance")
+        case .removeBackground: return String(localized: "Cut out")
+        case .erase: return String(localized: "Erase")
+        case .adjust: return String(localized: "Adjust")
         }
     }
 
     var caption: String {
         switch self {
-        case .magicEdit: return "Describe a change"
-        case .styles: return "One-tap looks"
-        case .effects: return "80s · 90s · Y2K"
-        case .enhance: return "Sharpen & restore"
-        case .removeBackground: return "Free · on-device"
-        case .erase: return "Brush to remove"
-        case .adjust: return "Light & color"
+        case .magicEdit: return String(localized: "Describe a change")
+        case .styles: return String(localized: "One-tap looks")
+        case .effects: return String(localized: "80s · 90s · Y2K")
+        case .enhance: return String(localized: "Sharpen & restore")
+        case .removeBackground: return String(localized: "Free · on-device")
+        case .erase: return String(localized: "Brush to remove")
+        case .adjust: return String(localized: "Light & color")
         }
     }
 

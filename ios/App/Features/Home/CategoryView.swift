@@ -66,20 +66,22 @@ struct CategoryView: View {
 extension TemplateCategory {
     /// "Glow-up *looks*": the last word in the italic accent.
     var styledTitle: String {
+        let title = L10n.core(self.title)
         var words = title.split(separator: " ").map(String.init)
-        guard let last = words.popLast() else { return title }
+        // Languages written without spaces (Japanese, Chinese) keep it plain.
+        guard words.count > 1, let last = words.popLast() else { return title }
         return (words + ["*\(last)*"]).joined(separator: " ")
     }
 
     var blurb: String {
         switch self {
-        case .trending: return "What everyone's posting right now."
-        case .glowUp: return "Hair, makeup and glam, and still 100% you."
-        case .aesthetic: return "Moods, places and colours for your feed."
-        case .dreamy: return "Soft, magical portraits."
-        case .seasonal: return "Limited looks for this season."
-        case .art: return "Turn any photo into art."
-        case .business: return "Polished photos for work and your shop."
+        case .trending: return String(localized: "What everyone's posting right now.")
+        case .glowUp: return String(localized: "Hair, makeup and glam, and still 100% you.")
+        case .aesthetic: return String(localized: "Moods, places and colours for your feed.")
+        case .dreamy: return String(localized: "Soft, magical portraits.")
+        case .seasonal: return String(localized: "Limited looks for this season.")
+        case .art: return String(localized: "Turn any photo into art.")
+        case .business: return String(localized: "Polished photos for work and your shop.")
         }
     }
 }

@@ -13,8 +13,8 @@ enum TrialReminder {
         guard granted else { return }
 
         let content = UNMutableNotificationContent()
-        content.title = "Your free trial ends tomorrow"
-        content.body = "You'll be charged \(price) unless you cancel. Manage it anytime in Settings › Apple Account › Subscriptions."
+        content.title = String(localized: "Your free trial ends tomorrow")
+        content.body = String(localized: "You'll be charged \(price) unless you cancel. Manage it anytime in Settings › Apple Account › Subscriptions.")
         content.sound = .default
 
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: TimeInterval(trialDays - 1) * 86_400, repeats: false)

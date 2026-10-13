@@ -2,7 +2,7 @@ import SwiftUI
 
 /// Capsule chip: white when idle, blush with ink text when selected.
 struct SelectableChip: View {
-    let title: String
+    let title: LocalizedStringKey
     var symbolName: String?
     let isSelected: Bool
     var isLocked = false

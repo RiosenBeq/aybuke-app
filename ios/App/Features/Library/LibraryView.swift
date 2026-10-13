@@ -69,7 +69,9 @@ struct LibraryView: View {
                                             }
                                         }
                                         .contentShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
-                                        .accessibilityLabel(creation.isFavorite ? "\(creation.title), favorite" : creation.title)
+                                        .accessibilityLabel(creation.isFavorite
+                                            ? String(localized: "\(L10n.core(creation.title)), favorite")
+                                            : L10n.core(creation.title))
                                 }
                             }
                         }
@@ -199,7 +201,7 @@ struct CreationDetailView: View {
             }
 
             VStack(alignment: .leading, spacing: 4) {
-                Text(creation.title)
+                Text(L10n.core(creation.title))
                     .font(.cardTitle)
                     .foregroundStyle(Palette.textPrimary)
                     .lineLimit(2)
@@ -268,7 +270,8 @@ struct CreationDetailView: View {
         guard let image else { return }
         Task {
             do {
-                try await PhotoLibrarySaver.save(image, operation: creation.operation, watermark: !app.purchases.isPro)
+                let usedCloudAI = creation.operation.map { !$0.runsOnDevice } ?? false
+                try await PhotoLibrarySaver.save(image, operation: creation.operation, watermark: !app.purchases.isPro && usedCloudAI)
                 app.showToast("Saved to Photos", style: .success)
                 Haptics.success()
             } catch {

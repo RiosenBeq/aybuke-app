@@ -60,7 +60,7 @@
           },
           "localizations": [
             {
-              "description": "100 credits a month, every template, HD exports",
+              "description": "100 credits a month, every template, best-quality AI",
               "displayName": "Glowlit Pro Yearly",
               "locale": "en_US"
             }
@@ -81,7 +81,7 @@
           "internalID": "6739100012",
           "localizations": [
             {
-              "description": "100 credits a month, every template, HD exports",
+              "description": "100 credits a month, every template, best-quality AI",
               "displayName": "Glowlit Pro Monthly",
               "locale": "en_US"
             }

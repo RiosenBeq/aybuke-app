@@ -40,17 +40,17 @@ struct TrendWidgetView: View {
                 Label("Today's trend", systemImage: "sparkles")
                     .font(.caption2.weight(.semibold))
                     .widgetAccentable()
-                Text(entry.template.title)
+                Text(L10n.core(entry.template.title))
                     .font(.headline)
                     .lineLimit(1)
-                Text(entry.template.subtitle)
+                Text(L10n.core(entry.template.subtitle))
                     .font(.caption2)
                     .lineLimit(1)
                     .foregroundStyle(.secondary)
             }
             .containerBackground(for: .widget) { Color.clear }
         case .accessoryInline:
-            Label("Trend: \(entry.template.title)", systemImage: "sparkles")
+            Label("Trend: \(L10n.core(entry.template.title))", systemImage: "sparkles")
                 .containerBackground(for: .widget) { Color.clear }
         case .systemMedium:
             medium
@@ -84,12 +84,13 @@ struct TrendWidgetView: View {
             }
             Spacer(minLength: 6)
             eyebrow
-            Text(entry.template.title)
+            Text(L10n.core(entry.template.title))
                 .font(.widgetTitle(19))
                 .foregroundStyle(WidgetPalette.ink)
                 .lineLimit(2)
                 .minimumScaleFactor(0.8)
-            Text("\(Text("Try it ").font(.system(size: 13, weight: .semibold, design: .rounded)))\(Text("on you").font(.widgetAccent(14)))")
+            Text("Try it on you")
+                .font(.system(size: 13, weight: .semibold, design: .rounded))
                 .foregroundStyle(WidgetPalette.ink.opacity(0.75))
         }
         .containerBackground(for: .widget) { GlowWash() }
@@ -100,12 +101,12 @@ struct TrendWidgetView: View {
         HStack(spacing: 16) {
             VStack(alignment: .leading, spacing: 6) {
                 eyebrow
-                Text(entry.template.title)
+                Text(L10n.core(entry.template.title))
                     .font(.widgetTitle(24))
                     .foregroundStyle(WidgetPalette.ink)
                     .lineLimit(1)
                     .minimumScaleFactor(0.8)
-                Text(entry.template.subtitle)
+                Text(L10n.core(entry.template.subtitle))
                     .font(.system(size: 13, weight: .medium, design: .rounded))
                     .foregroundStyle(WidgetPalette.inkSoft)
                     .lineLimit(2)

@@ -13,11 +13,11 @@ enum LegalDocument: String, CaseIterable, Identifiable, Hashable {
 
     func title(in language: LegalLanguage) -> String {
         switch (self, language) {
-        case (.terms, .en): return "Terms of Use"
+        case (.terms, .en): return String(localized: "Terms of Use")
         case (.terms, .tr): return "Kullanım Koşulları"
-        case (.privacy, .en): return "Privacy Policy"
+        case (.privacy, .en): return String(localized: "Privacy Policy")
         case (.privacy, .tr): return "Gizlilik Politikası"
-        case (.acceptableUse, .en): return "Acceptable Use Policy"
+        case (.acceptableUse, .en): return String(localized: "Acceptable Use Policy")
         case (.acceptableUse, .tr): return "Kabul Edilebilir Kullanım"
         case (.kvkk, _): return "KVKK Aydınlatma Metni"
         }
@@ -62,7 +62,7 @@ enum LegalLanguage: String, CaseIterable, Identifiable {
     case en, tr
 
     var id: String { rawValue }
-    var label: String { self == .en ? "English" : "Türkçe" }
+    var label: String { self == .en ? (Locale.current.localizedString(forLanguageCode: "en") ?? "English") : "Türkçe" }
 
     static var preferred: LegalLanguage {
         Locale.preferredLanguages.first?.lowercased().hasPrefix("tr") == true ? .tr : .en

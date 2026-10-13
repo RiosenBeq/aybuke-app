@@ -66,7 +66,7 @@ final class DirectAIImageService: AIImageService {
         )
         if let source = job.sourceImage {
             guard let jpeg = ImageUtilities.jpegData(source, maxLongEdge: RemoteAIImageService.uploadLongEdge, quality: 0.9) else {
-                throw AIServiceError.invalidRequest("This photo couldn't be read.")
+                throw AIServiceError.invalidRequest(String(localized: "This photo couldn't be read."))
             }
             input.image = jpeg
         }
@@ -161,7 +161,7 @@ final class DirectAIImageService: AIImageService {
             if FalDirectAPI.decodeStatus(data: statusData) == "COMPLETED" { break }
             guard Date().timeIntervalSince(started) < schedule.timeout else {
                 cancelFal(queued)
-                throw AIServiceError.server(code: "timeout", message: "This is taking longer than usual. Please try again.")
+                throw AIServiceError.server(code: "timeout", message: String(localized: "This is taking longer than usual. Please try again."))
             }
         }
         let (resultData, resultResponse) = try await load(FalDirectAPI.authorized(queued.responseURL, key: config.apiKey))
@@ -194,7 +194,7 @@ final class DirectAIImageService: AIImageService {
         } catch let error as AIServiceError {
             throw error
         } catch {
-            throw AIServiceError.network("Check your internet connection and try again.")
+            throw AIServiceError.network(String(localized: "Check your internet connection and try again."))
         }
     }
 }

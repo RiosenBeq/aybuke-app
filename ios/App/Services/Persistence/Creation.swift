@@ -44,5 +44,5 @@ final class Creation {
     /// by hand (so exports make no AI claim).
     var operation: AIOperation? { AIOperation(rawValue: operationRaw) }
 
-    var kindTitle: String { operation?.displayName ?? "Adjusted" }
+    var kindTitle: String { operation.map { L10n.core($0.displayName) } ?? String(localized: "Adjusted") }
 }

@@ -32,8 +32,8 @@ enum VideoEngine {
 
         var errorDescription: String? {
             switch self {
-            case .noVideo: return "That file doesn't have a video track."
-            case .exportFailed: return "Couldn't save the video. Please try again."
+            case .noVideo: return String(localized: "That file doesn't have a video track.")
+            case .exportFailed: return String(localized: "Couldn't save the video. Please try again.")
             }
         }
     }

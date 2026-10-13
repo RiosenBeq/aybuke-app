@@ -103,6 +103,8 @@ To verify purchases, we receive Apple-signed transaction data, including transac
 
 For subscriptions, we keep an entitlement record: the Apple original transaction ID, the product ID, the expiry date, a revoked flag and the environment, linked to your anonymous user ID.
 
+To understand how our subscriptions perform (trials, renewals, cancellations, refunds), the app also shares the same purchase records with our subscription analytics provider, RevenueCat, together with your anonymous user ID and basic device and app information (app version, iOS version, country and language). RevenueCat never receives your photos, prompts or results.
+
 ### Reports
 
 If you use "Report this image", we receive the reason you select, any details you choose to add, the related job ID, your anonymous user ID and timestamps.
@@ -193,6 +195,7 @@ These companies process personal data on our behalf. We keep this list up to dat
 - **xAI (X.AI LLC and its affiliates)** (USA): AI inference, meaning it runs the Grok Imagine models for cloud AI features and checks their results with its own moderation. Data: photos, masks, prompts and results, for the duration of the request. Zero Data Retention is on: requests and results are deleted within 1 hour, and nothing is used to train models.
 - **Features & Labels, Inc. (fal.ai)** (USA): the automated output safety check where we use it, and an alternative AI provider. Data: results (and, if we route jobs to fal.ai, photos, masks and prompts), for the duration of the request. Request history is disabled, and results are deleted within 1 hour.
 - **Developers of the models that fal.ai runs**, for example **Google LLC** (USA) for Gemini image models: where fal.ai uses the developer's own service to run a model, that developer processes the inputs and results of the request on fal.ai's behalf.
+- **RevenueCat, Inc.** (USA): subscription analytics. Data: anonymous user ID, purchase and subscription records (product, price, dates, status, transaction IDs) and basic device and app information. No photos, prompts or results.
 - **Google LLC** (USA), Gemini API: alternative AI provider, used only if we route jobs directly to Google.
 - **OpenAI** (USA), Images API: alternative AI provider, used only if we route jobs directly to OpenAI.
 - **Our email service provider**: receives and stores the emails you send us.

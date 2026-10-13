@@ -173,7 +173,7 @@ struct VideoEditorView: View {
         .tint(Palette.accent)
         .overlay {
             if model.isExporting {
-                GeneratingOverlay(title: "Saving your video…")
+                GeneratingOverlay(title: String(localized: "Saving your video…"))
                     .transition(.opacity)
             }
         }
@@ -237,7 +237,7 @@ struct VideoEditorView: View {
                         model.effect = nil
                     }
                     ForEach(RetroEffect.videoEffects) { effect in
-                        EffectChoice(title: effect.title, image: model.effectThumbnails[effect], isSelected: model.effect == effect) {
+                        EffectChoice(title: LocalizedStringKey(effect.title), image: model.effectThumbnails[effect], isSelected: model.effect == effect) {
                             Haptics.selection()
                             model.effect = effect
                         }
@@ -248,6 +248,16 @@ struct VideoEditorView: View {
             .scrollIndicators(.hidden)
             .scrollClipDisabled()
             .fixedSize(horizontal: false, vertical: true)
+
+            if model.effect?.hasDateStamp == true {
+                Toggle(isOn: $model.dateStamp) {
+                    Label("Date stamp", systemImage: "calendar")
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(Palette.textPrimary)
+                }
+                .tint(Palette.accent)
+                .transition(.opacity)
+            }
 
             if model.duration > 1 {
                 VStack(alignment: .leading, spacing: 6) {
@@ -317,7 +327,7 @@ struct VideoEditorView: View {
 }
 
 private struct EffectChoice: View {
-    let title: String
+    let title: LocalizedStringKey
     let image: UIImage?
     let isSelected: Bool
     let action: () -> Void

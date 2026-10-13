@@ -43,18 +43,18 @@ final class DemoAIImageService: AIImageService {
             return [try transform(job.sourceImage) { ImageFilters.stylize($0, seed: seed) }]
         case .eraseObject:
             guard let maskImage = job.mask, let mask = ImageFilters.ciImage(maskImage) else {
-                throw AIServiceError.invalidRequest("Brush over the area you want to erase.")
+                throw AIServiceError.invalidRequest(String(localized: "Brush over the area you want to erase."))
             }
             return [try transform(job.sourceImage) { ImageFilters.blurInpaint($0, mask: mask) }]
         case .removeBackground:
-            guard let source = job.sourceImage else { throw AIServiceError.invalidRequest("Pick a photo first.") }
+            guard let source = job.sourceImage else { throw AIServiceError.invalidRequest(String(localized: "Pick a photo first.")) }
             return [try OnDeviceImageService.removeBackground(from: source)]
         }
     }
 
     private static func transform(_ image: UIImage?, _ body: (CIImage) -> CIImage) throws -> UIImage {
         guard let image, let input = ImageFilters.ciImage(image) else {
-            throw AIServiceError.invalidRequest("Pick a photo first.")
+            throw AIServiceError.invalidRequest(String(localized: "Pick a photo first."))
         }
         let output = body(input)
         let extent = output.extent.isInfinite ? input.extent : output.extent.integral

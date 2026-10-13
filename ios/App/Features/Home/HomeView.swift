@@ -155,7 +155,7 @@ struct HomeView: View {
             ScrollView(.horizontal) {
                 HStack(spacing: 12) {
                     ForEach(Array(EditorTool.quickTools.enumerated()), id: \.element) { index, tool in
-                        QuickToolTile(title: tool.title, caption: tool.caption, symbolName: tool.symbolName, palette: Self.toolPalettes[index % Self.toolPalettes.count]) {
+                        QuickToolTile(title: LocalizedStringKey(tool.title), caption: LocalizedStringKey(tool.caption), symbolName: tool.symbolName, palette: Self.toolPalettes[index % Self.toolPalettes.count]) {
                             Haptics.tap()
                             app.startEditing(tool: tool)
                         }
@@ -181,7 +181,7 @@ struct HomeView: View {
 
     private func templateRow(_ category: TemplateCategory) -> some View {
         VStack(alignment: .leading, spacing: 14) {
-            SectionHeader(title: category.title, actionTitle: "See all") {
+            SectionHeader(title: LocalizedStringKey(category.title), actionTitle: "See all") {
                 Haptics.tap()
                 openCategory = category
             }
@@ -285,8 +285,8 @@ struct HomeView: View {
 }
 
 private struct QuickToolTile: View {
-    let title: String
-    let caption: String
+    let title: LocalizedStringKey
+    let caption: LocalizedStringKey
     let symbolName: String
     var palette: AuraPalette = .bubblegum
     let action: () -> Void

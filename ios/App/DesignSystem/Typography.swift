@@ -78,6 +78,12 @@ private extension Font.TextStyle {
 extension Text {
     /// Display headline where words wrapped in `*asterisks*` are set in the
     /// italic serif accent: `Text(styled: "Your photos, in their *best light*", size: 34)`.
+    init(styled source: LocalizedStringResource, size: CGFloat, weight: Font.Weight = .bold, relativeTo style: Font.TextStyle = .largeTitle) {
+        self.init(styled: String(localized: source), size: size, weight: weight, relativeTo: style)
+    }
+
+    /// For text that's already localized.
+    @_disfavoredOverload
     init(styled source: String, size: CGFloat, weight: Font.Weight = .bold, relativeTo style: Font.TextStyle = .largeTitle) {
         let parts = source.components(separatedBy: "*")
         var text = Text(verbatim: "")

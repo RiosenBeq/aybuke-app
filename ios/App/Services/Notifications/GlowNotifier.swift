@@ -97,8 +97,9 @@ final class GlowNotifier {
         }
         for item in plan where item.date > Date() {
             let content = UNMutableNotificationContent()
-            content.title = item.title
-            content.body = item.body
+            let copy = Self.localizedCopy(for: item, dailyCredits: dailyCredits)
+            content.title = copy.title
+            content.body = copy.body
             content.sound = .default
             content.userInfo = ["link": item.link.url.absoluteString]
             content.threadIdentifier = item.kind.rawValue
@@ -113,13 +114,34 @@ final class GlowNotifier {
     func notifyJobFinished(success: Bool, title: String) {
         guard preferences.glowReady, isAllowedBySystem,
               UIApplication.shared.applicationState != .active else { return }
-        let copy = NotificationPlanner.jobFinished(success: success, title: title)
         let content = UNMutableNotificationContent()
+        let copy = success
+            ? (title: String(localized: "Your glow-up is ready ✨"),
+               body: String(localized: "Tap to see “\(L10n.core(title).shortened(to: 40))”."))
+            : (title: String(localized: "That one didn't work"),
+               body: String(localized: "No credit was used. Tap to try again."))
         content.title = copy.title
         content.body = copy.body
         content.sound = .default
         content.threadIdentifier = GlowNotificationKind.glowReady.rawValue
         UNUserNotificationCenter.current().add(UNNotificationRequest(identifier: "glowlit.job.\(UUID().uuidString)", content: content, trigger: nil))
+    }
+
+    /// The planner decides when; the words are in the user's language.
+    private static func localizedCopy(for item: PlannedNotification, dailyCredits: Int) -> (title: String, body: String) {
+        switch item.kind {
+        case .creditsBack:
+            return (String(localized: "Your free credits are back ✨"),
+                    String(localized: "\(dailyCredits) fresh credits for today. What are we glowing up?"))
+        case .weeklyLook:
+            guard case .template(let id) = item.link, let look = TemplateCatalog.template(id: id) else {
+                return (item.title, item.body)
+            }
+            return (String(localized: "This week's look: \(L10n.core(look.title)) ✨"),
+                    String(localized: "\(L10n.core(look.subtitle)). Try it on your photo."))
+        case .glowReady:
+            return (item.title, item.body)
+        }
     }
 
     private func persist() {

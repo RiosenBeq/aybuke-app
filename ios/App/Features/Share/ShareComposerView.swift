@@ -123,7 +123,7 @@ struct ShareComposerView: View {
         ScrollView(.horizontal) {
             HStack(spacing: 8) {
                 ForEach(formats) { option in
-                    SelectableChip(title: option.title, symbolName: option.symbolName, isSelected: format == option) {
+                    SelectableChip(title: LocalizedStringKey(option.title), symbolName: option.symbolName, isSelected: format == option) {
                         Haptics.selection()
                         withAnimation(.snappy) { format = option }
                     }
@@ -304,7 +304,7 @@ struct ShareComposerView: View {
 }
 
 private struct ShareTarget: View {
-    let title: String
+    let title: LocalizedStringKey
     let symbol: String
     var isPrimary = false
     let action: () -> Void

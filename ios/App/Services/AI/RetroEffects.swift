@@ -34,7 +34,7 @@ enum RetroEffect: String, CaseIterable, Identifiable {
         case .vhs, .instant, .neon: return "80s"
         case .disposable, .glamour: return "90s"
         case .digicam: return "Y2K"
-        case .kira: return "Sparkle"
+        case .kira: return String(localized: "Sparkle")
         }
     }
 

@@ -76,7 +76,7 @@ enum ShareRenderer {
         let rendered = render(payload, format: format, branded: branded, showPrompt: showPrompt)
         guard aiLabel, let operation = payload.operation else { return rendered }
         let reservedBottom: CGFloat = format.isStory ? 300 : format == .cover ? 70 : 0
-        return addAILabel(to: rendered, text: operation == .textToImage ? "Made with AI" : "AI-edited", reservedBottom: reservedBottom)
+        return addAILabel(to: rendered, text: operation == .textToImage ? String(localized: "Made with AI") : String(localized: "AI-edited"), reservedBottom: reservedBottom)
     }
 
     private static func render(_ payload: SharePayload, format: ShareFormat, branded: Bool, showPrompt: Bool) -> UIImage {
@@ -147,9 +147,9 @@ enum ShareRenderer {
             radialGlow(cg, center: CGPoint(x: 940, y: 1650), radius: 760, color: .brandBlush, alpha: 0.9)
 
             // Instagram keeps ~250 px at the top and bottom for its own UI.
-            drawText("Help me pick", font: brandFont(96, weight: .heavy), color: .brandInk,
+            drawText(String(localized: "Help me pick"), font: brandFont(96, weight: .heavy), color: .brandInk,
                      centeredIn: CGRect(x: 0, y: 300, width: canvas.width, height: 120))
-            drawText("which one should I post?", font: accentFont(54), color: .brandInk,
+            drawText(String(localized: "which one should I post?"), font: accentFont(54), color: .brandInk,
                      centeredIn: CGRect(x: 0, y: 420, width: canvas.width, height: 80))
 
             let slot = CGSize(width: 430, height: 760)
@@ -180,10 +180,10 @@ enum ShareRenderer {
                          color: index == 0 ? .brandBlush : .brandInk, centeredIn: badge)
             }
 
-            drawText("Reply A or B ♡", font: brandFont(46, weight: .bold), color: .brandInk,
+            drawText(String(localized: "Reply A or B ♡"), font: brandFont(46, weight: .bold), color: .brandInk,
                      centeredIn: CGRect(x: 0, y: 1500, width: canvas.width, height: 70))
             if branded {
-                drawText("Made with \(Brand.name) ✦", font: brandFont(34, weight: .semibold), color: .brandInk,
+                drawText(String(localized: "Made with \(Brand.name) ✦"), font: brandFont(34, weight: .semibold), color: .brandInk,
                          centeredIn: CGRect(x: 0, y: canvas.height - 300, width: canvas.width, height: 60))
             }
         }
@@ -218,7 +218,7 @@ enum ShareRenderer {
                 drawTag(label, at: CGPoint(x: rect.minX + unit * 0.02, y: rect.minY + unit * 0.02), size: unit * 0.026, highlighted: label == "AFTER")
             }
             if branded {
-                drawText("Made with \(Brand.name) ✦", font: brandFont(unit * 0.034), color: .brandInk,
+                drawText(String(localized: "Made with \(Brand.name) ✦"), font: brandFont(unit * 0.034), color: .brandInk,
                          centeredIn: CGRect(x: 0, y: canvas.height - padding - footer * 0.85, width: canvas.width, height: footer))
             }
         }
@@ -268,7 +268,7 @@ enum ShareRenderer {
             if branded {
                 drawText(Brand.name, font: brandFont(64, weight: .heavy), color: .brandInk,
                          centeredIn: CGRect(x: 0, y: 150, width: canvas.width, height: 90))
-                drawText("Made with \(Brand.name) ✦  ·  \(Brand.tagline)", font: brandFont(34, weight: .semibold), color: .brandInk,
+                drawText(String(localized: "Made with \(Brand.name) ✦  ·  \(Brand.tagline)"), font: brandFont(34, weight: .semibold), color: .brandInk,
                          centeredIn: CGRect(x: 0, y: canvas.height - 300, width: canvas.width, height: 60))
             }
         }
@@ -354,7 +354,7 @@ enum ShareCaption {
         if let prompt = payload.shareablePrompt {
             lines.append("“\(prompt)”")
         }
-        lines.append("Made with \(Brand.name) ✦ \(Brand.tagline)")
+        lines.append(String(localized: "Made with \(Brand.name) ✦ \(Brand.tagline)"))
         if let link {
             lines.append(link.absoluteString)
         }

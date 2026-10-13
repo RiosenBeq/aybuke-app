@@ -88,6 +88,7 @@
 <p>Apple processes all payments. We never receive your card details, your name or your Apple Account email address.</p>
 <p>To verify purchases, we receive Apple-signed transaction data, including transaction IDs, the product ID, purchase and expiry dates, the environment (sandbox or production) and an app account token that equals your anonymous user ID. Apple keeps this token with its purchase records under Apple's own privacy policy.</p>
 <p>For subscriptions, we keep an entitlement record: the Apple original transaction ID, the product ID, the expiry date, a revoked flag and the environment, linked to your anonymous user ID.</p>
+<p>To understand how our subscriptions perform (trials, renewals, cancellations, refunds), the app also shares the same purchase records with our subscription analytics provider, RevenueCat, together with your anonymous user ID and basic device and app information (app version, iOS version, country and language). RevenueCat never receives your photos, prompts or results.</p>
 <h3>Reports</h3>
 <p>If you use "Report this image", we receive the reason you select, any details you choose to add, the related job ID, your anonymous user ID and timestamps.</p>
 <h3>Server and security logs</h3>
@@ -157,6 +158,7 @@
 <li><strong>xAI (X.AI LLC and its affiliates)</strong> (USA): AI inference, meaning it runs the Grok Imagine models for cloud AI features and checks their results with its own moderation. Data: photos, masks, prompts and results, for the duration of the request. Zero Data Retention is on: requests and results are deleted within 1 hour, and nothing is used to train models.</li>
 <li><strong>Features &amp; Labels, Inc. (fal.ai)</strong> (USA): the automated output safety check where we use it, and an alternative AI provider. Data: results (and, if we route jobs to fal.ai, photos, masks and prompts), for the duration of the request. Request history is disabled, and results are deleted within 1 hour.</li>
 <li><strong>Developers of the models that fal.ai runs</strong>, for example <strong>Google LLC</strong> (USA) for Gemini image models: where fal.ai uses the developer's own service to run a model, that developer processes the inputs and results of the request on fal.ai's behalf.</li>
+<li><strong>RevenueCat, Inc.</strong> (USA): subscription analytics. Data: anonymous user ID, purchase and subscription records (product, price, dates, status, transaction IDs) and basic device and app information. No photos, prompts or results.</li>
 <li><strong>Google LLC</strong> (USA), Gemini API: alternative AI provider, used only if we route jobs directly to Google.</li>
 <li><strong>OpenAI</strong> (USA), Images API: alternative AI provider, used only if we route jobs directly to OpenAI.</li>
 <li><strong>Our email service provider</strong>: receives and stores the emails you send us.</li>
