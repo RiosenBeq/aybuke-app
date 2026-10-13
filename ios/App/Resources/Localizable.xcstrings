@@ -3052,7 +3052,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pembe makaronlar ve kalp şeklinde keklerle dolu bir pastane vitrini"
+            "value" : "Pembe makaronlar ve kalp şeklinde cupcake'lerle dolu bir pastane vitrini"
           }
         },
         "zh-Hans" : {
@@ -4113,7 +4113,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Çoğu yapay zekâ fotoğraf uygulamasının neredeyse yarı fiyatına. Haftalık abonelik asla yok."
+            "value" : "Çoğu yapay zekâ fotoğraf uygulamasının yaklaşık yarı fiyatına. Haftalık abonelik asla yok."
           }
         },
         "zh-Hans" : {
@@ -5725,7 +5725,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Yapay zekâ işlemeye izin ver"
+            "value" : "Yapay zekâ ile işlemeye izin ver"
           }
         },
         "zh-Hans" : {
@@ -5796,7 +5796,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bu özelliği kullanmak için yapay zekâ işlemeye izin ver."
+            "value" : "Bu özelliği kullanmak için yapay zekâ ile işlemeye izin ver."
           }
         },
         "zh-Hans" : {
@@ -12477,7 +12477,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bir şey oluştur"
+            "value" : "Bir şeyler oluştur"
           }
         },
         "zh-Hans" : {
@@ -18181,7 +18181,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ücretsiz · en iyi selfie"
+            "value" : "Ücretsiz · selfie sıralar"
           }
         },
         "zh-Hans" : {
@@ -21908,7 +21908,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Açık, imza pembe görünümümüz. Otomatik, iPhone'unun ayarına uyar."
+            "value" : "“Açık”, imza pembe görünümümüz. “Otomatik”, iPhone'unun ayarına uyar."
           }
         },
         "zh-Hans" : {
@@ -24587,7 +24587,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Yok"
+            "value" : "Orijinal"
           }
         },
         "zh-Hans" : {
@@ -28317,7 +28317,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "CV Fotoğrafı"
+            "value" : "Pro Portre"
           }
         },
         "zh-Hans" : {
@@ -35126,7 +35126,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Burada görmek için bir eserdeki ♡ simgesine dokun."
+            "value" : "Buraya eklemek için bir eserdeki ♡ simgesine dokun."
           }
         },
         "zh-Hans" : {
@@ -36882,7 +36882,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bu işlem, bu iPhone'da %@ içinde kayıtlı tüm görselleri siler. Fotoğraf arşivine kaydettiğin fotoğraflar orada kalır."
+            "value" : "Bu iPhone'da %@ içinde kayıtlı tüm görseller silinir. Fotoğraf arşivine kaydettiğin fotoğraflar orada kalır."
           }
         },
         "zh-Hans" : {
