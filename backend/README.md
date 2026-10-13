@@ -13,6 +13,7 @@ iOS app ──► Supabase Auth (anonymous JWT)
    ├─► DELETE /functions/v1/ai-image?job_id=…   cancel job   ──► fal cancel + exact credit refund
    ├─► GET    /functions/v1/ai-image            balance
    ├─► POST   /functions/v1/credits-redeem      credit pack  ──► Apple JWS verification → grant once
+   ├─► POST   /functions/v1/report              "Report this image" (reason, job id) → public.reports
    └─► DELETE /functions/v1/account             delete user and all data (cascades)
 ```
 
@@ -59,13 +60,23 @@ Prices, latency and alternatives: [`docs/research/tech-and-compliance.md`](../do
    ```
 5. **Deploy functions**
    ```bash
-   supabase functions deploy ai-image credits-redeem account
+   supabase functions deploy ai-image credits-redeem account report
    ```
-6. **Schedule the sweeper** (fails and refunds stuck jobs, deletes job rows after 30 days): enable the `pg_cron` extension, then run
+6. **Schedule the sweeper** (fails and refunds stuck jobs, clears job outputs after 1 hour, deletes job rows after 30 days and reports after 12 months): enable the `pg_cron` extension, then run
    ```sql
    select cron.schedule('sweep-jobs', '*/5 * * * *', 'select public.sweep_jobs()');
    ```
 7. **Point the app at it** — in `ios/App/Resources/AppConfig.json` set `backendBaseURL` to `https://<project-ref>.supabase.co` and `supabaseAnonKey` to the project's publishable (anon) key. Both are public by design; access is enforced by JWTs, RLS and the functions themselves.
+
+## Reports
+
+`POST /report` stores a user's "Report this image" in `public.reports` (reason, optional details, the user's own job id) with a limit of 20 reports a day. Review open reports in the Supabase dashboard (`status = 'open'`) and set `status` to `reviewed`, `actioned` or `dismissed`. Reports are deleted after 12 months by `sweep_jobs()`, or with the account.
+
+## Which AI key goes where
+
+- **Production (this backend):** the provider key lives only in Edge Function secrets (`FAL_KEY` in `.env`, then `supabase secrets set --env-file .env`). It never ships in the app.
+- **Trying a key before the backend exists:** put it in `ios/Config/Secrets.xcconfig` (git-ignored, DEBUG builds only). The app then calls fal.ai, OpenAI or Google Gemini directly. See the repository README, "Connect an AI provider".
+- The backend currently runs jobs on fal.ai. OpenAI and Gemini work in the app's developer mode; add a backend adapter for them in `_shared/` before using them in production.
 
 ## Credit rules
 
@@ -83,7 +94,7 @@ Change the numbers in `credit_policy()` (new migration) to retune pricing withou
 
 ```bash
 # Type-check, lint and format-check the Edge Functions (Deno 2)
-cd backend/supabase/functions && deno check ai-image/index.ts credits-redeem/index.ts account/index.ts && deno lint && deno fmt --check
+cd backend/supabase/functions && deno check ai-image/index.ts credits-redeem/index.ts account/index.ts report/index.ts && deno lint && deno fmt --check
 
 # Run the migration + ledger tests on a throwaway PostgreSQL 14+
 backend/scripts/test-db.sh

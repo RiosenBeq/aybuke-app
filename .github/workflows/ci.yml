@@ -36,9 +36,17 @@ jobs:
         run: |
           deno fmt --check
           deno lint
-          deno check ai-image/index.ts credits-redeem/index.ts account/index.ts
+          deno check ai-image/index.ts credits-redeem/index.ts account/index.ts report/index.ts
       - name: Credit ledger tests on PostgreSQL
         run: backend/scripts/test-db.sh
+
+  docs:
+    name: Legal documents in sync
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Bundled and published copies match legal/
+        run: python3 scripts/build-legal.py --check
 
   ios:
     name: iOS app build (Xcode)

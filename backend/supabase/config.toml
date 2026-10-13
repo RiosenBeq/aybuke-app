@@ -14,3 +14,6 @@ verify_jwt = true
 
 [functions.account]
 verify_jwt = true
+
+[functions.report]
+verify_jwt = true
