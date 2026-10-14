@@ -4,6 +4,7 @@ import AppCore
 struct CreateView: View {
     @Environment(AppModel.self) private var app
     @State private var model = CreateViewModel()
+    @State private var showsCredits = false
     @FocusState private var isPromptFocused: Bool
 
     var body: some View {
@@ -60,6 +61,12 @@ struct CreateView: View {
             }
             .animation(.easeInOut(duration: 0.2), value: model.undoPrompt)
             .animation(.snappy, value: model.prompt.isEmpty)
+            .sheet(isPresented: $showsCredits) {
+                CreditsSheet()
+                    .environment(app)
+                    .presentationDetents([.medium, .large])
+                    .presentationBackground(Palette.background)
+            }
             .onAppear {
                 app.writer.prewarm()
                 // Her draft survives leaving the tab (and the app).
@@ -285,18 +292,20 @@ struct CreateView: View {
     }
 
     private var generateBar: some View {
-        Button {
-            isPromptFocused = false
-            model.generate(app: app)
-        } label: {
-            CostLabel(title: "Generate", cost: app.credits.cost(of: .textToImage, outputs: model.count), isLoading: model.isGenerating)
+        VStack(spacing: 0) {
+            Button {
+                isPromptFocused = false
+                model.generate(app: app)
+            } label: {
+                CostLabel(title: "Generate", cost: app.credits.cost(of: .textToImage, outputs: model.count), isLoading: model.isGenerating)
+            }
+            .buttonStyle(.primary)
+            .disabled(!model.canGenerate)
+            .keyboardShortcut(.return, modifiers: .command)
+            creditsLink
         }
-        .buttonStyle(.primary)
-        .disabled(!model.canGenerate)
-        .keyboardShortcut(.return, modifiers: .command)
         .padding(.horizontal, Metrics.gutter)
         .padding(.top, 10)
-        .padding(.bottom, 8)
         .readableWidth(Metrics.compactWidth, alignment: .center)
         .background(
             LinearGradient(colors: [Palette.background.opacity(0), Palette.background], startPoint: .top, endPoint: .center)
@@ -305,6 +314,26 @@ struct CreateView: View {
                 .padding(.bottom, -32)
                 .ignoresSafeArea()
         )
+    }
+
+    /// Her balance next to the price, so she knows before she taps; a tap
+    /// explains credits and when they refill.
+    private var creditsLink: some View {
+        Button {
+            Haptics.tap()
+            showsCredits = true
+        } label: {
+            Label("\(app.credits.balance) credits left", systemImage: app.purchases.isPro ? "crown.fill" : "bolt.fill")
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(Palette.textSecondary)
+                .contentTransition(.numericText(value: Double(app.credits.balance)))
+                .animation(Motion.bouncy, value: app.credits.balance)
+                .padding(.horizontal, 12)
+                .frame(minHeight: 44)
+                .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .accessibilityHint("Shows your credits and how they work")
     }
 }
 

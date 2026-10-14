@@ -29,6 +29,7 @@ struct CategoryView: View {
                             .aspectRatio(3 / 4, contentMode: .fit)
                         }
                         .buttonStyle(.pressable)
+                        .accessibilityHint(template.lookHint(isPro: app.purchases.isPro))
                         .reveal(1 + min(index, 7))
                     }
                 }
@@ -53,6 +54,12 @@ struct CategoryView: View {
             Text(category.blurb)
                 .font(.subheadline)
                 .foregroundStyle(Palette.textSecondary)
+            // A tap on a look runs it on her photo right away, so the price
+            // is said here, before the credit is spent.
+            Label("\(app.credits.cost(of: .restyle)) credit per look · failed looks are refunded", systemImage: "bolt.fill")
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(Palette.textSecondary)
+                .padding(.top, 2)
             Rectangle()
                 .fill(Palette.accent)
                 .frame(width: 44, height: 3)
@@ -60,6 +67,13 @@ struct CategoryView: View {
                 .accessibilityHidden(true)
         }
         .padding(.top, 4)
+    }
+}
+
+extension PhotoTemplate {
+    /// VoiceOver: what a tap on the look's card on Explore does next.
+    func lookHint(isPro: Bool) -> Text {
+        self.isPro && !isPro ? Text("Upgrade to \(Brand.name) Pro") : Text("Choose a photo to try this look")
     }
 }
 

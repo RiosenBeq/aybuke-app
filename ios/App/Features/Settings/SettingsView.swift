@@ -232,9 +232,10 @@ struct SettingsView: View {
         } header: {
             Text("Credits")
         } footer: {
+            // Every free tool, not just two of them (the same words as the tour).
             Text(app.purchases.isPro
                  ? "Pro includes \(app.credits.policy.proMonthlyAllowance) credits every month; unused credits roll over one month. Failed creations are refunded automatically."
-                 : "You get \(app.credits.policy.freeDailyAllowance) free credits every day. Background removal and adjustments are always free.")
+                 : "You get \(app.credits.policy.freeDailyAllowance) free credits every day. Free tools never use credits, and failed edits are always refunded.")
         }
         .listRowBackground(Palette.surface)
     }

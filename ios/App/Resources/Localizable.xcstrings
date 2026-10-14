@@ -1919,6 +1919,190 @@
         }
       }
     },
+    "%lld credit per look · failed looks are refunded" : {
+      "localizations" : {
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld Credit pro Look · Fehlversuche werden erstattet"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld Credits pro Look · Fehlversuche werden erstattet"
+                }
+              }
+            }
+          }
+        },
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld credit per look · failed looks are refunded"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld credits per look · failed looks are refunded"
+                }
+              }
+            }
+          }
+        },
+        "es" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld crédito por look · si falla, lo recuperas"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld créditos por look · si falla, los recuperas"
+                }
+              }
+            }
+          }
+        },
+        "fr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld crédit par look · looks échoués remboursés"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld crédits par look · looks échoués remboursés"
+                }
+              }
+            }
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld kredit per gaya · kredit kembali jika gagal"
+          }
+        },
+        "it" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld credito per look · rimborso se non riesce"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld crediti per look · rimborso se non riesce"
+                }
+              }
+            }
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ルック1回につき%lldクレジット · 失敗した場合は返却されます"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "룩 1회당 %lld크레딧 · 실패하면 환불돼요"
+          }
+        },
+        "pt-BR" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld crédito por look · devolvido se o look falhar"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld créditos por look · devolvidos se o look falhar"
+                }
+              }
+            }
+          }
+        },
+        "ru" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld кредита за образ · за неудачные вернём"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld кредитов за образ · за неудачные вернём"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld кредит за образ · за неудачные вернём"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld кредита за образ · за неудачные вернём"
+                }
+              }
+            }
+          }
+        },
+        "tr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Görünüm başına %lld kredi · başarısız olursa iade edilir"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Görünüm başına %lld kredi · başarısız olursa iade edilir"
+                }
+              }
+            }
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "每个造型消耗 %lld 点数 · 失败自动退还"
+          }
+        }
+      }
+    },
     "%lld credits every month" : {
       "localizations" : {
         "de" : {
@@ -12791,6 +12975,76 @@
         }
       }
     },
+    "AI tools use 1 credit per picture: Magic Edit, looks, Enhance, Erase and Create." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KI-Tools brauchen 1 Credit pro Bild: Zauber-Edit, Looks, Verbessern, Entfernen und Erstellen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Las herramientas de IA usan 1 crédito por imagen: Edición mágica, looks, Mejorar, Borrar y Crear."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les outils d’IA utilisent 1 crédit par image : Retouche magique, looks, Améliorer, Effacer et Créer."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alat AI memakai 1 kredit per gambar: Edit Ajaib, gaya, Perjelas, Hapus, dan Buat."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gli strumenti IA usano 1 credito per immagine: Modifica magica, look, Migliora, Cancella e Crea."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIツールは画像1枚につき1クレジット：マジック編集、ルック、高画質化、消しゴム、作成。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI 도구는 이미지 1장에 1크레딧을 써요: 매직 편집, 룩, 화질 개선, 지우기, 만들기."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "As ferramentas de IA usam 1 crédito por imagem: Edição Mágica, looks, Melhorar, Apagar e Criar."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ИИ-инструменты тратят 1 кредит на картинку: Волшебная правка, образы, Улучшить, Стереть и Создать."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yapay zekâ araçları resim başına 1 kredi kullanır: Sihirli Düzenleme, görünümler, İyileştir, Silgi ve Oluştur."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI 工具每张图消耗 1 点数：魔法编辑、造型、增强、消除和创作。"
+          }
+        }
+      }
+    },
     "AI-edited" : {
       "localizations" : {
         "de" : {
@@ -13699,6 +13953,76 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "请在“设置”中允许访问照片，以便保存你的作品。"
+          }
+        }
+      }
+    },
+    "Always free: effects, Retro Cam, Cut out, Adjust, Crop, Hide faces, Text & Stickers, collages and videos." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Immer gratis: Effekte, Retro Cam, Freistellen, Anpassen, Zuschnitt, Gesichter verbergen, Text & Sticker, Collagen und Videos."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Siempre gratis: efectos, Retro Cam, Recortar, Ajustar, Encuadrar, Ocultar caras, Texto y stickers, collages y videos."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toujours gratuit : effets, Retro Cam, Détourer, Ajuster, Recadrer, Masquer les visages, Texte et stickers, collages et vidéos."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Selalu gratis: efek, Retro Cam, Potong, Sesuaikan, Pangkas, Sembunyikan wajah, Teks & Stiker, kolase, dan video."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sempre gratis: effetti, Retro Cam, Scontorna, Regola, Ritaglia, Nascondi volti, Testo e sticker, collage e video."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "いつでも無料：エフェクト、Retro Cam、切り抜き、調整、切り取り、顔を隠す、テキスト＆ステッカー、コラージュ、動画。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "언제나 무료: 효과, Retro Cam, 누끼, 조절, 자르기, 얼굴 가리기, 텍스트 & 스티커, 콜라주, 동영상."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sempre grátis: efeitos, Retro Cam, Recortar, Ajustar, Cortar, Ocultar rostos, Texto e figurinhas, colagens e vídeos."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Всегда бесплатно: эффекты, Retro Cam, Вырезать, Коррекция, Обрезать, Скрыть лица, Текст и стикеры, коллажи и видео."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Her zaman ücretsiz: efektler, Retro Cam, Dekupe, Ayarla, Kırp, Yüzleri gizle, Yazı ve Çıkartma, kolajlar ve videolar."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "永久免费：特效、Retro Cam、抠图、调整、裁剪、遮挡人脸、文字和贴纸、拼图和视频。"
           }
         }
       }
@@ -21316,6 +21640,76 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "选择照片"
+          }
+        }
+      }
+    },
+    "Choose a photo to try this look" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wähle ein Foto, um diesen Look auszuprobieren"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elige una foto para probar este look"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choisis une photo pour essayer ce look"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pilih foto untuk mencoba gaya ini"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scegli una foto per provare questo look"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "写真を選んでこのルックを試せます"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "사진을 골라 이 룩을 입혀 보세요"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escolha uma foto para experimentar este look"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Выбери фото, чтобы примерить этот образ"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu görünümü denemek için bir fotoğraf seç"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "选择一张照片来试试这个造型"
           }
         }
       }
@@ -37420,6 +37814,76 @@
         }
       }
     },
+    "Free credits are back in %@" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gratis-Credits sind in %@ wieder da"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Los créditos gratis vuelven en %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les crédits gratuits reviennent dans %@"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kredit gratis kembali dalam %@"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "I crediti gratis tornano tra %@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "無料クレジットは%@後に戻ります"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "무료 크레딧은 %@ 후에 충전돼요"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Os créditos grátis voltam em %@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Бесплатные кредиты вернутся через %@"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ücretsiz krediler %@ içinde geri gelir"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "免费点数将在%@后恢复"
+          }
+        }
+      }
+    },
     "Free exports carry a small %@ mark." : {
       "localizations" : {
         "de" : {
@@ -38758,6 +39222,76 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "生成的图片，第 %1$lld 张，共 %2$lld 张"
+          }
+        }
+      }
+    },
+    "Get more credits" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mehr Credits holen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Consigue más créditos"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Obtenir plus de crédits"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dapatkan kredit lagi"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ottieni più crediti"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "クレジットを追加する"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "크레딧 더 받기"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Obter mais créditos"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Получить больше кредитов"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Daha fazla kredi al"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "获取更多点数"
           }
         }
       }
@@ -69048,6 +69582,76 @@
         }
       }
     },
+    "Shows your credits and how they work" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zeigt deine Credits und wie sie funktionieren"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Muestra tus créditos y cómo funcionan"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Affiche tes crédits et leur fonctionnement"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Menampilkan kreditmu dan cara kerjanya"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostra i tuoi crediti e come funzionano"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "クレジットの残りと仕組みを表示します"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "내 크레딧과 사용 방법을 보여 줘요"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostra seus créditos e como eles funcionam"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Показывает твои кредиты и как они работают"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kredilerini ve nasıl çalıştıklarını gösterir"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "显示你的点数及使用方式"
+          }
+        }
+      }
+    },
     "Sign in" : {
       "localizations" : {
         "de" : {
@@ -87887,6 +88491,76 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "你的*年龄段*"
+          }
+        }
+      }
+    },
+    "Your *credits*" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deine *Credits*"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tus *créditos*"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tes *crédits*"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "*Kreditmu*"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "I tuoi *crediti*"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "あなたの*クレジット*"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "나의 *크레딧*"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seus *créditos*"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Твои *кредиты*"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "*Kredilerin*"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你的*点数*"
           }
         }
       }
