@@ -18,6 +18,7 @@ struct PaywallView: View {
     @State private var showPacks = false
     @State private var legalDocument: LegalDocument?
     @State private var showSignIn = false
+    @State private var isRestoring = false
 
     private var purchases: PurchaseManager { app.purchases }
 
@@ -53,7 +54,19 @@ struct PaywallView: View {
                     } else if isScreenshotPreview {
                         TrialTimeline(days: 7, price: "$39.99")
                     }
-                    purchaseButton
+                    if purchases.isSubscriptionPending {
+                        PendingApprovalCard(text: "Waiting for approval. If it's approved, Pro turns on automatically.")
+                    }
+                    VStack(spacing: 10) {
+                        purchaseButton
+                        if let billedTerms {
+                            // The billed amount stays as prominent as the button (Guideline 3.1.2).
+                            Text(billedTerms)
+                                .font(.display(17, weight: .regular, relativeTo: .headline))
+                                .foregroundStyle(Palette.textPrimary)
+                                .multilineTextAlignment(.center)
+                        }
+                    }
                     packsLink
                     freeCreditsReminder
                     footer
@@ -74,8 +87,9 @@ struct PaywallView: View {
             .padding(Metrics.gutter)
             .accessibilityLabel("Close")
         }
-        .task {
-            await purchases.loadProducts()
+        .task { await purchases.loadProducts() }
+        // Products can arrive late (after "Try again"), so check eligibility then.
+        .task(id: purchases.products.count) {
             if let yearly = purchases.yearly {
                 trialEligible = await purchases.isEligibleForTrial(yearly)
             }
@@ -90,7 +104,7 @@ struct PaywallView: View {
         .sheet(isPresented: $showPacks) {
             CreditPacksView()
                 .environment(app)
-                .presentationDetents([.medium])
+                .presentationDetents([.medium, .large])
                 .presentationBackground(Palette.background)
         }
         .legalSheet($legalDocument)
@@ -168,22 +182,15 @@ struct PaywallView: View {
                 PlanCard(title: "Monthly", price: "$5.99 / month", detail: String(localized: "First month $1.99 · cancel anytime"),
                          badge: "TRY IT", isSelected: false) {}
             }
-            if !purchases.products.isEmpty || isScreenshotPreview {
-                Label("About half what most AI photo apps charge. No weekly plans, ever.", systemImage: "heart.fill")
+            if purchases.yearly != nil || purchases.monthly != nil || isScreenshotPreview {
+                Label("No weekly plans, ever.", systemImage: "heart.fill")
                     .font(.footnote.weight(.semibold))
                     .foregroundStyle(Palette.textSecondary)
                     .multilineTextAlignment(.center)
                     .padding(.top, 2)
-            } else if purchases.products.isEmpty {
-                VStack(spacing: 8) {
-                    ProgressView().tint(Palette.textSecondary)
-                    if let error = purchases.loadError {
-                        Text(error)
-                            .font(.footnote)
-                            .foregroundStyle(Palette.textSecondary)
-                    }
-                }
-                .frame(maxWidth: .infinity, minHeight: 120)
+            }
+            if !isScreenshotPreview {
+                StoreStatusView(purchases: purchases, showsSpinner: purchases.yearly == nil && purchases.monthly == nil)
             }
         }
     }
@@ -212,29 +219,53 @@ struct PaywallView: View {
         } label: {
             if purchases.isPurchasing {
                 ProgressView().tint(Palette.onAccent)
+            } else if purchases.isSubscriptionPending {
+                Text("Waiting for approval")
             } else {
                 Text(ctaTitle)
             }
         }
         .buttonStyle(.primary)
-        .disabled((selectedProduct == nil && !isScreenshotPreview) || purchases.isPurchasing)
+        .disabled((selectedProduct == nil && !isScreenshotPreview) || purchases.isPurchasing
+                  || purchases.isSubscriptionPending || !purchases.canMakePayments)
     }
 
+    /// With a trial or an intro price the button stays neutral and the line
+    /// under it states what will be billed.
     private var ctaTitle: String {
-        if isScreenshotPreview { return String(localized: "Start my 7-day free trial") }
-        guard let product = selectedProduct else { return String(localized: "Continue") }
-        if showsTrial, let days = product.freeTrialDays {
-            return String(localized: "Start my \(days)-day free trial")
-        }
-        if product.id == StoreProducts.monthly, monthlyIntroEligible, let intro = product.subscription?.introductoryOffer,
-           intro.paymentMode != .freeTrial {
-            return String(localized: "Start for \(intro.displayPrice)")
-        }
+        if isScreenshotPreview { return String(localized: "Continue") }
+        guard let product = selectedProduct, billedTerms == nil else { return String(localized: "Continue") }
         switch product.periodLabel {
         case "year": return String(localized: "Continue — \(product.displayPrice)/year")
         case "week": return String(localized: "Continue — \(product.displayPrice)/week")
         default: return String(localized: "Continue — \(product.displayPrice)/month")
         }
+    }
+
+    /// "7 days free, then **$39.99**/year": the trial or intro terms with the
+    /// billed price in bold, reusing the plan cards' sentences.
+    private var billedTerms: AttributedString? {
+        if isScreenshotPreview {
+            return Self.emphasizing("$39.99", in: String(localized: "\(7) days free, then \("$39.99")/year"))
+        }
+        guard let product = selectedProduct else { return nil }
+        if showsTrial, let days = product.freeTrialDays {
+            return Self.emphasizing(product.displayPrice, in: String(localized: "\(days) days free, then \(product.displayPrice)/year"))
+        }
+        if product.id == StoreProducts.monthly, monthlyIntroEligible, let intro = product.introOfferText {
+            return Self.emphasizing(product.displayPrice,
+                                    in: String(localized: "\(intro), then \(product.displayPrice)/month · cancel anytime"))
+        }
+        return nil
+    }
+
+    private static func emphasizing(_ price: String, in sentence: String) -> AttributedString {
+        var text = AttributedString(sentence)
+        // The last match is the recurring price ("First month $1.99, then $5.99/month").
+        if let range = text.range(of: price, options: .backwards) {
+            text[range].inlinePresentationIntent = .stronglyEmphasized
+        }
+        return text
     }
 
     private var packsLink: some View {
@@ -282,18 +313,16 @@ struct PaywallView: View {
     private var footer: some View {
         VStack(spacing: 10) {
             HStack(spacing: 18) {
-                Button("Restore") {
-                    Task {
-                        await purchases.restore()
-                        if purchases.isPro {
-                            app.credits.refresh(isPro: true)
-                            dismiss()
-                        } else {
-                            errorTitle = String(localized: "Nothing to restore")
-                            errorMessage = String(localized: "No active subscription found for this Apple Account.")
-                        }
+                Button {
+                    Task { await restore() }
+                } label: {
+                    if isRestoring {
+                        ProgressView().controlSize(.small)
+                    } else {
+                        Text("Restore")
                     }
                 }
+                .disabled(isRestoring)
                 if app.canUseAccounts, !app.isSignedIn {
                     Button("Sign in") { showSignIn = true }
                 }
@@ -317,20 +346,100 @@ struct PaywallView: View {
         let startsTrial = showsTrial
         do {
             let token = await app.appAccountToken()
-            let success = try await purchases.purchase(product, appAccountToken: token)
-            guard success else { return }
+            guard try await purchases.purchase(product, appAccountToken: token) == .purchased else { return }
             app.credits.refresh(isPro: purchases.isPro)
-            if startsTrial, let days = product.freeTrialDays {
-                await TrialReminder.schedule(trialDays: days, price: product.displayPrice)
+            if startsTrial, let days = product.freeTrialDays,
+               let billingDate = Calendar.current.date(byAdding: .day, value: days, to: Date()) {
+                await TrialReminder.schedule(billingDate: billingDate, price: product.displayPrice, mayAsk: true)
             }
             Haptics.success()
             app.showToast("Welcome to \(Brand.name) Pro ✦", style: .success)
             dismiss()
             app.offerAccountAfterPurchase()
         } catch {
+            guard !AppModel.isCancellation(error) else { return }
             errorTitle = String(localized: "Purchase failed")
             errorMessage = AppModel.localizedMessage(for: error)
         }
+    }
+
+    private func restore() async {
+        isRestoring = true
+        defer { isRestoring = false }
+        do {
+            try await purchases.restore()
+        } catch {
+            guard !AppModel.isCancellation(error) else { return }
+            errorTitle = String(localized: "Restore failed")
+            errorMessage = AppModel.localizedMessage(for: error)
+            return
+        }
+        if purchases.isPro {
+            app.credits.refresh(isPro: true)
+            dismiss()
+        } else {
+            errorTitle = String(localized: "Nothing to restore")
+            errorMessage = String(localized: "No active subscription found for this Apple Account.")
+        }
+    }
+}
+
+/// "Waiting for approval": status only. StoreKit doesn't say who approves,
+/// and the copy never asks anyone to buy (UCPD Annex I No. 28).
+struct PendingApprovalCard: View {
+    let text: LocalizedStringKey
+
+    var body: some View {
+        Label {
+            Text(text)
+                .font(.subheadline)
+                .foregroundStyle(Palette.textPrimary)
+                .fixedSize(horizontal: false, vertical: true)
+        } icon: {
+            Image(systemName: "hourglass")
+                .foregroundStyle(Palette.ink)
+        }
+        .padding(14)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .cardStyle(radius: 18)
+    }
+}
+
+/// Loading, "can't reach the App Store" with Try again, and turned-off
+/// purchases (Screen Time or device management), shared by the paywall and the packs.
+struct StoreStatusView: View {
+    let purchases: PurchaseManager
+    var showsSpinner = true
+
+    var body: some View {
+        VStack(spacing: 10) {
+            if !purchases.canMakePayments {
+                Label("Purchases are turned off on this device.", systemImage: "lock.fill")
+                    .font(.footnote.weight(.semibold))
+                    .foregroundStyle(Palette.textSecondary)
+                    .multilineTextAlignment(.center)
+            }
+            switch purchases.loadState {
+            case .idle, .loading:
+                if showsSpinner {
+                    ProgressView().tint(Palette.textSecondary)
+                        .frame(maxWidth: .infinity, minHeight: 80)
+                }
+            case .failed(let message):
+                Text(message)
+                    .font(.footnote)
+                    .foregroundStyle(Palette.textSecondary)
+                    .multilineTextAlignment(.center)
+                Button("Try again") {
+                    Task { await purchases.loadProducts() }
+                }
+                .font(.footnote.weight(.semibold))
+                .foregroundStyle(Palette.textPrimary)
+            case .loaded:
+                EmptyView()
+            }
+        }
+        .frame(maxWidth: .infinity)
     }
 }
 
@@ -481,68 +590,107 @@ private struct TrialTimeline: View {
 struct CreditPacksView: View {
     @Environment(AppModel.self) private var app
     @Environment(\.dismiss) private var dismiss
-    @State private var errorMessage: String?
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            Text("Credit packs")
-                .font(.screenTitle)
-                .foregroundStyle(Palette.textPrimary)
-                .padding(.top, 24)
-            Text("Pay once. Credits never expire. 1 credit = 1 creation or edit.")
-                .font(.subheadline)
-                .foregroundStyle(Palette.textSecondary)
+        ScrollView {
+            VStack(alignment: .leading, spacing: 16) {
+                Text("Credit packs")
+                    .font(.screenTitle)
+                    .foregroundStyle(Palette.textPrimary)
+                    .padding(.top, 24)
+                Text("Pay once. Credits never expire. 1 credit = 1 creation or edit.")
+                    .font(.subheadline)
+                    .foregroundStyle(Palette.textSecondary)
+                CreditPackList { dismiss() }
+            }
+            .padding(.horizontal, Metrics.gutter)
+            .padding(.bottom, 24)
+        }
+        .scrollBounceBehavior(.basedOnSize)
+    }
+}
 
-            ForEach(app.purchases.creditPacks, id: \.id) { product in
-                Button {
-                    Task {
-                        do {
-                            let token = await app.appAccountToken()
-                            if try await app.purchases.purchase(product, appAccountToken: token) {
-                                Haptics.success()
-                                app.showToast("Credits added ✦", style: .success)
-                                dismiss()
-                                app.offerAccountAfterPurchase()
-                            }
-                        } catch {
-                            errorMessage = error.localizedDescription
-                        }
-                    }
-                } label: {
-                    HStack {
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text(product.displayName)
-                                .font(.subheadline.weight(.semibold))
-                                .foregroundStyle(Palette.textPrimary)
-                            Text(product.description)
-                                .font(.caption)
-                                .foregroundStyle(Palette.textSecondary)
-                        }
-                        Spacer()
-                        Text(product.displayPrice)
-                            .font(.headline)
-                            .foregroundStyle(Palette.onAccent)
-                            .padding(.horizontal, 14)
-                            .padding(.vertical, 8)
-                            .background(Palette.accent, in: Capsule())
-                    }
-                    .padding(14)
-                    .cardStyle(radius: 18)
-                }
-                .buttonStyle(.plain)
-                .disabled(app.purchases.isPurchasing)
+/// The pack rows with their loading, error and approval states; used by the
+/// packs sheet and the out-of-credits sheet.
+struct CreditPackList: View {
+    /// Called after credits were added (typically to dismiss the sheet).
+    var onPurchased: () -> Void = {}
+
+    @Environment(AppModel.self) private var app
+    @State private var errorMessage: String?
+
+    private var purchases: PurchaseManager { app.purchases }
+
+    private var hasPendingPack: Bool {
+        purchases.pendingProductIDs.contains { StoreProducts.creditPacks[$0] != nil }
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            if hasPendingPack {
+                PendingApprovalCard(text: "Waiting for approval. If it's approved, your credits are added automatically.")
             }
-            if app.purchases.creditPacks.isEmpty {
-                ProgressView().frame(maxWidth: .infinity)
+            ForEach(purchases.creditPacks, id: \.id) { product in
+                row(for: product)
             }
+            StoreStatusView(purchases: purchases, showsSpinner: purchases.creditPacks.isEmpty)
             if let errorMessage {
                 Text(errorMessage)
                     .font(.footnote)
                     .foregroundStyle(Palette.danger)
             }
-            Spacer()
         }
-        .padding(.horizontal, Metrics.gutter)
-        .task { await app.purchases.loadProducts() }
+        .task { await purchases.loadProducts() }
+    }
+
+    private func row(for product: Product) -> some View {
+        let isPending = purchases.pendingProductIDs.contains(product.id)
+        return Button {
+            Task { await buy(product) }
+        } label: {
+            HStack {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(product.displayName)
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(Palette.textPrimary)
+                    Text(product.description)
+                        .font(.caption)
+                        .foregroundStyle(Palette.textSecondary)
+                }
+                Spacer()
+                Group {
+                    if isPending {
+                        Text("Waiting for approval")
+                            .font(.footnote.weight(.semibold))
+                    } else {
+                        Text(product.displayPrice)
+                            .font(.headline)
+                    }
+                }
+                .foregroundStyle(Palette.onAccent)
+                .padding(.horizontal, 14)
+                .padding(.vertical, 8)
+                .background(Palette.accent, in: Capsule())
+            }
+            .padding(14)
+            .cardStyle(radius: 18)
+        }
+        .buttonStyle(.plain)
+        .disabled(purchases.isPurchasing || isPending || !purchases.canMakePayments)
+    }
+
+    private func buy(_ product: Product) async {
+        errorMessage = nil
+        do {
+            let token = await app.appAccountToken()
+            guard try await purchases.purchase(product, appAccountToken: token) == .purchased else { return }
+            Haptics.success()
+            app.showToast("Credits added ✦", style: .success)
+            onPurchased()
+            app.offerAccountAfterPurchase()
+        } catch {
+            guard !AppModel.isCancellation(error) else { return }
+            errorMessage = AppModel.localizedMessage(for: error)
+        }
     }
 }

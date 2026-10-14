@@ -6,10 +6,22 @@ import UserNotifications
 enum TrialReminder {
     static let identifier = "glowlit.trial-reminder"
 
-    static func schedule(trialDays: Int, price: String) async {
-        guard trialDays > 1 else { return }
+    /// - Parameters:
+    ///   - billingDate: When the trial ends and the first payment is due.
+    ///   - mayAsk: Ask for notification permission. False for trials that
+    ///     start in the background (an approval, an offer code), so no prompt
+    ///     appears out of nowhere; the reminder is then set only if allowed.
+    static func schedule(billingDate: Date, price: String, mayAsk: Bool) async {
+        let fireDate = billingDate.addingTimeInterval(-86_400)
+        guard fireDate.timeIntervalSinceNow > 3_600 else { return }
         let center = UNUserNotificationCenter.current()
-        let granted = (try? await center.requestAuthorization(options: [.alert, .sound])) ?? false
+        let granted: Bool
+        if mayAsk {
+            granted = (try? await center.requestAuthorization(options: [.alert, .sound])) ?? false
+        } else {
+            let status = await center.notificationSettings().authorizationStatus
+            granted = status == .authorized || status == .provisional
+        }
         guard granted else { return }
 
         let content = UNMutableNotificationContent()
@@ -17,7 +29,7 @@ enum TrialReminder {
         content.body = String(localized: "You'll be charged \(price) unless you cancel. Manage it anytime in Settings › Apple Account › Subscriptions.")
         content.sound = .default
 
-        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: TimeInterval(trialDays - 1) * 86_400, repeats: false)
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: fireDate.timeIntervalSinceNow, repeats: false)
         try? await center.add(UNNotificationRequest(identifier: identifier, content: content, trigger: trigger))
     }
 

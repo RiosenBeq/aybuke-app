@@ -94,9 +94,16 @@ struct SettingsView: View {
             Button {
                 isRestoring = true
                 Task {
-                    await app.purchases.restore()
+                    defer { isRestoring = false }
+                    do {
+                        try await app.purchases.restore()
+                    } catch {
+                        if !AppModel.isCancellation(error) {
+                            app.showToast(verbatim: AppModel.localizedMessage(for: error), style: .error)
+                        }
+                        return
+                    }
                     app.credits.refresh(isPro: app.purchases.isPro)
-                    isRestoring = false
                     app.showToast(app.purchases.isPro ? "Purchases restored ✦" : "No active subscription found.", style: app.purchases.isPro ? .success : .info)
                 }
             } label: {
@@ -108,6 +115,7 @@ struct SettingsView: View {
                     }
                 }
             }
+            .disabled(isRestoring)
         } header: {
             Text("Membership")
         }

@@ -3,6 +3,7 @@ import SwiftData
 import PhotosUI
 import Observation
 import AuthenticationServices
+import StoreKit
 import AppCore
 
 enum AppTab: Hashable {
@@ -167,6 +168,13 @@ final class AppModel {
         purchases.creditPackHandler = { [weak self] credits, signedTransaction in
             await self?.grantCreditPack(credits, signedTransaction: signedTransaction) ?? false
         }
+        purchases.onProStatusChange = { [weak self] isPro in
+            guard let self else { return }
+            credits.refresh(isPro: isPro)
+            syncWidgets()
+            Task { await self.refreshServerBalance() }
+        }
+        purchases.onLatePurchase = { [weak self] purchase in self?.completeLatePurchase(purchase) }
         notifier.onOpenLink = { [weak self] link in self?.handle(link) }
 
         #if DEBUG
@@ -228,6 +236,22 @@ final class AppModel {
             // The transaction stays unfinished, so StoreKit redelivers it and we retry.
             showToast("We couldn't add your credits yet. We'll retry automatically.", style: .error)
             return false
+        }
+    }
+
+    /// An approved "Ask to Buy" or a redeemed offer code. No account prompt
+    /// here: it could cover an edit in progress (Settings still offers it).
+    private func completeLatePurchase(_ purchase: LatePurchase) {
+        Haptics.success()
+        if purchase.isCreditPack {
+            showToast("Credits added ✦", style: .success)
+            return
+        }
+        showToast("Welcome to \(Brand.name) Pro ✦", style: .success)
+        // Keep the paywall's "We'll remind you before your trial ends" promise.
+        if let trialEnd = purchase.trialEndsAt,
+           let price = purchases.products.first(where: { $0.id == purchase.productID })?.displayPrice {
+            Task { await TrialReminder.schedule(billingDate: trialEnd, price: price, mayAsk: false) }
         }
     }
 
@@ -731,7 +755,8 @@ final class AppModel {
 
     /// Maps any error to a friendly toast, opening the paywall when relevant.
     static func isCancellation(_ error: Error) -> Bool {
-        error is CancellationError || (error as? URLError)?.code == .cancelled
+        if case StoreKitError.userCancelled = error { return true }
+        return error is CancellationError || (error as? URLError)?.code == .cancelled
     }
 
     func handle(_ error: Error) {
@@ -763,10 +788,38 @@ final class AppModel {
         if case AIServiceError.server(let code, let message) = error {
             return serverMessages[code] ?? L10n.core(message)
         }
+        if let message = storeMessage(for: error) {
+            return message
+        }
         if let text = (error as? LocalizedError)?.errorDescription {
             return L10n.core(text)
         }
         return String(localized: "Something went wrong. Please try again.")
+    }
+
+    /// StoreKit's own texts would otherwise pass through untranslated.
+    private static func storeMessage(for error: Error) -> String? {
+        if let error = error as? StoreKitError {
+            switch error {
+            case .networkError:
+                return String(localized: "Couldn't reach the App Store. Check your connection.")
+            case .notAvailableInStorefront:
+                return String(localized: "This purchase isn't available in your country or region.")
+            default:
+                return nil
+            }
+        }
+        if let error = error as? Product.PurchaseError {
+            switch error {
+            case .purchaseNotAllowed:
+                return String(localized: "Purchases are turned off on this device.")
+            case .productUnavailable:
+                return String(localized: "This purchase isn't available right now.")
+            default:
+                return nil
+            }
+        }
+        return nil
     }
 
     private static let serverMessages: [String: String] = [
