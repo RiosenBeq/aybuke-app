@@ -171,6 +171,16 @@ final class BrushCanvasView: UIView, UIScrollViewDelegate, UIGestureRecognizerDe
             scrollView.setZoomScale(1, animated: false)
             imageView.frame = bounds
             scrollView.contentSize = bounds.size
+            #if DEBUG
+            // Screenshot QA of the zoomed canvas: -GLBrushZoom <scale>.
+            let zoom = CGFloat(UserDefaults.standard.double(forKey: "GLBrushZoom"))
+            if ScreenshotScene.current != nil, zoom > 1, bounds.width > 0 {
+                scrollView.setZoomScale(zoom, animated: false)
+                let size = scrollView.contentSize
+                scrollView.contentOffset = CGPoint(x: min(max(size.width * 0.5 - bounds.width / 2, 0), size.width - bounds.width),
+                                                   y: min(max(size.height * 0.6 - bounds.height / 2, 0), size.height - bounds.height))
+            }
+            #endif
         }
         followImage()
     }

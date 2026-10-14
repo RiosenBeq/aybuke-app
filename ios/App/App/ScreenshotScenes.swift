@@ -31,6 +31,9 @@ enum ScreenshotScene: String, CaseIterable {
     case paywall
     case consent
     case settings
+    /// The share composer; `-GLShareFormat <format>`, `-GLShareOnDevice YES`,
+    /// and `-GLShareHideFaces YES` for a group from My Works with "Hide
+    /// other faces" switched on.
     case share
     case invite
     case tour
@@ -48,8 +51,12 @@ enum ScreenshotScene: String, CaseIterable {
     case age
     /// Hide faces on a group of cartoon figures, with every friend covered.
     case hideFaces
-    /// Cut out with a fixture subject mask and a backdrop.
+    /// Cut out with a fixture subject mask and a backdrop; `-GLCutoutRefine
+    /// more|less` picks a refine brush (with two fixture strokes) and
+    /// `-GLCutoutShadow YES` switches the shadow on.
     case cutout
+    /// Erase with two brush strokes; `-GLBrushZoom <scale>` zooms the canvas.
+    case erase
     /// Text & Stickers with text, stickers and a doodle on the demo photo;
     /// `-GLOverlayMode text|stickers|doodle` picks the panel (default stickers),
     /// `-GLOverlayEdit YES` (text) opens typing, `-GLOverlayApply YES` applies.
@@ -206,6 +213,21 @@ enum ScreenshotFixtures {
             return CGRect(x: x - r, y: y - height, width: r * 2, height: height * 2)
         }
     }
+
+    /// Erase: a wide stroke over the far shore and a fine one, as if made
+    /// zoomed in, along a ripple.
+    static let eraseStrokes = [
+        MaskStroke(points: [CGPoint(x: 0.12, y: 0.5), CGPoint(x: 0.22, y: 0.47), CGPoint(x: 0.3, y: 0.5)], width: 0.07),
+        MaskStroke(points: [CGPoint(x: 0.53, y: 0.66), CGPoint(x: 0.6, y: 0.655), CGPoint(x: 0.68, y: 0.66)], width: 0.02),
+    ]
+
+    /// Cut out's refine brush on `cutoutPhoto`: the shore brushed back in
+    /// under her, and the pet's ears brushed away.
+    static let refineStrokes = [
+        CutoutRefineStroke(stroke: MaskStroke(points: [CGPoint(x: 0.12, y: 0.9), CGPoint(x: 0.34, y: 0.92), CGPoint(x: 0.55, y: 0.9)], width: 0.06),
+                           keeps: true),
+        CutoutRefineStroke(stroke: MaskStroke(points: [CGPoint(x: 0.76, y: 0.6), CGPoint(x: 0.84, y: 0.6)], width: 0.06), keeps: false),
+    ]
 
     private static let cutoutHeads: [(CGFloat, CGFloat, CGFloat)] = [(0.34, 0.42, 0.11)]
 

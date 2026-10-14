@@ -1339,6 +1339,9 @@ extension AppModel {
         case .cutout:
             selectedTab = .home
             editorLaunch = EditorLaunch(image: ScreenshotFixtures.cutoutPhoto, tool: .removeBackground)
+        case .erase:
+            selectedTab = .home
+            editorLaunch = EditorLaunch(image: ScreenshotFixtures.goldenLandscape, tool: .erase)
         case .textStickers:
             selectedTab = .home
             editorLaunch = EditorLaunch(image: ScreenshotFixtures.goldenLandscape, tool: .textStickers)
@@ -1390,6 +1393,10 @@ extension AppModel {
         case .consent:
             selectedTab = .home
             consentRequest = ConsentRequest {}
+        case .share where UserDefaults.standard.bool(forKey: "GLShareHideFaces"):
+            // A group shared from My Works, with "Hide other faces" switched on.
+            selectedTab = .home
+            shareRequest = SharePayload(image: ScreenshotFixtures.groupPhoto, operation: nil, offersHidingFaces: true)
         case .share:
             selectedTab = .home
             shareRequest = SharePayload(
