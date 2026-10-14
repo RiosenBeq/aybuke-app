@@ -17,6 +17,9 @@ struct VideoFile: Transferable {
                 .appendingPathComponent("glowlit-\(UUID().uuidString)")
                 .appendingPathExtension(received.file.pathExtension.isEmpty ? "mov" : received.file.pathExtension)
             try FileManager.default.copyItem(at: received.file, to: copy)
+            // The copy keeps the original's date; the launch sweep of old tmp
+            // files must see it as new.
+            try? FileManager.default.setAttributes([.modificationDate: Date()], ofItemAtPath: copy.path)
             return VideoFile(url: copy)
         }
     }
@@ -58,11 +61,13 @@ enum VideoEngine {
     }
 
     /// Loudness (dBFS) per `levelWindow`, from a mono 16 kHz copy of the audio.
-    /// Empty when the clip has no sound.
+    /// Empty when the clip has no sound. Only the first `maxDuration` counts,
+    /// like everywhere else in the editor.
     static func loudness(of asset: AVAsset) async throws -> [Double] {
         guard let track = try await asset.loadTracks(withMediaType: .audio).first else { return [] }
         return try await Task.detached(priority: .userInitiated) {
             let reader = try AVAssetReader(asset: asset)
+            reader.timeRange = CMTimeRange(start: .zero, duration: CMTime(seconds: maxDuration, preferredTimescale: 600))
             let output = AVAssetReaderTrackOutput(track: track, outputSettings: [
                 AVFormatIDKey: kAudioFormatLinearPCM,
                 AVLinearPCMBitDepthKey: 32,
@@ -184,29 +189,71 @@ enum VideoEngine {
 
     // MARK: Export
 
-    static func export(_ asset: AVAsset, videoComposition: AVVideoComposition?) async throws -> URL {
+    /// Renders `asset` into a temporary .mp4, reporting progress (0…1) on the
+    /// main actor. Cancelling the calling task stops the export, throws
+    /// `CancellationError` and leaves no file behind.
+    static func export(_ asset: AVAsset, videoComposition: AVVideoComposition?, progress: @escaping @MainActor (Double) -> Void = { _ in }) async throws -> URL {
         guard let session = AVAssetExportSession(asset: asset, presetName: AVAssetExportPresetHighestQuality) else {
             throw VideoError.exportFailed
         }
         let url = FileManager.default.temporaryDirectory.appendingPathComponent("Glowlit-\(UUID().uuidString.prefix(6)).mp4")
         session.videoComposition = videoComposition
         session.shouldOptimizeForNetworkUse = true
-        if #available(iOS 18.0, *) {
-            try await session.export(to: url, as: .mp4)
-        } else {
-            session.outputURL = url
-            session.outputFileType = .mp4
-            await withCheckedContinuation { continuation in
-                session.exportAsynchronously { continuation.resume() }
+        do {
+            if #available(iOS 18.0, *) {
+                let watcher = Task {
+                    for await state in session.states(updateInterval: 0.1) {
+                        if case .exporting(let done) = state { await progress(done.fractionCompleted) }
+                    }
+                }
+                defer { watcher.cancel() }
+                // Throws CancellationError when the task is cancelled.
+                try await session.export(to: url, as: .mp4)
+            } else {
+                session.outputURL = url
+                session.outputFileType = .mp4
+                let poller = Task {
+                    while !Task.isCancelled {
+                        await progress(Double(session.progress))
+                        try? await Task.sleep(for: .milliseconds(100))
+                    }
+                }
+                defer { poller.cancel() }
+                await withTaskCancellationHandler {
+                    await withCheckedContinuation { continuation in
+                        session.exportAsynchronously { continuation.resume() }
+                    }
+                } onCancel: {
+                    session.cancelExport()
+                }
+                if session.status == .cancelled { throw CancellationError() }
+                guard session.status == .completed else { throw session.error ?? VideoError.exportFailed }
             }
-            guard session.status == .completed else { throw session.error ?? VideoError.exportFailed }
+        } catch {
+            try? FileManager.default.removeItem(at: url)
+            // A stopped export isn't a failure to report.
+            if (error as? AVError)?.code == .operationCancelled { throw CancellationError() }
+            throw error
         }
+        await progress(1)
         return url
     }
 
-    static func saveToPhotos(_ url: URL) async throws {
+    /// True when iOS stopped the export because the app left the foreground:
+    /// the GPU and the video encoder don't run in the background.
+    static func isInterruption(_ error: Error) -> Bool {
+        (error as? AVError)?.code == .operationInterrupted
+    }
+
+    /// "Add only" Photos access, asked before a long export so the work isn't
+    /// wasted when she says no.
+    static func requestPhotosAccess() async throws {
         let status = await PHPhotoLibrary.requestAuthorization(for: .addOnly)
         guard status == .authorized || status == .limited else { throw PhotoLibrarySaver.SaveError.denied }
+    }
+
+    static func saveToPhotos(_ url: URL) async throws {
+        try await requestPhotosAccess()
         try await PHPhotoLibrary.shared().performChanges {
             PHAssetCreationRequest.forAsset().addResource(with: .video, fileURL: url, options: nil)
         }

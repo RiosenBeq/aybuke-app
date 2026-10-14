@@ -36,6 +36,10 @@ struct GeneratingOverlay: View {
     var title = String(localized: "Creating magic…")
     /// Cloud jobs: offer "Ping me when it's ready" the first time.
     var offersReadyPing = false
+    /// 0…1 when the work reports progress (video exports); nil hides the bar.
+    var progress: Double?
+    /// The tips talk about AI and our servers, so on-device work turns them off.
+    var showsTips = true
     var onCancel: (() -> Void)?
 
     @Environment(AppModel.self) private var app
@@ -89,13 +93,29 @@ struct GeneratingOverlay: View {
                         .font(.display(24, weight: .bold))
                         .foregroundStyle(Palette.textPrimary)
                         .multilineTextAlignment(.center)
-                    Text(tips[tipIndex % tips.count])
-                        .font(.subheadline)
-                        .foregroundStyle(Palette.textSecondary)
-                        .multilineTextAlignment(.center)
-                        .frame(maxWidth: 300, minHeight: 44)
-                        .id(tipIndex)
-                        .transition(.opacity)
+                    if showsTips {
+                        Text(tips[tipIndex % tips.count])
+                            .font(.subheadline)
+                            .foregroundStyle(Palette.textSecondary)
+                            .multilineTextAlignment(.center)
+                            .frame(maxWidth: 300, minHeight: 44)
+                            .id(tipIndex)
+                            .transition(.opacity)
+                    }
+                }
+
+                if let progress {
+                    VStack(spacing: 8) {
+                        ProgressView(value: min(max(progress, 0), 1))
+                            .tint(Palette.accent)
+                        Text(min(max(progress, 0), 1), format: .percent.precision(.fractionLength(0)))
+                            .font(.subheadline.weight(.semibold).monospacedDigit())
+                            .foregroundStyle(Palette.textSecondary)
+                    }
+                    .frame(maxWidth: 240)
+                    .accessibilityElement(children: .ignore)
+                    .accessibilityLabel(title)
+                    .accessibilityValue(Text(min(max(progress, 0), 1), format: .percent.precision(.fractionLength(0))))
                 }
 
                 if offersReadyPing {

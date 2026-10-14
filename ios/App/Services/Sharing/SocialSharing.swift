@@ -82,11 +82,12 @@ extension View {
     /// The system share sheet for `item`: a sheet on iPhone and iPad. The Mac
     /// shows a share popover instead of a sheet, so there it's presented from
     /// an invisible view behind this one and `item` is cleared when it closes.
-    func shareSheet(item: Binding<ActivityItems?>) -> some View {
+    /// `onDismiss` runs once the sheet is gone, e.g. to delete a temporary file.
+    func shareSheet(item: Binding<ActivityItems?>, onDismiss: (() -> Void)? = nil) -> some View {
         #if targetEnvironment(macCatalyst)
-        background(MacSharePresenter(item: item))
+        background(MacSharePresenter(item: item, onDismiss: onDismiss))
         #else
-        sheet(item: item) { item in
+        sheet(item: item, onDismiss: onDismiss) { item in
             ShareSheet(items: item.items)
                 .presentationDetents([.medium, .large])
         }
@@ -99,6 +100,7 @@ extension View {
 /// she picks an app or closes it.
 private struct MacSharePresenter: UIViewControllerRepresentable {
     @Binding var item: ActivityItems?
+    var onDismiss: (() -> Void)?
 
     final class Coordinator {
         var shownID: UUID?
@@ -118,6 +120,7 @@ private struct MacSharePresenter: UIViewControllerRepresentable {
         let share = UIActivityViewController(activityItems: request.items, applicationActivities: nil)
         share.completionWithItemsHandler = { _, _, _, _ in
             if item?.id == request.id { item = nil }
+            onDismiss?()
         }
         if let popover = share.popoverPresentationController {
             let bounds = anchor.view.bounds

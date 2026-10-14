@@ -289,6 +289,7 @@ final class AppModel {
     /// Called once from the root view's `.task`.
     func start() async {
         liveActivity.endLeftovers()
+        Task { await TemporaryFiles.sweep() }
         storefrontCountry = await Storefront.current?.countryCode
         // No account and no RevenueCat here: both wait until she buys or uses
         // a cloud feature (Privacy Policy §5).
@@ -1079,6 +1080,16 @@ extension AppModel {
         case .cutout:
             selectedTab = .home
             editorLaunch = EditorLaunch(image: ScreenshotFixtures.cutoutPhoto, tool: .removeBackground)
+        case .video:
+            selectedTab = .home
+            let defaults = UserDefaults.standard
+            let seconds = defaults.double(forKey: "GLVideoSeconds")
+            Task {
+                if let url = try? await ScreenshotFixtures.sampleVideo(seconds: seconds > 0 ? seconds : 8,
+                                                                       broken: defaults.bool(forKey: "GLVideoBroken")) {
+                    videoSource = VideoSource(url: url)
+                }
+            }
         case .create, .results:
             selectedTab = .create
         case .edit:
