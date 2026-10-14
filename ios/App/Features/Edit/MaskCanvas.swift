@@ -67,7 +67,7 @@ struct MaskCanvas: View {
             Haptics.tap()
         }
         .aspectRatio(image.size.width / max(image.size.height, 1), contentMode: .fit)
-        .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+        .clipShape(.control)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel("Brush over the area to erase")
         .accessibilityAddTraits(.allowsDirectInteraction)

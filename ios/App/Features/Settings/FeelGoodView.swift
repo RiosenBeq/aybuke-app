@@ -12,7 +12,7 @@ struct FeelGoodView: View {
         List {
             Section {
                 VStack(alignment: .leading, spacing: 10) {
-                    Text(styled: "Feel *good*", size: 30)
+                    Text(styled: "Feel *good*", size: 27)
                         .foregroundStyle(Palette.textPrimary)
                         .accessibilityAddTraits(.isHeader)
                     Text("Our looks are made to keep your face, skin tone and body as they are.")

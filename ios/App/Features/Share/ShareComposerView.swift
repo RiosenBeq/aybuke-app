@@ -124,7 +124,7 @@ struct ShareComposerView: View {
                 Image(uiImage: rendered)
                     .resizable()
                     .scaledToFit()
-                    .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
+                    .clipShape(.control)
                     .shadow(color: Palette.shadow, radius: 18, y: 10)
                     .transition(.scale(scale: 0.94).combined(with: .opacity))
                     .id(rendered)
@@ -252,7 +252,7 @@ struct ShareComposerView: View {
                     }
                     .padding(.horizontal, 14)
                     .padding(.vertical, 12)
-                    .background(Palette.background, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+                    .background(Palette.background, in: .control)
                 }
                 .buttonStyle(.pressable)
                 .accessibilityLabel(Text("Copy caption: \(idea)"))

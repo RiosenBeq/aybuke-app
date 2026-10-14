@@ -92,7 +92,7 @@ struct GeneratingOverlay: View {
 
                 VStack(spacing: 10) {
                     Text(title)
-                        .font(.display(24, weight: .bold))
+                        .font(.display(22, weight: .bold))
                         .foregroundStyle(Palette.textPrimary)
                         .multilineTextAlignment(.center)
                     if showsTips {
@@ -195,8 +195,8 @@ struct GeneratingOverlay: View {
                     .padding(.horizontal, 16)
                     .padding(.vertical, 10)
                     .frame(minHeight: 44)
-                    .background(Palette.surface, in: Capsule())
-                    .overlay(Capsule().strokeBorder(Palette.stroke, lineWidth: 1))
+                    .background(Palette.surface, in: .chip)
+                    .overlay(RoundedRectangle.chip.strokeBorder(Palette.stroke, lineWidth: 1))
                     .shadow(color: Palette.shadow, radius: 8, y: 3)
             }
             .buttonStyle(.pressable)

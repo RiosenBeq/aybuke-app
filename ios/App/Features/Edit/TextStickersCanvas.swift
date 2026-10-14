@@ -19,7 +19,7 @@ struct TextStickersCanvas: View {
             let canvas = OverlayCanvas(width: size.width, height: size.height)
             ZStack(alignment: .topLeading) {
                 // The shadow sits on a still shape, so dragging doesn't redraw it.
-                RoundedRectangle(cornerRadius: 16, style: .continuous)
+                RoundedRectangle.control
                     .fill(Palette.surface)
                     .shadow(color: Palette.shadow, radius: 16, y: 8)
                     .frame(width: size.width, height: size.height)
@@ -46,7 +46,7 @@ struct TextStickersCanvas: View {
                     }
                 }
                 .frame(width: size.width, height: size.height)
-                .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+                .clipShape(.control)
 
                 // Touches, and the doodle above the items as in the final photo.
                 OverlayInteractionLayer(session: session, size: size)
@@ -167,7 +167,7 @@ private struct SelectionChrome: View {
         let points = canvas.unit * placement.scale
         let width = item.size.width * points + 8
         let height = item.size.height * points + 8
-        RoundedRectangle(cornerRadius: 8, style: .continuous)
+        RoundedRectangle.chip
             .strokeBorder(Palette.white, style: StrokeStyle(lineWidth: 1.5, dash: [6, 4]))
             .shadow(color: .black.opacity(0.4), radius: 1.5)
             .allowsHitTesting(false)
@@ -535,7 +535,7 @@ struct OverlayTextEditor: View {
                             .foregroundStyle(Palette.ink)
                             .padding(.horizontal, 18)
                             .frame(minHeight: 44)
-                            .background(Palette.blush, in: Capsule())
+                            .background(Palette.blush, in: .chip)
                     }
                     .buttonStyle(.pressable)
                 }
@@ -559,7 +559,7 @@ struct OverlayTextEditor: View {
                 }
                 TextStyleRows(session: session)
                     .padding(12)
-                    .background(Palette.surface, in: RoundedRectangle(cornerRadius: 22, style: .continuous))
+                    .background(Palette.surface, in: .card)
             }
             .padding(.horizontal, Metrics.gutter)
             .padding(.vertical, 8)

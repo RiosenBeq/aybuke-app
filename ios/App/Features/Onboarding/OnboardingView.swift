@@ -95,14 +95,18 @@ struct OnboardingView: View {
                     .padding(.top, 8)
                     .padding(.bottom, 20)
 
+                // The buttons keep their full height (large text wraps them);
+                // the pages above scroll instead.
                 if isLastPage {
                     tryItButtons
+                        .fixedSize(horizontal: false, vertical: true)
                         .padding(.horizontal, Metrics.gutter)
                 } else if page != agePage {
                     Button(action: advance) {
                         Text("Continue")
                     }
                     .buttonStyle(.primary)
+                    .fixedSize(horizontal: false, vertical: true)
                     .padding(.horizontal, Metrics.gutter)
                 }
 
@@ -304,7 +308,7 @@ private struct OnboardingPageView: View {
                 }
 
                 VStack(spacing: 12) {
-                    Text(styled: page.title, size: 34)
+                    Text(styled: page.title, size: 30)
                         .multilineTextAlignment(.center)
                         .foregroundStyle(Palette.textPrimary)
                     Text(page.body)
@@ -324,16 +328,16 @@ private struct OnboardingPageView: View {
 
     private var art: some View {
         ZStack {
-            RoundedRectangle(cornerRadius: 40, style: .continuous)
+            RoundedRectangle(cornerRadius: 22, style: .continuous)
                 .fill(page.tone.fill)
                 .frame(width: 250, height: 310)
                 .rotationEffect(.degrees(appeared ? -7 : 0))
                 .shadow(color: Palette.ink.opacity(0.16), radius: 30, y: 18)
-            RoundedRectangle(cornerRadius: 40, style: .continuous)
+            RoundedRectangle(cornerRadius: 22, style: .continuous)
                 .fill(Palette.white)
                 .frame(width: 250, height: 310)
                 .overlay(
-                    RoundedRectangle(cornerRadius: 40, style: .continuous)
+                    RoundedRectangle(cornerRadius: 22, style: .continuous)
                         .strokeBorder(Palette.ink.opacity(0.06), lineWidth: 1)
                 )
                 .overlay(
@@ -396,7 +400,7 @@ private struct InterestPicker: View {
     var body: some View {
         OnboardingScroll {
             VStack(alignment: .leading, spacing: 18) {
-                Text(styled: "What are you\n*here for?*", size: 34)
+                Text(styled: "What are you\n*here for?*", size: 30)
                     .foregroundStyle(Palette.textPrimary)
                 Text("Pick as many as you like — we'll put them near the top of Explore.")
                     .font(.body)
@@ -436,9 +440,9 @@ private struct InterestPicker: View {
             }
             .frame(maxWidth: .infinity, minHeight: typeSize.isAccessibilitySize ? 0 : 84, alignment: .leading)
             .padding(14)
-            .background(Palette.surface, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+            .background(Palette.surface, in: .card)
             .overlay(
-                RoundedRectangle(cornerRadius: 18, style: .continuous)
+                RoundedRectangle.card
                     .strokeBorder(isSelected ? Palette.accent : Palette.stroke, lineWidth: isSelected ? 2 : 1)
             )
             .overlay(alignment: .topTrailing) {
@@ -473,7 +477,7 @@ private struct TryItPage<Footer: View>: View {
         OnboardingScroll {
             VStack(alignment: .leading, spacing: 16) {
                 VStack(alignment: .leading, spacing: 16) {
-                    Text(styled: "Try *Digicam '04*\non your photo", size: 34)
+                    Text(styled: "Try *Digicam '04*\non your photo", size: 30)
                         .foregroundStyle(Palette.textPrimary)
                     Text("A free Y2K camera look, made right on your device. Nothing is uploaded.")
                         .font(.body)
@@ -485,7 +489,7 @@ private struct TryItPage<Footer: View>: View {
 
                 if let photo {
                     BeforeAfterSlider(before: photo.original, after: photo.result)
-                        .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
+                        .clipShape(.card)
                         .frame(height: room(from: 180, upTo: 320))
                         .frame(maxWidth: .infinity)
                         .transition(.opacity.combined(with: .scale(scale: 0.96)))

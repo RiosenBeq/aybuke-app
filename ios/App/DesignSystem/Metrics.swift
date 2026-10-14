@@ -3,15 +3,31 @@ import SwiftUI
 enum Metrics {
     static let gutter: CGFloat = 16
     static let sectionSpacing: CGFloat = 28
-    static let cardRadius: CGFloat = 22
-    static let controlRadius: CGFloat = 16
-    /// Template cards are sharp-edged like prints; controls stay soft.
+    /// Crisp corners, from big to small: cards and panels, buttons, controls
+    /// (fields, tiles, photos on a canvas), chips and pills, then tags and
+    /// badges. Every corner in the app comes from here (see the shapes below).
+    static let cardRadius: CGFloat = 14
+    static let buttonRadius: CGFloat = 12
+    static let controlRadius: CGFloat = 10
+    static let chipRadius: CGFloat = 8
+    static let tagRadius: CGFloat = 5
+    /// Template cards are square-edged like prints.
     static let printRadius: CGFloat = 0
-    static let buttonHeight: CGFloat = 56
+    static let buttonHeight: CGFloat = 52
     /// Widest a column of content gets on iPad and in landscape.
     static let readableWidth: CGFloat = 820
     /// Narrower column for forms, panels and flows (onboarding, editor panels).
     static let compactWidth: CGFloat = 620
+}
+
+/// The shapes behind `Metrics`' radii: `.background(Palette.surface, in: .chip)`,
+/// `RoundedRectangle.card.strokeBorder(…)`.
+extension Shape where Self == RoundedRectangle {
+    static var card: RoundedRectangle { RoundedRectangle(cornerRadius: Metrics.cardRadius, style: .continuous) }
+    static var button: RoundedRectangle { RoundedRectangle(cornerRadius: Metrics.buttonRadius, style: .continuous) }
+    static var control: RoundedRectangle { RoundedRectangle(cornerRadius: Metrics.controlRadius, style: .continuous) }
+    static var chip: RoundedRectangle { RoundedRectangle(cornerRadius: Metrics.chipRadius, style: .continuous) }
+    static var tag: RoundedRectangle { RoundedRectangle(cornerRadius: Metrics.tagRadius, style: .continuous) }
 }
 
 /// White card on the petal canvas: a soft shadow in light mode, a hairline

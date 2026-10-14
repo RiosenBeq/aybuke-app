@@ -11,7 +11,7 @@ struct CreateView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: Metrics.sectionSpacing) {
                     VStack(alignment: .leading, spacing: 6) {
-                        Text(styled: "Create *anything*", size: 28)
+                        Text(styled: "Create *anything*", size: 25)
                             .foregroundStyle(Palette.textPrimary)
                             .accessibilityAddTraits(.isHeader)
                         Text("Describe it, pick a vibe — we'll handle the magic words.")
@@ -322,8 +322,8 @@ private struct RecentPromptChip: View {
                 .frame(maxWidth: 220, alignment: .leading)
                 .padding(.horizontal, 14)
                 .frame(minHeight: 44)
-                .background(Palette.surfaceRaised, in: Capsule())
-                .overlay(Capsule().strokeBorder(Palette.stroke, lineWidth: 1))
+                .background(Palette.surfaceRaised, in: .chip)
+                .overlay(RoundedRectangle.chip.strokeBorder(Palette.stroke, lineWidth: 1))
         }
         .buttonStyle(.pressable)
         .accessibilityLabel(Text(verbatim: text))

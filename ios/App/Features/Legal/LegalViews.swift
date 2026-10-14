@@ -163,9 +163,9 @@ private struct MarkdownBlockView: View {
             }
             .padding(16)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .background(Palette.primary.opacity(0.35), in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+            .background(Palette.primary.opacity(0.35), in: .card)
             .overlay(
-                RoundedRectangle(cornerRadius: 18, style: .continuous)
+                RoundedRectangle.card
                     .strokeBorder(Palette.stroke, lineWidth: 1)
             )
         case .rule:

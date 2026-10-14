@@ -14,7 +14,7 @@ struct LibraryTile: View {
     var onMissing: () -> Void = {}
     var onRemove: () -> Void = {}
 
-    private let shape = RoundedRectangle(cornerRadius: 14, style: .continuous)
+    private let shape = RoundedRectangle.control
 
     var body: some View {
         Color.clear
@@ -45,7 +45,7 @@ struct LibraryTile: View {
                         .lineLimit(1)
                         .padding(.horizontal, 7)
                         .padding(.vertical, 3)
-                        .background(Palette.ink.opacity(0.6), in: Capsule())
+                        .background(Palette.ink.opacity(0.6), in: .tag)
                         .padding(6)
                 }
             }
@@ -100,8 +100,8 @@ struct LibraryTile: View {
                         .lineLimit(1)
                         .padding(.horizontal, 12)
                         .frame(minHeight: 28)
-                        .background(Palette.accent, in: Capsule())
-                        // A 44 pt target around the small capsule.
+                        .background(Palette.accent, in: .chip)
+                        // A 44 pt target around the small button.
                         .padding(.vertical, 8)
                         .contentShape(Rectangle())
                 }

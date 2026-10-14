@@ -32,7 +32,7 @@ struct AIConsentView: View {
                         .accessibilityHidden(true)
                 }
 
-                Text(styled: "Your photos, *your call*", size: 28)
+                Text(styled: "Your photos, *your call*", size: 25)
                     .foregroundStyle(Palette.textPrimary)
 
                 Text("To create and edit images with AI, we send the photo and text you choose to our servers and to \(providerName), who process them on our behalf.")
@@ -120,7 +120,7 @@ struct AIConsentView: View {
         }
         .padding(14)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Palette.surface, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+        .background(Palette.surface, in: .card)
     }
 }
 
@@ -140,7 +140,7 @@ extension AIConsentView {
             .tint(Palette.accent)
         }
         .padding(14)
-        .background(Palette.surface, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+        .background(Palette.surface, in: .card)
     }
 }
 

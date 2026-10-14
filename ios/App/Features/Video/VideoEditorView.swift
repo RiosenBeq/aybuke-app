@@ -449,7 +449,7 @@ struct VideoEditorView: View {
     private var playerCard: some View {
         Button { model.togglePlayback() } label: {
             PlayerView(player: model.player)
-                .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
+                .clipShape(.control)
                 // Top center: the corners belong to Camcorder '06's REC, SP,
                 // battery, date and timecode.
                 .overlay(alignment: .top) {
@@ -459,7 +459,7 @@ struct VideoEditorView: View {
                             .foregroundStyle(Palette.textPrimary)
                             .padding(.horizontal, 10)
                             .padding(.vertical, 5)
-                            .liquidGlass(in: Capsule())
+                            .liquidGlass(in: .chip)
                             .padding(10)
                     }
                 }

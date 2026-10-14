@@ -16,7 +16,7 @@ private struct FinePrintBacking: ViewModifier {
             content
                 .padding(.horizontal, 10)
                 .padding(.vertical, 6)
-                .background(Palette.surface, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+                .background(Palette.surface, in: .chip)
         } else {
             content
         }

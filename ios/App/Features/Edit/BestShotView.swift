@@ -99,7 +99,7 @@ struct BestShotView: View {
         VStack(alignment: .leading, spacing: 8) {
             Text("Free · on your device")
                 .eyebrowStyle()
-            Text(styled: "Find your *best shot*", size: 32)
+            Text(styled: "Find your *best shot*", size: 28)
                 .foregroundStyle(Palette.textPrimary)
                 .accessibilityAddTraits(.isHeader)
             Text("Took a bunch of selfies? Pick up to \(Self.maxPhotos). We find the one with the best light and focus. Never by looks.")
@@ -255,7 +255,7 @@ private struct ShotTile: View {
                         .foregroundStyle(Palette.ink)
                         .padding(.horizontal, 7)
                         .padding(.vertical, 4)
-                        .background(Palette.blush, in: Capsule())
+                        .background(Palette.blush, in: .tag)
                         .padding(5)
                 }
             }

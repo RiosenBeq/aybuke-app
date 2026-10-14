@@ -349,7 +349,7 @@ private struct GlowTipStyle: TipViewStyle {
                             .foregroundStyle(Palette.onAccent)
                             .padding(.horizontal, 16)
                             .frame(minHeight: 36)
-                            .background(Palette.accent, in: Capsule())
+                            .background(Palette.accent, in: .chip)
                     }
                     .buttonStyle(.pressable)
                     .padding(.top, 6)

@@ -170,7 +170,7 @@ struct TourOverlay: View {
                         .accessibilityHidden(true)
 
                     if target != nil {
-                        RoundedRectangle(cornerRadius: 22, style: .continuous)
+                        RoundedRectangle.card
                             .strokeBorder(Palette.blush, lineWidth: 2.5)
                             .frame(width: hole.width, height: hole.height)
                             .scaleEffect(pulse ? 1.03 : 1)
@@ -214,7 +214,7 @@ struct TourOverlay: View {
         VStack(alignment: .leading, spacing: 10) {
             Text("\(app.tour.stepNumber) of \(app.tour.stepCount)")
                 .eyebrowStyle(Palette.textSecondary)
-            Text(styled: step.title(isPro: app.purchases.isPro), size: 24)
+            Text(styled: step.title(isPro: app.purchases.isPro), size: 22)
                 .foregroundStyle(Palette.textPrimary)
                 .accessibilityAddTraits(.isHeader)
                 .accessibilityFocused($titleFocused)
@@ -240,18 +240,18 @@ struct TourOverlay: View {
                     .foregroundStyle(Palette.onAccent)
                     .padding(.horizontal, 18)
                     .frame(height: 44)
-                    .background(Palette.accent, in: Capsule())
+                    .background(Palette.accent, in: .chip)
                 }
                 .buttonStyle(.pressable)
             }
             .padding(.top, 4)
         }
         .padding(18)
-        .background(Palette.surface, in: RoundedRectangle(cornerRadius: 24, style: .continuous))
-        .overlay(RoundedRectangle(cornerRadius: 24, style: .continuous).strokeBorder(Palette.stroke, lineWidth: 1))
+        .background(Palette.surface, in: .card)
+        .overlay(RoundedRectangle.card.strokeBorder(Palette.stroke, lineWidth: 1))
         .shadow(color: .black.opacity(0.2), radius: 24, y: 10)
         // The whole card moves on too (Skip and Next keep their own taps).
-        .contentShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
+        .contentShape(.card)
         .onTapGesture { advance() }
         .accessibilityElement(children: .contain)
         .accessibilityAction(.escape) { app.tour.finish() }
@@ -301,7 +301,7 @@ private struct SpotlightShape: Shape {
     func path(in rect: CGRect) -> Path {
         var path = Path(rect)
         if hole.width > 0, hole.height > 0 {
-            path.addRoundedRect(in: hole, cornerSize: CGSize(width: 22, height: 22), style: .continuous)
+            path.addRoundedRect(in: hole, cornerSize: CGSize(width: Metrics.cardRadius, height: Metrics.cardRadius), style: .continuous)
         }
         return path
     }

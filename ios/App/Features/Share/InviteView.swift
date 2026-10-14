@@ -18,7 +18,7 @@ struct InviteView: View {
                 VStack(spacing: 22) {
                     preview
                     VStack(spacing: 6) {
-                        Text(styled: "Glow *together*", size: 26)
+                        Text(styled: "Glow *together*", size: 23)
                             .foregroundStyle(Palette.textPrimary)
                             .accessibilityAddTraits(.isHeader)
                         Text("Share Glowlit with your besties: a story card with a QR code, or a message with the link.")
@@ -61,7 +61,7 @@ struct InviteView: View {
                 Image(uiImage: card)
                     .resizable()
                     .scaledToFit()
-                    .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
+                    .clipShape(.card)
                     .shadow(color: Palette.shadow, radius: 18, y: 10)
                     .transition(.scale(scale: 0.94).combined(with: .opacity))
                     .accessibilityLabel("Glowlit invite card with a QR code")

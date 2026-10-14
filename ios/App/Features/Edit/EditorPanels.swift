@@ -65,9 +65,9 @@ struct MagicEditPanel: View {
                     .onSubmit(submit)
                     .padding(.horizontal, 14)
                     .padding(.vertical, 12)
-                    .background(Palette.surface, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+                    .background(Palette.surface, in: .card)
                     .overlay(
-                        RoundedRectangle(cornerRadius: 18, style: .continuous)
+                        RoundedRectangle.card
                             .strokeBorder(isFocused ? Palette.accent : Palette.strokeStrong, lineWidth: isFocused ? 1.5 : 1)
                     )
                 Button(action: submit) {
@@ -248,7 +248,7 @@ struct AdjustPanel: View {
                             .foregroundStyle(Palette.onAccent)
                             .padding(.horizontal, 14)
                             .frame(minHeight: 44)
-                            .background(Palette.accent, in: Capsule())
+                            .background(Palette.accent, in: .chip)
                     }
                     .buttonStyle(.pressable)
                     .accessibilityHint("Picks the best light and colour for this photo")
@@ -345,7 +345,7 @@ struct EffectsPanel: View {
                 .font(.subheadline)
                 .padding(.horizontal, 14)
                 .padding(.vertical, 10)
-                .background(Palette.petal, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+                .background(Palette.petal, in: .control)
             }
 
             HStack(spacing: 12) {

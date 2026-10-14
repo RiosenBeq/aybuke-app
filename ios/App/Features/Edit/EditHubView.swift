@@ -15,7 +15,7 @@ struct EditHubView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 20) {
                     VStack(alignment: .leading, spacing: 6) {
-                        Text(styled: "Edit & *glow up*", size: 28)
+                        Text(styled: "Edit & *glow up*", size: 25)
                             .foregroundStyle(Palette.textPrimary)
                             .accessibilityAddTraits(.isHeader)
                         Text("Choose a tool, then a photo.")
@@ -33,7 +33,7 @@ struct EditHubView: View {
                                 .font(.title2.weight(.semibold))
                                 .foregroundStyle(Palette.blush)
                                 .frame(width: 54, height: 54)
-                                .background(Palette.ink, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+                                .background(Palette.ink, in: .control)
                             VStack(alignment: .leading, spacing: 3) {
                                 Text("Open a photo")
                                     .font(.cardTitle)
@@ -67,7 +67,7 @@ struct EditHubView: View {
                                 .font(.title3.weight(.semibold))
                                 .foregroundStyle(Palette.ink)
                                 .frame(width: 54, height: 54)
-                                .background(Palette.petal, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+                                .background(Palette.petal, in: .control)
                             VStack(alignment: .leading, spacing: 3) {
                                 HStack(spacing: 6) {
                                     Text("Find your best shot")
@@ -101,7 +101,7 @@ struct EditHubView: View {
                                 .font(.title3.weight(.semibold))
                                 .foregroundStyle(Palette.blush)
                                 .frame(width: 54, height: 54)
-                                .background(Palette.ink, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+                                .background(Palette.ink, in: .control)
                             VStack(alignment: .leading, spacing: 3) {
                                 HStack(spacing: 6) {
                                     Text("Edit a video")
@@ -138,7 +138,7 @@ struct EditHubView: View {
                                         .frame(width: 40, height: 40)
                                         .background(
                                             AuraFill(palette: Self.toolPalettes[index % Self.toolPalettes.count])
-                                                .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                                                .clipShape(.chip)
                                         )
                                     VStack(alignment: .leading, spacing: 3) {
                                         Text(tool.title)

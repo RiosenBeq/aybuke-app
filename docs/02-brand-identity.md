@@ -79,7 +79,7 @@ In October 2026 the owner retargeted Glowlit at **girls and young women** and as
 | `surfaceRaised` | `#F8F8F6` paper | `#303337` | Controls, chips | — |
 | `primary` | `#F7C1D9` blush | same | Selection, highlights, hero fills, glows | — |
 | `onPrimary` | `#121212` | same | Labels on blush | 12.1:1 |
-| `accent` / `onAccent` | `#121212` / `#F7C1D9` | `#F7C1D9` / `#121212` | **The one primary action per screen** (ink pill with a blush label), links, tints | 12.1:1 |
+| `accent` / `onAccent` | `#121212` / `#F7C1D9` | `#F7C1D9` / `#121212` | **The one primary action per screen** (ink button with a blush label), links, tints | 12.1:1 |
 | `textPrimary` | `#121212` | `#F8F8F6` | Body text | 15.0:1 on petal |
 | `textSecondary` | `#5C5457` | `#AAAAA8` | Secondary text | 5.9:1 on petal |
 | `textTertiary` | `#645A5E` | `#90908F` | Captions (not over blush or the aurora: 4.3:1 there, so fine print uses `textSecondary`) | 5.3:1 on petal |
@@ -87,7 +87,7 @@ In October 2026 the owner retargeted Glowlit at **girls and young women** and as
 
 **Rules**
 - **Never put white text on blush** (1.6:1). Labels on blush are ink.
-- The primary action is an **ink pill with a blush label** in light mode (blush pill with an ink label in dark mode). Everything else stays white, petal or blush.
+- The primary action is an **ink button with a blush label** in light mode (blush button with an ink label in dark mode). Everything else stays white, petal or blush.
 - Artwork without a photo (template cards, style tiles) uses flat `PaletteTone` pairings — blush, ink, white, charcoal — in a steady rhythm.
 - Generation and success moments read as **soft pink light**: a rotating blush glow, then a burst of hearts and sparkles.
 - Photos keep their own colors: no tinted overlays on images.
@@ -121,6 +121,22 @@ The first brand used Golden Hour amber `#FF9A3D` (gradient `#FFC25C → #FF7A3D`
   - Unbounded: crypto association.
   - Inter and Geist: too close to SF Pro to add brand value.
   - Clash Display and Satoshi: not OFL.
+- **Sizes:** headlines are set a step below iOS's large title, so Poppins' wide forms don't shout: 30 pt for onboarding and paywall titles, 25–28 pt for screen titles, 23 pt for card headlines, 26 pt for the Home wordmark, 16 pt for buttons and card titles. At accessibility text sizes, layouts stack (the Home header puts its buttons above the name) instead of breaking words.
+
+### Shape
+
+Crisp corners, not bubbles (October 2026): one radius scale in [`Metrics.swift`](../ios/App/DesignSystem/Metrics.swift), with matching shapes (`.card`, `.button`, `.control`, `.chip`, `.tag`) so no view hard-codes a corner.
+
+| Shape | Radius | Used for |
+|---|---|---|
+| `card` | 14 pt | Cards, panels, sheets' inner cards, the tour card |
+| `button` | 12 pt | Primary and secondary buttons (52 pt tall), the editor's tool bar items |
+| `control` | 10 pt | Photos on a canvas, fields, tiles, icon squares |
+| `chip` | 8 pt | Chips, pills (credits, ideas, idea buttons), toasts |
+| `tag` | 5 pt | PRO/NEW badges, Before/After tags, small labels |
+| print | 0 | Template cards and collection pages: looks are prints |
+
+Round shapes stay round where roundness is the meaning: icon buttons, the shutter, toggles, page dots and progress bars. Corners inside exported pictures (share cards, captions, stickers, collage captions) belong to the artwork, not to this scale.
 
 ---
 

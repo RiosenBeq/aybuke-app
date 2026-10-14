@@ -155,7 +155,7 @@ struct HideFacesCanvas: View {
             }
         }
         .aspectRatio(image.size.width / max(image.size.height, 1), contentMode: .fit)
-        .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+        .clipShape(.control)
         .shadow(color: Palette.shadow, radius: 16, y: 8)
         .overlay {
             if hider.isDetecting {

@@ -3,6 +3,7 @@ import AppCore
 
 struct HomeView: View {
     @Environment(AppModel.self) private var app
+    @Environment(\.dynamicTypeSize) private var typeSize
     @State private var legalDocument: LegalDocument?
     @State private var openCategory: TemplateCategory?
     @State private var showInvite = false
@@ -88,31 +89,53 @@ struct HomeView: View {
 
     // MARK: Sections
 
+    @ViewBuilder
     private var header: some View {
-        HStack(spacing: 12) {
-            VStack(alignment: .leading, spacing: 0) {
-                Text(Brand.name)
-                    .font(.display(30, weight: .heavy, relativeTo: .largeTitle))
-                    .foregroundStyle(Palette.textPrimary)
-                    .accessibilityAddTraits(.isHeader)
-                Text("What are we glowing up today?")
-                    .font(.accent(16, relativeTo: .subheadline))
-                    .foregroundStyle(Palette.textSecondary)
+        // At accessibility sizes the buttons go above the name, so "Glowlit"
+        // and the line under it get the whole width and never break mid-word.
+        if typeSize.isAccessibilitySize {
+            VStack(alignment: .leading, spacing: 8) {
+                HStack(spacing: 12) {
+                    Spacer()
+                    headerButtons
+                }
+                headerTitle
             }
-            Spacer()
-            if app.allowsCloudAI {
-                HomeCreditPill()
-                    .tourAnchor(.credits)
+        } else {
+            HStack(spacing: 12) {
+                headerTitle
+                Spacer()
+                headerButtons
             }
-            Button {
-                app.isSettingsPresented = true
-            } label: {
-                Image(systemName: "gearshape.fill")
-            }
-            .buttonStyle(.icon)
-            .accessibilityLabel("Settings")
-            .tourAnchor(.settings)
         }
+    }
+
+    private var headerTitle: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            Text(Brand.name)
+                .font(.display(26, weight: .heavy, relativeTo: .largeTitle))
+                .foregroundStyle(Palette.textPrimary)
+                .accessibilityAddTraits(.isHeader)
+            Text("What are we glowing up today?")
+                .font(.accent(16, relativeTo: .subheadline))
+                .foregroundStyle(Palette.textSecondary)
+        }
+    }
+
+    @ViewBuilder
+    private var headerButtons: some View {
+        if app.allowsCloudAI {
+            HomeCreditPill()
+                .tourAnchor(.credits)
+        }
+        Button {
+            app.isSettingsPresented = true
+        } label: {
+            Image(systemName: "gearshape.fill")
+        }
+        .buttonStyle(.icon)
+        .accessibilityLabel("Settings")
+        .tourAnchor(.settings)
     }
 
     private var heroCard: some View {
@@ -123,7 +146,7 @@ struct HomeView: View {
             VStack(alignment: .leading, spacing: 8) {
                 Text("Magic Edit")
                     .eyebrowStyle(Palette.ink.opacity(0.7))
-                Text(styled: "Say the change.\nWatch it *glow.*", size: 26)
+                Text(styled: "Say the change.\nWatch it *glow.*", size: 23)
                     .foregroundStyle(Palette.ink)
                     .multilineTextAlignment(.leading)
                 HStack(spacing: 6) {
@@ -134,7 +157,7 @@ struct HomeView: View {
                 .foregroundStyle(Palette.blush)
                 .padding(.horizontal, 14)
                 .padding(.vertical, 9)
-                .background(Palette.ink, in: Capsule())
+                .background(Palette.ink, in: .chip)
                 .padding(.top, 6)
             }
             .padding(20)
@@ -246,7 +269,7 @@ struct HomeView: View {
                     .font(.title2.weight(.semibold))
                     .foregroundStyle(Palette.blush)
                     .frame(width: 52, height: 52)
-                    .background(Palette.ink, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+                    .background(Palette.ink, in: .control)
                 VStack(alignment: .leading, spacing: 3) {
                     Text("Create from text")
                         .font(.cardTitle)
@@ -279,7 +302,7 @@ struct HomeView: View {
                     .background(
                         LinearGradient(colors: [Palette.auraMint, Palette.auraLilac, Palette.auraPink, Palette.auraPeach],
                                        startPoint: .topLeading, endPoint: .bottomTrailing),
-                        in: RoundedRectangle(cornerRadius: 16, style: .continuous)
+                        in: .control
                     )
                 VStack(alignment: .leading, spacing: 3) {
                     Text("Glow together")
@@ -346,7 +369,7 @@ private struct QuickToolTile: View {
                     .font(.title3.weight(.semibold))
                     .foregroundStyle(palette.isDark ? Palette.white : Palette.ink)
                     .frame(width: 44, height: 44)
-                    .background(AuraFill(palette: palette).clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous)))
+                    .background(AuraFill(palette: palette).clipShape(.control))
                 VStack(alignment: .leading, spacing: 2) {
                     Text(title)
                         .font(.subheadline.weight(.bold))

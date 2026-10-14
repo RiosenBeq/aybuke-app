@@ -67,7 +67,7 @@ struct TextStyleRows: View {
                             .fixedSize()
                             .padding(.horizontal, 14)
                             .frame(minHeight: 44)
-                            .background(Palette.accent, in: Capsule())
+                            .background(Palette.accent, in: .chip)
                     }
                     .buttonStyle(.pressable)
                 }
@@ -98,7 +98,7 @@ struct TextStyleRows: View {
                         .modifier(TextLookPreview(style: style, scale: 0.45))
                         .frame(width: 44, height: 44)
                         // Mid grey, so light and dark colours both show.
-                        .background(Color(hex: 0x8C8790), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+                        .background(Color(hex: 0x8C8790), in: .chip)
                 }
                 .buttonStyle(.pressable)
                 .accessibilityLabel("Text style")
@@ -112,8 +112,8 @@ struct TextStyleRows: View {
                         .font(.system(size: 17, weight: .semibold))
                         .foregroundStyle(Palette.textPrimary)
                         .frame(width: 44, height: 44)
-                        .background(Palette.surface, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
-                        .overlay(RoundedRectangle(cornerRadius: 12, style: .continuous).strokeBorder(Palette.stroke, lineWidth: 1))
+                        .background(Palette.surface, in: .chip)
+                        .overlay(RoundedRectangle.chip.strokeBorder(Palette.stroke, lineWidth: 1))
                 }
                 .buttonStyle(.pressable)
                 .accessibilityLabel("Alignment")
@@ -140,8 +140,8 @@ private struct FontChip: View {
                 .padding(.horizontal, 14)
                 .frame(minHeight: 44)
                 .foregroundStyle(isSelected ? Palette.onPrimary : Palette.textPrimary)
-                .background(isSelected ? Palette.primary : Palette.surface, in: Capsule())
-                .overlay(Capsule().strokeBorder(isSelected ? Palette.ink : Palette.stroke, lineWidth: isSelected ? 1.5 : 1))
+                .background(isSelected ? Palette.primary : Palette.surface, in: .chip)
+                .overlay(RoundedRectangle.chip.strokeBorder(isSelected ? Palette.ink : Palette.stroke, lineWidth: isSelected ? 1.5 : 1))
         }
         .buttonStyle(.pressable)
         .accessibilityLabel(font.title)
@@ -227,8 +227,8 @@ private struct StickerTray: View {
                             }
                         }
                         .frame(width: 52, height: 52)
-                        .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
-                        .overlay(RoundedRectangle(cornerRadius: 14, style: .continuous).strokeBorder(Palette.stroke, lineWidth: 1))
+                        .clipShape(.control)
+                        .overlay(RoundedRectangle.control.strokeBorder(Palette.stroke, lineWidth: 1))
                     }
                     .buttonStyle(.pressable)
                     .accessibilityLabel(kind.title)

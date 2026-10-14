@@ -96,7 +96,7 @@ struct CollageView: View {
                     VStack(alignment: .leading, spacing: 8) {
                         Text("Free · on your device")
                             .eyebrowStyle()
-                        Text(styled: "Make a *photo dump*", size: 32)
+                        Text(styled: "Make a *photo dump*", size: 28)
                             .foregroundStyle(Palette.textPrimary)
                             .accessibilityAddTraits(.isHeader)
                         Text("Grids, instant prints, film strips and seamless carousels. Your photos never leave your device.")
@@ -136,7 +136,7 @@ struct CollageView: View {
                             } label: {
                                 CollageLayoutThumbnail(style: style, count: 4)
                                     .padding(6)
-                                    .background(Palette.surface, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+                                    .background(Palette.surface, in: .chip)
                             }
                             .buttonStyle(.pressable)
                             .accessibilityLabel(style.title)
@@ -244,7 +244,7 @@ struct CollageView: View {
         .foregroundStyle(Palette.onAccent)
         .padding(.horizontal, showsText ? 16 : 0)
         .frame(minWidth: 44, minHeight: 44)
-        .background(Palette.accent, in: Capsule())
+        .background(Palette.accent, in: .chip)
         .fixedSize()
     }
 
@@ -323,8 +323,8 @@ struct CollageView: View {
                 .foregroundStyle(Palette.textPrimary)
                 .padding(.horizontal, 14)
                 .frame(minWidth: 44, minHeight: 44)
-                .background(Palette.surface, in: Capsule())
-                .overlay(Capsule().strokeBorder(Palette.stroke, lineWidth: 1))
+                .background(Palette.surface, in: .chip)
+                .overlay(RoundedRectangle.chip.strokeBorder(Palette.stroke, lineWidth: 1))
         }
         .buttonStyle(.pressable)
         .fixedSize()
@@ -401,8 +401,8 @@ struct CollageView: View {
             art()
                 .frame(width: 64, height: 64)
                 .background(isSelected ? Palette.primary : Palette.surface)
-                .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
-                .overlay(RoundedRectangle(cornerRadius: 16, style: .continuous)
+                .clipShape(.control)
+                .overlay(RoundedRectangle.control
                     .strokeBorder(isSelected ? Palette.ink : Palette.stroke, lineWidth: isSelected ? 1.5 : 1))
             Text(title)
                 .font(.caption.weight(isSelected ? .bold : .semibold))
@@ -548,8 +548,8 @@ struct CollageView: View {
             .submitLabel(.done)
             .padding(.horizontal, 14)
             .frame(minHeight: 44)
-            .background(Palette.surface, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
-            .overlay(RoundedRectangle(cornerRadius: 14, style: .continuous).strokeBorder(Palette.stroke, lineWidth: 1))
+            .background(Palette.surface, in: .control)
+            .overlay(RoundedRectangle.control.strokeBorder(Palette.stroke, lineWidth: 1))
             .disabled(!model.design.showsCaption)
             .opacity(model.design.showsCaption ? 1 : 0.5)
         }
@@ -574,17 +574,17 @@ struct CollageView: View {
                     .foregroundStyle(isActive ? Palette.onPrimary : Palette.textSecondary)
                     .frame(maxWidth: .infinity)
                     .frame(height: 54)
-                    .background(isActive ? Palette.primary : Color.clear, in: Capsule())
+                    .background(isActive ? Palette.primary : Color.clear, in: .button)
                     // Blush alone is too faint on the glass to mark the panel.
-                    .overlay(Capsule().strokeBorder(isActive ? Palette.ink : Color.clear, lineWidth: 1.5))
-                    .contentShape(Capsule())
+                    .overlay(RoundedRectangle.button.strokeBorder(isActive ? Palette.ink : Color.clear, lineWidth: 1.5))
+                    .contentShape(.button)
                 }
                 .buttonStyle(.plain)
                 .accessibilityAddTraits(isActive ? .isSelected : [])
             }
         }
         .padding(5)
-        .liquidGlass(in: Capsule(), tint: Palette.white.opacity(0.4))
+        .liquidGlass(in: RoundedRectangle(cornerRadius: Metrics.buttonRadius + 5, style: .continuous), tint: Palette.white.opacity(0.4))
         .frame(maxWidth: 440)
         .padding(.horizontal, 10)
         .padding(.bottom, 4)
@@ -726,7 +726,7 @@ struct CollageHubCard: View {
                     .font(.title3.weight(.semibold))
                     .foregroundStyle(Palette.ink)
                     .frame(width: 54, height: 54)
-                    .background(AuraFill(palette: .lilac).clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous)))
+                    .background(AuraFill(palette: .lilac).clipShape(.control))
                 VStack(alignment: .leading, spacing: 3) {
                     HStack(spacing: 6) {
                         Text("Make a collage")

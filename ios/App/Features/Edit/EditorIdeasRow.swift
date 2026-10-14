@@ -214,8 +214,8 @@ private struct IdeaChip: View {
             .padding(.horizontal, 14)
             .padding(.vertical, 9)
             .foregroundStyle(isPrimary ? Palette.onPrimary : Palette.textPrimary)
-            .background(isPrimary ? Palette.primary : Palette.surface, in: Capsule())
-            .overlay(Capsule().strokeBorder(isPrimary ? Palette.ink.opacity(0.12) : Palette.stroke, lineWidth: 1))
+            .background(isPrimary ? Palette.primary : Palette.surface, in: .chip)
+            .overlay(RoundedRectangle.chip.strokeBorder(isPrimary ? Palette.ink.opacity(0.12) : Palette.stroke, lineWidth: 1))
         }
         .buttonStyle(.pressable)
     }

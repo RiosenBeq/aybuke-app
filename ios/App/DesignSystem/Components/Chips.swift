@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Capsule chip: white when idle, blush with ink text when selected.
+/// Chip: white when idle, blush with ink text when selected.
 struct SelectableChip: View {
     let title: LocalizedStringKey
     var symbolName: String?
@@ -29,10 +29,10 @@ struct SelectableChip: View {
             .padding(.horizontal, 14)
             .frame(minHeight: 44)
             .foregroundStyle(isSelected ? Palette.onPrimary : Palette.textPrimary)
-            .background(isSelected ? Palette.primary : Palette.surface, in: Capsule())
+            .background(isSelected ? Palette.primary : Palette.surface, in: .chip)
             // Blush on white is too faint to show selection alone, so the
             // selected chip always gets an ink edge as well.
-            .overlay(Capsule().strokeBorder(isSelected ? Palette.ink : Palette.stroke, lineWidth: isSelected ? 1.5 : 1))
+            .overlay(RoundedRectangle.chip.strokeBorder(isSelected ? Palette.ink : Palette.stroke, lineWidth: isSelected ? 1.5 : 1))
             .animation(Motion.press, value: isSelected)
         }
         .buttonStyle(.pressable)
@@ -54,7 +54,7 @@ struct StyleTile: View {
         Button(action: action) {
             VStack(spacing: 8) {
                 ZStack {
-                    RoundedRectangle(cornerRadius: 18, style: .continuous)
+                    RoundedRectangle.control
                         .fill(tone.fill)
                     Image(systemName: symbolName)
                         .font(.system(size: 22, weight: .semibold))
@@ -71,12 +71,12 @@ struct StyleTile: View {
                 }
                 .frame(width: 72, height: 72)
                 .overlay(
-                    RoundedRectangle(cornerRadius: 18, style: .continuous)
+                    RoundedRectangle.control
                         .strokeBorder(Palette.stroke, lineWidth: 1)
                 )
                 .padding(3)
                 .overlay(
-                    RoundedRectangle(cornerRadius: 21, style: .continuous)
+                    RoundedRectangle(cornerRadius: Metrics.controlRadius + 3, style: .continuous)
                         .strokeBorder(isSelected ? Palette.accent : Color.clear, lineWidth: 2.5)
                 )
                 .overlay(alignment: .bottomTrailing) {

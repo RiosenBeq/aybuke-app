@@ -181,10 +181,10 @@ private struct CaptionPillButtonStyle: ButtonStyle {
             .padding(.horizontal, 14)
             .frame(minHeight: 34)
             .foregroundStyle(prominent ? Palette.onAccent : Palette.textPrimary)
-            .background(prominent ? Palette.accent : Palette.surfaceRaised, in: Capsule())
-            .overlay(Capsule().strokeBorder(prominent ? Color.clear : Palette.strokeStrong, lineWidth: 1))
+            .background(prominent ? Palette.accent : Palette.surfaceRaised, in: .chip)
+            .overlay(RoundedRectangle.chip.strokeBorder(prominent ? Color.clear : Palette.strokeStrong, lineWidth: 1))
             .frame(minHeight: 44)
-            .contentShape(Capsule())
+            .contentShape(.chip)
             .scaleEffect(configuration.isPressed ? 0.96 : 1)
             .animation(Motion.press, value: configuration.isPressed)
     }
@@ -262,7 +262,7 @@ struct CaptionsEditor: View {
         return Button { model.togglePlayback() } label: {
             CaptionsPlayerView(player: model.player)
                 .aspectRatio(aspect, contentMode: .fit)
-                .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+                .clipShape(.control)
                 .overlay {
                     if !model.isPlaying {
                         Image(systemName: "play.fill")
@@ -567,9 +567,9 @@ private struct CaptionStyleButton: View {
                     }
                 }
                 .frame(width: 64, height: 86)
-                .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                .clipShape(.control)
                 .overlay(
-                    RoundedRectangle(cornerRadius: 12, style: .continuous)
+                    RoundedRectangle.control
                         .strokeBorder(isSelected ? Palette.accent : Palette.stroke, lineWidth: isSelected ? 3 : 1)
                 )
                 Text(style.title)

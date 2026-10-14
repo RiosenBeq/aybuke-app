@@ -383,7 +383,7 @@ private struct SeamGuides: View {
                     .foregroundStyle(Color.white)
                     .padding(.horizontal, 6)
                     .padding(.vertical, 3)
-                    .background(Palette.ink.opacity(0.55), in: Capsule())
+                    .background(Palette.ink.opacity(0.55), in: .tag)
                     .offset(x: Double(number - 1) / Double(max(count, 1)) * size.width + 6, y: 6)
             }
         }

@@ -63,7 +63,7 @@ struct GlowWidgetView: View {
         .foregroundStyle(WidgetPalette.blush)
         .padding(.horizontal, 9)
         .padding(.vertical, 5)
-        .background(WidgetPalette.ink, in: Capsule())
+        .background(WidgetPalette.ink, in: RoundedRectangle(cornerRadius: 8, style: .continuous))
     }
 
     @ViewBuilder
@@ -123,9 +123,9 @@ struct GlowWidgetView: View {
             Link(destination: GlowDeepLink.library.url) {
                 artwork
                     .frame(width: 118, height: 132)
-                    .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
+                    .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
                     .overlay(
-                        RoundedRectangle(cornerRadius: 22, style: .continuous)
+                        RoundedRectangle(cornerRadius: 14, style: .continuous)
                             .strokeBorder(.white.opacity(0.8), lineWidth: 2)
                     )
                     .shadow(color: WidgetPalette.ink.opacity(0.15), radius: 8, y: 4)

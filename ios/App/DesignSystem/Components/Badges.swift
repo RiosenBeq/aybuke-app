@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Ink capsule with blush lettering; flips to blush-on-ink over dark artwork.
+/// Ink tag with blush lettering; flips to blush-on-ink over dark artwork.
 struct ProBadge: View {
     var onDark = false
 
@@ -12,7 +12,7 @@ struct ProBadge: View {
         .foregroundStyle(onDark ? Palette.ink : Palette.blush)
         .padding(.horizontal, 7)
         .padding(.vertical, 4)
-        .background(onDark ? Palette.blush : Palette.ink, in: Capsule())
+        .background(onDark ? Palette.blush : Palette.ink, in: .tag)
         .accessibilityLabel("Pro")
     }
 }
@@ -26,7 +26,7 @@ struct NewBadge: View {
             .foregroundStyle(onDark ? Palette.ink : Palette.white)
             .padding(.horizontal, 7)
             .padding(.vertical, 4)
-            .background(onDark ? Palette.white : Palette.ink, in: Capsule())
+            .background(onDark ? Palette.white : Palette.ink, in: .tag)
     }
 }
 
@@ -50,7 +50,7 @@ struct CreditPill: View {
             .foregroundStyle(Palette.onAccent)
             .padding(.horizontal, 12)
             .padding(.vertical, 7)
-            .background(Palette.accent, in: Capsule())
+            .background(Palette.accent, in: .chip)
             // The pill stays small; the touch target doesn't.
             .frame(minWidth: 44, minHeight: 44)
             .contentShape(Rectangle())

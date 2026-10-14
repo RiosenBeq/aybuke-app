@@ -22,8 +22,8 @@ struct EditorToolBar: View {
             scrollingRow
         }
         .padding(5)
-        // A capsule at the usual size, like the items inside it.
-        .liquidGlass(in: RoundedRectangle(cornerRadius: 32), tint: Palette.white.opacity(0.4))
+        // Concentric with the items inside it (5 pt in).
+        .liquidGlass(in: RoundedRectangle(cornerRadius: Metrics.buttonRadius + 5, style: .continuous), tint: Palette.white.opacity(0.4))
         // Labels grow with Dynamic Type up to AX1; past that, a long press
         // shows the large content viewer, as Apple's own bars do.
         .dynamicTypeSize(...DynamicTypeSize.accessibility1)
@@ -79,9 +79,9 @@ private struct ToolItem: View {
     @ScaledMetric(relativeTo: .caption2) private var bottomPadding: CGFloat = 6
 
     var body: some View {
-        // A capsule at the usual size; when big text makes the item taller,
-        // the corners stop growing, so they never cut into the label.
-        let shape = RoundedRectangle(cornerRadius: 27)
+        // Fixed corners, so when big text makes the item taller they never
+        // cut into the label.
+        let shape = RoundedRectangle.button
         Button(action: action) {
             VStack(spacing: 3) {
                 Image(systemName: tool.symbolName)

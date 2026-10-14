@@ -35,7 +35,7 @@ struct AppleSignInButton: View {
         }
         .signInWithAppleButtonStyle(colorScheme == .dark ? .white : .black)
         .frame(height: 52)
-        .clipShape(Capsule())
+        .clipShape(.button)
         .overlay {
             if isWorking {
                 ProgressView().tint(colorScheme == .dark ? Palette.ink : Palette.white)
@@ -61,7 +61,7 @@ struct AccountPromptSheet: View {
                 .padding(.top, 28)
 
             VStack(spacing: 8) {
-                Text(styled: "Keep your glow on *every device*", size: 26)
+                Text(styled: "Keep your glow on *every device*", size: 23)
                     .multilineTextAlignment(.center)
                     .foregroundStyle(Palette.textPrimary)
                 Text("Sign in with Apple and Pro and your credits come with you when you switch or add a device.")

@@ -74,7 +74,7 @@ struct RetroCamReviewView: View {
                     .foregroundStyle(.white)
                     .padding(.horizontal, 16)
                     .frame(minHeight: 44)
-                    .background(Color.white.opacity(0.14), in: Capsule())
+                    .background(Color.white.opacity(0.14), in: .chip)
             }
             .buttonStyle(.pressable)
             Spacer()
@@ -145,7 +145,7 @@ struct RetroCamReviewView: View {
             .foregroundStyle(.white)
             .padding(.horizontal, 14)
             .padding(.vertical, 12)
-            .background(Color.white.opacity(0.12), in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+            .background(Color.white.opacity(0.12), in: .control)
         }
         .padding(.horizontal, Metrics.gutter)
         .padding(.top, 4)

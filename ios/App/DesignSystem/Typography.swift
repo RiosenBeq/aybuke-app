@@ -43,11 +43,11 @@ extension Font {
         return .system(size: size, weight: weight, design: .rounded)
     }
 
-    static var heroTitle: Font { .display(34, weight: .bold, relativeTo: .largeTitle) }
-    static var screenTitle: Font { .display(28, weight: .bold, relativeTo: .largeTitle) }
-    static var sectionTitle: Font { .display(20, weight: .semibold, relativeTo: .title3) }
-    static var cardTitle: Font { .display(17, weight: .semibold, relativeTo: .headline) }
-    static var buttonLabel: Font { .display(17, weight: .semibold, relativeTo: .headline) }
+    static var heroTitle: Font { .display(30, weight: .bold, relativeTo: .largeTitle) }
+    static var screenTitle: Font { .display(25, weight: .bold, relativeTo: .largeTitle) }
+    static var sectionTitle: Font { .display(19, weight: .semibold, relativeTo: .title3) }
+    static var cardTitle: Font { .display(16, weight: .semibold, relativeTo: .headline) }
+    static var buttonLabel: Font { .display(16, weight: .semibold, relativeTo: .headline) }
 
     /// Editorial accent: Apple's New York serif in italic — the one soft,
     /// elegant word in a headline ("Make it *glow*"). Scales with Dynamic Type.
@@ -77,7 +77,7 @@ private extension Font.TextStyle {
 
 extension Text {
     /// Display headline where words wrapped in `*asterisks*` are set in the
-    /// italic serif accent: `Text(styled: "Your photos, in their *best light*", size: 34)`.
+    /// italic serif accent: `Text(styled: "Your photos, in their *best light*", size: 30)`.
     init(styled source: LocalizedStringResource, size: CGFloat, weight: Font.Weight = .bold, relativeTo style: Font.TextStyle = .largeTitle) {
         self.init(styled: String(localized: source), size: size, weight: weight, relativeTo: style)
     }

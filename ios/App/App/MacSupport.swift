@@ -198,7 +198,7 @@ private struct DropHint: View {
                 .foregroundStyle(Palette.onAccent)
                 .padding(.horizontal, 20)
                 .padding(.vertical, 12)
-                .background(Palette.accent, in: Capsule())
+                .background(Palette.accent, in: .chip)
         }
         .ignoresSafeArea()
         .allowsHitTesting(false)

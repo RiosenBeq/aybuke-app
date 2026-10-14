@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Ink capsule with a blush label (blush with ink on the dark canvas) for the
+/// Ink button with a blush label (blush with ink on the dark canvas) for the
 /// one primary action on a screen.
 struct PrimaryButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
@@ -14,15 +14,18 @@ struct PrimaryButtonStyle: ButtonStyle {
         var body: some View {
             configuration.label
                 .font(.buttonLabel)
+                .multilineTextAlignment(.center)
                 .foregroundStyle(isEnabled ? Palette.onAccent : Palette.textTertiary)
+                // Long translations and large text wrap instead of truncating.
+                .padding(.vertical, 6)
                 .frame(maxWidth: .infinity, minHeight: Metrics.buttonHeight)
                 .padding(.horizontal, 20)
                 .background {
                     // Disabled: the tint sits on the page color, so content
                     // scrolling under a floating button doesn't show through.
-                    Capsule()
+                    RoundedRectangle.button
                         .fill(isEnabled ? Palette.accent : Palette.strokeStrong)
-                        .background(isEnabled ? .clear : Palette.background, in: Capsule())
+                        .background(isEnabled ? .clear : Palette.background, in: .button)
                 }
                 .shadow(color: Palette.ink.opacity(isEnabled ? 0.18 : 0), radius: 16, y: 8)
                 .scaleEffect(configuration.isPressed ? 0.97 : 1)
@@ -31,19 +34,21 @@ struct PrimaryButtonStyle: ButtonStyle {
     }
 }
 
-/// White capsule for secondary actions.
+/// White button for secondary actions.
 struct SecondaryButtonStyle: ButtonStyle {
     /// `Metrics.buttonHeight` when it sits under a primary button as an equal choice.
-    var minHeight: CGFloat = 50
+    var minHeight: CGFloat = 46
 
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .font(.buttonLabel)
+            .multilineTextAlignment(.center)
             .foregroundStyle(Palette.textPrimary)
+            .padding(.vertical, 6)
             .frame(maxWidth: .infinity, minHeight: minHeight)
             .padding(.horizontal, 18)
-            .background(Palette.surface, in: Capsule())
-            .overlay(Capsule().strokeBorder(Palette.strokeStrong, lineWidth: 1))
+            .background(Palette.surface, in: .button)
+            .overlay(RoundedRectangle.button.strokeBorder(Palette.strokeStrong, lineWidth: 1))
             .scaleEffect(configuration.isPressed ? 0.97 : 1)
             .animation(.spring(response: 0.25, dampingFraction: 0.7), value: configuration.isPressed)
     }
@@ -104,7 +109,7 @@ struct CostLabel: View {
                 .font(.subheadline.weight(.bold))
                 .padding(.horizontal, 8)
                 .padding(.vertical, 3)
-                .background(Palette.onAccent.opacity(0.18), in: Capsule())
+                .background(Palette.onAccent.opacity(0.18), in: .tag)
             }
         }
     }

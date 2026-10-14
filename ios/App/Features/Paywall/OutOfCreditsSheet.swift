@@ -33,13 +33,13 @@ struct OutOfCreditsSheet: View {
                         .frame(width: 48, height: 48)
                         .background(Palette.blush, in: Circle())
                     if let shortfall {
-                        Text(styled: "Not quite *enough*", size: 28)
+                        Text(styled: "Not quite *enough*", size: 25)
                             .foregroundStyle(Palette.textPrimary)
                         Text("This needs \(shortfall.needed) credits. You have \(shortfall.available). Choose fewer images, or add a credit pack.")
                             .font(.subheadline)
                             .foregroundStyle(Palette.textSecondary)
                     } else {
-                        Text(styled: "You've used this month's *credits*", size: 28)
+                        Text(styled: "You've used this month's *credits*", size: 25)
                             .foregroundStyle(Palette.textPrimary)
                     }
                     refillLine

@@ -179,7 +179,7 @@ struct TrendWidgetView: View {
                     .foregroundStyle(WidgetPalette.blush)
                     .padding(.horizontal, 12)
                     .padding(.vertical, 7)
-                    .background(WidgetPalette.ink, in: Capsule())
+                    .background(WidgetPalette.ink, in: RoundedRectangle(cornerRadius: 8, style: .continuous))
                 }
             }
             Spacer(minLength: 0)
@@ -198,7 +198,7 @@ struct TrendWidgetView: View {
                         .foregroundStyle(.white)
                         .padding(.horizontal, 7)
                         .padding(.vertical, 3)
-                        .background(WidgetPalette.ink, in: Capsule())
+                        .background(WidgetPalette.ink, in: RoundedRectangle(cornerRadius: 5, style: .continuous))
                         .offset(x: -40, y: 46)
                 }
             }

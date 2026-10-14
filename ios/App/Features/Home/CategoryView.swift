@@ -47,7 +47,7 @@ struct CategoryView: View {
         VStack(alignment: .leading, spacing: 8) {
             Text("Collection · \(templates.count) looks")
                 .eyebrowStyle()
-            Text(styled: category.styledTitle, size: 36)
+            Text(styled: category.styledTitle, size: 31)
                 .foregroundStyle(Palette.textPrimary)
                 .accessibilityAddTraits(.isHeader)
             Text(category.blurb)

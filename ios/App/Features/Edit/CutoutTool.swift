@@ -302,7 +302,7 @@ struct CutoutCanvas: View {
             }
         }
         .aspectRatio(image.size.width / max(image.size.height, 1), contentMode: .fit)
-        .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+        .clipShape(.control)
         .shadow(color: Palette.shadow, radius: 16, y: 8)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(mode == .keepMore ? Text("Brush over what to keep") : Text("Brush over what to remove"))
@@ -335,7 +335,7 @@ struct CutoutCanvas: View {
             }
         }
         .aspectRatio(image.size.width / max(image.size.height, 1), contentMode: .fit)
-        .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+        .clipShape(.control)
         .shadow(color: Palette.shadow, radius: 16, y: 8)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel("Cut-out preview")
@@ -428,8 +428,8 @@ struct CutoutPanel: View {
                             .foregroundStyle(Palette.textPrimary)
                             .lineLimit(1)
                             .frame(maxWidth: .infinity, minHeight: 52)
-                            .background(Palette.surface, in: Capsule())
-                            .overlay(Capsule().strokeBorder(Palette.stroke, lineWidth: 1))
+                            .background(Palette.surface, in: .button)
+                            .overlay(RoundedRectangle.button.strokeBorder(Palette.stroke, lineWidth: 1))
                     }
                     Button("Apply", action: onApply)
                         .buttonStyle(.primary)
@@ -528,8 +528,8 @@ struct CutoutPanel: View {
         } label: {
             content()
                 .frame(width: 44, height: 44)
-                .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
-                .overlay(RoundedRectangle(cornerRadius: 12, style: .continuous).strokeBorder(Palette.stroke, lineWidth: 1))
+                .clipShape(.chip)
+                .overlay(RoundedRectangle.chip.strokeBorder(Palette.stroke, lineWidth: 1))
                 .overlay(selectionRing(isSelected: isSelected))
         }
         .buttonStyle(.pressable)
@@ -538,7 +538,7 @@ struct CutoutPanel: View {
     }
 
     private func selectionRing(isSelected: Bool) -> some View {
-        RoundedRectangle(cornerRadius: 15, style: .continuous)
+        RoundedRectangle(cornerRadius: Metrics.chipRadius + 4, style: .continuous)
             .strokeBorder(Palette.accent, lineWidth: isSelected ? 2.5 : 0)
             .padding(-4)
     }
@@ -606,10 +606,10 @@ private struct PhotoTile: View {
             }
         }
         .frame(width: 44, height: 44)
-        .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
-        .overlay(RoundedRectangle(cornerRadius: 12, style: .continuous).strokeBorder(Palette.stroke, lineWidth: 1))
+        .clipShape(.chip)
+        .overlay(RoundedRectangle.chip.strokeBorder(Palette.stroke, lineWidth: 1))
         .overlay(
-            RoundedRectangle(cornerRadius: 15, style: .continuous)
+            RoundedRectangle(cornerRadius: Metrics.chipRadius + 4, style: .continuous)
                 .strokeBorder(Palette.accent, lineWidth: isSelected ? 2.5 : 0)
                 .padding(-4)
         )

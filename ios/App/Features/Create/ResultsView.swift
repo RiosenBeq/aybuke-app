@@ -175,7 +175,7 @@ struct ResultsView: View {
         return Image(uiImage: images[index])
             .resizable()
             .scaledToFit()
-            .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+            .clipShape(.card)
             .developReveal(id: key, haptic: index == 0)
             .shadow(color: Palette.shadow, radius: 16, y: 8)
             .padding(.horizontal, Metrics.gutter)

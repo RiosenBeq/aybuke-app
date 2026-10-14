@@ -756,7 +756,7 @@ struct CreationDetailView: View {
                 Image(uiImage: image)
                     .resizable()
                     .scaledToFit()
-                    .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+                    .clipShape(.card)
                     .shadow(color: Palette.shadow, radius: 16, y: 8)
                     .overlay {
                         // Double-tap to heart, like everywhere else she posts.

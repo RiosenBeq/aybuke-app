@@ -105,6 +105,6 @@ struct BeforeAfterSlider: View {
             .foregroundStyle(.white)
             .padding(.horizontal, 8)
             .padding(.vertical, 4)
-            .background(Palette.ink.opacity(reduceTransparency ? 0.9 : 0.65), in: Capsule())
+            .background(Palette.ink.opacity(reduceTransparency ? 0.9 : 0.65), in: .tag)
     }
 }

@@ -146,7 +146,7 @@ struct PaywallView: View {
                 }
                 .floating(distance: 4)
                 .accessibilityHidden(true)
-            Text(styled: "Your photos,\nin their *best light*", size: 34)
+            Text(styled: "Your photos,\nin their *best light*", size: 30)
                 .multilineTextAlignment(.center)
                 .foregroundStyle(Palette.textPrimary)
             Text("\(Brand.name) Pro unlocks every tool and trend.")
@@ -531,7 +531,7 @@ private struct PlanCard: View {
                                 .foregroundStyle(Palette.onPrimary)
                                 .padding(.horizontal, 7)
                                 .padding(.vertical, 3)
-                                .background(Palette.primary, in: Capsule())
+                                .background(Palette.primary, in: .tag)
                         }
                     }
                     // The billed amount is the most prominent price element.
@@ -547,9 +547,9 @@ private struct PlanCard: View {
                 Spacer()
             }
             .padding(16)
-            .background(Palette.surface, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+            .background(Palette.surface, in: .card)
             .overlay(
-                RoundedRectangle(cornerRadius: 18, style: .continuous)
+                RoundedRectangle.card
                     .strokeBorder(isSelected ? Palette.accent : Palette.stroke, lineWidth: isSelected ? 2 : 1)
             )
             .shadow(color: Palette.shadow, radius: isSelected ? 14 : 8, y: 5)
@@ -732,7 +732,7 @@ struct CreditPackList: View {
                 .foregroundStyle(Palette.onAccent)
                 .padding(.horizontal, 14)
                 .padding(.vertical, 8)
-                .background(Palette.accent, in: Capsule())
+                .background(Palette.accent, in: .chip)
             }
             .padding(14)
             .cardStyle(radius: 18)

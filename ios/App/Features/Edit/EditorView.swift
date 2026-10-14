@@ -219,7 +219,7 @@ struct EditorView: View {
         .foregroundStyle(Palette.onAccent)
         .padding(.horizontal, showsText ? 16 : 0)
         .frame(minWidth: 44, minHeight: 44)
-        .background(Palette.accent, in: Capsule())
+        .background(Palette.accent, in: .chip)
         .fixedSize()
     }
 
@@ -275,11 +275,11 @@ struct EditorView: View {
             TextStickersCanvas(image: model.current, session: model.overlays)
         } else if model.activeTool == .crop, let proxy = model.cropProxy {
             CropCanvas(image: proxy, geometry: $model.crop, aspect: model.cropAspect, sourceSize: model.cropSourceSize)
-                .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+                .clipShape(.control)
                 .shadow(color: Palette.shadow, radius: 16, y: 8)
         } else if model.isComparing && canCompare {
             BeforeAfterSlider(before: model.before, after: model.current, showsTransparencyGrid: model.hasTransparency)
-                .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+                .clipShape(.control)
                 .shadow(color: Palette.shadow, radius: 16, y: 8)
         } else {
             ZStack {
@@ -300,7 +300,7 @@ struct EditorView: View {
                 .onDisappear { isZoomed = false }
             }
             .aspectRatio(model.displayImage.size.width / max(model.displayImage.size.height, 1), contentMode: .fit)
-            .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+            .clipShape(.control)
             .shadow(color: Palette.shadow, radius: 16, y: 8)
             .overlay(alignment: .bottom) {
                 if model.hasChanges && !model.isHoldingOriginal && !isZoomed {
@@ -309,7 +309,7 @@ struct EditorView: View {
                         .foregroundStyle(.white.opacity(0.95))
                         .padding(.horizontal, 10)
                         .padding(.vertical, 5)
-                        .background(Palette.ink.opacity(reduceTransparency ? 0.9 : 0.65), in: Capsule())
+                        .background(Palette.ink.opacity(reduceTransparency ? 0.9 : 0.65), in: .tag)
                         .padding(10)
                 }
             }
@@ -339,7 +339,7 @@ struct EditorView: View {
                     Spacer(minLength: 0)
                 }
                 .padding(12)
-                .background(Palette.blush.opacity(0.55), in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+                .background(Palette.blush.opacity(0.55), in: .control)
                 .padding(.horizontal, Metrics.gutter)
                 .transition(.move(edge: .bottom).combined(with: .opacity))
             }
@@ -350,7 +350,7 @@ struct EditorView: View {
                         .foregroundStyle(Palette.textPrimary)
                         .padding(.horizontal, 12)
                         .padding(.vertical, 8)
-                        .background(Palette.blush, in: Capsule())
+                        .background(Palette.blush, in: .chip)
                         .accessibilityLabel("Likeness check: still looks like you")
                         .transition(.scale.combined(with: .opacity))
                 }
@@ -377,8 +377,8 @@ struct EditorView: View {
             .foregroundStyle(emphasised ? Palette.onAccent : Palette.textPrimary)
             .padding(.horizontal, 14)
             .frame(minHeight: 44)
-            .background(emphasised ? Palette.accent : Palette.surface, in: Capsule())
-            .overlay(Capsule().strokeBorder(emphasised ? Color.clear : Palette.stroke, lineWidth: 1))
+            .background(emphasised ? Palette.accent : Palette.surface, in: .chip)
+            .overlay(RoundedRectangle.chip.strokeBorder(emphasised ? Color.clear : Palette.stroke, lineWidth: 1))
         }
         .buttonStyle(.pressable)
     }
@@ -409,8 +409,8 @@ struct EditorView: View {
         }
         .padding(12)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Palette.surface, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
-        .overlay(RoundedRectangle(cornerRadius: 16, style: .continuous).strokeBorder(Palette.stroke, lineWidth: 1))
+        .background(Palette.surface, in: .card)
+        .overlay(RoundedRectangle.card.strokeBorder(Palette.stroke, lineWidth: 1))
         .padding(.horizontal, Metrics.gutter)
         .padding(.bottom, 6)
         .transition(.move(edge: .bottom).combined(with: .opacity))
@@ -446,8 +446,8 @@ struct EditorView: View {
                 .foregroundStyle(foreground)
                 .padding(.horizontal, 14)
                 .frame(minHeight: 44)
-                .background(background, in: Capsule())
-                .overlay(Capsule().strokeBorder(outlined ? Palette.stroke : Color.clear, lineWidth: 1))
+                .background(background, in: .chip)
+                .overlay(RoundedRectangle.chip.strokeBorder(outlined ? Palette.stroke : Color.clear, lineWidth: 1))
         }
         .buttonStyle(.pressable)
         .fixedSize()

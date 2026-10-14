@@ -51,7 +51,7 @@ struct AgeStepView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 18) {
             Spacer(minLength: 8)
-            Text(styled: title, size: 34)
+            Text(styled: title, size: 30)
                 .foregroundStyle(Palette.textPrimary)
             Group {
                 if usesMenus {
@@ -206,9 +206,9 @@ struct AgeStepView: View {
         .font(.body.weight(.semibold))
         .padding(.horizontal, 16)
         .frame(maxWidth: .infinity, minHeight: 52)
-        .background(Palette.surface, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+        .background(Palette.surface, in: .control)
         .overlay(
-            RoundedRectangle(cornerRadius: 16, style: .continuous)
+            RoundedRectangle.control
                 .strokeBorder(Palette.stroke, lineWidth: 1)
         )
     }

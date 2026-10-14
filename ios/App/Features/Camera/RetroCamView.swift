@@ -136,7 +136,7 @@ struct RetroCamView: View {
                     .foregroundStyle(.white)
                     .padding(.horizontal, 16)
                     .padding(.vertical, 10)
-                    .background(.black.opacity(0.55), in: Capsule())
+                    .background(.black.opacity(0.55), in: .chip)
                     .padding(.bottom, 16)
                 }
             }
@@ -156,7 +156,7 @@ struct RetroCamView: View {
                 }
             }
             .animation(.snappy(duration: 0.3), value: model.countdown)
-            .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
+            .clipShape(.card)
             .contentShape(Rectangle())
             .gesture(
                 DragGesture(minimumDistance: 24).onEnded { value in
@@ -195,7 +195,7 @@ struct RetroCamView: View {
         }
         .padding(.horizontal, 12)
         .padding(.vertical, 8)
-        .background(.black.opacity(0.45), in: Capsule())
+        .background(.black.opacity(0.45), in: .chip)
         .padding(.top, 14)
         .animation(.snappy, value: model.boothCount)
     }
@@ -219,7 +219,7 @@ struct RetroCamView: View {
                         .padding(.horizontal, 14)
                         .frame(minHeight: 48)
                         .foregroundStyle(isSelected ? Palette.ink : .white)
-                        .background(isSelected ? Palette.blush : Color.white.opacity(0.12), in: Capsule())
+                        .background(isSelected ? Palette.blush : Color.white.opacity(0.12), in: .chip)
                     }
                     .buttonStyle(.pressable)
                     .accessibilityAddTraits(isSelected ? .isSelected : [])
@@ -406,7 +406,7 @@ private struct CamNotice<Actions: View>: View {
                 .frame(width: 84, height: 84)
                 .background(Palette.blush, in: Circle())
                 .accessibilityHidden(true)
-            Text(styled: title, size: 30)
+            Text(styled: title, size: 27)
                 .foregroundStyle(.white)
                 .multilineTextAlignment(.center)
                 .accessibilityAddTraits(.isHeader)
@@ -466,7 +466,7 @@ struct RetroCamHubCard: View {
                     .font(.title3.weight(.semibold))
                     .foregroundStyle(Palette.ink)
                     .frame(width: 54, height: 54)
-                    .background(AuraFill(palette: .mint).clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous)))
+                    .background(AuraFill(palette: .mint).clipShape(.control))
                 VStack(alignment: .leading, spacing: 3) {
                     HStack(spacing: 6) {
                         Text("Retro Cam")

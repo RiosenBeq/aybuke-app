@@ -16,8 +16,8 @@ struct OfflineNotice: View {
         .padding(.horizontal, 14)
         .padding(.vertical, 10)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Palette.surface, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
-        .overlay(RoundedRectangle(cornerRadius: 16, style: .continuous).strokeBorder(Palette.strokeStrong))
+        .background(Palette.surface, in: .card)
+        .overlay(RoundedRectangle.card.strokeBorder(Palette.strokeStrong))
         .accessibilityElement(children: .combine)
     }
 }
