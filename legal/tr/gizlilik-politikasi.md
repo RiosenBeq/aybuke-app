@@ -71,6 +71,8 @@ Bu bölüm 18 yaşından küçükseniz sizin için. Politikanın geri kalanı da
 
 **Cihaz üzerinde yazım yardımı.** Apple Intelligence destekli cihazlarda, Create bölümündeki fikir ve istem önerileri ("Inspire me" ve "Make it magic") Apple'ın cihaz üzerindeki dil modeli tarafından yazılabilir. Yazdıklarınız ve öneriler cihazınızda kalır; bize veya Apple'a gönderilmez.
 
+**Cihaz üzerinde video altyazıları.** Video düzenleyicideki **Captions** (altyazılar), videonuzda söylenenleri Apple'ın konuşma tanıma özelliğiyle cihazınızda altyazıya dönüştürür. iOS 26'dan itibaren Apple'ın cihaz üzerinde çalışan konuşma modellerini kullanır; her dilin modeli Apple'dan bir kez indirilir ve bu indirmeyle hiçbir ses veya metin gönderilmez. Aksi hâlde Apple'ın konuşma tanıyıcısını yalnızca cihazınızın internet olmadan tanıyabildiği dillerde kullanır ve iOS önce konuşma tanımayı kullanmak için izninizi ister. Videonuzun sesi ve altyazı metni cihazınızda kalır; bize veya Apple'a gönderilmez. Altyazılar yalnızca düzenleme sırasında ve kaydettiğiniz veya paylaştığınız videolarda bulunur.
+
 **Fotoğraf erişimi.** Fotoğrafları Apple'ın sistem fotoğraf seçicisiyle seçersiniz; bu nedenle {{APP_NAME}} tüm kitaplığınızı değil, yalnızca seçtiğiniz fotoğrafları görebilir. Sonuçları Fotoğraflar kitaplığınıza kaydetmek için uygulama yalnızca ekleme izni ister; bu izin görsel eklemeye olanak tanır, kitaplığınızı okumaya değil.
 
 **Yedeklemeler.** Uygulamanın sakladığı veriler, ayarlarınıza bağlı olarak cihaz yedeklemelerinize (örneğin iCloud Yedekleme) dahil edilebilir. Yedeklemeler Apple'ın kendi koşullarına tabidir.

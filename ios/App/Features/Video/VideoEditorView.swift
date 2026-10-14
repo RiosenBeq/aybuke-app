@@ -46,7 +46,13 @@ final class VideoEditorModel {
 
     let player = AVPlayer()
     private(set) var isPlaying = false
+    /// Automatic captions; their changes redraw the preview in place.
+    let captions = VideoCaptions()
     @ObservationIgnored private var rebuildTask: Task<Void, Never>?
+    @ObservationIgnored private var captionsTask: Task<Void, Never>?
+    @ObservationIgnored private var currentComposition: AVMutableComposition?
+    /// A seek still on its way, which a caption redraw mustn't undo.
+    @ObservationIgnored private var seekTarget: CMTime?
     @ObservationIgnored private var loopObserver: NSObjectProtocol?
 
     @ObservationIgnored private var exportTask: Task<URL, Error>?
@@ -62,16 +68,18 @@ final class VideoEditorModel {
         let effect: RetroEffect?
         let showsExtra: Bool
         let trim: ClosedRange<Double>
+        let captions: VideoCaptions.Snapshot
     }
 
     private var edits: Edits {
-        Edits(cutSilences: cutSilences, effect: effect, showsExtra: showsExtra, trim: trim)
+        Edits(cutSilences: cutSilences, effect: effect, showsExtra: showsExtra, trim: trim, captions: captions.snapshot)
     }
 
     init(url: URL) {
         asset = AVURLAsset(url: url)
         player.isMuted = false
         player.actionAtItemEnd = .none
+        captions.onChange = { [weak self] in self?.captionsChanged() }
     }
 
     var hasSound: Bool { silencePlan != nil }
@@ -79,8 +87,25 @@ final class VideoEditorModel {
     /// Changes she'd lose by closing: anything but the untouched clip, unless
     /// exactly this version was already saved or shared.
     var hasUnsavedEdits: Bool {
-        let edited = cutSilences || effect != nil || trim != 0...max(duration, 0.1)
+        let edited = cutSilences || effect != nil || trim != 0...max(duration, 0.1) || captions.shows
         return edited && edits != savedEdits
+    }
+
+    /// Where the preview is on the edited timeline, in seconds.
+    var playheadSeconds: Double {
+        let seconds = player.currentTime().seconds
+        return seconds.isFinite ? max(0, seconds) : 0
+    }
+
+    /// Shows the frame at `seconds` on the edited timeline, paused.
+    func seek(to seconds: Double) {
+        player.pause()
+        isPlaying = false
+        let target = CMTime(seconds: seconds, preferredTimescale: 600)
+        seekTarget = target
+        player.seek(to: target, toleranceBefore: .zero, toleranceAfter: .zero) { [weak self] _ in
+            Task { @MainActor in if self?.seekTarget == target { self?.seekTarget = nil } }
+        }
     }
 
     func load() async {
@@ -114,7 +139,7 @@ final class VideoEditorModel {
     }
 
     /// The parts of the clip that make it into the video.
-    private var keptRanges: [ClosedRange<Double>] {
+    var keptRanges: [ClosedRange<Double>] {
         let base = cutSilences ? (silencePlan?.keep ?? [0...duration]) : [0...duration]
         return base.compactMap { range in
             let lower = max(range.lowerBound, trim.lowerBound)
@@ -137,11 +162,13 @@ final class VideoEditorModel {
     private func rebuild() async -> Bool {
         let ranges = keptRanges
         guard !ranges.isEmpty, let composition = try? await VideoEngine.composition(of: asset, keeping: ranges) else { return false }
-        let videoComposition = try? await VideoEngine.videoComposition(for: composition, effect: effect, showsExtra: showsExtra, fps: frameRate)
+        let videoComposition = try? await VideoEngine.videoComposition(for: composition, effect: effect, showsExtra: showsExtra, fps: frameRate,
+                                                                       captions: captionTrack(for: ranges))
         guard !Task.isCancelled else { return true }
         resultDuration = ranges.reduce(0) { $0 + ($1.upperBound - $1.lowerBound) }
         let item = AVPlayerItem(asset: composition)
         item.videoComposition = videoComposition
+        currentComposition = composition
         player.replaceCurrentItem(with: item)
         if let loopObserver { NotificationCenter.default.removeObserver(loopObserver) }
         loopObserver = NotificationCenter.default.addObserver(forName: .AVPlayerItemDidPlayToEndTime, object: item, queue: .main) { [weak self] _ in
@@ -158,7 +185,30 @@ final class VideoEditorModel {
         return true
     }
 
+    /// Captions drawn above the effect's own date stamp, display or bars.
+    private func captionTrack(for ranges: [ClosedRange<Double>]) -> CaptionTrack? {
+        captions.track(keeping: ranges, overlay: showsExtra && effect?.option?.worksOnVideo == true ? effect : nil)
+    }
+
+    /// Captions changed: the playing item gets a new video composition, so
+    /// the preview keeps its place instead of starting over.
+    private func captionsChanged() {
+        captionsTask?.cancel()
+        captionsTask = Task {
+            // Typing in a caption settles before the redraw.
+            try? await Task.sleep(for: .milliseconds(120))
+            guard !Task.isCancelled, let composition = currentComposition, let item = player.currentItem else { return }
+            let videoComposition = try? await VideoEngine.videoComposition(for: composition, effect: effect, showsExtra: showsExtra, fps: frameRate,
+                                                                           captions: captionTrack(for: keptRanges))
+            guard !Task.isCancelled, item === player.currentItem else { return }
+            item.videoComposition = videoComposition
+            // A paused frame redraws only when asked.
+            if !isPlaying { await player.seek(to: seekTarget ?? player.currentTime(), toleranceBefore: .zero, toleranceAfter: .zero) }
+        }
+    }
+
     func togglePlayback() {
+        seekTarget = nil
         if isPlaying { player.pause() } else { player.play() }
         isPlaying.toggle()
         Haptics.tap()
@@ -195,9 +245,11 @@ final class VideoEditorModel {
             // Ask before the export, so a long render isn't wasted on a "no".
             if action == .save { try await VideoEngine.requestPhotosAccess() }
             let ranges = keptRanges, effect = effect, showsExtra = showsExtra, fps = frameRate, asset = asset
+            let captionTrack = captionTrack(for: ranges)
             let task = Task<URL, Error> {
                 let composition = try await VideoEngine.composition(of: asset, keeping: ranges)
-                let videoComposition = try await VideoEngine.videoComposition(for: composition, effect: effect, showsExtra: showsExtra, fps: fps)
+                let videoComposition = try await VideoEngine.videoComposition(for: composition, effect: effect, showsExtra: showsExtra, fps: fps,
+                                                                              captions: captionTrack)
                 try Task.checkCancellation()
                 return try await VideoEngine.export(composition, videoComposition: videoComposition) { [weak self] value in
                     self?.exportProgress = value
@@ -240,6 +292,7 @@ final class VideoEditorModel {
     func stop() {
         player.pause()
         isPlaying = false
+        captions.cancel()
         if let loopObserver { NotificationCenter.default.removeObserver(loopObserver) }
     }
 }
@@ -455,6 +508,7 @@ struct VideoEditorView: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
             }
             silenceCard
+            CaptionsCard(model: model)
             ScrollView(.horizontal) {
                 HStack(spacing: 10) {
                     EffectChoice(title: "None", image: model.thumbnail, isSelected: model.effect == nil) {
@@ -579,6 +633,15 @@ struct VideoEditorView: View {
         let defaults = UserDefaults.standard
         if let effect = defaults.string(forKey: "GLEffect").flatMap(RetroEffect.init(rawValue:)) { model.effect = effect }
         if defaults.bool(forKey: "GLCutSilences") { model.cutSilences = true }
+        model.captions.applyScreenshotOptions(asset: model.asset, duration: model.duration)
+        // `-GLVideoSeek <seconds>`: paused on one frame, for caption shots.
+        if defaults.object(forKey: "GLVideoSeek") != nil {
+            let seconds = defaults.double(forKey: "GLVideoSeek")
+            Task {
+                try? await Task.sleep(for: .milliseconds(1500))
+                model.seek(to: seconds)
+            }
+        }
         switch defaults.string(forKey: "GLVideoAction") {
         case "save"?: Task { await perform(.save) }
         case "share"?: Task { await perform(.share) }

@@ -28,6 +28,8 @@
 		<string>instagram-stories</string>
 		<string>instagram</string>
 	</array>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>Glowlit turns what's said in your video into captions on your device. Nothing is uploaded.</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

@@ -42,6 +42,10 @@ enum ScreenshotScene: String, CaseIterable {
     /// The video editor on a generated clip; `-GLVideoSeconds <n>` sets its
     /// length (default 8), `-GLVideoBroken YES` shows the can't-open state, and
     /// `-GLEffect`, `-GLCutSilences YES`, `-GLVideoAction save|share|close` act on it.
+    /// Captions: `-GLCaptions fixture|auto|listening|nospeech|denied|…`,
+    /// `-GLCaptionStyle`, `-GLCaptionPosition`, `-GLCaptionSize`,
+    /// `-GLCaptionsEditor YES`, `-GLVideoSeek <s>` (paused there), and
+    /// `-GLVideoSpeech YES` for a clip that talks.
     case video
 
     static var current: ScreenshotScene? {
