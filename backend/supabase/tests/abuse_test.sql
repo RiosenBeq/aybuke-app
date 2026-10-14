@@ -524,4 +524,95 @@ begin
   assert has_function_privilege('anon', 'public.keepalive()', 'execute'), 'the documented exception';
 end $$;
 
+-- 19. Likeness Lock: a retry that was refunded (it failed, timed out or she
+--     cancelled it) gives its daily slot back. Retries she got, or is still
+--     waiting for, use the three.
+do $$
+declare
+  u uuid := '00000000-0000-0000-0000-000000000d21';
+  originals uuid[];
+  r jsonb;
+begin
+  insert into auth.users (id) values (u);
+  -- Pro allows 20 jobs a minute, so the per-minute limit stays out of the way.
+  insert into public.entitlements (original_transaction_id, user_id, product_id, expires_at)
+    values ('otx-abuse-retries', u, 'app.glowlit.pro.monthly', now() + interval '1 month');
+  for i in 1..5 loop
+    r := public.admit_job(u, 'magic_edit', 'test', p_input_images => 1);
+    assert (r->>'ok')::boolean, format('original %s: %s', i, r);
+    originals := originals || (r->>'job_id')::uuid;
+  end loop;
+  update public.jobs set status = 'completed', delivered_at = now() where id = any (originals);
+
+  r := public.admit_job(u, 'magic_edit', 'test', p_retry_of => originals[1]);
+  assert (r->>'ok')::boolean, format('retry 1: %s', r);
+  assert public.fail_job((r->>'job_id')::uuid, 'provider_failed', 'This creation failed.'), 'the provider failed';
+  r := public.admit_job(u, 'magic_edit', 'test', p_retry_of => originals[2]);
+  assert (r->>'ok')::boolean, format('retry 2: %s', r);
+  assert public.fail_job((r->>'job_id')::uuid, 'timeout', 'This took too long.'), 'it timed out';
+  r := public.admit_job(u, 'magic_edit', 'test', p_retry_of => originals[3]);
+  assert (r->>'ok')::boolean, format('retry 3: %s', r);
+  assert public.cancel_job((r->>'job_id')::uuid, u, true)->>'status' = 'cancelled', 'she cancelled it';
+
+  r := public.admit_job(u, 'magic_edit', 'test', p_retry_of => originals[4]);
+  assert (r->>'ok')::boolean, format('three refunded retries leave today''s three free: %s', r);
+  -- A failed retry also gave its result's retry back (fail_job).
+  r := public.admit_job(u, 'magic_edit', 'test', p_retry_of => originals[1]);
+  assert (r->>'ok')::boolean, format('the failed one again: %s', r);
+  update public.jobs set status = 'completed', delivered_at = now() where id = (r->>'job_id')::uuid;
+  r := public.admit_job(u, 'magic_edit', 'test', p_retry_of => originals[2]);
+  assert (r->>'ok')::boolean, format('the timed-out one again: %s', r);
+  r := public.admit_job(u, 'magic_edit', 'test', p_retry_of => originals[5]);
+  assert r->>'code' = 'retry_limit', format('two running and one delivered use the three: %s', r);
+  assert not (select retried from public.jobs where id = originals[5]), 'a refused retry stays available';
+end $$;
+
+-- 20. A job she cancelled is no strike, even when its result comes back flagged.
+do $$
+declare
+  u uuid := '00000000-0000-0000-0000-000000000d22';
+  j uuid;
+  r jsonb;
+begin
+  insert into auth.users (id) values (u);
+  perform public.grant_pack(u, 3, 'tx-abuse-20');
+  r := public.admit_job(u, 'magic_edit', 'test', p_app_transaction_id => 'atid-d22', p_install_status => 'verified');
+  j := (r->>'job_id')::uuid;
+  update public.jobs set status = 'processing' where id = j;
+  assert public.cancel_job(j, u, true)->>'status' = 'cancelled', 'she cancelled it';
+  -- The provider answers after the cancel, and the output check flags it.
+  r := public.flag_job(j, 'content_blocked', 'This result was blocked by our safety filters.', 'output');
+  assert r is null, format('no strike: %s', r);
+  assert not exists (select 1 from private.strikes where user_id = u or job_id = j), 'nothing recorded';
+  assert (select status from public.jobs where id = j) = 'cancelled', 'still cancelled';
+  assert (public.wallet_state(u, 'atid-d22', 'verified', 'Sandbox')->>'credits_remaining')::int = 5, 'refunded once';
+end $$;
+
+-- 21. The balance shows a cool-down or block kept on the address (no verified
+--     install), as admit_job sees it.
+do $$
+declare
+  ip text := '192.0.2.80';
+  k text := private.keyed_hash('ip', ip);
+  u uuid := '00000000-0000-0000-0000-000000000d23';
+  sibling uuid := '00000000-0000-0000-0000-000000000d24';
+  state jsonb;
+begin
+  insert into auth.users (id) values (u), (sibling);
+  insert into private.cooldowns (install_key, ends_at) values (k, now() + interval '20 hours');
+  state := public.wallet_state(u, null, 'missing', null, ip);
+  assert state->>'ai_status' = 'cooldown' and state->>'cooldown_until' is not null, format('address cool-down: %s', state);
+  assert (state->>'cooldown_seconds')::int between 71900 and 72000, format('20 hours: %s', state);
+  assert public.admit_job(u, 'magic_edit', 'test', p_ip => ip)->>'code' = 'cooldown', 'the same answer as a job';
+  assert public.wallet_state(u, null, 'missing', null, '192.0.2.81')->>'ai_status' = 'ok', 'another address is not affected';
+  assert public.wallet_state(u)->>'ai_status' = 'ok', 'the call without an address still works';
+  -- A verified install is judged by the install, not the address (admit_job does the same).
+  assert public.wallet_state(u, 'atid-d23', 'verified', 'Sandbox', ip)->>'ai_status' = 'ok', 'a verified install';
+
+  insert into private.blocks (install_key, reason) values (k, 'test');
+  state := public.wallet_state(sibling, null, 'invalid', null, ip);
+  assert state->>'ai_status' = 'blocked', format('an address block, for every account on it: %s', state);
+  delete from private.blocks where install_key = k;
+end $$;
+
 select 'all abuse control tests passed' as result;

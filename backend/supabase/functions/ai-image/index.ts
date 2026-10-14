@@ -107,7 +107,7 @@ Deno.serve(async (req) => {
         if (jobId) return await pollJob(db, user.id, jobId);
         await resolveEntitlement(db, user.id, req.headers.get("x-entitlement-jws"));
         const install = await verifyInstall(req.headers.get("x-app-transaction"));
-        return json(await walletState(db, user.id, install));
+        return json(await walletState(db, user.id, install, clientIp(req.headers)));
       }
       case "DELETE":
         if (!jobId) throw new HttpError(400, "bad_request", "Missing job_id.");
@@ -351,7 +351,9 @@ async function photoPassesSafetyCheck(db: SupabaseClient, jobId: string, input: 
     // Not a strike: a photo can be someone's ordinary holiday snap.
     await failJob(db, jobId, "input_blocked", "This photo can't be edited. Try another one. Your credit was refunded.");
   } else {
-    await failJob(db, jobId, "safety_check_failed", PHOTO_CHECK_FAILED);
+    // Its own code: no result exists yet, so the output check's "this result
+    // wasn't shown" (safety_check_failed) would be the wrong thing to tell her.
+    await failJob(db, jobId, "photo_check_failed", PHOTO_CHECK_FAILED);
   }
   return false;
 }
@@ -460,12 +462,22 @@ async function cancelJob(db: SupabaseClient, userId: string, jobId: string, give
 
 // MARK: - Helpers
 
-async function walletState(db: SupabaseClient, userId: string, install: InstallProof): Promise<unknown> {
+/**
+ * The balance. The address is the one admit_job gets, so a cool-down or block
+ * kept on it (an install without a verified App Store transaction) shows here too.
+ */
+async function walletState(
+  db: SupabaseClient,
+  userId: string,
+  install: InstallProof,
+  ip: string | undefined,
+): Promise<unknown> {
   const { data, error } = await db.rpc("wallet_state", {
     p_user: userId,
     p_app_transaction_id: install.status === "verified" ? install.appTransactionId ?? null : null,
     p_install_status: install.status,
     p_install_environment: install.status === "verified" ? install.environment : null,
+    p_ip: ip ?? null,
   });
   if (error || !data) {
     console.error("wallet_state failed", error?.message);

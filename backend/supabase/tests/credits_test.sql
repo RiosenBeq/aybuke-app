@@ -272,4 +272,20 @@ begin
   assert not exists (select 1 from pg_policies where schemaname = 'private'), 'no policy on the private schema';
 end $$;
 
+-- 13. The balance with the client address (20261025000001): service role only, and
+-- the older call without it gives the same answer.
+do $$
+declare
+  u uuid := '00000000-0000-0000-0000-000000000005';
+begin
+  assert not has_function_privilege('anon', 'public.wallet_state(uuid, text, text, text, text)', 'execute');
+  assert not has_function_privilege('authenticated', 'public.wallet_state(uuid, text, text, text, text)', 'execute');
+  assert has_function_privilege('service_role', 'public.wallet_state(uuid, text, text, text, text)', 'execute');
+  assert has_function_privilege('service_role', 'public.wallet_state(uuid, text, text, text)', 'execute');
+  perform public.wallet_state(u, 'atid-five', 'verified', 'Sandbox');
+  assert public.wallet_state(u, 'atid-five', 'verified', 'Sandbox')
+       = public.wallet_state(u, 'atid-five', 'verified', 'Sandbox', '198.51.100.20'),
+    'the address changes nothing without a cool-down or block on it';
+end $$;
+
 select 'all credit ledger tests passed' as result;

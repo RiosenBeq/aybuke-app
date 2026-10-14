@@ -115,7 +115,7 @@ Photos are not synced: the library stays on each iPhone.
 
 ## Reports
 
-`POST /report` stores a user's "Report this image" in `public.reports` (reason, optional details, the user's own job id) with a limit of 20 reports a day. Review open reports in the Supabase dashboard (`status = 'open'`) and set `status` to `reviewed`, `actioned` or `dismissed`. Reports are deleted after 12 months by `sweep_jobs()`, or with the account.
+`POST /report` stores a user's "Report this image" in `public.reports` (reason, optional details, the user's own job id) with a limit of 10 reports a day per user (`reports_per_day`). Review open reports in the Supabase dashboard (`status = 'open'`) and set `status` to `reviewed`, `actioned` or `dismissed`. Reports are deleted after 12 months by `sweep_jobs()`, or with the account.
 
 ## Rewarded ads (AdMob server-side verification)
 
@@ -144,7 +144,7 @@ Defined once in SQL (`public.credit_policy()`) and mirrored in the app (`CreditP
 - Pro: **80 credits per month**, unused credits roll over one month (cap 160). The free trial week gives **20 credits** instead (`trial_credits`).
 - Credit packs: never expire (App Review Guideline 3.1.1).
 - Rewarded ads (free members out of credits): **1 credit per ad, at most 2 a day** (`ad_reward_policy()`), added to the daily bucket.
-- Likeness Lock: one free retry per result within 15 minutes, **3 a day** (`free_retries_daily`).
+- Likeness Lock: one free retry per result within 15 minutes, **3 a day** (`free_retries_daily`). A retry that was refunded (it failed, timed out or was cancelled) gives its daily slot back.
 - Spending order: daily → subscription → purchased (expiring credits first).
 - Any failure, cancellation, safety block or timeout is refunded exactly once, and so is a result that never reached the app. The poll that hands the results over records the delivery (`deliver_outputs()`); a finished job that was never handed over is refunded when its hour is up, or at once when the app cancels it, and one that was handed over but never confirmed (a download that broke) is refunded at most once a day per user, so skipping the confirmation can't keep both the images and the credit.
 
@@ -154,7 +154,7 @@ Change the numbers in `credit_policy()` (new migration) to retune pricing withou
 
 Every cloud job goes through `admit_job()`, which applies the numbers in `public.credit_policy()`:
 
-- **Strikes:** a prompt the policy blocks, or an output the moderation flags, is a strike. **3** strikes in **24 hours** start a **24-hour** cool-down (no cloud AI, nothing charged, no paywall). **3** cool-downs in **30 days** block the install until the owner lifts it. An install without a verified App Store transaction is kept to its network address instead: a salted hash of the address (`private.keyed_hash('ip', …)`), the same key the rate limit uses.
+- **Strikes:** a prompt the policy blocks, or an output the moderation flags, is a strike (not when she cancelled the job before its result came back). **3** strikes in **24 hours** start a **24-hour** cool-down (no cloud AI, nothing charged, no paywall). **3** cool-downs in **30 days** block the install until the owner lifts it. An install without a verified App Store transaction is kept to its network address instead: a salted hash of the address (`private.keyed_hash('ip', …)`), the same key the rate limit uses. The balance (`GET /ai-image`, `wallet_state()`) gets the same address, so it shows a cool-down or block on it too.
 - **Rate limits:** per user, free **6 a minute, 30 an hour, 100 a day**; Pro **20, 60 and 200**. Per address, **120 requests an hour**. Reports: **10 a day** per user.
 - **Breakers** (UTC day): free credits pause at **1,500** free jobs (`free_jobs_daily_cap`), the unverified allowance at **200** (`unverified_jobs_daily_cap`), and all AI at **8,000** jobs (`all_jobs_daily_cap`). Paid users keep working when only the free breaker trips.
 
