@@ -13,7 +13,9 @@
   "revenueCatAPIKey": "appl_nMgLjPGSrACLwsGJMMoDmMXUvwS",
   "shareHashtags": [
     "Glowlit",
-    "GlowUp",
+    "GlowUp"
+  ],
+  "aiShareHashtags": [
     "AIphoto",
     "MadeWithAI"
   ]

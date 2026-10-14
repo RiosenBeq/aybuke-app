@@ -10,6 +10,12 @@ struct SharePayload: Identifiable {
     var prompt: String?
     /// Other variations from the same creation, for "Help me pick".
     var alternatives: [UIImage] = []
+    /// The AI marking the source file already carried (see `Provenance`).
+    var inheritedSourceType: DigitalSourceType? = nil
+
+    /// Decides the IPTC field, the free-tier branding, the AI hashtags and
+    /// the AI label.
+    var provenance: Provenance { Provenance(operation: operation, inheritedSourceType: inheritedSourceType) }
 
     /// Photo strip frames: the original first, then the glow-up and its
     /// variations (up to four).
@@ -68,15 +74,17 @@ enum ShareFormat: String, CaseIterable, Identifiable {
     var isStory: Bool { self == .story || self == .strip || self == .pick }
 }
 
-/// Renders share formats. Free exports carry Glowlit branding (the corner
-/// watermark, or a "Made with Glowlit" line on collages and cards); Pro
-/// removes it everywhere. Pure functions, safe off the main thread.
+/// Renders share formats. Free exports of Glowlit's cloud AI results carry
+/// Glowlit branding (the corner watermark, or a "Made with Glowlit" line on
+/// collages and cards); on-device edits and Pro never do. Pure functions,
+/// safe off the main thread.
 enum ShareRenderer {
     static func render(_ payload: SharePayload, format: ShareFormat, branded: Bool, showPrompt: Bool, aiLabel: Bool = false) -> UIImage {
         let rendered = render(payload, format: format, branded: branded, showPrompt: showPrompt)
-        guard aiLabel, let operation = payload.operation else { return rendered }
+        let provenance = payload.provenance
+        guard aiLabel, provenance.carriesAIProvenance else { return rendered }
         let reservedBottom: CGFloat = format.isStory ? 300 : format == .cover ? 70 : 0
-        return addAILabel(to: rendered, text: operation == .textToImage ? String(localized: "Made with AI") : String(localized: "AI-edited"), reservedBottom: reservedBottom)
+        return addAILabel(to: rendered, text: provenance.isFullyGenerated ? String(localized: "Made with AI") : String(localized: "AI-edited"), reservedBottom: reservedBottom)
     }
 
     private static func render(_ payload: SharePayload, format: ShareFormat, branded: Bool, showPrompt: Bool) -> UIImage {
@@ -349,7 +357,9 @@ enum ShareRenderer {
 
 /// Default caption with hashtags and a link people can tap.
 enum ShareCaption {
-    static func make(for payload: SharePayload, hashtags: [String], link: URL?) -> String {
+    /// `aiHashtags` (#MadeWithAI…) are added only when generative AI made or
+    /// changed the picture, never for on-device edits.
+    static func make(for payload: SharePayload, hashtags: [String], aiHashtags: [String], link: URL?) -> String {
         var lines: [String] = []
         if let prompt = payload.shareablePrompt {
             lines.append("“\(prompt)”")
@@ -358,13 +368,19 @@ enum ShareCaption {
         if let link {
             lines.append(link.absoluteString)
         }
-        let tags = hashtags
+        let tags = hashtagLine(hashtags, aiHashtags: aiHashtags, madeWithAI: payload.provenance.carriesAIProvenance)
+        if !tags.isEmpty {
+            lines.append(tags)
+        }
+        return lines.joined(separator: "\n")
+    }
+
+    /// "#Glowlit #GlowUp", plus the AI tags when they apply.
+    static func hashtagLine(_ hashtags: [String], aiHashtags: [String], madeWithAI: Bool) -> String {
+        (hashtags + (madeWithAI ? aiHashtags : []))
             .map { $0.trimmingCharacters(in: CharacterSet(charactersIn: "# ")) }
             .filter { !$0.isEmpty }
             .map { "#\($0)" }
-        if !tags.isEmpty {
-            lines.append(tags.joined(separator: " "))
-        }
-        return lines.joined(separator: "\n")
+            .joined(separator: " ")
     }
 }

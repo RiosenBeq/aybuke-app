@@ -18,7 +18,9 @@ struct ShareComposerView: View {
     @State private var isWorking = false
     @State private var activityItems: ActivityItems?
 
-    private var branded: Bool { !app.purchases.isPro }
+    /// On-device edits are never branded; free cloud AI results are.
+    private var branded: Bool { payload.provenance.showsMark(isPro: app.purchases.isPro) }
+    private var madeWithAI: Bool { payload.provenance.carriesAIProvenance }
 
     private var formats: [ShareFormat] {
         ShareFormat.allCases.filter { format in
@@ -45,7 +47,7 @@ struct ShareComposerView: View {
                             .tint(Palette.accent)
                     }
                     destinations
-                    if payload.operation != nil {
+                    if madeWithAI {
                         Toggle(isOn: $showsAILabel) {
                             VStack(alignment: .leading, spacing: 2) {
                                 Text("Add a visible “AI-edited” label")
@@ -81,7 +83,8 @@ struct ShareComposerView: View {
         }
         .onAppear {
             if caption.isEmpty {
-                caption = ShareCaption.make(for: payload, hashtags: app.config.shareHashtags, link: app.config.shareLinkURL)
+                caption = ShareCaption.make(for: payload, hashtags: app.config.shareHashtags,
+                                            aiHashtags: app.config.aiShareHashtags, link: app.config.shareLinkURL)
             }
             #if DEBUG
             if ScreenshotScene.current == .share, payload.original != nil {
@@ -206,12 +209,14 @@ struct ShareComposerView: View {
                     }
                 }
             }
-            HStack(alignment: .top, spacing: 10) {
-                Image(systemName: "sparkles")
-                    .foregroundStyle(Palette.accent)
-                Text("Posting publicly? Switch on the app's AI label (for example Instagram's “AI info”). Your file already carries an invisible “made with AI” tag.")
-                    .font(.footnote)
-                    .foregroundStyle(Palette.textSecondary)
+            if madeWithAI {
+                HStack(alignment: .top, spacing: 10) {
+                    Image(systemName: "sparkles")
+                        .foregroundStyle(Palette.accent)
+                    Text("Posting publicly? Switch on the app's AI label (for example Instagram's “AI info”). Your file already carries an invisible “made with AI” tag.")
+                        .font(.footnote)
+                        .foregroundStyle(Palette.textSecondary)
+                }
             }
         }
     }
@@ -238,10 +243,11 @@ struct ShareComposerView: View {
         rendered = image
     }
 
-    /// The rendered image as a file with IPTC "made with AI" metadata.
+    /// The rendered image as a file with IPTC "made with AI" metadata when
+    /// AI was involved.
     private func encodedFile() throws -> URL {
         guard let rendered else { throw CocoaError(.fileWriteUnknown) }
-        return try ImageExporter.temporaryFile(for: rendered, operation: payload.operation, watermark: false)
+        return try ImageExporter.temporaryFile(for: rendered, sourceType: payload.provenance.sourceType, watermark: false)
     }
 
     // MARK: Destinations
@@ -278,7 +284,7 @@ struct ShareComposerView: View {
         isWorking = true
         defer { isWorking = false }
         do {
-            try await PhotoLibrarySaver.save(rendered, operation: payload.operation, watermark: false)
+            try await PhotoLibrarySaver.save(rendered, sourceType: payload.provenance.sourceType, watermark: false)
             Haptics.success()
             app.countHappyMoment()
             app.showToast("Saved to Photos", style: .success)
@@ -289,11 +295,17 @@ struct ShareComposerView: View {
 
     private func copyImage() {
         guard let rendered else { return }
-        if let encoded = ImageExporter.encode(rendered, operation: payload.operation) {
+        let provenance = payload.provenance
+        if let encoded = ImageExporter.encode(rendered, sourceType: provenance.sourceType) {
             let type = encoded.fileExtension == "png" ? UTType.png : UTType.jpeg
             UIPasteboard.general.setData(encoded.data, forPasteboardType: type.identifier)
-        } else {
+        } else if !provenance.carriesAIProvenance {
+            // A plain image has no marking to lose.
             UIPasteboard.general.image = rendered
+        } else {
+            // Never hand over an AI image stripped of its "made with AI" tag.
+            app.showToast("Couldn't prepare the image. Please try again.", style: .error)
+            return
         }
         Haptics.success()
         app.showToast("Image copied", style: .success)

@@ -19,6 +19,9 @@ final class Creation {
     /// Who made the pixels when it wasn't Glowlit's own pipeline
     /// (`imagePlaygroundSource`); `nil` for everything else.
     var source: String? = nil
+    /// The IPTC marking the edited photo already carried (a `DigitalSourceType`
+    /// raw value), so the copy keeps it on export.
+    var sourceTypeRaw: String? = nil
 
     /// Stored for images that only received manual adjustments (no AI).
     static let manualEditRaw = "adjust"
@@ -34,8 +37,10 @@ final class Creation {
         imageFileName: String,
         pixelWidth: Int,
         pixelHeight: Int,
-        source: String? = nil
+        source: String? = nil,
+        inheritedSourceType: DigitalSourceType? = nil
     ) {
+        self.sourceTypeRaw = inheritedSourceType?.rawValue
         self.id = id
         self.createdAt = createdAt
         self.operationRaw = operation?.rawValue ?? Self.manualEditRaw
@@ -52,6 +57,19 @@ final class Creation {
     var operation: AIOperation? { AIOperation(rawValue: operationRaw) }
 
     var isFromImagePlayground: Bool { source == Self.imagePlaygroundSource }
+
+    /// Export markings. Apple made Image Playground pictures, so they're
+    /// marked as AI-generated but never carry Glowlit's mark.
+    var provenance: Provenance {
+        Creation.provenance(operation: operation, source: source, inheritedSourceType: sourceTypeRaw.flatMap(DigitalSourceType.init(rawValue:)))
+    }
+
+    static func provenance(operation: AIOperation?, source: String?, inheritedSourceType: DigitalSourceType? = nil) -> Provenance {
+        guard source == imagePlaygroundSource else {
+            return Provenance(operation: operation, inheritedSourceType: inheritedSourceType)
+        }
+        return Provenance(inheritedSourceType: DigitalSourceType.strongest(.trainedAlgorithmicMedia, inheritedSourceType))
+    }
 
     var kindTitle: String {
         if isFromImagePlayground { return String(localized: "Made with Image Playground") }

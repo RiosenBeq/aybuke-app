@@ -30,6 +30,9 @@ struct EditorLaunch: Identifiable {
     /// A crop shape and straighten angle to start from (screenshots).
     var cropAspect: CropAspect?
     var cropAngle: Double = 0
+    /// How the photo was made (an AI result, or a file that already carries
+    /// an AI marking), so saving after a re-edit keeps the marking.
+    var provenance = Provenance()
 }
 
 struct ConsentRequest: Identifiable {
@@ -559,7 +562,8 @@ final class AppModel {
 
     /// Adds images to the library (SwiftData metadata + files on disk).
     /// `operation == nil` marks a manually adjusted photo (no AI claim).
-    func saveToLibrary(_ images: [UIImage], operation: AIOperation?, title: String, prompt: String?, source: String? = nil) async {
+    func saveToLibrary(_ images: [UIImage], operation: AIOperation?, title: String, prompt: String?, source: String? = nil,
+                       inheritedSourceType: DigitalSourceType? = nil) async {
         let context = container.mainContext
         for image in images {
             let stored = await Task.detached(priority: .utility) { () -> (String, PixelSize)? in
@@ -575,7 +579,8 @@ final class AppModel {
                 imageFileName: name,
                 pixelWidth: size.width,
                 pixelHeight: size.height,
-                source: source
+                source: source,
+                inheritedSourceType: inheritedSourceType
             ))
         }
         try? context.save()
@@ -672,8 +677,8 @@ final class AppModel {
         isPhotoPickerPresented = true
     }
 
-    func openEditor(with image: UIImage, tool: EditorTool? = nil, template: PhotoTemplate? = nil) {
-        editorLaunch = EditorLaunch(image: ImageUtilities.normalized(image), tool: tool, template: template)
+    func openEditor(with image: UIImage, tool: EditorTool? = nil, template: PhotoTemplate? = nil, provenance: Provenance = .none) {
+        editorLaunch = EditorLaunch(image: ImageUtilities.normalized(image), tool: tool, template: template, provenance: provenance)
     }
 
     /// Copies a picked video to a temporary file and opens the video editor.
@@ -718,15 +723,18 @@ final class AppModel {
     private func openPhoto(_ data: Data, request: EditorRequest) async throws {
         // RAW (ProRAW, DNG) is developed with Auto, since it looks flat out of the camera.
         let isRAW = AutoDevelop.isRAW(data)
-        let image = await Task.detached(priority: .userInitiated) { () -> UIImage? in
+        let (image, sourceType) = await Task.detached(priority: .userInitiated) { () -> (UIImage?, DigitalSourceType?) in
+            // Decoding drops the XMP, so an AI marking is read first and kept.
+            let sourceType = ImageExporter.digitalSourceType(in: data)
             if isRAW, let developed = AutoDevelop.developRAW(data) {
-                return ImageUtilities.normalized(developed)
+                return (ImageUtilities.normalized(developed), sourceType)
             }
-            guard let image = UIImage(data: data) else { return nil }
-            return ImageUtilities.normalized(image)
+            guard let image = UIImage(data: data) else { return (nil, nil) }
+            return (ImageUtilities.normalized(image), sourceType)
         }.value
         guard let image else { throw AIServiceError.invalidRequest(String(localized: "That file isn't a supported photo.")) }
-        editorLaunch = EditorLaunch(image: image, tool: request.tool, template: request.template)
+        editorLaunch = EditorLaunch(image: image, tool: request.tool, template: request.template,
+                                    provenance: Provenance(inheritedSourceType: sourceType))
         if isRAW {
             showToast("RAW photo developed with the best settings ✨", style: .success)
         }

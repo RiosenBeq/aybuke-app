@@ -1,5 +1,6 @@
 import SwiftUI
 import PhotosUI
+import AppCore
 
 /// "Best shot": pick up to 12 selfies and the iPhone ranks them by light,
 /// focus and how clearly the face shows (Apple's face capture quality),
@@ -183,10 +184,12 @@ struct BestShotView: View {
 
     private func glowUp(_ shot: Shot) {
         guard let image = UIImage(data: shot.data) else { return }
+        // Keeps an AI marking the file already carries.
+        let provenance = Provenance(inheritedSourceType: ImageExporter.digitalSourceType(in: shot.data))
         dismiss()
         Task {
             try? await Task.sleep(for: .milliseconds(450))
-            app.openEditor(with: image, tool: .magicEdit)
+            app.openEditor(with: image, tool: .magicEdit, provenance: provenance)
         }
     }
 }

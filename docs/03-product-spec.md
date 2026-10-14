@@ -107,7 +107,7 @@ This document turns that brief into a product definition grounded in the researc
 
 | Tier | Price (US) | Includes |
 |---|---|---|
-| **Free** | $0 | 3 credits every day (low AI quality at 1k, small corner wordmark on photo exports). Unlimited on-device tools: effects, Auto and adjustments, background removal, Best shot and video editing (videos carry no watermark). |
+| **Free** | $0 | 3 credits every day (low AI quality at 1k, small corner wordmark on exports of cloud AI results, also after a re-edit; share cards of them say "Made with Glowlit"). Unlimited on-device tools: effects, Auto and adjustments, background removal, Best shot and video editing (no watermark on anything made only with them). |
 | **Pro Yearly** *(default)* | **$39.99/yr** (≈ $3.33/month), **7-day free trial** for eligible users | 100 credits/month with one month of rollover (cap 200), every template and style, our best-quality AI (medium instead of low quality), up to 4 images at once, no watermark |
 | **Pro Monthly** | **$5.99/mo**; first month **$1.99** for eligible users (introductory offer), no free trial | Same as yearly |
 | **Credit packs** (consumable) | 30 credits **$2.99**, 100 credits **$7.99** | Never expire; for occasional users who don't want a subscription |

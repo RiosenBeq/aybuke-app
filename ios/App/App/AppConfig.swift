@@ -32,6 +32,8 @@ struct AppConfig: Decodable {
     var instagramAppID: String
     /// Hashtags suggested in share captions.
     var shareHashtags: [String]
+    /// Added only when the picture was made or changed with generative AI.
+    var aiShareHashtags: [String] = ["AIphoto", "MadeWithAI"]
     /// RevenueCat public SDK key ("appl_…"; safe to ship). Empty: RevenueCat off.
     var revenueCatAPIKey: String
 
@@ -60,14 +62,14 @@ struct AppConfig: Decodable {
         appStoreID: "",
         websiteURL: "",
         instagramAppID: "",
-        shareHashtags: ["Glowlit", "AIphoto", "MadeWithAI"],
+        shareHashtags: ["Glowlit", "GlowUp"],
         revenueCatAPIKey: ""
     )
 
     private enum CodingKeys: String, CodingKey {
         case backendBaseURL, supabaseAnonKey, forceDemoMode, aiProviderName, dataRetentionHours
         case privacyPolicyURL, termsURL, supportEmail, appStoreID, websiteURL, instagramAppID, shareHashtags
-        case revenueCatAPIKey
+        case aiShareHashtags, revenueCatAPIKey
     }
 
     init(
@@ -106,6 +108,7 @@ struct AppConfig: Decodable {
         websiteURL = try container.decodeIfPresent(String.self, forKey: .websiteURL) ?? ""
         instagramAppID = try container.decodeIfPresent(String.self, forKey: .instagramAppID) ?? ""
         shareHashtags = try container.decodeIfPresent([String].self, forKey: .shareHashtags) ?? fallback.shareHashtags
+        aiShareHashtags = try container.decodeIfPresent([String].self, forKey: .aiShareHashtags) ?? fallback.aiShareHashtags
         revenueCatAPIKey = try container.decodeIfPresent(String.self, forKey: .revenueCatAPIKey) ?? ""
     }
 

@@ -14,6 +14,12 @@ enum ImageExporter {
     /// `operation == nil` means no AI was involved (manual adjustments only),
     /// so no AI provenance is claimed.
     static func encode(_ image: UIImage, operation: AIOperation?, watermark: Bool = false) -> (data: Data, fileExtension: String)? {
+        encode(image, sourceType: operation?.digitalSourceType, watermark: watermark)
+    }
+
+    /// `sourceType == nil` claims no AI. Only this one value is written, so
+    /// a source's EXIF and location never reach the file.
+    static func encode(_ image: UIImage, sourceType: DigitalSourceType?, watermark: Bool = false) -> (data: Data, fileExtension: String)? {
         var normalized = ImageUtilities.normalized(image, maxLongEdge: 4096)
         if watermark {
             normalized = Watermark.apply(to: normalized)
@@ -27,12 +33,12 @@ enum ImageExporter {
             return nil
         }
         let metadata = CGImageMetadataCreateMutable()
-        if let operation {
+        if let sourceType {
             _ = CGImageMetadataRegisterNamespaceForPrefix(metadata, iptcExtNamespace, iptcExtPrefix, nil)
             _ = CGImageMetadataSetValueWithPath(
                 metadata, nil,
                 "Iptc4xmpExt:DigitalSourceType" as CFString,
-                operation.digitalSourceType.uri as CFString
+                sourceType.uri as CFString
             )
         }
         _ = CGImageMetadataSetValueWithPath(
@@ -43,12 +49,32 @@ enum ImageExporter {
         let options = [kCGImageDestinationLossyCompressionQuality: 0.92] as CFDictionary
         CGImageDestinationAddImageAndMetadata(destination, cgImage, metadata, options)
         guard CGImageDestinationFinalize(destination) else { return nil }
+        #if DEBUG
+        // There's no app test target, so the ImageIO round trip is checked here.
+        assert(digitalSourceType(in: output as Data) == sourceType, "The exported file lost its IPTC DigitalSourceType")
+        #endif
         return (output as Data, usePNG ? "png" : "jpg")
+    }
+
+    /// The AI marking an image file already carries (IPTC DigitalSourceType
+    /// in its XMP), so re-edits keep it. Other values, such as a camera's
+    /// `digitalCapture`, give `nil`.
+    static func digitalSourceType(in data: Data) -> DigitalSourceType? {
+        guard
+            let source = CGImageSourceCreateWithData(data as CFData, nil),
+            let metadata = CGImageSourceCopyMetadataAtIndex(source, 0, nil),
+            let value = CGImageMetadataCopyStringValueWithPath(metadata, nil, "Iptc4xmpExt:DigitalSourceType" as CFString)
+        else { return nil }
+        return DigitalSourceType(uri: value as String)
     }
 
     /// Writes a temporary file for the share sheet.
     static func temporaryFile(for image: UIImage, operation: AIOperation?, watermark: Bool = false) throws -> URL {
-        guard let encoded = encode(image, operation: operation, watermark: watermark) else { throw CocoaError(.fileWriteUnknown) }
+        try temporaryFile(for: image, sourceType: operation?.digitalSourceType, watermark: watermark)
+    }
+
+    static func temporaryFile(for image: UIImage, sourceType: DigitalSourceType?, watermark: Bool = false) throws -> URL {
+        guard let encoded = encode(image, sourceType: sourceType, watermark: watermark) else { throw CocoaError(.fileWriteUnknown) }
         let name = "creation-\(Int(Date().timeIntervalSince1970)).\(encoded.fileExtension)"
         let url = FileManager.default.temporaryDirectory.appendingPathComponent(name)
         try encoded.data.write(to: url, options: .atomic)
@@ -70,9 +96,13 @@ enum PhotoLibrarySaver {
     }
 
     static func save(_ image: UIImage, operation: AIOperation?, watermark: Bool = false) async throws {
+        try await save(image, sourceType: operation?.digitalSourceType, watermark: watermark)
+    }
+
+    static func save(_ image: UIImage, sourceType: DigitalSourceType?, watermark: Bool = false) async throws {
         let status = await PHPhotoLibrary.requestAuthorization(for: .addOnly)
         guard status == .authorized || status == .limited else { throw SaveError.denied }
-        guard let encoded = ImageExporter.encode(image, operation: operation, watermark: watermark) else { throw SaveError.encodingFailed }
+        guard let encoded = ImageExporter.encode(image, sourceType: sourceType, watermark: watermark) else { throw SaveError.encodingFailed }
         try await PHPhotoLibrary.shared().performChanges {
             let request = PHAssetCreationRequest.forAsset()
             request.addResource(with: .photo, data: encoded.data, options: nil)
