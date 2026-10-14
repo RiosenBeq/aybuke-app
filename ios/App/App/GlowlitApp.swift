@@ -9,14 +9,11 @@ struct GlowlitApp: App {
 
     init() {
         FontRegistrar.registerBundledFonts()
-        let container: ModelContainer
-        do {
-            container = try ModelContainer(for: Creation.self)
-        } catch {
-            fatalError("Couldn't open the library database: \(error)")
-        }
+        let (container, outcome) = LibraryStore.open()
         self.container = container
-        _app = State(initialValue: AppModel(container: container))
+        let app = AppModel(container: container)
+        app.libraryOutcome = outcome
+        _app = State(initialValue: app)
     }
 
     var body: some Scene {

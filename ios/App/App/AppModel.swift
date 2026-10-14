@@ -110,6 +110,11 @@ final class AppModel {
     var videoSource: VideoSource?
     var toast: ToastMessage?
     @ObservationIgnored private var pendingEditorRequest: EditorRequest?
+    /// How My Works opened at launch; a repair is reported once in `start()`.
+    @ObservationIgnored var libraryOutcome: LibraryStore.Outcome = .opened
+    /// Library saves that failed while the device was locked, retried after unlock.
+    @ObservationIgnored private var deferredSaves: [DeferredSave] = []
+    @ObservationIgnored private var unlockWatcher: Task<Void, Never>?
 
     // MARK: Services
     let config: AppConfig
@@ -289,6 +294,14 @@ final class AppModel {
     /// Called once from the root view's `.task`.
     func start() async {
         liveActivity.endLeftovers()
+        switch libraryOutcome {
+        case .opened: break
+        case .rebuilt:
+            showToast("We rebuilt My Works. Your images are back; titles and hearts couldn't be restored.", style: .info)
+        case .temporary:
+            showToast("My Works couldn't open, so new creations won't be kept this time. Free up some space and restart Glowlit.", style: .error)
+        }
+        libraryOutcome = .opened
         storefrontCountry = await Storefront.current?.countryCode
         // No account and no RevenueCat here: both wait until she buys or uses
         // a cloud feature (Privacy Policy §5).
@@ -434,6 +447,9 @@ final class AppModel {
         credits.resetAll()
         credits.refresh(isPro: purchases.isPro)
         deleteAllCreations() // also resets the widgets, after the credits
+        deferredSaves = []
+        // A library moved aside after damage still holds titles and prompts.
+        LibraryStore.removeAllCorruptStores()
         liveActivity.endAll()
         await notifier.reset(keeping: purchases.isPro ? [TrialReminder.identifier] : [])
         URLCache.shared.removeAllCachedResponses()
@@ -727,29 +743,87 @@ final class AppModel {
     func saveToLibrary(_ images: [UIImage], operation: AIOperation?, title: String, prompt: String?, source: String? = nil,
                        inheritedSourceType: DigitalSourceType? = nil) async {
         let context = container.mainContext
+        let tag = ImageStore.Tag(operation: operation, source: source, inheritedSourceType: inheritedSourceType)
+        var saved: [UIImage] = []
         for image in images {
-            let stored = await Task.detached(priority: .utility) { () -> (String, PixelSize)? in
-                guard let name = try? ImageStore.save(image) else { return nil }
-                return (name, ImageUtilities.pixelSize(of: image))
+            let stored = await Task.detached(priority: .utility) { () -> Result<(String, PixelSize), Error> in
+                Result { (try ImageStore.save(image, tag: tag), ImageUtilities.pixelSize(of: image)) }
             }.value
-            guard let stored else { continue }
-            let (name, size) = stored
-            context.insert(Creation(
-                operation: operation,
-                title: title,
-                prompt: prompt,
-                imageFileName: name,
-                pixelWidth: size.width,
-                pixelHeight: size.height,
-                source: source,
-                inheritedSourceType: inheritedSourceType
-            ))
+            switch stored {
+            case .success(let (name, size)):
+                context.insert(Creation(
+                    operation: operation,
+                    title: title,
+                    prompt: prompt,
+                    imageFileName: name,
+                    pixelWidth: size.width,
+                    pixelHeight: size.height,
+                    source: source,
+                    inheritedSourceType: inheritedSourceType
+                ))
+                saved.append(image)
+            case .failure:
+                if isDeviceLocked {
+                    deferredSaves.append(DeferredSave(image: image, operation: operation, title: title, prompt: prompt,
+                                                      source: source, inheritedSourceType: inheritedSourceType))
+                    watchForUnlock()
+                } else {
+                    showToast("Couldn't save to My Works", style: .error)
+                }
+            }
         }
+        guard !saved.isEmpty else { return }
         try? context.save()
-        if let newest = images.last {
+        if let newest = saved.last {
             GlowWidgetBridge.updateLatestImage(newest)
         }
         syncWidgets()
+    }
+
+    /// Kept in memory only: if the app is closed while locked, it's lost,
+    /// which is why files are written "unless open" in the first place.
+    private struct DeferredSave {
+        let image: UIImage
+        let operation: AIOperation?
+        let title: String
+        let prompt: String?
+        let source: String?
+        let inheritedSourceType: DigitalSourceType?
+    }
+
+    private var isDeviceLocked: Bool {
+        #if targetEnvironment(macCatalyst)
+        false
+        #else
+        !UIApplication.shared.isProtectedDataAvailable
+        #endif
+    }
+
+    private func watchForUnlock() {
+        guard unlockWatcher == nil else { return }
+        unlockWatcher = Task { [weak self] in
+            for await _ in NotificationCenter.default.notifications(named: UIApplication.protectedDataDidBecomeAvailableNotification) {
+                guard let self else { return }
+                await self.retryDeferredSaves()
+                if self.deferredSaves.isEmpty { break }
+            }
+            self?.unlockWatcher = nil
+        }
+    }
+
+    private func retryDeferredSaves() async {
+        let pending = deferredSaves
+        deferredSaves = []
+        let before = (try? container.mainContext.fetchCount(FetchDescriptor<Creation>())) ?? 0
+        for item in pending {
+            await saveToLibrary([item.image], operation: item.operation, title: item.title, prompt: item.prompt,
+                                source: item.source, inheritedSourceType: item.inheritedSourceType)
+        }
+        let after = (try? container.mainContext.fetchCount(FetchDescriptor<Creation>())) ?? 0
+        // A failure already showed "Couldn't save to My Works".
+        if after > before, deferredSaves.isEmpty {
+            showToast("Saved to My Works", style: .success)
+        }
     }
 
     /// Writes credits and the newest creation for the Home Screen widgets.
@@ -1127,7 +1201,7 @@ extension AppModel {
         let images = [ScreenshotFixtures.goldenLandscape] + ScreenshotFixtures.generatedArt(count: 8)
         let context = container.mainContext
         for (index, image) in images.enumerated() {
-            guard let name = try? ImageStore.save(image) else { continue }
+            guard let name = try? ImageStore.save(image, tag: ImageStore.Tag(operation: index == 0 ? .magicEdit : .textToImage)) else { continue }
             let size = ImageUtilities.pixelSize(of: image)
             context.insert(Creation(
                 createdAt: Date().addingTimeInterval(TimeInterval(-index * 3600)),
