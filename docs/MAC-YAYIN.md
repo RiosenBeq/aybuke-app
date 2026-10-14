@@ -590,11 +590,31 @@ Ardından eski xAI anahtarını iptal et (0. bölüm). Ayrıntılı test listesi
 
 ## Claude Code için tek prompt (bypass modu)
 
-**Başlatma:**
+**Başlatma:** gizli değerler Claude Code'u başlatmadan önce, aynı terminal penceresinde ortam değişkeni olarak verilir; Claude Code onları bu pencereden devralır ve değerleri hiç görmeden kullanır.
 
 ```zsh
+setopt interactivecomments
 cd ~/Downloads/aybuke-app
-git pull --ff-only origin pink-girls-redesign
+git pull --ff-only
+
+# 1) Supabase CLI girişi (tarayıcı açılır)
+brew install supabase/tap/supabase
+supabase login
+
+# 2) Veritabanı adresi (panel: proje › Connect › Session pooler URI, [YOUR-PASSWORD] yer tutucusuyla)
+read -r "TEMPLATE?Session pooler URI: "
+read -rs "DBPW?Veritabanı şifresi: "; echo
+export SUPABASE_DB_URL="$(TEMPLATE="$TEMPLATE" DBPW="$DBPW" python3 -c 'import os, urllib.parse as u; print(os.environ["TEMPLATE"].replace("[YOUR-PASSWORD]", u.quote(os.environ["DBPW"], safe="")))')"
+unset DBPW TEMPLATE
+
+# 3) App Store Connect API anahtarı (.p8 dosyası ~/.appstoreconnect/private_keys/ içinde)
+mkdir -p ~/.appstoreconnect/private_keys
+mv ~/Downloads/AuthKey_*.p8 ~/.appstoreconnect/private_keys/ 2>/dev/null
+chmod 600 ~/.appstoreconnect/private_keys/AuthKey_*.p8
+read -r "ASC_KEY_ID?API Key ID: ";  export ASC_KEY_ID
+read -r "ASC_ISSUER_ID?Issuer ID: "; export ASC_ISSUER_ID
+
+# 4) Aynı pencerede Claude Code
 claude --dangerously-skip-permissions
 ```
 
