@@ -21,7 +21,8 @@ permissions:
 jobs:
   simulator:
     name: Simulator screenshots
-    runs-on: macos-15
+    # Xcode 26 (iOS 26 SDK): the app uses the iOS 26 speech and on-device AI APIs.
+    runs-on: macos-26
     timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
