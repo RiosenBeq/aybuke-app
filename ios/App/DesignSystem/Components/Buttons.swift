@@ -30,11 +30,14 @@ struct PrimaryButtonStyle: ButtonStyle {
 
 /// White capsule for secondary actions.
 struct SecondaryButtonStyle: ButtonStyle {
+    /// `Metrics.buttonHeight` when it sits under a primary button as an equal choice.
+    var minHeight: CGFloat = 50
+
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .font(.buttonLabel)
             .foregroundStyle(Palette.textPrimary)
-            .frame(maxWidth: .infinity, minHeight: 50)
+            .frame(maxWidth: .infinity, minHeight: minHeight)
             .padding(.horizontal, 18)
             .background(Palette.surface, in: Capsule())
             .overlay(Capsule().strokeBorder(Palette.strokeStrong, lineWidth: 1))
@@ -65,6 +68,8 @@ extension ButtonStyle where Self == PrimaryButtonStyle {
 
 extension ButtonStyle where Self == SecondaryButtonStyle {
     static var secondary: SecondaryButtonStyle { SecondaryButtonStyle() }
+    /// As tall as the primary button: an equal choice, not small print.
+    static var secondaryFull: SecondaryButtonStyle { SecondaryButtonStyle(minHeight: Metrics.buttonHeight) }
 }
 
 extension ButtonStyle where Self == IconButtonStyle {

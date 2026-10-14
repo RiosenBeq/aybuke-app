@@ -25,6 +25,15 @@ enum PurchaseOutcome {
 
 /// A purchase that completed outside `purchase(_:)`: an approved pending
 /// purchase or a redeemed offer code, delivered through `Transaction.updates`.
+/// The free trial she's in: when it ends, its first payment and whether it
+/// renews (cancelling turns that off; the trial itself runs to the end).
+struct TrialStatus: Equatable {
+    let productID: String
+    let endsAt: Date
+    let price: String?
+    let willRenew: Bool
+}
+
 struct LatePurchase {
     let productID: String
     /// The end of a free trial that this purchase started.
@@ -64,6 +73,8 @@ final class PurchaseManager {
     /// JWS of the active entitlement, forwarded to the backend so it can verify
     /// Pro status with Apple's signature instead of trusting the client.
     private(set) var entitlementJWS: String?
+    /// The running free trial, if any (Settings › Membership, the reminder).
+    private(set) var trial: TrialStatus?
 
     /// Grants credits for a verified consumable transaction (locally in demo
     /// mode, via the backend in production). Return `true` once granted; the
@@ -73,6 +84,9 @@ final class PurchaseManager {
     @ObservationIgnored var onProStatusChange: ((Bool) -> Void)?
     /// A purchase completed in the background (see `LatePurchase`).
     @ObservationIgnored var onLatePurchase: ((LatePurchase) -> Void)?
+    /// The trial started, ended or was cancelled (or not, re-checked).
+    @ObservationIgnored var onTrialChange: ((TrialStatus?) -> Void)?
+    @ObservationIgnored private var statusTask: Task<Void, Never>?
 
     @ObservationIgnored private var updatesTask: Task<Void, Never>?
     @ObservationIgnored private var hasCheckedEntitlements = false
@@ -83,6 +97,12 @@ final class PurchaseManager {
         updatesTask = Task { [weak self] in
             for await update in Transaction.updates {
                 await self?.handle(update, isUpdate: true)
+            }
+        }
+        // Cancelling in Settings › Subscriptions arrives here, not as a transaction.
+        statusTask = Task { [weak self] in
+            for await _ in Product.SubscriptionInfo.Status.updates {
+                await self?.refreshEntitlements()
             }
         }
     }
@@ -181,6 +201,26 @@ final class PurchaseManager {
         if active { pendingProductIDs.subtract(StoreProducts.subscriptions) }
         hasCheckedEntitlements = true
         if changed { onProStatusChange?(active) }
+        await refreshTrial()
+    }
+
+    private func refreshTrial() async {
+        var found: TrialStatus?
+        for await entitlement in Transaction.currentEntitlements {
+            guard case .verified(let transaction) = entitlement,
+                  StoreProducts.subscriptions.contains(transaction.productID),
+                  transaction.revocationDate == nil, transaction.ownershipType == .purchased,
+                  let end = Self.trialEnd(of: transaction), end > Date() else { continue }
+            var willRenew = true
+            if let status = await transaction.subscriptionStatus, case .verified(let renewal) = status.renewalInfo {
+                willRenew = renewal.willAutoRenew
+            }
+            var product = products.first { $0.id == transaction.productID }
+            if product == nil { product = try? await Product.products(for: [transaction.productID]).first }
+            found = TrialStatus(productID: transaction.productID, endsAt: end, price: product?.displayPrice, willRenew: willRenew)
+        }
+        trial = found
+        onTrialChange?(found)
     }
 
     /// Turns purchases off when a demo-mode build runs from the App Store

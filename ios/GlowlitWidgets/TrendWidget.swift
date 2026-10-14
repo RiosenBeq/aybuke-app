@@ -2,19 +2,29 @@ import SwiftUI
 import WidgetKit
 import AppCore
 
-/// "Today's trend": one look per day, tap to try it on a photo.
+/// "Today's trend": one look per day, tap to try it on a photo. Free looks
+/// unless she's Pro, so a tap never lands on the paywall; under 13 (no cloud
+/// AI) it offers the free retro effects instead.
 struct TrendEntry: TimelineEntry {
     let date: Date
     let template: PhotoTemplate
+    var onDeviceOnly = false
 }
 
 struct TrendProvider: TimelineProvider {
     func placeholder(in context: Context) -> TrendEntry {
-        TrendEntry(date: Date(), template: TemplateCatalog.template(id: "pink-hair") ?? TemplateCatalog.all[0])
+        TrendEntry(date: Date(), template: TemplateCatalog.pushPool(isPro: false).first ?? TemplateCatalog.all[0])
     }
 
     func getSnapshot(in context: Context, completion: @escaping (TrendEntry) -> Void) {
-        completion(TrendEntry(date: Date(), template: TemplateCatalog.trendOfTheDay()))
+        completion(entry(on: Date()))
+    }
+
+    private func entry(on date: Date) -> TrendEntry {
+        // Read defensively: no snapshot yet means a free member with cloud AI.
+        let snapshot = GlowSharedStore.load()
+        return TrendEntry(date: date, template: TemplateCatalog.trendOfTheDay(on: date, isPro: snapshot?.isPro ?? false),
+                          onDeviceOnly: !(snapshot?.showsCloudAI ?? true))
     }
 
     func getTimeline(in context: Context, completion: @escaping (Timeline<TrendEntry>) -> Void) {
@@ -22,8 +32,8 @@ struct TrendProvider: TimelineProvider {
         let now = Date()
         let tomorrow = calendar.startOfDay(for: calendar.date(byAdding: .day, value: 1, to: now) ?? now.addingTimeInterval(86_400))
         let entries = [
-            TrendEntry(date: now, template: TemplateCatalog.trendOfTheDay(on: now)),
-            TrendEntry(date: tomorrow, template: TemplateCatalog.trendOfTheDay(on: tomorrow)),
+            entry(on: now),
+            entry(on: tomorrow),
         ]
         completion(Timeline(entries: entries, policy: .after(calendar.date(byAdding: .day, value: 1, to: tomorrow) ?? tomorrow)))
     }
@@ -34,6 +44,55 @@ struct TrendWidgetView: View {
     @Environment(\.widgetFamily) private var family
 
     var body: some View {
+        if entry.onDeviceOnly {
+            freeEffects
+        } else {
+            trend
+        }
+    }
+
+    /// Under 13: the free on-device effects, no AI looks.
+    @ViewBuilder
+    private var freeEffects: some View {
+        switch family {
+        case .accessoryInline:
+            Label("Retro effects", systemImage: "camera.filters")
+                .containerBackground(for: .widget) { Color.clear }
+                .widgetURL(GlowDeepLink.effects.url)
+        case .accessoryRectangular:
+            VStack(alignment: .leading, spacing: 1) {
+                Label("Retro effects", systemImage: "camera.filters")
+                    .font(.headline)
+                    .widgetAccentable()
+                Text("Free, on your device")
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+            }
+            .containerBackground(for: .widget) { Color.clear }
+            .widgetURL(GlowDeepLink.effects.url)
+        default:
+            VStack(alignment: .leading, spacing: 6) {
+                Image(systemName: "camera.filters")
+                    .font(.system(size: 22, weight: .semibold))
+                    .foregroundStyle(WidgetPalette.blush)
+                    .frame(width: 44, height: 44)
+                    .background(WidgetPalette.ink, in: Circle())
+                Spacer(minLength: 0)
+                Text("Retro effects")
+                    .font(.widgetTitle(17))
+                    .foregroundStyle(WidgetPalette.ink)
+                Text("Free, on your device")
+                    .font(.system(size: 12, weight: .semibold, design: .rounded))
+                    .foregroundStyle(WidgetPalette.inkSoft)
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
+            .containerBackground(for: .widget) { GlowWash() }
+            .widgetURL(GlowDeepLink.effects.url)
+        }
+    }
+
+    @ViewBuilder
+    private var trend: some View {
         switch family {
         case .accessoryRectangular:
             VStack(alignment: .leading, spacing: 1) {

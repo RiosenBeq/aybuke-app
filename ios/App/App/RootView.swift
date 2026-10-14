@@ -40,11 +40,11 @@ struct RootView: View {
                 videoItem = nil
             }
         }
-        .fullScreenCover(item: $app.editorLaunch) { launch in
+        .fullScreenCover(item: $app.editorLaunch, onDismiss: { app.editorDidClose() }) { launch in
             EditorView(launch: launch)
                 .environment(app)
         }
-        .fullScreenCover(item: $app.videoSource) { source in
+        .fullScreenCover(item: $app.videoSource, onDismiss: { app.presentationEnded() }) { source in
             VideoEditorView(source: source)
                 .environment(app)
         }

@@ -33,7 +33,7 @@ Satın alımlarınıza ayrıca sizinle Apple arasında geçerli olan Apple koşu
 ## 2. Tanımlar
 
 - **Bulut yapay zekâ özellikleri**: İçeriği cihazınızdan sunucularımıza ve yapay zekâ sağlayıcılarımıza göndererek işleyen özellikler. Bunlar Magic Edit, Styles, AI Enhance, Erase ve Create from text özellikleridir.
-- **Cihaz üzerindeki özellikler**: Tamamen iPhone'unuzda çalışan ve fotoğraflarınızı bize hiçbir zaman göndermeyen özellikler. Bunlar Remove background, Adjust ve tanıtım (onboarding) sırasında sunulan "quick glow" iyileştirmesidir.
+- **Cihaz üzerindeki özellikler**: Tamamen iPhone'unuzda çalışan ve fotoğraflarınızı bize hiçbir zaman göndermeyen özellikler. Bunlar Remove background, Adjust ve Effects'tir (tanıtım (onboarding) sırasında sunulan Digicam '04 görünümü dahil).
 - **Girdiler**: Bulut yapay zekâ özelliklerine gönderdiğiniz fotoğraflar, maskeler (fırçayla işaretlediğiniz alanlar) ve metin istemleri (prompt).
 - **Çıktılar** veya **sonuçlar**: Hizmetin sizin için ürettiği veya düzenlediği görseller.
 - **Kredi**: Bulut yapay zekâ çıktıları için kullandığınız birim (8. bölüm).
@@ -100,7 +100,7 @@ Bazı şablon ve stiller yalnızca Pro ile kullanılabilir. Ünlülere veya baş
 
 ### Cihaz üzerindeki özellikler
 
-Remove background (Apple'ın Vision çerçevesiyle arka plan kaldırma), Adjust (parlaklık, kontrast, doygunluk, sıcaklık, keskinlik ve vinyet ayarı) ve tanıtım sırasında sunulan ücretsiz "quick glow" iyileştirmesi tamamen iPhone'unuzda çalışır. Bu özellikler ücretsizdir, kredi kullanmaz ve bulut işlemeye onay vermeseniz de çalışır.
+Remove background (Apple'ın Vision çerçevesiyle arka plan kaldırma), Adjust (parlaklık, kontrast, doygunluk, sıcaklık, keskinlik ve vinyet ayarı) ve Effects (tanıtım sırasında da sunulan Digicam '04 gibi retro görünümler) tamamen iPhone'unuzda çalışır. Bu özellikler ücretsizdir, kredi kullanmaz ve bulut işlemeye onay vermeseniz de çalışır.
 
 ### Likeness Lock
 
@@ -198,7 +198,7 @@ Bunlar ABD doları cinsinden referans fiyatlardır. Uygulama, satın almadan ön
 
 Uygunsanız yıllık plan 7 günlük ücretsiz deneme süresiyle başlar. Uygunluk, Apple'ın tanıtım teklifleri (introductory offers) kurallarına göre belirlenir.
 
-Deneme süresinin bitiminden en az 24 saat önce iptal etmezseniz aboneliğiniz otomatik olarak başlar ve deneme süresi sona erdiğinde yıllık ücret tahsil edilir. Bildirimlere izin verdiyseniz uygulama, deneme sürenizin bitmesinden bir gün önce size hatırlatma gönderir.
+Deneme süresinin bitiminden en az 24 saat önce iptal etmezseniz aboneliğiniz otomatik olarak başlar ve deneme süresi sona erdiğinde yıllık ücret tahsil edilir. Bildirimlere izin verdiyseniz uygulama, bu son iptal zamanından önce size hatırlatma gönderir: deneme sürenizin bitmesinden en az 26 saat önce; bu zaman geceye veya okul saatlerine denk gelirse daha erken.
 
 Ücretsiz deneme süresi devam ederken bir abonelik satın alırsanız, uygulanabildiği hallerde deneme süresinin kullanılmayan kısmı sona erer.
 

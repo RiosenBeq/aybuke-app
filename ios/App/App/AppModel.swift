@@ -40,14 +40,6 @@ struct ConsentRequest: Identifiable {
     let onAccept: () -> Void
 }
 
-/// Consent to cloud AI processing, kept on this device. `guardianConfirmed`
-/// is her own answer to "A parent or guardian said yes"; nobody verifies it.
-struct AIConsentRecord: Codable, Equatable {
-    var granted = false
-    var date: Date?
-    var guardianConfirmed = false
-}
-
 /// Settings › Appearance. Light (the pink "Blush" look) is the default.
 enum AppearancePreference: String, CaseIterable, Identifiable {
     case light, dark, system
@@ -78,7 +70,9 @@ enum AppearancePreference: String, CaseIterable, Identifiable {
 final class AppModel {
     // MARK: Persistent flags
     private(set) var hasCompletedOnboarding: Bool
-    private(set) var consentRecord: AIConsentRecord
+    /// Cloud AI consent (see `AIConsentRecord` in AppCore); nil until she
+    /// taps "Allow AI processing".
+    private(set) var consentRecord: AIConsentRecord?
     /// Her age range (band, source, date), only on this device. Nil until
     /// she has answered the age step.
     private(set) var ageRecord: AgeRecord?
@@ -139,12 +133,17 @@ final class AppModel {
     @ObservationIgnored private var reviewPolicy: ReviewPromptPolicy
     /// The last paywall or permission prompt; no rating prompt for 30 minutes after.
     @ObservationIgnored private var lastInterruption: Date?
+    /// One paywall a session is enough: no onboarding one after another.
+    @ObservationIgnored private var paywallShownThisSession = false
 
     private enum Keys {
         static let onboarding = "onboarding.completed"
-        /// The old Bool consent, migrated to `consentRecord`.
-        static let legacyConsent = "ai.consent.v1"
-        static let consent = "ai.consent.v2"
+        /// The adult soft paywall waits for the first success (the editor
+        /// closing); kept so a force-quit there still shows it once.
+        static let onboardingPaywallPending = "onboarding.paywallPending"
+        /// Older formats that never shipped: read as "no consent" and removed.
+        static let legacyConsent = ["ai.consent.v1", "ai.consent.v2"]
+        static let consent = "ai.consent.v3"
         static let ageRecord = "age.record.v1"
         static let interests = "onboarding.interests"
         static let successfulSaves = "stats.successfulSaves"
@@ -156,9 +155,9 @@ final class AppModel {
         /// What "Delete my data" removes (other owners' keys spelled out here
         /// so the list is complete in one place).
         static let wiped = [
-            onboarding, legacyConsent, consent, ageRecord, interests, successfulSaves, reviewPolicy, appearance, deletionRequested,
+            onboarding, onboardingPaywallPending, consent, ageRecord, interests, successfulSaves, reviewPolicy, appearance, deletionRequested,
             "credits.wallet.v2", "notifications.preferences.v1", "notifications.readyPingDeclined", "tour.seen.v1",
-        ]
+        ] + legacyConsent
         static let wipedKeychain = [appleUserID, "auth.session", "auth.pendingMerge"]
     }
 
@@ -167,12 +166,8 @@ final class AppModel {
         self.config = config
         self.defaults = defaults
         self.hasCompletedOnboarding = defaults.bool(forKey: Keys.onboarding)
-        if let data = defaults.data(forKey: Keys.consent),
-           let saved = try? JSONDecoder().decode(AIConsentRecord.self, from: data) {
-            self.consentRecord = saved
-        } else {
-            self.consentRecord = AIConsentRecord(granted: defaults.bool(forKey: Keys.legacyConsent))
-        }
+        self.consentRecord = AIConsentRecord.decode(defaults.data(forKey: Keys.consent))
+        for key in Keys.legacyConsent { defaults.removeObject(forKey: key) }
         self.ageRecord = defaults.data(forKey: Keys.ageRecord).flatMap { try? JSONDecoder().decode(AgeRecord.self, from: $0) }
         self.interests = Set(defaults.stringArray(forKey: Keys.interests) ?? [])
         self.appearance = defaults.string(forKey: Keys.appearance).flatMap(AppearancePreference.init(rawValue:)) ?? .light
@@ -218,6 +213,9 @@ final class AppModel {
             Task { await self.refreshServerBalance() }
         }
         purchases.onLatePurchase = { [weak self] purchase in self?.completeLatePurchase(purchase) }
+        purchases.onTrialChange = { trial in
+            Task { await Self.syncTrialReminder(trial) }
+        }
         notifier.onOpenLink = { [weak self] link in self?.handle(link) }
 
         #if DEBUG
@@ -254,6 +252,9 @@ final class AppModel {
             consentRequest = nil
             if selectedTab == .create { selectedTab = .home }
         }
+        // Widgets, controls and reminders follow her age band.
+        syncWidgets()
+        syncReminders()
         return true
     }
 
@@ -305,11 +306,26 @@ final class AppModel {
         if isDemoMode { await purchases.closeForPreviewIfFromAppStore() }
         #endif
         await purchases.loadProducts()
+        // She force-quit the editor she opened from onboarding.
+        if defaults.bool(forKey: Keys.onboardingPaywallPending), hasCompletedOnboarding, !needsAgeStep, editorLaunch == nil {
+            offerOnboardingPaywall()
+        }
     }
 
     /// Back in the foreground: notification permission may have changed.
     func becameActive() {
         syncReminders()
+        // A trial cancelled in Settings › Subscriptions loses its reminder.
+        Task { await purchases.refreshEntitlements() }
+    }
+
+    /// The trial reminder exists only while a trial runs and will renew.
+    private static func syncTrialReminder(_ trial: TrialStatus?) async {
+        guard let trial, trial.willRenew else {
+            TrialReminder.cancel()
+            return
+        }
+        await TrialReminder.schedule(trialEnd: trial.endsAt, price: trial.price, mayAsk: false)
     }
 
     /// Adds a purchased pack: locally in demo mode, verified by the server in production.
@@ -338,11 +354,7 @@ final class AppModel {
             return
         }
         showToast("Welcome to \(Brand.name) Pro ✦", style: .success)
-        // Keep the paywall's "We'll remind you before your trial ends" promise.
-        if let trialEnd = purchase.trialEndsAt,
-           let price = purchases.products.first(where: { $0.id == purchase.productID })?.displayPrice {
-            Task { await TrialReminder.schedule(billingDate: trialEnd, price: price, mayAsk: false) }
-        }
+        // The trial reminder follows from `onTrialChange`.
     }
 
     /// Binds purchases to the backend user (StoreKit `appAccountToken`) and
@@ -422,7 +434,7 @@ final class AppModel {
         for key in Keys.wiped { defaults.removeObject(forKey: key) }
         for key in Keys.wipedKeychain { Keychain.delete(key: key) }
         hasCompletedOnboarding = false
-        consentRecord = AIConsentRecord()
+        consentRecord = nil
         ageRecord = nil
         interests = []
         appearance = .light
@@ -541,6 +553,43 @@ final class AppModel {
         defaults.set(true, forKey: Keys.onboarding)
     }
 
+    /// The soft paywall after onboarding: adults only, never for Pro, and
+    /// not when another paywall was already shown this session. The one
+    /// place the age-assurance rules extend.
+    var shouldShowOnboardingPaywall: Bool {
+        !purchases.isPro && ageDefaults.autoPaywall && !paywallShownThisSession
+    }
+
+    /// Onboarding ended (a saved try-it result, or skipped): the paywall now.
+    func offerOnboardingPaywall() {
+        defaults.removeObject(forKey: Keys.onboardingPaywallPending)
+        if shouldShowOnboardingPaywall { presentPaywall(source: "onboarding") }
+    }
+
+    /// Onboarding ended in the editor: the paywall waits until she closes it.
+    func deferOnboardingPaywall() {
+        guard shouldShowOnboardingPaywall else { return }
+        defaults.set(true, forKey: Keys.onboardingPaywallPending)
+    }
+
+    /// The editor's full-screen cover closed.
+    func editorDidClose() {
+        if defaults.bool(forKey: Keys.onboardingPaywallPending) {
+            offerOnboardingPaywall()
+        }
+        presentationEnded()
+    }
+
+    /// A paywall, account prompt or editor closed: a moment later (after a
+    /// purchase the account prompt comes first), offer the tour.
+    func presentationEnded() {
+        guard hasCompletedOnboarding, !tour.hasSeen else { return }
+        Task {
+            try? await Task.sleep(for: .milliseconds(800))
+            offerTourIfNeeded()
+        }
+    }
+
     /// Shows the tour once, after onboarding, when nothing else is on screen.
     func offerTourIfNeeded() {
         #if DEBUG
@@ -549,7 +598,8 @@ final class AppModel {
             return
         }
         #endif
-        guard hasCompletedOnboarding, !needsAgeStep, !tour.hasSeen, !tour.isRunning, !isPresentingSomething else { return }
+        guard hasCompletedOnboarding, !needsAgeStep, !tour.hasSeen, !tour.isRunning, !isPresentingSomething,
+              !isSettingsPresented, !isPhotoPickerPresented, !isVideoPickerPresented else { return }
         startTour()
     }
 
@@ -572,32 +622,35 @@ final class AppModel {
             && !isSettingsPresented && !isPhotoPickerPresented && !isVideoPickerPresented
     }
 
-    /// Consent counts only where cloud AI is offered, and only with the
-    /// guardian answer when her age range asks for one.
+    /// Consent counts only where cloud AI is offered, for the current
+    /// consent version and processors, and only with the guardian answer
+    /// when her age range asks for one.
     var hasAIConsent: Bool {
-        allowsCloudAI && consentRecord.granted
-            && (!ageDefaults.requiresGuardianStep || consentRecord.guardianConfirmed)
+        guard allowsCloudAI, let consentRecord,
+              consentRecord.isValid(currentVersion: config.consentVersion,
+                                    currentProcessors: config.consentProcessors.map(\.name)) else { return false }
+        return !ageDefaults.requiresGuardianStep || consentRecord.guardianConfirmed
     }
 
     /// Settings: switching it off withdraws consent. Switching it on goes
     /// through the consent sheet (`grantAIConsent`).
-    func setAIConsent(_ granted: Bool) {
-        if granted {
-            grantAIConsent(guardianConfirmed: consentRecord.guardianConfirmed)
-        } else {
-            saveConsent(AIConsentRecord())
-        }
+    func withdrawAIConsent() {
+        saveConsent(nil)
     }
 
-    /// "Allow AI processing" in the consent sheet.
+    /// "Allow AI processing" in the consent sheet: records what it showed.
     func grantAIConsent(guardianConfirmed: Bool) {
-        saveConsent(AIConsentRecord(granted: true, date: Date(), guardianConfirmed: guardianConfirmed))
+        saveConsent(AIConsentRecord(version: config.consentVersion, acceptedAt: Date(),
+                                    processors: config.consentProcessors.map(\.name), guardianConfirmed: guardianConfirmed))
     }
 
-    private func saveConsent(_ record: AIConsentRecord) {
+    private func saveConsent(_ record: AIConsentRecord?) {
         consentRecord = record
-        if let data = try? JSONEncoder().encode(record) { defaults.set(data, forKey: Keys.consent) }
-        defaults.removeObject(forKey: Keys.legacyConsent)
+        if let record, let data = try? JSONEncoder().encode(record) {
+            defaults.set(data, forKey: Keys.consent)
+        } else {
+            defaults.removeObject(forKey: Keys.consent)
+        }
     }
 
     // MARK: Paywall
@@ -606,6 +659,7 @@ final class AppModel {
         // Never under 13; for teens, never by itself after onboarding.
         guard allowsPurchases, source != "onboarding" || ageDefaults.autoPaywall else { return }
         lastInterruption = Date() // never ask for a rating right after a paywall
+        paywallShownThisSession = true
         paywallSource = source
         isPaywallPresented = true
     }
@@ -655,7 +709,8 @@ final class AppModel {
     func run(_ job: AIJob, saveToLibrary: Bool) async throws -> AIJobResult {
         let isCloud = !job.operation.runsOnDevice
         let showsActivity = isCloud && liveActivity.start(
-            title: job.title.shortened(to: 34),
+            // Catalog text only: her prompt would show on the Lock Screen.
+            title: L10n.core(job.template?.title ?? job.operation.displayName).shortened(to: 34),
             symbolName: job.template?.symbolName ?? job.operation.symbolName,
             expectedSeconds: GlowActivityController.expectedSeconds(for: job.operation, outputs: job.numOutputs)
         )
@@ -667,13 +722,13 @@ final class AppModel {
         }
         do {
             let result = try await perform(job, saveToLibrary: saveToLibrary)
-            if isCloud { finishCloudJob(success: true, title: job.title, showsActivity: showsActivity) }
+            if isCloud { finishCloudJob(success: true, operation: job.operation, showsActivity: showsActivity) }
             return result
         } catch {
             if Self.isCancellation(error) {
                 if showsActivity { liveActivity.cancel() }
             } else if isCloud {
-                finishCloudJob(success: false, title: job.title, showsActivity: showsActivity)
+                finishCloudJob(success: false, operation: job.operation, showsActivity: showsActivity)
             }
             throw error
         }
@@ -681,12 +736,12 @@ final class AppModel {
 
     /// The Live Activity shows the outcome; without one (switched off in
     /// Settings, say) a notification does, if she opted in.
-    private func finishCloudJob(success: Bool, title: String, showsActivity: Bool) {
+    private func finishCloudJob(success: Bool, operation: AIOperation, showsActivity: Bool) {
         let inBackground = UIApplication.shared.applicationState != .active
         if showsActivity {
             liveActivity.finish(success: success, lingers: inBackground)
         } else {
-            notifier.notifyJobFinished(success: success, title: title)
+            notifier.notifyJobFinished(success: success, isCreate: operation == .textToImage)
         }
     }
 
@@ -767,7 +822,8 @@ final class AppModel {
             latest: (try? context.fetch(newest))?.first,
             creationsCount: count,
             breakdown: credits.breakdown,
-            nextGrant: credits.nextSubscriptionGrant
+            nextGrant: credits.nextSubscriptionGrant,
+            cloudAIAllowed: allowsCloudAI
         )
     }
 
@@ -824,7 +880,8 @@ final class AppModel {
                 credits: credits.balance,
                 isPro: purchases.isPro,
                 nextRefill: credits.nextFreeRefill,
-                dailyCredits: credits.policy.freeDailyAllowance
+                dailyCredits: credits.policy.freeDailyAllowance,
+                cloudAIAllowed: allowsCloudAI
             )
         }
     }
@@ -842,9 +899,10 @@ final class AppModel {
         isPhotoPickerPresented = true
     }
 
-    func openEditor(with image: UIImage, tool: EditorTool? = nil, template: PhotoTemplate? = nil, provenance: Provenance = .none) {
+    func openEditor(with image: UIImage, tool: EditorTool? = nil, template: PhotoTemplate? = nil, provenance: Provenance = .none,
+                    previewEffect: RetroEffect? = nil) {
         editorLaunch = EditorLaunch(image: ImageUtilities.normalized(image), tool: permittedTool(tool),
-                                    template: allowsCloudAI ? template : nil, provenance: provenance)
+                                    template: allowsCloudAI ? template : nil, previewEffect: previewEffect, provenance: provenance)
     }
 
     /// Copies a picked video to a temporary file and opens the video editor.
@@ -1052,7 +1110,10 @@ extension AppModel {
     func applyScreenshotScene(_ scene: ScreenshotScene) {
         credits.resetForScreenshots()
         hasCompletedOnboarding = scene != .onboarding
-        consentRecord = AIConsentRecord(granted: scene != .consent, date: nil, guardianConfirmed: true)
+        consentRecord = scene == .consent ? nil : AIConsentRecord(
+            version: config.consentVersion, acceptedAt: Date(),
+            processors: config.consentProcessors.map(\.name), guardianConfirmed: true
+        )
         if scene == .age {
             ageRecord = nil
         } else if ageRecord == nil {

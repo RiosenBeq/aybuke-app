@@ -115,19 +115,20 @@ extension GlowActivityController {
 enum GlowWidgetBridge {
     static func update(
         credits: Int, isPro: Bool, nextRefill: Date?, latest: Creation?, creationsCount: Int,
-        breakdown: CreditBreakdown? = nil, nextGrant: Date? = nil
+        breakdown: CreditBreakdown? = nil, nextGrant: Date? = nil, cloudAIAllowed: Bool = true
     ) {
         let snapshot = GlowWidgetSnapshot(
             credits: credits,
             isPro: isPro,
             nextRefill: isPro ? nil : nextRefill,
-            latestTitle: latest?.title,
+            latestTitle: latest.flatMap(widgetTitle(for:)),
             latestIsFavorite: latest?.isFavorite ?? false,
             creationsCount: creationsCount,
             daily: breakdown?.daily,
             monthly: breakdown?.monthly,
             packs: breakdown?.packs,
-            nextGrant: isPro ? nextGrant : nil
+            nextGrant: isPro ? nextGrant : nil,
+            cloudAIAllowed: cloudAIAllowed
         )
         let previous = GlowSharedStore.load()
         var unchanged = snapshot
@@ -135,6 +136,24 @@ enum GlowWidgetBridge {
         guard previous != unchanged else { return }
         GlowSharedStore.save(snapshot)
         WidgetCenter.shared.reloadAllTimelines()
+        if previous?.showsCloudAI != snapshot.showsCloudAI { reloadControls() }
+    }
+
+    /// Only catalog text reaches the widget (it can show on the Lock Screen
+    /// and in StandBy): a Magic Edit or Create title is her prompt, so those
+    /// show "Your latest creation" instead.
+    private static func widgetTitle(for creation: Creation) -> String? {
+        switch creation.operation {
+        case .magicEdit, .textToImage: return nil
+        default: return creation.title
+        }
+    }
+
+    /// The Magic Edit control turns into Cut out under 13.
+    private static func reloadControls() {
+        #if !targetEnvironment(macCatalyst) || compiler(>=6.2)
+        if #available(iOS 18.0, *) { ControlCenter.shared.reloadAllControls() }
+        #endif
     }
 
     /// A ~600 px thumbnail of the newest creation for the "My glow" widget.

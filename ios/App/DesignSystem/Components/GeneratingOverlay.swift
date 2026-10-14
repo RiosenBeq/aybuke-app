@@ -1,4 +1,5 @@
 import SwiftUI
+import AppCore
 
 /// Hearts and sparkles circling the progress glow.
 private struct OrbitingCharms: View {
@@ -118,7 +119,8 @@ struct GeneratingOverlay: View {
                     .accessibilityValue(Text(min(max(progress, 0), 1), format: .percent.precision(.fractionLength(0))))
                 }
 
-                if offersReadyPing {
+                // No pings at night or in school hours, so no promise of one then.
+                if offersReadyPing && NotificationPlanner.mayPostNow(Date()) {
                     readyPing
                 }
 

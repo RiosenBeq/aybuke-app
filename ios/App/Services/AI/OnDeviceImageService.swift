@@ -48,16 +48,6 @@ final class OnDeviceImageService: AIImageService {
         return output
     }
 
-    /// Auto-enhance plus a gentle warm grade — the onboarding "aha" moment.
-    static func quickGlow(_ image: UIImage) -> UIImage {
-        guard let input = ImageFilters.ciImage(image) else { return image }
-        let enhanced = ImageFilters.autoEnhance(input)
-        let graded = ImageFilters.adjust(enhanced, with: AdjustmentSettings(
-            brightness: 0.02, contrast: 1.06, saturation: 1.1, warmth: 0.18, sharpness: 0.25, vignette: 0.12
-        ))
-        return ImageFilters.render(graded, extent: input.extent) ?? image
-    }
-
     static func adjust(_ image: UIImage, with settings: AdjustmentSettings) -> UIImage {
         guard let input = ImageFilters.ciImage(image) else { return image }
         return ImageFilters.render(ImageFilters.adjust(input, with: settings), extent: input.extent) ?? image

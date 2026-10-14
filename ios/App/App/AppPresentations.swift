@@ -13,7 +13,7 @@ struct AppPresentations: ViewModifier {
             .sheet(isPresented: Binding(
                 get: { isActive && app.isPaywallPresented },
                 set: { app.isPaywallPresented = $0 }
-            )) {
+            ), onDismiss: { app.presentationEnded() }) {
                 PaywallView(source: app.paywallSource)
                     .environment(app)
                     .pageSheetSizing()
@@ -38,7 +38,7 @@ struct AppPresentations: ViewModifier {
             .sheet(isPresented: Binding(
                 get: { isActive && app.isAccountPromptPresented && !app.isPaywallPresented && app.outOfCredits == nil },
                 set: { app.isAccountPromptPresented = $0 }
-            )) {
+            ), onDismiss: { app.presentationEnded() }) {
                 AccountPromptSheet()
                     .environment(app)
             }
@@ -48,6 +48,7 @@ struct AppPresentations: ViewModifier {
             )) { request in
                 AIConsentView(
                     providerName: app.config.processorName,
+                    processors: app.config.consentProcessors,
                     retention: app.config.retentionPhrase,
                     asksGuardian: app.ageDefaults.requiresGuardianStep,
                     onAccept: { guardianConfirmed in
@@ -59,6 +60,7 @@ struct AppPresentations: ViewModifier {
                 )
                 .environment(app)
                 .presentationDetents([.large])
+                .presentationDragIndicator(.visible)
                 .presentationBackground(Palette.background)
             }
             .sheet(item: Binding(

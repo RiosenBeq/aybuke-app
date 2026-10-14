@@ -52,13 +52,20 @@ public enum GlowDeepLink: Equatable, Sendable {
 // MARK: - Trend of the day
 
 extension TemplateCatalog {
-    /// Free-to-try and trending looks first, one per calendar day, so the
-    /// widget and the app agree on "today's" trend without any network call.
-    public static func trendOfTheDay(on date: Date = Date(), calendar: Calendar = .current) -> PhotoTemplate {
-        // Never an out-of-season look (none is in these categories today; this keeps it so).
-        let pool = all.filter {
-            ($0.category == .trending || $0.category == .glowUp || $0.category == .aesthetic) && $0.season == nil
+    /// Looks the trend widget and the Friday push may feature: trending,
+    /// aesthetic and art looks, never makeup "glow-ups" or out-of-season
+    /// ones, and only free looks unless she's Pro (a push shouldn't lead to
+    /// the paywall).
+    public static func pushPool(isPro: Bool) -> [PhotoTemplate] {
+        all.filter {
+            [.trending, .aesthetic, .art].contains($0.category) && $0.season == nil && (isPro || !$0.isPro)
         }
+    }
+
+    /// One look per calendar day from `pushPool`, so the widget and the app
+    /// agree on "today's" trend without any network call.
+    public static func trendOfTheDay(on date: Date = Date(), isPro: Bool = false, calendar: Calendar = .current) -> PhotoTemplate {
+        let pool = pushPool(isPro: isPro)
         let day = calendar.ordinality(of: .day, in: .era, for: date) ?? 0
         return pool[day % pool.count]
     }
@@ -82,11 +89,18 @@ public struct GlowWidgetSnapshot: Codable, Equatable, Sendable {
     public var packs: Int?
     /// When Pro's monthly credits arrive next, when known.
     public var nextGrant: Date?
+    /// False under 13 (her age band): widgets and controls offer only the
+    /// free on-device tools. Nil in older snapshots, read as allowed.
+    public var cloudAIAllowed: Bool?
+
+    /// Widgets and controls show cloud AI entry points (and credits).
+    public var showsCloudAI: Bool { cloudAIAllowed ?? true }
 
     public init(
         credits: Int, isPro: Bool, nextRefill: Date?, latestTitle: String?,
         latestIsFavorite: Bool = false, creationsCount: Int, updatedAt: Date = Date(),
-        daily: Int? = nil, monthly: Int? = nil, packs: Int? = nil, nextGrant: Date? = nil
+        daily: Int? = nil, monthly: Int? = nil, packs: Int? = nil, nextGrant: Date? = nil,
+        cloudAIAllowed: Bool? = nil
     ) {
         self.credits = credits
         self.isPro = isPro
@@ -99,6 +113,7 @@ public struct GlowWidgetSnapshot: Codable, Equatable, Sendable {
         self.monthly = monthly
         self.packs = packs
         self.nextGrant = nextGrant
+        self.cloudAIAllowed = cloudAIAllowed
     }
 
     public enum BalanceKind: Sendable {

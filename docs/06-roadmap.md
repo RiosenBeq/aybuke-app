@@ -24,7 +24,7 @@ Legend: ✅ done in this repository · ⏳ next · 🔭 later
 
 ## Phase 2 — MVP features ✅
 
-- ✅ Onboarding: value pages, interests, **free on-device "try it on your photo"**, soft paywall
+- ✅ Onboarding: value pages, interests, **free on-device "try Digicam '04 on your photo"** that opens in the editor or saves to My Works, then the soft paywall (adults) and the tour
 - ✅ Explicit AI consent (5.1.2(i)), revocable
 - ✅ Explore: hero, quick tools, personalised template rows
 - ✅ Editor

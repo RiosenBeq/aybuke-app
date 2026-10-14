@@ -16,6 +16,9 @@ struct PaywallView: View {
     @State private var errorMessage: String?
     @State private var errorTitle = String(localized: "Purchase failed")
     @State private var showPacks = false
+    /// Large text starts the packs sheet full height, so no row hides below it.
+    @State private var packsDetent: PresentationDetent = .medium
+    @Environment(\.dynamicTypeSize) private var typeSize
     @State private var legalDocument: LegalDocument?
     @State private var showSignIn = false
     @State private var isRestoring = false
@@ -104,8 +107,11 @@ struct PaywallView: View {
         .sheet(isPresented: $showPacks) {
             CreditPacksView()
                 .environment(app)
-                .presentationDetents([.medium, .large])
+                .presentationDetents([.medium, .large], selection: $packsDetent)
                 .presentationBackground(Palette.background)
+        }
+        .onChange(of: showPacks) { _, isShown in
+            if isShown { packsDetent = typeSize.isAccessibilitySize ? .large : .medium }
         }
         .legalSheet($legalDocument)
         .alert(errorTitle, isPresented: Binding(get: { errorMessage != nil }, set: { if !$0 { errorMessage = nil } })) {
@@ -349,12 +355,20 @@ struct PaywallView: View {
             let token = await app.appAccountToken()
             guard try await purchases.purchase(product, appAccountToken: token) == .purchased else { return }
             app.credits.refresh(isPro: purchases.isPro)
-            if startsTrial, let days = product.freeTrialDays,
-               let billingDate = Calendar.current.date(byAdding: .day, value: days, to: Date()) {
-                await TrialReminder.schedule(billingDate: billingDate, price: product.displayPrice, mayAsk: true)
+            // Without a reminder (notifications off), the toast names the end date.
+            var unremindedTrialEnd: Date?
+            if startsTrial, let trialEnd = purchases.trial?.endsAt
+                ?? product.freeTrialDays.flatMap({ Calendar.current.date(byAdding: .day, value: $0, to: Date()) }) {
+                let reminded = await TrialReminder.schedule(trialEnd: trialEnd, price: product.displayPrice, mayAsk: true)
+                if !reminded { unremindedTrialEnd = trialEnd }
             }
             Haptics.success()
-            app.showToast("Welcome to \(Brand.name) Pro ✦", style: .success)
+            if let unremindedTrialEnd {
+                let date = unremindedTrialEnd.formatted(date: .abbreviated, time: .shortened)
+                app.showToast("Welcome to \(Brand.name) Pro ✦ Your free trial ends \(date).", style: .success)
+            } else {
+                app.showToast("Welcome to \(Brand.name) Pro ✦", style: .success)
+            }
             dismiss()
             app.offerAccountAfterPurchase()
         } catch {
@@ -543,9 +557,21 @@ private struct TrialTimeline: View {
     let days: Int
     let price: String
 
+    private var trialEnd: Date {
+        Calendar.current.date(byAdding: .day, value: days, to: Date()) ?? Date()
+    }
+
     private var chargeDate: String {
-        let date = Calendar.current.date(byAdding: .day, value: days, to: Date()) ?? Date()
-        return date.formatted(date: .abbreviated, time: .omitted)
+        trialEnd.formatted(date: .abbreviated, time: .omitted)
+    }
+
+    /// The day the reminder really comes: before the cancel-by time and
+    /// never at night, so sometimes two days before the end.
+    private var reminderDay: Int? {
+        let now = Date()
+        guard let reminder = TrialReminder.fireDate(trialEnd: trialEnd, now: now) else { return nil }
+        let calendar = Calendar.current
+        return calendar.dateComponents([.day], from: calendar.startOfDay(for: now), to: calendar.startOfDay(for: reminder)).day
     }
 
     var body: some View {
@@ -555,7 +581,9 @@ private struct TrialTimeline: View {
                 .foregroundStyle(Palette.textPrimary)
                 .padding(.bottom, 14)
             Step(symbol: "lock.open.fill", title: "Today", detail: "Unlock everything. No charge today.", isLast: false)
-            Step(symbol: "bell.fill", title: "Day \(max(1, days - 1))", detail: "We'll remind you before your trial ends.", isLast: false)
+            if let reminderDay {
+                Step(symbol: "bell.fill", title: "Day \(max(1, reminderDay))", detail: "We'll remind you before your trial ends.", isLast: false)
+            }
             Step(symbol: "creditcard.fill", title: "Day \(days)", detail: "You'll be charged \(price) on \(chargeDate) unless you cancel before.", isLast: true)
         }
         .padding(18)
@@ -629,9 +657,17 @@ struct CreditPackList: View {
     var onPurchased: () -> Void = {}
 
     @Environment(AppModel.self) private var app
+    @Environment(\.dynamicTypeSize) private var typeSize
     @State private var errorMessage: String?
 
     private var purchases: PurchaseManager { app.purchases }
+
+    /// Name and price side by side; stacked at accessibility sizes.
+    private var rowLayout: AnyLayout {
+        typeSize.isAccessibilitySize
+            ? AnyLayout(VStackLayout(alignment: .leading, spacing: 10))
+            : AnyLayout(HStackLayout())
+    }
 
     private var hasPendingPack: Bool {
         purchases.pendingProductIDs.contains { StoreProducts.creditPacks[$0] != nil }
@@ -661,7 +697,7 @@ struct CreditPackList: View {
         return Button {
             Task { await buy(product) }
         } label: {
-            HStack {
+            rowLayout {
                 VStack(alignment: .leading, spacing: 2) {
                     Text(product.displayName)
                         .font(.subheadline.weight(.semibold))
@@ -675,7 +711,7 @@ struct CreditPackList: View {
                             .foregroundStyle(Palette.textTertiary)
                     }
                 }
-                Spacer()
+                if !typeSize.isAccessibilitySize { Spacer() }
                 Group {
                     if isPending {
                         Text("Waiting for approval")

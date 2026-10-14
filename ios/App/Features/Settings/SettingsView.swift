@@ -58,6 +58,7 @@ struct SettingsView: View {
             .sheet(isPresented: $showConsent) {
                 AIConsentView(
                     providerName: app.config.processorName,
+                    processors: app.config.consentProcessors,
                     retention: app.config.retentionPhrase,
                     asksGuardian: app.ageDefaults.requiresGuardianStep,
                     onAccept: { guardianConfirmed in
@@ -67,6 +68,7 @@ struct SettingsView: View {
                     onDecline: { showConsent = false }
                 )
                 .presentationDetents([.large])
+                .presentationDragIndicator(.visible)
                 .presentationBackground(Palette.background)
             }
             .sheet(isPresented: $showAgeUpdate) {
@@ -102,7 +104,10 @@ struct SettingsView: View {
                 }
                 Button("Cancel", role: .cancel) {}
             } message: {
-                if app.canUseAccounts {
+                if !app.allowsCloudAI {
+                    // Under 13 nothing was sent, and there are no credits or subscriptions.
+                    Text("Deletes your creations and resets every setting on this device.")
+                } else if app.canUseAccounts {
                     Text("Deletes your creations and your account with its credits from our servers, and resets every setting on this device. Subscriptions are managed by Apple and must be cancelled separately.")
                 } else {
                     // Preview builds have no server account to delete.
@@ -121,7 +126,12 @@ struct SettingsView: View {
                 Label {
                     VStack(alignment: .leading, spacing: 2) {
                         Text("\(Brand.name) Pro").font(.headline)
-                        Text("Thank you for supporting us ✦").font(.caption).foregroundStyle(Palette.textSecondary)
+                        if let trial = app.purchases.trial {
+                            Text("Free trial until \(trial.endsAt.formatted(date: .abbreviated, time: .shortened))")
+                                .font(.caption).foregroundStyle(Palette.textSecondary)
+                        } else {
+                            Text("Thank you for supporting us ✦").font(.caption).foregroundStyle(Palette.textSecondary)
+                        }
                     }
                 } icon: {
                     Image(systemName: "crown.fill").foregroundStyle(Palette.accent)
@@ -328,13 +338,16 @@ struct SettingsView: View {
             if app.allowsCloudAI {
                 // On goes through the consent sheet (and its guardian step); off withdraws.
                 Toggle(isOn: Binding(get: { app.hasAIConsent }, set: { on in
-                    if on { showConsent = true } else { app.setAIConsent(false) }
+                    if on { showConsent = true } else { app.withdrawAIConsent() }
                 })) {
                     VStack(alignment: .leading, spacing: 2) {
                         Text("Cloud AI processing")
-                        Text("Selected photos are processed by \(app.config.processorName).")
-                            .font(.caption)
-                            .foregroundStyle(Palette.textSecondary)
+                        // The same list the consent sheet shows.
+                        ForEach(app.config.consentProcessors, id: \.self) { processor in
+                            Text("\(processor.name): \(processor.roleText)")
+                                .font(.caption)
+                                .foregroundStyle(Palette.textSecondary)
+                        }
                     }
                 }
                 .tint(Palette.accent)
@@ -355,7 +368,11 @@ struct SettingsView: View {
         } header: {
             Text("Privacy")
         } footer: {
-            Text("Uploaded photos are deleted from our servers within \(app.config.retentionPhrase) and are never used to train AI models. Exports include an invisible “made with AI” label (IPTC metadata) as required by the EU AI Act.")
+            if app.allowsCloudAI {
+                Text("Uploaded photos are deleted from our servers within \(app.config.retentionPhrase) and are never used to train AI models. Exports include an invisible “made with AI” label (IPTC metadata) as required by the EU AI Act.")
+            } else {
+                Text("Every tool runs on your device. Your photos are never uploaded.")
+            }
         }
         .listRowBackground(Palette.surface)
     }

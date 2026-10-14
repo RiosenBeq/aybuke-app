@@ -2,8 +2,11 @@ import SwiftUI
 
 /// Explicit permission before any photo or prompt leaves the device for
 /// third-party AI processing (App Store Review Guideline 5.1.2(i), GDPR).
+/// "Allow" and "Not now" carry the same weight: no nudge either way.
 struct AIConsentView: View {
     let providerName: String
+    /// Everyone who processes what she sends, named on the sheet.
+    let processors: [AIProcessor]
     /// "an hour", "24 hours"…
     let retention: String
     /// Her age range asks for a parent or guardian to read this with her.
@@ -12,67 +15,112 @@ struct AIConsentView: View {
     let onAccept: (_ guardianConfirmed: Bool) -> Void
     let onDecline: () -> Void
 
+    @Environment(\.dynamicTypeSize) private var typeSize
     @State private var legalDocument: LegalDocument?
     @State private var guardianSaidYes = false
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 22) {
-            Capsule()
-                .fill(Palette.strokeStrong)
-                .frame(width: 40, height: 5)
-                .frame(maxWidth: .infinity)
-                .padding(.top, 8)
+        ScrollView {
+            VStack(alignment: .leading, spacing: 22) {
+                if !typeSize.isAccessibilitySize {
+                    Image(systemName: "lock.shield.fill")
+                        .font(.system(size: 32, weight: .semibold))
+                        .foregroundStyle(Palette.ink)
+                        .frame(width: 68, height: 68)
+                        .background(Palette.blush, in: Circle())
+                        .floating(distance: 3)
+                        .accessibilityHidden(true)
+                }
 
-            Image(systemName: "lock.shield.fill")
-                .font(.system(size: 32, weight: .semibold))
-                .foregroundStyle(Palette.ink)
-                .frame(width: 68, height: 68)
-                .background(Palette.blush, in: Circle())
-                .floating(distance: 3)
+                Text(styled: "Your photos, *your call*", size: 28)
+                    .foregroundStyle(Palette.textPrimary)
 
-            Text(styled: "Your photos, *your call*", size: 28)
-                .foregroundStyle(Palette.textPrimary)
+                Text("To create and edit images with AI, we send the photo and text you choose to our servers and to \(providerName), who process them on our behalf.")
+                    .font(.body)
+                    .foregroundStyle(Palette.textSecondary)
+                    .fixedSize(horizontal: false, vertical: true)
 
-            Text("To create and edit images with AI, we send the photo and text you choose to our servers and to \(providerName), who process them on our behalf.")
-                .font(.body)
-                .foregroundStyle(Palette.textSecondary)
-                .fixedSize(horizontal: false, vertical: true)
+                VStack(alignment: .leading, spacing: 14) {
+                    ConsentPoint(symbol: "trash", text: "Deleted from our servers within \(retention)")
+                    ConsentPoint(symbol: "brain", text: "Never used to train AI models")
+                    ConsentPoint(symbol: "eye.slash", text: "Never sold or shared for advertising")
+                    ConsentPoint(symbol: Platform.isMac ? "laptopcomputer" : "lock.shield",
+                                 text: "Effects, Adjust, Cut out and video editing always stay on this device")
+                }
 
-            VStack(alignment: .leading, spacing: 14) {
-                ConsentPoint(symbol: "trash", text: "Deleted from our servers within \(retention)")
-                ConsentPoint(symbol: "brain", text: "Never used to train AI models")
-                ConsentPoint(symbol: "eye.slash", text: "Never sold or shared for advertising")
-                ConsentPoint(symbol: Platform.isMac ? "laptopcomputer" : "lock.shield", text: "Background removal always stays on your device")
+                processorList
+
+                Button("Read our Privacy Policy") {
+                    legalDocument = .privacy
+                }
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(Palette.accent)
+                .underline()
+
+                if asksGuardian {
+                    guardianStep
+                }
+
+                // At accessibility sizes nothing is pinned: two wrapped
+                // buttons and the caption would cover the sheet.
+                if typeSize.isAccessibilitySize {
+                    choices
+                }
             }
-
-            Button("Read our Privacy Policy") {
-                legalDocument = .privacy
+            .padding(.horizontal, 24)
+            .padding(.top, 24)
+            .padding(.bottom, 12)
+        }
+        .scrollBounceBehavior(.basedOnSize)
+        .safeAreaInset(edge: .bottom) {
+            if !typeSize.isAccessibilitySize {
+                choices
+                    .padding(.horizontal, 24)
+                    .padding(.top, 12)
+                    .padding(.bottom, 8)
+                    .background(Palette.background)
             }
-            .font(.subheadline.weight(.semibold))
-            .foregroundStyle(Palette.accent)
-            .underline()
+        }
+        .legalSheet($legalDocument)
+    }
 
-            if asksGuardian {
-                guardianStep
-            }
-
-            Spacer(minLength: 0)
-
+    private var choices: some View {
+        VStack(spacing: 10) {
             Button("Allow AI processing") { onAccept(asksGuardian && guardianSaidYes) }
                 .buttonStyle(.primary)
                 .disabled(asksGuardian && !guardianSaidYes)
             Button("Not now", action: onDecline)
-                .font(.subheadline.weight(.semibold))
-                .foregroundStyle(Palette.textSecondary)
-                .frame(maxWidth: .infinity)
+                .buttonStyle(.secondaryFull)
             Text("You can change this anytime in Settings.")
                 .font(.caption)
                 .foregroundStyle(Palette.textTertiary)
+                .multilineTextAlignment(.center)
                 .frame(maxWidth: .infinity)
         }
-        .padding(.horizontal, 24)
-        .padding(.bottom, 12)
-        .legalSheet($legalDocument)
+    }
+
+    /// Names and roles; Create sends text only, so not "your photo".
+    private var processorList: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Text("Who processes what you send")
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(Palette.textPrimary)
+            ForEach(processors, id: \.self) { processor in
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(verbatim: processor.name)
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(Palette.textPrimary)
+                    Text(processor.roleText)
+                        .font(.caption)
+                        .foregroundStyle(Palette.textSecondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                .accessibilityElement(children: .combine)
+            }
+        }
+        .padding(14)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Palette.surface, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
     }
 }
 
@@ -99,14 +147,19 @@ extension AIConsentView {
 private struct ConsentPoint: View {
     let symbol: String
     let text: LocalizedStringKey
+    @Environment(\.dynamicTypeSize) private var typeSize
 
     var body: some View {
         HStack(spacing: 12) {
-            Image(systemName: symbol)
-                .font(.subheadline.weight(.semibold))
-                .foregroundStyle(Palette.ink)
-                .frame(width: 32, height: 32)
-                .background(Palette.blush, in: Circle())
+            // A fixed circle can't hold an accessibility-size symbol.
+            if !typeSize.isAccessibilitySize {
+                Image(systemName: symbol)
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(Palette.ink)
+                    .frame(width: 32, height: 32)
+                    .background(Palette.blush, in: Circle())
+                    .accessibilityHidden(true)
+            }
             Text(text)
                 .font(.subheadline)
                 .foregroundStyle(Palette.textPrimary)

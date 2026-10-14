@@ -59,6 +59,8 @@ Bu değerleri hesap sahibi yapıştırmalı (anahtarları ben giremem). Şablon:
 - [ ] `REVENUECAT_SECRET_KEY` ve `REVENUECAT_PROJECT_ID` — hesap silinince RevenueCat müşterisini de silmek için. RevenueCat → Project settings → API keys'te yalnızca `customer_information:customers:read_write` izinli bir **v2** gizli anahtar oluştur; proje kimliği aynı sayfada. Boş kalırsa silme yine çalışır ama RevenueCat kaydı kalır (günlüğe uyarı düşer).
 - [ ] (İsteğe bağlı) `FAL_KEY` — ek çıktı güvenlik kontrolü ve yedek sağlayıcı
 
+> **Onay ekranı:** Uygulamanın yapay zekâ onay ekranı, işleyicileri `ios/App/Resources/AppConfig.json` içindeki `aiProcessors` listesinden gösterir (şu an Supabase, xAI ve fal.ai). `AI_PROVIDER`'ı değiştirmek veya listede olmayan bir işleyici eklemek, önce o işleyiciyi listeleyen bir uygulama güncellemesi gerektirir; liste değişince uygulama onayı yeniden ister. Backend sağlayıcıyı uygulama sürümü olmadan değiştirebilir, bu yüzden sırayı koru.
+
 ## 7. xAI konsolu
 
 - [ ] [console.x.ai](https://console.x.ai) → ekip ayarlarında **Zero Data Retention**'ı aç. Selfie'ler kişisel veri; gizlilik politikamız ve xAI şartları bunu bekliyor.

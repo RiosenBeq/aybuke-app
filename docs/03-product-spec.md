@@ -45,7 +45,7 @@ This document turns that brief into a product definition grounded in the researc
 
 | Area | Feature | Where |
 |---|---|---|
-| Onboarding | 3 value pages → interests ("What will you create first?") → **free on-device "try it on your photo"** before/after → soft paywall | `Features/Onboarding` |
+| Onboarding | 2 value pages → age step → interests ("What are you here for?") → **free on-device "Try Digicam '04 on your photo"** before/after → Keep editing (editor on Effects) or Save to My Works → soft paywall (adults only, after the editor closes) → tour | `Features/Onboarding` |
 | Guided tour | 7 spotlight steps with Next/Skip across the tabs (Magic Edit, daily credits, free tools, Create, photos & videos, private gallery, Settings); shown once after onboarding, replayable from Settings → "Show me around" | `Features/Tour` |
 | Consent | Explicit **AI data-sharing consent**, asked in context before the first cloud job (App Review 5.1.2(i)); revocable in Settings | `AIConsentView` |
 | Explore (home) | Magic Edit hero, daily credits, quick tools (Effects first), template rows personalised by onboarding interests, "Create from text", "Glow together" invite | `Features/Home` |
@@ -93,7 +93,7 @@ This document turns that brief into a product definition grounded in the researc
 
 ## 4. Key flows
 
-1. **First launch.** Onboarding (about 30 s). The user picks interests, optionally tries the free on-device glow on their own photo, sees the soft paywall, and either closes it or starts a trial. They land on Explore with categories ordered by their interests, and a 7-step guided tour points out the essentials (Skip ends it at any step).
+1. **First launch.** Onboarding (about 30 s). The user picks interests, tries the free on-device Digicam '04 effect on their own photo (keeps editing it or saves it to My Works), sees the soft paywall (adults only), and either closes it or starts a trial. They land on Explore with categories ordered by their interests, and a 7-step guided tour points out the essentials (Skip ends it at any step).
 2. **One-tap template.** Tap a card → photo picker → editor opens and the template starts immediately (consent sheet first time) → result with before/after → Save / Share / "Retry free".
 3. **Magic Edit.** Pick a photo → type or choose a suggestion → result → keep editing (undo/redo) → Save.
 4. **Create.** Type an idea → pick a style and size → Generate → results (paged) → Save / Share / Edit.
@@ -150,7 +150,7 @@ Cloud jobs run on **xAI Grok Imagine**, chosen as the best quality for the price
 | Stage | Metric | Target (first 90 days) |
 |---|---|---|
 | Activation | % of new users completing a first AI result on Day 0 | ≥ 60% |
-| Aha | % of onboarding users who try the free glow | ≥ 35% |
+| Aha | % of onboarding users who try the free Digicam '04 look | ≥ 35% |
 | Conversion | Install → trial start (Day 0) | ≥ 6% (annual-default paywall) |
 | Conversion | Trial → paid | ≥ 30% (category median 22.2%) |
 | Trust | Refund rate | ≤ 4% (AI-app median 4.2%) |
