@@ -132,6 +132,10 @@ struct TemplateArt: View {
                     .position(x: size.width / 2, y: size.height * 0.4)
             }
         }
+        // Static art: drawn once into one layer, instead of some twenty
+        // layers (a blur, a shadow and fourteen symbols) composited on every
+        // frame while the rows scroll.
+        .drawingGroup()
         .accessibilityHidden(true)
     }
 

@@ -101,15 +101,8 @@ struct HomeView: View {
             }
             Spacer()
             if app.allowsCloudAI {
-                CreditPill(balance: app.credits.balance, isPro: app.purchases.isPro) {
-                    // Pro: Settings has the Membership and Credits sections.
-                    if app.purchases.isPro {
-                        app.isSettingsPresented = true
-                    } else {
-                        app.presentPaywall(source: "home_credits")
-                    }
-                }
-                .tourAnchor(.credits)
+                HomeCreditPill()
+                    .tourAnchor(.credits)
             }
             Button {
                 app.isSettingsPresented = true
@@ -219,13 +212,15 @@ struct HomeView: View {
             }
             .padding(.horizontal, Metrics.gutter)
             ScrollView(.horizontal) {
-                HStack(spacing: 12) {
+                // Lazy: Explore has some forty cards, most of them off screen.
+                LazyHStack(spacing: 12) {
                     ForEach(TemplateCatalog.templates(in: category, on: AppClock.now)) { template in
                         Button {
                             Haptics.tap()
                             app.startEditing(tool: .styles, template: template)
                         } label: {
                             TemplateCard(template: template)
+                                .equatable()
                         }
                         .buttonStyle(.pressable)
                     }
@@ -312,6 +307,22 @@ struct HomeView: View {
             let rhsScore = (rhs == .trending ? 2 : 0) + (boosted.contains(rhs) ? 1 : 0)
             if lhsScore != rhsScore { return lhsScore > rhsScore }
             return (order.firstIndex(of: lhs) ?? 0) < (order.firstIndex(of: rhs) ?? 0)
+        }
+    }
+}
+
+/// Its own view, so a credit or Pro change redraws the pill, not Explore.
+private struct HomeCreditPill: View {
+    @Environment(AppModel.self) private var app
+
+    var body: some View {
+        CreditPill(balance: app.credits.balance, isPro: app.purchases.isPro) {
+            // Pro: Settings has the Membership and Credits sections.
+            if app.purchases.isPro {
+                app.isSettingsPresented = true
+            } else {
+                app.presentPaywall(source: "home_credits")
+            }
         }
     }
 }

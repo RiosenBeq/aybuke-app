@@ -3,8 +3,9 @@ import AppCore
 
 /// Card for a one-tap template. Uses the remote thumbnail when available and
 /// illustrated aura art (the template's symbol as a sticker) otherwise.
-/// Sharp-edged, like a print.
-struct TemplateCard: View {
+/// Sharp-edged, like a print. Equatable, so the forty cards on Explore aren't
+/// redrawn each time something else there changes.
+struct TemplateCard: View, Equatable {
     let template: PhotoTemplate
     var width: CGFloat = 148
     var height: CGFloat = 196
