@@ -95070,25 +95070,113 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dafür brauchst du %1$lld Credits. Du hast %2$lld. Wähl weniger Bilder oder hol dir ein Credit-Paket."
+            "value" : "Dafür brauchst du %#@credits@. Du hast %2$lld. Wähl weniger Bilder oder hol dir ein Credit-Paket."
+          },
+          "substitutions" : {
+            "credits" : {
+              "argNum" : 1,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg Credit"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg Credits"
+                    }
+                  }
+                }
+              }
+            }
           }
         },
         "en" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "This needs %1$lld credits. You have %2$lld. Choose fewer images, or add a credit pack."
+            "state" : "translated",
+            "value" : "This needs %#@credits@. You have %2$lld. Choose fewer images, or add a credit pack."
+          },
+          "substitutions" : {
+            "credits" : {
+              "argNum" : 1,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg credit"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg credits"
+                    }
+                  }
+                }
+              }
+            }
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Créditos necesarios: %1$lld. Tienes: %2$lld. Elige menos imágenes o añade un paquete de créditos."
+            "value" : "Necesitas %#@credits@. Tienes: %2$lld. Elige menos imágenes o añade un paquete de créditos."
+          },
+          "substitutions" : {
+            "credits" : {
+              "argNum" : 1,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg crédito"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg créditos"
+                    }
+                  }
+                }
+              }
+            }
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Il faut %1$lld crédits. Tu en as %2$lld. Choisis moins d’images ou ajoute un pack de crédits."
+            "value" : "Il faut %#@credits@. Tu en as %2$lld. Choisis moins d’images ou ajoute un pack de crédits."
+          },
+          "substitutions" : {
+            "credits" : {
+              "argNum" : 1,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg crédit"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg crédits"
+                    }
+                  }
+                }
+              }
+            }
           }
         },
         "id" : {
@@ -95100,7 +95188,29 @@
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Crediti necessari: %1$lld. Ne hai: %2$lld. Scegli meno immagini o aggiungi un pacchetto di crediti."
+            "value" : "Crediti necessari: %#@credits@. Ne hai: %2$lld. Scegli meno immagini o aggiungi un pacchetto di crediti."
+          },
+          "substitutions" : {
+            "credits" : {
+              "argNum" : 1,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg credito"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg crediti"
+                    }
+                  }
+                }
+              }
+            }
           }
         },
         "ja" : {
@@ -95118,19 +95228,97 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Créditos necessários: %1$lld. Você tem: %2$lld. Escolha menos imagens ou adicione um pacote de créditos."
+            "value" : "Créditos necessários: %#@credits@. Você tem: %2$lld. Escolha menos imagens ou adicione um pacote de créditos."
+          },
+          "substitutions" : {
+            "credits" : {
+              "argNum" : 1,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg crédito"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg créditos"
+                    }
+                  }
+                }
+              }
+            }
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Нужно кредитов: %1$lld. У тебя: %2$lld. Выбери меньше изображений или добавь пакет кредитов."
+            "value" : "Нужно %#@credits@. У тебя: %2$lld. Выбери меньше изображений или добавь пакет кредитов."
+          },
+          "substitutions" : {
+            "credits" : {
+              "argNum" : 1,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "few" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg кредита"
+                    }
+                  },
+                  "many" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg кредитов"
+                    }
+                  },
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg кредит"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg кредита"
+                    }
+                  }
+                }
+              }
+            }
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bunun için %1$lld kredi gerekiyor. Sende %2$lld var. Daha az görsel seç ya da bir kredi paketi ekle."
+            "value" : "Bunun için %#@credits@ gerekiyor. Sende %2$lld var. Daha az görsel seç ya da bir kredi paketi ekle."
+          },
+          "substitutions" : {
+            "credits" : {
+              "argNum" : 1,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg kredi"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg kredi"
+                    }
+                  }
+                }
+              }
+            }
           }
         },
         "zh-Hans" : {
@@ -105609,77 +105797,6 @@
                 }
               }
             }
-          }
-        }
-      }
-    },
-    "You get 3 free credits every day. Free tools never use credits, and failed edits are always refunded." : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Du bekommst jeden Tag 3 Gratis-Credits. Gratis-Tools verbrauchen nie Credits, und fehlgeschlagene Bearbeitungen werden immer erstattet."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tienes 3 créditos gratis cada día. Las herramientas gratis nunca gastan créditos y, si una edición falla, siempre recuperas el crédito."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tu reçois 3 crédits gratuits par jour. Les outils gratuits n’utilisent jamais de crédits, et les retouches échouées sont toujours remboursées."
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kamu dapat 3 kredit gratis setiap hari. Alat gratis tidak pernah memakai kredit, dan kredit edit yang gagal selalu dikembalikan."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ricevi 3 crediti gratis ogni giorno. Gli strumenti gratuiti non usano mai crediti e le modifiche non riuscite vengono sempre rimborsate."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "毎日3クレジットが無料でもらえます。無料ツールではクレジットを使わず、失敗した編集のクレジットは必ず返却されます。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "매일 3크레딧을 무료로 드려요. 무료 도구는 크레딧을 쓰지 않고, 실패한 편집은 언제나 환불돼요."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Você ganha 3 créditos grátis todo dia. As ferramentas grátis nunca gastam créditos, e edições com falha sempre têm o crédito devolvido."
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Каждый день у тебя 3 бесплатных кредита. Бесплатные инструменты не тратят кредиты, а за неудачные правки они всегда возвращаются."
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Her gün 3 ücretsiz kredi alırsın. Ücretsiz araçlar asla kredi harcamaz, başarısız düzenlemelerin kredisi de her zaman iade edilir."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "你每天可获得 3 个免费点数。免费工具不消耗点数，编辑失败也一律退还点数。"
           }
         }
       }
