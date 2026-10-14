@@ -483,8 +483,11 @@ final class AppModel {
     }
 
     private func perform(_ job: AIJob, saveToLibrary: Bool) async throws -> AIJobResult {
-        let verdict = ContentPolicy.evaluate([job.prompt, job.template?.prompt].compactMap { $0 }.joined(separator: " "))
-        if case .blocked(let reason) = verdict {
+        let verdict = ContentPolicy.evaluate(
+            [job.prompt, job.template?.prompt].compactMap { $0 }.joined(separator: " "),
+            operation: job.operation
+        )
+        if case .blocked(let reason, _) = verdict {
             throw AIServiceError.contentBlocked(reason)
         }
 

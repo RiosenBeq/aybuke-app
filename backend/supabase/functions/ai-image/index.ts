@@ -17,7 +17,7 @@ import { resolveEntitlement } from "../_shared/apple.ts";
 import { requireUser, serviceClient } from "../_shared/auth.ts";
 import * as fal from "../_shared/fal.ts";
 import { corsHeaders, errorResponse, HttpError, json } from "../_shared/http.ts";
-import { evaluatePrompt } from "../_shared/policy.ts";
+import { EDIT_GUARD, evaluatePrompt } from "../_shared/policy.ts";
 import { PRO_STYLES, templateRecipe } from "../_shared/templates.ts";
 import * as xai from "../_shared/xai.ts";
 
@@ -133,8 +133,11 @@ async function createJob(db: SupabaseClient, userId: string, isPro: boolean, req
   if ((op === "text_to_image" || op === "magic_edit") && !prompt) {
     throw new HttpError(400, "bad_request", "Describe what you want to see.");
   }
-  const verdict = evaluatePrompt(prompt);
+  const verdict = evaluatePrompt(prompt, op);
   if (!verdict.allowed) throw new HttpError(422, "content_blocked", verdict.reason);
+  // The app already appends the guard; this holds even for a modified client.
+  // Restyle recipes carry their own identity clause, and enhance ignores the prompt.
+  if (op === "magic_edit" && !prompt.endsWith(EDIT_GUARD)) prompt += EDIT_GUARD;
 
   await enforceRateLimit(db, userId, isPro);
 

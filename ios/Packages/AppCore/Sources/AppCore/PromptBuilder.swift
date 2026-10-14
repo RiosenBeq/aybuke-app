@@ -27,16 +27,20 @@ public enum PromptBuilder {
         return base + separator + style.promptSuffix
     }
 
+    /// Appended to every Magic Edit, whatever the instruction says (the server
+    /// appends it too). Scoped to faces, bodies and skin so makeup, outfit and
+    /// art-style edits still work. 800 + 1 + its length must stay within the
+    /// server's 1,000-character limit.
+    public static let editGuard = " Keep everything else the same. Don't change anyone's face or body shape, facial features, skin tone, skin texture or age, and keep clothing at least as modest as in the photo."
+
     /// Instruction for prompt-based editing. Short commands like "sunset sky"
     /// are turned into an explicit instruction that also protects identity.
     public static func editInstruction(_ userInstruction: String) -> String {
         let text = sanitize(userInstruction)
         guard !text.isEmpty else { return text }
-        let protectsIdentity = text.localizedCaseInsensitiveContains("face")
-            || text.localizedCaseInsensitiveContains("identity")
-        let suffix = protectsIdentity ? "" : " Keep everything else, including people's faces and identity, unchanged."
+        if text.hasSuffix(editGuard.trimmingCharacters(in: .whitespaces)) { return text }
         let sentence = text.hasSuffix(".") ? text : text + "."
-        return sentence + suffix
+        return sentence + editGuard
     }
 
     /// Offline "magic prompt": enriches very short prompts with composition and

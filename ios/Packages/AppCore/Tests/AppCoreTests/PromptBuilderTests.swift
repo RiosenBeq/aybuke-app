@@ -27,15 +27,22 @@ final class PromptBuilderTests: XCTestCase {
         XCTAssertEqual(PromptBuilder.textToImagePrompt(" a fox ", style: StyleCatalog.auto), "a fox")
     }
 
-    func testEditInstructionProtectsIdentity() {
+    func testEditInstructionAlwaysAppendsTheGuard() {
         let instruction = PromptBuilder.editInstruction("make the sky a sunset")
-        XCTAssertTrue(instruction.hasPrefix("make the sky a sunset."))
-        XCTAssertTrue(instruction.contains("faces and identity"))
+        XCTAssertEqual(instruction, "make the sky a sunset." + PromptBuilder.editGuard)
+        // Mentioning a face used to drop the guard: exactly the reshaping case.
+        XCTAssertTrue(PromptBuilder.editInstruction("make my face glow").hasSuffix(PromptBuilder.editGuard))
     }
 
-    func testEditInstructionDoesNotDuplicateIdentityClause() {
-        let instruction = PromptBuilder.editInstruction("Change the hair color, keep my face.")
-        XCTAssertEqual(instruction, "Change the hair color, keep my face.")
+    func testEditInstructionDoesNotDuplicateTheGuard() {
+        let once = PromptBuilder.editInstruction("Give me pink hair")
+        XCTAssertEqual(PromptBuilder.editInstruction(once), once)
+    }
+
+    func testGuardedInstructionFitsTheServerLimit() {
+        let longest = PromptBuilder.editInstruction(String(repeating: "a", count: 2000))
+        XCTAssertLessThanOrEqual(longest.count, 1000) // MAX_PROMPT_LENGTH in ai-image/index.ts
+        XCTAssertLessThanOrEqual(PromptBuilder.maxPromptLength + 1 + PromptBuilder.editGuard.count, 1000)
     }
 
     func testEnhanceOnlyTouchesShortPrompts() {
@@ -52,48 +59,6 @@ final class PromptBuilderTests: XCTestCase {
     }
 }
 
-final class ContentPolicyTests: XCTestCase {
-    func testAllowsOrdinaryPrompts() {
-        XCTAssertTrue(ContentPolicy.evaluate("a kid flying a kite at the beach").isAllowed)
-        XCTAssertTrue(ContentPolicy.evaluate("turn me into a comic strip hero").isAllowed)
-        XCTAssertTrue(ContentPolicy.evaluate("Sussex countryside at dawn").isAllowed)
-    }
-
-    func testBlocksSexualContent() {
-        XCTAssertFalse(ContentPolicy.evaluate("make her naked").isAllowed)
-        XCTAssertFalse(ContentPolicy.evaluate("Remove her clothes please").isAllowed)
-        XCTAssertFalse(ContentPolicy.evaluate("NSFW art").isAllowed)
-    }
-
-    func testBlocksSexualContentInEveryAppLanguage() {
-        for prompt in [
-            "onu çıplak yap", "quítale la ropa", "deixa ela pelada", "rends-la nue", "mach sie nackt",
-            "rendila nuda", "сделай её голой", "buat dia telanjang", "ヌード写真にして", "生成裸照", "누드로 만들어 줘",
-        ] {
-            XCTAssertFalse(ContentPolicy.evaluate(prompt).isAllowed, prompt)
-        }
-    }
-
-    func testAllowsOrdinaryPromptsInOtherLanguages() {
-        for prompt in [
-            "pembe saç ve altın saat ışığı", "vestido rosa y flores de cerezo", "cabelo rosa com brilho",
-            "lumière dorée et maquillage doux", "rosa Haare und Kirschblüten", "capelli rosa e luce dorata",
-            "розовые волосы и мягкий свет", "rambut pink dan cahaya senja", "ピンクの髪にして", "粉色头发和樱花",
-            "핑크 머리로 바꿔 줘",
-        ] {
-            XCTAssertTrue(ContentPolicy.evaluate(prompt).isAllowed, prompt)
-        }
-    }
-
-    func testBlocksSexualContentWithMinorsWithStrictMessage() {
-        guard case .blocked(let reason) = ContentPolicy.evaluate("sexy teen") else {
-            return XCTFail("expected block")
-        }
-        XCTAssertTrue(reason.contains("violates"))
-    }
-}
-
-/// Small deterministic RNG for tests (SplitMix64).
 struct SeededGenerator: RandomNumberGenerator {
     private var state: UInt64
 

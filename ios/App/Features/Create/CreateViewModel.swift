@@ -33,8 +33,8 @@ final class CreateViewModel {
     }
 
     func generate(app: AppModel) {
-        let verdict = ContentPolicy.evaluate(prompt)
-        if case .blocked(let reason) = verdict {
+        let verdict = ContentPolicy.evaluate(prompt, operation: .textToImage)
+        if case .blocked(let reason, _) = verdict {
             app.showToast(verbatim: L10n.core(reason), style: .error)
             Haptics.error()
             return
