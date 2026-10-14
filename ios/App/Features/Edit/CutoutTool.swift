@@ -191,9 +191,9 @@ final class CutoutSession {
         let photo: UIImage?
         /// Normalized bounds of what she keeps, brushed-in parts included.
         let bounds: CGRect
-        let showsShadow: Bool
-
-        var shadowBounds: CGRect? { showsShadow ? bounds : nil }
+        /// Each kept subject's bounds (with what she brushed in around it),
+        /// when it gets a shadow.
+        let shadowBounds: [CGRect]
 
         /// The kept subjects' mask with her brush strokes on top, at the
         /// analysed photo's size.
@@ -207,11 +207,14 @@ final class CutoutSession {
         var backdrop = backdrop
         if backdrop == .blurOriginal && sourceHasAlpha { backdrop = .transparent }
         if backdrop == .photo && backdropPhoto == nil { backdrop = .transparent }
+        let whole = CGRect(x: 0, y: 0, width: 1, height: 1)
         let brushedIn = refineStrokes.filter { $0.keeps }.map { $0.stroke.bounds }
-        let bounds = brushedIn.reduce(analysis.bounds(of: selection)) { $0.union($1) }
-            .intersection(CGRect(x: 0, y: 0, width: 1, height: 1))
+        let bounds = brushedIn.reduce(analysis.bounds(of: selection)) { $0.union($1) }.intersection(whole)
+        let shadowBounds = !(showsShadow && offersShadow) ? [] : analysis.subjects.filter { selection.contains($0.id) }.map { subject in
+            brushedIn.filter { $0.intersects(subject.bounds) }.reduce(subject.bounds) { $0.union($1) }.intersection(whole)
+        }
         return RenderJob(selection: selection, refine: refineStrokes, backdrop: backdrop, color: UIColor(customColor), photo: backdropPhoto,
-                         bounds: bounds, showsShadow: showsShadow && offersShadow)
+                         bounds: bounds, shadowBounds: shadowBounds)
     }
 
     /// Re-renders the preview on a ≤ 1200 px copy. Subjects she isn't keeping

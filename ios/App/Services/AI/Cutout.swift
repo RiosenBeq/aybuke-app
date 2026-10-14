@@ -277,10 +277,10 @@ enum CutoutRenderer {
     }
 
     /// The kept subjects (`mask`) over `backdrop`, at `source`'s extent, with
-    /// a soft shadow under the subjects inside `shadowUnder` (normalized,
-    /// top-left origin) when it's given.
+    /// a soft shadow under each subject in `shadowUnder` (their bounds,
+    /// normalized, top-left origin).
     static func composite(source: CIImage, mask: CIImage, backdrop: CutoutBackdrop, color: UIColor?, photo: UIImage?,
-                          shadowUnder subject: CGRect? = nil) -> CIImage {
+                          shadowUnder subjects: [CGRect] = []) -> CIImage {
         let extent = source.extent
         var background: CIImage
         switch backdrop {
@@ -300,8 +300,8 @@ enum CutoutRenderer {
                 photo.draw(in: ShareRenderer.fillRect(for: photo.size, in: CGRect(origin: .zero, size: size), face: nil))
             }
         }
-        if let subject, !subject.isNull, !subject.isEmpty {
-            background = shadow(of: mask, under: subject, extent: extent).composited(over: background).cropped(to: extent)
+        if !subjects.isEmpty {
+            background = shadow(of: mask, under: subjects, extent: extent).composited(over: background).cropped(to: extent)
         }
         let blend = CIFilter.blendWithMask()
         blend.inputImage = source
@@ -330,11 +330,12 @@ enum CutoutRenderer {
         return background.unpremultiplyingAlpha().settingAlphaOne(in: extent)
     }
 
-    /// So the subject sits on the new background instead of floating: a
-    /// close, soft drop shadow of her shape, and a contact shadow where she
-    /// meets the ground (her shape pressed flat at the bottom of `subject`).
-    /// Black on transparency, to go between the background and the subject.
-    static func shadow(of mask: CIImage, under subject: CGRect, extent: CGRect) -> CIImage {
+    /// So the subjects sit on the new background instead of floating: a
+    /// close, soft drop shadow of their shape, and a contact shadow where
+    /// each meets the ground (its own shape pressed flat at the bottom of
+    /// its bounds, so a pet beside her gets its own). Black on transparency,
+    /// to go between the background and the subjects.
+    static func shadow(of mask: CIImage, under subjects: [CGRect], extent: CGRect) -> CIImage {
         let longEdge = max(extent.width, extent.height)
         func layer(_ shape: CIImage, opacity: CGFloat) -> CIImage {
             let tint = CIFilter.blendWithMask()
@@ -348,12 +349,20 @@ enum CutoutRenderer {
             .applyingGaussianBlur(sigma: Double(longEdge * 0.012))
             .transformed(by: CGAffineTransform(translationX: 0, y: -longEdge * 0.008))
             .cropped(to: extent)
-        // Core Image's y runs up, so the subject's bottom edge is at minY.
-        let ground = extent.minY + (1 - subject.maxY) * extent.height
-        let contact = mask
-            .transformed(by: CGAffineTransform(translationX: 0, y: -ground)
-                .concatenating(CGAffineTransform(scaleX: 1, y: 0.1))
-                .concatenating(CGAffineTransform(translationX: 0, y: ground)))
+        var pressed = CIImage(color: .black).cropped(to: extent)
+        for subject in subjects where !subject.isNull && !subject.isEmpty {
+            // Core Image's y runs up, so the subject's bottom edge is at minY.
+            let region = CGRect(x: extent.minX + (subject.minX - 0.02) * extent.width, y: extent.minY + (1 - subject.maxY) * extent.height,
+                                width: (subject.width + 0.04) * extent.width, height: subject.height * extent.height)
+            let ground = region.minY
+            let flat = mask.cropped(to: region)
+                .transformed(by: CGAffineTransform(translationX: 0, y: -ground)
+                    .concatenating(CGAffineTransform(scaleX: 1, y: 0.1))
+                    .concatenating(CGAffineTransform(translationX: 0, y: ground)))
+            pressed = flat.applyingFilter("CIMaximumCompositing", parameters: [kCIInputBackgroundImageKey: pressed])
+        }
+        let contact = pressed
+            .cropped(to: extent)
             .clampedToExtent()
             .applyingGaussianBlur(sigma: Double(longEdge * 0.018))
             .cropped(to: extent)
