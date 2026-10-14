@@ -49,7 +49,7 @@ struct RetroCamView: View {
             await model.applyScreenshotOptions(app: app)
             #endif
         }
-        .onDisappear { model.stop() }
+        .onDisappear { model.close() }
         .onChange(of: scenePhase) { _, phase in model.sceneChanged(to: phase) }
         .onChange(of: model.shutterCount) { _, _ in
             guard !reduceMotion else { return }
@@ -346,7 +346,7 @@ struct RetroCamView: View {
     // MARK: Actions
 
     private func close() {
-        model.stop()
+        model.close()
         dismiss()
     }
 

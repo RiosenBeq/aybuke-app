@@ -74,6 +74,8 @@ final class RetroCamModel {
     @ObservationIgnored private let renderer: RetroCamRenderer
     @ObservationIgnored private var source: RetroCamSource?
     @ObservationIgnored private var isRunning = false
+    /// Closed for good: nothing may start the camera again.
+    @ObservationIgnored private var isClosed = false
     @ObservationIgnored private var sequence: Task<Void, Never>?
     @ObservationIgnored private var sequenceID: UUID?
 
@@ -134,7 +136,7 @@ final class RetroCamModel {
 
     /// Starts the camera, unless a shot is waiting for review.
     func run() async {
-        guard let source, shot == nil, !isRunning else { return }
+        guard let source, shot == nil, !isRunning, !isClosed else { return }
         isRunning = true
         renderer.setActive(true)
         guard let features = await source.start(previewLayer: previewView.layer) else {
@@ -147,10 +149,17 @@ final class RetroCamModel {
         phase = .live
     }
 
-    /// Closing, or the app leaving the screen: stops everything.
+    /// The app left the screen: stops everything until it's back.
     func stop() {
         cancelSequence()
         pauseCamera()
+    }
+
+    /// The camera closed. A start still on its way (the permission prompt,
+    /// finding the camera) won't turn it back on.
+    func close() {
+        isClosed = true
+        stop()
     }
 
     func sceneChanged(to scenePhase: ScenePhase) {
