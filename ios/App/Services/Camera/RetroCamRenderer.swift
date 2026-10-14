@@ -64,8 +64,10 @@ final class RetroCamRenderer: @unchecked Sendable {
     /// rotation); on the main actor.
     var onAspectChange: (@MainActor (CGFloat) -> Void)?
 
+    /// One queue for the app's lifetime, however often the camera opens.
+    private static let commandQueue = ImageFilters.metalDevice?.makeCommandQueue()
+
     private let layer: CAMetalLayer?
-    private let commandQueue = ImageFilters.metalDevice?.makeCommandQueue()
     private let colorSpace = CGColorSpace(name: CGColorSpace.sRGB)
     private let lock = NSLock()
     private var look: Look
@@ -94,7 +96,7 @@ final class RetroCamRenderer: @unchecked Sendable {
         let (look, isActive) = lock.withLock { (self.look, self.isActive) }
         noteAspect(of: frame.extent)
         guard isActive, let layer, layer.drawableSize.width > 1,
-              let drawable = layer.nextDrawable(), let buffer = commandQueue?.makeCommandBuffer() else { return }
+              let drawable = layer.nextDrawable(), let buffer = Self.commandQueue?.makeCommandBuffer() else { return }
         let size = CGSize(width: drawable.texture.width, height: drawable.texture.height)
         let bounds = CGRect(origin: .zero, size: size)
 

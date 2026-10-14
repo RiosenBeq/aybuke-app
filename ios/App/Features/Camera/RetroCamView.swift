@@ -15,6 +15,7 @@ struct RetroCamView: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var model = RetroCamModel()
     @State private var flash = 0.0
+    @State private var stripPosition: RetroEffect?
 
     var body: some View {
         ZStack {
@@ -29,7 +30,9 @@ struct RetroCamView: View {
             case .unavailable:
                 unavailableNotice
             case .live:
+                // Under the review its controls (and Space and Esc on the Mac) rest.
                 camera
+                    .disabled(model.shot != nil)
             }
             if let shot = model.shot {
                 RetroCamReviewView(shot: shot, onRetake: { Task { await model.retake() } }, onEdit: edit, onClose: close)
@@ -193,37 +196,37 @@ struct RetroCamView: View {
     }
 
     private var effectStrip: some View {
-        ScrollViewReader { proxy in
-            ScrollView(.horizontal) {
-                HStack(spacing: 8) {
-                    ForEach(RetroCamModel.effects) { effect in
-                        let isSelected = model.effect == effect
-                        Button { model.select(effect) } label: {
-                            VStack(spacing: 1) {
-                                Text(verbatim: effect.title)
-                                    .font(.subheadline.weight(.bold))
-                                Text(verbatim: effect.era)
-                                    .font(.caption2.weight(.semibold))
-                                    .opacity(0.7)
-                            }
-                            .lineLimit(1)
-                            .fixedSize()
-                            .padding(.horizontal, 14)
-                            .frame(minHeight: 48)
-                            .foregroundStyle(isSelected ? Palette.ink : .white)
-                            .background(isSelected ? Palette.blush : Color.white.opacity(0.12), in: Capsule())
+        ScrollView(.horizontal) {
+            HStack(spacing: 8) {
+                ForEach(RetroCamModel.effects) { effect in
+                    let isSelected = model.effect == effect
+                    Button { model.select(effect) } label: {
+                        VStack(spacing: 1) {
+                            Text(verbatim: effect.title)
+                                .font(.subheadline.weight(.bold))
+                            Text(verbatim: effect.era)
+                                .font(.caption2.weight(.semibold))
+                                .opacity(0.7)
                         }
-                        .buttonStyle(.pressable)
-                        .id(effect)
-                        .accessibilityAddTraits(isSelected ? .isSelected : [])
+                        .lineLimit(1)
+                        .fixedSize()
+                        .padding(.horizontal, 14)
+                        .frame(minHeight: 48)
+                        .foregroundStyle(isSelected ? Palette.ink : .white)
+                        .background(isSelected ? Palette.blush : Color.white.opacity(0.12), in: Capsule())
                     }
+                    .buttonStyle(.pressable)
+                    .accessibilityAddTraits(isSelected ? .isSelected : [])
                 }
-                .padding(.horizontal, Metrics.gutter)
             }
-            .scrollIndicators(.hidden)
-            .onChange(of: model.effect) { _, effect in
-                withAnimation(.snappy) { proxy.scrollTo(effect, anchor: .center) }
-            }
+            .scrollTargetLayout()
+            .padding(.horizontal, Metrics.gutter)
+        }
+        .scrollIndicators(.hidden)
+        // Keeps the chosen effect in view, also after a swipe on the preview.
+        .scrollPosition(id: $stripPosition, anchor: .center)
+        .onChange(of: model.effect, initial: true) { _, effect in
+            withAnimation(.snappy) { stripPosition = effect }
         }
         .padding(.vertical, 10)
     }

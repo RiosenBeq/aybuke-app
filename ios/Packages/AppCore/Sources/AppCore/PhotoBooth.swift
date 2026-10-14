@@ -79,7 +79,7 @@ public enum BoothLayout: String, CaseIterable, Identifiable, Sendable {
     var canvasWidth: Double { self == .strip ? 1200 : 2400 }
     var margin: Double { self == .strip ? 60 : 72 }
     var gap: Double { self == .strip ? 30 : 36 }
-    static let footerHeight: Double = 300
+    var footerHeight: Double { self == .strip ? 300 : 440 }
 
     /// The print for `PhotoBooth.shotCount` shots, with room for a caption
     /// and the date when `hasFooter`.
@@ -105,7 +105,7 @@ public enum BoothLayout: String, CaseIterable, Identifiable, Sendable {
         guard hasFooter else {
             return BoothPlan(width: canvasWidth, height: bottom + margin, cells: cells, footer: nil)
         }
-        let footer = BoothRect(x: left, y: bottom, width: canvasWidth - left * 2, height: Self.footerHeight)
+        let footer = BoothRect(x: left, y: bottom, width: canvasWidth - left * 2, height: footerHeight)
         return BoothPlan(width: canvasWidth, height: footer.maxY, cells: cells, footer: footer)
     }
 }

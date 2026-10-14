@@ -45,7 +45,9 @@ final class RetroCamModel {
     static let effects: [RetroEffect] = [.disposable, .vhs, .digicam, .instant, .throwback16, .filmStill, .camcorder06, .neon]
 
     private(set) var phase: Phase = .starting
-    var mode: Mode = .photo
+    var mode: Mode = .photo {
+        didSet { renderer.update(look) }
+    }
     private(set) var effect: RetroEffect = .disposable
     /// The effect's switch (date stamp, letterbox or camcorder display).
     private(set) var showsExtra = true
@@ -81,8 +83,15 @@ final class RetroCamModel {
     }
 
     /// The effect's switch, when it also works live (not 2016's border).
+    /// Booth frames get the effect's colour only: the print has the date.
     var extraOption: RetroEffect.Option? {
-        effect.option.flatMap { $0.worksOnVideo ? $0 : nil }
+        guard mode == .photo else { return nil }
+        return effect.option.flatMap { $0.worksOnVideo ? $0 : nil }
+    }
+
+    /// What the preview shows: exactly what the shot will get.
+    private var look: RetroCamRenderer.Look {
+        RetroCamRenderer.Look(effect: effect, showsExtra: showsExtra && mode == .photo)
     }
 
     // MARK: Camera
@@ -170,7 +179,7 @@ final class RetroCamModel {
         // Each effect starts with its own switch at its default.
         showsExtra = effect.option?.isOnByDefault ?? true
         Haptics.selection()
-        renderer.update(RetroCamRenderer.Look(effect: effect, showsExtra: showsExtra))
+        renderer.update(look)
     }
 
     /// Swipes on the preview step through the effects.
@@ -182,7 +191,7 @@ final class RetroCamModel {
     func toggleExtra() {
         showsExtra.toggle()
         Haptics.selection()
-        renderer.update(RetroCamRenderer.Look(effect: effect, showsExtra: showsExtra))
+        renderer.update(look)
     }
 
     func cycleTimer() {
@@ -312,6 +321,7 @@ final class RetroCamModel {
     /// `-GLCameraTimer 3|10` and `-GLCameraAction shoot|booth`, which presses
     /// the shutter once the preview runs.
     func applyScreenshotOptions(app: AppModel) async {
+        guard ScreenshotScene.current != nil else { return }
         let defaults = UserDefaults.standard
         if let effect = defaults.string(forKey: "GLEffect").flatMap(RetroEffect.init(rawValue:)), Self.effects.contains(effect) {
             select(effect)

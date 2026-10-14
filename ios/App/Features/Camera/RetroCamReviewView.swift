@@ -296,6 +296,7 @@ struct RetroCamReviewView: View {
     #if DEBUG
     /// Screenshots: `-GLBoothLayout grid`, `-GLBoothCaption "…"`.
     private func applyScreenshotOptions() {
+        guard ScreenshotScene.current != nil else { return }
         let defaults = UserDefaults.standard
         if let value = defaults.string(forKey: "GLBoothLayout").flatMap(BoothLayout.init(rawValue:)) { layout = value }
         if let text = defaults.string(forKey: "GLBoothCaption") {

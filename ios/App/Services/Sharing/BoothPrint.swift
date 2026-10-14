@@ -39,21 +39,26 @@ enum BoothPrint {
     /// The caption in the editorial italic (it falls back to the system's
     /// glyphs for every app language), the date in typewriter type.
     private static func drawFooter(in footer: CGRect, caption: String, date: Date?) {
+        let unit = footer.height / 300
         let stamp = date.map { "✦ \($0.formatted(.dateTime.day(.twoDigits).month(.twoDigits).year(.twoDigits))) ✦" }
-        let typewriter = UIFont(name: "Courier-Bold", size: 46) ?? .monospacedSystemFont(ofSize: 46, weight: .bold)
-        let captionFont = ShareRenderer.accentFont(88)
+        let captionFont = ShareRenderer.accentFont(104 * unit)
+        let inset = footer.insetBy(dx: 20 * unit, dy: 0)
         switch (caption.isEmpty, stamp) {
         case (false, let stamp?):
             ShareRenderer.drawText(caption, font: captionFont, color: .white,
-                                   centeredIn: CGRect(x: footer.minX, y: footer.minY + 40, width: footer.width, height: 130))
-            ShareRenderer.drawText(stamp, font: typewriter, color: UIColor.white.withAlphaComponent(0.8),
-                                   centeredIn: CGRect(x: footer.minX, y: footer.minY + 180, width: footer.width, height: 70))
+                                   centeredIn: CGRect(x: inset.minX, y: footer.minY + 30 * unit, width: inset.width, height: 140 * unit))
+            ShareRenderer.drawText(stamp, font: typewriter(56 * unit), color: UIColor.white.withAlphaComponent(0.8),
+                                   centeredIn: CGRect(x: inset.minX, y: footer.minY + 178 * unit, width: inset.width, height: 76 * unit))
         case (false, nil):
-            ShareRenderer.drawText(caption, font: captionFont, color: .white, centeredIn: footer.insetBy(dx: 0, dy: 30))
+            ShareRenderer.drawText(caption, font: captionFont, color: .white, centeredIn: inset)
         case (true, let stamp?):
-            ShareRenderer.drawText(stamp, font: typewriter.withSize(56), color: .white, centeredIn: footer.insetBy(dx: 0, dy: 30))
+            ShareRenderer.drawText(stamp, font: typewriter(80 * unit), color: .white, centeredIn: inset)
         case (true, nil):
             break
         }
+    }
+
+    private static func typewriter(_ size: CGFloat) -> UIFont {
+        UIFont(name: "Courier-Bold", size: size) ?? .monospacedSystemFont(ofSize: size, weight: .bold)
     }
 }
