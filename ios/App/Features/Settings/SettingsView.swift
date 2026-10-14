@@ -64,10 +64,10 @@ struct SettingsView: View {
                 Button("Cancel", role: .cancel) {}
             } message: {
                 if app.canUseAccounts {
-                    Text("Deletes your creations, your anonymous account and its credits from our servers. Subscriptions are managed by Apple and must be cancelled separately.")
+                    Text("Deletes your creations and your account with its credits from our servers, and resets every setting on this device. Subscriptions are managed by Apple and must be cancelled separately.")
                 } else {
                     // Preview builds have no server account to delete.
-                    Text("Deletes your creations and resets your AI consent on this device. Subscriptions are managed by Apple and must be cancelled separately.")
+                    Text("Deletes your creations and resets every setting on this device, including your AI consent. Subscriptions are managed by Apple and must be cancelled separately.")
                 }
             }
         }
@@ -296,7 +296,18 @@ struct SettingsView: View {
             }
             .tint(Palette.accent)
             Button("Delete all creations", role: .destructive) { confirmDeleteCreations = true }
-            Button("Delete my data & account", role: .destructive) { confirmDeleteAccount = true }
+            Button(role: .destructive) {
+                confirmDeleteAccount = true
+            } label: {
+                HStack {
+                    Text("Delete my data & account")
+                    if app.isDeletingData {
+                        Spacer()
+                        ProgressView()
+                    }
+                }
+            }
+            .disabled(app.isDeletingData)
         } header: {
             Text("Privacy")
         } footer: {

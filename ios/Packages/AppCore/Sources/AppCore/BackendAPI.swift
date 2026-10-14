@@ -324,9 +324,15 @@ public enum RequestFactory {
     }
 
     /// Deletes the account and all server-side data (Guideline 5.1.1(v)); the
-    /// server also revokes the Sign in with Apple token.
-    public static func deleteAccount(config: BackendConfiguration, accessToken: String?) throws -> URLRequest {
-        try authorized(config: config, path: "functions/v1/account", method: "DELETE", query: [], accessToken: accessToken)
+    /// server also revokes the Sign in with Apple token. `anonymousToken` is an
+    /// anonymous user that was never merged after Sign in with Apple, so the
+    /// server deletes that user too.
+    public static func deleteAccount(config: BackendConfiguration, accessToken: String?, anonymousToken: String? = nil) throws -> URLRequest {
+        var request = try authorized(config: config, path: "functions/v1/account", method: "DELETE", query: [], accessToken: accessToken)
+        if let anonymousToken {
+            request.httpBody = try JSONEncoder().encode(["anonymous_token": anonymousToken])
+        }
+        return request
     }
 
     /// Supabase's native Sign in with Apple: exchanges Apple's identity token

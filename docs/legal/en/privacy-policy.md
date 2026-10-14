@@ -32,7 +32,7 @@ This policy covers the Service. It doesn't cover third-party services you use to
 Glowlit is designed with teen users in mind. That's why we apply high-privacy defaults to everyone who uses it, whatever their age:
 
 - **No ads.** We don't show advertising, and we don't use advertising SDKs.
-- **No tracking.** We don't track you across other companies' apps or websites, we don't use third-party analytics SDKs, and we don't access your device's advertising identifier (IDFA).
+- **No tracking.** We don't track you across other companies' apps or websites, the only third-party analytics SDK is RevenueCat's subscription analytics, which starts only once you make a purchase (see section 5), and we don't access your device's advertising identifier (IDFA).
 - **No profiling.** We don't build profiles about you, and we don't make decisions about you with legal or similarly significant effects based on automated processing.
 - **No public profiles or feeds.** Nothing about you is public in Glowlit. Your creations are shared only if you choose to share them.
 - **No sharing for marketing.** We don't sell personal information or share it for advertising or marketing, and we don't work with data brokers. We don't send you marketing messages.
@@ -81,7 +81,7 @@ You can delete your library in **Settings → Delete all creations**. It's also 
 
 ### Anonymous account
 
-When you first use a cloud AI feature or your credit balance on our servers, the app creates an anonymous account with our backend provider (Supabase). The account is identified by a random user ID. We don't collect your name, email address, phone number or password.
+When you first use a cloud AI feature or make a purchase, the app creates an anonymous account with our backend provider (Supabase). The account is identified by a random user ID. We don't collect your name, email address, phone number or password.
 
 ### Optional account (Sign in with Apple)
 
@@ -107,7 +107,7 @@ To verify purchases, we receive Apple-signed transaction data, including transac
 
 For subscriptions, we keep an entitlement record: the Apple original transaction ID, the product ID, the expiry date, a revoked flag and the environment, linked to your anonymous user ID.
 
-To understand how our subscriptions perform (trials, renewals, cancellations, refunds), the app also shares the same purchase records with our subscription analytics provider, RevenueCat, together with your anonymous user ID and basic device and app information (app version, iOS version, country and language). RevenueCat never receives your photos, prompts or results.
+To understand how our subscriptions perform (trials, renewals, cancellations, refunds), once you make a purchase (or if your Apple Account already has purchases with us) the app also shares the same purchase records with our subscription analytics provider, RevenueCat, together with your anonymous user ID and basic device and app information (app version, iOS version, country and language). RevenueCat never receives your photos, prompts or results.
 
 ### Reports
 
@@ -235,6 +235,7 @@ You can ask for a copy of the safeguards we use by emailing [privacy@glowlit.app
 - **Entitlement records**: as long as your account exists. Deleted when you delete your account.
 - **Anonymous account (user ID)**: as long as your account exists. Deleted when you delete your account, or when it's merged into your account after Sign in with Apple.
 - **Account (Apple user identifier, email or relay address, Apple token)**: as long as your account exists. When you delete your account, the token is revoked with Apple and everything is deleted.
+- **Subscription analytics records at RevenueCat**: as long as your account exists. When you delete your account, we ask RevenueCat to delete them, including the records of anonymous user IDs merged into your account; RevenueCat completes the deletion shortly after.
 - **Reports**: up to 12 months, for safety review and to improve our filters. Then deleted, or earlier if you delete your account.
 - **Server and security logs**: a short period, typically no more than 90 days, for security and abuse prevention. They are deleted on this schedule even after you delete your account.
 - **Emails and privacy requests**: as long as needed to handle your request and to document how we handled it, unless we must keep them longer to establish, exercise or defend legal claims.
@@ -259,7 +260,7 @@ No system is completely secure. If a personal data breach occurs, we'll notify t
 
 - **Cloud AI processing**: switch it off at any time in **Settings → Cloud AI processing** to withdraw your consent. Withdrawal doesn't affect processing that has already happened.
 - **Delete all creations**: removes your library from your device.
-- **Delete my data & account**: in Settings. Deletes your server account and all server-side records (credit wallet, credit ledger, job records, entitlement records and reports) and your on-device library. Apple subscriptions must be cancelled separately in your Apple Account settings.
+- **Delete my data & account**: in Settings. Deletes your server account and all server-side records (credit wallet, credit ledger, job records, entitlement records and reports), asks RevenueCat to delete its subscription analytics records about you, and resets the app on your device: your library, settings, reminders and AI consent. Apple subscriptions must be cancelled separately in your Apple Account settings.
 - **Photos and notifications**: manage photo and notification permissions in iOS Settings.
 
 ### Your rights

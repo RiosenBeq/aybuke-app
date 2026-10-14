@@ -99,6 +99,19 @@ final class CreditsManager {
         persist()
     }
 
+    /// Signed out: the account's balance isn't hers on this device anymore.
+    func resetServerBalance() {
+        serverBalance = nil
+    }
+
+    /// "Delete my data": a fresh day's free credits, and no server balance
+    /// until a new session reports one.
+    func resetAll() {
+        serverBalance = nil
+        wallet = .fresh(now: Date(), policy: policy)
+        defaults.removeObject(forKey: Self.storageKey)
+    }
+
     #if DEBUG
     /// Screenshots always show a fresh day's free credits.
     func resetForScreenshots() {

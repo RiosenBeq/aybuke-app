@@ -76,6 +76,7 @@ Kişisel verilerinizi satmayız ve üçüncü kişilerin kendi reklam veya pazar
 - Bulutta üretilen sonuçlar: en fazla 1 saat.
 - İş kayıtları: 30 gün.
 - Hesap, kredi ve hak kayıtları (Apple ile giriş bilgileri dahil): hesabınız var olduğu sürece; hesabınızı sildiğinizde silinir ve Apple anahtarı iptal edilir.
+- RevenueCat'teki abonelik analizi kayıtları (yalnızca satın alma yaptıysanız): hesabınız var olduğu sürece; hesabınızı sildiğinizde, hesabınızla birleştirilmiş anonim kimliklere ait kayıtlar dahil, RevenueCat'ten silinmesini isteriz ve RevenueCat silmeyi kısa süre içinde tamamlar.
 - Bildirimler: en fazla 12 ay.
 - Sunucu ve güvenlik kayıtları: genellikle en fazla 90 gün.
 - E-postalar ve başvurular: talebin sonuçlandırılması ve belgelenmesi için gereken süre boyunca.

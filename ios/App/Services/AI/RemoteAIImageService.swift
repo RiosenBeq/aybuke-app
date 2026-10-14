@@ -131,10 +131,31 @@ final class RemoteAIImageService: AIImageService {
         return try ResponseDecoder.decodeBalance(data: data, statusCode: (response as? HTTPURLResponse)?.statusCode ?? 0)
     }
 
-    func deleteAccount() async throws {
-        let token = try await auth.validAccessToken()
-        let (data, response) = try await load(RequestFactory.deleteAccount(config: config, accessToken: token))
+    /// Deletes the server account, if this device has one. Never signs up:
+    /// a new anonymous user would be the one deleted, while the real account
+    /// stayed. `previouslyRequested` means an earlier attempt was sent, so a
+    /// rejected session means that attempt worked and only its reply was lost.
+    func deleteAccount(previouslyRequested: Bool) async throws {
+        let token: String?
+        do {
+            token = try await auth.existingAccessToken()
+        } catch AIServiceError.unauthorized {
+            guard previouslyRequested else { throw AccountDeletionError.sessionRejected }
+            await auth.signOut()
+            return
+        } catch {
+            throw AIServiceError.network(String(localized: "Check your internet connection and try again."))
+        }
+        guard let token else { return }
+        // An anonymous user whose merge failed after Sign in with Apple goes too.
+        let anonymous = await auth.pendingAnonymousToken()
+        let request = try RequestFactory.deleteAccount(config: config, accessToken: token, anonymousToken: anonymous)
+        let (data, response) = try await load(request)
         let status = (response as? HTTPURLResponse)?.statusCode ?? 0
+        if status == 401, previouslyRequested {
+            await auth.signOut()
+            return
+        }
         guard (200..<300).contains(status) else {
             throw ResponseDecoder.error(from: data, statusCode: status)
         }
@@ -186,7 +207,13 @@ final class RemoteAIImageService: AIImageService {
         await auth.signOut()
     }
 
-    /// Supabase user id, used as the StoreKit `appAccountToken`.
+    /// The stored user id, if any. No network and no sign-up.
+    func existingUserID() async -> UUID? {
+        await auth.userID.flatMap(UUID.init(uuidString:))
+    }
+
+    /// Supabase user id, used as the StoreKit `appAccountToken`. Signs up an
+    /// anonymous user when there is none yet, so call it only when she acts.
     func currentUserID() async -> UUID? {
         _ = try? await auth.validAccessToken()
         return await auth.userID.flatMap(UUID.init(uuidString:))
@@ -244,5 +271,14 @@ final class RemoteAIImageService: AIImageService {
         guard let url = output.url else { return nil }
         let (data, _) = try await load(URLRequest(url: url))
         return UIImage(data: data)
+    }
+}
+
+/// Deleting an account whose session the server no longer accepts.
+enum AccountDeletionError: LocalizedError {
+    case sessionRejected
+
+    var errorDescription: String? {
+        String(localized: "We couldn't confirm your account, so nothing was deleted. Please contact support and we'll delete it for you.")
     }
 }

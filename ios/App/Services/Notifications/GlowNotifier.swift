@@ -69,6 +69,18 @@ final class GlowNotifier {
         return true
     }
 
+    /// "Delete my data": every reminder off, and nothing left in Notification
+    /// Center (a delivered "glow ready" shows her prompt). `kept` survives.
+    func reset(keeping kept: Set<String>) async {
+        preferences = GlowNotificationPreferences()
+        defaults.removeObject(forKey: Self.storageKey)
+        defaults.removeObject(forKey: Self.readyPingDeclinedKey)
+        let center = UNUserNotificationCenter.current()
+        let pending = await center.pendingNotificationRequests().map(\.identifier).filter { !kept.contains($0) }
+        center.removePendingNotificationRequests(withIdentifiers: pending)
+        center.removeAllDeliveredNotifications()
+    }
+
     private func ensurePermission() async -> Bool {
         await refreshAuthorization()
         if canAskPermission {

@@ -30,7 +30,7 @@ Bu politika Hizmeti kapsar. {{APP_NAME}} ile birlikte kullandığınız üçünc
 {{APP_NAME}} genç kullanıcılar düşünülerek tasarlanmıştır. Bu nedenle yaşı ne olursa olsun herkese yüksek gizlilik sağlayan varsayılan ayarlar uygularız:
 
 - **Reklam yok.** Reklam göstermeyiz, reklam yazılım geliştirme kitleri (SDK) kullanmayız.
-- **Takip yok.** Sizi başka şirketlerin uygulamaları veya web siteleri arasında takip etmeyiz, üçüncü taraf analiz SDK'ları kullanmayız ve cihazınızın reklam kimliğine (IDFA) erişmeyiz.
+- **Takip yok.** Sizi başka şirketlerin uygulamaları veya web siteleri arasında takip etmeyiz, tek üçüncü taraf analiz SDK'sı olarak yalnızca bir satın alma yaptığınızda başlayan RevenueCat abonelik analizini kullanırız (bkz. bölüm 5) ve cihazınızın reklam kimliğine (IDFA) erişmeyiz.
 - **Profilleme yok.** Hakkınızda profil oluşturmayız ve otomatik işlemeye dayanarak sizi hukuken veya benzer şekilde önemli ölçüde etkileyen kararlar almayız.
 - **Herkese açık profil veya akış yok.** {{APP_NAME}} içinde hakkınızdaki hiçbir şey herkese açık değildir. Oluşturduklarınız yalnızca siz paylaşmayı seçerseniz paylaşılır.
 - **Pazarlama için paylaşım yok.** Kişisel verileri satmayız, reklam veya pazarlama amacıyla paylaşmayız ve veri simsarlarıyla çalışmayız. Size pazarlama mesajı göndermeyiz.
@@ -79,7 +79,7 @@ Kütüphanenizi **Ayarlar → Tüm oluşturduklarımı sil** ile silebilirsiniz.
 
 ### Anonim hesap
 
-Bir bulut yapay zekâ özelliğini veya sunucularımızdaki kredi bakiyenizi ilk kez kullandığınızda uygulama, arka uç (backend) hizmet sağlayıcımız Supabase nezdinde anonim bir hesap oluşturur. Hesap rastgele bir kullanıcı kimliğiyle tanımlanır. Adınızı, e-posta adresinizi, telefon numaranızı veya bir şifre toplamayız.
+Bir bulut yapay zekâ özelliğini ilk kez kullandığınızda veya bir satın alma yaptığınızda uygulama, arka uç (backend) hizmet sağlayıcımız Supabase nezdinde anonim bir hesap oluşturur. Hesap rastgele bir kullanıcı kimliğiyle tanımlanır. Adınızı, e-posta adresinizi, telefon numaranızı veya bir şifre toplamayız.
 
 ### İsteğe bağlı hesap (Apple ile giriş)
 
@@ -105,7 +105,7 @@ Satın alımları doğrulamak için Apple tarafından imzalanmış işlem verile
 
 Abonelikler için bir hak kaydı tutarız: Apple orijinal işlem kimliği, ürün kimliği, bitiş tarihi, iptal/iade işareti ve ortam; bunlar anonim kullanıcı kimliğinize bağlıdır.
 
-Aboneliklerimizin nasıl gittiğini (deneme süreleri, yenilemeler, iptaller, iadeler) anlamak için uygulama aynı satın alma kayıtlarını, anonim kullanıcı kimliğiniz ve temel cihaz ve uygulama bilgileriyle (uygulama sürümü, iOS sürümü, ülke ve dil) birlikte abonelik analizi sağlayıcımız RevenueCat ile de paylaşır. RevenueCat fotoğraflarınızı, istemlerinizi veya sonuçlarınızı asla almaz.
+Aboneliklerimizin nasıl gittiğini (deneme süreleri, yenilemeler, iptaller, iadeler) anlamak için, bir satın alma yaptığınızda (veya Apple Hesabınızda bizden önceki satın almalar varsa) uygulama aynı satın alma kayıtlarını, anonim kullanıcı kimliğiniz ve temel cihaz ve uygulama bilgileriyle (uygulama sürümü, iOS sürümü, ülke ve dil) birlikte abonelik analizi sağlayıcımız RevenueCat ile de paylaşır. RevenueCat fotoğraflarınızı, istemlerinizi veya sonuçlarınızı asla almaz.
 
 ### Bildirimler (raporlar)
 
@@ -233,6 +233,7 @@ Kullandığımız güvencelerin bir örneğini [{{PRIVACY_EMAIL}}](mailto:{{PRIV
 - **Hak kayıtları**: hesabınız var olduğu sürece; hesabınızı sildiğinizde silinir.
 - **Anonim hesap (kullanıcı kimliği)**: hesabınız var olduğu sürece; hesabınızı sildiğinizde veya Apple ile giriş sonrasında hesabınızla birleştirildiğinde silinir.
 - **Hesap (Apple kullanıcı tanımlayıcısı, e-posta veya aktarma adresi, Apple anahtarı)**: hesabınız var olduğu sürece; hesabınızı sildiğinizde anahtar Apple nezdinde iptal edilir ve tümü silinir.
+- **RevenueCat'teki abonelik analizi kayıtları**: hesabınız var olduğu sürece. Hesabınızı sildiğinizde, hesabınızla birleştirilmiş anonim kullanıcı kimliklerine ait kayıtlar dahil, RevenueCat'ten bunları silmesini isteriz; RevenueCat silmeyi kısa süre içinde tamamlar.
 - **Bildirimler**: güvenlik incelemesi ve filtrelerimizi geliştirmek için en fazla 12 ay; ardından veya hesabınızı daha önce silerseniz o zaman silinir.
 - **Sunucu ve güvenlik kayıtları**: güvenlik ve kötüye kullanımın önlenmesi için kısa bir süre, genellikle en fazla 90 gün. Bu kayıtlar hesabınızı sildikten sonra da bu takvime göre silinir.
 - **E-postalar ve gizlilik talepleri**: talebinizi karşılamak ve nasıl karşıladığımızı belgelemek için gereken süre boyunca; bir hakkın tesisi, kullanılması veya savunulması için daha uzun saklamamız gerekmedikçe.
@@ -257,7 +258,7 @@ Hiçbir sistem tamamen güvenli değildir. Bir kişisel veri ihlali yaşanırsa,
 
 - **Cloud AI processing**: Rızanızı geri almak için bu seçeneği **Ayarlar** içinden istediğiniz zaman kapatabilirsiniz. Geri alma, daha önce gerçekleşmiş işlemeyi etkilemez.
 - **Tüm oluşturduklarımı sil**: kütüphanenizi cihazınızdan kaldırır.
-- **Verilerimi ve hesabımı sil**: Ayarlar'da yer alır. Sunucudaki hesabınızı ve sunucu tarafındaki tüm kayıtları (kredi cüzdanı, kredi defteri, iş kayıtları, hak kayıtları ve bildirimler) ile cihazınızdaki kütüphaneyi siler. Apple abonelikleri Apple Hesabı ayarlarınızdan ayrıca iptal edilmelidir.
+- **Verilerimi ve hesabımı sil**: Ayarlar'da yer alır. Sunucudaki hesabınızı ve sunucu tarafındaki tüm kayıtları (kredi cüzdanı, kredi defteri, iş kayıtları, hak kayıtları ve bildirimler) siler, RevenueCat'ten sizinle ilgili abonelik analizi kayıtlarını silmesini ister ve cihazınızdaki uygulamayı sıfırlar: kütüphaneniz, ayarlarınız, hatırlatıcılarınız ve yapay zekâ onayınız. Apple abonelikleri Apple Hesabı ayarlarınızdan ayrıca iptal edilmelidir.
 - **Fotoğraf ve bildirim izinleri**: iOS Ayarları'ndan yönetilir.
 
 ### Haklarınız

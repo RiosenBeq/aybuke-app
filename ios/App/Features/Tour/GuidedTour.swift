@@ -104,6 +104,13 @@ final class TourGuide {
         hasSeen = true
         defaults.set(true, forKey: Self.seenKey)
     }
+
+    /// "Delete my data": the tour shows again after onboarding.
+    func reset() {
+        current = nil
+        hasSeen = false
+        defaults.removeObject(forKey: Self.seenKey)
+    }
 }
 
 extension View {

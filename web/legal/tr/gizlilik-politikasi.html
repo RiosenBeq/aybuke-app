@@ -38,7 +38,7 @@
 <p>Glowlit genç kullanıcılar düşünülerek tasarlanmıştır. Bu nedenle yaşı ne olursa olsun herkese yüksek gizlilik sağlayan varsayılan ayarlar uygularız:</p>
 <ul>
 <li><strong>Reklam yok.</strong> Reklam göstermeyiz, reklam yazılım geliştirme kitleri (SDK) kullanmayız.</li>
-<li><strong>Takip yok.</strong> Sizi başka şirketlerin uygulamaları veya web siteleri arasında takip etmeyiz, üçüncü taraf analiz SDK'ları kullanmayız ve cihazınızın reklam kimliğine (IDFA) erişmeyiz.</li>
+<li><strong>Takip yok.</strong> Sizi başka şirketlerin uygulamaları veya web siteleri arasında takip etmeyiz, tek üçüncü taraf analiz SDK'sı olarak yalnızca bir satın alma yaptığınızda başlayan RevenueCat abonelik analizini kullanırız (bkz. bölüm 5) ve cihazınızın reklam kimliğine (IDFA) erişmeyiz.</li>
 <li><strong>Profilleme yok.</strong> Hakkınızda profil oluşturmayız ve otomatik işlemeye dayanarak sizi hukuken veya benzer şekilde önemli ölçüde etkileyen kararlar almayız.</li>
 <li><strong>Herkese açık profil veya akış yok.</strong> Glowlit içinde hakkınızdaki hiçbir şey herkese açık değildir. Oluşturduklarınız yalnızca siz paylaşmayı seçerseniz paylaşılır.</li>
 <li><strong>Pazarlama için paylaşım yok.</strong> Kişisel verileri satmayız, reklam veya pazarlama amacıyla paylaşmayız ve veri simsarlarıyla çalışmayız. Size pazarlama mesajı göndermeyiz.</li>
@@ -76,7 +76,7 @@
 <p>Kütüphanenizi <strong>Ayarlar → Tüm oluşturduklarımı sil</strong> ile silebilirsiniz. Kütüphane, hesabınızı veya uygulamayı sildiğinizde de silinir.</p>
 <h2>5. Sunucularımızda işlediğimiz veriler</h2>
 <h3>Anonim hesap</h3>
-<p>Bir bulut yapay zekâ özelliğini veya sunucularımızdaki kredi bakiyenizi ilk kez kullandığınızda uygulama, arka uç (backend) hizmet sağlayıcımız Supabase nezdinde anonim bir hesap oluşturur. Hesap rastgele bir kullanıcı kimliğiyle tanımlanır. Adınızı, e-posta adresinizi, telefon numaranızı veya bir şifre toplamayız.</p>
+<p>Bir bulut yapay zekâ özelliğini ilk kez kullandığınızda veya bir satın alma yaptığınızda uygulama, arka uç (backend) hizmet sağlayıcımız Supabase nezdinde anonim bir hesap oluşturur. Hesap rastgele bir kullanıcı kimliğiyle tanımlanır. Adınızı, e-posta adresinizi, telefon numaranızı veya bir şifre toplamayız.</p>
 <h3>İsteğe bağlı hesap (Apple ile giriş)</h3>
 <p>Giriş yapmak isteğe bağlıdır. Pro üyeliğiniz ve kredileriniz başka bir iPhone'a da gelsin diye sunulan <strong>Apple ile giriş</strong> seçeneğini kullanırsanız, kimliğinizi Apple doğrular ve arka uç sağlayıcımız sabit bir Apple kullanıcı tanımlayıcısı ile, paylaşmayı seçerseniz e-posta adresinizi alır; bu adres size yönlendiren gizli bir aktarma (relay) adresi olabilir. Adınızı istemeyiz ve Apple Kimliği şifrenizi asla görmeyiz. O iPhone'da kullandığınız anonim hesap hesabınızla birleştirilir: ücretli krediler, abonelik kayıtları, iş kayıtları ve bildirimler taşınır, anonim hesap silinir. Apple'ın şart koştuğu üzere, hesabınızı sildiğinizde Glowlit'in Apple Kimliğinize erişimini iptal edebilmek için Apple'dan aldığımız bir anahtarı da saklarız. Fotoğraflarınız ve kütüphaneniz eşitlenmez; her iPhone'da kalır.</p>
 <h3>Bulut yapay zekâ özelliklerine gönderdiğiniz içerik</h3>
@@ -89,7 +89,7 @@
 <p>Tüm ödemeleri Apple işler. Kart bilgilerinizi, adınızı veya Apple Hesabı e-posta adresinizi hiçbir zaman almayız.</p>
 <p>Satın alımları doğrulamak için Apple tarafından imzalanmış işlem verilerini alırız: işlem kimlikleri, ürün kimliği, satın alma ve bitiş tarihleri, ortam (deneme/sandbox veya canlı) ve anonim kullanıcı kimliğinize eşit olan bir uygulama hesap anahtarı (app account token). Apple bu anahtarı kendi satın alma kayıtlarıyla birlikte, Apple'ın gizlilik politikası kapsamında saklar.</p>
 <p>Abonelikler için bir hak kaydı tutarız: Apple orijinal işlem kimliği, ürün kimliği, bitiş tarihi, iptal/iade işareti ve ortam; bunlar anonim kullanıcı kimliğinize bağlıdır.</p>
-<p>Aboneliklerimizin nasıl gittiğini (deneme süreleri, yenilemeler, iptaller, iadeler) anlamak için uygulama aynı satın alma kayıtlarını, anonim kullanıcı kimliğiniz ve temel cihaz ve uygulama bilgileriyle (uygulama sürümü, iOS sürümü, ülke ve dil) birlikte abonelik analizi sağlayıcımız RevenueCat ile de paylaşır. RevenueCat fotoğraflarınızı, istemlerinizi veya sonuçlarınızı asla almaz.</p>
+<p>Aboneliklerimizin nasıl gittiğini (deneme süreleri, yenilemeler, iptaller, iadeler) anlamak için, bir satın alma yaptığınızda (veya Apple Hesabınızda bizden önceki satın almalar varsa) uygulama aynı satın alma kayıtlarını, anonim kullanıcı kimliğiniz ve temel cihaz ve uygulama bilgileriyle (uygulama sürümü, iOS sürümü, ülke ve dil) birlikte abonelik analizi sağlayıcımız RevenueCat ile de paylaşır. RevenueCat fotoğraflarınızı, istemlerinizi veya sonuçlarınızı asla almaz.</p>
 <h3>Bildirimler (raporlar)</h3>
 <p>"Bu görseli bildir" özelliğini kullanırsanız, seçtiğiniz nedeni, eklemeyi seçtiğiniz ayrıntıları, ilgili iş kimliğini, anonim kullanıcı kimliğinizi ve zaman bilgilerini alırız.</p>
 <h3>Sunucu ve güvenlik kayıtları</h3>
@@ -187,6 +187,7 @@
 <li><strong>Hak kayıtları</strong>: hesabınız var olduğu sürece; hesabınızı sildiğinizde silinir.</li>
 <li><strong>Anonim hesap (kullanıcı kimliği)</strong>: hesabınız var olduğu sürece; hesabınızı sildiğinizde veya Apple ile giriş sonrasında hesabınızla birleştirildiğinde silinir.</li>
 <li><strong>Hesap (Apple kullanıcı tanımlayıcısı, e-posta veya aktarma adresi, Apple anahtarı)</strong>: hesabınız var olduğu sürece; hesabınızı sildiğinizde anahtar Apple nezdinde iptal edilir ve tümü silinir.</li>
+<li><strong>RevenueCat'teki abonelik analizi kayıtları</strong>: hesabınız var olduğu sürece. Hesabınızı sildiğinizde, hesabınızla birleştirilmiş anonim kullanıcı kimliklerine ait kayıtlar dahil, RevenueCat'ten bunları silmesini isteriz; RevenueCat silmeyi kısa süre içinde tamamlar.</li>
 <li><strong>Bildirimler</strong>: güvenlik incelemesi ve filtrelerimizi geliştirmek için en fazla 12 ay; ardından veya hesabınızı daha önce silerseniz o zaman silinir.</li>
 <li><strong>Sunucu ve güvenlik kayıtları</strong>: güvenlik ve kötüye kullanımın önlenmesi için kısa bir süre, genellikle en fazla 90 gün. Bu kayıtlar hesabınızı sildikten sonra da bu takvime göre silinir.</li>
 <li><strong>E-postalar ve gizlilik talepleri</strong>: talebinizi karşılamak ve nasıl karşıladığımızı belgelemek için gereken süre boyunca; bir hakkın tesisi, kullanılması veya savunulması için daha uzun saklamamız gerekmedikçe.</li>
@@ -208,7 +209,7 @@
 <ul>
 <li><strong>Cloud AI processing</strong>: Rızanızı geri almak için bu seçeneği <strong>Ayarlar</strong> içinden istediğiniz zaman kapatabilirsiniz. Geri alma, daha önce gerçekleşmiş işlemeyi etkilemez.</li>
 <li><strong>Tüm oluşturduklarımı sil</strong>: kütüphanenizi cihazınızdan kaldırır.</li>
-<li><strong>Verilerimi ve hesabımı sil</strong>: Ayarlar'da yer alır. Sunucudaki hesabınızı ve sunucu tarafındaki tüm kayıtları (kredi cüzdanı, kredi defteri, iş kayıtları, hak kayıtları ve bildirimler) ile cihazınızdaki kütüphaneyi siler. Apple abonelikleri Apple Hesabı ayarlarınızdan ayrıca iptal edilmelidir.</li>
+<li><strong>Verilerimi ve hesabımı sil</strong>: Ayarlar'da yer alır. Sunucudaki hesabınızı ve sunucu tarafındaki tüm kayıtları (kredi cüzdanı, kredi defteri, iş kayıtları, hak kayıtları ve bildirimler) siler, RevenueCat'ten sizinle ilgili abonelik analizi kayıtlarını silmesini ister ve cihazınızdaki uygulamayı sıfırlar: kütüphaneniz, ayarlarınız, hatırlatıcılarınız ve yapay zekâ onayınız. Apple abonelikleri Apple Hesabı ayarlarınızdan ayrıca iptal edilmelidir.</li>
 <li><strong>Fotoğraf ve bildirim izinleri</strong>: iOS Ayarları'ndan yönetilir.</li>
 </ul>
 <h3>Haklarınız</h3>

@@ -68,6 +68,12 @@ final class GlowActivityController {
         endImmediately()
     }
 
+    /// "Delete my data": activity titles are her prompts.
+    func endAll() {
+        endImmediately()
+        endLeftovers()
+    }
+
     private func endImmediately() {
         overtime?.cancel()
         overtime = nil
@@ -86,6 +92,7 @@ final class GlowActivityController {
     func finish(success: Bool, lingers: Bool) {}
     func endLeftovers() {}
     func cancel() {}
+    func endAll() {}
 }
 #endif
 
