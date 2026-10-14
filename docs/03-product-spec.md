@@ -111,7 +111,7 @@ This document turns that brief into a product definition grounded in the researc
 | **Pro Monthly** | **$5.99/mo**; first month **$1.99** for eligible users (introductory offer), no free trial | Same as yearly |
 | **Credit packs** (consumable) | 30 credits **$2.99**, 100 credits **$7.99** | Never expire; for occasional users who don't want a subscription |
 
-The paywall sums it up: *"About half what most AI photo apps charge. No weekly plans, ever."*
+The paywall sums it up: *"No weekly plans, ever."* (No price comparison: our own research puts $39.99/year at the North American median.)
 
 **Rules**
 - 1 credit = 1 cloud creation or edit. Background removal, adjustments, effects and video editing are free.

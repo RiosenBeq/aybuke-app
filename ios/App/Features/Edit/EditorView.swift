@@ -307,7 +307,7 @@ struct EditorView: View {
         case .removeBackground?:
             OneTapPanel(
                 title: "Remove background",
-                message: Platform.isMac ? "Runs privately on your Mac. Always free." : "Runs privately on your iPhone. Always free.",
+                message: "Runs privately on your device. Always free.",
                 buttonTitle: "Remove background",
                 cost: 0
             ) {

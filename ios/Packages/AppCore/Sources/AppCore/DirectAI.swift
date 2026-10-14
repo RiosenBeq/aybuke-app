@@ -553,7 +553,7 @@ public enum XAIImagesAPI {
             body["images"] = [imageObject(image, mimeType: "image/jpeg"), imageObject(mask, mimeType: "image/png")]
         case .removeBackground:
             // Always on the device.
-            throw AIServiceError.invalidRequest("Background removal runs on your iPhone.")
+            throw AIServiceError.invalidRequest("Background removal runs on your device.")
         }
         return body
     }

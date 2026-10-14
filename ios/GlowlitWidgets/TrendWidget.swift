@@ -155,7 +155,7 @@ struct TrendWidget: Widget {
             TrendWidgetView(entry: entry)
         }
         .configurationDisplayName("Today's trend")
-        .description("A new one-tap look every day.")
+        .description("A different one-tap look every day.")
         .supportedFamilies([.systemSmall, .systemMedium, .accessoryRectangular, .accessoryInline])
     }
 }

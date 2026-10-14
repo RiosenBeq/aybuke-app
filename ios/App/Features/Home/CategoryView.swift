@@ -75,11 +75,11 @@ extension TemplateCategory {
 
     var blurb: String {
         switch self {
-        case .trending: return String(localized: "What everyone's posting right now.")
+        case .trending: return String(localized: "Looks inspired by what's trending.")
         case .glowUp: return String(localized: "Hair, makeup and glam, and still 100% you.")
         case .aesthetic: return String(localized: "Moods, places and colours for your feed.")
         case .dreamy: return String(localized: "Soft, magical portraits.")
-        case .seasonal: return String(localized: "Limited looks for this season.")
+        case .seasonal: return String(localized: "Cute and a little spooky.")
         case .art: return String(localized: "Turn any photo into art.")
         case .business: return String(localized: "Polished photos for work and your shop.")
         }

@@ -82,6 +82,7 @@ backend/scripts/test-db.sh
 # Generated files must stay in sync (CI checks both)
 python3 scripts/build-legal.py --check
 python3 scripts/export-core-strings.py --check
+python3 scripts/check-honest-copy.py      # no unsupported claims, device-neutral app copy (CI)
 
 # Archive and upload to App Store Connect / TestFlight with an API key
 # (key file in ~/.appstoreconnect/private_keys/; ids from Users and Access → Integrations)

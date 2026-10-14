@@ -38,11 +38,7 @@ struct AIConsentView: View {
                 ConsentPoint(symbol: "trash", text: "Deleted from our servers within \(retention)")
                 ConsentPoint(symbol: "brain", text: "Never used to train AI models")
                 ConsentPoint(symbol: "eye.slash", text: "Never sold or shared for advertising")
-                if Platform.isMac {
-                    ConsentPoint(symbol: "laptopcomputer", text: "Background removal always stays on your Mac")
-                } else {
-                    ConsentPoint(symbol: "iphone", text: "Background removal always stays on your iPhone")
-                }
+                ConsentPoint(symbol: Platform.isMac ? "laptopcomputer" : "lock.shield", text: "Background removal always stays on your device")
             }
 
             Button("Read our Privacy Policy") {

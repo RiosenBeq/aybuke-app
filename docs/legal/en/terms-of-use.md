@@ -192,7 +192,7 @@ These are reference prices in US dollars. The app shows the price in your local 
 - up to 4 images per generation;
 - all templates and styles;
 - exports without the Glowlit watermark; and
-- higher-resolution outputs.
+- higher-quality AI processing than the free plan.
 
 ### Free trial
 

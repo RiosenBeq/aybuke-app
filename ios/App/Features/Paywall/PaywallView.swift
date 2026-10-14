@@ -147,7 +147,7 @@ struct PaywallView: View {
     private var benefits: some View {
         VStack(alignment: .leading, spacing: 14) {
             Benefit(symbol: "bolt.fill", title: "\(app.credits.policy.proMonthlyAllowance) credits every month", detail: "Unused credits roll over to next month")
-            Benefit(symbol: "sparkles", title: "Every trend & style, first", detail: "Fresh looks added regularly")
+            Benefit(symbol: "sparkles", title: "Every look & style", detail: "Including the Pro-only looks and styles")
             Benefit(symbol: "photo.badge.checkmark", title: "Our best-quality AI, no watermark", detail: "Up to 4 images at once")
             Benefit(symbol: "arrow.uturn.backward.circle", title: "Failed edits are always refunded", detail: "Plus a free retry if it doesn't look like you")
         }
@@ -297,7 +297,7 @@ struct PaywallView: View {
                         } else {
                             app.showToast(Platform.isMac
                                 ? "Turn on notifications for \(Brand.name) in System Settings to get reminders."
-                                : "Turn on notifications for \(Brand.name) in iOS Settings to get reminders.", style: .info)
+                                : "Turn on notifications for \(Brand.name) in Settings to get reminders.", style: .info)
                         }
                     }
                 } label: {

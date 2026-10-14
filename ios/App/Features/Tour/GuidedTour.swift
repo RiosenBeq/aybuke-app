@@ -29,7 +29,7 @@ enum TourStep: Int, CaseIterable, Identifiable {
         switch self {
         case .hero: return String(localized: "Say the *change*")
         case .credits: return isPro ? String(localized: "Your monthly *glow*") : String(localized: "Your daily *glow*")
-        case .quickTools: return Platform.isMac ? String(localized: "Free on your *Mac*") : String(localized: "Free on your *iPhone*")
+        case .quickTools: return String(localized: "Free on your *device*")
         case .create: return String(localized: "Create *anything*")
         case .edit: return String(localized: "Photos *and* videos")
         case .library: return String(localized: "Your *gallery*")
@@ -46,9 +46,7 @@ enum TourStep: Int, CaseIterable, Identifiable {
                 ? String(localized: "Pro gives you \(policy.proMonthlyAllowance) credits every month. Free tools never use credits, and failed edits are always refunded.")
                 : String(localized: "You get \(policy.freeDailyAllowance) free credits every day. Free tools never use credits, and failed edits are always refunded.")
         case .quickTools:
-            return Platform.isMac
-                ? String(localized: "80s & 90s effects, Cut out and Adjust are free and run right on your Mac. Enhance and Erase add AI magic.")
-                : String(localized: "80s & 90s effects, Cut out and Adjust are free and run right on your phone. Enhance and Erase add AI magic.")
+            return String(localized: "80s & 90s effects, Cut out and Adjust are free and run right on your device. Enhance and Erase add AI magic.")
         case .create:
             return String(localized: "Type an idea, pick a style and get art in seconds. No prompt skills needed.")
         case .edit:
@@ -56,7 +54,7 @@ enum TourStep: Int, CaseIterable, Identifiable {
         case .library:
             return Platform.isMac
                 ? String(localized: "Everything you make stays on your Mac. Heart your favorites and share in one click.")
-                : String(localized: "Everything you make stays on your iPhone. Heart your favorites and share in one tap.")
+                : String(localized: "Everything you make stays on your device. Heart your favorites and share in one tap.")
         case .settings:
             return String(localized: "Language, look, privacy and your account live here. Enjoy the glow ✨")
         }

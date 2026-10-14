@@ -38,7 +38,6 @@ ONE TAP. A WHOLE NEW AESTHETIC.
 • Glow-up looks: Soft Glam, Pink Hair, Bouncy Curls, Clean Girl, Glam Studio
 • Aesthetic edits: Ballet Core, Cherry Blossom, Café Date, Paris Trip, Old Money
 • Dreamy portraits: Fairy Princess, Golden Hour Glow, Birthday Glam, Restore Old Photo
-• Fresh looks added regularly
 
 DREAM IT. CREATE IT.
 • Create anything from text with 14 styles, from Pastel Dream and Kawaii to Watercolor and Anime
@@ -51,7 +50,7 @@ DREAM IT. CREATE IT.
 • Edit videos up to 5 minutes: cut out the silences like a jump cut, add a retro effect and trim
 • Save or share your videos with no watermark and no ending clip
 
-FREE ON YOUR IPHONE
+FREE ON YOUR DEVICE
 • Remove backgrounds instantly, on-device and always free
 • Adjust light and color with simple sliders, or tap Auto for the best settings
 • RAW photos are developed automatically
@@ -152,7 +151,6 @@ TEK DOKUNUŞ. BAMBAŞKA BİR ESTETİK.
 • Glow-up görünümleri: Soft Glam, Pembe Saç, Dalgalı Bukleler, Clean Girl, Glam Stüdyo
 • Estetik düzenlemeler: Ballet Core, Kiraz Çiçeği, Kafe Buluşması, Paris Gezisi, Old Money
 • Rüya gibi portreler: Peri Prensesi, Altın Saat Işıltısı, Doğum Günü Glam, Eski Fotoğrafı Onar
-• Düzenli olarak yeni görünümler
 
 HAYAL ET, OLUŞTUR.
 • Pastel Rüya ve Kawaii'den Suluboya ve Anime'ye 14 stille metinden görsel oluştur
@@ -165,7 +163,7 @@ HAYAL ET, OLUŞTUR.
 • 5 dakikaya kadar videoları düzenle: sessiz kısımları jump cut gibi kes, retro efekt ekle, kırp
 • Videolarını filigransız ve kapanış klibi olmadan kaydet ya da paylaş
 
-IPHONE'UNDA ÜCRETSİZ
+CİHAZINDA ÜCRETSİZ
 • Arka planı anında kaldır; cihazında çalışır, her zaman ücretsiz
 • Işığı ve rengi basit kaydırıcılarla ayarla ya da en iyi ayarlar için Auto'ya dokun
 • RAW fotoğraflar otomatik olarak banyo edilir
