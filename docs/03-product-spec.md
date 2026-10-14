@@ -109,8 +109,8 @@ This document turns that brief into a product definition grounded in the researc
 
 | Tier | Price (US) | Includes |
 |---|---|---|
-| **Free** | $0 | 3 credits every day (low AI quality at 1k, small corner wordmark on exports of cloud AI results, also after a re-edit; share cards of them say "Made with Glowlit"). Unlimited on-device tools: effects, Auto and adjustments, background removal, Best shot and video editing (no watermark on anything made only with them). |
-| **Pro Yearly** *(default)* | **$39.99/yr** (≈ $3.33/month), **7-day free trial** for eligible users | 100 credits/month with one month of rollover (cap 200), every template and style, our best-quality AI (medium instead of low quality), up to 4 images at once, no watermark |
+| **Free** | $0 | 2 credits every day (low AI quality at 1k, small corner wordmark on exports of cloud AI results, also after a re-edit; share cards of them say "Made with Glowlit"). Unlimited on-device tools: effects, Auto and adjustments, background removal, Best shot and video editing (no watermark on anything made only with them). |
+| **Pro Yearly** *(default)* | **$39.99/yr** (≈ $3.33/month), **7-day free trial** for eligible users | 80 credits/month with one month of rollover (cap 160), every template and style, our best-quality AI (medium instead of low quality), up to 4 images at once, no watermark |
 | **Pro Monthly** | **$5.99/mo**; first month **$1.99** for eligible users (introductory offer), no free trial | Same as yearly |
 | **Credit packs** (consumable) | 30 credits **$2.99**, 100 credits **$7.99** | Never expire; for occasional users who don't want a subscription |
 
@@ -122,7 +122,7 @@ The paywall sums it up: *"No weekly plans, ever."* (No price comparison: our own
 - Failed, cancelled, blocked or timed-out jobs are **refunded exactly**.
 - One **free retry** per people edit, within 15 minutes.
 - The paywall makes the **billed amount the most prominent price** (Apple 3.1.2). The yearly plan's monthly equivalent ("just $3.33/month") is subordinate. There is no free-trial toggle; Apple has rejected these since January 2026.
-- A trial-end **reminder notification** fires 24 hours before billing.
+- A trial-end **reminder notification** fires at least 26 hours before the trial ends (earlier when that would fall at night or in school hours).
 
 **Pricing rationale**
 - Competitor annual prices: Picsart $57, Meitu $59.99, Hypic $69.99, YouCam $69.99, Facetune $77.99, Remini $79.99, Photoroom $79.99. At $39.99, Glowlit costs about half the typical ~$70.
@@ -131,9 +131,9 @@ The paywall sums it up: *"No weekly plans, ever."* (No price comparison: our own
 ### Unit economics (from [tech research §3.9](research/tech-and-compliance.md#39-rough-cost-per-active-user))
 
 - Blended cloud cost is about **$0.06 per operation**, including retries: on xAI, about $0.04 per created image and $0.05–0.07 per edit (see [AI provider](#ai-provider)). Infrastructure is ≲ $0.01 per monthly active user.
-- **Free user**, worst case: 3 operations/day ≈ $0.18/day. Mitigations: rate limits, DeviceCheck/appTransactionID binding (planned) and low quality for free users. Typical usage is far lower.
-- **Pro Monthly** ($5.99, about $5.09 net): 100 credits × $0.06 = **$6.00 worst case**, more than the net price. The expected cost at typical utilisation (30–40%) is about $1.80–2.40 (35–47% of net). The $1.99 first month (about $1.69 net) works as an acquisition cost.
-- **Pro Yearly** ($39.99, about $34 net, ≈ $2.83/mo): a heavy user who spends the full 100/month costs about $6/mo and is unprofitable. RevenueCat calls Photo & Video "one-off project apps", and median annual renewal is 23%, so most annual users use far less.
+- **Free user**, worst case: 2 operations/day ≈ $0.12/day. Mitigations: rate limits, DeviceCheck/appTransactionID binding (planned) and low quality for free users. Typical usage is far lower.
+- **Pro Monthly** ($5.99, about $5.09 net): 80 credits × $0.06 = **$4.80 worst case**, about 94% of the net price. The expected cost at typical utilisation (30–40%) is about $1.44–1.92 (28–38% of net). The $1.99 first month (about $1.69 net) works as an acquisition cost.
+- **Pro Yearly** ($39.99, about $34 net, ≈ $2.83/mo): a heavy user who spends the full 80/month costs about $4.80/mo and is unprofitable. RevenueCat calls Photo & Video "one-off project apps", and median annual renewal is 23%, so most annual users use far less.
 - **Credit packs** (about $2.54 and $6.79 net): if every credit is used, 30 × $0.06 = $1.80 (71% of net) and 100 × $0.06 = $6.00 (88% of net).
 - **Monitor `credits used ÷ allowance`.** Allowances live in SQL (`credit_policy()`) and can be retuned without an app release.
 - Free users already run at low quality and Pro at medium (both 1k); reserve anything costlier for an explicit "premium" option at 3–5× credits.

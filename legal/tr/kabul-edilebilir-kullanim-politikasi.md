@@ -112,7 +112,7 @@ Birden çok katmanlı güvenlik önlemi kullanırız:
 
 Otomatik filtreler kusursuz değildir: zararsız talepleri engelleyebilir, zararlı olanları kaçırabilir. Engellenen veya başarısız olan üretimlerden asla ücret alınmaz.
 
-Sunucularımızdaki filtreler 24 saat içinde isteklerinizden veya sonuçlarınızdan 3'ünü engellerse bulut yapay zekâ, hesabınız ve App Store indirmeniz için 24 saat ara verir. 30 gün içinde 3 mola olursa, inceleyene kadar o indirme için bulut yapay zekâyı kapatırız. Cihaz üzerindeki özellikler çalışmaya devam eder. Bir molaya veya kapatmaya itiraz edebilirsiniz (9. bölüm).
+Sunucularımızdaki filtreler 24 saat içinde isteklerinizden veya sonuçlarınızdan 3'ünü engellerse bulut yapay zekâ, hesabınız ve App Store indirmeniz (doğrulanmış bir indirme yoksa ağ adresiniz) için 24 saat ara verir. 30 gün içinde 3 mola olursa, inceleyene kadar o indirme için bulut yapay zekâyı kapatırız. Cihaz üzerindeki özellikler çalışmaya devam eder. Bir molaya veya kapatmaya itiraz edebilirsiniz (9. bölüm).
 
 Girdilerinizi saklamadığımız ve sonuçları bir saat içinde buluttan sildiğimiz için oluşturduklarınıza rutin olarak bakmayız. İnsan incelemesi, içerik bize bildirildiğinde veya bir karara itiraz ettiğinizde yapılır.
 

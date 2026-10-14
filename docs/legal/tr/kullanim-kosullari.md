@@ -178,7 +178,7 @@ Aktif bir Pro aboneliğiniz yoksa, krediniz bittiğinde Google AdMob'dan kısa b
 
 Hizmeti korumak için bir hesabın, bir App Store indirmesinin ve bir ağ adresinin dakikada, saatte ve günde başlatabileceği bulut yapay zekâ işi sayısını ve tüm kullanıcıların bir günde başlatabileceği toplam iş sayısını sınırlandırıyoruz. Bir sınıra ulaşıldığında uygulama sizi bilgilendirir ve bulut yapay zekâ bir süre ara verir; hiçbir ücret alınmaz.
 
-Güvenlik filtrelerimiz 24 saat içinde isteklerinizden veya sonuçlarınızdan 3'ünü engellerse bulut yapay zekâ, hesabınız ve App Store indirmeniz için 24 saat ara verir. 30 gün içinde 3 mola olursa, inceleyene kadar o indirme için bulut yapay zekâyı kapatırız. Cihaz üzerindeki özellikler çalışmaya devam eder ve bir insanın incelemesini isteyebilirsiniz ([Kabul Edilebilir Kullanım ve Yapay Zekâ İçerik Politikası](kabul-edilebilir-kullanim-politikasi.md), 9. bölüm).
+Güvenlik filtrelerimiz 24 saat içinde isteklerinizden veya sonuçlarınızdan 3'ünü engellerse bulut yapay zekâ, hesabınız ve App Store indirmeniz (doğrulanmış bir indirme yoksa ağ adresiniz) için 24 saat ara verir. 30 gün içinde 3 mola olursa, inceleyene kadar o indirme için bulut yapay zekâyı kapatırız. Cihaz üzerindeki özellikler çalışmaya devam eder ve bir insanın incelemesini isteyebilirsiniz ([Kabul Edilebilir Kullanım ve Yapay Zekâ İçerik Politikası](kabul-edilebilir-kullanim-politikasi.md), 9. bölüm).
 
 Krediler, Glowlit uygulamasındaki bulut yapay zekâ özelliklerini kullanmanıza yönelik bir lisanstır. Krediler para, mülkiyet konusu bir değer veya ödeme aracı değildir ve yalnızca uygulamada kullanılabilir.
 

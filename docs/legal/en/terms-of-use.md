@@ -178,7 +178,7 @@ Free members may also see an occasional ad after saving or sharing a finished cr
 
 To protect the Service, we limit how many cloud AI jobs an account, an App Store download and a network address can start per minute, per hour and per day, and how many jobs all users together can start per day. When a limit is reached, the app tells you and cloud AI pauses for a while; nothing is charged.
 
-If our safety filters block 3 of your requests or results within 24 hours, cloud AI pauses for 24 hours for your account and your App Store download. After 3 pauses within 30 days, we switch cloud AI off for that download until we've reviewed it. On-device features keep working, and you can ask for a human review (our [AUP](acceptable-use-policy.md), section 9).
+If our safety filters block 3 of your requests or results within 24 hours, cloud AI pauses for 24 hours for your account and your App Store download (or, without a verified download, your network address). After 3 pauses within 30 days, we switch cloud AI off for that download until we've reviewed it. On-device features keep working, and you can ask for a human review (our [AUP](acceptable-use-policy.md), section 9).
 
 Credits are a licence to use cloud AI features in Glowlit. They are not money, property or a payment instrument, and they can only be used in the app.
 

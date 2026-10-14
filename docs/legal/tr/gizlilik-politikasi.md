@@ -55,7 +55,7 @@ Bu bölüm 18 yaşından küçükseniz sizin için. Politikanın geri kalanı da
 - **Satın alımlar.** Satın alımlar cihazınızdaki Apple Hesabından tahsil edilir. Aile Paylaşımı'nda çocuk hesabınız varsa, veliniz veya vasinizin satın alımları "Satın Alma İzni İste" (Ask to Buy) ile onaylaması gerekebilir.
 - **Reklamlar.** Pro'nuz yoksa Google'dan birkaç reklam görebilirsiniz: krediniz bittiğinde 1 kredi için isteğe bağlı olarak izleyebileceğiniz kısa bir reklam (uygulamanın gösterdiği gibi günde birkaç kez) ve bazen kaydettikten sonra bir reklam. Reklamlar asla kişiselleştirilmez, herkese uygun reklamlarla sınırlıdır ve Google fotoğraflarınızı, istemlerinizi veya adınızı almaz. Hiçbir reklamı izlemek zorunda değilsiniz. 13 yaşın altında hiç reklam yoktur.
 - **Başkalarının fotoğrafları.** Başkalarının fotoğraflarını yalnızca "evet" dedilerse yükleyin. Küçük çocuklar için izni velisi veya vasisi vermelidir.
-- **Kontrol sizde.** Bulut yapay zekâ işlemeyi Ayarlar'dan istediğiniz zaman kapatabilir, **Ayarlar → Verilerimi ve hesabımı sil** ile her şeyi silebilirsiniz.
+- **Kontrol sizde.** Bulut yapay zekâ işlemeyi Ayarlar'dan istediğiniz zaman kapatabilir, **Ayarlar → Verilerimi ve hesabımı sil** ile verilerinizi ve hesabınızı silebilirsiniz.
 - **Sorunuz veya endişeniz mi var?** Güvendiğiniz bir yetişkinle konuşun. Siz, veliniz veya vasiniz bize [hello@buaze.com](mailto:hello@buaze.com) adresinden yazabilirsiniz.
 
 ## 4. iPhone'unuzda kalan veriler
@@ -100,7 +100,7 @@ Magic Edit, Styles, AI Enhance, Erase veya Create from text özelliklerini kulla
 
 ### İş kayıtları
 
-Her bulut yapay zekâ işi için şu bilgileri içeren bir kayıt tutarız: iş kimliği, anonim kullanıcı kimliğiniz, işlem türü, şablon kimliği, yapay zekâ model uç noktasının adı, kredi tutarı, durum, varsa hata kodu ve mesajı, yeniden deneme işaretleri, sağlayıcının istek kimliği ve zaman bilgileri. İş kayıtları ayrıca işin ücretsiz kredilerle ödenip ödenmediğini, yapay zekâ sağlayıcısının o iş için tahmini ücretini ve App Store indirmenizin özetini (aşağıda) içerir. İş kayıtları gönderdiğiniz fotoğrafı veya isteminizi içermez. Siz indirene kadar sonuçlarınızı tutar; sonuçlar en geç 1 saat içinde silinir. Bu kayıtları bir hesabın dakikada, saatte ve günde başlatabileceği iş sayısını sınırlamak için de kullanırız.
+Her bulut yapay zekâ işi için şu bilgileri içeren bir kayıt tutarız: iş kimliği, anonim kullanıcı kimliğiniz, işlem türü, şablon kimliği, yapay zekâ model uç noktasının adı, kredi tutarı, durum, varsa hata kodu ve mesajı, yeniden deneme işaretleri, sağlayıcının istek kimliği ve zaman bilgileri. İş kayıtları ayrıca işin ücretsiz kredilerle ödenip ödenmediğini, yapay zekâ sağlayıcısının o iş için tahmini ücretini ve App Store indirmenizin özetini (aşağıda) içerir; doğrulanmış bir indirme yoksa bunun yerine ağ adresinizin tuzlanmış özetini içerir. İş kayıtları gönderdiğiniz fotoğrafı veya isteminizi içermez. Siz indirene kadar sonuçlarınızı tutar; sonuçlar en geç 1 saat içinde silinir. Bu kayıtları bir hesabın dakikada, saatte ve günde başlatabileceği iş sayısını sınırlamak için de kullanırız.
 
 ### Krediler
 
@@ -206,7 +206,7 @@ Glowlit uygulamasını güvenli tutmak için otomatik güvenlik önlemleri kulla
 - yapay zekâ sağlayıcılarımızın güvenlik ayarları ve
 - her çıktının çıplaklık veya cinsel içerik bakımından otomatik kontrolü; açtığımız durumlarda ayrıca fotoğrafın ve sonuçların yapay zekâ sağlayıcımızın görsel modeliyle ikinci bir otomatik kontrolü.
 
-Bir filtre bir isteği veya sonucu engellerse sizden ücret alınmaz ve kredileriniz iade edilir. Bunun olduğunu (içeriği değil, filtrenin kategorisini ve zamanını) anonim hesabınıza ve App Store indirmenizin özetine bağlı olarak kaydederiz. Sunucularımızdaki filtreler 24 saat içinde isteklerinizden veya sonuçlarınızdan 3'ünü engellerse bulut yapay zekâ, o hesap ve indirme için 24 saat ara verir; 30 gün içinde 3 mola olursa, bir insan inceleyene kadar o indirme için bulut yapay zekâyı kapatırız. Cihaz üzerindeki özellikler çalışmaya devam eder.
+Bir filtre bir isteği veya sonucu engellerse sizden ücret alınmaz ve kredileriniz iade edilir. Bunun olduğunu (içeriği değil, filtrenin kategorisini ve zamanını) anonim hesabınıza ve App Store indirmenizin özetine bağlı olarak kaydederiz (doğrulanmış bir indirme yoksa ağ adresinizin tuzlanmış özetine bağlı olarak). Sunucularımızdaki filtreler 24 saat içinde isteklerinizden veya sonuçlarınızdan 3'ünü engellerse bulut yapay zekâ, o hesap ve indirme için 24 saat ara verir; 30 gün içinde 3 mola olursa, bir insan inceleyene kadar o indirme için bulut yapay zekâyı kapatırız. Cihaz üzerindeki özellikler çalışmaya devam eder.
 
 Bu filtreler ve molalar, istekleriniz hakkında verdiğimiz tek otomatik kararlardır. Yalnızca bulut yapay zekâ özelliklerine erişimi sınırlı bir süre etkiler; GDPR md. 22 anlamında sizin üzerinizde hukuki veya benzer şekilde önemli etkiler doğurmaz ve sizi profillemeyiz. Bir filtrenin bir şeyi yanlışlıkla engellediğini veya bir molanın size uygulanmaması gerektiğini düşünüyorsanız [hello@buaze.com](mailto:hello@buaze.com) adresinden bize yazın; bir insan inceleyecektir. KVKK md. 11/1-(g) kapsamındaki itiraz hakkınız saklıdır.
 
@@ -277,7 +277,7 @@ Kullandığımız güvencelerin bir örneğini [hello@buaze.com](mailto:hello@bu
 - **Ödüllü reklamlar**: tek kullanımlık ödül kodları 30 dakika geçerlidir ve süreleri dolduktan bir gün sonra silinir; onaylanan ödüllerin kayıtları 30 gün saklanır, ardından veya hesabınızı daha önce silerseniz o zaman silinir. Google, aldığı reklam verilerini kendi politikalarına göre saklar (11. bölüm).
 - **App Store indirmesinin özeti** (o günün ücretsiz kredileri, ortam ve tarihlerle birlikte özet): uygulamanın onu son kullanmasından 30 gün sonra silinir; o indirme için bulut yapay zekâ kapatıldıysa aşağıdaki süre geçerlidir.
 - **Güvenlik kayıtları** (kategori ve zaman olarak engellenen istekler ve sonuçlar; molalar): 30 gün sonra silinir. Tekrarlanan molalardan sonraki kapatma, biz kaldırana kadar ve en fazla 12 ay saklanır.
-- **Ağ adresi özetiyle tutulan sayımlar**: bir gün sonra silinir.
+- **Ağ adresi özetiyle tutulan sayımlar**: bir gün sonra silinir. Doğrulanmış bir App Store indirmesi yoksa, iş ve güvenlik kayıtları indirme özeti yerine bu tuzlanmış adres özetini kullanır; süreler yukarıdakiler gibidir.
 - Son üç kayıt, yalnızca ücretsiz kredilerin ve güvenlik sistemimizin kötüye kullanılmasını önlemek için hesabınızı sildikten sonra da saklanır. Silmeden sonra hiçbir hesaba bağlı değildir.
 - **Sunucu ve güvenlik kayıtları**: güvenlik ve kötüye kullanımın önlenmesi için kısa bir süre, genellikle en fazla 90 gün. Bu kayıtlar hesabınızı sildikten sonra da bu takvime göre silinir.
 - **E-postalar ve gizlilik talepleri**: talebinizi karşılamak ve nasıl karşıladığımızı belgelemek için gereken süre boyunca; bir hakkın tesisi, kullanılması veya savunulması için daha uzun saklamamız gerekmedikçe.

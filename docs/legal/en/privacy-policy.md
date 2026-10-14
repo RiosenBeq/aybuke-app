@@ -55,7 +55,7 @@ This section is for you if you're under 18. The rest of this policy applies to y
 - **Purchases.** Purchases are charged to the Apple Account on your device. If you have a child account in Family Sharing, your parent or guardian may need to approve purchases with "Ask to Buy".
 - **Ads.** If you don't have Pro, you may see a few ads from Google: a short ad you can choose to watch for 1 credit when you've run out (a few a day, as the app shows), and sometimes one after you save. They're never personalised, they're limited to ads suitable for everyone, and Google doesn't get your photos, prompts or name. You never have to watch one. Under 13 there are no ads.
 - **Other people's photos.** Only upload photos of other people if they've said yes. For younger children, their parent or guardian has to say yes.
-- **You're in control.** You can switch off cloud AI processing in Settings at any time, and delete everything with **Settings → Delete my data & account**.
+- **You're in control.** You can switch off cloud AI processing in Settings at any time, and delete your data and account with **Settings → Delete my data & account**.
 - **Questions or worries?** Talk to a trusted adult. You, your parent or your guardian can email us at [hello@buaze.com](mailto:hello@buaze.com).
 
 ## 4. Data that stays on your iPhone
@@ -100,7 +100,7 @@ When you use Magic Edit, Styles, AI Enhance, Erase or Create from text, the app 
 
 ### Job records
 
-For each cloud AI job, we keep a record with: a job ID, your anonymous user ID, the type of operation, the template ID, the name of the AI model endpoint, the credit cost, the status, any error code and message, retry flags, the provider's request ID and timestamps. Job records also note whether free credits paid for the job, an estimate of what the AI provider charges for it and the hash of your App Store download (below). Job records don't contain the photo you sent or your prompt. Until you download them, they hold your results, which are deleted within 1 hour. We also use them to apply limits on how many jobs an account can start per minute, hour and day.
+For each cloud AI job, we keep a record with: a job ID, your anonymous user ID, the type of operation, the template ID, the name of the AI model endpoint, the credit cost, the status, any error code and message, retry flags, the provider's request ID and timestamps. Job records also note whether free credits paid for the job, an estimate of what the AI provider charges for it and the hash of your App Store download (below), or, without a verified download, a salted hash of your network address. Job records don't contain the photo you sent or your prompt. Until you download them, they hold your results, which are deleted within 1 hour. We also use them to apply limits on how many jobs an account can start per minute, hour and day.
 
 ### Credits
 
@@ -206,7 +206,7 @@ To keep Glowlit safe, we use automated safety measures:
 - our AI providers' safety settings; and
 - an automated check of every output for nudity or sexual content, and, where we switch it on, a second automated check of the photo and the results by our AI provider's vision model.
 
-If a filter blocks a request or a result, you aren't charged, and any credits are refunded. We record that it happened (the filter's category and the time, never the content), linked to your anonymous account and the hash of your App Store download. If our servers' filters block 3 of your requests or results within 24 hours, cloud AI pauses for 24 hours for that account and download; after 3 pauses within 30 days, we switch cloud AI off for that download until a human has reviewed it. On-device features keep working.
+If a filter blocks a request or a result, you aren't charged, and any credits are refunded. We record that it happened (the filter's category and the time, never the content), linked to your anonymous account and the hash of your App Store download (or, without a verified download, a salted hash of your network address). If our servers' filters block 3 of your requests or results within 24 hours, cloud AI pauses for 24 hours for that account and download; after 3 pauses within 30 days, we switch cloud AI off for that download until a human has reviewed it. On-device features keep working.
 
 These filters and pauses are the only automated decisions we make about your requests. They affect only access to cloud AI features for a limited time, don't have legal or similarly significant effects on you within the meaning of Article 22 GDPR, and we don't profile you. If you think a filter blocked something by mistake, or a pause shouldn't apply to you, contact us at [hello@buaze.com](mailto:hello@buaze.com) and a human will review it.
 
@@ -277,7 +277,7 @@ You can ask for a copy of the safeguards we use by emailing [hello@buaze.com](ma
 - **Rewarded ads**: single-use reward codes are valid for 30 minutes and deleted a day after they expire; records of confirmed rewards are kept for 30 days, then deleted, or earlier if you delete your account. Google keeps the ad data it receives under its own policies (section 11).
 - **Hashed App Store download** (the hash with the day's free credits, the environment and dates): deleted 30 days after the app last used it, unless cloud AI is switched off for that download (below).
 - **Safety records** (blocked requests and results, as category and time; pauses): deleted after 30 days. A switch-off after repeated pauses is kept until we lift it, and at most 12 months.
-- **Hashed network address counts**: deleted after a day.
+- **Hashed network address counts**: deleted after a day. Without a verified App Store download, job and safety records use a salted hash of your network address in place of the download hash, for the periods above.
 - The last three are kept even after you delete your account, only to prevent abuse of free credits and of our safety system. After deletion they aren't linked to any account.
 - **Server and security logs**: a short period, typically no more than 90 days, for security and abuse prevention. They are deleted on this schedule even after you delete your account.
 - **Emails and privacy requests**: as long as needed to handle your request and to document how we handled it, unless we must keep them longer to establish, exercise or defend legal claims.
