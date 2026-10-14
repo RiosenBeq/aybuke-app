@@ -79,7 +79,7 @@ struct BestShotView: View {
 
     private var header: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text(Platform.isMac ? "Free · on your Mac" : "Free · on your iPhone")
+            Text("Free · on your device")
                 .eyebrowStyle()
             Text(styled: "Find your *best shot*", size: 32)
                 .foregroundStyle(Palette.textPrimary)
@@ -103,7 +103,7 @@ struct BestShotView: View {
                 Text("Choose selfies")
                     .font(.cardTitle)
                     .foregroundStyle(Palette.textPrimary)
-                Text(Platform.isMac ? "Photos never leave your Mac" : "Photos never leave your iPhone")
+                Text("Photos never leave your device")
                     .font(.footnote)
                     .foregroundStyle(Palette.textSecondary)
             }

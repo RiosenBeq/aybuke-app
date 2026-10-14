@@ -190,7 +190,7 @@ Bunlar ABD doları cinsinden referans fiyatlardır. Uygulama, satın almadan ön
 - üretim başına 4 görsele kadar;
 - tüm şablon ve stiller;
 - Glowlit filigranı olmadan dışa aktarım; ve
-- daha yüksek çözünürlüklü çıktılar.
+- ücretsiz plandan daha yüksek kalitede yapay zekâ işleme.
 
 ### Ücretsiz deneme süresi
 

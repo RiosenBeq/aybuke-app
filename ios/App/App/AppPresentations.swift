@@ -18,6 +18,15 @@ struct AppPresentations: ViewModifier {
                     .environment(app)
                     .pageSheetSizing()
             }
+            .sheet(item: Binding(
+                get: { isActive ? app.outOfCredits : nil },
+                set: { app.outOfCredits = $0 }
+            )) { request in
+                OutOfCreditsSheet(request: request)
+                    .environment(app)
+                    .presentationDetents([.medium, .large])
+                    .presentationBackground(Palette.background)
+            }
             .sheet(isPresented: Binding(
                 get: { isActive && app.isBestShotPresented },
                 set: { app.isBestShotPresented = $0 }
@@ -27,7 +36,7 @@ struct AppPresentations: ViewModifier {
                     .pageSheetSizing()
             }
             .sheet(isPresented: Binding(
-                get: { isActive && app.isAccountPromptPresented && !app.isPaywallPresented },
+                get: { isActive && app.isAccountPromptPresented && !app.isPaywallPresented && app.outOfCredits == nil },
                 set: { app.isAccountPromptPresented = $0 }
             )) {
                 AccountPromptSheet()

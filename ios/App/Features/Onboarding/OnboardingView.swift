@@ -22,7 +22,7 @@ struct OnboardingView: View {
         OnboardingPage(
             symbol: "heart.text.square",
             title: String(localized: "One tap.\nA whole new *aesthetic*"),
-            body: String(localized: "Doll box, Y2K, ballet core, fairy princess — and fresh trends every week."),
+            body: String(localized: "Doll box, Y2K, ballet core, fairy princess and more — one tap each."),
             tone: .ink
         ),
         OnboardingPage(
@@ -212,7 +212,7 @@ private struct InterestPicker: View {
             Spacer(minLength: 8)
             Text(styled: "What are you\n*here for?*", size: 34)
                 .foregroundStyle(Palette.textPrimary)
-            Text("Pick as many as you like — we'll tailor your feed.")
+            Text("Pick as many as you like — we'll put them near the top of Explore.")
                 .font(.body)
                 .foregroundStyle(Palette.textSecondary)
 
@@ -274,9 +274,7 @@ private struct TryItPage: View {
             Spacer(minLength: 8)
             Text(styled: "See the *glow*\non your own photo", size: 34)
                 .foregroundStyle(Palette.textPrimary)
-            Text(Platform.isMac
-                 ? "A free enhance that runs on your Mac — nothing is uploaded."
-                 : "A free enhance that runs on your iPhone — nothing is uploaded.")
+            Text("A free enhance that runs on your device — nothing is uploaded.")
                 .font(.body)
                 .foregroundStyle(Palette.textSecondary)
 

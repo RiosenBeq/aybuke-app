@@ -123,9 +123,7 @@ struct LibraryView: View {
             Text("Nothing here yet")
                 .font(.sectionTitle)
                 .foregroundStyle(Palette.textPrimary)
-            Text(Platform.isMac
-                 ? "Your creations are saved here — privately, on this Mac."
-                 : "Your creations are saved here — privately, on this iPhone.")
+            Text("Your creations are saved here — privately, on this device.")
                 .font(.subheadline)
                 .foregroundStyle(Palette.textSecondary)
                 .multilineTextAlignment(.center)

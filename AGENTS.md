@@ -82,9 +82,13 @@ backend/scripts/test-db.sh
 # Generated files must stay in sync (CI checks both)
 python3 scripts/build-legal.py --check
 python3 scripts/export-core-strings.py --check
+python3 scripts/check-honest-copy.py      # no unsupported claims, device-neutral app copy (CI)
+python3 scripts/check-release-config.py   # release blockers: demo mode, legal placeholders, website URL
+                                          # (CI runs it with --report; upload-app-store.sh with --online)
 
 # Archive and upload to App Store Connect / TestFlight with an API key
 # (key file in ~/.appstoreconnect/private_keys/; ids from Users and Access → Integrations)
+# It stops on release blockers; GL_PREVIEW_BUILD=1 allows a deliberate preview (never submit it for review)
 ASC_KEY_ID=<key id> ASC_ISSUER_ID=<issuer id> scripts/upload-app-store.sh
 PLATFORM=mac ASC_KEY_ID=<key id> ASC_ISSUER_ID=<issuer id> scripts/upload-app-store.sh   # Mac App Store
 ```
@@ -95,11 +99,11 @@ Deterministic screens for QA and marketing (DEBUG builds): launch with `-GLScree
 
 ## 4. How things work
 
-- **AI modes** (`AppConfig.aiMode`): *backend* (production: Supabase Edge Functions → xAI `grok-imagine-image-2.0`, low quality for free and medium for Pro, 1k), *direct* (DEBUG only, key from `ios/Config/Secrets.xcconfig`, `GL_AI_PROVIDER = xai|fal|openai|gemini`), *demo* (no backend: simulated results stamped "DEMO PREVIEW"). Jobs are async: POST → poll → download → DELETE to confirm, which clears results server-side.
+- **AI modes** (`AppConfig.aiMode`): *backend* (production: Supabase Edge Functions → xAI `grok-imagine-image-2.0`, low quality for free and medium for Pro, 1k), *direct* (DEBUG only, key from `ios/Config/Secrets.xcconfig`, `GL_AI_PROVIDER = xai|fal|openai|gemini`), *demo* (no backend: simulated results stamped "DEMO PREVIEW"; the banner says "Preview build", accounts and reports are hidden or say they aren't on yet, and a demo build installed from the App Store turns purchases off). Jobs are async: POST → poll → download → DELETE to confirm, which clears results server-side.
 - **Gates for every AI action:** content policy (client + server, all app languages; checked before the consent sheet or paywall opens) → consent → Pro/credits. Credits are server-authoritative in production; failures are refunded exactly once.
 - **On-device tools** never need consent or credits and save without a watermark. Free cloud AI results carry a small mark; Pro removes it.
 - **Localization:** String Catalogs. In SwiftUI use literals or `LocalizedStringKey`; in models use `String(localized:)`; AppCore text is English and translated at runtime with `L10n.core(_:)`, so after changing AppCore strings run `python3 scripts/export-core-strings.py`. Add or update translations with `xcodebuild -exportLocalizations` / `-importLocalizations`. Keep placeholders, `*accent*` pairs and line breaks identical. Legal documents exist in English and Turkish only.
-- **Purchases:** StoreKit 2 in `PurchaseManager`; the backend verifies Apple-signed transactions. RevenueCat runs in observer mode for analytics only (project "Glowlit", public key in `AppConfig.json`).
+- **Purchases:** StoreKit 2 in `PurchaseManager`; the backend verifies Apple-signed transactions. RevenueCat runs in observer mode for analytics only (project "Glowlit", public key in `AppConfig.json`). A purchase can come back *pending* (Ask to Buy, Texas SB 2420 parental consent): the paywall shows a neutral "Waiting for approval" state kept in memory only (StoreKit never reports a decline), and an approval arrives through `Transaction.updates` (`PurchaseManager.onLatePurchase`). To test it, select `ios/StoreKit/Products.storekit`, choose Editor › Enable Ask to Buy, then approve or decline in Debug › StoreKit › Manage Transactions; never commit the file with Ask to Buy switched on. Load failures are simulated with the file's StoreKit error settings (airplane mode has no effect on a local configuration).
 - **Shared data with widgets:** App Group `group.app.glowlit.shared`; deep links `glowlit://…` (`GlowDeepLink` in AppCore).
 - **Layout:** universal; use `.readableWidth()` for wide screens and `pageSheetSizing()` for big sheets; Liquid Glass only behind `#if compiler(>=6.2)` + `#available(iOS 26, *)`. On the Mac the tabs sit in the title bar, so full-window covers (editor, video editor) hide them with `hidesMacTabs`.
 - **Mac (Mac Catalyst):** both targets set `SUPPORTS_MACCATALYST` and keep `TARGETED_DEVICE_FAMILY = 1,2` ("Scale Interface to Match iPad", macOS 14+) and the iOS bundle ids (`DERIVE_MACCATALYST_PRODUCT_BUNDLE_IDENTIFIER = NO`, so purchases are universal). macOS signs with `Config/*-macOS.entitlements` (App Sandbox, network client, user-selected files, Photos library, App Group, Sign in with Apple for the app) through `CODE_SIGN_ENTITLEMENTS[sdk=macosx*]`. `App/MacSupport.swift` has the menu bar (`GlowlitCommands`, attached on the Mac only), the window setup (no title text, 900×640 minimum), photo drag & drop and Mac-only shortcuts; share sheets go through `.shareSheet(item:)`, a popover on the Mac. Not on the Mac: the Live Activity (ActivityKit is unavailable there, so a finished job uses the opt-in notification) and Instagram Stories (the share menu takes its place); the Control Center controls reach the Mac build only with the Xcode 26 SDK. Use `#if targetEnvironment(macCatalyst)` for APIs, but `Platform.isMac` at runtime for Mac wording ("on your Mac", "System Settings"), so `-exportLocalizations`, which builds for iOS, still extracts it.

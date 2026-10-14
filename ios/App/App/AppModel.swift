@@ -3,6 +3,7 @@ import SwiftData
 import PhotosUI
 import Observation
 import AuthenticationServices
+import StoreKit
 import AppCore
 
 enum AppTab: Hashable {
@@ -74,6 +75,8 @@ final class AppModel {
     /// Settings: the gear on Explore, or Glowlit › Settings… on the Mac.
     var isSettingsPresented = false
     var isPaywallPresented = false
+    /// Pro without enough credits: next refill and packs (free members get the paywall).
+    var outOfCredits: OutOfCreditsRequest?
     private(set) var paywallSource = "unknown"
     var isPhotoPickerPresented = false
     var editorLaunch: EditorLaunch?
@@ -167,6 +170,13 @@ final class AppModel {
         purchases.creditPackHandler = { [weak self] credits, signedTransaction in
             await self?.grantCreditPack(credits, signedTransaction: signedTransaction) ?? false
         }
+        purchases.onProStatusChange = { [weak self] isPro in
+            guard let self else { return }
+            credits.refresh(isPro: isPro)
+            syncWidgets()
+            Task { await self.refreshServerBalance() }
+        }
+        purchases.onLatePurchase = { [weak self] purchase in self?.completeLatePurchase(purchase) }
         notifier.onOpenLink = { [weak self] link in self?.handle(link) }
 
         #if DEBUG
@@ -190,7 +200,7 @@ final class AppModel {
         case .direct(let direct):
             return "Developer mode — AI runs directly on \(direct.provider.displayName) with your key from Secrets.xcconfig. Release builds use the backend."
         case .demo:
-            return "Demo mode — AI results are simulated on device. Add an AI key (see README → “Connect an AI provider”) to see real results."
+            return String(localized: "Preview build: AI results are samples")
         }
     }
 
@@ -206,6 +216,9 @@ final class AppModel {
         await refreshServerBalance()
         syncWidgets()
         syncReminders()
+        #if !DEBUG
+        if isDemoMode { await purchases.closeForPreviewIfFromAppStore() }
+        #endif
         await purchases.loadProducts()
     }
 
@@ -231,17 +244,41 @@ final class AppModel {
         }
     }
 
+    /// An approved "Ask to Buy" or a redeemed offer code. No account prompt
+    /// here: it could cover an edit in progress (Settings still offers it).
+    private func completeLatePurchase(_ purchase: LatePurchase) {
+        Haptics.success()
+        if purchase.isCreditPack {
+            showToast("Credits added ✦", style: .success)
+            return
+        }
+        showToast("Welcome to \(Brand.name) Pro ✦", style: .success)
+        // Keep the paywall's "We'll remind you before your trial ends" promise.
+        if let trialEnd = purchase.trialEndsAt,
+           let price = purchases.products.first(where: { $0.id == purchase.productID })?.displayPrice {
+            Task { await TrialReminder.schedule(billingDate: trialEnd, price: price, mayAsk: false) }
+        }
+    }
+
     /// Binds purchases to the backend user (StoreKit `appAccountToken`).
     func appAccountToken() async -> UUID? {
         await remote?.currentUserID()
     }
 
-    /// "Report this image": sent to the backend for review; logged locally in
-    /// demo and developer mode, where there is no server.
+    /// Reports go to the backend for review; preview (demo and developer)
+    /// builds have no server to send them to.
+    var canSendReports: Bool { remote != nil }
+
+    /// Says so instead of pretending a report was kept.
+    func noteReportingUnavailable() {
+        showToast("Reporting turns on when \(Brand.name) launches. Thanks for looking out.", style: .info)
+    }
+
+    /// "Report this image": sent to the backend for review.
     func report(_ reason: ReportReason, requestID: String?) async {
         registerSetback()
         guard let remote else {
-            showToast("Thanks — your report was noted.", style: .success)
+            noteReportingUnavailable()
             return
         }
         do {
@@ -382,7 +419,7 @@ final class AppModel {
     }
 
     private var isPresentingSomething: Bool {
-        isPaywallPresented || editorLaunch != nil || videoSource != nil || consentRequest != nil
+        isPaywallPresented || outOfCredits != nil || editorLaunch != nil || videoSource != nil || consentRequest != nil
             || shareRequest != nil || isAccountPromptPresented || isBestShotPresented
     }
 
@@ -430,7 +467,7 @@ final class AppModel {
         credits.refresh(isPro: purchases.isPro)
         guard credits.canAfford(operation, outputs: outputs) else {
             if purchases.isPro {
-                showToast("You've reached today's fair-use limit. Credits refill at midnight.", style: .info)
+                outOfCredits = OutOfCreditsRequest(needed: credits.cost(of: operation, outputs: outputs), available: credits.balance)
             } else {
                 presentPaywall(source: "out_of_credits")
             }
@@ -554,7 +591,9 @@ final class AppModel {
             isPro: purchases.isPro,
             nextRefill: credits.nextFreeRefill,
             latest: (try? context.fetch(newest))?.first,
-            creationsCount: count
+            creationsCount: count,
+            breakdown: credits.breakdown,
+            nextGrant: credits.nextSubscriptionGrant
         )
     }
 
@@ -692,6 +731,7 @@ final class AppModel {
     func handle(_ link: GlowDeepLink) {
         guard hasCompletedOnboarding, editorLaunch == nil else { return }
         isPaywallPresented = false
+        outOfCredits = nil
         switch link {
         case .magicEdit:
             selectedTab = .home
@@ -734,23 +774,28 @@ final class AppModel {
 
     /// Maps any error to a friendly toast, opening the paywall when relevant.
     static func isCancellation(_ error: Error) -> Bool {
-        error is CancellationError || (error as? URLError)?.code == .cancelled
+        if case StoreKitError.userCancelled = error { return true }
+        return error is CancellationError || (error as? URLError)?.code == .cancelled
     }
 
     func handle(_ error: Error) {
         if Self.isCancellation(error) { return }
         Haptics.error()
         registerSetback()
-        if case AIServiceError.insufficientCredits = error {
+        if case AIServiceError.insufficientCredits(let remaining) = error {
             if purchases.isPro {
-                showToast("You've reached today's fair-use limit.", style: .info)
+                outOfCredits = OutOfCreditsRequest(available: remaining)
             } else {
                 presentPaywall(source: "out_of_credits")
             }
             return
         }
-        if case CreditError.insufficient = error {
-            presentPaywall(source: "out_of_credits")
+        if case CreditError.insufficient(let needed, let available) = error {
+            if purchases.isPro {
+                outOfCredits = OutOfCreditsRequest(needed: needed, available: available)
+            } else {
+                presentPaywall(source: "out_of_credits")
+            }
             return
         }
         if case AIServiceError.consentRequired = error {
@@ -766,10 +811,38 @@ final class AppModel {
         if case AIServiceError.server(let code, let message) = error {
             return serverMessages[code] ?? L10n.core(message)
         }
+        if let message = storeMessage(for: error) {
+            return message
+        }
         if let text = (error as? LocalizedError)?.errorDescription {
             return L10n.core(text)
         }
         return String(localized: "Something went wrong. Please try again.")
+    }
+
+    /// StoreKit's own texts would otherwise pass through untranslated.
+    private static func storeMessage(for error: Error) -> String? {
+        if let error = error as? StoreKitError {
+            switch error {
+            case .networkError:
+                return String(localized: "Couldn't reach the App Store. Check your connection.")
+            case .notAvailableInStorefront:
+                return String(localized: "This purchase isn't available in your country or region.")
+            default:
+                return nil
+            }
+        }
+        if let error = error as? Product.PurchaseError {
+            switch error {
+            case .purchaseNotAllowed:
+                return String(localized: "Purchases are turned off on this device.")
+            case .productUnavailable:
+                return String(localized: "This purchase isn't available right now.")
+            default:
+                return nil
+            }
+        }
+        return nil
     }
 
     private static let serverMessages: [String: String] = [
@@ -824,6 +897,12 @@ extension AppModel {
             selectedTab = .home
             paywallSource = "screenshot"
             isPaywallPresented = true
+        case .outOfCredits:
+            selectedTab = .home
+            outOfCredits = OutOfCreditsRequest(needed: 1, available: 0)
+        case .outOfCreditsMulti:
+            selectedTab = .create
+            outOfCredits = OutOfCreditsRequest(needed: 4, available: 2)
         case .consent:
             selectedTab = .home
             consentRequest = ConsentRequest {}

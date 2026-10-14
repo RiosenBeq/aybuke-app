@@ -62,7 +62,7 @@ Much of Glowlit works without sending anything to us. The following data is stor
 - **Your library ("My Works")**: the images you keep, with their title, the type of edit, the text prompt you used (for Create from text and Magic Edit), whether you marked them as a favourite, and timestamps. The library is stored in the app's private storage and protected by iOS Data Protection.
 - **App settings** (stored in iOS UserDefaults): whether you've completed onboarding; the interests you picked (for example "Selfie glow-ups" or "Shots for my shop"), which are used only to order the home screen on your device; your cloud AI consent choice; your appearance preference; your notification choices; a small count of happy moments (saving, sharing or hearting a creation) and when the app last asked, used only to time Apple's rating prompt; and, only in offline or demo mode, a local credit balance.
 - **Session tokens** for your anonymous account, stored in the iOS Keychain.
-- **Reminders**: notifications are off until you allow them and switch them on. The app then schedules them locally on your device: a reminder one day before a free trial ends; "your glow-up is ready" when a creation finishes while you're in another app; "your free credits are back" (only after you run out); and, if you choose, one new look a week. Reminders are never sent between 9 pm and 9 am, or during school hours (8 am to 3 pm) on weekdays. No push server or device token is involved.
+- **Reminders**: notifications are off until you allow them and switch them on. The app then schedules them locally on your device: a reminder one day before a free trial ends; "your glow-up is ready" when a creation finishes while you're in another app; "your free credits are back" (only after you run out); and, if you choose, a look of the week. Reminders are never sent between 9 pm and 9 am, or during school hours (8 am to 3 pm) on weekdays. No push server or device token is involved.
 - **Widgets and Live Activity**: to show your credits, your latest creation and its progress on the Home Screen, the Lock Screen and in the Dynamic Island, the app shares a small snapshot (credit balance, the title and a small thumbnail of your latest creation, and how many creations you have) with its widgets through a container on your device. It never leaves your iPhone.
 
 **On-device features.** Remove background (using Apple's Vision framework), Adjust and the "quick glow" enhance during onboarding process your photos entirely on your iPhone.
@@ -91,7 +91,7 @@ When you use Magic Edit, Styles, AI Enhance, Erase or Create from text, the app 
 
 ### Job records
 
-For each cloud AI job, we keep a record with: a job ID, your anonymous user ID, the type of operation, the template ID, the name of the AI model endpoint, the credit cost, the status, any error code and message, retry flags, the provider's request ID and timestamps. Job records don't contain your photos or prompts. We also use them to apply rate limits (6 jobs per minute on the free tier and 20 with Pro).
+For each cloud AI job, we keep a record with: a job ID, your anonymous user ID, the type of operation, the template ID, the name of the AI model endpoint, the credit cost, the status, any error code and message, retry flags, the provider's request ID and timestamps. Job records don't contain the photo you sent or your prompt. Until you download them, they hold your results, which are deleted within 1 hour. We also use them to apply rate limits (6 jobs per minute on the free tier and 20 with Pro).
 
 ### Credits
 

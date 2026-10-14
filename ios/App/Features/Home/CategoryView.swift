@@ -75,14 +75,14 @@ extension TemplateCategory {
 
     var blurb: String {
         switch self {
-        case .trending: return String(localized: "What everyone's posting right now.")
+        case .trending: return String(localized: "Looks inspired by what's trending.")
         case .glowUp: return String(localized: "Hair, makeup and glam, and still 100% you.")
         case .aesthetic: return String(localized: "Moods, places and colours for your feed.")
         case .dreamy: return String(localized: "Soft, magical portraits.")
         case .seasonal:
             // No scarcity talk: seasonal looks stay in the editor all year.
             switch SeasonalTheme.current(on: AppClock.now) {
-            case .halloween: return String(localized: "Cute, cozy and a little spooky.")
+            case .halloween: return String(localized: "Cute and a little spooky.")
             case .winter: return String(localized: "Snow, sweaters and New Year sparkle.")
             case .galentines: return String(localized: "Pink brunches and photo booths with your besties.")
             case nil: return String(localized: "Looks for this time of year.")

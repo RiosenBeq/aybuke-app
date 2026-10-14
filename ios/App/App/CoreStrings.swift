@@ -137,7 +137,7 @@ enum CoreStrings {
         String(localized: "This request was blocked by the AI provider's safety filters. Try a different idea.", comment: "Error message"),
         String(localized: "Pick a photo first.", comment: "Error message"),
         String(localized: "Brush over the area you want to erase.", comment: "Error message"),
-        String(localized: "Background removal runs on your iPhone.", comment: "Error message"),
+        String(localized: "Background removal runs on your device.", comment: "Error message"),
         String(localized: "Describe what you want to see.", comment: "Error message"),
         String(localized: "Choose a style.", comment: "Error message"),
         String(localized: "A dreamy pastel bedroom with a canopy bed, fairy lights and a window seat at sunset", comment: "Example idea for creating an image, put in the prompt field"),

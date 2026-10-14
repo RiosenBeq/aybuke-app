@@ -12,12 +12,15 @@ struct SettingsView: View {
     @State private var isRestoring = false
     @State private var confirmSignOut = false
     @State private var showInvite = false
+    @State private var showPacks = false
 
     var body: some View {
         NavigationStack {
             List {
                 membershipSection
-                accountSection
+                if app.canUseAccounts {
+                    accountSection
+                }
                 creditsSection
                 notificationsSection
                 appearanceSection
@@ -52,9 +55,7 @@ struct SettingsView: View {
                 }
                 Button("Cancel", role: .cancel) {}
             } message: {
-                Text(Platform.isMac
-                     ? "This removes every image saved in \(Brand.name) on this Mac. Photos you saved to your library stay there."
-                     : "This removes every image saved in \(Brand.name) on this iPhone. Photos you saved to your library stay there.")
+                Text("This removes every image saved in \(Brand.name) on this device. Photos you saved to your library stay there.")
             }
             .confirmationDialog("Delete my data?", isPresented: $confirmDeleteAccount, titleVisibility: .visible) {
                 Button("Delete my data", role: .destructive) {
@@ -62,7 +63,12 @@ struct SettingsView: View {
                 }
                 Button("Cancel", role: .cancel) {}
             } message: {
-                Text("Deletes your creations, your anonymous account and its credits from our servers. Subscriptions are managed by Apple and must be cancelled separately.")
+                if app.canUseAccounts {
+                    Text("Deletes your creations, your anonymous account and its credits from our servers. Subscriptions are managed by Apple and must be cancelled separately.")
+                } else {
+                    // Preview builds have no server account to delete.
+                    Text("Deletes your creations and resets your AI consent on this device. Subscriptions are managed by Apple and must be cancelled separately.")
+                }
             }
         }
         .tint(Palette.accent)
@@ -94,9 +100,16 @@ struct SettingsView: View {
             Button {
                 isRestoring = true
                 Task {
-                    await app.purchases.restore()
+                    defer { isRestoring = false }
+                    do {
+                        try await app.purchases.restore()
+                    } catch {
+                        if !AppModel.isCancellation(error) {
+                            app.showToast(verbatim: AppModel.localizedMessage(for: error), style: .error)
+                        }
+                        return
+                    }
                     app.credits.refresh(isPro: app.purchases.isPro)
-                    isRestoring = false
                     app.showToast(app.purchases.isPro ? "Purchases restored ✦" : "No active subscription found.", style: app.purchases.isPro ? .success : .info)
                 }
             } label: {
@@ -108,6 +121,7 @@ struct SettingsView: View {
                     }
                 }
             }
+            .disabled(isRestoring)
         } header: {
             Text("Membership")
         }
@@ -130,9 +144,7 @@ struct SettingsView: View {
                 Button("Sign out", role: .destructive) { confirmSignOut = true }
             } else {
                 VStack(alignment: .leading, spacing: 12) {
-                    Text(Platform.isMac
-                         ? "Keep Pro and your credits when you switch or add a device. Signing in is optional."
-                         : "Keep Pro and your credits when you switch or add an iPhone. Signing in is optional.")
+                    Text("Keep Pro and your credits when you switch or add a device. Signing in is optional.")
                         .font(.subheadline)
                         .foregroundStyle(Palette.textSecondary)
                     AppleSignInButton()
@@ -144,10 +156,8 @@ struct SettingsView: View {
         } footer: {
             if !app.canUseAccounts {
                 Text("Accounts need the \(Brand.name) server, which isn't connected in this demo build.")
-            } else if Platform.isMac {
-                Text("Your photos stay on each device and are never uploaded to sync. We only learn your Apple ID email if you share it, and you can hide it.")
             } else {
-                Text("Your photos stay on each iPhone and are never uploaded to sync. We only learn your Apple ID email if you share it, and you can hide it.")
+                Text("Your photos stay on each device and are never uploaded to sync. We only learn your Apple ID email if you share it, and you can hide it.")
             }
         }
         .listRowBackground(Palette.surface)
@@ -162,10 +172,14 @@ struct SettingsView: View {
                     .monospacedDigit()
                     .foregroundStyle(Palette.textSecondary)
             }
-            Button("Buy a credit pack") {
-                dismiss()
-                app.presentPaywall(source: "settings_packs")
-            }
+            // The packs themselves, not the plans: she asked for a pack.
+            Button("Buy a credit pack") { showPacks = true }
+                .sheet(isPresented: $showPacks) {
+                    CreditPacksView()
+                        .environment(app)
+                        .presentationDetents([.medium, .large])
+                        .presentationBackground(Palette.background)
+                }
         } header: {
             Text("Credits")
         } footer: {
@@ -182,9 +196,9 @@ struct SettingsView: View {
             if !app.purchases.isPro {
                 notificationToggle(.creditsBack, title: "When my free credits are back", detail: "Only after I run out.")
             }
-            notificationToggle(.weeklyLook, title: "One new look a week", detail: "Fridays at 5 pm.")
+            notificationToggle(.weeklyLook, title: "Look of the week", detail: "Fridays at 5 pm.")
             if app.notifier.authorization == .denied, let settings = URL(string: UIApplication.openNotificationSettingsURLString) {
-                Button(Platform.isMac ? "Allow notifications in System Settings" : "Allow notifications in iOS Settings") { openURL(settings) }
+                Button(Platform.isMac ? "Allow notifications in System Settings" : "Allow notifications in Settings") { openURL(settings) }
             }
         } header: {
             Text("Notifications")
@@ -230,9 +244,7 @@ struct SettingsView: View {
         } header: {
             Text("Appearance")
         } footer: {
-            Text(Platform.isMac
-                 ? "Light is our signature pink look. Automatic follows your Mac."
-                 : "Light is our signature pink look. Automatic follows your iPhone.")
+            Text("Light is our signature pink look. Automatic follows your device.")
         }
         .listRowBackground(Palette.surface)
     }
@@ -259,7 +271,7 @@ struct SettingsView: View {
         } footer: {
             Text(Platform.isMac
                  ? "Glowlit follows your Mac's language. To pick another one, click Language, then add Glowlit under Applications."
-                 : "Glowlit follows your iPhone's language. To pick another one, tap Language, then choose it in iOS Settings.")
+                 : "Glowlit follows your device's language. To pick another one, tap Language, then choose it in Settings.")
         }
         .listRowBackground(Palette.surface)
     }
@@ -365,14 +377,20 @@ struct SettingsView: View {
     }
 }
 
-/// Third-party notices required by the SIL Open Font License.
+/// Third-party notices: the Poppins font (SIL Open Font License) and the
+/// RevenueCat SDK (MIT), the app's only third-party code. Licence texts stay in English.
 struct AcknowledgementsView: View {
     private var fontLicense: String {
-        guard let url = Bundle.main.url(forResource: "Poppins-OFL", withExtension: "txt"),
-              let text = try? String(contentsOf: url, encoding: .utf8) else {
-            return String(localized: "Poppins is licensed under the SIL Open Font License 1.1.")
-        }
-        return text
+        Self.bundledText("Poppins-OFL") ?? String(localized: "Poppins is licensed under the SIL Open Font License 1.1.")
+    }
+
+    private var revenueCatLicense: String {
+        Self.bundledText("RevenueCat-LICENSE") ?? "MIT License. Copyright (c) 2024 RevenueCat, Inc."
+    }
+
+    private static func bundledText(_ name: String) -> String? {
+        guard let url = Bundle.main.url(forResource: name, withExtension: "txt") else { return nil }
+        return try? String(contentsOf: url, encoding: .utf8)
     }
 
     var body: some View {
@@ -381,6 +399,12 @@ struct AcknowledgementsView: View {
                 Text("Poppins")
                     .font(.headline)
                 Text(fontLicense)
+                    .font(.caption.monospaced())
+                    .foregroundStyle(Palette.textSecondary)
+                Text(verbatim: "RevenueCat")
+                    .font(.headline)
+                    .padding(.top, 12)
+                Text(revenueCatLicense)
                     .font(.caption.monospaced())
                     .foregroundStyle(Palette.textSecondary)
             }

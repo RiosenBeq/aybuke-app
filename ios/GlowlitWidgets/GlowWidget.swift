@@ -56,7 +56,7 @@ struct GlowWidgetView: View {
     private var creditsPill: some View {
         HStack(spacing: 4) {
             Image(systemName: snapshot.isPro ? "crown.fill" : "bolt.fill")
-            Text(snapshot.isPro ? "PRO" : "\(snapshot.credits)")
+            Text("\(snapshot.credits)")
                 .monospacedDigit()
         }
         .font(.system(size: 12, weight: .bold, design: .rounded))
@@ -148,19 +148,24 @@ struct GlowWidgetView: View {
 
     @ViewBuilder
     private var creditsLine: some View {
-        if snapshot.isPro {
-            Label("\(snapshot.credits) Pro credits", systemImage: "crown.fill")
-                .font(.system(size: 12, weight: .semibold, design: .rounded))
-                .foregroundStyle(WidgetPalette.inkSoft)
-        } else if let refill = snapshot.nextRefill, snapshot.credits == 0 {
-            Text("New credits in \(Text(refill, style: .relative))")
-                .font(.system(size: 12, weight: .semibold, design: .rounded))
-                .foregroundStyle(WidgetPalette.inkSoft)
-        } else {
-            Label("\(snapshot.credits) free credits today", systemImage: "bolt.fill")
-                .font(.system(size: 12, weight: .semibold, design: .rounded))
-                .foregroundStyle(WidgetPalette.inkSoft)
+        let refill = snapshot.isPro ? snapshot.nextGrant : snapshot.nextRefill
+        Group {
+            if let refill, snapshot.credits == 0 {
+                Text("New credits in \(Text(refill, style: .relative))")
+            } else {
+                switch snapshot.balanceKind {
+                case .daily:
+                    Label("\(snapshot.credits) free credits today", systemImage: "bolt.fill")
+                case .monthly:
+                    Label("\(snapshot.credits) Pro credits", systemImage: "crown.fill")
+                case .mixed:
+                    // Pack credits are neither free nor monthly.
+                    Label("\(snapshot.credits) credits left", systemImage: snapshot.isPro ? "crown.fill" : "bolt.fill")
+                }
+            }
         }
+        .font(.system(size: 12, weight: .semibold, design: .rounded))
+        .foregroundStyle(WidgetPalette.inkSoft)
     }
 
     private func action(_ symbol: String, _ title: LocalizedStringKey, _ link: GlowDeepLink) -> some View {
@@ -180,10 +185,11 @@ struct GlowWidgetView: View {
     }
 
     private var circular: some View {
-        Gauge(value: Double(min(snapshot.credits, 3)), in: 0...3) {
-            Image(systemName: "bolt.fill")
+        let range = snapshot.gaugeRange()
+        return Gauge(value: Double(snapshot.gaugeValue()), in: Double(range.lowerBound)...Double(range.upperBound)) {
+            Image(systemName: snapshot.isPro ? "crown.fill" : "bolt.fill")
         } currentValueLabel: {
-            Text(snapshot.isPro ? "∞" : "\(snapshot.credits)")
+            Text("\(snapshot.credits)")
                 .font(.system(.title3, design: .rounded).weight(.bold))
         }
         .gaugeStyle(.accessoryCircular)

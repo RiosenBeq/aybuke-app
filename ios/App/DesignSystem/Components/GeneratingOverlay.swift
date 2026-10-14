@@ -48,9 +48,7 @@ struct GeneratingOverlay: View {
         var tips = [
             String(localized: "Tip: be specific — lighting, mood and style words help a lot."),
             String(localized: "Tip: hold the photo to compare with your original."),
-            Platform.isMac
-                ? String(localized: "Background removal runs on your Mac and is always free.")
-                : String(localized: "Background removal runs on your phone and is always free."),
+            String(localized: "Background removal runs on your device and is always free."),
             String(localized: "Your photos are never used to train AI and are deleted from our servers within \(app.config.retentionPhrase)."),
             String(localized: "Tip: try “soft glam”, “pink hair” or “golden hour”."),
         ]

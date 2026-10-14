@@ -23,6 +23,9 @@ enum ScreenshotScene: String, CaseIterable {
     case legal
     /// A collection page; `-GLCategory <id>` picks it (default: the seasonal row).
     case collection
+    /// The Pro out-of-credits sheet: empty, and 2 credits for 4 images.
+    case outOfCredits
+    case outOfCreditsMulti
 
     static var current: ScreenshotScene? {
         UserDefaults.standard.string(forKey: "GLScreenshotScene").flatMap(ScreenshotScene.init(rawValue:))

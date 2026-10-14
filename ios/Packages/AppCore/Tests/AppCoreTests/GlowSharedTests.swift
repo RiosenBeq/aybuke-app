@@ -47,6 +47,34 @@ final class GlowSharedTests: XCTestCase {
         XCTAssertFalse(FileManager.default.fileExists(atPath: directory.appendingPathComponent("latest-creation.jpg").path))
     }
 
+    func testSnapshotFromAnOlderVersionStillDecodes() throws {
+        let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let old = #"{"credits":2,"isPro":false,"latestIsFavorite":false,"creationsCount":1,"updatedAt":"2026-10-01T09:00:00Z"}"#
+        try Data(old.utf8).write(to: directory.appendingPathComponent("widget-snapshot.json"))
+        let snapshot = try XCTUnwrap(GlowSharedStore.load(from: directory))
+        XCTAssertEqual(snapshot.credits, 2)
+        XCTAssertNil(snapshot.packs)
+        XCTAssertEqual(snapshot.balanceKind, .mixed, "unknown split: no \"today\" or \"this month\" label")
+    }
+
+    func testBalanceKindAndGauge() {
+        let free = GlowWidgetSnapshot(credits: 2, isPro: false, nextRefill: nil, latestTitle: nil, creationsCount: 0,
+                                      daily: 2, monthly: 0, packs: 0)
+        XCTAssertEqual(free.balanceKind, .daily)
+        XCTAssertEqual(free.gaugeRange(), 0...3)
+        let withPack = GlowWidgetSnapshot(credits: 32, isPro: false, nextRefill: nil, latestTitle: nil, creationsCount: 0,
+                                          daily: 2, monthly: 0, packs: 30)
+        XCTAssertEqual(withPack.balanceKind, .mixed)
+        XCTAssertEqual(withPack.gaugeValue(), 3)
+        let pro = GlowWidgetSnapshot(credits: 180, isPro: true, nextRefill: nil, latestTitle: nil, creationsCount: 0,
+                                     daily: 0, monthly: 180, packs: 0)
+        XCTAssertEqual(pro.balanceKind, .monthly)
+        XCTAssertEqual(pro.gaugeRange(), 0...100)
+        XCTAssertEqual(pro.gaugeValue(), 100, "rollover can pass the monthly allowance")
+    }
+
     func testShortenedKeepsWholeWords() {
         XCTAssertEqual("Pink Hair".shortened(to: 34), "Pink Hair")
         let prompt = "A tiny fairy house inside a teacup on a mossy windowsill"

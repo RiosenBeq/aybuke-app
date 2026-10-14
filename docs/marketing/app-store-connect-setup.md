@@ -57,8 +57,8 @@ No tracking. Matches `ios/App/Resources/PrivacyInfo.xcprivacy`.
 
 | Data type | Linked to the user | Purposes |
 |---|---|---|
-| Photos or Videos | No | App Functionality (only photos the user sends to cloud AI; deleted after download, ≤ 1 hour) |
-| Other User Content (prompts) | No | App Functionality |
+| Photos or Videos | Yes | App Functionality (only photos the user sends to cloud AI; results are kept under the user ID until download, ≤ 1 hour) |
+| Other User Content (prompts, reports) | Yes | App Functionality (prompts reach the AI provider with a hashed user tag we can link back; reports are keyed to the user ID) |
 | User ID (anonymous account ID) | Yes | App Functionality, Analytics (RevenueCat) |
 | Purchase History | Yes | App Functionality, Analytics (RevenueCat) |
 | Email Address (only with optional Sign in with Apple) | Yes | App Functionality |
@@ -72,7 +72,7 @@ No tracking. Matches `ios/App/Resources/PrivacyInfo.xcprivacy`.
 | Marketing URL | same as Support URL |
 | Copyright | `2026 Glowlit` |
 | App Review information | Contact name, phone and email of the owner; no demo account needed; notes from [`app-store-listing.md`](app-store-listing.md) ("App Review notes") |
-| Build | `ASC_KEY_ID=… ASC_ISSUER_ID=… scripts/upload-app-store.sh` (App Store Connect API key, automatic signing; `PLATFORM=mac` for the Mac build), or Xcode › Product › Archive › Distribute. `ITSAppUsesNonExemptEncryption` is `NO` (HTTPS only), so no export-compliance documents are needed |
+| Build | `ASC_KEY_ID=… ASC_ISSUER_ID=… scripts/upload-app-store.sh` (App Store Connect API key, automatic signing; `PLATFORM=mac` for the Mac build), or Xcode › Product › Archive › Distribute. The script first runs `scripts/check-release-config.py --online` and stops on release blockers: demo mode (no backend), `[bracketed]` legal placeholders, a missing or GitHub-blob `websiteURL`, a website or privacy page that doesn't answer, mail domains without MX records. For a deliberate TestFlight preview set `GL_PREVIEW_BUILD=1`; never submit such a build for review. Xcode archives skip the check, so run it by hand before submitting one. `ITSAppUsesNonExemptEncryption` is `NO` (HTTPS only), so no export-compliance documents are needed |
 | Release | Manual release after approval |
 
 ## 7. Before pressing "Submit for Review"

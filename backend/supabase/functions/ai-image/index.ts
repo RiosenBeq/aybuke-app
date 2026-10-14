@@ -117,7 +117,7 @@ async function createJob(db: SupabaseClient, userId: string, isPro: boolean, req
   }
 
   const useXAI = provider() === "xai";
-  if (useXAI && !xai.supports(op)) throw new HttpError(400, "bad_request", "Background removal runs on your iPhone.");
+  if (useXAI && !xai.supports(op)) throw new HttpError(400, "bad_request", "Background removal runs on your device.");
 
   let prompt = (body.prompt ?? "").trim().slice(0, MAX_PROMPT_LENGTH);
   let endpoint = useXAI ? `xai/${xai.model(op)}` : fal.ENDPOINTS[op];

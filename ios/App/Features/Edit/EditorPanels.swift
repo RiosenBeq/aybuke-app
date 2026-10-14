@@ -328,7 +328,7 @@ struct EffectsPanel: View {
                     .buttonStyle(.primary)
                     .disabled(selected == nil)
             }
-            Text(Platform.isMac ? "Free for everyone · on your Mac · no credits" : "Free for everyone · on your iPhone · no credits")
+            Text("Free for everyone · on your device · no credits")
                 .font(.caption2)
                 .foregroundStyle(Palette.textTertiary)
         }

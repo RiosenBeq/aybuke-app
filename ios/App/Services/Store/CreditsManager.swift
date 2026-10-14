@@ -44,6 +44,18 @@ final class CreditsManager {
         return utc.date(byAdding: .day, value: 1, to: utc.startOfDay(for: Date())) ?? Date().addingTimeInterval(86_400)
     }
 
+    /// When Pro's monthly credits arrive next. Known in demo mode only: the
+    /// server's month can start elsewhere (for example after a sign-in merge).
+    var nextSubscriptionGrant: Date? {
+        isServerAuthoritative ? nil : wallet.nextSubscriptionGrant()
+    }
+
+    /// Where the balance comes from; nil in backend mode, where only the server knows.
+    var breakdown: CreditBreakdown? {
+        guard !isServerAuthoritative else { return nil }
+        return CreditBreakdown(daily: wallet.daily, monthly: wallet.subscription, packs: wallet.purchased)
+    }
+
     func cost(of operation: AIOperation, outputs: Int = 1) -> Int {
         policy.cost(of: operation, outputs: outputs)
     }
@@ -99,4 +111,10 @@ final class CreditsManager {
             defaults.set(data, forKey: Self.storageKey)
         }
     }
+}
+
+struct CreditBreakdown: Equatable {
+    var daily: Int
+    var monthly: Int
+    var packs: Int
 }

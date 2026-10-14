@@ -23,7 +23,7 @@
 | Promise | What it means |
 |---|---|
 | **Likeness Lock** | Every look keeps the face, skin tone and body as they are, plus *"Doesn't look like you? Retry free."* No body-reshaping or skin-lightening features. |
-| **Fair-Price Promise** | About half what most AI photo apps charge, and no weekly plan, ever. Pro Yearly $39.99 with a 7-day free trial (≈ $3.33/month) or Pro Monthly $5.99 (first month $1.99 if eligible), credit packs that never expire (30 for $2.99, 100 for $7.99), rollover credits, exact refunds when a generation fails, and a reminder before the trial bills. |
+| **Fair-Price Promise** | No weekly plan, ever. Pro Yearly $39.99 with a 7-day free trial (≈ $3.33/month) or Pro Monthly $5.99 (first month $1.99 if eligible), credit packs that never expire (30 for $2.99, 100 for $7.99), rollover credits, exact refunds when a generation fails, and a reminder before the trial bills. |
 | **Private by default** | Explicit consent before any cloud AI, high-privacy defaults designed with teens in mind, photos never used to train AI, and results cleared from our servers as soon as the app has them (within an hour at most). |
 | **Server-side trend recipes** | Template prompts live on the server, so looks can be tuned without an app update. New looks ship with app updates; a remote catalog is on the roadmap. |
 
