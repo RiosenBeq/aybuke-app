@@ -544,10 +544,9 @@ struct LibraryView: View {
         let provenance = creation.provenance
         let name = creation.imageFileName
         Task {
-            // Sized for the editor off the main thread, so opening it doesn't redraw there.
-            let image = await Task.detached(priority: .userInitiated) {
-                ImageStore.load(name).map { ImageUtilities.normalized($0) }
-            }.value
+            // Decoded and sized for the editor off the main thread, so opening
+            // it doesn't decode or redraw there.
+            let image = await Task.detached(priority: .userInitiated) { ImageStore.decoded(name) }.value
             guard let image else { return couldNotOpen() }
             app.openEditor(with: image, tool: .magicEdit, provenance: provenance)
         }

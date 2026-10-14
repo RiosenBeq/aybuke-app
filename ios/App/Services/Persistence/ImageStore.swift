@@ -121,6 +121,13 @@ enum ImageStore {
         UIImage(contentsOfFile: url(for: name).path)
     }
 
+    /// The file decoded once into a plain bitmap of at most `maxPixel`, for
+    /// the editor, which reads it many times (`load` decodes on every read).
+    static func decoded(_ name: String, maxPixel: Int = 2048) -> UIImage? {
+        guard let data = try? Data(contentsOf: url(for: name)) else { return nil }
+        return ImageUtilities.decodedImage(from: data, maxPixel: maxPixel)
+    }
+
     /// Whether the file is still there. Works while the device is locked:
     /// only reading the pixels needs the file key.
     static func exists(_ name: String) -> Bool {

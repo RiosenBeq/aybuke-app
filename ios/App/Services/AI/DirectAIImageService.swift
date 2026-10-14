@@ -29,12 +29,12 @@ final class DirectAIImageService: AIImageService {
         switch config.provider {
         case .xai:
             let (data, response) = try await load(XAIImagesAPI.request(input, config: config))
-            images = try XAIImagesAPI.decode(data: data, statusCode: response.statusCode).compactMap(UIImage.init(data:))
+            images = try XAIImagesAPI.decode(data: data, statusCode: response.statusCode).compactMap { ImageUtilities.decodedImage(from: $0, maxPixel: 4096) }
         case .fal:
             images = try await runFal(input)
         case .openai:
             let (data, response) = try await load(OpenAIImagesAPI.request(input, config: config))
-            images = try OpenAIImagesAPI.decode(data: data, statusCode: response.statusCode).compactMap(UIImage.init(data:))
+            images = try OpenAIImagesAPI.decode(data: data, statusCode: response.statusCode).compactMap { ImageUtilities.decodedImage(from: $0, maxPixel: 4096) }
         case .gemini:
             images = try await withThrowingTaskGroup(of: [Data].self) { group in
                 for _ in 0..<max(1, input.numOutputs) {
@@ -45,7 +45,7 @@ final class DirectAIImageService: AIImageService {
                 }
                 var all: [UIImage] = []
                 for try await batch in group {
-                    all += batch.compactMap(UIImage.init(data:))
+                    all += batch.compactMap { ImageUtilities.decodedImage(from: $0, maxPixel: 4096) }
                 }
                 return all
             }
@@ -168,7 +168,7 @@ final class DirectAIImageService: AIImageService {
         var images: [UIImage] = []
         for url in try FalDirectAPI.decodeResult(data: resultData, statusCode: resultResponse.statusCode) {
             let (data, _) = try await load(URLRequest(url: url))
-            if let image = UIImage(data: data) { images.append(image) }
+            if let image = ImageUtilities.decodedImage(from: data, maxPixel: 4096) { images.append(image) }
         }
         return images
     }
