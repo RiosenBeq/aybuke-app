@@ -10,8 +10,8 @@ or to [fal.ai](https://fal.ai) with `AI_PROVIDER=fal`.
 iOS app ──► Supabase Auth (anonymous JWT; optional Sign in with Apple ID token)
    │
    ├─► POST   /functions/v1/ai-image            enqueue job  ──► xAI request in the background (or fal's queue)
-   ├─► GET    /functions/v1/ai-image?job_id=…   poll job     ──► job status / results (+ output safety check)
-   ├─► DELETE /functions/v1/ai-image?job_id=…   cancel job   ──► exact credit refund; on a finished job: results cleared
+   ├─► GET    /functions/v1/ai-image?job_id=…   poll job     ──► job status / results (+ output safety check, delivery recorded)
+   ├─► DELETE /functions/v1/ai-image?job_id=…   cancel job   ──► exact credit refund; on a delivered job: results cleared
    ├─► GET    /functions/v1/ai-image            balance
    ├─► POST   /functions/v1/credits-redeem      credit pack  ──► Apple JWS verification → grant once
    ├─► POST   /functions/v1/report              "Report this image" (reason, job id) → public.reports
@@ -28,7 +28,7 @@ The wire contract is defined (and unit-tested) in
 |---|---|
 | **Async jobs + polling** | Edge Functions time out after ~150 s idle; generations take 5–40 s. The function answers in < 1 s and the app polls (1 s → 3 s back-off). xAI requests run in the background (`EdgeRuntime.waitUntil`); fal jobs sit on fal's durable queue. |
 | **Operations, not endpoints** | The app sends `operation` + `template_id`; the server picks the model (`_shared/xai.ts`, `_shared/fal.ts`) and the prompt recipe (`_shared/catalog.json`). Models can be swapped without an app release, and nobody can use our keys for arbitrary models. |
-| **Server-side credit ledger** | `reserve_credits` → job → `release_credits` on any failure, cancel or timeout. Exact per-bucket refunds, idempotent, append-only audit trail (`credit_ledger`). |
+| **Server-side credit ledger** | `reserve_credits` → job → `release_credits` on any failure, cancel, timeout or result the app never received (`cancel_job()`, `sweep_jobs()`). Exact per-bucket refunds, idempotent, append-only audit trail (`credit_ledger`). |
 | **Apple-verified entitlements** | Pro status comes from a StoreKit 2 signed transaction verified with Apple's App Store Server Library, then bound to one user at a time. |
 | **No input storage** | Photos are passed to the provider as data URIs and never written to our database or storage. xAI results come back as base64, are held on the job only until the app confirms the download (then cleared; `sweep_jobs()` clears any left after an hour). With xAI Zero Data Retention on, xAI deletes requests within an hour and never trains on them. fal outputs expire after 1 hour (`X-Fal-Object-Lifecycle-Preference`) and request I/O history is disabled (`X-Fal-Store-IO: 0`). |
 | **Layered safety** | Prompt policy (client + server) → provider moderation (fal's strict `safety_tolerance`) → one output check on every result that fails closed (`_shared/moderation.ts`): fal.ai's NSFW classifier when `FAL_KEY` is set, otherwise xAI's own moderation verdict; a flag, an error or a missing verdict blocks the result and refunds it, and there's no switch to turn it off → in-app reporting. Documented for EU AI Act Art. 5(1)(ba) (from 2 Dec 2026). |
@@ -69,7 +69,7 @@ Prices, latency and alternatives: [`docs/research/tech-and-compliance.md`](../do
    ```bash
    supabase functions deploy ai-image credits-redeem account report
    ```
-6. **Schedule the sweeper** (fails and refunds stuck jobs, clears job outputs after 1 hour, deletes job rows after 30 days and reports after 12 months): enable the `pg_cron` extension, then run
+6. **Schedule the sweeper** (fails and refunds stuck jobs, refunds results the app never received and clears job outputs after 1 hour, deletes job rows after 30 days and reports after 12 months): enable the `pg_cron` extension, then run
    ```sql
    select cron.schedule('sweep-jobs', '*/5 * * * *', 'select public.sweep_jobs()');
    ```
@@ -106,7 +106,7 @@ Defined once in SQL (`public.credit_policy()`) and mirrored in the app (`CreditP
 - Pro: **100 credits per month**, unused credits roll over one month (cap 200).
 - Credit packs: never expire (App Review Guideline 3.1.1).
 - Spending order: daily → subscription → purchased (expiring credits first).
-- Any failure, cancellation, safety block or timeout is refunded exactly once.
+- Any failure, cancellation, safety block or timeout is refunded exactly once, and so is a result that never reached the app. The poll that hands the results over records the delivery (`deliver_outputs()`); a finished job that was never handed over is refunded when its hour is up, or at once when the app cancels it, and one that was handed over but never confirmed (a download that broke) is refunded at most once a day per user, so skipping the confirmation can't keep both the images and the credit.
 
 Change the numbers in `credit_policy()` (new migration) to retune pricing without an app update; update `CreditPolicy.standard` so the app's copy matches.
 

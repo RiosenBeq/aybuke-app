@@ -1,0 +1,149 @@
+-- Results that never reached the app are refunded exactly once. Run with
+-- backend/scripts/test-db.sh. Each block raises (ASSERT) on failure.
+\set ON_ERROR_STOP on
+
+insert into auth.users (id) values
+  ('00000000-0000-0000-0000-0000000000b1'),
+  ('00000000-0000-0000-0000-0000000000b2');
+
+-- 1. Delivery is recorded once, only for the job's owner and only while there are results.
+do $$
+declare
+  u uuid := '00000000-0000-0000-0000-0000000000b1';
+  other uuid := '00000000-0000-0000-0000-0000000000b2';
+  j uuid := gen_random_uuid();
+  first_delivery timestamptz;
+begin
+  insert into public.jobs (id, user_id, operation, endpoint, cost, status, outputs)
+    values (j, u, 'magic_edit', 'test', 1, 'completed', '[{"base64":"AAAA"}]');
+  assert public.deliver_outputs(j, other) is null, 'another user gets nothing';
+  assert (select delivered_at from public.jobs where id = j) is null, 'nor marks it delivered';
+  assert public.deliver_outputs(j, u) = '[{"base64":"AAAA"}]'::jsonb, 'the owner gets the results';
+  assert (select delivered_at from public.jobs where id = j) is not null, 'delivery is recorded';
+  first_delivery := now() - interval '5 minutes';
+  update public.jobs set delivered_at = first_delivery where id = j;
+  assert public.deliver_outputs(j, u) is not null, 'a lost response can be fetched again';
+  assert (select delivered_at from public.jobs where id = j) = first_delivery, 'the first delivery time stays';
+  update public.jobs set outputs = null where id = j;
+  assert public.deliver_outputs(j, u) is null, 'nothing to hand over once confirmed';
+end $$;
+
+-- 2. A finished job the app never received is refunded when its hour is up, exactly once.
+do $$
+declare
+  u uuid := '00000000-0000-0000-0000-0000000000b1';
+  j uuid := gen_random_uuid();
+  fresh uuid := gen_random_uuid();
+begin
+  perform public.refresh_wallet(u, false);
+  insert into public.jobs (id, user_id, operation, endpoint, cost) values (j, u, 'magic_edit', 'test', 1);
+  insert into public.jobs (id, user_id, operation, endpoint, cost) values (fresh, u, 'magic_edit', 'test', 1);
+  perform public.reserve_credits(u, false, 1, j);
+  perform public.reserve_credits(u, false, 1, fresh);
+  update public.jobs set status = 'completed', outputs = '[{"base64":"AAAA"}]', updated_at = now() - interval '61 minutes'
+   where id = j;
+  update public.jobs set status = 'completed', outputs = '[{"base64":"BBBB"}]', updated_at = now() - interval '10 minutes'
+   where id = fresh;
+  assert (select daily from public.credit_wallets where user_id = u) = 1, 'two credits are held';
+
+  perform public.sweep_jobs();
+  assert (select status from public.jobs where id = j) = 'failed', 'the undelivered job fails';
+  assert (select error_code from public.jobs where id = j) = 'undelivered';
+  assert (select outputs from public.jobs where id = j) is null, 'its results are deleted';
+  assert (select daily from public.credit_wallets where user_id = u) = 2, 'and its credit comes back';
+  assert (select outputs from public.jobs where id = fresh) is not null, 'a result inside its hour waits';
+
+  perform public.sweep_jobs();
+  assert (select count(*) from public.credit_ledger where job_id = j and kind = 'release') = 1, 'refunded once';
+  assert (select daily from public.credit_wallets where user_id = u) = 2, 'a second sweep changes nothing';
+end $$;
+
+-- 3. Delivered but never confirmed: refunded once a day per user at most.
+do $$
+declare
+  u uuid := '00000000-0000-0000-0000-0000000000b2';
+  first_job uuid := gen_random_uuid();
+  second_job uuid := gen_random_uuid();
+  confirmed uuid := gen_random_uuid();
+begin
+  perform public.refresh_wallet(u, false);
+  insert into public.jobs (id, user_id, operation, endpoint, cost) values
+    (first_job, u, 'magic_edit', 'test', 1), (second_job, u, 'magic_edit', 'test', 1), (confirmed, u, 'enhance', 'test', 1);
+  perform public.reserve_credits(u, false, 1, first_job);
+  perform public.reserve_credits(u, false, 1, second_job);
+  perform public.reserve_credits(u, false, 1, confirmed);
+  update public.jobs
+     set status = 'completed', outputs = '[{"base64":"AAAA"}]', delivered_at = now() - interval '2 hours',
+         updated_at = now() - interval '2 hours'
+   where id in (first_job, second_job);
+  -- Confirmed downloads ("got it") have no results left to sweep.
+  update public.jobs set status = 'completed', outputs = null, delivered_at = now() - interval '2 hours',
+         updated_at = now() - interval '2 hours'
+   where id = confirmed;
+  assert (select daily from public.credit_wallets where user_id = u) = 0, 'three credits are held';
+
+  perform public.sweep_jobs();
+  assert (select count(*) from public.jobs where id in (first_job, second_job) and error_code = 'unconfirmed') = 1,
+    'one unconfirmed result is refunded';
+  assert (select count(*) from public.jobs where id in (first_job, second_job) and status = 'completed') = 1,
+    'the other one stays paid';
+  assert (select count(*) from public.jobs where id in (first_job, second_job) and outputs is not null) = 0,
+    'both are deleted after the hour';
+  assert (select daily from public.credit_wallets where user_id = u) = 1, 'exactly one credit comes back';
+  assert (select status from public.jobs where id = confirmed) = 'completed', 'a confirmed download stays paid';
+  assert (select count(*) from public.credit_ledger where job_id = confirmed and kind = 'release') = 0;
+end $$;
+
+-- 4. Cancelling: a running job and a finished job the app never received are refunded
+--    right away; on a delivered job a DELETE is the "got it" that clears the results.
+do $$
+declare
+  u uuid := '00000000-0000-0000-0000-0000000000b1';
+  running uuid := gen_random_uuid();
+  unreceived uuid := gen_random_uuid();
+  received uuid := gen_random_uuid();
+  result jsonb;
+  before int;
+begin
+  perform public.grant_pack(u, 10, 'tx-unclaimed-4');
+  insert into public.jobs (id, user_id, operation, endpoint, cost) values
+    (running, u, 'magic_edit', 'test', 1), (unreceived, u, 'magic_edit', 'test', 1), (received, u, 'magic_edit', 'test', 1);
+  perform public.reserve_credits(u, false, 1, running);
+  perform public.reserve_credits(u, false, 1, unreceived);
+  perform public.reserve_credits(u, false, 1, received);
+  update public.jobs set status = 'processing' where id = running;
+  update public.jobs set status = 'completed', outputs = '[{"base64":"AAAA"}]' where id in (unreceived, received);
+  perform public.deliver_outputs(received, u);
+  select daily + subscription + purchased into before from public.credit_wallets where user_id = u;
+
+  result := public.cancel_job(running, u);
+  assert result->>'status' = 'cancelled', format('running job cancelled, got %s', result);
+  assert (result->>'credits_remaining')::int = before + 1, 'and refunded';
+
+  result := public.cancel_job(unreceived, u);
+  assert result->>'status' = 'cancelled', 'an unreceived result is cancelled';
+  assert (result->>'credits_remaining')::int = before + 2, 'and refunded';
+  assert (select outputs from public.jobs where id = unreceived) is null, 'its results are deleted';
+
+  result := public.cancel_job(received, u);
+  assert result->>'status' = 'completed', 'a received result is confirmed, not cancelled';
+  assert (result->>'credits_remaining')::int = before + 2, 'and stays paid';
+  assert (select outputs from public.jobs where id = received) is null, 'its results are deleted';
+
+  result := public.cancel_job(unreceived, u);
+  assert result->>'status' = 'cancelled' and (result->>'credits_remaining')::int = before + 2, 'cancelling twice refunds once';
+  assert public.cancel_job(received, '00000000-0000-0000-0000-0000000000b2') is null, 'only the owner can cancel';
+  assert (select count(*) from public.credit_ledger where job_id in (running, unreceived) and kind = 'release') = 2;
+end $$;
+
+-- 5. Clients can't call the job functions.
+do $$
+begin
+  assert not has_function_privilege('authenticated', 'public.deliver_outputs(uuid, uuid)', 'execute');
+  assert not has_function_privilege('authenticated', 'public.cancel_job(uuid, uuid)', 'execute');
+  assert not has_function_privilege('anon', 'public.cancel_job(uuid, uuid)', 'execute');
+end $$;
+
+delete from auth.users where id in ('00000000-0000-0000-0000-0000000000b1', '00000000-0000-0000-0000-0000000000b2');
+
+select 'all unclaimed result tests passed' as result;

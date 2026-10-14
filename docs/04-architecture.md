@@ -101,7 +101,8 @@ App                          ai-image (Edge)                         Postgres   
  │                             b64 results, moderated by xAI ◄──────────────────────────────┘
  │                             output check (fails closed) ─────────► jobs(completed, outputs)
  │ GET ?job_id (1s, 1s, 1.5s…) ► read job
- │ ◄──── {completed, outputs:[base64]}                 (failure → jobs(failed) + release_credits)
+ │ ◄──── {completed, outputs:[base64], credits_remaining} ─ deliver_outputs() ─► delivered_at
+ │                                                       (failure → jobs(failed) + release_credits)
  │ DELETE ?job_id ("got it") ─► clear the results ──────────────────► outputs = null
  │ editor/result → export with IPTC provenance
 ```
@@ -110,7 +111,7 @@ With `AI_PROVIDER=fal`, the job goes to fal's queue instead (`queue.fal.run`), e
 
 **Failure modes**
 - Provider error, safety block, timeout (3 min for xAI, 10 min for fal, server-side) or user cancel → `release_credits(job)`: an exact, idempotent refund.
-- `sweep_jobs()` (pg_cron) refunds jobs whose client disappeared and clears any outputs still stored after an hour.
+- `sweep_jobs()` (pg_cron) refunds jobs whose client disappeared and clears any outputs still stored after an hour. A finished job whose results were never handed to the app is refunded then (or at once if the app cancels it); a delivered one the app never confirmed is refunded at most once a day per user.
 - A 401 triggers one token refresh and retry.
 - Network errors surface as friendly toasts.
 
