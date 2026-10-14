@@ -24,6 +24,11 @@ struct CreateView: View {
                     styleSection
                     ratioSection
                     countSection
+                    if #available(iOS 18.4, *) {
+                        ImagePlaygroundCreateButton(prompt: model.prompt) { image in
+                            model.finishPlayground(image, app: app)
+                        }
+                    }
                 }
                 .padding(.horizontal, Metrics.gutter)
                 .padding(.top, 12)
@@ -36,7 +41,13 @@ struct CreateView: View {
             .toolbar(.hidden, for: .navigationBar)
             .safeAreaInset(edge: .bottom) { generateBar }
             .navigationDestination(isPresented: $model.showResults) {
-                ResultsView(images: model.results, prompt: model.prompt, operation: .textToImage, requestID: model.requestID)
+                ResultsView(
+                    images: model.results,
+                    prompt: model.resultsSource == nil ? model.prompt : nil,
+                    operation: .textToImage,
+                    requestID: model.requestID,
+                    source: model.resultsSource
+                )
             }
             .overlay {
                 if model.isGenerating {

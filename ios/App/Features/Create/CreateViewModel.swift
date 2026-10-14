@@ -14,6 +14,8 @@ final class CreateViewModel {
     /// Server request id of the latest results, attached to reports.
     private(set) var requestID: String?
     var showResults = false
+    /// `Creation.imagePlaygroundSource` when the results came from Apple's sheet.
+    private(set) var resultsSource: String?
     @ObservationIgnored private var task: Task<Void, Never>?
 
     var canGenerate: Bool {
@@ -131,6 +133,19 @@ final class CreateViewModel {
         }
     }
 
+    /// A picture from Apple's Image Playground sheet: no credits, kept in My
+    /// Works and marked as AI-made on export. Her starting prompt isn't stored,
+    /// because she may have changed the description inside Apple's sheet.
+    func finishPlayground(_ image: UIImage, app: AppModel) {
+        results = [image]
+        requestID = nil
+        resultsSource = Creation.imagePlaygroundSource
+        showResults = true
+        Task {
+            await app.saveToLibrary([image], operation: .textToImage, title: "Image Playground", prompt: nil, source: Creation.imagePlaygroundSource)
+        }
+    }
+
     func cancel() {
         task?.cancel()
     }
@@ -143,6 +158,7 @@ final class CreateViewModel {
                 let result = try await app.run(job, saveToLibrary: true)
                 results = result.images
                 requestID = result.requestID
+                resultsSource = nil
                 showResults = true
             } catch {
                 app.handle(error)

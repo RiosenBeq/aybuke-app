@@ -8,6 +8,9 @@ struct ResultsView: View {
     let prompt: String?
     let operation: AIOperation
     var requestID: String?
+    /// `Creation.imagePlaygroundSource` for Apple-made images: no mark, no
+    /// report to Glowlit (we never see them), credited to Image Playground.
+    var source: String? = nil
 
     @Environment(AppModel.self) private var app
     @Environment(\.requestReview) private var requestReview
@@ -29,7 +32,12 @@ struct ResultsView: View {
             }
             .tabViewStyle(.page(indexDisplayMode: images.count > 1 ? .always : .never))
 
-            if let prompt, !prompt.isEmpty {
+            if isFromImagePlayground {
+                Label("Made with Image Playground", systemImage: "apple.image.playground")
+                    .font(.footnote)
+                    .foregroundStyle(Palette.textSecondary)
+                    .padding(.horizontal, Metrics.gutter)
+            } else if let prompt, !prompt.isEmpty {
                 Text(prompt)
                     .font(.footnote)
                     .foregroundStyle(Palette.textSecondary)
@@ -72,19 +80,25 @@ struct ResultsView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                Menu {
-                    Button(role: .destructive) {
-                        showReport = true
-                    } label: {
-                        Label("Report this image", systemImage: "flag")
-                    }
-                } label: {
-                    Image(systemName: "ellipsis.circle")
-                }
-                .accessibilityLabel("More")
+                if !isFromImagePlayground { reportMenu }
             }
         }
         .reportDialog(isPresented: $showReport, requestID: requestID)
+    }
+
+    private var isFromImagePlayground: Bool { source == Creation.imagePlaygroundSource }
+
+    private var reportMenu: some View {
+        Menu {
+            Button(role: .destructive) {
+                showReport = true
+            } label: {
+                Label("Report this image", systemImage: "flag")
+            }
+        } label: {
+            Image(systemName: "ellipsis.circle")
+        }
+        .accessibilityLabel("More")
     }
 
     private func page(_ index: Int) -> some View {
@@ -104,7 +118,7 @@ struct ResultsView: View {
         guard let current else { return }
         Task {
             do {
-                try await PhotoLibrarySaver.save(current, operation: operation, watermark: !app.purchases.isPro)
+                try await PhotoLibrarySaver.save(current, operation: operation, watermark: !app.purchases.isPro && !isFromImagePlayground)
                 app.showToast("Saved to Photos", style: .success)
                 Haptics.success()
                 if app.registerHappyMoment() {
