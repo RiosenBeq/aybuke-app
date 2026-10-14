@@ -429,21 +429,11 @@ enum CaptionTranscriber {
 }
 
 #if DEBUG
-/// QA trace of automatic captions: the log, standard error, and
-/// `glowlit-captions.log` in the app's tmp folder (the simulator script reads it).
+/// QA trace of automatic captions, in the log (and standard error when the
+/// Mac app runs from a terminal): which recognizer ran and what it heard.
 enum CaptionsTrace {
     static func note(_ message: String) {
         NSLog("[captions] %@", message)
-        FileHandle.standardError.write(Data("[captions] \(message)\n".utf8))
-        let url = FileManager.default.temporaryDirectory.appendingPathComponent("glowlit-captions.log")
-        let line = Data((message + "\n").utf8)
-        if let handle = try? FileHandle(forWritingTo: url) {
-            handle.seekToEndOfFile()
-            handle.write(line)
-            try? handle.close()
-        } else {
-            try? line.write(to: url)
-        }
     }
 }
 #endif

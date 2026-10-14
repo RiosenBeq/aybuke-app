@@ -106,8 +106,9 @@ final class CaptionTrack: @unchecked Sendable {
     private var canvas: CGSize = .zero
     private var cache: [Key: Drawn] = [:]
     private var recent: [Key] = []
-    /// Cues near the playhead; a long video doesn't keep every caption in memory.
-    private static let capacity = 12
+    /// Cues near the playhead (a Karaoke caption has a state per word); a
+    /// long 4K video doesn't keep every caption in memory.
+    private static let capacity = 8
 
     private struct Key: Hashable {
         let cue: Int
