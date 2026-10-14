@@ -40,7 +40,7 @@ Every value needed to create Glowlit in App Store Connect, in the order the form
 | `app.glowlit.pro.yearly` | Pro Yearly | 1 year | $39.99 | Free trial, 1 week, new subscribers |
 | `app.glowlit.pro.monthly` | Pro Monthly | 1 month | $5.99 | Pay as you go, 1 month at $1.99 |
 
-Localized description for both: "100 credits a month, every template, best-quality AI" (translate per locale). Review screenshot: the paywall (`docs/marketing/app-store/en/09-paywall.jpg`).
+Localized description for both: "100 credits a month, every template, best-quality AI" (translate per locale). Review screenshot: the paywall (`docs/marketing/app-store/en/10-paywall.jpg`).
 
 **Consumables**
 
@@ -93,5 +93,5 @@ The Mac app is the same app built with Mac Catalyst, with the same bundle IDs (`
 | Signing | `PLATFORM=mac ASC_KEY_ID=… ASC_ISSUER_ID=… scripts/upload-app-store.sh`. Automatic signing makes the Mac Catalyst profiles for the same App IDs; the App Group and Sign in with Apple carry over. The Mac build is sandboxed (`ios/Config/*-macOS.entitlements`), as the Mac App Store requires |
 | Category | Set once in App Information and shared with iOS. The Mac build also declares `LSApplicationCategoryType` = `public.app-category.photography`, which the Mac App Store requires |
 | Version page | The macOS version has its own description, keywords and screenshots. Start from `app-store-metadata.json`, but drop the Lock Screen and Dynamic Island lines and say Mac where it says iPhone or iPad: there is no Live Activity or Instagram Stories sharing on the Mac |
-| Screenshots | 16:10 (1280×800, 1440×900, 2560×1600 or 2880×1800; up to 10). Ready: eight per language at 2880×1800 in `docs/marketing/app-store/<lang>/mac/` (home, ideas in the editor, before/after, Create, effects, Cover star, Cut out, Hide faces), made by `scripts/marketing-images.py` from window captures of the Mac app launched with `-GLScreenshotScene <scene> -GLWindowSize 1600x1000`; captions in the `mac` lists of `screenshot-captions.json` |
+| Screenshots | 16:10 (1280×800, 1440×900, 2560×1600 or 2880×1800; up to 10). Ready: eight per language at 2880×1800 in `docs/marketing/app-store/<lang>/mac/` (home in a MacBook, Makeup Studio, before/after, Create, effects, Cover star, Cut out, Hide faces), made by `scripts/marketing-images.py` from window captures of the Mac app launched with `-GLScreenshotScene <scene> -GLWindowSize 1600x1000`; captions in the `mac` lists of `screenshot-captions.json` |
 | Review notes | Add: "On the Mac, Instagram Stories sharing and the Live Activity aren't offered; everything else matches the iOS app." |

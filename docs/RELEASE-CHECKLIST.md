@@ -466,7 +466,7 @@ Değerlerin hepsi: [`marketing/app-store-connect-setup.md`](marketing/app-store-
   - Beklenen: İkisi de seçili ve "Missing Compliance" uyarısı yok.
   - Dikkat: Projede `MARKETING_VERSION = 1.0.0`, App Store Connect'teki sürüm ise "1.0". Derleme listede görünmüyorsa App Store Connect'te sürüm numarasını 1.0.0 yap (gönderimden önce düzenlenebilir) ve not al (§12-6).
 - [ ] **Ekran görüntüleri**
-  - Beklenen: en-US ve tr için iPhone 6.9" (1290×2796) 9, iPad 13" (2064×2752) 9 ve Mac (2880×1800) 8 görüntü; dosyalar `docs/marketing/app-store/en/` ve `tr/` altında (iPad `ipad/`, Mac `mac/` alt klasöründe). Diğer diller birincil dilin (en-US) görüntülerini kullanır. Boş ya da yanlış dosya olmamalı.
+  - Beklenen: 12 dilin her biri için iPhone 6.9" (1290×2796) 10, iPad 13" (2064×2752) 10 ve Mac (2880×1800) 8 görüntü; dosyalar `docs/marketing/app-store/<dil>/` altında (iPad `ipad/`, Mac `mac/` alt klasöründe; es-MX İspanyolca `es/` görüntülerini kullanır). Boş ya da yanlış dosya olmamalı.
 - [ ] **Abonelikler ve paketler sürüme ekli**
   - Yap: iOS 1.0 sayfası › In-App Purchases and Subscriptions › Pro Yearly, Pro Monthly, 30 Credits ve 100 Credits'i ekle. İlk abonelik uygulama sürümüyle birlikte incelemeye gönderilmek zorundadır. macOS sayfasında da bu bölüm varsa aynılarını seç.
   - Beklenen: Her birinde inceleme ekran görüntüsü ve not var, durumları "Ready to Submit"; abonelik grubunun en-US ve tr adları dolu.
