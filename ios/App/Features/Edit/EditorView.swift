@@ -1,5 +1,6 @@
 import SwiftUI
 import StoreKit
+import UniformTypeIdentifiers
 import AppCore
 
 struct EditorView: View {
@@ -55,6 +56,9 @@ struct EditorView: View {
         .animation(.snappy, value: model.activeTool)
         .task {
             model.stampsDemoResults = app.isDemoMode
+            #if DEBUG
+            if ScreenshotScene.current == .cutout { model.startCutout(app: app) }
+            #endif
             await model.checkForOtherPeople()
         }
         .animation(.snappy, value: model.showsKindnessNote)
@@ -160,6 +164,10 @@ struct EditorView: View {
     private var canvas: some View {
         if model.activeTool == .erase {
             MaskCanvas(image: model.current, strokes: $model.strokes, brushSize: model.brushSize)
+        } else if model.activeTool == .hideFaces {
+            HideFacesCanvas(image: model.displayImage, hider: model.faceHider)
+        } else if model.activeTool == .removeBackground && model.cutout.isActive {
+            CutoutCanvas(session: model.cutout, fallback: model.current)
         } else if model.activeTool == .crop, let proxy = model.cropProxy {
             CropCanvas(image: proxy, geometry: $model.crop, aspect: model.cropAspect, sourceSize: model.cropSourceSize)
                 .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
@@ -280,22 +288,17 @@ struct EditorView: View {
                     .foregroundStyle(Palette.textPrimary)
                     .fixedSize(horizontal: false, vertical: true)
             }
-            HStack(spacing: 8) {
-                Button("Only edit me") { model.editOnlyMe() }
-                    .buttonStyle(.pressable)
-                    .font(.footnote.weight(.bold))
-                    .foregroundStyle(Palette.onAccent)
-                    .padding(.horizontal, 14)
-                    .padding(.vertical, 8)
-                    .background(Palette.accent, in: Capsule())
-                Button("They're OK with it") { model.dismissKindnessNote() }
-                    .buttonStyle(.pressable)
-                    .font(.footnote.weight(.bold))
-                    .foregroundStyle(Palette.textPrimary)
-                    .padding(.horizontal, 14)
-                    .padding(.vertical, 8)
-                    .background(Palette.surface, in: Capsule())
-                    .overlay(Capsule().strokeBorder(Palette.stroke, lineWidth: 1))
+            // Three buttons don't fit in one row in every language on a small iPhone.
+            ViewThatFits(in: .horizontal) {
+                HStack(spacing: 8) { kindnessButtons }
+                VStack(alignment: .leading, spacing: 8) {
+                    HStack(spacing: 8) {
+                        onlyMeButton
+                        hideFacesButton
+                    }
+                    okButton
+                }
+                VStack(alignment: .leading, spacing: 8) { kindnessButtons }
             }
         }
         .padding(12)
@@ -305,6 +308,47 @@ struct EditorView: View {
         .padding(.horizontal, Metrics.gutter)
         .padding(.bottom, 6)
         .transition(.move(edge: .bottom).combined(with: .opacity))
+    }
+
+    @ViewBuilder
+    private var kindnessButtons: some View {
+        onlyMeButton
+        hideFacesButton
+        okButton
+    }
+
+    private var onlyMeButton: some View {
+        Button("Only edit me") { model.editOnlyMe() }
+            .buttonStyle(.pressable)
+            .font(.footnote.weight(.bold))
+            .foregroundStyle(Palette.onAccent)
+            .padding(.horizontal, 14)
+            .padding(.vertical, 8)
+            .background(Palette.accent, in: Capsule())
+            .fixedSize()
+    }
+
+    private var hideFacesButton: some View {
+        Button("Hide their faces") { model.hideTheirFaces() }
+            .buttonStyle(.pressable)
+            .font(.footnote.weight(.bold))
+            .foregroundStyle(Palette.textPrimary)
+            .padding(.horizontal, 14)
+            .padding(.vertical, 8)
+            .background(Palette.blush, in: Capsule())
+            .fixedSize()
+    }
+
+    private var okButton: some View {
+        Button("They're OK with it") { model.dismissKindnessNote() }
+            .buttonStyle(.pressable)
+            .font(.footnote.weight(.bold))
+            .foregroundStyle(Palette.textPrimary)
+            .padding(.horizontal, 14)
+            .padding(.vertical, 8)
+            .background(Palette.surface, in: Capsule())
+            .overlay(Capsule().strokeBorder(Palette.stroke, lineWidth: 1))
+            .fixedSize()
     }
 
     private var reportButton: some View {
@@ -345,13 +389,16 @@ struct EditorView: View {
                 model.run(.enhance, app: app)
             }
         case .removeBackground?:
-            OneTapPanel(
-                title: "Remove background",
-                message: "Runs privately on your device. Always free.",
-                buttonTitle: "Remove background",
-                cost: 0
-            ) {
-                model.run(.removeBackground, app: app)
+            CutoutPanel(
+                session: model.cutout,
+                onStart: { model.startCutout(app: app) },
+                onApply: { Task { await model.applyCutout() } },
+                onCopySticker: { copySticker() },
+                onSaveSticker: { saveSticker() }
+            )
+        case .hideFaces?:
+            HideFacesPanel(hider: model.faceHider) {
+                Task { await model.applyHideFaces() }
             }
         case .erase?:
             ErasePanel(
@@ -468,7 +515,7 @@ struct EditorView: View {
                 try await PhotoLibrarySaver.save(model.current, sourceType: provenance.sourceType,
                                                  watermark: provenance.showsMark(isPro: app.purchases.isPro))
                 await app.saveToLibrary([model.current], operation: model.appliedOperation, title: model.libraryTitle, prompt: nil,
-                                        inheritedSourceType: provenance.inheritedSourceType)
+                                        inheritedSourceType: provenance.storedSourceType)
                 app.showToast("Saved to Photos", style: .success)
                 Haptics.success()
                 if app.registerHappyMoment() {
@@ -490,8 +537,33 @@ struct EditorView: View {
                 original: model.hasChanges ? model.before : nil,
                 operation: model.appliedOperation,
                 prompt: nil,
+                isComposite: model.isComposite,
                 inheritedSourceType: model.inheritedSourceType
             ))
+        }
+    }
+
+    // MARK: Stickers
+
+    private func copySticker() {
+        Task {
+            guard let sticker = await model.cutoutSticker(isPro: app.purchases.isPro) else { return }
+            UIPasteboard.general.setData(sticker.data, forPasteboardType: UTType.png.identifier)
+            Haptics.success()
+            app.showToast("Copied, paste it in a chat", style: .success)
+        }
+    }
+
+    private func saveSticker() {
+        Task {
+            guard let sticker = await model.cutoutSticker(isPro: app.purchases.isPro) else { return }
+            do {
+                try await PhotoLibrarySaver.save(data: sticker.data)
+                Haptics.success()
+                app.showToast("Saved to Photos", style: .success)
+            } catch {
+                app.handle(error)
+            }
         }
     }
 }

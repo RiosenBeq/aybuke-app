@@ -33,6 +33,10 @@ enum ScreenshotScene: String, CaseIterable {
     case feelGood
     /// The age step shown once to people who finished onboarding before it.
     case age
+    /// Hide faces on a group of cartoon figures, with every friend covered.
+    case hideFaces
+    /// Cut out with a fixture subject mask and a backdrop.
+    case cutout
 
     static var current: ScreenshotScene? {
         UserDefaults.standard.string(forKey: "GLScreenshotScene").flatMap(ScreenshotScene.init(rawValue:))
@@ -135,6 +139,114 @@ enum ScreenshotFixtures {
             (golden ? UIColor(red: 0.12, green: 0.09, blue: 0.12, alpha: 1) : UIColor(red: 0.20, green: 0.22, blue: 0.24, alpha: 1)).setFill()
             shore.fill()
         }
+    }
+
+    // MARK: Hide faces and Cut out
+
+    /// Head circles (centre x, centre y, radius as a share of the width) for
+    /// a group of cartoon figures; the second one is the largest ("me").
+    private static let groupHeads: [(CGFloat, CGFloat, CGFloat)] = [(0.17, 0.55, 0.065), (0.40, 0.47, 0.095), (0.63, 0.53, 0.07), (0.85, 0.57, 0.055)]
+
+    /// Cartoon figures by the lake: Vision finds no real faces in them, so
+    /// the scene uses `groupFaces` instead.
+    static let groupPhoto = figures(heads: groupHeads, pet: false)
+
+    /// Face boxes for `groupPhoto`, normalized with a top-left origin.
+    static var groupFaces: [CGRect] {
+        groupHeads.map { x, y, r in
+            let height = r * 1200 / 1500
+            return CGRect(x: x - r, y: y - height, width: r * 2, height: height * 2)
+        }
+    }
+
+    private static let cutoutHeads: [(CGFloat, CGFloat, CGFloat)] = [(0.34, 0.42, 0.11)]
+
+    /// A cartoon person and a pet for the Cut out scene.
+    static let cutoutPhoto = figures(heads: cutoutHeads, pet: true)
+
+    /// A stand-in for Vision's subject lifting on `cutoutPhoto`: the same
+    /// shapes as label map and masks.
+    static func cutoutAnalysis(for image: UIImage) -> CutoutAnalysis? {
+        guard let source = image.cgImage else { return nil }
+        let size = CGSize(width: source.width, height: source.height)
+        let labelWidth = 240, labelHeight = Int((240 * size.height / size.width).rounded())
+        guard let labelContext = CGContext(
+            data: nil, width: labelWidth, height: labelHeight, bitsPerComponent: 8, bytesPerRow: labelWidth,
+            space: CGColorSpaceCreateDeviceGray(), bitmapInfo: CGImageAlphaInfo.none.rawValue
+        ) else { return nil }
+        labelContext.setShouldAntialias(false)
+        // Top-left origin, like Vision's label map.
+        labelContext.translateBy(x: 0, y: CGFloat(labelHeight))
+        labelContext.scaleBy(x: 1, y: -1)
+        let labelScale = CGFloat(labelWidth) / size.width
+        for (index, path) in figurePaths(heads: cutoutHeads, pet: true, size: size).enumerated() {
+            labelContext.saveGState()
+            labelContext.scaleBy(x: labelScale, y: labelScale)
+            labelContext.addPath(path.cgPath)
+            labelContext.setFillColor(gray: CGFloat(index + 1) / 255, alpha: 1)
+            labelContext.fillPath()
+            labelContext.restoreGState()
+        }
+        guard let data = labelContext.data else { return nil }
+        let labels = Array(UnsafeBufferPointer(start: data.assumingMemoryBound(to: UInt8.self), count: labelWidth * labelHeight))
+        return CutoutAnalysis(source: source, labels: labels, labelWidth: labelWidth, labelHeight: labelHeight) { ids in
+            let format = UIGraphicsImageRendererFormat()
+            format.scale = 1
+            format.opaque = true
+            let mask = UIGraphicsImageRenderer(size: size, format: format).image { _ in
+                UIColor.black.setFill()
+                UIRectFill(CGRect(origin: .zero, size: size))
+                UIColor.white.setFill()
+                for (index, path) in figurePaths(heads: cutoutHeads, pet: true, size: size).enumerated() where ids.contains(index + 1) {
+                    path.fill()
+                }
+            }
+            return mask.cgImage.map { CIImage(cgImage: $0) } ?? CIImage(color: .black).cropped(to: CGRect(origin: .zero, size: size))
+        }
+    }
+
+    private static func figures(heads: [(CGFloat, CGFloat, CGFloat)], pet: Bool) -> UIImage {
+        let base = goldenLandscape
+        let size = base.size
+        let format = UIGraphicsImageRendererFormat()
+        format.scale = 1
+        format.opaque = true
+        let colors: [UIColor] = [.auraLilac, .auraPink, .auraMint, .auraPeach, .auraButter]
+        return UIGraphicsImageRenderer(size: size, format: format).image { _ in
+            base.draw(at: .zero)
+            for (index, path) in figurePaths(heads: heads, pet: pet, size: size).enumerated() {
+                colors[index % colors.count].setFill()
+                path.fill()
+                UIColor.white.withAlphaComponent(0.8).setStroke()
+                path.lineWidth = 3
+                path.stroke()
+            }
+        }
+    }
+
+    /// One path per subject: a head on a rounded body, and optionally a pet.
+    private static func figurePaths(heads: [(CGFloat, CGFloat, CGFloat)], pet: Bool, size: CGSize) -> [UIBezierPath] {
+        var paths = heads.map { x, y, r -> UIBezierPath in
+            let radius = r * size.width
+            let center = CGPoint(x: x * size.width, y: y * size.height)
+            let path = UIBezierPath(ovalIn: CGRect(x: center.x - radius, y: center.y - radius, width: radius * 2, height: radius * 2))
+            path.append(UIBezierPath(
+                roundedRect: CGRect(x: center.x - radius * 1.5, y: center.y + radius * 1.05, width: radius * 3, height: size.height - center.y),
+                cornerRadius: radius
+            ))
+            return path
+        }
+        if pet {
+            let body = CGRect(x: size.width * 0.6, y: size.height * 0.7, width: size.width * 0.3, height: size.height * 0.16)
+            let path = UIBezierPath(ovalIn: body)
+            let head = CGRect(x: body.maxX - body.width * 0.35, y: body.minY - body.height * 0.55, width: body.width * 0.4, height: body.width * 0.4)
+            path.append(UIBezierPath(ovalIn: head))
+            for dx in [0.08, 0.62] as [CGFloat] {
+                path.append(UIBezierPath(ovalIn: CGRect(x: head.minX + head.width * dx, y: head.minY - head.height * 0.18, width: head.width * 0.3, height: head.height * 0.45)))
+            }
+            paths.append(path)
+        }
+        return paths
     }
 }
 #endif

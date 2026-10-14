@@ -8,6 +8,8 @@ struct SharePayload: Identifiable {
     var original: UIImage?
     let operation: AIOperation?
     var prompt: String?
+    /// A cut-out placed on another photo (IPTC "composite").
+    var isComposite = false
     /// Other variations from the same creation, for "Which vibe?".
     var alternatives: [UIImage] = []
     /// The AI marking the source file already carried (see `Provenance`).
@@ -15,7 +17,7 @@ struct SharePayload: Identifiable {
 
     /// Decides the IPTC field, the free-tier branding, the AI hashtags and
     /// the AI label.
-    var provenance: Provenance { Provenance(operation: operation, inheritedSourceType: inheritedSourceType) }
+    var provenance: Provenance { Provenance(operation: operation, inheritedSourceType: inheritedSourceType, isComposite: isComposite) }
 
     /// Photo strip frames: the original first, then the glow-up and its
     /// variations (up to four).

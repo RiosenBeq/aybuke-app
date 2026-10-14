@@ -68,4 +68,24 @@ final class ProvenanceTests: XCTestCase {
         XCTAssertEqual(provenance.sourceType, .trainedAlgorithmicMedia)
         XCTAssertTrue(provenance.showsMark(isPro: false))
     }
+
+    func testCompositeIsMarkedButNotGenerative() {
+        XCTAssertEqual(DigitalSourceType(uri: "http://cv.iptc.org/newscodes/digitalsourcetype/composite"), .composite)
+        XCTAssertFalse(DigitalSourceType.composite.isGenerative)
+
+        let onOwnPhoto = Provenance(operation: .removeBackground, isComposite: true)
+        XCTAssertEqual(onOwnPhoto.sourceType, .composite)
+        XCTAssertEqual(onOwnPhoto.storedSourceType, .composite)
+        XCTAssertFalse(onOwnPhoto.carriesAIProvenance)
+        XCTAssertFalse(onOwnPhoto.showsMark(isPro: false))
+
+        // Generative AI outranks the composite, and the label still applies.
+        let afterMagicEdit = Provenance(operation: .magicEdit, isComposite: true)
+        XCTAssertEqual(afterMagicEdit.sourceType, .compositeWithTrainedAlgorithmicMedia)
+        XCTAssertTrue(afterMagicEdit.carriesAIProvenance)
+
+        // Reopened from the Library, the stored composite is inherited.
+        let reopened = Provenance(operation: .removeBackground, inheritedSourceType: onOwnPhoto.storedSourceType)
+        XCTAssertEqual(reopened.sourceType, .composite)
+    }
 }

@@ -210,4 +210,14 @@ final class BackendAPITests: XCTestCase {
         XCTAssertTrue(AIOperation.removeBackground.runsOnDevice)
         XCTAssertFalse(AIOperation.magicEdit.runsOnDevice)
     }
+
+    func testCompositeProvenance() {
+        XCTAssertEqual(DigitalSourceType.composite.uri, "http://cv.iptc.org/newscodes/digitalsourcetype/composite")
+        // A cut-out on another photo is a composite, unless generative AI made more of it.
+        XCTAssertEqual(DigitalSourceType.strongest(AIOperation.removeBackground.digitalSourceType, .composite), .composite)
+        XCTAssertEqual(DigitalSourceType.strongest(.composite, AIOperation.restyle.digitalSourceType), .trainedAlgorithmicMedia)
+        XCTAssertEqual(DigitalSourceType.strongest(AIOperation.magicEdit.digitalSourceType, .composite), .compositeWithTrainedAlgorithmicMedia)
+        XCTAssertEqual(DigitalSourceType.strongest(nil, .composite), .composite)
+        XCTAssertNil(DigitalSourceType.strongest(nil, nil))
+    }
 }

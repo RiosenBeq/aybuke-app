@@ -12,9 +12,10 @@ enum ImageExporter {
     private static let iptcExtPrefix = "Iptc4xmpExt" as CFString
 
     /// `operation == nil` means no AI was involved (manual adjustments only),
-    /// so no AI provenance is claimed.
-    static func encode(_ image: UIImage, operation: AIOperation?, watermark: Bool = false) -> (data: Data, fileExtension: String)? {
-        encode(image, sourceType: operation?.digitalSourceType, watermark: watermark)
+    /// so no AI provenance is claimed. `composite`: a cut-out was placed on
+    /// another photo.
+    static func encode(_ image: UIImage, operation: AIOperation?, watermark: Bool = false, composite: Bool = false) -> (data: Data, fileExtension: String)? {
+        encode(image, sourceType: DigitalSourceType.strongest(operation?.digitalSourceType, composite ? .composite : nil), watermark: watermark)
     }
 
     /// `sourceType == nil` claims no AI. Only this one value is written, so
@@ -69,8 +70,8 @@ enum ImageExporter {
     }
 
     /// Writes a temporary file for the share sheet.
-    static func temporaryFile(for image: UIImage, operation: AIOperation?, watermark: Bool = false) throws -> URL {
-        try temporaryFile(for: image, sourceType: operation?.digitalSourceType, watermark: watermark)
+    static func temporaryFile(for image: UIImage, operation: AIOperation?, watermark: Bool = false, composite: Bool = false) throws -> URL {
+        try temporaryFile(for: image, sourceType: DigitalSourceType.strongest(operation?.digitalSourceType, composite ? .composite : nil), watermark: watermark)
     }
 
     static func temporaryFile(for image: UIImage, sourceType: DigitalSourceType?, watermark: Bool = false) throws -> URL {
@@ -95,17 +96,22 @@ enum PhotoLibrarySaver {
         }
     }
 
-    static func save(_ image: UIImage, operation: AIOperation?, watermark: Bool = false) async throws {
-        try await save(image, sourceType: operation?.digitalSourceType, watermark: watermark)
+    static func save(_ image: UIImage, operation: AIOperation?, watermark: Bool = false, composite: Bool = false) async throws {
+        try await save(image, sourceType: DigitalSourceType.strongest(operation?.digitalSourceType, composite ? .composite : nil), watermark: watermark)
     }
 
     static func save(_ image: UIImage, sourceType: DigitalSourceType?, watermark: Bool = false) async throws {
+        guard let encoded = ImageExporter.encode(image, sourceType: sourceType, watermark: watermark) else { throw SaveError.encodingFailed }
+        try await save(data: encoded.data)
+    }
+
+    /// Saves an already encoded image (with its metadata) as it is.
+    static func save(data: Data) async throws {
         let status = await PHPhotoLibrary.requestAuthorization(for: .addOnly)
         guard status == .authorized || status == .limited else { throw SaveError.denied }
-        guard let encoded = ImageExporter.encode(image, sourceType: sourceType, watermark: watermark) else { throw SaveError.encodingFailed }
         try await PHPhotoLibrary.shared().performChanges {
             let request = PHAssetCreationRequest.forAsset()
-            request.addResource(with: .photo, data: encoded.data, options: nil)
+            request.addResource(with: .photo, data: data, options: nil)
         }
     }
 }

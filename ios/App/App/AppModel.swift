@@ -886,18 +886,9 @@ final class AppModel {
     }
 
     private func openPhoto(_ data: Data, request: EditorRequest) async throws {
-        // RAW (ProRAW, DNG) is developed with Auto, since it looks flat out of the camera.
-        let isRAW = AutoDevelop.isRAW(data)
-        let (image, sourceType) = await Task.detached(priority: .userInitiated) { () -> (UIImage?, DigitalSourceType?) in
-            // Decoding drops the XMP, so an AI marking is read first and kept.
-            let sourceType = ImageExporter.digitalSourceType(in: data)
-            if isRAW, let developed = AutoDevelop.developRAW(data) {
-                return (ImageUtilities.normalized(developed), sourceType)
-            }
-            guard let image = UIImage(data: data) else { return (nil, nil) }
-            return (ImageUtilities.normalized(image), sourceType)
-        }.value
-        guard let image else { throw AIServiceError.invalidRequest(String(localized: "That file isn't a supported photo.")) }
+        guard let (image, isRAW, sourceType) = await PhotoDecoder.decode(data) else {
+            throw AIServiceError.invalidRequest(String(localized: "That file isn't a supported photo."))
+        }
         editorLaunch = EditorLaunch(image: image, tool: permittedTool(request.tool), template: allowsCloudAI ? request.template : nil,
                                     provenance: Provenance(inheritedSourceType: sourceType))
         if isRAW {
@@ -1079,6 +1070,12 @@ extension AppModel {
         case .crop:
             selectedTab = .home
             editorLaunch = EditorLaunch(image: ScreenshotFixtures.goldenLandscape, tool: .crop, cropAspect: .story, cropAngle: 4)
+        case .hideFaces:
+            selectedTab = .home
+            editorLaunch = EditorLaunch(image: ScreenshotFixtures.groupPhoto, tool: .hideFaces)
+        case .cutout:
+            selectedTab = .home
+            editorLaunch = EditorLaunch(image: ScreenshotFixtures.cutoutPhoto, tool: .removeBackground)
         case .create, .results:
             selectedTab = .create
         case .edit:

@@ -10,17 +10,29 @@ public struct Provenance: Equatable, Sendable {
     /// The marking the source already had: an imported file's XMP, or an
     /// Image Playground picture. Kept as is rather than rewritten.
     public var inheritedSourceType: DigitalSourceType?
+    /// A cut-out was placed on another photo in this edit (IPTC "composite").
+    public var isComposite: Bool
 
-    public init(operation: AIOperation? = nil, inheritedSourceType: DigitalSourceType? = nil) {
+    public init(operation: AIOperation? = nil, inheritedSourceType: DigitalSourceType? = nil, isComposite: Bool = false) {
         self.operation = operation
         self.inheritedSourceType = inheritedSourceType
+        self.isComposite = isComposite
     }
 
     public static let none = Provenance()
 
     /// What to write as Iptc4xmpExt:DigitalSourceType; `nil` claims no AI.
     public var sourceType: DigitalSourceType? {
-        DigitalSourceType.strongest(operation?.digitalSourceType, inheritedSourceType)
+        DigitalSourceType.strongest(
+            DigitalSourceType.strongest(operation?.digitalSourceType, inheritedSourceType),
+            isComposite ? .composite : nil
+        )
+    }
+
+    /// What a Library copy keeps as its inherited marking: the source's own
+    /// plus a composite made here, which `operation` alone can't express.
+    public var storedSourceType: DigitalSourceType? {
+        DigitalSourceType.strongest(inheritedSourceType, isComposite ? .composite : nil)
     }
 
     /// Glowlit's cloud models made or changed the pixels.
@@ -28,7 +40,7 @@ public struct Provenance: Equatable, Sendable {
 
     /// Generative AI made or changed the picture, so the AI hashtags, the
     /// "AI-edited" label and the "invisible tag" note apply. An on-device
-    /// cut-out alone doesn't count.
+    /// cut-out alone, or one placed on another photo, doesn't count.
     public var carriesAIProvenance: Bool { sourceType?.isGenerative ?? false }
 
     /// The free-tier mark is only for Glowlit's own cloud results. Images
@@ -51,22 +63,10 @@ extension DigitalSourceType {
         self.init(rawValue: term)
     }
 
-    /// Higher means more of the picture was generated.
-    public var rank: Int {
-        switch self {
-        case .trainedAlgorithmicMedia: return 3
-        case .compositeWithTrainedAlgorithmicMedia: return 2
-        case .algorithmicallyEnhanced: return 1
-        }
-    }
-
-    /// Generative AI was involved (not just an algorithmic enhancement).
-    public var isGenerative: Bool { self != .algorithmicallyEnhanced }
-
-    public static func strongest(_ lhs: DigitalSourceType?, _ rhs: DigitalSourceType?) -> DigitalSourceType? {
-        guard let lhs else { return rhs }
-        guard let rhs else { return lhs }
-        return rhs.rank >= lhs.rank ? rhs : lhs
+    /// Generative AI was involved (not just an algorithmic enhancement or a
+    /// composite of her own photos).
+    public var isGenerative: Bool {
+        self == .trainedAlgorithmicMedia || self == .compositeWithTrainedAlgorithmicMedia
     }
 }
 
@@ -75,6 +75,6 @@ extension AIOperation {
     /// edit never downgrades the label.
     public static func stronger(_ lhs: AIOperation?, _ rhs: AIOperation) -> AIOperation {
         guard let lhs else { return rhs }
-        return rhs.digitalSourceType.rank >= lhs.digitalSourceType.rank ? rhs : lhs
+        return rhs.digitalSourceType.generativeRank >= lhs.digitalSourceType.generativeRank ? rhs : lhs
     }
 }
