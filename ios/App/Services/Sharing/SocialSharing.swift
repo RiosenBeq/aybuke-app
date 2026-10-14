@@ -1,6 +1,7 @@
 import UIKit
 import SwiftUI
 import UniformTypeIdentifiers
+import AppCore
 
 /// Instagram Stories sharing through the documented pasteboard handoff.
 /// Instagram requires a Meta (Facebook) App ID (`AppConfig.instagramAppID`);
@@ -13,11 +14,12 @@ enum InstagramStories {
     }
 
     /// A 9:16 card goes in as the background; any other image becomes a
-    /// movable sticker on a blush-to-petal background.
+    /// movable sticker on a blush-to-petal background. The data comes from
+    /// the same encoder as every other export, so the AI marking travels too.
     @MainActor
-    static func share(_ image: UIImage, asBackground: Bool, appID: String) async -> Bool {
+    static func share(_ image: UIImage, asBackground: Bool, sourceType: DigitalSourceType?, appID: String) async -> Bool {
         guard let url = URL(string: "instagram-stories://share?source_application=\(appID)"),
-              let data = asBackground ? image.jpegData(compressionQuality: 0.92) : image.pngData() else { return false }
+              let data = ImageExporter.encode(image, sourceType: sourceType)?.data else { return false }
         var item: [String: Any] = [:]
         if asBackground {
             item["com.instagram.sharedSticker.backgroundImage"] = data

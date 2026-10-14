@@ -353,7 +353,7 @@ struct ShareComposerView: View {
         let appID = app.config.instagramAppID
         if InstagramStories.isAvailable(appID: appID) {
             UIPasteboard.general.string = caption
-            let opened = await InstagramStories.share(rendered, asBackground: format.isStory, appID: appID)
+            let opened = await InstagramStories.share(rendered, asBackground: format.isStory, sourceType: payload.provenance.sourceType, appID: appID)
             if opened {
                 app.countHappyMoment()
             } else {

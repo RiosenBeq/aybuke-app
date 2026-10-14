@@ -115,7 +115,7 @@ struct InviteView: View {
         guard let card else { return }
         let appID = app.config.instagramAppID
         if InstagramStories.isAvailable(appID: appID) {
-            if await InstagramStories.share(card, asBackground: true, appID: appID) { return }
+            if await InstagramStories.share(card, asBackground: true, sourceType: nil, appID: appID) { return }
         }
         // Without a Meta App ID the system sheet still offers Instagram → Stories.
         guard let file = Self.pngFile(card) else { return }
