@@ -120,6 +120,36 @@ enum ImageStore {
         UIImage(contentsOfFile: url(for: name).path)
     }
 
+    /// Whether the file is still there. Works while the device is locked:
+    /// only reading the pixels needs the file key.
+    static func exists(_ name: String) -> Bool {
+        FileManager.default.fileExists(atPath: url(for: name).path)
+    }
+
+    /// A small upright bitmap straight from ImageIO, without decoding the
+    /// full-size image first. `nil` when the file is missing or unreadable.
+    static func downsampled(_ name: String, maxPixel: CGFloat) -> UIImage? {
+        let options: [CFString: Any] = [
+            kCGImageSourceCreateThumbnailFromImageAlways: true,
+            kCGImageSourceCreateThumbnailWithTransform: true,
+            kCGImageSourceShouldCacheImmediately: true,
+            kCGImageSourceThumbnailMaxPixelSize: maxPixel,
+        ]
+        guard let source = CGImageSourceCreateWithURL(url(for: name) as CFURL, [kCGImageSourceShouldCache: false] as CFDictionary),
+              let thumbnail = CGImageSourceCreateThumbnailAtIndex(source, 0, options as CFDictionary)
+        else { return nil }
+        return UIImage(cgImage: thumbnail)
+    }
+
+    /// A second file with the same pixels and tag ("Duplicate" in My Works).
+    static func duplicate(_ name: String) throws -> String {
+        let data = try Data(contentsOf: url(for: name))
+        let ext = (name as NSString).pathExtension
+        let copy = UUID().uuidString + (ext.isEmpty ? "" : "." + ext)
+        try data.write(to: url(for: copy), options: [.atomic, fileProtection])
+        return copy
+    }
+
     static func delete(_ name: String) {
         try? FileManager.default.removeItem(at: url(for: name))
         ThumbnailCache.shared.remove(name)
@@ -140,31 +170,35 @@ final class ThumbnailCache {
         cache.totalCostLimit = 50 * 1024 * 1024
     }
 
+    enum Outcome {
+        case image(UIImage)
+        /// The file is gone: the tile offers "Remove" instead of staying blank.
+        case missing
+        /// Still there but unreadable, usually because the device is locked.
+        case unreadable
+    }
+
     func thumbnail(for name: String, maxPixel: CGFloat = 480) async -> UIImage? {
+        if case .image(let image) = await load(name, maxPixel: maxPixel) { return image }
+        return nil
+    }
+
+    func load(_ name: String, maxPixel: CGFloat = 480) async -> Outcome {
         if let cached = cache.object(forKey: name as NSString) {
-            return cached
+            return .image(cached)
         }
-        let image = await Task.detached(priority: .utility) { () -> UIImage? in
+        let outcome = await Task.detached(priority: .utility) { () -> Outcome in
             // ImageIO decodes straight to a small bitmap. preparingThumbnail
             // needed the full-size decode first, and on the Mac its images
             // drew as blank tiles.
-            let options: [CFString: Any] = [
-                kCGImageSourceCreateThumbnailFromImageAlways: true,
-                kCGImageSourceCreateThumbnailWithTransform: true,
-                kCGImageSourceShouldCacheImmediately: true,
-                kCGImageSourceThumbnailMaxPixelSize: maxPixel,
-            ]
-            let url = ImageStore.url(for: name)
-            guard let source = CGImageSourceCreateWithURL(url as CFURL, [kCGImageSourceShouldCache: false] as CFDictionary),
-                  let thumbnail = CGImageSourceCreateThumbnailAtIndex(source, 0, options as CFDictionary)
-            else { return nil }
-            return UIImage(cgImage: thumbnail)
+            if let image = ImageStore.downsampled(name, maxPixel: maxPixel) { return .image(image) }
+            return ImageStore.exists(name) ? .unreadable : .missing
         }.value
-        if let image {
+        if case .image(let image) = outcome {
             let cost = image.cgImage.map { $0.bytesPerRow * $0.height } ?? 0
             cache.setObject(image, forKey: name as NSString, cost: cost)
         }
-        return image
+        return outcome
     }
 
     func remove(_ name: String) {

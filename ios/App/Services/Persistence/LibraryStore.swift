@@ -34,11 +34,46 @@ enum CreationSchemaV1: VersionedSchema {
     }
 }
 
+/// The library as it was before `deletedAt` ("Recently deleted"). Frozen:
+/// its hash must keep matching stores written by those builds.
+enum CreationSchemaV2: VersionedSchema {
+    static var versionIdentifier: Schema.Version { Schema.Version(2, 0, 0) }
+    static var models: [any PersistentModel.Type] { [Creation.self] }
+
+    @Model
+    final class Creation {
+        @Attribute(.unique) var id: UUID
+        var createdAt: Date
+        var operationRaw: String
+        var title: String
+        var prompt: String?
+        var imageFileName: String
+        var pixelWidth: Int
+        var pixelHeight: Int
+        var isFavorite: Bool = false
+        var source: String? = nil
+        var sourceTypeRaw: String? = nil
+
+        init(id: UUID, createdAt: Date, operationRaw: String, title: String, imageFileName: String, pixelWidth: Int, pixelHeight: Int) {
+            self.id = id
+            self.createdAt = createdAt
+            self.operationRaw = operationRaw
+            self.title = title
+            self.imageFileName = imageFileName
+            self.pixelWidth = pixelWidth
+            self.pixelHeight = pixelHeight
+        }
+    }
+}
+
 enum GlowlitMigrationPlan: SchemaMigrationPlan {
-    static var schemas: [any VersionedSchema.Type] { [CreationSchemaV1.self, CreationSchemaV2.self] }
+    static var schemas: [any VersionedSchema.Type] { [CreationSchemaV1.self, CreationSchemaV2.self, CreationSchemaV3.self] }
     static var stages: [MigrationStage] {
-        // V2 only adds an optional property.
-        [.lightweight(fromVersion: CreationSchemaV1.self, toVersion: CreationSchemaV2.self)]
+        // Each version only adds an optional property.
+        [
+            .lightweight(fromVersion: CreationSchemaV1.self, toVersion: CreationSchemaV2.self),
+            .lightweight(fromVersion: CreationSchemaV2.self, toVersion: CreationSchemaV3.self),
+        ]
     }
 }
 
@@ -56,7 +91,7 @@ enum LibraryStore {
     }
 
     private static let log = Logger(subsystem: "app.glowlit.ios", category: "library")
-    private static let schema = Schema(versionedSchema: CreationSchemaV2.self)
+    private static let schema = Schema(versionedSchema: CreationSchemaV3.self)
     private static let corruptPrefix = "Corrupt-"
 
     /// Where SwiftData keeps the default store. With the App Group

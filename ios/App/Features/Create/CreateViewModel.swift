@@ -16,6 +16,8 @@ final class CreateViewModel {
     var showResults = false
     /// `Creation.imagePlaygroundSource` when the results came from Apple's sheet.
     private(set) var resultsSource: String?
+    /// The job behind the results on screen, so Regenerate can run it again.
+    private(set) var resultsJob: AIJob?
     @ObservationIgnored private var task: Task<Void, Never>?
 
     var canGenerate: Bool {
@@ -84,6 +86,14 @@ final class CreateViewModel {
         }
     }
 
+    /// A recent prompt chip: her own words, so no "written by" note.
+    func useRecent(_ recent: String) {
+        Haptics.selection()
+        prompt = recent
+        modelWrittenPrompt = nil
+        undoPrompt = nil
+    }
+
     func undoEnhance() {
         guard let undoPrompt else { return }
         prompt = undoPrompt
@@ -121,14 +131,24 @@ final class CreateViewModel {
     }
 
     func generate(app: AppModel) {
-        let verdict = ContentPolicy.evaluate(prompt, operation: .textToImage)
+        submit(AIJob(operation: .textToImage, prompt: prompt, style: style, aspectRatio: aspectRatio, numOutputs: count), app: app)
+    }
+
+    /// Results' "Regenerate": the same prompt, style, size and count, through
+    /// the same safety check, consent, Pro and credit gates as Generate.
+    func regenerate(app: AppModel) {
+        guard let resultsJob, !isGenerating else { return }
+        submit(resultsJob, app: app)
+    }
+
+    private func submit(_ job: AIJob, app: AppModel) {
+        let verdict = ContentPolicy.evaluate(job.prompt ?? "", operation: .textToImage)
         if case .blocked(let reason, _) = verdict {
             app.showToast(verbatim: L10n.core(reason), style: .error)
             Haptics.error()
             return
         }
-        let job = AIJob(operation: .textToImage, prompt: prompt, style: style, aspectRatio: aspectRatio, numOutputs: count)
-        app.requestAccess(for: .textToImage, outputs: count, requiresPro: job.isProOnly) { [weak self] in
+        app.requestAccess(for: .textToImage, outputs: job.numOutputs, requiresPro: job.isProOnly) { [weak self] in
             self?.start(job, app: app)
         }
     }
@@ -140,6 +160,7 @@ final class CreateViewModel {
         results = [image]
         requestID = nil
         resultsSource = Creation.imagePlaygroundSource
+        resultsJob = nil
         showResults = true
         Task {
             await app.saveToLibrary([image], operation: .textToImage, title: "Image Playground", prompt: nil, source: Creation.imagePlaygroundSource)
@@ -151,6 +172,8 @@ final class CreateViewModel {
     }
 
     private func start(_ job: AIJob, app: AppModel) {
+        // Every gate passed: kept for the recent prompt chips (this device only).
+        if let prompt = job.prompt { app.prompts.record(prompt) }
         isGenerating = true
         task = Task {
             defer { isGenerating = false }
@@ -159,10 +182,20 @@ final class CreateViewModel {
                 results = result.images
                 requestID = result.requestID
                 resultsSource = nil
+                resultsJob = job
                 showResults = true
             } catch {
                 app.handle(error)
             }
         }
     }
+
+    #if DEBUG
+    /// The `results` screenshot scene, with Regenerate available.
+    func showScreenshotResults(_ images: [UIImage]) {
+        results = images
+        resultsJob = AIJob(operation: .textToImage, prompt: prompt, style: style, aspectRatio: aspectRatio, numOutputs: images.count)
+        showResults = true
+    }
+    #endif
 }

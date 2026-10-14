@@ -47,23 +47,25 @@ struct CreateView: View {
             .navigationDestination(isPresented: $model.showResults) {
                 ResultsView(
                     images: model.results,
-                    prompt: model.resultsSource == nil ? model.prompt : nil,
+                    prompt: model.resultsSource == nil ? (model.resultsJob?.prompt ?? model.prompt) : nil,
                     operation: .textToImage,
                     requestID: model.requestID,
-                    source: model.resultsSource
+                    source: model.resultsSource,
+                    regenerate: model.resultsJob.map { job in
+                        ResultsView.Regenerate(cost: app.credits.cost(of: .textToImage, outputs: job.numOutputs)) {
+                            model.regenerate(app: app)
+                        }
+                    }
                 )
             }
-            .overlay {
-                if model.isGenerating {
-                    GeneratingOverlay(title: model.count > 1 ? String(localized: "Creating \(model.count) images…") : String(localized: "Creating your image…"), offersReadyPing: true) {
-                        model.cancel()
-                    }
-                    .transition(.opacity)
-                }
-            }
-            .animation(.easeInOut(duration: 0.25), value: model.isGenerating)
             .animation(.easeInOut(duration: 0.2), value: model.undoPrompt)
-            .onAppear { app.writer.prewarm() }
+            .animation(.snappy, value: model.prompt.isEmpty)
+            .onAppear {
+                app.writer.prewarm()
+                // Her draft survives leaving the tab (and the app).
+                if model.prompt.isEmpty, !app.prompts.draft.isEmpty { model.prompt = app.prompts.draft }
+            }
+            .onChange(of: model.prompt) { _, prompt in app.prompts.draft = prompt }
             #if DEBUG
             .onAppear {
                 guard let scene = ScreenshotScene.current, scene == .create || scene == .results, model.prompt.isEmpty else { return }
@@ -71,8 +73,7 @@ struct CreateView: View {
                 model.prompt = UserDefaults.standard.string(forKey: "GLPrompt") ?? ScreenshotFixtures.createPrompt
                 model.style = StyleCatalog.style(id: "pastel")
                 if scene == .results {
-                    model.results = ScreenshotFixtures.generatedArt(count: 3)
-                    model.showResults = true
+                    model.showScreenshotResults(ScreenshotFixtures.generatedArt(count: 3))
                 }
                 // QA: `-GLWriterAction magic|inspire` runs a writer chip once.
                 switch UserDefaults.standard.string(forKey: "GLWriterAction") {
@@ -84,6 +85,18 @@ struct CreateView: View {
                 }
             }
             #endif
+        }
+        // Over the results too, so Regenerate shows the same progress.
+        .overlay {
+            ZStack {
+                if model.isGenerating {
+                    GeneratingOverlay(title: model.count > 1 ? String(localized: "Creating \(model.count) images…") : String(localized: "Creating your image…"), offersReadyPing: true) {
+                        model.cancel()
+                    }
+                    .transition(.opacity)
+                }
+            }
+            .animation(.easeInOut(duration: 0.25), value: model.isGenerating)
         }
     }
 
@@ -138,6 +151,11 @@ struct CreateView: View {
                 }
                 .transition(.opacity)
             }
+
+            if model.prompt.isEmpty && !app.prompts.recent.isEmpty {
+                recentPrompts
+                    .transition(.opacity)
+            }
         }
         .padding(16)
         .cardStyle()
@@ -145,6 +163,40 @@ struct CreateView: View {
             RoundedRectangle(cornerRadius: Metrics.cardRadius, style: .continuous)
                 .strokeBorder(isPromptFocused ? Palette.accent : Color.clear, lineWidth: 1.5)
         )
+    }
+
+    /// Her last prompts, only while the box is empty. Kept on this device only.
+    private var recentPrompts: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack {
+                Label("Recent", systemImage: "clock.arrow.circlepath")
+                    .labelStyle(WriterCaptionLabelStyle())
+                    .accessibilityAddTraits(.isHeader)
+                Spacer(minLength: 0)
+                Button("Clear") {
+                    Haptics.selection()
+                    withAnimation(.snappy) { app.prompts.clear() }
+                }
+                .font(.footnote.weight(.semibold))
+                .foregroundStyle(Palette.accent)
+                .accessibilityLabel("Clear recent prompts")
+            }
+            ScrollView(.horizontal) {
+                HStack(spacing: 8) {
+                    ForEach(app.prompts.recent, id: \.self) { recent in
+                        RecentPromptChip(text: recent) { model.useRecent(recent) }
+                            .contextMenu {
+                                Button(role: .destructive) {
+                                    withAnimation(.snappy) { app.prompts.remove(recent) }
+                                } label: {
+                                    Label("Remove from recent", systemImage: "xmark")
+                                }
+                            }
+                    }
+                }
+            }
+            .scrollIndicators(.hidden)
+        }
     }
 
     /// "Inspire me" and the prompt upgrade. With Apple's on-device model the
@@ -247,6 +299,29 @@ struct CreateView: View {
             LinearGradient(colors: [Palette.background.opacity(0), Palette.background], startPoint: .top, endPoint: .center)
                 .ignoresSafeArea()
         )
+    }
+}
+
+/// One of her recent prompts; long ones are cut short.
+private struct RecentPromptChip: View {
+    let text: String
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            Text(verbatim: text)
+                .font(.subheadline.weight(.medium))
+                .foregroundStyle(Palette.textPrimary)
+                .lineLimit(1)
+                .frame(maxWidth: 220, alignment: .leading)
+                .padding(.horizontal, 14)
+                .frame(minHeight: 44)
+                .background(Palette.surfaceRaised, in: Capsule())
+                .overlay(Capsule().strokeBorder(Palette.stroke, lineWidth: 1))
+        }
+        .buttonStyle(.pressable)
+        .accessibilityLabel(Text(verbatim: text))
+        .accessibilityHint("Puts this prompt back in the box")
     }
 }
 

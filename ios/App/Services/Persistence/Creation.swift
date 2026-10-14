@@ -4,10 +4,10 @@ import AppCore
 
 /// The live library model. Changing a stored property means a new frozen
 /// schema version plus a migration stage in `GlowlitMigrationPlan`.
-typealias Creation = CreationSchemaV2.Creation
+typealias Creation = CreationSchemaV3.Creation
 
-enum CreationSchemaV2: VersionedSchema {
-    static var versionIdentifier: Schema.Version { Schema.Version(2, 0, 0) }
+enum CreationSchemaV3: VersionedSchema {
+    static var versionIdentifier: Schema.Version { Schema.Version(3, 0, 0) }
     static var models: [any PersistentModel.Type] { [Creation.self] }
 
     /// A saved result in the user's library. Pixels live on disk (`ImageStore`);
@@ -30,6 +30,9 @@ enum CreationSchemaV2: VersionedSchema {
         /// The IPTC marking the edited photo already carried (a `DigitalSourceType`
         /// raw value), so the copy keeps it on export.
         var sourceTypeRaw: String? = nil
+        /// Set when she deletes it: the creation waits in "Recently deleted"
+        /// (`RecentlyDeleted` has the rules) before it's removed for good.
+        var deletedAt: Date? = nil
 
         /// Stored for images that only received manual adjustments (no AI).
         static let manualEditRaw = "adjust"
@@ -62,12 +65,14 @@ enum CreationSchemaV2: VersionedSchema {
     }
 }
 
-extension CreationSchemaV2.Creation {
+extension CreationSchemaV3.Creation {
     /// The AI operation behind this image; `nil` when it was only adjusted
     /// by hand (so exports make no AI claim).
     var operation: AIOperation? { AIOperation(rawValue: operationRaw) }
 
     var isFromImagePlayground: Bool { source == Self.imagePlaygroundSource }
+
+    var isInRecentlyDeleted: Bool { deletedAt != nil }
 
     /// Export markings. Apple made Image Playground pictures, so they're
     /// marked as AI-generated but never carry Glowlit's mark.
