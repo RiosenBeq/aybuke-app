@@ -136,8 +136,8 @@ public enum LookSuggester {
     /// filter is too close to beauty retouching to suggest unasked. Tiny
     /// World's tilt-shift turns streets and wide views into a model, so it
     /// leads for cities by day and follows for landscapes and nights out.
-    /// Rainbow '17's prism light suits faces, pets and sunny rooms; Toy Cam
-    /// '09's cross-processed colour suits friends and streets.
+    /// Rainbow '17's prism light suits selfies, pets and sunny rooms, and
+    /// Toy Cam '09's cross-processed colour suits friends and streets.
     static func effectIDs(for kind: PhotoKind, theme: SeasonalTheme?) -> [String] {
         var ids: [String]
         switch kind {
