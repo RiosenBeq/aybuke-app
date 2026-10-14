@@ -133,6 +133,7 @@ enum CaptionTranscriber {
                                    reportingOptions: [], attributeOptions: [.audioTimeRange])
             : SpeechTranscriber(locale: locale, transcriptionOptions: [], reportingOptions: [], attributeOptions: [.audioTimeRange])
         try await installModel(for: module, locale: locale, relay: relay)
+        try Task.checkCancellation()
         relay.send(.listening(0))
 
         let format = monoFormat(like: await SpeechAnalyzer.bestAvailableAudioFormat(compatibleWith: [module]))
@@ -288,7 +289,7 @@ enum CaptionTranscriber {
         guard let format = AVAudioFormat(commonFormat: .pcmFormatFloat32, sampleRate: 16_000, channels: 1, interleaved: false) else {
             throw Failure.failed
         }
-        let samples = try await Task.detached(priority: .userInitiated) {
+        let reading = Task.detached(priority: .userInitiated) {
             var samples: [Float] = []
             samples.reserveCapacity(Int(duration * format.sampleRate))
             try readAudio(of: asset, track: track, duration: duration, format: format) { buffer in
@@ -296,7 +297,8 @@ enum CaptionTranscriber {
                 samples.append(contentsOf: UnsafeBufferPointer(start: channel, count: Int(buffer.frameLength)))
             }
             return samples
-        }.value
+        }
+        let samples = try await withTaskCancellationHandler { try await reading.value } onCancel: { reading.cancel() }
         try Task.checkCancellation()
 
         // Long clips go in parts of under a minute, cut where it's quietest.
@@ -361,9 +363,13 @@ enum CaptionTranscriber {
                         #if DEBUG
                         CaptionsTrace.note("SFSpeechRecognizer: \(error)")
                         #endif
-                        // 1110: "No speech detected". Not a failure, just no captions.
-                        if (error as NSError).domain == "kAFAssistantErrorDomain", code == 1110 {
+                        let domain = (error as NSError).domain
+                        if domain == "kAFAssistantErrorDomain", code == 1110 {
+                            // "No speech detected": not a failure, just no captions.
                             pending.finish(.success([]))
+                        } else if domain == "kLSRErrorDomain", code == 300 || code == 201 {
+                            // No recognizer model on this device, or dictation is off.
+                            pending.finish(.failure(Failure.unavailable))
                         } else {
                             pending.finish(.failure(Failure.failed))
                         }

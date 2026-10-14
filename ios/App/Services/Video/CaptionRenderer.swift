@@ -455,8 +455,10 @@ private struct CaptionDrawing {
             let x0 = CTLineGetOffsetForStringIndex(line.ctLine, lower, nil)
             let x1 = CTLineGetOffsetForStringIndex(line.ctLine, upper, nil)
             let start = origin(index)
-            return CGRect(x: start.x + x0 - em * 0.13, y: slots[index].minY - em * 0.02,
-                          width: x1 - x0 + em * 0.26, height: slots[index].height + em * 0.04)
+            // "I" and "a" still get a box that reads as one.
+            let width = max(x1 - x0 + em * 0.26, em * 0.8)
+            return CGRect(x: start.x + (x0 + x1 - width) / 2, y: slots[index].minY - em * 0.02,
+                          width: width, height: slots[index].height + em * 0.04)
         }
     }
 

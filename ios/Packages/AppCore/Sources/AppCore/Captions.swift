@@ -455,6 +455,8 @@ public enum CaptionChunker {
                     } else {
                         cost += 1.2
                     }
+                    // "…trying the" | "new look" reads badly: keep little words with what follows.
+                    if leadsIn(words[j - 1]) { cost += 0.6 }
                 }
                 // A sentence ending inside a caption, worst with a stub after it.
                 if let inner = chunk.dropLast().lastIndex(where: endsSentence) {
@@ -475,6 +477,24 @@ public enum CaptionChunker {
             end = start
         }
         return chunks
+    }
+
+    /// Articles, prepositions, conjunctions and possessives in the app's
+    /// languages that belong with the word after them.
+    static let leadWords = Set([
+        "a an the to of and or but in on at for with from my your our their his her its i",
+        "el la los las un una de del y o en con por para que mi tu su",
+        "os as uma do da e ou com meu minha",
+        "le les une du des et à au avec pour mon ma mes ton",
+        "der das ein eine und oder im mit zu von für mein meine",
+        "il lo gli di per che mio mia",
+        "dan ke yang untuk dengan",
+        "ve ile bir",
+        "и в на с к по а но что",
+    ].joined(separator: " ").split(separator: " ").map(String.init))
+
+    static func leadsIn(_ word: TranscriptWord) -> Bool {
+        leadWords.contains(word.text.trimmingCharacters(in: .whitespacesAndNewlines).lowercased())
     }
 
     static func endsSentence(_ word: TranscriptWord) -> Bool {

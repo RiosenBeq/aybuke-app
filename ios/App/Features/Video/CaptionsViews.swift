@@ -239,7 +239,7 @@ struct CaptionsEditor: View {
                 Button("Redo captions", role: .destructive) { remake() }
                 Button("Cancel", role: .cancel) {}
             } message: {
-                Text("Glowlit listens to your video again and replaces these captions, with your changes.")
+                Text("Glowlit listens to your video again and replaces these captions, including your changes.")
             }
         }
         .tint(Palette.accent)

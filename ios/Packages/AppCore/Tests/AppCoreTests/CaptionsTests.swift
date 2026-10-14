@@ -365,6 +365,7 @@ final class CaptionChunkBalanceTests: XCTestCase {
             return TranscriptPiece(text: (index == 0 ? "" : " ") + word, start: time, end: time + 0.28)
         }
         let cues = CaptionChunker.cues(from: [TranscriptPhrase(pieces: pieces)])
-        XCTAssertEqual(cues.map { $0.words?.count ?? 0 }.sorted(), [4, 5])
+        // Even, and "the" stays with the words it belongs to.
+        XCTAssertEqual(cues.map(\.text), ["Today I am trying", "the new pink hair look."])
     }
 }
