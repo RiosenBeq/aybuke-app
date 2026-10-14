@@ -165,17 +165,35 @@ final class OnDeviceWriter {
         // A fresh session per request keeps earlier answers out of the context.
         let session = (warmSession as? LanguageModelSession) ?? Self.makeSession()
         warmSession = nil
-        let work = Task { @MainActor in
-            try await session.respond(to: prompt, generating: type, options: GenerationOptions(temperature: 0.9)).content
+        // Race the model against the clock: whichever finishes first answers.
+        // (Don't rely on cancellation; the model may not stop promptly.)
+        return await withCheckedContinuation { continuation in
+            let answer = Answer()
+            let work = Task { @MainActor in
+                let content = try? await session.respond(to: prompt, generating: type, options: GenerationOptions(temperature: 0.9)).content
+                if answer.claim() { continuation.resume(returning: content) }
+            }
+            Task { @MainActor in
+                try? await Task.sleep(for: Self.timeout)
+                if answer.claim() {
+                    work.cancel()
+                    continuation.resume(returning: nil)
+                }
+            }
         }
-        let timer = Task {
-            try? await Task.sleep(for: Self.timeout)
-            work.cancel()
-        }
-        defer { timer.cancel() }
-        return try? await work.value
     }
     #endif
+}
+
+/// Lets exactly one of two racing tasks resume a continuation.
+@MainActor
+private final class Answer {
+    private var isClaimed = false
+
+    func claim() -> Bool {
+        defer { isClaimed = true }
+        return !isClaimed
+    }
 }
 
 #if canImport(FoundationModels)

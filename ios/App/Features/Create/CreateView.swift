@@ -69,6 +69,14 @@ struct CreateView: View {
                     model.results = ScreenshotFixtures.generatedArt(count: 3)
                     model.showResults = true
                 }
+                // QA: `-GLWriterAction magic|inspire` runs a writer chip once.
+                switch UserDefaults.standard.string(forKey: "GLWriterAction") {
+                case "magic":
+                    model.prompt = "a cat in the snow"
+                    model.enhancePrompt(writer: app.writer)
+                case "inspire": model.inspire(writer: app.writer)
+                default: break
+                }
             }
             #endif
         }
@@ -90,7 +98,13 @@ struct CreateView: View {
                     VStack(alignment: .leading, spacing: 8) { writerChips }
                 }
                 Spacer(minLength: 0)
-                if !model.prompt.isEmpty {
+                // The spinner takes the clear button's slot, so the chips don't move.
+                if model.isWriting {
+                    ProgressView()
+                        .controlSize(.small)
+                        .frame(minWidth: 32, minHeight: 32)
+                        .accessibilityLabel("Writing…")
+                } else if !model.prompt.isEmpty {
                     Button {
                         model.prompt = ""
                     } label: {
@@ -146,11 +160,6 @@ struct CreateView: View {
                 model.enhancePrompt(writer: app.writer)
             }
             .disabled(model.prompt.isEmpty)
-        }
-        if model.isWriting {
-            ProgressView()
-                .controlSize(.small)
-                .accessibilityLabel("Writing…")
         }
     }
 
