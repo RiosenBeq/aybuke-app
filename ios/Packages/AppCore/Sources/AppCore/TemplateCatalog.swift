@@ -4,6 +4,8 @@ public enum TemplateCategory: String, Codable, CaseIterable, Sendable, Identifia
     case trending
     case glowUp
     case aesthetic
+    /// Looks for photos with friends (the "Bestie pics" interest).
+    case besties
     case dreamy
     case seasonal
     case art
@@ -17,6 +19,7 @@ public enum TemplateCategory: String, Codable, CaseIterable, Sendable, Identifia
         case .trending: return "Trending now"
         case .glowUp: return "Glow-up looks"
         case .aesthetic: return "Aesthetic edits"
+        case .besties: return "Bestie pics"
         case .dreamy: return "Dreamy portraits"
         case .seasonal: return "Spooky season"
         case .art: return "Art styles"
@@ -129,7 +132,7 @@ public struct PhotoTemplate: Identifiable, Hashable, Codable, Sendable {
         self.isNew = isNew
         self.thumbnailURL = thumbnailURL
         self.season = season
-        self.keepsLikeness = keepsLikeness ?? [.glowUp, .aesthetic, .dreamy, .business].contains(category)
+        self.keepsLikeness = keepsLikeness ?? [.glowUp, .aesthetic, .besties, .dreamy, .business].contains(category)
     }
 }
 
@@ -427,6 +430,100 @@ public enum TemplateCatalog {
             category: .seasonal,
             prompt: "Turn this into a retro photo-booth picture: a pink curtain with paper hearts, heart-shaped sunglasses as props, bright even flash and a light film grain. \(modestyClause) \(groupIdentityClause)",
             symbolName: "heart.square", season: .galentines, keepsLikeness: true
+        ),
+
+        // MARK: Content pack (October 2026)
+        // Appended, like the trend pack, and ordered so that neighbours in
+        // each Home row get different card colours (palette = index % 6).
+        PhotoTemplate(
+            id: "concert-night", title: "Concert Night", subtitle: "Stage lights & confetti",
+            category: .besties,
+            prompt: "Place the people in this photo in the crowd at an outdoor evening concert: colorful stage lights and light beams, floating confetti, glow sticks and a soft haze. Give everyone a sparkly sequin jacket over their outfit. No alcohol, no band names, logos or readable text. Keep natural skin texture, no skin smoothing. \(modestyClause) \(groupIdentityClause)",
+            symbolName: "music.mic", isPro: true, isNew: true
+        ),
+        PhotoTemplate(
+            id: "pet-studio", title: "Pet & Me Studio", subtitle: "Studio portrait, together",
+            category: .pets,
+            prompt: "Turn this into a soft studio portrait by a pet photographer: a seamless pastel backdrop, gentle studio lighting and a soft shadow on the floor. Change only the background and the light. \(petClause) \(identityClause)",
+            symbolName: "camera.on.rectangle", isNew: true
+        ),
+        PhotoTemplate(
+            id: "sticker-sheet", title: "Sticker Sheet", subtitle: "Die-cut stickers of you",
+            category: .trending,
+            prompt: "Turn the person in this photo into a sheet of six glossy die-cut vinyl stickers on a pastel backing sheet: cute illustrated versions of her in cheerful poses, each with a small prop such as a heart, a star, a bubble tea, a camera, a flower or a rainbow. Thick white sticker borders, soft shadows and no text, logos or brand names. Keep her real hairstyle, hair color, skin tone and outfit in every sticker. \(identityClause)",
+            symbolName: "star.square.on.square", isNew: true
+        ),
+        PhotoTemplate(
+            id: "tennis-club", title: "Tennis Club", subtitle: "Sunny court, sporty fit",
+            category: .aesthetic,
+            prompt: "Restyle the photo as a sunny tennis-club moment: a white sleeved tennis polo with a pastel sweater tied over the shoulders, a knee-length pleated tennis skirt, a racket and tennis balls, a green court with crisp white lines and bright midday light. No logos or brand names. Keep natural skin texture, no skin smoothing. \(modestyClause) \(identityClause)",
+            symbolName: "tennis.racket", isPro: true, isNew: true
+        ),
+        PhotoTemplate(
+            id: "grad-day", title: "Grad Day", subtitle: "Cap, gown & confetti",
+            category: .dreamy,
+            prompt: "Turn this into a graduation-day photo: a classic graduation cap and gown over her outfit, a sunny campus lawn with leafy trees, golden confetti and tossed caps in the air, and warm afternoon light. Keep natural skin texture, no skin smoothing. \(identityClause)",
+            symbolName: "graduationcap.fill", isNew: true
+        ),
+        PhotoTemplate(
+            id: "bracelet-club", title: "Bracelet Club", subtitle: "Beads, besties & sunshine",
+            category: .besties,
+            prompt: "Turn this into a sunny friendship-bracelet afternoon: colorful beaded friendship bracelets on everyone's wrists, a picnic blanket with little boxes of beads and string, wildflowers and soft golden light. Keep everyone's outfits from the photo. Match the lighting naturally. \(groupIdentityClause)",
+            symbolName: "hands.and.sparkles", isNew: true
+        ),
+        PhotoTemplate(
+            id: "trading-card", title: "Holo Card", subtitle: "A shiny holo card of you",
+            category: .trending,
+            prompt: "Turn the person in this photo into a shiny holographic collectible trading card: her portrait as glossy card art inside an ornate pastel frame with a rainbow foil shimmer and sparkles, the card standing on a desk in soft light. No text, numbers, logos or brand names. \(identityClause)",
+            symbolName: "rectangle.portrait.on.rectangle.portrait.angled", isPro: true, isNew: true
+        ),
+        PhotoTemplate(
+            id: "twinning", title: "Twinning", subtitle: "Matching fits, same vibe",
+            category: .besties,
+            prompt: "Give everyone in this photo matching outfits: cozy pastel-pink zip hoodies, with a soft pastel color grade and light film grain. Keep the background and each person's hairstyle and hair color. No logos or brand names. Keep natural skin texture, no skin smoothing. \(modestyClause) \(groupIdentityClause)",
+            symbolName: "tshirt", isNew: true
+        ),
+        PhotoTemplate(
+            id: "pet-party", title: "Pawty Time", subtitle: "Party hats & balloons",
+            category: .pets,
+            prompt: "Turn this into a cute birthday party for the pet: a tiny striped party hat, pastel balloons, paper bunting, confetti and a small pet-safe cake with one candle on the table. \(petClause) \(identityClause)",
+            symbolName: "balloon.2", isNew: true
+        ),
+        PhotoTemplate(
+            id: "manga", title: "Manga Panel", subtitle: "Ink, sparkles & screentone",
+            category: .art,
+            prompt: "Redraw this photo as a classic black-and-white manga panel with clean ink lines, soft screentone shading, sparkles and floating flowers around the people, and gentle speed lines in the background. Keep the composition and each person's recognizable features.",
+            symbolName: "book.pages", isNew: true
+        ),
+        PhotoTemplate(
+            id: "postcard", title: "Travel Postcard", subtitle: "Greetings from the seaside",
+            category: .aesthetic,
+            prompt: "Turn this photo into a vintage travel postcard: place the person on a sunny seaside promenade with pastel houses, a lighthouse and sailboats, inside a white deckled postcard border with a decorative stamp and a round postmark in the corner. No readable text. Match the lighting naturally. \(identityClause)",
+            symbolName: "sailboat", isPro: true, isNew: true
+        ),
+        PhotoTemplate(
+            id: "bow-era", title: "Bow Era", subtitle: "Ribbons, lace & pearls",
+            category: .aesthetic,
+            prompt: "Restyle the photo with a soft bow aesthetic: pink satin ribbon bows in her hair, a cream knit cardigan with a lace collar and pearl buttons, a pastel pink backdrop with little bows, soft daylight and light film grain. Keep her hairstyle and hair color; just add the bows. \(modestyClause) \(identityClause)",
+            symbolName: "gift.fill", isNew: true
+        ),
+        PhotoTemplate(
+            id: "sleepover", title: "Sleepover", subtitle: "Pillow fort & fairy lights",
+            category: .besties,
+            prompt: "Turn this into a cozy sleepover photo: a pillow fort with fairy lights, soft blankets, popcorn bowls, instant photos pinned to a string and a warm movie-night glow. Everyone wears matching long-sleeve pastel pajamas. Keep natural skin texture, no skin smoothing. \(modestyClause) \(groupIdentityClause)",
+            symbolName: "tent", isNew: true
+        ),
+        PhotoTemplate(
+            id: "plushie-pet", title: "Plushie Pet", subtitle: "Your pet, as a soft toy",
+            category: .pets,
+            prompt: "Turn the pet in this photo into a cute handmade stitched plush toy sitting on a cozy knitted blanket: soft fabric in the pet's real colors and markings, visible seams, embroidered details and a little ribbon collar. No logos, labels or brand names. \(petClause) \(identityClause)",
+            symbolName: "pawprint.fill", isPro: true, isNew: true
+        ),
+        PhotoTemplate(
+            id: "soft-film", title: "Soft Film", subtitle: "Dreamy 35mm snapshot",
+            category: .aesthetic,
+            prompt: "Make this look like a dreamy 35mm film snapshot: soft window light, a pastel color grade, gentle halation around the highlights, a faint light leak at the edge and fine grain. Keep the scene and the outfit unchanged. Keep natural skin texture, no skin smoothing. \(identityClause)",
+            symbolName: "film", isNew: true
         ),
     ]
 

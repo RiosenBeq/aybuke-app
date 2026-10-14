@@ -24,6 +24,15 @@ public struct PhotoInsight: Equatable, Sendable {
         self.isPortraitOrientation = isPortraitOrientation
     }
 
+    /// A stable number from what the photo shows, so photos of the same kind
+    /// can lead with different ideas while one photo always gets the same.
+    var variety: Int {
+        // FNV-1a: stable across launches (String.hashValue isn't).
+        let key = labels.sorted().joined(separator: ",") + "|\(faceCount)|\(animalKind ?? "")"
+        let hash = key.utf8.reduce(UInt64(14_695_981_039_346_656_037)) { ($0 ^ UInt64($1)) &* 1_099_511_628_211 }
+        return Int(hash % 1_000)
+    }
+
     public var kind: PhotoKind {
         if faceCount >= 2 { return .group }
         if faceCount == 1 { return .selfie }
@@ -87,7 +96,9 @@ public enum LookSuggestion: Hashable, Sendable {
 /// Picks up to four ideas that fit a photo: a free effect first (it applies
 /// instantly, offline and without credits), then a look, a Magic Edit idea
 /// and a second effect. Deterministic for the same input, so "Surprise me"
-/// moves through them with `rotation` instead of randomness.
+/// moves through them with `rotation` instead of randomness. Which free look
+/// and which Magic Edit idea lead also follows what the photo shows
+/// (`PhotoInsight.variety`), so different photos get different ones.
 ///
 /// Ideas for photos with people only change hair colour, backgrounds, light,
 /// props, outfits for the season or the art style, never a face or body.
@@ -106,8 +117,10 @@ public enum LookSuggester {
         let theme = SeasonalTheme.current(on: date, calendar: calendar)
 
         let effects = rotated(effectIDs(for: kind, theme: theme).filter(freeEffects.contains), by: rotation)
-        let templates = templateCandidates(for: kind, theme: theme, date: date, calendar: calendar, catalog: catalog)
-        let ideas = rotated(magicEditIdeas(for: kind, theme: theme), by: rotation)
+        let templates = templateCandidates(
+            for: kind, theme: theme, date: date, calendar: calendar, catalog: catalog, variety: insight.variety
+        )
+        let ideas = magicEditIdeas(for: kind, theme: theme, offset: insight.variety + rotation)
 
         var result: [LookSuggestion] = []
         if let effect = effects.first { result.append(.effect(effect)) }
@@ -158,15 +171,19 @@ public enum LookSuggester {
     }
 
     /// Looks that fit the kind: in-season seasonal looks first (people only),
-    /// then free looks, then Pro ones, so a locked look never leads.
+    /// then free looks (turned by `variety`), then Pro ones, so a locked look
+    /// never leads.
     static func templateCandidates(
-        for kind: PhotoKind, theme: SeasonalTheme?, date: Date, calendar: Calendar, catalog: [PhotoTemplate]
+        for kind: PhotoKind, theme: SeasonalTheme?, date: Date, calendar: Calendar, catalog: [PhotoTemplate],
+        variety: Int = 0
     ) -> [PhotoTemplate] {
         let preferred: [String]
         switch kind {
-        case .selfie: preferred = ["y2k", "polaroid", "pink-hair", "anime-film", "golden-glow", "80s-studio", "watercolor"]
-        case .group: preferred = ["polaroid", "y2k", "birthday", "disco-79", "anime-film"]
-        case .pet: preferred = ["royal-pet", "pet-astronaut", "pet-figurine"]
+        case .selfie:
+            preferred = ["y2k", "polaroid", "pink-hair", "anime-film", "golden-glow", "80s-studio", "watercolor",
+                         "soft-film", "sticker-sheet", "manga"]
+        case .group: preferred = ["polaroid", "y2k", "birthday", "disco-79", "anime-film", "bracelet-club"]
+        case .pet: preferred = ["royal-pet", "pet-astronaut", "pet-figurine", "pet-party", "pet-studio", "plushie-pet"]
         case .landscape: preferred = ["golden-sky", "watercolor", "anime-film", "oil-painting"]
         case .city: preferred = ["golden-sky", "anime-film", "watercolor", "comic"]
         case .cityNight: preferred = ["anime-film", "comic", "neon-city"]
@@ -179,71 +196,100 @@ public enum LookSuggester {
             let seasonal = catalog.filter { $0.season == theme && TemplateCatalog.isAvailable($0, on: date, calendar: calendar) }
             candidates = seasonal + candidates
         }
-        // Stable: keeps the order above within free and within Pro.
-        return candidates.filter { !$0.isPro } + candidates.filter(\.isPro)
+        // Stable: keeps the order above within free and within Pro. Free
+        // in-season looks still lead; the year-round free ones take turns.
+        let free = candidates.filter { !$0.isPro }
+        return free.filter { $0.season != nil } + rotated(free.filter { $0.season == nil }, by: variety)
+            + candidates.filter(\.isPro)
     }
 
-    static func magicEditIdeas(for kind: PhotoKind, theme: SeasonalTheme?) -> [String] {
-        let base: [String]
+    /// The kind's ideas, the season's first; `offset` turns the others.
+    static func magicEditIdeas(for kind: PhotoKind, theme: SeasonalTheme?, offset: Int = 0) -> [String] {
+        let base = rotated(baseIdeas(for: kind), by: offset)
+        guard let theme, let seasonal = seasonalIdea(for: kind, theme: theme) else { return base }
+        return [seasonal] + base
+    }
+
+    private static func baseIdeas(for kind: PhotoKind) -> [String] {
         switch kind {
         case .selfie:
-            base = [
+            return [
                 idea("Give me pastel pink hair"),
                 idea("Add soft fairy lights behind me"),
                 idea("Put me in a cherry blossom street"),
                 idea("Turn it into a dreamy watercolor painting"),
+                idea("Add a soft rainbow glow behind me"),
+                idea("Give me a sparkly butterfly hair clip"),
+                idea("Turn the background into a starry night sky"),
             ]
         case .group:
-            base = [
+            return [
                 idea("Add confetti and party lights around us"),
                 idea("Turn the background into a sunset beach"),
                 idea("Make it look like a retro film photo"),
+                idea("Give us matching friendship bracelets"),
+                idea("Turn the background into a pastel cloud sky"),
+                idea("Add heart balloons and fairy lights around us"),
             ]
         case .pet:
-            base = [
+            return [
                 idea("Give my pet a tiny party hat"),
                 idea("Put my pet on a cloud in a pink sky"),
                 idea("Add a little bow tie and party balloons"),
+                idea("Give my pet a tiny strawberry hat"),
+                idea("Put my pet in a field of daisies"),
+                idea("Turn it into a cute cartoon"),
             ]
         case .landscape:
-            base = [
+            return [
                 idea("Turn the sky into a golden-hour glow"),
                 idea("Make it an aurora night with soft green lights"),
                 idea("Add a rainbow and a few butterflies"),
+                idea("Turn the sky into a pink sunset"),
+                idea("Add hot-air balloons in the sky"),
+                idea("Make it a starry night with a big full moon"),
             ]
         case .cityNight:
-            base = [
+            return [
                 idea("Add pink and blue neon reflections on the street"),
                 idea("Add soft falling snow under the street lights"),
                 idea("Turn it into an anime city at night"),
+                idea("Add glowing paper lanterns above the street"),
+                idea("Make it a starry night with a big full moon"),
             ]
         case .city:
-            base = [
+            return [
                 idea("Turn the sky into a golden-hour glow"),
                 idea("Turn it into an anime city at night"),
                 idea("Add a rainbow and a few butterflies"),
+                idea("Add cherry blossom trees along the street"),
+                idea("Turn the sky into a pink sunset"),
             ]
         case .food:
-            base = [
+            return [
                 idea("Turn it into a sunny picnic with a checked blanket"),
                 idea("Add fresh flowers and soft morning light"),
                 idea("Make it a cozy café table by the window"),
+                idea("Add sparkles and a birthday candle"),
+                idea("Turn it into a cozy storybook illustration"),
             ]
         case .indoor:
-            base = [
+            return [
                 idea("Add warm fairy lights around the room"),
                 idea("Turn it into a cozy storybook illustration"),
                 idea("Make it golden hour through the window"),
+                idea("Add plants and soft morning light"),
+                idea("Make it snow softly outside the window"),
             ]
         case .other:
-            base = [
+            return [
                 idea("Add sparkles and soft pastel light"),
                 idea("Turn it into a dreamy watercolor painting"),
                 idea("Make it look like a retro film photo"),
+                idea("Turn it into a cute sticker with a white border"),
+                idea("Add a dreamy pastel glow and tiny stars"),
             ]
         }
-        guard let theme, let seasonal = seasonalIdea(for: kind, theme: theme) else { return base }
-        return [seasonal] + base
     }
 
     private static func seasonalIdea(for kind: PhotoKind, theme: SeasonalTheme) -> String? {

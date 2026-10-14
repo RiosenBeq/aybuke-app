@@ -12,14 +12,18 @@ struct MagicEditPanel: View {
     @FocusState private var isFocused: Bool
 
     private let suggestions = [
-        String(localized: "Golden hour light"),
-        String(localized: "Give me pink hair"),
-        String(localized: "Add soft glam makeup"),
-        String(localized: "Put me in a pink dress"),
-        String(localized: "Add cherry blossoms"),
-        String(localized: "Add sparkles everywhere"),
-        String(localized: "Make it a watercolor"),
-        String(localized: "Remove the people behind me"),
+        String(localized: "Golden hour light", comment: "Example Magic Edit request on a chip; tapping it fills the prompt"),
+        String(localized: "Give me pink hair", comment: "Example Magic Edit request on a chip; tapping it fills the prompt"),
+        String(localized: "Add soft glam makeup", comment: "Example Magic Edit request on a chip; tapping it fills the prompt"),
+        String(localized: "Put me in a pink dress", comment: "Example Magic Edit request on a chip; tapping it fills the prompt"),
+        String(localized: "Add cherry blossoms", comment: "Example Magic Edit request on a chip; tapping it fills the prompt"),
+        String(localized: "Add sparkles everywhere", comment: "Example Magic Edit request on a chip; tapping it fills the prompt"),
+        String(localized: "Make it a watercolor", comment: "Example Magic Edit request on a chip; tapping it fills the prompt"),
+        String(localized: "Make it snow", comment: "Example Magic Edit request on a chip; tapping it fills the prompt"),
+        String(localized: "Add a rainbow", comment: "Example Magic Edit request on a chip; tapping it fills the prompt"),
+        String(localized: "Turn it into anime", comment: "Example Magic Edit request on a chip; tapping it fills the prompt"),
+        String(localized: "Add fairy lights", comment: "Example Magic Edit request on a chip; tapping it fills the prompt"),
+        String(localized: "Remove the people behind me", comment: "Example Magic Edit request on a chip; tapping it fills the prompt"),
     ]
 
     private var canSubmit: Bool {
