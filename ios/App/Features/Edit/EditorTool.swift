@@ -53,7 +53,7 @@ enum EditorTool: String, CaseIterable, Identifiable {
         switch self {
         case .magicEdit: return String(localized: "Describe a change")
         case .makeup: return String(localized: "Lips, eyes & blush")
-        case .styles: return String(localized: "One-tap looks")
+        case .styles: return Platform.isMac ? String(localized: "One-click looks") : String(localized: "One-tap looks")
         case .effects: return String(localized: "80s · Y2K · 2010s")
         case .textStickers: return String(localized: "Text, stickers, doodles")
         case .enhance: return String(localized: "Sharpen & restore")

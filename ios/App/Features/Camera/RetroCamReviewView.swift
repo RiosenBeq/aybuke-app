@@ -56,6 +56,9 @@ struct RetroCamReviewView: View {
         } message: {
             Text("Save it first if you want to keep it.")
         }
+        // File › Save (⌘S) on the Mac saves the shot on screen.
+        .onAppear { app.saveActiveCover = { save() } }
+        .onDisappear { app.saveActiveCover = nil }
         #if DEBUG
         .onAppear(perform: applyScreenshotOptions)
         #endif
@@ -187,9 +190,8 @@ struct RetroCamReviewView: View {
                 }
             }
             .buttonStyle(.primary)
-            .macKeyboardShortcut(KeyboardShortcut("s"))
             Text("Free · made on your device")
-                .font(.caption2)
+                .font(.legibleCaption2)
                 .foregroundStyle(.white.opacity(0.55))
         }
         .disabled(image == nil || isSaving)

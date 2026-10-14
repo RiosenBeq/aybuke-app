@@ -47,9 +47,17 @@ struct GlowlitCommands: Commands {
                 .keyboardShortcut("o", modifiers: [.command, .option])
                 .disabled(!app.acceptsCommands)
         }
-        // Not a document app: no Save or Export that would do nothing.
-        // Saving and sharing live in each editor.
-        CommandGroup(replacing: .saveItem) {}
+        // Not a document app: no Export. Close and Save act on what's on
+        // screen. This group also holds the system's Close, so it's written
+        // out again here. Neither is gated by acceptsCommands: covers are up.
+        CommandGroup(replacing: .saveItem) {
+            Button("Close") { app.closePresented() }
+                .keyboardShortcut("w")
+                .disabled(!app.canClosePresented)
+            Button("Save") { app.saveActiveCover?() }
+                .keyboardShortcut("s")
+                .disabled(app.saveActiveCover == nil)
+        }
         CommandGroup(replacing: .importExport) {}
         CommandGroup(replacing: .undoRedo) {
             EditorUndoCommands(app: app)
@@ -287,6 +295,9 @@ extension View {
 
     /// Mac: a tooltip, so an icon-only button says what it does under the
     /// pointer. iPhone and iPad are unchanged.
+    /// Literals pick the `LocalizedStringKey` form, which is what the string
+    /// catalogs extract. The `Text` form is disfavored so a literal isn't
+    /// ambiguous; it stays for callers that already hold a `Text`.
     @ViewBuilder
     func macHelp(_ text: LocalizedStringKey) -> some View {
         if Platform.isMac {
@@ -296,6 +307,7 @@ extension View {
         }
     }
 
+    @_disfavoredOverload
     @ViewBuilder
     func macHelp(_ text: Text) -> some View {
         if Platform.isMac {
@@ -339,6 +351,18 @@ extension View {
     /// what a click opens. iPhone and iPad are unchanged.
     func macHoverLift(scale: CGFloat = 1.02) -> some View {
         modifier(MacHoverLift(scale: scale))
+    }
+
+    /// Mac: the title bar stays above full-window covers, so a section's
+    /// toolbar items (Library's Select) hide while one is up. iPhone and iPad
+    /// are unchanged.
+    @ViewBuilder
+    func hidesMacToolbar(_ hidden: Bool) -> some View {
+        #if targetEnvironment(macCatalyst)
+        toolbar(hidden ? .hidden : .automatic, for: .navigationBar)
+        #else
+        self
+        #endif
     }
 
     /// Mac: drop a photo file anywhere on the main screens to open it in the

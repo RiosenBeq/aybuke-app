@@ -83,7 +83,7 @@ struct MakeupPanel: View {
             .tint(Palette.accent)
 
             Text("Makeup is play. Your face, skin and features stay yours.")
-                .font(.caption)
+                .font(.legibleCaption)
                 .foregroundStyle(Palette.textSecondary)
                 .multilineTextAlignment(.center)
                 .fixedSize(horizontal: false, vertical: true)

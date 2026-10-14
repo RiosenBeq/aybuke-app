@@ -299,11 +299,19 @@ struct HomeView: View {
                 SectionHeader(title: LocalizedStringKey(category.title(on: AppClock.now)), actionTitle: "See all") {
                     openCategory = category
                 }
-                // Inside the scroll view's own bounds: a card past the edge of
-                // a row whose clipping is off would draw without its art (the
-                // art is a drawing group).
-                Shelf(items: TemplateCatalog.templates(in: category, on: AppClock.now), itemWidth: Self.macCardSize.width) { template in
-                    templateButton(template, size: Self.macCardSize)
+                // The first eight looks, as many columns as the page fits.
+                LazyVGrid(columns: [GridItem(.adaptive(minimum: Self.macCardSize.width), spacing: 14, alignment: .top)],
+                          alignment: .leading, spacing: 14) {
+                    ForEach(TemplateCatalog.templates(in: category, on: AppClock.now).prefix(8)) { template in
+                        templateButton(template, size: Self.macCardSize)
+                            .contextMenu {
+                                // Same entry point as a tap on the card.
+                                Button("Try this look") {
+                                    Haptics.tap()
+                                    app.startEditing(tool: .styles, template: template)
+                                }
+                            }
+                    }
                 }
             }
             .padding(.horizontal, Metrics.pageGutter)
@@ -312,7 +320,7 @@ struct HomeView: View {
         }
     }
 
-    /// Bigger cards on the Mac, where the row has the room.
+    /// Bigger cards on the Mac, where the grid has the room.
     private static let macCardSize = CGSize(width: 176, height: 234)
 
     private func templateButton(_ template: PhotoTemplate, size: CGSize) -> some View {
@@ -372,7 +380,7 @@ struct HomeView: View {
                         .font(.cardTitle)
                         .foregroundStyle(Palette.textPrimary)
                     Text("Turn any idea into an image")
-                        .font(.footnote)
+                        .font(.legibleFootnote)
                         .foregroundStyle(Palette.textSecondary)
                 }
                 Spacer()
@@ -414,7 +422,7 @@ struct HomeView: View {
                     .font(.cardTitle)
                     .foregroundStyle(Palette.textPrimary)
                 Text("Turn any idea into an image")
-                    .font(.footnote)
+                    .font(.legibleFootnote)
                     .foregroundStyle(Palette.textSecondary)
             }
             .padding(20)
@@ -466,7 +474,7 @@ struct HomeView: View {
                         .font(.cardTitle)
                         .foregroundStyle(Palette.textPrimary)
                     Text("Invite your besties with a story card")
-                        .font(.footnote)
+                        .font(.legibleFootnote)
                         .foregroundStyle(Palette.textSecondary)
                 }
                 Spacer()
@@ -543,7 +551,7 @@ private struct QuickToolTile: View {
                         .font(.subheadline.weight(.bold))
                         .foregroundStyle(Palette.textPrimary)
                     Text(caption)
-                        .font(.caption)
+                        .font(.legibleCaption)
                         .foregroundStyle(Palette.textSecondary)
                         .lineLimit(1)
                 }
@@ -604,7 +612,7 @@ struct ModeBanner: View {
             Image(systemName: "testtube.2")
                 .foregroundStyle(Palette.warning)
             Text(text)
-                .font(.footnote)
+                .font(.legibleFootnote)
                 .foregroundStyle(Palette.textSecondary)
         }
         .padding(12)

@@ -46,7 +46,7 @@ struct MagicEditPanel: View {
 
             promptRow
             Text("\(cost) credit per edit · failed edits are refunded")
-                .font(.caption2)
+                .font(.legibleCaption2)
                 .foregroundStyle(Palette.textTertiary)
 
             if showsExamples && placement == .inspector {
@@ -110,11 +110,6 @@ struct StylesPanel: View {
     let onSelect: (PhotoTemplate) -> Void
 
     @Environment(\.editorPanelPlacement) private var placement
-    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
-
-    /// A row as wide as the screen (iPhone) can let its shadows spill; a
-    /// narrower panel clips its row, with room inside for the shadows.
-    private var clipsRow: Bool { horizontalSizeClass == .regular }
 
     var body: some View {
         if placement == .inspector {
@@ -127,11 +122,10 @@ struct StylesPanel: View {
                 HStack(spacing: 10) {
                     cards(fillingWidth: false)
                 }
-                .padding(.vertical, clipsRow ? 16 : 4)
+                .padding(.vertical, 4)
             }
             .scrollIndicators(.hidden)
-            .scrollClipDisabled(!clipsRow)
-            .padding(.vertical, clipsRow ? -12 : 0)
+            .scrollClipDisabled()
         }
     }
 
@@ -171,7 +165,7 @@ struct OneTapPanel: View {
                     .font(.cardTitle)
                     .foregroundStyle(Palette.textPrimary)
                 Text(message)
-                    .font(.footnote)
+                    .font(.legibleFootnote)
                     .foregroundStyle(Palette.textSecondary)
             }
             Button(action: action) {
@@ -387,7 +381,7 @@ struct EffectsPanel: View {
                     .disabled(selected == nil)
             }
             Text("Free for everyone · on your device · no credits")
-                .font(.caption2)
+                .font(.legibleCaption2)
                 .foregroundStyle(Palette.textTertiary)
         }
     }

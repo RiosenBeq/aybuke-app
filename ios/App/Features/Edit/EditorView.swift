@@ -68,9 +68,18 @@ struct EditorView: View {
         #if DEBUG || GL_PERF
         .onAppear { PerfProbe.editorAppeared() }
         #endif
-        // Edit › Undo and Redo on the Mac reach this editor's history.
-        .onAppear { app.activeEditor = model }
-        .onDisappear { if app.activeEditor === model { app.activeEditor = nil } }
+        // Edit › Undo and Redo on the Mac reach this editor's history, and
+        // File › Save (⌘S) saves it.
+        .onAppear {
+            app.activeEditor = model
+            app.saveActiveCover = { save() }
+        }
+        .onDisappear {
+            if app.activeEditor === model {
+                app.activeEditor = nil
+                app.saveActiveCover = nil
+            }
+        }
         .animation(.snappy, value: model.showsKindnessNote)
         .animation(.easeInOut(duration: 0.2), value: isTypingOverlayText)
         .onChange(of: model.overlays.notice) { _, notice in
@@ -185,7 +194,7 @@ struct EditorView: View {
                         .foregroundStyle(Palette.textPrimary)
                         .accessibilityAddTraits(.isHeader)
                     Text(tool.caption)
-                        .font(.footnote)
+                        .font(.legibleFootnote)
                         .foregroundStyle(Palette.textSecondary)
                 }
                 .padding(.horizontal, 18)
@@ -312,7 +321,7 @@ struct EditorView: View {
             .disabled(isSaving)
             .accessibilityLabel("Save to Photos")
             .accessibilityInputLabels(["Save", "Save to Photos"])
-            .keyboardShortcut("s")
+            .padKeyboardShortcut("s")
         }
         .padding(.horizontal, Metrics.gutter)
         .padding(.top, 6)

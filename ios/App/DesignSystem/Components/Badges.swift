@@ -101,7 +101,7 @@ struct SectionHeader: View {
                     .foregroundStyle(Palette.textPrimary)
                     .accessibilityAddTraits(.isHeader)
                 if let subtitle {
-                    Text(subtitle).font(.footnote).foregroundStyle(Palette.textSecondary)
+                    Text(subtitle).font(.legibleFootnote).foregroundStyle(Palette.textSecondary)
                 }
             }
             Spacer()

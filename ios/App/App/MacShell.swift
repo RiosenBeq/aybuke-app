@@ -20,7 +20,9 @@ struct MacShellView: View {
                 .toolbar(removing: .sidebarToggle)
                 .navigationSplitViewColumnWidth(min: 220, ideal: 260, max: 340)
         } detail: {
+            // Each section's own toolbar would otherwise bring a second toggle.
             MacSections(createModel: createModel)
+                .toolbar(removing: .sidebarToggle)
         }
         .navigationSplitViewStyle(.balanced)
         .overlay(alignment: .topLeading) {
@@ -55,6 +57,7 @@ private extension MacShellView {
                 .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
+        .disabled(!app.acceptsCommands)
         .accessibilityLabel(isHidden ? "Show Sidebar" : "Hide Sidebar")
         .help(isHidden ? "Show Sidebar" : "Hide Sidebar")
         .padding(.leading, 104)
@@ -72,11 +75,12 @@ private struct MacSections: View {
     @Environment(AppModel.self) private var app
 
     var body: some View {
+        let covered = app.isFullScreenCoverPresented
         switch app.selectedTab {
-        case .home: HomeView()
-        case .create: CreateView(model: createModel)
-        case .edit: EditHubView()
-        case .library: LibraryView()
+        case .home: HomeView().hidesMacToolbar(covered)
+        case .create: CreateView(model: createModel).hidesMacToolbar(covered)
+        case .edit: EditHubView().hidesMacToolbar(covered)
+        case .library: LibraryView().hidesMacToolbar(covered)
         }
     }
 }

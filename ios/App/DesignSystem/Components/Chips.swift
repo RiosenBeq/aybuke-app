@@ -30,7 +30,7 @@ struct SelectableChip: View {
                         .fixedSize(horizontal: false, vertical: true)
                 }
                 if isLocked {
-                    Image(systemName: "lock.fill").font(.caption2)
+                    Image(systemName: "lock.fill").font(.legibleCaption2)
                 }
             }
             .padding(.horizontal, 14)
@@ -43,6 +43,7 @@ struct SelectableChip: View {
             .animation(Motion.press, value: isSelected)
         }
         .buttonStyle(.pressable)
+        .macHoverLift()
         .accessibilityAddTraits(isSelected ? .isSelected : [])
     }
 

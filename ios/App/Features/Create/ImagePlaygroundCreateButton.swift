@@ -39,7 +39,7 @@ struct ImagePlaygroundCreateButton: View {
                 }
                 .buttonStyle(.secondary)
                 Text("Apple's image maker · no Glowlit credits. Style, size and count here don't apply.")
-                    .font(.caption)
+                    .font(.legibleCaption)
                     .foregroundStyle(Palette.textSecondary)
                     .fixedSize(horizontal: false, vertical: true)
             }

@@ -193,7 +193,7 @@ struct IdeasTip: Tip {
 /// The video editor's Captions card, from her second video.
 struct CaptionsTip: Tip {
     var id: String { GlowTips.id("video-captions") }
-    var title: Text { Text("Captions in one tap") }
+    var title: Text { Platform.isMac ? Text("Captions in one click") : Text("Captions in one tap") }
     var message: Text? {
         Platform.isMac
             ? Text("Click Add captions and the words you say appear on your video. Then fix a word or pick a style in Edit.")
@@ -340,7 +340,7 @@ private struct GlowTipStyle: TipViewStyle {
                     .foregroundStyle(Palette.textPrimary)
                     .accessibilityAddTraits(.isHeader)
                 configuration.message?
-                    .font(.footnote)
+                    .font(.legibleFootnote)
                     .foregroundStyle(Palette.textSecondary)
                     .fixedSize(horizontal: false, vertical: true)
                 ForEach(configuration.actions) { action in

@@ -52,12 +52,12 @@ struct ResultsView: View {
             VStack(spacing: 0) {
                 if isFromImagePlayground {
                     Label("Made with Image Playground", systemImage: "apple.image.playground")
-                        .font(.footnote)
+                        .font(.legibleFootnote)
                         .foregroundStyle(Palette.textSecondary)
                         .padding(.horizontal, Metrics.gutter)
                 } else if let prompt, !prompt.isEmpty {
                     Text(prompt)
-                        .font(.footnote)
+                        .font(.legibleFootnote)
                         .foregroundStyle(Palette.textSecondary)
                         .lineLimit(2)
                         .padding(.horizontal, Metrics.gutter)

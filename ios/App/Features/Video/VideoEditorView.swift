@@ -353,14 +353,7 @@ struct VideoEditorView: View {
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button {
-                        // Esc on the Mac still reaches this under the export overlay.
-                        if model.isExporting {
-                            model.cancelExport()
-                        } else if model.hasUnsavedEdits {
-                            showDiscardAlert = true
-                        } else {
-                            close()
-                        }
+                        requestClose()
                     } label: { Image(systemName: "xmark") }
                     .accessibilityLabel("Close")
                     .macHelp("Close")
@@ -373,7 +366,6 @@ struct VideoEditorView: View {
                             .macHelp("Share")
                         Button("Save") { Task { await perform(.save) } }
                             .fontWeight(.bold)
-                            .macKeyboardShortcut(KeyboardShortcut("s"))
                     }
                 }
             }
@@ -400,7 +392,17 @@ struct VideoEditorView: View {
             applyScreenshotOptions()
             #endif
         }
-        .onDisappear { model.stop() }
+        // File › Save (⌘S) and File › Close (⌘W) on the Mac use this editor's
+        // own save and discard prompt.
+        .onAppear {
+            app.saveActiveCover = { Task { await perform(.save) } }
+            app.closeActiveCover = { requestClose() }
+        }
+        .onDisappear {
+            model.stop()
+            app.saveActiveCover = nil
+            app.closeActiveCover = nil
+        }
         .onChange(of: scenePhase) { _, phase in
             if phase == .background { model.noteLeftApp() }
             if phase == .active { restartInterruptedExport() }
@@ -457,7 +459,7 @@ struct VideoEditorView: View {
                 .overlay(alignment: .top) {
                     if model.resultDuration > 0 {
                         Text(timeLabel)
-                            .font(.caption.weight(.bold).monospacedDigit())
+                            .font(.legibleCaption.weight(.bold).monospacedDigit())
                             .foregroundStyle(Palette.textPrimary)
                             .padding(.horizontal, 10)
                             .padding(.vertical, 5)
@@ -505,7 +507,7 @@ struct VideoEditorView: View {
             if model.isCutToLimit {
                 // The trim handles stay inside the first 5:00, so say only that.
                 Label("This video is longer than 5 minutes, so we'll use the first 5:00.", systemImage: "info.circle")
-                    .font(.caption)
+                    .font(.legibleCaption)
                     .foregroundStyle(Palette.textSecondary)
                     .frame(maxWidth: .infinity, alignment: .leading)
             }
@@ -571,7 +573,7 @@ struct VideoEditorView: View {
                         Text("This video has no sound")
                     }
                 }
-                .font(.caption)
+                .font(.legibleCaption)
                 .foregroundStyle(Palette.textSecondary)
             }
             // Wraps instead of cutting long titles ("Cortar silencios automáticamente").
@@ -615,6 +617,18 @@ struct VideoEditorView: View {
     private func restartInterruptedExport() {
         guard scenePhase == .active, let action = model.interruptedAction, !model.isExporting else { return }
         Task { await perform(action, isRestart: true) }
+    }
+
+    /// Esc and File › Close (⌘W) on the Mac: cancels an export under the
+    /// overlay, asks before discarding edits, or closes.
+    private func requestClose() {
+        if model.isExporting {
+            model.cancelExport()
+        } else if model.hasUnsavedEdits {
+            showDiscardAlert = true
+        } else {
+            close()
+        }
     }
 
     private func close() {
@@ -681,7 +695,7 @@ private struct EffectChoice: View {
                         .strokeBorder(isSelected ? Palette.accent : Palette.stroke, lineWidth: isSelected ? 3 : 1)
                 )
                 Text(title)
-                    .font(.caption2.weight(isSelected ? .bold : .semibold))
+                    .font(.legibleCaption2.weight(isSelected ? .bold : .semibold))
                     .foregroundStyle(isSelected ? Palette.textPrimary : Palette.textSecondary)
                     .lineLimit(1)
                     .minimumScaleFactor(0.8)

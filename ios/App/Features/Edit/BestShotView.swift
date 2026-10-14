@@ -122,7 +122,7 @@ struct BestShotView: View {
                     .font(.cardTitle)
                     .foregroundStyle(Palette.textPrimary)
                 Text("Photos never leave your device")
-                    .font(.footnote)
+                    .font(.legibleFootnote)
                     .foregroundStyle(Palette.textSecondary)
             }
             .frame(maxWidth: .infinity)
@@ -161,7 +161,7 @@ struct BestShotView: View {
             }
             if noFace > 0 {
                 Text(noFace == 1 ? "1 photo without a clear face was left out." : "\(noFace) photos without a clear face were left out.")
-                    .font(.footnote)
+                    .font(.legibleFootnote)
                     .foregroundStyle(Palette.textTertiary)
             }
         }

@@ -108,6 +108,12 @@ final class AppModel {
     /// The editor on screen, so Edit › Undo and Redo (⌘Z, ⇧⌘Z) on the Mac
     /// step through its history.
     var activeEditor: EditorViewModel?
+    /// The save of the cover on screen (editor, collage, video editor, Retro
+    /// Cam review), for File › Save (⌘S). Each registers it while it's up.
+    var saveActiveCover: (() -> Void)?
+    /// The close of a cover that asks before it discards work (collage, video
+    /// editor), for File › Close (⌘W). Covers without one are closed with Esc.
+    var closeActiveCover: (() -> Void)?
     /// File › New Creation asks Create to put the cursor in its prompt.
     var wantsPromptFocus = false
     /// Settings: the gear on Explore, or Glowlit › Settings… on the Mac.
@@ -770,6 +776,25 @@ final class AppModel {
     var acceptsCommands: Bool {
         hasCompletedOnboarding && !needsAgeStep && !tour.isRunning && !isPresentingSomething
             && !isSettingsPresented && !isPhotoPickerPresented && !isVideoPickerPresented
+    }
+
+    /// File › Close (⌘W) is for what's on screen, in order: a cover that asks
+    /// before it discards work, then Settings, the paywall and Best shot. The
+    /// others close with Esc or their own buttons, as before.
+    var canClosePresented: Bool {
+        closeActiveCover != nil || isSettingsPresented || isPaywallPresented || isBestShotPresented
+    }
+
+    func closePresented() {
+        if let closeActiveCover {
+            closeActiveCover()
+        } else if isSettingsPresented {
+            isSettingsPresented = false
+        } else if isPaywallPresented {
+            isPaywallPresented = false
+        } else if isBestShotPresented {
+            isBestShotPresented = false
+        }
     }
 
     /// Consent counts only where cloud AI is offered, for the current

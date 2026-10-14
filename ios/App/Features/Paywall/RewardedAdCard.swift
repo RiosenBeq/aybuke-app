@@ -26,7 +26,7 @@ struct RewardedAdCard: View {
                             .font(.subheadline.weight(.semibold))
                             .foregroundStyle(Palette.textPrimary)
                         subtitle
-                            .font(.caption)
+                            .font(.legibleCaption)
                             .foregroundStyle(isNotice ? Palette.warning : Palette.textSecondary)
                     }
                     .multilineTextAlignment(.leading)
@@ -49,7 +49,7 @@ struct RewardedAdCard: View {
             .accessibilityElement(children: .combine)
             .accessibilityHint(isTappable ? Text("Plays a short video ad. When it ends, you get 1 credit.") : Text(verbatim: ""))
             Text("Optional. Ads come from Google and are never personalized.")
-                .font(.caption2)
+                .font(.legibleCaption2)
                 .foregroundStyle(Palette.textTertiary)
                 .padding(.horizontal, 4)
                 .fixedSize(horizontal: false, vertical: true)

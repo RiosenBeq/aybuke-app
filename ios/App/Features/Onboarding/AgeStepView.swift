@@ -75,7 +75,7 @@ struct AgeStepView: View {
 
             if mode == .update {
                 Text("You can enter a younger age anytime. An older one can be entered once a year.")
-                    .font(.footnote)
+                    .font(.legibleFootnote)
                     .foregroundStyle(Palette.textTertiary)
                     .fixedSize(horizontal: false, vertical: true)
             }

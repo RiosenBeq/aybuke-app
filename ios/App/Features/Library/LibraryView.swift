@@ -49,8 +49,10 @@ struct LibraryView: View {
     }
 
     private static let tileSpacing: CGFloat = Platform.isMac ? 10 : 6
-    /// The grid's side margin; on the Mac, in line with the large title.
-    private static let gridMargin: CGFloat = Platform.isMac ? 20 : 12
+    /// The grid's side margin; on the Mac, the page gutter the other sections use.
+    private static let gridMargin: CGFloat = Platform.isMac ? Metrics.pageGutter : 12
+    /// Mac: the grid stops widening here, about seven tiles a row, and centres.
+    private static let macMaxWidth: CGFloat = 1240
     /// The grid's coordinate space, shared by the tile frames and the drag.
     static let gridSpace = "libraryGrid"
 
@@ -206,7 +208,7 @@ struct LibraryView: View {
             filterChips
             if filter == .recentlyDeleted, !items.isEmpty {
                 Text("Creations stay here for 30 days, then they're deleted for good.")
-                    .font(.footnote)
+                    .font(.legibleFootnote)
                     .foregroundStyle(Palette.textSecondary)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.horizontal, Platform.isMac ? Self.gridMargin : 16)
@@ -227,7 +229,10 @@ struct LibraryView: View {
         }
         .scrollDisabled(isDragSelecting)
         .animation(.snappy, value: filter)
+        // Read inside the cap, so the tiles size to the centred column.
         .modifier(MacPageWidthReader(width: $gridWidth))
+        .frame(maxWidth: Platform.isMac ? Self.macMaxWidth : .infinity)
+        .frame(maxWidth: .infinity)
         .background { deleteKeys }
     }
 
@@ -345,6 +350,8 @@ struct LibraryView: View {
                 }
                 .buttonStyle(.pressable)
                 .macHoverLift(scale: 1.03)
+                // Mac: the name on hover, for a tile that is only a picture at this size.
+                .macHelp(Text(verbatim: L10n.core(creation.title)))
                 .accessibilityLabel(accessibilityLabel(for: creation, isMissing: isMissing))
                 // While she picks: where it is, "3 of 12" (and "Selected" from the trait).
                 .accessibilityValue(isSelecting ? Text("\(position) of \(total)") : Text(verbatim: ""))
@@ -1013,7 +1020,7 @@ struct CreationDetailView: View {
                     .foregroundStyle(Palette.textPrimary)
                     .lineLimit(2)
                 Text("\(creation.kindTitle) · \(creation.createdAt.formatted(date: .abbreviated, time: .shortened))")
-                    .font(.caption)
+                    .font(.legibleCaption)
                     .foregroundStyle(Palette.textSecondary)
             }
             .frame(maxWidth: .infinity, alignment: .leading)

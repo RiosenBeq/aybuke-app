@@ -51,7 +51,7 @@ struct CaptionsCard: View {
                 .font(.subheadline.weight(.semibold))
                 .foregroundStyle(Palette.textPrimary)
             detail
-                .font(.caption)
+                .font(.legibleCaption)
                 .foregroundStyle(Palette.textSecondary)
                 .fixedSize(horizontal: false, vertical: true)
         }

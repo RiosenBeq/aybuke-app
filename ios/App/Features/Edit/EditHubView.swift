@@ -70,7 +70,7 @@ struct EditHubView: View {
                         .font(.cardTitle)
                         .foregroundStyle(Palette.ink)
                     Text("All tools in one editor")
-                        .font(.footnote)
+                        .font(.legibleFootnote)
                         .foregroundStyle(Palette.ink.opacity(0.7))
                 }
                 Spacer()
@@ -110,7 +110,7 @@ struct EditHubView: View {
                 VStack(alignment: .leading, spacing: 3) {
                     TitleWithNewBadge(title: "Find your best shot")
                     Text("Finds the best light & focus · free, on-device")
-                        .font(.footnote)
+                        .font(.legibleFootnote)
                         .foregroundStyle(Palette.textSecondary)
                 }
                 Spacer()
@@ -141,7 +141,7 @@ struct EditHubView: View {
                 VStack(alignment: .leading, spacing: 3) {
                     TitleWithNewBadge(title: "Edit a video")
                     Text("Cut silences, 80s & 90s effects · free")
-                        .font(.footnote)
+                        .font(.legibleFootnote)
                         .foregroundStyle(Palette.textSecondary)
                         .fixedSize(horizontal: false, vertical: true)
                 }
@@ -180,7 +180,7 @@ struct EditHubView: View {
                             .font(.cardTitle)
                             .foregroundStyle(Palette.textPrimary)
                         Text(tool.caption)
-                            .font(.caption)
+                            .font(.legibleCaption)
                             .foregroundStyle(Palette.textSecondary)
                     }
                 }
@@ -208,7 +208,7 @@ struct EditHubView: View {
                     Text("Every tool here runs on your device. Your photos are never uploaded.")
                 }
             }
-                .font(.footnote)
+                .font(.legibleFootnote)
                 .foregroundStyle(Palette.textSecondary)
         }
         .padding(.top, 4)
@@ -230,7 +230,7 @@ struct EditHubView: View {
                 VStack(alignment: .leading, spacing: 3) {
                     TitleWithNewBadge(title: "Makeup Studio")
                     Text("Try lips, eyes, blush and sparkle on your photo")
-                        .font(.footnote)
+                        .font(.legibleFootnote)
                         .foregroundStyle(Palette.textSecondary)
                         .fixedSize(horizontal: false, vertical: true)
                 }

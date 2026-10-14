@@ -37,9 +37,11 @@ struct CreateView: View {
             )) {
                 results(isEmbedded: false)
             }
-            // Pushed while the window was narrow: the preview column takes over.
-            .onChange(of: usesColumns) { _, columns in
-                if columns { model.showResults = false }
+            // Either way the layout switches, a result pushed by the old layout
+            // must not come back unasked when the window is resized. iPhone
+            // never switches, so its flow is unchanged.
+            .onChange(of: usesColumns) { _, _ in
+                model.showResults = false
             }
             .animation(.easeInOut(duration: 0.2), value: model.undoPrompt)
             .animation(.snappy, value: model.prompt.isEmpty)
@@ -510,7 +512,7 @@ private struct CreatePreviewPlaceholder: View {
                 .font(.cardTitle)
                 .foregroundStyle(Palette.textPrimary)
             Text(verbatim: "\(L10n.core(style.name)) · \(L10n.core(ratio.label)) \(ratio.rawValue)")
-                .font(.footnote)
+                .font(.legibleFootnote)
                 .foregroundStyle(Palette.textSecondary)
         }
         .multilineTextAlignment(.center)
@@ -526,16 +528,31 @@ private struct CreatePreviewPlaceholder: View {
 }
 
 /// Mac: reads a page's width for layouts that split into columns. Nothing
-/// on iPhone and iPad.
+/// on iPhone and iPad. A preference rather than `onGeometryChange`, which is
+/// iOS 18 while the app targets iOS 17 (macOS 14 on the Mac).
 struct MacPageWidthReader: ViewModifier {
     @Binding var width: CGFloat
 
     func body(content: Content) -> some View {
         if Platform.isMac {
-            content.onGeometryChange(for: CGFloat.self) { $0.size.width } action: { width = $0 }
+            content
+                .background {
+                    GeometryReader { proxy in
+                        Color.clear.preference(key: PageWidthKey.self, value: proxy.size.width)
+                    }
+                }
+                .onPreferenceChange(PageWidthKey.self) { width = $0 }
         } else {
             content
         }
+    }
+}
+
+private struct PageWidthKey: PreferenceKey {
+    static let defaultValue: CGFloat = 0
+
+    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
+        value = nextValue()
     }
 }
 
@@ -569,7 +586,7 @@ private struct WriterCaptionLabelStyle: LabelStyle {
             configuration.icon
             configuration.title
         }
-        .font(.caption)
+        .font(.legibleCaption)
         .foregroundStyle(Palette.textSecondary)
     }
 }

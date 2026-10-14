@@ -219,7 +219,7 @@ private struct IdeaChip: View {
                     .lineLimit(1)
                     .truncationMode(.tail)
                 if isLocked {
-                    Image(systemName: "lock.fill").font(.caption2).accessibilityLabel("Pro")
+                    Image(systemName: "lock.fill").font(.legibleCaption2).accessibilityLabel("Pro")
                 }
             }
             .frame(maxWidth: maxWidth)

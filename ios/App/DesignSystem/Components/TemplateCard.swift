@@ -31,7 +31,7 @@ struct TemplateCard: View, Equatable {
                     .lineLimit(2)
                     .minimumScaleFactor(0.8)
                 Text(L10n.core(template.subtitle))
-                    .font(.caption)
+                    .font(.legibleCaption)
                     .foregroundStyle(labelColor.opacity(0.75))
                     .lineLimit(1)
                     .minimumScaleFactor(0.8)

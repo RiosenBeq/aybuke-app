@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 /// The colorful side of the brand for illustrated surfaces: six aura
 /// palettes (soft gradients plus a sticker colour). Template cards cycle
@@ -81,7 +82,10 @@ struct StickerSymbol: View {
     let size: CGFloat
 
     var body: some View {
-        let symbol = Image(systemName: name).font(.system(size: size, weight: .bold))
+        // A symbol this system doesn't draw would leave the sticker blank;
+        // the sparkle keeps the card a card (TemplateArt draws one anyway).
+        let symbolName = UIImage(systemName: name) != nil ? name : "sparkle"
+        let symbol = Image(systemName: symbolName).font(.system(size: size, weight: .bold))
         let border = max(2, size * 0.075)
         ZStack {
             ForEach(0..<12, id: \.self) { step in

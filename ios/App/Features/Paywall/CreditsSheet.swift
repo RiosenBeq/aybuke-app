@@ -141,7 +141,7 @@ struct CreditsSheet: View {
                     .accessibilityHidden(true)
             }
             Text(text)
-                .font(.footnote)
+                .font(.legibleFootnote)
                 .foregroundStyle(Palette.textSecondary)
                 .fixedSize(horizontal: false, vertical: true)
         }
