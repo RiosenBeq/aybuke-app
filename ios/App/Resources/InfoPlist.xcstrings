@@ -161,10 +161,76 @@
       "comment" : "Privacy - Camera Usage Description",
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Glowlit nutzt die Kamera für Retro Cam und Retro Booth. Fotos bleiben auf deinem Gerät, bis du sie teilst."
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Glowlit uses the camera for Retro Cam and Retro Booth. Photos stay on your device until you share them."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Glowlit usa la cámara para Retro Cam y Retro Booth. Las fotos se quedan en tu dispositivo hasta que las compartes."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Glowlit utilise l’appareil photo pour Retro Cam et Retro Booth. Tes photos restent sur ton appareil jusqu’à ce que tu les partages."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Glowlit memakai kamera untuk Retro Cam dan Retro Booth. Foto tetap di perangkatmu sampai kamu membagikannya."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Glowlit usa la fotocamera per Retro Cam e Retro Booth. Le foto restano sul tuo dispositivo finché non le condividi."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GlowlitはRetro CamとRetro Boothでカメラを使用します。写真はシェアするまで端末内に保存されます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Glowlit은 Retro Cam과 Retro Booth에서 카메라를 사용해요. 사진은 공유하기 전까지 기기에만 저장돼요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Glowlit usa a câmera para a Retro Cam e o Retro Booth. As fotos ficam no seu aparelho até você compartilhar."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Glowlit использует камеру для Retro Cam и Retro Booth. Фото остаются на твоём устройстве, пока ты ими не поделишься."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Glowlit kamerayı Retro Cam ve Retro Booth için kullanır. Fotoğrafların sen paylaşana kadar cihazında kalır."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Glowlit 会在 Retro Cam 和 Retro Booth 中使用相机。在你分享之前，照片只保存在你的设备上。"
           }
         }
       }
@@ -251,10 +317,76 @@
       "comment" : "Privacy - Speech Recognition Usage Description",
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Glowlit macht aus dem Gesprochenen in deinem Video Untertitel – direkt auf deinem Gerät. Nichts wird hochgeladen."
+          }
+        },
         "en" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Glowlit turns what's said in your video into captions on your device. Nothing is uploaded."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Glowlit convierte en subtítulos lo que se dice en tu video, en tu propio dispositivo. No se sube nada."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Glowlit transforme ce qui est dit dans ta vidéo en sous-titres, directement sur ton appareil. Rien n’est envoyé."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Glowlit mengubah ucapan di videomu jadi subtitle langsung di perangkatmu. Tidak ada yang diunggah."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Glowlit trasforma in sottotitoli ciò che viene detto nel tuo video, direttamente sul tuo dispositivo. Non viene caricato nulla."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Glowlitは、動画内で話された言葉を端末上で字幕に変換します。アップロードされるものはありません。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Glowlit은 동영상 속 말소리를 기기에서 자막으로 바꿔요. 아무것도 업로드되지 않아요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Glowlit transforma o que é falado no seu vídeo em legendas, direto no seu aparelho. Nada é enviado."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Glowlit превращает речь из твоего видео в субтитры прямо на устройстве. Ничего не загружается."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Glowlit, videonda söylenenleri cihazında altyazıya dönüştürür. Hiçbir şey yüklenmez."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Glowlit 会在你的设备上把视频中说的话转成字幕，不会上传任何内容。"
           }
         }
       }
