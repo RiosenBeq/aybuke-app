@@ -97,7 +97,7 @@ Two notes for the form: Apple asks "linked to the user" once per data type, so *
 | Promotional text, description, keywords, What's New | `app-store-metadata.json` |
 | Support URL | `https://aybuke.org` (landing page with the support email) |
 | Marketing URL | same as Support URL |
-| Copyright | `2026 Aybuke` |
+| Copyright | `2026 Okan Berk Manavoğlu` |
 | App Review information | Contact name, phone and email of the owner; no demo account needed; notes from [`app-store-listing.md`](app-store-listing.md) ("App Review notes") |
 | Build | `ASC_KEY_ID=… ASC_ISSUER_ID=… scripts/upload-app-store.sh` (App Store Connect API key, automatic signing; `PLATFORM=mac` for the Mac build), or Xcode › Product › Archive › Distribute. The script first runs `scripts/check-release-config.py --online` and stops on release blockers: demo mode (no backend), `[bracketed]` legal placeholders, a missing or GitHub-blob `websiteURL`, a website or privacy page that doesn't answer, mail domains without MX records. For a deliberate TestFlight preview set `GL_PREVIEW_BUILD=1`; never submit such a build for review. Xcode archives skip the check, so run it by hand before submitting one. `ITSAppUsesNonExemptEncryption` is `NO` (HTTPS only), so no export-compliance documents are needed |
 | Release | Manual release after approval |

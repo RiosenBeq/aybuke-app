@@ -104,11 +104,11 @@ supabase functions deploy ad-reward --project-ref efapupjvidyqhqdevmcu --use-api
 
 ### 2.5 Telif satırı, yayın türü ve sürüm numarası
 - [ ] **Ne:** Üç ayarı karara bağla.
-  - **Telif:** `docs/HANDOFF-PROMPT.md` "2026 Okan Berk Manavoğlu" diyor; kurulum dokümanı §6 ve App Store Connect'in mevcut değeri "2026 Aybuke" (HANDOFF'a göre). Karar: birini seç.
+  - **Telif (karar verildi):** `2026 Okan Berk Manavoğlu`. `docs/HANDOFF-PROMPT.md` ve kurulum dokümanı §6 bu değeri veriyordu; kurulum dokümanındaki eski `2026 Aybuke` satırı bu değerle düzeltildi.
   - **Yayın türü:** HANDOFF'a göre sürüm "AFTER_APPROVAL" (onaydan hemen sonra otomatik yayın). Kurulum dokümanı §6 "Manual release after approval" diyor. Öneri: manuel yayın; backend ve reklam kurulumu bitmeden yayın olmasın.
   - **Sürüm numarası:** `ios/Glowlit.xcodeproj/project.pbxproj` içinde `MARKETING_VERSION = 1.0` (dört yer). `docs/RELEASE-CHECKLIST.md` §11 ve §12-6 "1.0.0" diyor; bu uyarı artık geçerli değil. App Store Connect'te sürüm 1.0 olmalı.
   - **Nerede:** App Store Connect > sürüm sayfası.
-  - **Sıra:** 1) Telif satırını yaz. 2) "Manually release this version" seç (öneri). 3) Sürümün 1.0 olduğunu kontrol et.
+  - **Sıra:** 1) Telif satırına `2026 Okan Berk Manavoğlu` yaz. 2) "Manually release this version" seç (öneri). 3) Sürümün 1.0 olduğunu kontrol et.
 
 ### 2.6 Abonelik açıklamasındaki kredi sayısı
 - [ ] **Ne:** Abonelik açıklaması "80 kredi" yazıyor; kurulum dokümanı sayı yazılmamasını istiyor. Karar ver.
