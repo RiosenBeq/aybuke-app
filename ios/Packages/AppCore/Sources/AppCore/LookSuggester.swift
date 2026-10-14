@@ -32,6 +32,8 @@ public struct PhotoInsight: Equatable, Sendable {
         if isDark && matches(Self.cityWords) { return .cityNight }
         if matches(Self.outdoorWords) { return .landscape }
         if matches(Self.indoorWords) { return .indoor }
+        // Streets and buildings by day, without sky or nature in view.
+        if matches(Self.cityWords) { return .city }
         return .other
     }
 
@@ -66,7 +68,7 @@ public struct PhotoInsight: Equatable, Sendable {
 
 /// The kind of photo, which decides the ideas offered for it.
 public enum PhotoKind: String, CaseIterable, Sendable {
-    case selfie, group, pet, landscape, cityNight, food, indoor, other
+    case selfie, group, pet, landscape, city, cityNight, food, indoor, other
 
     /// People are in it: ideas never touch how anyone looks.
     public var hasPeople: Bool { self == .selfie || self == .group }
@@ -131,15 +133,18 @@ public enum LookSuggester {
     // MARK: Rules
 
     /// Effect ids by kind. Glamour '92 is left out: a soft-focus portrait
-    /// filter is too close to beauty retouching to suggest unasked.
+    /// filter is too close to beauty retouching to suggest unasked. Tiny
+    /// World's tilt-shift turns streets and wide views into a model, so it
+    /// leads for cities by day and follows for landscapes and nights out.
     static func effectIDs(for kind: PhotoKind, theme: SeasonalTheme?) -> [String] {
         var ids: [String]
         switch kind {
         case .selfie: ids = ["digicam", "instant", "disposable", "kira"]
         case .group: ids = ["disposable", "instant", "throwback16", "camcorder06"]
         case .pet: ids = ["instant", "kira", "throwback16", "disposable"]
-        case .landscape: ids = ["filmStill", "instant", "disposable", "vhs"]
-        case .cityNight: ids = ["neon", "filmStill", "vhs", "camcorder06"]
+        case .landscape: ids = ["filmStill", "tinyWorld", "instant", "vhs"]
+        case .city: ids = ["tinyWorld", "disposable", "filmStill", "throwback16"]
+        case .cityNight: ids = ["neon", "filmStill", "tinyWorld", "vhs"]
         case .food: ids = ["instant", "disposable", "throwback16", "filmStill"]
         case .indoor: ids = ["camcorder06", "digicam", "vhs", "instant"]
         case .other: ids = ["instant", "digicam", "vhs", "kira"]
@@ -163,6 +168,7 @@ public enum LookSuggester {
         case .group: preferred = ["polaroid", "y2k", "birthday", "disco-79", "anime-film"]
         case .pet: preferred = ["royal-pet", "pet-astronaut", "pet-figurine"]
         case .landscape: preferred = ["golden-sky", "watercolor", "anime-film", "oil-painting"]
+        case .city: preferred = ["golden-sky", "anime-film", "watercolor", "comic"]
         case .cityNight: preferred = ["anime-film", "comic", "neon-city"]
         case .food, .indoor: preferred = ["watercolor", "oil-painting", "anime-film", "comic"]
         case .other: preferred = ["watercolor", "anime-film", "comic"]
@@ -211,6 +217,12 @@ public enum LookSuggester {
                 idea("Add soft falling snow under the street lights"),
                 idea("Turn it into an anime city at night"),
             ]
+        case .city:
+            base = [
+                idea("Turn the sky into a golden-hour glow"),
+                idea("Turn it into an anime city at night"),
+                idea("Add a rainbow and a few butterflies"),
+            ]
         case .food:
             base = [
                 idea("Turn it into a sunny picnic with a checked blanket"),
@@ -239,7 +251,7 @@ public enum LookSuggester {
         case (.halloween, .selfie): return idea("Give me a cute witch hat and glowing pumpkins")
         case (.halloween, .group): return idea("Give us cute witch hats and glowing pumpkins")
         case (.halloween, .pet): return idea("Give my pet a tiny pumpkin costume")
-        case (.halloween, .landscape), (.halloween, .cityNight):
+        case (.halloween, .landscape), (.halloween, .city), (.halloween, .cityNight):
             return idea("Add a big harvest moon and glowing jack-o'-lanterns")
         case (.halloween, _): return idea("Add glowing pumpkins and candlelight")
         case (.winter, .selfie): return idea("Put me in a cozy knitted scarf with falling snow")
