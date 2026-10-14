@@ -66,6 +66,38 @@
       "text": "Give me pink hair. Only change the main person in front; keep everyone else exactly as they are.",
       "expected": null
     },
+    { "lang": "en", "text": "Add a cherry red lip and winged eyeliner", "expected": null },
+    { "lang": "en", "text": "Give me faux freckles and a rosy blush", "expected": null },
+    { "lang": "en", "text": "Add face gems and glitter on my cheekbones", "expected": null },
+    { "lang": "en", "text": "airbrush my skin and add soft glam makeup", "expected": "appearanceChange" },
+    { "lang": "en", "text": "remove my freckles and add blush", "expected": "appearanceChange" },
+    { "lang": "en", "text": "make my lips fuller with a gloss", "expected": "appearanceChange" },
+    { "lang": "en", "text": "sexy smoky eye makeup", "expected": "sexual" },
+    {
+      "lang": "en",
+      "text": "Add makeup to the person in this photo as color, shine and sparkle on the real skin. Eyes: smoky brown eyeshadow blended on the eyelids. Lips: a soft pink tint, following the natural lip line. Cheeks: a soft rosy-peach blush on the apples of the cheeks. Keep the colors soft and subtle. Keep the same expression and every freckle, pore and mark of the real skin, with no smoothing, contouring or reshaping.",
+      "expected": null
+    },
+    {
+      "lang": "en",
+      "text": "Add makeup to the person in this photo as color, shine and sparkle on the real skin. Eyes: a soft champagne shimmer on the eyelids. Lips: a cherry-red color, following the natural lip line. Cheeks: a cool rosy flush on the cheeks and the tip of the nose. Extras: faux freckles across the nose and cheeks. Make the colors visible but wearable. Keep the same expression and every freckle, pore and mark of the real skin, with no smoothing, contouring or reshaping. Only change the main person in front; keep everyone else exactly as they are.",
+      "expected": null
+    },
+    {
+      "lang": "en",
+      "text": "Add makeup to the person in this photo as color, shine and sparkle on the real skin. Eyes: smoky brown eyeshadow blended on the eyelids. Lips: a deep plum color, following the natural lip line. Make the colors bold and vivid. Hair: soft pastel pink color with realistic highlights, same hairstyle and cut. Keep the same expression and every freckle, pore and mark of the real skin, with no smoothing, contouring or reshaping.",
+      "expected": null
+    },
+    {
+      "lang": "en",
+      "text": "Add makeup to the person in this photo as color, shine and sparkle on the real skin. Eyes: a sunset blend of peach, coral and gold eyeshadow on the eyelids. Lips: a warm mocha-brown color, following the natural lip line. Cheeks: a warm peach blush across the cheeks and nose bridge. Extras: a few face gems by the outer eye corners, faux freckles across the nose and cheeks, star stickers on the cheekbones and glitter on the cheekbones. Make the colors visible but wearable. Hair: golden honey blonde color with realistic highlights, same hairstyle and cut. Keep the same expression and every freckle, pore and mark of the real skin, with no smoothing, contouring or reshaping. Only change the main person in front; keep everyone else exactly as they are.",
+      "expected": null
+    },
+    {
+      "lang": "en",
+      "text": "Change only the hair color of the person in this photo. Keep the colors soft and subtle. Hair: dreamy lilac color with realistic highlights, same hairstyle and cut. Keep the same expression and every freckle, pore and mark of the real skin, with no smoothing, contouring or reshaping.",
+      "expected": null
+    },
 
     { "lang": "tr", "text": "beni zayıflat", "expected": "appearanceChange" },
     { "lang": "tr", "text": "BENİ ZAYIFLAT", "expected": "appearanceChange" },
