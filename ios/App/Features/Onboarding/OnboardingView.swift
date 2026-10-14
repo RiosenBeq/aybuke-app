@@ -150,7 +150,7 @@ struct OnboardingView: View {
                     .disabled(isSaving)
             } else {
                 PhotosPicker(selection: $tryItem, matching: .images) {
-                    Text("Choose a photo")
+                    Text("Start with your photo")
                 }
                 .buttonStyle(.primary)
                 .disabled(isTrying)
