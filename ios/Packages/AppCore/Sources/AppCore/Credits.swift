@@ -149,4 +149,11 @@ public struct CreditWallet: Equatable, Sendable, Codable {
         let startOfDay = calendar.startOfDay(for: dailyPeriodStart)
         return calendar.date(byAdding: .day, value: 1, to: startOfDay) ?? dailyPeriodStart.addingTimeInterval(86_400)
     }
+
+    /// The first moment `refresh` grants the next monthly Pro allowance;
+    /// nil without a subscription. Uses the same month arithmetic as `refresh`.
+    public func nextSubscriptionGrant(calendar: Calendar = .current) -> Date? {
+        guard let start = subscriptionPeriodStart else { return nil }
+        return calendar.date(byAdding: .month, value: 1, to: start)
+    }
 }

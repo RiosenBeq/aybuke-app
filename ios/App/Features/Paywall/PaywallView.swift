@@ -656,6 +656,11 @@ struct CreditPackList: View {
                     Text(product.description)
                         .font(.caption)
                         .foregroundStyle(Palette.textSecondary)
+                    if let perCredit = product.perCreditPrice {
+                        Text("≈ \(perCredit) per credit")
+                            .font(.caption2)
+                            .foregroundStyle(Palette.textTertiary)
+                    }
                 }
                 Spacer()
                 Group {

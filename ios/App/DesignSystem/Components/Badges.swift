@@ -30,7 +30,7 @@ struct NewBadge: View {
     }
 }
 
-/// Shows remaining credits (or Pro status); tapping opens the paywall.
+/// Shows remaining credits, with a crown for Pro (a balance, never "unlimited").
 struct CreditPill: View {
     let balance: Int
     let isPro: Bool
@@ -41,7 +41,7 @@ struct CreditPill: View {
             HStack(spacing: 5) {
                 Image(systemName: isPro ? "crown.fill" : "bolt.fill")
                     .symbolEffect(.bounce, value: balance)
-                Text(isPro ? "PRO" : "\(balance)")
+                Text("\(balance)")
                     .font(.subheadline.weight(.bold))
                     .monospacedDigit()
                     .contentTransition(.numericText(value: Double(balance)))
@@ -53,7 +53,8 @@ struct CreditPill: View {
             .background(Palette.accent, in: Capsule())
         }
         .buttonStyle(.plain)
-        .accessibilityLabel(isPro ? "Pro member" : "\(balance) credits left")
+        .accessibilityLabel("\(balance) credits left")
+        .accessibilityValue(isPro ? Text("\(Brand.name) Pro") : Text(verbatim: ""))
     }
 }
 

@@ -1,4 +1,5 @@
 import SwiftUI
+import AppCore
 
 /// One stop on the first-run tour. Each step lives on a tab and points at a
 /// view marked with `.tourAnchor(_:)`.
@@ -23,10 +24,11 @@ enum TourStep: Int, CaseIterable, Identifiable {
     }
 
     /// Headline with an *italic accent*, as in the app's other headlines.
-    var title: String {
+    /// People who start Pro during onboarding see the tour as Pro members.
+    func title(isPro: Bool) -> String {
         switch self {
         case .hero: return String(localized: "Say the *change*")
-        case .credits: return String(localized: "Your daily *glow*")
+        case .credits: return isPro ? String(localized: "Your monthly *glow*") : String(localized: "Your daily *glow*")
         case .quickTools: return Platform.isMac ? String(localized: "Free on your *Mac*") : String(localized: "Free on your *iPhone*")
         case .create: return String(localized: "Create *anything*")
         case .edit: return String(localized: "Photos *and* videos")
@@ -35,12 +37,14 @@ enum TourStep: Int, CaseIterable, Identifiable {
         }
     }
 
-    var message: String {
+    func message(isPro: Bool, policy: CreditPolicy) -> String {
         switch self {
         case .hero:
             return String(localized: "Describe any change, like pink hair, golden hour or soft glam, and watch your photo glow. Or tap a trend below.")
         case .credits:
-            return String(localized: "You get 3 free credits every day. Free tools never use credits, and failed edits are always refunded.")
+            return isPro
+                ? String(localized: "Pro gives you \(policy.proMonthlyAllowance) credits every month. Free tools never use credits, and failed edits are always refunded.")
+                : String(localized: "You get \(policy.freeDailyAllowance) free credits every day. Free tools never use credits, and failed edits are always refunded.")
         case .quickTools:
             return Platform.isMac
                 ? String(localized: "80s & 90s effects, Cut out and Adjust are free and run right on your Mac. Enhance and Erase add AI magic.")
@@ -179,10 +183,10 @@ struct TourOverlay: View {
         VStack(alignment: .leading, spacing: 10) {
             Text("\(app.tour.stepNumber) of \(app.tour.stepCount)")
                 .eyebrowStyle(Palette.textSecondary)
-            Text(styled: step.title, size: 24)
+            Text(styled: step.title(isPro: app.purchases.isPro), size: 24)
                 .foregroundStyle(Palette.textPrimary)
                 .accessibilityAddTraits(.isHeader)
-            Text(step.message)
+            Text(step.message(isPro: app.purchases.isPro, policy: app.credits.policy))
                 .font(.subheadline)
                 .foregroundStyle(Palette.textSecondary)
                 .fixedSize(horizontal: false, vertical: true)

@@ -106,14 +106,21 @@ extension GlowActivityController {
 
 /// Keeps the widgets' App Group snapshot (credits, latest creation) current.
 enum GlowWidgetBridge {
-    static func update(credits: Int, isPro: Bool, nextRefill: Date?, latest: Creation?, creationsCount: Int) {
+    static func update(
+        credits: Int, isPro: Bool, nextRefill: Date?, latest: Creation?, creationsCount: Int,
+        breakdown: CreditBreakdown? = nil, nextGrant: Date? = nil
+    ) {
         let snapshot = GlowWidgetSnapshot(
             credits: credits,
             isPro: isPro,
             nextRefill: isPro ? nil : nextRefill,
             latestTitle: latest?.title,
             latestIsFavorite: latest?.isFavorite ?? false,
-            creationsCount: creationsCount
+            creationsCount: creationsCount,
+            daily: breakdown?.daily,
+            monthly: breakdown?.monthly,
+            packs: breakdown?.packs,
+            nextGrant: isPro ? nextGrant : nil
         )
         let previous = GlowSharedStore.load()
         var unchanged = snapshot

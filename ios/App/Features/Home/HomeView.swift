@@ -84,7 +84,12 @@ struct HomeView: View {
             }
             Spacer()
             CreditPill(balance: app.credits.balance, isPro: app.purchases.isPro) {
-                if !app.purchases.isPro { app.presentPaywall(source: "home_credits") }
+                // Pro: Settings has the Membership and Credits sections.
+                if app.purchases.isPro {
+                    app.isSettingsPresented = true
+                } else {
+                    app.presentPaywall(source: "home_credits")
+                }
             }
             .tourAnchor(.credits)
             Button {

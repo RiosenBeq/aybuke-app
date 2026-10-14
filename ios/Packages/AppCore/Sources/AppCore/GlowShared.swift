@@ -72,10 +72,18 @@ public struct GlowWidgetSnapshot: Codable, Equatable, Sendable {
     public var latestIsFavorite: Bool
     public var creationsCount: Int
     public var updatedAt: Date
+    /// Where `credits` comes from. Optional, so snapshots written by older
+    /// versions still decode; nil when unknown (the server keeps the split).
+    public var daily: Int?
+    public var monthly: Int?
+    public var packs: Int?
+    /// When Pro's monthly credits arrive next, when known.
+    public var nextGrant: Date?
 
     public init(
         credits: Int, isPro: Bool, nextRefill: Date?, latestTitle: String?,
-        latestIsFavorite: Bool = false, creationsCount: Int, updatedAt: Date = Date()
+        latestIsFavorite: Bool = false, creationsCount: Int, updatedAt: Date = Date(),
+        daily: Int? = nil, monthly: Int? = nil, packs: Int? = nil, nextGrant: Date? = nil
     ) {
         self.credits = credits
         self.isPro = isPro
@@ -84,6 +92,36 @@ public struct GlowWidgetSnapshot: Codable, Equatable, Sendable {
         self.latestIsFavorite = latestIsFavorite
         self.creationsCount = creationsCount
         self.updatedAt = updatedAt
+        self.daily = daily
+        self.monthly = monthly
+        self.packs = packs
+        self.nextGrant = nextGrant
+    }
+
+    public enum BalanceKind: Sendable {
+        /// Only today's free credits.
+        case daily
+        /// Only Pro's monthly credits.
+        case monthly
+        /// Packs, a mix, or an unknown split: say just "credits".
+        case mixed
+    }
+
+    public var balanceKind: BalanceKind {
+        guard let daily, let monthly, let packs, packs == 0 else { return .mixed }
+        if !isPro, monthly == 0 { return .daily }
+        if isPro, daily == 0 { return .monthly }
+        return .mixed
+    }
+
+    /// The gauge's range: one day's or one month's allowance (never "∞").
+    /// Rollover and packs can exceed it, so clamp the value with `gaugeValue`.
+    public func gaugeRange(policy: CreditPolicy = .standard) -> ClosedRange<Int> {
+        0...max(1, isPro ? policy.proMonthlyAllowance : policy.freeDailyAllowance)
+    }
+
+    public func gaugeValue(policy: CreditPolicy = .standard) -> Int {
+        min(max(0, credits), gaugeRange(policy: policy).upperBound)
     }
 
     public static let placeholder = GlowWidgetSnapshot(

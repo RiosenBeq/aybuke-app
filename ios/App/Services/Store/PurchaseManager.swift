@@ -237,6 +237,12 @@ extension Product {
         return offer.period.dayCount
     }
 
+    /// "≈ $0.10 per credit" for a credit pack; always shown below the billed price.
+    var perCreditPrice: String? {
+        guard let credits = StoreProducts.creditPacks[id], credits > 0 else { return nil }
+        return (price / Decimal(credits)).formatted(priceFormatStyle)
+    }
+
     /// Monthly equivalent of a yearly price ("just $3.33/month").
     var monthlyEquivalentPrice: String? {
         guard let period = subscription?.subscriptionPeriod, period.unit == .year else { return nil }

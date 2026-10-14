@@ -12,6 +12,7 @@ struct SettingsView: View {
     @State private var isRestoring = false
     @State private var confirmSignOut = false
     @State private var showInvite = false
+    @State private var showPacks = false
 
     var body: some View {
         NavigationStack {
@@ -170,10 +171,14 @@ struct SettingsView: View {
                     .monospacedDigit()
                     .foregroundStyle(Palette.textSecondary)
             }
-            Button("Buy a credit pack") {
-                dismiss()
-                app.presentPaywall(source: "settings_packs")
-            }
+            // The packs themselves, not the plans: she asked for a pack.
+            Button("Buy a credit pack") { showPacks = true }
+                .sheet(isPresented: $showPacks) {
+                    CreditPacksView()
+                        .environment(app)
+                        .presentationDetents([.medium, .large])
+                        .presentationBackground(Palette.background)
+                }
         } header: {
             Text("Credits")
         } footer: {

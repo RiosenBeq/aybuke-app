@@ -75,6 +75,8 @@ final class AppModel {
     /// Settings: the gear on Explore, or Glowlit › Settings… on the Mac.
     var isSettingsPresented = false
     var isPaywallPresented = false
+    /// Pro without enough credits: next refill and packs (free members get the paywall).
+    var outOfCredits: OutOfCreditsRequest?
     private(set) var paywallSource = "unknown"
     var isPhotoPickerPresented = false
     var editorLaunch: EditorLaunch?
@@ -406,7 +408,7 @@ final class AppModel {
     }
 
     private var isPresentingSomething: Bool {
-        isPaywallPresented || editorLaunch != nil || videoSource != nil || consentRequest != nil
+        isPaywallPresented || outOfCredits != nil || editorLaunch != nil || videoSource != nil || consentRequest != nil
             || shareRequest != nil || isAccountPromptPresented || isBestShotPresented
     }
 
@@ -454,7 +456,7 @@ final class AppModel {
         credits.refresh(isPro: purchases.isPro)
         guard credits.canAfford(operation, outputs: outputs) else {
             if purchases.isPro {
-                showToast("You've reached today's fair-use limit. Credits refill at midnight.", style: .info)
+                outOfCredits = OutOfCreditsRequest(needed: credits.cost(of: operation, outputs: outputs), available: credits.balance)
             } else {
                 presentPaywall(source: "out_of_credits")
             }
@@ -575,7 +577,9 @@ final class AppModel {
             isPro: purchases.isPro,
             nextRefill: credits.nextFreeRefill,
             latest: (try? context.fetch(newest))?.first,
-            creationsCount: count
+            creationsCount: count,
+            breakdown: credits.breakdown,
+            nextGrant: credits.nextSubscriptionGrant
         )
     }
 
@@ -713,6 +717,7 @@ final class AppModel {
     func handle(_ link: GlowDeepLink) {
         guard hasCompletedOnboarding, editorLaunch == nil else { return }
         isPaywallPresented = false
+        outOfCredits = nil
         switch link {
         case .magicEdit:
             selectedTab = .home
@@ -763,16 +768,20 @@ final class AppModel {
         if Self.isCancellation(error) { return }
         Haptics.error()
         registerSetback()
-        if case AIServiceError.insufficientCredits = error {
+        if case AIServiceError.insufficientCredits(let remaining) = error {
             if purchases.isPro {
-                showToast("You've reached today's fair-use limit.", style: .info)
+                outOfCredits = OutOfCreditsRequest(available: remaining)
             } else {
                 presentPaywall(source: "out_of_credits")
             }
             return
         }
-        if case CreditError.insufficient = error {
-            presentPaywall(source: "out_of_credits")
+        if case CreditError.insufficient(let needed, let available) = error {
+            if purchases.isPro {
+                outOfCredits = OutOfCreditsRequest(needed: needed, available: available)
+            } else {
+                presentPaywall(source: "out_of_credits")
+            }
             return
         }
         if case AIServiceError.consentRequired = error {
@@ -873,6 +882,12 @@ extension AppModel {
             selectedTab = .home
             paywallSource = "screenshot"
             isPaywallPresented = true
+        case .outOfCredits:
+            selectedTab = .home
+            outOfCredits = OutOfCreditsRequest(needed: 1, available: 0)
+        case .outOfCreditsMulti:
+            selectedTab = .create
+            outOfCredits = OutOfCreditsRequest(needed: 4, available: 2)
         case .consent:
             selectedTab = .home
             consentRequest = ConsentRequest {}

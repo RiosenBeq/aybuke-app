@@ -98,6 +98,24 @@ final class CreditsTests: XCTestCase {
         let decoded = try JSONDecoder().decode(CreditWallet.self, from: JSONEncoder().encode(wallet))
         XCTAssertEqual(decoded, wallet)
     }
+
+    func testNextSubscriptionGrantIsTheFirstMomentRefreshGrants() throws {
+        var wallet = CreditWallet.fresh(now: date(1, 31, 10), policy: policy)
+        XCTAssertNil(wallet.nextSubscriptionGrant(calendar: calendar), "no subscription yet")
+        wallet.refresh(now: date(1, 31, 10), isPro: true, policy: policy, calendar: calendar)
+        let grant = try XCTUnwrap(wallet.nextSubscriptionGrant(calendar: calendar))
+
+        var justBefore = wallet
+        justBefore.refresh(now: grant.addingTimeInterval(-1), isPro: true, policy: policy, calendar: calendar)
+        XCTAssertEqual(justBefore.subscription, wallet.subscription)
+        var atGrant = wallet
+        atGrant.refresh(now: grant, isPro: true, policy: policy, calendar: calendar)
+        XCTAssertEqual(atGrant.subscription, wallet.subscription + policy.proMonthlyAllowance)
+        XCTAssertEqual(atGrant.nextSubscriptionGrant(calendar: calendar).map { $0 > grant }, true)
+
+        atGrant.refresh(now: date(4, 1), isPro: false, policy: policy, calendar: calendar)
+        XCTAssertNil(atGrant.nextSubscriptionGrant(calendar: calendar), "none after Pro ends")
+    }
 }
 
 final class SizingTests: XCTestCase {

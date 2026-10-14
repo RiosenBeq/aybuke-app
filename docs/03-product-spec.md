@@ -98,7 +98,7 @@ This document turns that brief into a product definition grounded in the researc
 4. **Create.** Type an idea → pick a style and size → Generate → results (paged) → Save / Share / Edit.
 5. **Out of credits.**
    - Free user → paywall (or a credit pack).
-   - Pro user → friendly fair-use message: credits refill monthly and packs never expire.
+   - Pro user → a sheet (only after she tries an AI action, with a close button): the next monthly refill date when the app knows it (otherwise "within a month"), the credit packs with their real prices ("≈ price per credit" below the billed price), and a reminder that the free tools still work. Not enough for several images → "This needs N credits. You have M."
 6. **Video.** Edit tab → "Edit a video" → pick a clip (up to 5 minutes) → toggle "Auto-cut silences", pick an effect, trim → Save to Photos or Share. Everything runs on the iPhone; no credits.
 7. **Share.** Result → Share → pick a format (Photo, Before/After, Story card, Cover star, Photo strip, Help me pick) → edit the caption → Stories, Photos or the share sheet.
 
