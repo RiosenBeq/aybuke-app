@@ -18,6 +18,12 @@ struct TextStickersCanvas: View {
             let size = proxy.size
             let canvas = OverlayCanvas(width: size.width, height: size.height)
             ZStack(alignment: .topLeading) {
+                // The shadow sits on a still shape, so dragging doesn't redraw it.
+                RoundedRectangle(cornerRadius: 16, style: .continuous)
+                    .fill(Palette.surface)
+                    .shadow(color: Palette.shadow, radius: 16, y: 8)
+                    .frame(width: size.width, height: size.height)
+                    .accessibilityHidden(true)
                 ZStack(alignment: .topLeading) {
                     if ImageUtilities.hasAlpha(image) {
                         CheckerboardBackground()
@@ -41,7 +47,6 @@ struct TextStickersCanvas: View {
                 }
                 .frame(width: size.width, height: size.height)
                 .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
-                .shadow(color: Palette.shadow, radius: 16, y: 8)
 
                 // Touches, and the doodle above the items as in the final photo.
                 OverlayInteractionLayer(session: session, size: size)
@@ -51,11 +56,17 @@ struct TextStickersCanvas: View {
                     SelectionChrome(item: selected, placement: session.placement(of: selected), canvas: canvas, session: session)
                 }
 
-                if session.isMoving {
-                    trash
-                        .position(OverlayGestureView.trashCenter(in: size))
-                        .transition(.scale.combined(with: .opacity))
+                // Only the trash animates; the dragged item follows the finger.
+                ZStack {
+                    if session.isMoving {
+                        trash
+                            .position(OverlayGestureView.trashCenter(in: size))
+                            .transition(.scale.combined(with: .opacity))
+                    }
                 }
+                .frame(width: size.width, height: size.height)
+                .allowsHitTesting(false)
+                .animation(.snappy, value: session.isMoving)
             }
             .coordinateSpace(.named(Self.space))
             .onAppear { layout(size) }
@@ -63,7 +74,6 @@ struct TextStickersCanvas: View {
             .onChange(of: displayScale) { layout(size) }
             // Apply starts a fresh session on the same canvas.
             .onChange(of: session.doodleSpace == nil) { layout(size) }
-            .animation(.snappy, value: session.isMoving)
         }
         .aspectRatio(image.size.width / max(image.size.height, 1), contentMode: .fit)
     }
@@ -554,6 +564,8 @@ struct OverlayTextEditor: View {
             .padding(.horizontal, Metrics.gutter)
             .padding(.vertical, 8)
             .readableWidth(Metrics.compactWidth, alignment: .center)
+            // VoiceOver stays here, not on the dimmed editor behind.
+            .accessibilityAddTraits(.isModal)
         }
         .onAppear { isFocused = true }
     }

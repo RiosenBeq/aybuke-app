@@ -155,7 +155,8 @@ final class OverlaySession {
         let item = EditorOverlay(id: nextID, content: content, placement: .newItem(index: items.count))
         items.append(item)
         selectedID = item.id
-        refreshPreview(of: item)
+        // A new text box is drawn once she's typed it (an empty pill would flash).
+        if content.text?.text.isEmpty != true { refreshPreview(of: item) }
         return item
     }
 
@@ -228,7 +229,7 @@ final class OverlaySession {
         update(live.id) { $0 = live.placement }
     }
 
-    /// VoiceOver's adjustable action and the size buttons.
+    /// VoiceOver's adjustable action and its turn actions.
     func resize(_ id: EditorOverlay.ID, by factor: Double) {
         update(id) { $0 = $0.scaled(by: factor) }
     }
