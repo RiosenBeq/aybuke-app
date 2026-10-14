@@ -71,6 +71,10 @@ struct ShareComposerView: View {
                 .readableWidth(Metrics.compactWidth)
             }
             .scrollIndicators(.hidden)
+            #if DEBUG
+            // `-GLShareScrollBottom YES` shows the caption ideas in screenshots.
+            .defaultScrollAnchor(UserDefaults.standard.bool(forKey: "GLShareScrollBottom") ? .bottom : nil)
+            #endif
             .background(AuroraBackground(intensity: 0.45))
             .navigationTitle("Share your glow")
             .navigationBarTitleDisplayMode(.inline)
@@ -219,11 +223,10 @@ struct ShareComposerView: View {
                 .disabled(isLoadingIdeas)
                 .accessibilityLabel("New caption ideas")
             }
-            if captionIdeas.isEmpty {
-                ProgressView()
-                    .tint(Palette.accent)
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 12)
+            if isLoadingIdeas {
+                Label("Writing new ideas on your device…", systemImage: "sparkles")
+                    .font(.caption)
+                    .foregroundStyle(Palette.textSecondary)
             }
             ForEach(captionIdeas, id: \.self) { idea in
                 Button {
@@ -319,17 +322,18 @@ struct ShareComposerView: View {
 
     private func loadCaptionIdeas() async {
         guard !isLoadingIdeas else { return }
+        let context = OnDeviceWriter.IdeaContext.caption(look: nil, madeWithAI: madeWithAI)
+        // Hand-written ones show at once (the model can take a few seconds),
+        // different from the last set where possible.
+        let pool = CuratedIdeas.for(context)
+        let unseen = pool.filter { !captionIdeas.contains($0) }
+        captionIdeas = Array((unseen.count >= 3 ? unseen : pool).shuffled().prefix(3))
+        ideasFromWriter = false
+        guard app.writer.isAvailable else { return }
         isLoadingIdeas = true
         defer { isLoadingIdeas = false }
-        let context = OnDeviceWriter.IdeaContext.caption(look: nil, madeWithAI: madeWithAI)
         let fresh = await app.writer.ideas(context)
-        if fresh.isEmpty {
-            // Three hand-written ones, different from the last set where possible.
-            let pool = CuratedIdeas.for(context)
-            let unseen = pool.filter { !captionIdeas.contains($0) }
-            captionIdeas = Array((unseen.count >= 3 ? unseen : pool).shuffled().prefix(3))
-            ideasFromWriter = false
-        } else {
+        if !fresh.isEmpty {
             captionIdeas = fresh
             ideasFromWriter = true
         }
