@@ -83,7 +83,7 @@ enum FaceHiding {
 
     // MARK: Blur and pixelate
 
-    private static let context = CIContext(options: [.cacheIntermediates: false])
+    private static let context = ImageFilters.context
 
     /// The blurred or pixelated face as a transparent patch the size of
     /// `feather` (UIKit coordinates), opaque inside `rect`'s ellipse and

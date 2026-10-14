@@ -242,7 +242,7 @@ struct CutoutRefineStroke: Sendable, Equatable {
 /// function is pure and safe off the main thread, and works at any scale, so
 /// the preview matches the final image.
 enum CutoutRenderer {
-    private static let context = CIContext(options: [.cacheIntermediates: false])
+    private static let context = ImageFilters.context
 
     /// `mask` with her refine strokes painted over it in order (white keeps,
     /// black removes), with an edge as soft as Vision's own.

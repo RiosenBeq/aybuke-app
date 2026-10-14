@@ -25,6 +25,12 @@ enum ImageFilters {
     /// preview can render into a Metal layer with it as well.
     static let context: CIContext = metalDevice.map { CIContext(mtlDevice: $0, options: [.cacheIntermediates: false]) }
         ?? CIContext(options: [.cacheIntermediates: false])
+    /// For measuring pixels as they are (averages, masks), without colour
+    /// management: the Vision checks and the share designs. Contexts are
+    /// expensive to make and each compiles its own kernels, so these two
+    /// are the only ones.
+    static let measuringContext: CIContext = metalDevice.map { CIContext(mtlDevice: $0, options: [.workingColorSpace: NSNull()]) }
+        ?? CIContext(options: [.workingColorSpace: NSNull()])
 
     static func render(_ image: CIImage, extent: CGRect? = nil) -> UIImage? {
         let rect = extent ?? image.extent

@@ -146,7 +146,7 @@ enum FaceAnalysis {
 
     // MARK: Helpers
 
-    private static let context = CIContext(options: [.workingColorSpace: NSNull()])
+    private static let context = ImageFilters.measuringContext
 
     /// Average CIELAB lightness (0…100) of a region.
     private static func averageLightness(of image: CIImage, in rect: CGRect) -> CGFloat? {
