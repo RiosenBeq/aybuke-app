@@ -385,7 +385,7 @@ struct CutoutPanel: View {
                         Image(systemName: "paintbrush.pointed")
                             .foregroundStyle(Palette.accent)
                         Text(mode == .keepMore ? "Brush over what to keep" : "Brush over what to remove")
-                            .font(.footnote.weight(.semibold))
+                            .font(.legibleFootnote.weight(.semibold))
                             .foregroundStyle(Palette.textSecondary)
                             .fixedSize(horizontal: false, vertical: true)
                         Spacer(minLength: 0)
@@ -395,7 +395,7 @@ struct CutoutPanel: View {
                         Image(systemName: "hand.tap")
                             .foregroundStyle(Palette.accent)
                         Text(Platform.isMac ? "Click who or what to keep" : "Tap who or what to keep")
-                            .font(.footnote.weight(.semibold))
+                            .font(.legibleFootnote.weight(.semibold))
                             .foregroundStyle(Palette.textSecondary)
                             .fixedSize(horizontal: false, vertical: true)
                         Spacer(minLength: 0)
@@ -407,7 +407,7 @@ struct CutoutPanel: View {
 
                 HStack(spacing: 8) {
                     Text("Background")
-                        .font(.footnote.weight(.semibold))
+                        .font(.legibleFootnote.weight(.semibold))
                         .foregroundStyle(Palette.textSecondary)
                     Spacer(minLength: 0)
                     if session.offersShadow {

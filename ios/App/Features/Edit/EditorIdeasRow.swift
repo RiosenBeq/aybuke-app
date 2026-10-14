@@ -57,13 +57,13 @@ struct EditorIdeasRow: View {
         VStack(alignment: .leading, spacing: 6) {
             HStack {
                 Text("Ideas for this photo")
-                    .font(.caption.weight(.semibold))
+                    .font(.legibleCaption.weight(.semibold))
                     .foregroundStyle(Palette.textSecondary)
                     .accessibilityAddTraits(.isHeader)
                 Spacer()
                 Button(action: onDismiss) {
                     Image(systemName: "xmark")
-                        .font(.caption2.weight(.bold))
+                        .font(.legibleCaption2.weight(.bold))
                         .foregroundStyle(Palette.textSecondary)
                         .frame(width: 32, height: 22)
                         .contentShape(Rectangle())
@@ -213,7 +213,7 @@ private struct IdeaChip: View {
     var body: some View {
         Button(action: action) {
             HStack(spacing: 6) {
-                Image(systemName: symbolName).font(.footnote.weight(.semibold))
+                Image(systemName: symbolName).font(.legibleFootnote.weight(.semibold))
                 Text(verbatim: title)
                     .font(.subheadline.weight(.semibold))
                     .lineLimit(1)

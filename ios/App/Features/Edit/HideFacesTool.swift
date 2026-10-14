@@ -209,7 +209,7 @@ struct HideFacesPanel: View {
                 Image(systemName: "person.2.slash")
                     .foregroundStyle(Palette.accent)
                 Text(hint)
-                    .font(.footnote.weight(.semibold))
+                    .font(.legibleFootnote.weight(.semibold))
                     .foregroundStyle(Palette.textSecondary)
                     .fixedSize(horizontal: false, vertical: true)
                 Spacer(minLength: 0)

@@ -39,6 +39,7 @@ Rules for every item: read the code before you change a claim; grep each number 
    **Done (14 October 2026):** both sides fold ς to σ, and a control character next to a CJK character splits words like a space (so '女性\n感谢你' passes; a CJK term broken by a line break passes too, as it already did with a space). New verdict vectors and a shared `words` section in `policy-vectors.json`; `deno test _shared/` and `swift test` pass.
 11. **Photo-check failure copy:** the likeness-check failure text says the result was not shown, which reads oddly for a photo check.
     *Settles:* the copy is reworded in every catalogue, and `TranslationTests` passes.
+    **Done (14 October 2026):** the server fails the photo check with `photo_check_failed`, and the app says the photo couldn't be checked and no credit was used (12 languages); `BackendAPITests` checks every failure code has its own translated sentence.
 12. **Translate the ~360 strings** added on 14 October 2026 (roadmap Phase 7, open). Catalogues are synced; the App Store locales follow the en-US text.
     *Settles:* `TranslationTests` and the catalogue checks pass for all eleven languages.
    **Done (14 October 2026):** every key in `Localizable.xcstrings` has all eleven translations except two format-only keys. A native speaker review is still open (section 3).
@@ -124,8 +125,8 @@ Each risk names its file or function and what would settle it.
 10. **Greek final sigma** may lowercase differently in Swift and JavaScript (`ContentPolicy.swift`, `policy.ts`). *Settles:* section 1, item 10. **Settled (14 October 2026):** both sides fold ς to σ.
 11. **CJK line break can join two words into a blocked term** (`ContentPolicy.swift`, `policy.ts`). *Settles:* section 1, item 10. **Settled (14 October 2026):** a control character next to CJK splits words.
 12. **Shared test fixtures:** `ad_rewards_test.sql` and `unclaimed_test.sql` share a fixture user, so `backend/scripts/test-db.sh` keeps their order (`ORDER`). *Settles:* the tests use separate fixture ids.
-13. **Photo-check failure copy** says the result was not shown. *Settles:* section 1, item 11.
-14. **Mac type, menus, sections and ⌘W:** section 2, items 3 to 6.
+13. **Photo-check failure copy** says the result was not shown. *Settles:* section 1, item 11. **Settled (14 October 2026):** section 1, item 11.
+14. **Mac type, menus, sections and ⌘W:** section 2, items 3 to 6. **Partly settled (14 October 2026):** ⌘W closes the editor and Retro Cam, look cards have a Try this look menu, and the chained caption and footnote fonts use the legible Mac sizes; a Mac capture still has to confirm nothing is clipped.
 15. **Export-catalog Swift side unchecked** (`scripts/export-catalog.sh`). *Settles:* section 2, item 2.
 16. **Test counts disagree:** 319 `func test` declarations against 315 reported passing. *Settles:* section 1, item 1. **Settled (14 October 2026):** AppCore runs 319 tests.
 17. **Website sources disagree:** `web/` and `website.yml` here, and `RiosenBeq/aybuke` on Vercel. *Settles:* section 1, item 4. **Settled (14 October 2026):** `web/README.md` names `RiosenBeq/aybuke` as the live source.

@@ -29,7 +29,7 @@ struct InviteView: View {
                     }
                     actions
                     Label("Your photos are never included.", systemImage: "lock.fill")
-                        .font(.footnote.weight(.semibold))
+                        .font(.legibleFootnote.weight(.semibold))
                         .foregroundStyle(Palette.textSecondary)
                 }
                 .padding(.horizontal, Metrics.gutter)

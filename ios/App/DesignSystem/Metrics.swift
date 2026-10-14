@@ -98,7 +98,7 @@ extension View {
 
     /// Small uppercase label above a headline ("MAGIC EDIT").
     func eyebrowStyle(_ color: Color = Palette.textSecondary) -> some View {
-        font(.caption.weight(.heavy))
+        font(.legibleCaption.weight(.heavy))
             .tracking(1.4)
             .textCase(.uppercase)
             .foregroundStyle(color)

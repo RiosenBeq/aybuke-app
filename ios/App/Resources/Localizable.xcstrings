@@ -103856,6 +103856,76 @@
         }
       }
     },
+    "We couldn't check this photo just now, so nothing was made and no credit was used. Try again in a moment." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wir konnten dieses Foto gerade nicht prüfen, deshalb wurde nichts erstellt und kein Credit verbraucht. Versuch es gleich noch mal."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No pudimos revisar esta foto ahora mismo, así que no se creó nada y no se usó ningún crédito. Inténtalo de nuevo en un momento."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "On n’a pas pu vérifier cette photo pour l’instant, donc rien n’a été créé et aucun crédit n’a été utilisé. Réessaie dans un instant."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kami belum bisa memeriksa foto ini sekarang, jadi tidak ada yang dibuat dan tidak ada kredit yang terpakai. Coba lagi dalam beberapa saat."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Al momento non siamo riusciti a controllare questa foto, quindi non è stato creato nulla e nessun credito è stato usato. Riprova tra poco."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "今はこの写真を確認できなかったため、何も作成されず、クレジットも使われていません。少し時間をおいてから、もう一度お試しください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "지금은 이 사진을 확인하지 못해서 아무것도 만들지 않았고 크레딧도 쓰지 않았어요. 잠시 후 다시 시도해 주세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não conseguimos verificar esta foto agora, então nada foi criado e nenhum crédito foi usado. Tente de novo daqui a pouco."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сейчас не удалось проверить это фото, поэтому ничего не создано и кредит не потрачен. Попробуй ещё раз чуть позже."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu fotoğrafı şu an kontrol edemedik, bu yüzden hiçbir şey oluşturulmadı ve kredi kullanılmadı. Birazdan tekrar dene."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "暂时无法检查这张照片，所以没有生成任何内容，也没有使用点数。请稍后再试。"
+          }
+        }
+      }
+    },
     "We couldn't confirm your account, so nothing was deleted. Please contact support and we'll delete it for you." : {
       "localizations" : {
         "de" : {

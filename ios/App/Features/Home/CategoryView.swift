@@ -21,8 +21,7 @@ struct CategoryView: View {
                 LazyVGrid(columns: columns, spacing: 12) {
                     ForEach(Array(templates.enumerated()), id: \.element) { index, template in
                         Button {
-                            Haptics.tap()
-                            app.startEditing(tool: .styles, template: template)
+                            tryLook(template)
                         } label: {
                             GeometryReader { proxy in
                                 TemplateCard(template: template, width: proxy.size.width, height: proxy.size.height, number: index + 1)
@@ -31,6 +30,7 @@ struct CategoryView: View {
                         }
                         .buttonStyle(.pressable)
                         .macHoverLift()
+                        .macTryLookMenu { tryLook(template) }
                         .accessibilityHint(template.lookHint(isPro: app.purchases.isPro))
                         .reveal(1 + min(index, 7))
                     }
@@ -47,6 +47,11 @@ struct CategoryView: View {
         .toolbar(.visible, for: .navigationBar)
     }
 
+    private func tryLook(_ template: PhotoTemplate) {
+        Haptics.tap()
+        app.startEditing(tool: .styles, template: template)
+    }
+
     private var header: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text("Collection · \(templates.count) looks")
@@ -60,7 +65,7 @@ struct CategoryView: View {
             // A tap on a look runs it on her photo right away, so the price
             // is said here, before the credit is spent.
             Label("\(app.credits.cost(of: .restyle)) credit per look · failed looks are refunded", systemImage: "bolt.fill")
-                .font(.caption.weight(.semibold))
+                .font(.legibleCaption.weight(.semibold))
                 .foregroundStyle(Palette.textSecondary)
                 .padding(.top, 2)
             Rectangle()
@@ -70,6 +75,21 @@ struct CategoryView: View {
                 .accessibilityHidden(true)
         }
         .padding(.top, 4)
+    }
+}
+
+extension View {
+    /// Mac: a right-click on a look's card offers it, with the same action as
+    /// a click (so the same gates). iPhone and iPad are unchanged.
+    @ViewBuilder
+    func macTryLookMenu(_ action: @escaping () -> Void) -> some View {
+        if Platform.isMac {
+            contextMenu {
+                Button("Try this look", action: action)
+            }
+        } else {
+            self
+        }
     }
 }
 

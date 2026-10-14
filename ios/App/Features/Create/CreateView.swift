@@ -266,7 +266,7 @@ struct CreateView: View {
                     Spacer(minLength: 0)
                     if model.undoPrompt != nil {
                         Button("Undo") { model.undoEnhance() }
-                            .font(.footnote.weight(.semibold))
+                            .font(.legibleFootnote.weight(.semibold))
                             .foregroundStyle(Palette.accent)
                             .accessibilityHint("Brings back what you wrote before")
                     }
@@ -299,7 +299,7 @@ struct CreateView: View {
                     Haptics.selection()
                     withAnimation(.snappy) { app.prompts.clear() }
                 }
-                .font(.footnote.weight(.semibold))
+                .font(.legibleFootnote.weight(.semibold))
                 .foregroundStyle(Palette.accent)
                 .accessibilityLabel("Clear recent prompts")
             }
@@ -479,7 +479,7 @@ struct CreateView: View {
             showsCredits = true
         } label: {
             Label("\(app.credits.balance) credits left", systemImage: app.purchases.isPro ? "crown.fill" : "bolt.fill")
-                .font(.caption.weight(.semibold))
+                .font(.legibleCaption.weight(.semibold))
                 .foregroundStyle(Palette.textSecondary)
                 .contentTransition(.numericText(value: Double(app.credits.balance)))
                 .animation(Motion.bouncy, value: app.credits.balance)

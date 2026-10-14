@@ -249,7 +249,7 @@ private struct ShotTile: View {
                 // A capture-quality fact, not a verdict on the person.
                 if isTop {
                     Label("Best light & focus", systemImage: "sun.max.fill")
-                        .font(.caption2.weight(.bold))
+                        .font(.legibleCaption2.weight(.bold))
                         .lineLimit(1)
                         .minimumScaleFactor(0.7)
                         .foregroundStyle(Palette.ink)

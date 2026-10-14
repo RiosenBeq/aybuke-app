@@ -132,8 +132,7 @@ struct StylesPanel: View {
     private func cards(fillingWidth: Bool) -> some View {
         ForEach(TemplateCatalog.editorOrder(on: AppClock.now)) { template in
             Button {
-                Haptics.tap()
-                onSelect(template)
+                select(template)
             } label: {
                 if fillingWidth {
                     GeometryReader { proxy in
@@ -146,7 +145,13 @@ struct StylesPanel: View {
             }
             .buttonStyle(.plain)
             .macHoverLift(scale: 1.03)
+            .macTryLookMenu { select(template) }
         }
+    }
+
+    private func select(_ template: PhotoTemplate) {
+        Haptics.tap()
+        onSelect(template)
     }
 }
 
@@ -455,7 +460,7 @@ private struct EffectTile: View {
             }
             .shadow(color: Palette.shadow, radius: 6, y: 3)
             Text(effect.title)
-                .font(.caption2.weight(isSelected ? .bold : .semibold))
+                .font(.legibleCaption2.weight(isSelected ? .bold : .semibold))
                 .foregroundStyle(isSelected ? Palette.textPrimary : Palette.textSecondary)
                 .lineLimit(1)
                 .minimumScaleFactor(0.8)
@@ -510,7 +515,7 @@ struct CropPanel: View {
                 .accessibilityValue(Text("\(Int(angle.rounded())) degrees"))
                 .sensoryFeedback(.alignment, trigger: angle == 0) { _, isLevel in isLevel }
                 Text(verbatim: "\(Int(angle.rounded()))°")
-                    .font(.footnote.weight(.semibold).monospacedDigit())
+                    .font(.legibleFootnote.weight(.semibold).monospacedDigit())
                     .foregroundStyle(Palette.textSecondary)
                     .frame(width: 36, alignment: .trailing)
                     .accessibilityHidden(true)

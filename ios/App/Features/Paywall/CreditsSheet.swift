@@ -148,7 +148,7 @@ struct CreditsSheet: View {
             // A fixed circle can't hold an accessibility-size symbol.
             if !typeSize.isAccessibilitySize {
                 Image(systemName: symbol)
-                    .font(.footnote.weight(.semibold))
+                    .font(.legibleFootnote.weight(.semibold))
                     .foregroundStyle(Palette.ink)
                     .frame(width: 26, height: 26)
                     .background(Palette.blush, in: Circle())

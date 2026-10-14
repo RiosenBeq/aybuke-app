@@ -54,7 +54,13 @@ struct RetroCamView: View {
             await model.applyScreenshotOptions(app: app)
             #endif
         }
-        .onDisappear { model.close() }
+        // File › Close (⌘W) on the Mac: the camera's own Close button.
+        .onAppear { registerClose() }
+        .onChange(of: model.shot == nil) { _, _ in registerClose() }
+        .onDisappear {
+            model.close()
+            app.closeActiveCover = nil
+        }
         .onChange(of: scenePhase) { _, phase in model.sceneChanged(to: phase) }
         .onChange(of: model.shutterCount) { _, _ in
             guard !reduceMotion else { return }
@@ -189,7 +195,7 @@ struct RetroCamView: View {
             }
             Text("\(min(model.boothCount + 1, PhotoBooth.shotCount)) of \(PhotoBooth.shotCount)",
                  comment: "Photo booth progress: which of the four shots is next")
-                .font(.caption.weight(.bold).monospacedDigit())
+                .font(.legibleCaption.weight(.bold).monospacedDigit())
                 .foregroundStyle(.white)
                 .padding(.leading, 4)
         }
@@ -211,7 +217,7 @@ struct RetroCamView: View {
                             Text(verbatim: effect.title)
                                 .font(.subheadline.weight(.bold))
                             Text(verbatim: effect.era)
-                                .font(.caption2.weight(.semibold))
+                                .font(.legibleCaption2.weight(.semibold))
                                 .opacity(0.7)
                         }
                         .lineLimit(1)
@@ -247,7 +253,7 @@ struct RetroCamView: View {
                         Haptics.selection()
                     } label: {
                         Text(mode.title)
-                            .font(.footnote.weight(.heavy))
+                            .font(.legibleFootnote.weight(.heavy))
                             .textCase(.uppercase)
                             .kerning(1.2)
                             .foregroundStyle(model.mode == mode ? Palette.blush : .white.opacity(0.65))
@@ -358,6 +364,12 @@ struct RetroCamView: View {
         dismiss()
     }
 
+    /// While a shot is in review, the review registers its own Close (it asks
+    /// before an unsaved shot is discarded), so this only sets the camera's.
+    private func registerClose() {
+        if model.shot == nil { app.closeActiveCover = { close() } }
+    }
+
     private func edit(_ image: UIImage) {
         onEdit(image)
         close()
@@ -379,7 +391,7 @@ private struct CamButton: View {
                 Image(systemName: symbol)
                     .font(.system(size: size * 0.4, weight: .semibold))
                 if let badge {
-                    badge.font(.caption.weight(.heavy).monospacedDigit())
+                    badge.font(.legibleCaption.weight(.heavy).monospacedDigit())
                 }
             }
             .foregroundStyle(isOn ? Palette.ink : .white)

@@ -9,7 +9,7 @@ struct OfflineNotice: View {
                 .font(.subheadline.weight(.semibold))
                 .accessibilityHidden(true)
             Text("You're offline. Effects, Adjust, Cut out and Video still work.")
-                .font(.footnote.weight(.medium))
+                .font(.legibleFootnote.weight(.medium))
                 .fixedSize(horizontal: false, vertical: true)
         }
         .foregroundStyle(Palette.textPrimary)

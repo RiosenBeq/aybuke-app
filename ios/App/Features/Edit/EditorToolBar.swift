@@ -89,7 +89,7 @@ private struct ToolItem: View {
                     .frame(height: 22)
                     .symbolEffect(.bounce, value: isActive)
                 Text(tool.shortTitle)
-                    .font(.caption2.weight(.semibold))
+                    .font(.legibleCaption2.weight(.semibold))
                     .lineLimit(1)
                     .fixedSize()
             }

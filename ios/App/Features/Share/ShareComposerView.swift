@@ -259,7 +259,7 @@ struct ShareComposerView: View {
                             .multilineTextAlignment(.leading)
                             .frame(maxWidth: .infinity, alignment: .leading)
                         Image(systemName: "doc.on.doc")
-                            .font(.footnote.weight(.semibold))
+                            .font(.legibleFootnote.weight(.semibold))
                             .foregroundStyle(Palette.accent)
                     }
                     .padding(.horizontal, 14)
@@ -294,7 +294,7 @@ struct ShareComposerView: View {
                             dismiss()
                             app.presentPaywall(source: "share_watermark")
                         }
-                        .font(.footnote.weight(.bold))
+                        .font(.legibleFootnote.weight(.bold))
                         .foregroundStyle(Palette.accent)
                     }
                 }
@@ -462,7 +462,7 @@ private struct ShareTarget: View {
                     .overlay(Circle().strokeBorder(isPrimary ? Color.clear : Palette.stroke, lineWidth: 1))
                     .shadow(color: Palette.shadow, radius: 8, y: 4)
                 Text(title)
-                    .font(.caption.weight(.semibold))
+                    .font(.legibleCaption.weight(.semibold))
                     .foregroundStyle(Palette.textPrimary)
                     .multilineTextAlignment(.center)
                     .lineLimit(2)

@@ -98,7 +98,7 @@ struct BeforeAfterSlider: View {
 
     private func tag(_ text: String) -> some View {
         Text(text)
-            .font(.caption2.weight(.bold))
+            .font(.legibleCaption2.weight(.bold))
             // One line: on a narrow photo the words shrink instead of breaking.
             .lineLimit(1)
             .minimumScaleFactor(0.5)

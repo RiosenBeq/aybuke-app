@@ -214,7 +214,7 @@ struct MakeupPanel: View {
 
     private var intensityLabel: some View {
         Text("Intensity")
-            .font(.footnote.weight(.semibold))
+            .font(.legibleFootnote.weight(.semibold))
             .foregroundStyle(Palette.textSecondary)
             .fixedSize()
             .accessibilityHidden(true)
@@ -251,11 +251,11 @@ private struct MakeupChip: View {
                 // VoiceOver hears the selected trait instead.
                 if isToggle {
                     Image(systemName: isSelected ? "checkmark" : "plus")
-                        .font(.footnote.weight(.bold))
+                        .font(.legibleFootnote.weight(.bold))
                         .accessibilityHidden(true)
                 } else if isSelected && differentiateWithoutColor {
                     Image(systemName: "checkmark")
-                        .font(.footnote.weight(.bold))
+                        .font(.legibleFootnote.weight(.bold))
                         .accessibilityHidden(true)
                 }
                 SwatchDots(hexes: swatches, ring: isSelected ? Palette.primary : Palette.surface)

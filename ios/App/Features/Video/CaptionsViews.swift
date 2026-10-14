@@ -514,7 +514,7 @@ private struct CaptionCueRow: View {
                     } icon: {
                         Image(systemName: isCurrent ? "waveform" : "play.fill")
                     }
-                    .font(.caption.weight(.semibold))
+                    .font(.legibleCaption.weight(.semibold))
                     .foregroundStyle(isCurrent ? Palette.accent : Palette.textSecondary)
                 }
                 .buttonStyle(.borderless)
@@ -597,7 +597,7 @@ private struct CaptionStyleButton: View {
                         .strokeBorder(isSelected ? Palette.accent : Palette.stroke, lineWidth: isSelected ? 3 : 1)
                 )
                 Text(style.title)
-                    .font(.caption2.weight(isSelected ? .bold : .semibold))
+                    .font(.legibleCaption2.weight(isSelected ? .bold : .semibold))
                     .foregroundStyle(isSelected ? Palette.textPrimary : Palette.textSecondary)
                     .lineLimit(1)
                     .minimumScaleFactor(0.7)

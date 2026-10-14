@@ -34,7 +34,7 @@ struct RewardedAdCard: View {
                     Spacer(minLength: 0)
                     if isTappable {
                         Image(systemName: "chevron.right")
-                            .font(.footnote.weight(.semibold))
+                            .font(.legibleFootnote.weight(.semibold))
                             .foregroundStyle(Palette.textTertiary)
                             .accessibilityHidden(true)
                     }
@@ -85,11 +85,11 @@ struct RewardedAdCard: View {
                 .tint(Palette.ink)
         case .capped:
             Image(systemName: "moon.stars.fill")
-                .font(.footnote.weight(.semibold))
+                .font(.legibleFootnote.weight(.semibold))
                 .foregroundStyle(Palette.ink)
         case .available, .notice:
             Image(systemName: "play.fill")
-                .font(.footnote.weight(.semibold))
+                .font(.legibleFootnote.weight(.semibold))
                 .foregroundStyle(Palette.ink)
         }
     }

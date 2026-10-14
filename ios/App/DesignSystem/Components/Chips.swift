@@ -14,9 +14,9 @@ struct SelectableChip: View {
         Button(action: action) {
             HStack(spacing: 6) {
                 if isSelected && differentiateWithoutColor {
-                    Image(systemName: "checkmark").font(.footnote.weight(.bold))
+                    Image(systemName: "checkmark").font(.legibleFootnote.weight(.bold))
                 } else if let symbolName {
-                    Image(systemName: symbolName).font(.footnote.weight(.semibold))
+                    Image(systemName: symbolName).font(.legibleFootnote.weight(.semibold))
                 }
                 // One line where the row has room (scrolling rows); where it
                 // hasn't (large text, long translations), the words wrap
@@ -73,7 +73,7 @@ struct StyleTile: View {
                         .foregroundStyle(tone.foreground)
                     if isLocked {
                         Image(systemName: "lock.fill")
-                            .font(.caption2.weight(.bold))
+                            .font(.legibleCaption2.weight(.bold))
                             .foregroundStyle(tone.isDark ? Palette.ink : Palette.blush)
                             .padding(5)
                             .background(tone.isDark ? Palette.blush : Palette.ink, in: Circle())
@@ -101,7 +101,7 @@ struct StyleTile: View {
                     }
                 }
                 Text(name)
-                    .font(.caption.weight(isSelected ? .bold : .medium))
+                    .font(.legibleCaption.weight(isSelected ? .bold : .medium))
                     .foregroundStyle(isSelected ? Palette.textPrimary : Palette.textSecondary)
                     .lineLimit(1)
             }

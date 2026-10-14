@@ -109,11 +109,43 @@ final class BackendAPITests: XCTestCase {
             XCTAssertEqual(error as? AIServiceError, .server(code: "job_failed", message: "This creation failed. Your credit was refunded."))
         }
         // The photo check (ai-image) fails with this code; the app's copy is keyed on it.
-        let photo = Data(#"{"job_id":"j1","status":"failed","error":{"code":"safety_check_failed","message":"We couldn't check this photo, so we didn't edit it. Your credit was refunded."}}"#.utf8)
+        let photo = Data(#"{"job_id":"j1","status":"failed","error":{"code":"photo_check_failed","message":"We couldn't check this photo, so we didn't edit it. Your credit was refunded."}}"#.utf8)
         XCTAssertThrowsError(try ResponseDecoder.decodeGeneration(data: photo, statusCode: 200)) { error in
-            XCTAssertEqual(error as? AIServiceError, .server(code: "safety_check_failed",
+            XCTAssertEqual(error as? AIServiceError, .server(code: "photo_check_failed",
                                                              message: "We couldn't check this photo, so we didn't edit it. Your credit was refunded."))
         }
+    }
+
+    /// Every code ai-image fails a job with has its own sentence in the app
+    /// (`AppModel.serverMessages`), translated into every app language; the
+    /// server's English message is only the fallback.
+    func testEveryJobFailureCodeHasTranslatedAppCopy() throws {
+        let server = try String(contentsOf: RepositoryFile.url("backend/supabase/functions/ai-image/index.ts"), encoding: .utf8)
+        let app = try String(contentsOf: RepositoryFile.url("ios/App/App/AppModel.swift"), encoding: .utf8)
+        let catalog = try JSONSerialization.jsonObject(
+            with: Data(contentsOf: RepositoryFile.url("ios/App/Resources/Localizable.xcstrings"))) as? [String: Any]
+        let strings = try XCTUnwrap(catalog?["strings"] as? [String: Any])
+
+        let codes = Set(server.matches(of: #/failJob\(db, [\w.]+, "([a-z_]+)"/#).map { String($0.output.1) })
+        XCTAssertTrue(codes.isSuperset(of: ["photo_check_failed", "safety_check_failed"]), "\(codes)")
+        let start = try XCTUnwrap(app.range(of: "serverMessages: [String: String] = ["))
+        let end = try XCTUnwrap(app.range(of: "\n    ]\n", range: start.upperBound..<app.endIndex))
+        var copy: [String: String] = [:]
+        for match in app[start.upperBound..<end.lowerBound].matches(of: #/"([a-z_]+)": String\(localized: "([^"]+)"\)/#) {
+            copy[String(match.output.1)] = String(match.output.2)
+        }
+
+        for code in codes.sorted() {
+            let english = try XCTUnwrap(copy[code], "AppModel.serverMessages needs a sentence for \(code)")
+            let localizations = (strings[english] as? [String: Any])?["localizations"] as? [String: Any] ?? [:]
+            let missing = TranslationTests.languages.filter { language in
+                let unit = (localizations[language] as? [String: Any])?["stringUnit"] as? [String: Any]
+                return unit?["state"] as? String != "translated" || (unit?["value"] as? String ?? "").isEmpty
+            }
+            XCTAssertEqual(missing, [], "\"\(english)\" (\(code)) needs translating")
+        }
+        XCTAssertNotEqual(copy["photo_check_failed"], copy["safety_check_failed"],
+                          "The photo check runs before anything is made; the output check's words don't fit it")
     }
 
     func testCancelledJobThrowsCancellation() {

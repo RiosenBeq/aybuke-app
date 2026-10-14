@@ -61,7 +61,7 @@ struct TemplateCard: View, Equatable {
         .overlay(alignment: .topLeading) {
             if showsLock {
                 Image(systemName: "lock.fill")
-                    .font(.caption.weight(.bold))
+                    .font(.legibleCaption.weight(.bold))
                     .foregroundStyle(isOnDark ? Palette.ink : Palette.blush)
                     .padding(7)
                     .background(isOnDark ? Palette.blush : Palette.ink, in: Circle())

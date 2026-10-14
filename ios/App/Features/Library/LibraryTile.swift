@@ -114,7 +114,7 @@ struct LibraryTile: View {
 
     private var heart: some View {
         Image(systemName: "heart.fill")
-            .font(.caption.weight(.bold))
+            .font(.legibleCaption.weight(.bold))
             .foregroundStyle(Palette.blush)
             .padding(6)
             .background(Palette.ink.opacity(0.55), in: Circle())
@@ -125,7 +125,7 @@ struct LibraryTile: View {
 
     private func daysTag(_ days: Int) -> some View {
         Text(days == 1 ? "1 day" : "\(days) days")
-            .font(.caption2.weight(.bold))
+            .font(.legibleCaption2.weight(.bold))
             .foregroundStyle(Palette.white)
             .lineLimit(1)
             // Shrinks to fit rather than cutting a word (small iPad tiles in
@@ -147,20 +147,20 @@ struct LibraryTile: View {
                 .foregroundStyle(Palette.textTertiary)
                 .overlay(alignment: .bottomTrailing) {
                     Image(systemName: "exclamationmark.circle.fill")
-                        .font(.caption.weight(.bold))
+                        .font(.legibleCaption.weight(.bold))
                         .foregroundStyle(Palette.danger)
                         .background(Circle().fill(Palette.surface))
                         .offset(x: 6, y: 4)
                 }
             Text("Image missing")
-                .font(.caption2.weight(.semibold))
+                .font(.legibleCaption2.weight(.semibold))
                 .foregroundStyle(Palette.textSecondary)
                 .lineLimit(1)
                 .minimumScaleFactor(0.5)
             if !isSelecting {
                 Button(action: onRemove) {
                     Text("Remove")
-                        .font(.caption.weight(.bold))
+                        .font(.legibleCaption.weight(.bold))
                         .foregroundStyle(Palette.onAccent)
                         .lineLimit(1)
                         .minimumScaleFactor(0.6)

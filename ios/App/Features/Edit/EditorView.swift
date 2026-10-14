@@ -68,16 +68,19 @@ struct EditorView: View {
         #if DEBUG || GL_PERF
         .onAppear { PerfProbe.editorAppeared() }
         #endif
-        // Edit › Undo and Redo on the Mac reach this editor's history, and
-        // File › Save (⌘S) saves it.
+        // Edit › Undo and Redo on the Mac reach this editor's history, File ›
+        // Save (⌘S) saves it, and File › Close (⌘W) asks like its close button.
         .onAppear {
             app.activeEditor = model
             app.saveActiveCover = { save() }
+            registerClose()
         }
+        .onChange(of: isUnderAppSheet) { _, _ in registerClose() }
         .onDisappear {
             if app.activeEditor === model {
                 app.activeEditor = nil
                 app.saveActiveCover = nil
+                app.closeActiveCover = nil
             }
         }
         .animation(.snappy, value: model.showsKindnessNote)
@@ -370,15 +373,30 @@ struct EditorView: View {
 
     private var closeButton: some View {
         Button {
-            // A typed but unsent prompt counts too, so Esc can't lose it.
-            let hasTypedPrompt = model.activeTool == .magicEdit && !model.magicPrompt.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
-            if model.hasUnsavedWork || hasTypedPrompt { showDiscardAlert = true } else { dismiss() }
+            requestClose()
         } label: {
             Image(systemName: "xmark")
         }
         .buttonStyle(.icon)
         .accessibilityLabel("Close editor")
         .macHelp("Close editor")
+    }
+
+    private func requestClose() {
+        // A typed but unsent prompt counts too, so Esc can't lose it.
+        let hasTypedPrompt = model.activeTool == .magicEdit && !model.magicPrompt.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+        if model.hasUnsavedWork || hasTypedPrompt { showDiscardAlert = true } else { dismiss() }
+    }
+
+    /// One of the app's sheets is over the editor. ⌘W then leaves the editor
+    /// alone: with the paywall up it still closes the paywall, as before.
+    private var isUnderAppSheet: Bool {
+        app.isPaywallPresented || app.outOfCredits != nil || app.consentRequest != nil
+            || app.shareRequest != nil || app.isAccountPromptPresented || app.isBestShotPresented
+    }
+
+    private func registerClose() {
+        app.closeActiveCover = isUnderAppSheet ? nil : { requestClose() }
     }
 
     private var isCropPending: Bool {
@@ -434,7 +452,7 @@ struct EditorView: View {
             .overlay(alignment: .bottom) {
                 if model.hasChanges && !model.isHoldingOriginal && !isZoomed {
                     Text("Hold to see original")
-                        .font(.caption2.weight(.semibold))
+                        .font(.legibleCaption2.weight(.semibold))
                         .foregroundStyle(.white.opacity(0.95))
                         .padding(.horizontal, 10)
                         .padding(.vertical, 5)
@@ -462,7 +480,7 @@ struct EditorView: View {
                         .font(.title3)
                         .foregroundStyle(Palette.accent)
                     Text(likeness.message)
-                        .font(.footnote.weight(.semibold))
+                        .font(.legibleFootnote.weight(.semibold))
                         .foregroundStyle(Palette.textPrimary)
                         .fixedSize(horizontal: false, vertical: true)
                     Spacer(minLength: 0)
@@ -475,7 +493,7 @@ struct EditorView: View {
             HStack(spacing: 8) {
                 if model.likeness == .stillYou {
                     Label("Still you", systemImage: "checkmark.seal.fill")
-                        .font(.footnote.weight(.semibold))
+                        .font(.legibleFootnote.weight(.semibold))
                         .foregroundStyle(Palette.textPrimary)
                         .padding(.horizontal, 12)
                         .padding(.vertical, 8)
@@ -502,7 +520,7 @@ struct EditorView: View {
                 Image(systemName: "arrow.triangle.2.circlepath")
                 Text(emphasised || model.likeness == .stillYou || !model.retryIsAboutLikeness ? "Retry free" : "Doesn't look like you? Retry free")
             }
-            .font(.footnote.weight(.semibold))
+            .font(.legibleFootnote.weight(.semibold))
             .foregroundStyle(emphasised ? Palette.onAccent : Palette.textPrimary)
             .padding(.horizontal, 14)
             .frame(minHeight: 44)
@@ -519,7 +537,7 @@ struct EditorView: View {
                 Image(systemName: "person.2.fill")
                     .foregroundStyle(Palette.accent)
                 Text("Friends in this photo? Ask them before you edit them 💗")
-                    .font(.footnote.weight(.semibold))
+                    .font(.legibleFootnote.weight(.semibold))
                     .foregroundStyle(Palette.textPrimary)
                     .fixedSize(horizontal: false, vertical: true)
             }
@@ -568,7 +586,7 @@ struct EditorView: View {
                                 action: @escaping () -> Void) -> some View {
         Button(action: action) {
             Text(title)
-                .font(.footnote.weight(.bold))
+                .font(.legibleFootnote.weight(.bold))
                 .foregroundStyle(foreground)
                 .padding(.horizontal, 14)
                 .frame(minHeight: 44)
@@ -584,7 +602,7 @@ struct EditorView: View {
             showReport = true
         } label: {
             Image(systemName: "flag")
-                .font(.footnote.weight(.semibold))
+                .font(.legibleFootnote.weight(.semibold))
                 .foregroundStyle(Palette.textSecondary)
                 .frame(width: 34, height: 34)
                 .background(Palette.surface, in: Circle())

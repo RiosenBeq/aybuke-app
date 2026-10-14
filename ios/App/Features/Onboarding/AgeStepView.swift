@@ -81,7 +81,7 @@ struct AgeStepView: View {
             }
             if rejected {
                 Text("That's older than the age range you entered before. You can change it once a year.")
-                    .font(.footnote.weight(.semibold))
+                    .font(.legibleFootnote.weight(.semibold))
                     .foregroundStyle(Palette.textPrimary)
                     .fixedSize(horizontal: false, vertical: true)
             }
@@ -200,7 +200,7 @@ struct AgeStepView: View {
             }
             Spacer()
             Image(systemName: "chevron.up.chevron.down")
-                .font(.footnote.weight(.semibold))
+                .font(.legibleFootnote.weight(.semibold))
                 .foregroundStyle(Palette.textSecondary)
         }
         .font(.body.weight(.semibold))

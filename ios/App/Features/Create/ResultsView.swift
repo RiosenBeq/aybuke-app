@@ -148,10 +148,10 @@ struct ResultsView: View {
             HStack(spacing: 4) {
                 Label("Saved to My Works", systemImage: "checkmark.circle.fill")
                 Image(systemName: "chevron.right")
-                    .font(.caption2.weight(.bold))
+                    .font(.legibleCaption2.weight(.bold))
                     .accessibilityHidden(true)
             }
-            .font(.footnote.weight(.semibold))
+            .font(.legibleFootnote.weight(.semibold))
             .foregroundStyle(Palette.textSecondary)
             .padding(.horizontal, 12)
             .frame(minHeight: 44)

@@ -379,7 +379,7 @@ private struct SeamGuides: View {
             }
             ForEach(1...max(count, 1), id: \.self) { number in
                 Text(verbatim: "\(number)/\(count)")
-                    .font(.caption2.weight(.bold).monospacedDigit())
+                    .font(.legibleCaption2.weight(.bold).monospacedDigit())
                     .foregroundStyle(Color.white)
                     .padding(.horizontal, 6)
                     .padding(.vertical, 3)

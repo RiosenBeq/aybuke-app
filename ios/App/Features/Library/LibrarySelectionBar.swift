@@ -240,7 +240,7 @@ private struct BarButton: View {
                     EmptyView()
                 }
             }
-            .font(.caption2.weight(.semibold))
+            .font(.legibleCaption2.weight(.semibold))
             .foregroundStyle(isDestructive ? Palette.danger : Palette.textPrimary)
             .opacity(isEnabled ? 1 : 0.35)
             .padding(.horizontal, 4)

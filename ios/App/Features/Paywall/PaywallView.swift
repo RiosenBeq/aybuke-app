@@ -233,14 +233,14 @@ struct PaywallView: View {
             }
             if purchases.yearly != nil || purchases.monthly != nil || isScreenshotPreview {
                 Label("No weekly plans, ever", systemImage: "heart.fill")
-                    .font(.footnote.weight(.semibold))
+                    .font(.legibleFootnote.weight(.semibold))
                     .foregroundStyle(Palette.textSecondary)
                     .multilineTextAlignment(.center)
                     .padding(.top, 2)
                 // What she keeps without paying, next to what she'd pay for.
                 Label("Always free: every on-device tool and \(app.credits.policy.freeDailyAllowance) AI credits a day.",
                       systemImage: "gift.fill")
-                    .font(.footnote.weight(.semibold))
+                    .font(.legibleFootnote.weight(.semibold))
                     .foregroundStyle(Palette.textSecondary)
                     .multilineTextAlignment(.center)
             }
@@ -388,7 +388,7 @@ struct PaywallView: View {
                 Button("Terms") { legalDocument = .terms }
                 Button("Privacy") { legalDocument = .privacy }
             }
-            .font(.footnote.weight(.semibold))
+            .font(.legibleFootnote.weight(.semibold))
             .foregroundStyle(Palette.textSecondary)
 
             Text("Payment is charged to your Apple Account. Subscriptions renew automatically at the price shown unless cancelled at least 24 hours before the end of the current period. Manage or cancel anytime in Settings › Apple Account › Subscriptions.")
@@ -570,12 +570,12 @@ struct StoreStatusView: View {
         VStack(spacing: 10) {
             if purchases.isClosedForPreview {
                 Label("Purchases open when \(Brand.name) launches. This is a preview build.", systemImage: "testtube.2")
-                    .font(.footnote.weight(.semibold))
+                    .font(.legibleFootnote.weight(.semibold))
                     .foregroundStyle(Palette.textSecondary)
                     .multilineTextAlignment(.center)
             } else if !purchases.canMakePayments {
                 Label("Purchases are turned off on this device.", systemImage: "lock.fill")
-                    .font(.footnote.weight(.semibold))
+                    .font(.legibleFootnote.weight(.semibold))
                     .foregroundStyle(Palette.textSecondary)
                     .multilineTextAlignment(.center)
             }
@@ -596,7 +596,7 @@ struct StoreStatusView: View {
                 Button("Try again") {
                     Task { await purchases.loadProducts() }
                 }
-                .font(.footnote.weight(.semibold))
+                .font(.legibleFootnote.weight(.semibold))
                 .foregroundStyle(Palette.textPrimary)
             case .loaded:
                 EmptyView()
@@ -742,7 +742,7 @@ private struct TrialTimeline: View {
             HStack(alignment: .top, spacing: 12) {
                 VStack(spacing: 0) {
                     Image(systemName: symbol)
-                        .font(.caption.weight(.bold))
+                        .font(.legibleCaption.weight(.bold))
                         .foregroundStyle(Palette.onPrimary)
                         .frame(width: 28, height: 28)
                         .background(Palette.primary, in: Circle())
@@ -857,7 +857,7 @@ struct CreditPackList: View {
                 Group {
                     if isPending {
                         Text("Waiting for approval")
-                            .font(.footnote.weight(.semibold))
+                            .font(.legibleFootnote.weight(.semibold))
                     } else {
                         Text(product.displayPrice)
                             .font(.headline)

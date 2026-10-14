@@ -364,7 +364,7 @@ private struct GlowTipStyle: TipViewStyle {
                 configuration.tip.invalidate(reason: .tipClosed)
             } label: {
                 Image(systemName: "xmark")
-                    .font(.caption.weight(.bold))
+                    .font(.legibleCaption.weight(.bold))
                     .foregroundStyle(Palette.textSecondary)
                     .frame(width: 32, height: 32)
                     .contentShape(Rectangle())

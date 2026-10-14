@@ -56,8 +56,12 @@ struct RetroCamReviewView: View {
         } message: {
             Text("Save it first if you want to keep it.")
         }
-        // File › Save (⌘S) on the Mac saves the shot on screen.
-        .onAppear { app.saveActiveCover = { save() } }
+        // File › Save (⌘S) on the Mac saves the shot on screen, and File ›
+        // Close (⌘W) runs the Close button, which asks before an unsaved shot goes.
+        .onAppear {
+            app.saveActiveCover = { save() }
+            app.closeActiveCover = { requestClose() }
+        }
         .onDisappear { app.saveActiveCover = nil }
         #if DEBUG
         .onAppear(perform: applyScreenshotOptions)
@@ -81,9 +85,7 @@ struct RetroCamReviewView: View {
             }
             .buttonStyle(.pressable)
             Spacer()
-            Button {
-                if isSaved { onClose() } else { showDiscardAlert = true }
-            } label: {
+            Button(action: requestClose) {
                 Image(systemName: "xmark")
                     .font(.system(size: 17, weight: .semibold))
                     .foregroundStyle(.white)
@@ -270,6 +272,11 @@ struct RetroCamReviewView: View {
     private var libraryTitle: String {
         guard isBooth else { return shot.effect.title }
         return layout == .strip ? String(localized: "Booth strip") : String(localized: "Booth grid")
+    }
+
+    /// The Close button and ⌘W: an unsaved shot asks first.
+    private func requestClose() {
+        if isSaved { onClose() } else { showDiscardAlert = true }
     }
 
     private func save() {

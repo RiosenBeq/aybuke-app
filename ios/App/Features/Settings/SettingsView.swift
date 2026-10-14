@@ -325,7 +325,7 @@ struct SettingsView: View {
                     Text(currentLanguage)
                         .foregroundStyle(Palette.textSecondary)
                     Image(systemName: "arrow.up.forward")
-                        .font(.caption.weight(.semibold))
+                        .font(.legibleCaption.weight(.semibold))
                         .foregroundStyle(Palette.textTertiary)
                 }
             }
@@ -511,20 +511,20 @@ struct AcknowledgementsView: View {
                 Text("Poppins")
                     .font(.headline)
                 Text(fontLicense)
-                    .font(.caption.monospaced())
+                    .font(.legibleCaption.monospaced())
                     .foregroundStyle(Palette.textSecondary)
                 Text(verbatim: "RevenueCat")
                     .font(.headline)
                     .padding(.top, 12)
                 Text(revenueCatLicense)
-                    .font(.caption.monospaced())
+                    .font(.legibleCaption.monospaced())
                     .foregroundStyle(Palette.textSecondary)
                 if !Platform.isMac {
                     Text(verbatim: "Google Mobile Ads SDK, Google User Messaging Platform SDK")
                         .font(.headline)
                         .padding(.top, 12)
                     Text(verbatim: "Copyright Google LLC. The SDKs are used under Google's terms for them; their Swift Package Manager distributions are licensed under the Apache License, Version 2.0.")
-                        .font(.caption.monospaced())
+                        .font(.legibleCaption.monospaced())
                         .foregroundStyle(Palette.textSecondary)
                 }
             }

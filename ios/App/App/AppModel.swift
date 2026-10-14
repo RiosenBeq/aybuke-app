@@ -111,8 +111,9 @@ final class AppModel {
     /// The save of the cover on screen (editor, collage, video editor, Retro
     /// Cam review), for File › Save (⌘S). Each registers it while it's up.
     var saveActiveCover: (() -> Void)?
-    /// The close of a cover that asks before it discards work (collage, video
-    /// editor), for File › Close (⌘W). Covers without one are closed with Esc.
+    /// The close of the cover on screen (editor, collage, video editor, Retro
+    /// Cam and its shot review), for File › Close (⌘W); each runs its own close
+    /// button's path. Unset while one of the app's sheets is over the editor.
     var closeActiveCover: (() -> Void)?
     /// File › New Creation asks Create to put the cursor in its prompt.
     var wantsPromptFocus = false
@@ -1479,8 +1480,10 @@ final class AppModel {
         "too_large": String(localized: "That photo is too large. Try a smaller one."),
         "image_invalid": String(localized: "This photo couldn't be read. Try another one."),
         "prompt_too_long": String(localized: "That's a long description. Try a shorter one."),
-        // The optional photo check (XAI_SAFETY_MODEL on the server).
+        // The optional photo check (XAI_SAFETY_MODEL on the server). When it
+        // can't run, nothing has been made yet, so it isn't the output check's sentence.
         "input_blocked": String(localized: "This photo can't be edited. Try another one. Your credit was refunded."),
+        "photo_check_failed": String(localized: "We couldn't check this photo just now, so nothing was made and no credit was used. Try again in a moment."),
         "content_blocked": String(localized: "This was blocked by our safety filters. Your credit was refunded."),
         // The output check fails closed: no verdict, no result.
         "safety_check_failed": String(localized: "Our safety check couldn't run, so this result wasn't shown. Your credit was refunded."),
