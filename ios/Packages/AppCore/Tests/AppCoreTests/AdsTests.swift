@@ -170,6 +170,21 @@ final class AdsTests: XCTestCase {
         XCTAssertThrowsError(try ResponseDecoder.decodeAdRewardToken(data: Data("{}".utf8), statusCode: 201))
     }
 
+    func testDailyCapDecodesWhenNullOrNumber() throws {
+        // The server sends null when its policy call failed: the app keeps its last cap.
+        let nullToken = try ResponseDecoder.decodeAdRewardToken(data: Data(#"{"token":"t","remaining_today":1,"daily_cap":null}"#.utf8),
+                                                                statusCode: 201)
+        XCTAssertNil(nullToken.dailyCap)
+        let nullStatus = try ResponseDecoder.decodeAdRewardStatus(data: Data(#"{"remaining_today":1,"daily_cap":null}"#.utf8),
+                                                                  statusCode: 200)
+        XCTAssertNil(nullStatus.dailyCap)
+        let numberStatus = try ResponseDecoder.decodeAdRewardStatus(data: Data(#"{"remaining_today":1,"daily_cap":3}"#.utf8),
+                                                                    statusCode: 200)
+        XCTAssertEqual(numberStatus.dailyCap, 3)
+        let missing = try ResponseDecoder.decodeAdRewardToken(data: Data(#"{"token":"t","remaining_today":1}"#.utf8), statusCode: 201)
+        XCTAssertNil(missing.dailyCap)
+    }
+
     func testMapsAdRewardErrors() {
         func error(_ status: Int, _ body: String) -> AdRewardError {
             ResponseDecoder.adRewardError(from: Data(body.utf8), statusCode: status)

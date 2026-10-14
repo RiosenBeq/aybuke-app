@@ -154,6 +154,32 @@ final class CreditsTests: XCTestCase {
         atGrant.refresh(now: date(4, 1), isPro: false, policy: policy, calendar: calendar)
         XCTAssertNil(atGrant.nextSubscriptionGrant(calendar: calendar), "none after Pro ends")
     }
+
+    func testTrialGrantsItsCreditsOnceThenTheFirstPaidPeriodAddsAMonth() {
+        var wallet = CreditWallet.fresh(now: date(10, 11), policy: policy)
+        wallet.refresh(now: date(10, 11, 10), isPro: true, isTrial: true, policy: policy, calendar: calendar)
+        XCTAssertEqual(wallet.subscription, policy.trialCredits)
+        XCTAssertTrue(wallet.trialGranted)
+        XCTAssertNil(wallet.nextSubscriptionGrant(calendar: calendar), "the trial's end isn't known here")
+
+        wallet.refresh(now: date(10, 12), isPro: true, isTrial: true, policy: policy, calendar: calendar)
+        XCTAssertEqual(wallet.subscription, policy.trialCredits, "a refresh in the trial grants nothing")
+
+        wallet.refresh(now: date(10, 18), isPro: true, isTrial: false, policy: policy, calendar: calendar)
+        XCTAssertEqual(wallet.subscription, policy.trialCredits + policy.proMonthlyAllowance, "the first paid period adds a month")
+        XCTAssertNotNil(wallet.nextSubscriptionGrant(calendar: calendar))
+
+        wallet.refresh(now: date(10, 19), isPro: true, isTrial: false, policy: policy, calendar: calendar)
+        XCTAssertEqual(wallet.subscription, policy.trialCredits + policy.proMonthlyAllowance, "a second refresh grants nothing")
+    }
+
+    func testWalletsSavedBeforeTrialFieldsStillDecode() throws {
+        let legacy = Data(#"{"daily":2,"dailyPeriodStart":0,"subscription":5,"purchased":3}"#.utf8)
+        let wallet = try JSONDecoder().decode(CreditWallet.self, from: legacy)
+        XCTAssertEqual(wallet.balance, 10)
+        XCTAssertFalse(wallet.trialGranted)
+        XCTAssertFalse(wallet.subscriptionIsTrial)
+    }
 }
 
 final class SizingTests: XCTestCase {

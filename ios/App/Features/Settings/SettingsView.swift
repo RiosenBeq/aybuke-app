@@ -160,7 +160,7 @@ struct SettingsView: View {
                         }
                         return
                     }
-                    app.credits.refresh(isPro: app.purchases.isPro)
+                    app.credits.refresh(isPro: app.purchases.isPro, isTrial: app.purchases.trial != nil)
                     app.showToast(app.purchases.isPro ? "Purchases restored ✦" : "No active subscription found.", style: app.purchases.isPro ? .success : .info)
                 }
             } label: {

@@ -289,7 +289,7 @@ final class AppModel {
         purchases.onProStatusChange = { [weak self] isPro in
             guard let self else { return }
             ads.proStatusChanged(isPro: isPro)
-            credits.refresh(isPro: isPro)
+            credits.refresh(isPro: isPro, isTrial: purchases.trial != nil)
             syncWidgets()
             Task { await self.refreshServerBalance() }
         }
@@ -419,7 +419,7 @@ final class AppModel {
         await refreshAccount()
         watchAppleCredentialRevocation()
         await purchases.refreshEntitlements()
-        credits.refresh(isPro: purchases.isPro)
+        credits.refresh(isPro: purchases.isPro, isTrial: purchases.trial != nil)
         await refreshServerBalance()
         syncWidgets()
         syncReminders()
@@ -577,7 +577,7 @@ final class AppModel {
         credits.resetAll()
         cloudPause = nil
         await appTransactions.reset()
-        credits.refresh(isPro: purchases.isPro)
+        credits.refresh(isPro: purchases.isPro, isTrial: purchases.trial != nil)
         deleteAllCreations() // also resets the widgets, after the credits
         deferredSaves = []
         // A library moved aside after damage still holds titles and prompts.
@@ -636,7 +636,7 @@ final class AppModel {
         await refreshAccount()
         if let userID = await remote.existingUserID() { await RevenueCatBridge.identify(userID.uuidString) }
         await purchases.refreshEntitlements()
-        credits.refresh(isPro: purchases.isPro)
+        credits.refresh(isPro: purchases.isPro, isTrial: purchases.trial != nil)
         await refreshServerBalance()
         syncWidgets()
         Haptics.success()
@@ -856,7 +856,7 @@ final class AppModel {
             }
             return
         }
-        credits.refresh(isPro: purchases.isPro)
+        credits.refresh(isPro: purchases.isPro, isTrial: purchases.trial != nil)
         guard credits.canAfford(operation, outputs: outputs) else {
             if purchases.isPro {
                 outOfCredits = OutOfCreditsRequest(needed: credits.cost(of: operation, outputs: outputs), available: credits.balance)
@@ -1323,7 +1323,8 @@ final class AppModel {
             return
         }
         Haptics.error()
-        registerSetback()
+        // Only a job that failed is a setback: a rest, a limit or a consent prompt isn't.
+        if Self.isFailedJob(error) { registerSetback() }
         // Resting or off: say so kindly; never the paywall.
         if case AIServiceError.cooldown(let retryAfter) = error {
             let pause = CloudPause.cooldown(until: Date().addingTimeInterval(retryAfter ?? 24 * 3600))
@@ -1357,6 +1358,13 @@ final class AppModel {
             return
         }
         showToast(verbatim: Self.localizedMessage(for: error), style: .error)
+    }
+
+    /// A job the server ran and failed (its error code, or the content check on it).
+    private static func isFailedJob(_ error: Error) -> Bool {
+        if case AIServiceError.server = error { return true }
+        if case AIServiceError.contentBlocked = error { return true }
+        return false
     }
 
     /// Why cloud AI isn't available right now, never as blame (the members

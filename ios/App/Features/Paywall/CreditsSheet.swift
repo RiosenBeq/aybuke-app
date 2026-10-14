@@ -86,7 +86,7 @@ struct CreditsSheet: View {
         }
         .task {
             // The day may have turned since the pill last counted.
-            app.credits.refresh(isPro: isPro)
+            app.credits.refresh(isPro: isPro, isTrial: app.purchases.trial != nil)
             await app.refreshServerBalance()
         }
         .sheet(isPresented: $showsPacks) {

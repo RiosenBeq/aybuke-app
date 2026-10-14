@@ -123,13 +123,39 @@ public struct CreditWallet: Equatable, Sendable, Codable {
     /// Start of the current subscription month; `nil` while not subscribed.
     public private(set) var subscriptionPeriodStart: Date?
     public private(set) var purchased: Int
+    /// The trial's credits come once, like the server's `trial_granted`.
+    public private(set) var trialGranted: Bool
+    /// The current subscription period is the trial week: the first paid
+    /// period then adds a full month, as the server does.
+    public private(set) var subscriptionIsTrial: Bool
 
-    public init(daily: Int, dailyPeriodStart: Date, subscription: Int = 0, subscriptionPeriodStart: Date? = nil, purchased: Int = 0) {
+    public init(daily: Int, dailyPeriodStart: Date, subscription: Int = 0, subscriptionPeriodStart: Date? = nil, purchased: Int = 0,
+                trialGranted: Bool = false, subscriptionIsTrial: Bool = false) {
         self.daily = daily
         self.dailyPeriodStart = dailyPeriodStart
         self.subscription = subscription
         self.subscriptionPeriodStart = subscriptionPeriodStart
         self.purchased = purchased
+        self.trialGranted = trialGranted
+        self.subscriptionIsTrial = subscriptionIsTrial
+    }
+
+    /// Wallets saved before the trial fields existed keep their balance.
+    enum CodingKeys: String, CodingKey {
+        case daily, dailyPeriodStart, subscription, subscriptionPeriodStart, purchased, trialGranted, subscriptionIsTrial
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.init(
+            daily: try container.decode(Int.self, forKey: .daily),
+            dailyPeriodStart: try container.decode(Date.self, forKey: .dailyPeriodStart),
+            subscription: try container.decode(Int.self, forKey: .subscription),
+            subscriptionPeriodStart: try container.decodeIfPresent(Date.self, forKey: .subscriptionPeriodStart),
+            purchased: try container.decode(Int.self, forKey: .purchased),
+            trialGranted: try container.decodeIfPresent(Bool.self, forKey: .trialGranted) ?? false,
+            subscriptionIsTrial: try container.decodeIfPresent(Bool.self, forKey: .subscriptionIsTrial) ?? false
+        )
     }
 
     public static func fresh(now: Date, policy: CreditPolicy) -> CreditWallet {
@@ -140,8 +166,9 @@ public struct CreditWallet: Equatable, Sendable, Codable {
 
     public var isSubscribed: Bool { subscriptionPeriodStart != nil }
 
-    /// Applies refills and expiries for the given moment.
-    public mutating func refresh(now: Date, isPro: Bool, policy: CreditPolicy, calendar: Calendar = .current) {
+    /// Applies refills and expiries for the given moment. `isTrial`: the
+    /// subscription is in its free trial week.
+    public mutating func refresh(now: Date, isPro: Bool, isTrial: Bool = false, policy: CreditPolicy, calendar: Calendar = .current) {
         if !calendar.isDate(now, inSameDayAs: dailyPeriodStart) {
             // Daily credits are a free-tier perk and never accumulate.
             daily = isPro ? 0 : policy.freeDailyAllowance
@@ -149,20 +176,30 @@ public struct CreditWallet: Equatable, Sendable, Codable {
         }
 
         if isPro {
-            if let start = subscriptionPeriodStart {
+            if isTrial {
+                if !trialGranted {
+                    subscription = min(subscription + policy.trialCredits, policy.proRolloverCap)
+                    trialGranted = true
+                    subscriptionIsTrial = true
+                    subscriptionPeriodStart = now
+                }
+            } else if let start = subscriptionPeriodStart, !subscriptionIsTrial {
                 let elapsedMonths = calendar.dateComponents([.month], from: start, to: now).month ?? 0
                 if elapsedMonths > 0 {
                     subscription = min(subscription + elapsedMonths * policy.proMonthlyAllowance, policy.proRolloverCap)
                     subscriptionPeriodStart = calendar.date(byAdding: .month, value: elapsedMonths, to: start) ?? now
                 }
             } else {
+                // The first paid period, also right after a trial: a full month.
                 subscription = min(subscription + policy.proMonthlyAllowance, policy.proRolloverCap)
                 subscriptionPeriodStart = now
+                subscriptionIsTrial = false
             }
         } else if subscriptionPeriodStart != nil {
             // Subscription credits end with the subscription; purchased packs stay.
             subscription = 0
             subscriptionPeriodStart = nil
+            subscriptionIsTrial = false
             daily = policy.freeDailyAllowance
             dailyPeriodStart = now
         }
@@ -208,9 +245,10 @@ public struct CreditWallet: Equatable, Sendable, Codable {
     }
 
     /// The first moment `refresh` grants the next monthly Pro allowance;
-    /// nil without a subscription. Uses the same month arithmetic as `refresh`.
+    /// nil without a subscription, and during the trial (its end isn't known
+    /// here, and the first paid period is a full month, not a month from now).
     public func nextSubscriptionGrant(calendar: Calendar = .current) -> Date? {
-        guard let start = subscriptionPeriodStart else { return nil }
+        guard let start = subscriptionPeriodStart, !subscriptionIsTrial else { return nil }
         return calendar.date(byAdding: .month, value: 1, to: start)
     }
 }

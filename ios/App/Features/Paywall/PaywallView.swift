@@ -60,6 +60,7 @@ struct PaywallView: View {
                     }
                     header
                     benefits
+                    cloudPauseNote
                     plans
                     if showsTrial, let yearly = purchases.yearly {
                         TrialTimeline(days: yearly.freeTrialDays ?? 7, price: yearly.displayPrice,
@@ -163,6 +164,20 @@ struct PaywallView: View {
                 .font(.subheadline)
                 .foregroundStyle(Palette.textSecondary)
                 .multilineTextAlignment(.center)
+        }
+    }
+
+    /// Why cloud AI is off right now, as the credits sheet says it.
+    @ViewBuilder private var cloudPauseNote: some View {
+        if let pause = app.cloudPause, pause.isActive() {
+            Label {
+                Text(verbatim: app.message(for: pause))
+            } icon: {
+                Image(systemName: "moon.zzz.fill")
+            }
+            .font(.subheadline)
+            .foregroundStyle(Palette.textPrimary)
+            .fixedSize(horizontal: false, vertical: true)
         }
     }
 
@@ -391,7 +406,7 @@ struct PaywallView: View {
         do {
             let token = await app.appAccountToken()
             guard try await purchases.purchase(product, appAccountToken: token) == .purchased else { return }
-            app.credits.refresh(isPro: purchases.isPro)
+            app.credits.refresh(isPro: purchases.isPro, isTrial: purchases.trial != nil)
             // Without a reminder (notifications off), the toast names the end date.
             var unremindedTrialEnd: Date?
             if startsTrial, let trialEnd = purchases.trial?.endsAt
@@ -427,7 +442,7 @@ struct PaywallView: View {
             return
         }
         if purchases.isPro {
-            app.credits.refresh(isPro: true)
+            app.credits.refresh(isPro: true, isTrial: purchases.trial != nil)
             dismiss()
         } else {
             errorTitle = String(localized: "Nothing to restore")

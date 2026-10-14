@@ -264,7 +264,7 @@ public enum CloudPause: Equatable, Sendable {
     public static func from(_ state: BalanceState, now: Date = Date()) -> CloudPause? {
         switch state.aiStatus {
         case .cooldown:
-            return .cooldown(until: now.addingTimeInterval(TimeInterval(max(60, state.cooldownSeconds ?? 3600))))
+            return .cooldown(until: now.addingTimeInterval(TimeInterval(max(60, state.cooldownSeconds ?? 24 * 3600))))
         case .blocked:
             return .blocked
         case .ok, nil:
@@ -734,6 +734,8 @@ public enum ResponseDecoder {
             return .aiPaused(retryAfter: wait)
         case "usage_limit":
             return .usageLimit(retryAfter: wait)
+        case "rate_limited":
+            return .rateLimited(retryAfter: wait)
         case "retry_limit":
             return .retryLimit
         default:

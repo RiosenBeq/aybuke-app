@@ -32,15 +32,17 @@ final class CreditsManager {
     static let policyKey = "credits.policy.v1"
 
     init(policy: CreditPolicy = .standard, isServerAuthoritative: Bool, defaults: UserDefaults = .standard) {
-        self.policy = defaults.data(forKey: Self.policyKey).flatMap { try? JSONDecoder().decode(CreditPolicy.self, from: $0) }
+        let cached = defaults.data(forKey: Self.policyKey).flatMap { try? JSONDecoder().decode(CreditPolicy.self, from: $0) }
             ?? policy
+        self.policy = cached
         self.isServerAuthoritative = isServerAuthoritative
         self.defaults = defaults
         if let data = defaults.data(forKey: Self.storageKey),
            let saved = try? JSONDecoder().decode(CreditWallet.self, from: data) {
             wallet = saved
         } else {
-            wallet = .fresh(now: Date(), policy: policy)
+            // The server's last policy, not the bundled one, after "Delete my data".
+            wallet = .fresh(now: Date(), policy: cached)
         }
     }
 
@@ -74,8 +76,9 @@ final class CreditsManager {
         policy.cost(of: operation, outputs: outputs)
     }
 
-    func refresh(isPro: Bool, now: Date = Date()) {
-        wallet.refresh(now: now, isPro: isPro, policy: policy)
+    /// `isTrial`: the subscription is in its free trial week (`PurchaseManager.trial`).
+    func refresh(isPro: Bool, isTrial: Bool = false, now: Date = Date()) {
+        wallet.refresh(now: now, isPro: isPro, isTrial: isTrial, policy: policy)
         persist()
     }
 

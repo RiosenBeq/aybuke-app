@@ -108,6 +108,12 @@ final class BackendAPITests: XCTestCase {
         XCTAssertThrowsError(try ResponseDecoder.decodeGeneration(data: generic, statusCode: 200)) { error in
             XCTAssertEqual(error as? AIServiceError, .server(code: "job_failed", message: "This creation failed. Your credit was refunded."))
         }
+        // The photo check (ai-image) fails with this code; the app's copy is keyed on it.
+        let photo = Data(#"{"job_id":"j1","status":"failed","error":{"code":"safety_check_failed","message":"We couldn't check this photo, so we didn't edit it. Your credit was refunded."}}"#.utf8)
+        XCTAssertThrowsError(try ResponseDecoder.decodeGeneration(data: photo, statusCode: 200)) { error in
+            XCTAssertEqual(error as? AIServiceError, .server(code: "safety_check_failed",
+                                                             message: "We couldn't check this photo, so we didn't edit it. Your credit was refunded."))
+        }
     }
 
     func testCancelledJobThrowsCancellation() {
@@ -148,6 +154,14 @@ final class BackendAPITests: XCTestCase {
             data: Data(#"{"credits_remaining": 0, "free_credits": "unverified", "ai_status": "blocked"}"#.utf8), statusCode: 200)
         XCTAssertEqual(unverified.freeCredits, .unverified)
         XCTAssertEqual(CloudPause.from(unverified), .blocked)
+    }
+
+    func testCooldownWithoutSecondsRestsADay() throws {
+        let now = Date(timeIntervalSince1970: 1_000_000)
+        let state = try ResponseDecoder.decodeBalanceState(
+            data: Data(#"{"credits_remaining": 0, "ai_status": "cooldown"}"#.utf8), statusCode: 200)
+        XCTAssertNil(state.cooldownSeconds)
+        XCTAssertEqual(CloudPause.from(state, now: now), .cooldown(until: now.addingTimeInterval(24 * 3600)))
     }
 
     func testJobRequests() throws {
@@ -281,6 +295,8 @@ final class BackendAPITests: XCTestCase {
         XCTAssertEqual(error(428, #"{"error":{"code":"app_transaction_invalid","message":"x"}}"#), .appStoreCheckFailed)
         XCTAssertEqual(error(409, #"{"error":{"code":"retry_limit","message":"x"}}"#), .retryLimit)
         XCTAssertEqual(error(429, #"{"error":{"code":"rate_limited","message":"x","retry_after":20}}"#), .rateLimited(retryAfter: 20))
+        // The code decides, not the status: a proxy's 503 with the same code is still a rate limit.
+        XCTAssertEqual(error(503, #"{"error":{"code":"rate_limited","message":"x","retry_after":20}}"#), .rateLimited(retryAfter: 20))
         XCTAssertEqual(error(402, #"{"error":{"code":"pro_required","message":"x"}}"#), .insufficientCredits(remaining: nil),
                        "unchanged")
         let errors: [AIServiceError] = [.cooldown(retryAfter: nil), .cloudBlocked, .aiPaused(retryAfter: nil),
