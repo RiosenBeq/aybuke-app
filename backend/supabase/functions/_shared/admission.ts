@@ -24,9 +24,9 @@ export const ADMISSION_MESSAGES: Record<string, string> = {
   retry_unavailable: "This result can't be retried for free anymore.",
   retry_limit: "You've used today's free retries.",
   app_transaction_required:
-    "We couldn't confirm this copy of Glowlit with the App Store, so free credits aren't available right now.",
+    "We couldn't confirm your download with the App Store, so free credits aren't available right now.",
   app_transaction_invalid:
-    "We couldn't confirm this copy of Glowlit with the App Store, so free credits aren't available right now.",
+    "We couldn't confirm your download with the App Store, so free credits aren't available right now.",
   insufficient_credits: "You're out of credits.",
 };
 

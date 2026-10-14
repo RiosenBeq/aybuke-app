@@ -458,6 +458,8 @@ final class EditorViewModel {
     /// retry it had already started.
     private func endsFreeRetry(_ error: Error, app: AppModel) -> Bool {
         if case AIServiceError.server(code: "retry_unavailable", _) = error { return true }
+        // Today's free retries are used (a few a day, still one per result).
+        if case AIServiceError.retryLimit = error { return true }
         return AppModel.isCancellation(error) && app.config.backend != nil
     }
 

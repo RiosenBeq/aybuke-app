@@ -6,7 +6,8 @@ import AppCore
 /// 13, on the Mac or in preview builds.
 ///
 /// - **Rewarded** ("Watch a short ad · +1 credit"): offered only when she's out
-///   of credits, at most three a day. The credit comes from the server once
+///   of credits, at most two a day (per user and per App Store install, on
+///   the server). The credit comes from the server once
 ///   AdMob confirms the ad (`functions/v1/ad-reward`); the app only shows the
 ///   ad with a single-use token, and polls until the credit lands.
 /// - **Interstitial**: may follow a finished save or share at a natural break

@@ -105,6 +105,17 @@ begin
 end $$;
 revoke all on function private.touch_install(uuid, text, text, text) from public;
 
+-- The most free daily credits an install can hold today: the allowance
+-- (20261021100000 adds today's rewarded-ad credits). Refunds never go above it.
+create function private.daily_ceiling(p_key text)
+returns int
+language sql stable
+set search_path = ''
+as $$
+  select p.free_daily from public.credit_policy() p
+$$;
+revoke all on function private.daily_ceiling(text) from public;
+
 -- Locks the install and refills its free credits on a new UTC day. They
 -- never accumulate.
 create function private.refresh_install(p_key text)
@@ -358,7 +369,9 @@ begin
     on conflict (kind, source_ref) where source_ref is not null do nothing;
   if found then
     if h.daily <> 0 and h.install_key is not null then
-      update private.app_installs set daily = least(daily - h.daily, pol.free_daily) where key = h.install_key;
+      update private.app_installs
+         set daily = least(daily - h.daily, private.daily_ceiling(h.install_key))
+       where key = h.install_key;
     end if;
     if h.subscription <> 0 then
       -- Holds from before this migration name no subscription: the newest one.

@@ -100,7 +100,9 @@ export async function verifyTransaction(jws: string): Promise<JWSTransactionDeco
  * introductory offer, which on the yearly plan is the trial (the monthly
  * plan's introductory offer is the paid $1.99 month).
  */
-export function isFreeTrial(transaction: Pick<JWSTransactionDecodedPayload, "offerType" | "offerDiscountType" | "productId">): boolean {
+export function isFreeTrial(
+  transaction: Pick<JWSTransactionDecodedPayload, "offerType" | "offerDiscountType" | "productId">,
+): boolean {
   if (transaction.offerDiscountType) return transaction.offerDiscountType === OfferDiscountType.FREE_TRIAL;
   return transaction.offerType === OfferType.INTRODUCTORY_OFFER && transaction.productId === YEARLY_PRODUCT;
 }

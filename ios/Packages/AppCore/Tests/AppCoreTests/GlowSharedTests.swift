@@ -84,16 +84,21 @@ final class GlowSharedTests: XCTestCase {
         let free = GlowWidgetSnapshot(credits: 2, isPro: false, nextRefill: nil, latestTitle: nil, creationsCount: 0,
                                       daily: 2, monthly: 0, packs: 0)
         XCTAssertEqual(free.balanceKind, .daily)
-        XCTAssertEqual(free.gaugeRange(), 0...3)
+        XCTAssertEqual(free.gaugeRange(), 0...2)
         let withPack = GlowWidgetSnapshot(credits: 32, isPro: false, nextRefill: nil, latestTitle: nil, creationsCount: 0,
                                           daily: 2, monthly: 0, packs: 30)
         XCTAssertEqual(withPack.balanceKind, .mixed)
-        XCTAssertEqual(withPack.gaugeValue(), 3)
-        let pro = GlowWidgetSnapshot(credits: 180, isPro: true, nextRefill: nil, latestTitle: nil, creationsCount: 0,
-                                     daily: 0, monthly: 180, packs: 0)
+        XCTAssertEqual(withPack.gaugeValue(), 2)
+        let pro = GlowWidgetSnapshot(credits: 150, isPro: true, nextRefill: nil, latestTitle: nil, creationsCount: 0,
+                                     daily: 0, monthly: 150, packs: 0)
         XCTAssertEqual(pro.balanceKind, .monthly)
-        XCTAssertEqual(pro.gaugeRange(), 0...100)
-        XCTAssertEqual(pro.gaugeValue(), 100, "rollover can pass the monthly allowance")
+        XCTAssertEqual(pro.gaugeRange(), 0...80)
+        XCTAssertEqual(pro.gaugeValue(), 80, "rollover can pass the monthly allowance")
+        // The allowance the server last said wins over the bundled policy.
+        var told = free
+        told.allowance = 3
+        XCTAssertEqual(told.gaugeRange(), 0...3)
+        XCTAssertEqual(GlowWidgetSnapshot.placeholder.credits, CreditPolicy.standard.freeDailyAllowance)
     }
 
     func testShortenedKeepsWholeWords() {

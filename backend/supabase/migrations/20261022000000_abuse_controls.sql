@@ -418,6 +418,7 @@ begin
     'free_credits', case when f.is_pro then 'pro' when v_key is null then 'unverified' else 'ok' end,
     'ai_status', case when v_blocked then 'blocked' when v_until is not null then 'cooldown' else 'ok' end,
     'cooldown_until', v_until,
+    'cooldown_seconds', case when v_until is not null then greatest(1, ceil(extract(epoch from (v_until - now())))::int) end,
     'policy', jsonb_build_object(
       'free_daily', pol.free_daily,
       'pro_monthly', pol.pro_monthly,
@@ -774,6 +775,8 @@ begin
     'reports', jsonb_build_object(
       'new', (select count(*) from public.reports where created_at >= v_from and created_at < v_to),
       'open', (select count(*) from public.reports where status = 'open')),
+    'ad_rewards', (select coalesce(jsonb_object_agg(status, n), '{}'::jsonb) from (
+        select status, count(*) as n from public.ad_rewards where reward_day = p_day group by status) a),
     'installs_seen', (select count(*) from private.app_installs where last_seen_at >= v_from and last_seen_at < v_to),
     'top_installs', (select coalesce(jsonb_agg(t), '[]'::jsonb) from (
         select left(install_key, 12) as install, count(*) as jobs from public.jobs

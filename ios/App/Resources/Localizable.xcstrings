@@ -4,6 +4,1772 @@
     "" : {
 
     },
+    "%lld days free with %lld credits, then %@/year with %lld credits every month" : {
+      "comment" : "Under the paywall's button for the yearly plan's free trial: trial days, the trial's credits, the yearly price (shown bold: it must stay the most prominent price), Pro's monthly credits.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%#@days@ gratis mit %#@trial@, danach %3$@/Jahr mit %#@monthly@ jeden Monat"
+          },
+          "substitutions" : {
+            "days" : {
+              "argNum" : 1,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg Tag"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg Tage"
+                    }
+                  }
+                }
+              }
+            },
+            "monthly" : {
+              "argNum" : 4,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg Credit"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg Credits"
+                    }
+                  }
+                }
+              }
+            },
+            "trial" : {
+              "argNum" : 2,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg Credit"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg Credits"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%#@days@ free with %#@trial@, then %3$@/year with %#@monthly@ every month"
+          },
+          "substitutions" : {
+            "days" : {
+              "argNum" : 1,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg day"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg days"
+                    }
+                  }
+                }
+              }
+            },
+            "monthly" : {
+              "argNum" : 4,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg credit"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg credits"
+                    }
+                  }
+                }
+              }
+            },
+            "trial" : {
+              "argNum" : 2,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg credit"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg credits"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%#@days@ gratis con %#@trial@, luego %3$@/año con %#@monthly@ cada mes"
+          },
+          "substitutions" : {
+            "days" : {
+              "argNum" : 1,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg día"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg días"
+                    }
+                  }
+                }
+              }
+            },
+            "monthly" : {
+              "argNum" : 4,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg crédito"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg créditos"
+                    }
+                  }
+                }
+              }
+            },
+            "trial" : {
+              "argNum" : 2,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg crédito"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg créditos"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%#@days@ avec %#@trial@, puis %3$@/an avec %#@monthly@ par mois"
+          },
+          "substitutions" : {
+            "days" : {
+              "argNum" : 1,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg jour gratuit"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg jours gratuits"
+                    }
+                  }
+                }
+              }
+            },
+            "monthly" : {
+              "argNum" : 4,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg crédit"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg crédits"
+                    }
+                  }
+                }
+              }
+            },
+            "trial" : {
+              "argNum" : 2,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg crédit"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg crédits"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gratis %1$lld hari dengan %2$lld kredit, lalu %3$@/tahun dengan %4$lld kredit setiap bulan"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%#@days@ gratis con %#@trial@, poi %3$@/anno con %#@monthly@ al mese"
+          },
+          "substitutions" : {
+            "days" : {
+              "argNum" : 1,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg giorno"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg giorni"
+                    }
+                  }
+                }
+              }
+            },
+            "monthly" : {
+              "argNum" : 4,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg credito"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg crediti"
+                    }
+                  }
+                }
+              }
+            },
+            "trial" : {
+              "argNum" : 2,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg credito"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg crediti"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld日間無料（%2$lldクレジット付き）、以降は年額%3$@で毎月%4$lldクレジット"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld일 무료(%2$lld크레딧 포함), 이후 연 %3$@에 매달 %4$lld크레딧"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%#@days@ grátis com %#@trial@, depois %3$@/ano com %#@monthly@ por mês"
+          },
+          "substitutions" : {
+            "days" : {
+              "argNum" : 1,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg dia"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg dias"
+                    }
+                  }
+                }
+              }
+            },
+            "monthly" : {
+              "argNum" : 4,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg crédito"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg créditos"
+                    }
+                  }
+                }
+              }
+            },
+            "trial" : {
+              "argNum" : 2,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg crédito"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg créditos"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%#@days@ бесплатно с %#@trial@, затем %3$@/год и %#@monthly@ каждый месяц"
+          },
+          "substitutions" : {
+            "days" : {
+              "argNum" : 1,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "few" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg дня"
+                    }
+                  },
+                  "many" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg дней"
+                    }
+                  },
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg день"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg дня"
+                    }
+                  }
+                }
+              }
+            },
+            "monthly" : {
+              "argNum" : 4,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "few" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg кредита"
+                    }
+                  },
+                  "many" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg кредитов"
+                    }
+                  },
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg кредит"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg кредита"
+                    }
+                  }
+                }
+              }
+            },
+            "trial" : {
+              "argNum" : 2,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "few" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg кредитами"
+                    }
+                  },
+                  "many" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg кредитами"
+                    }
+                  },
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg кредитом"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg кредитами"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld gün ücretsiz ve %2$lld kredi, ardından %3$@/yıl ile her ay %4$lld kredi"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "前 %1$lld 天免费（含 %2$lld 个点数），之后 %3$@/年，每月 %4$lld 个点数"
+          }
+        }
+      }
+    },
+    "AI is taking a short break. Please try again later. Your free tools still work." : {
+      "comment" : "Error message",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die KI macht gerade eine kurze Pause. Bitte versuch es später noch einmal. Deine Gratis-Tools funktionieren weiter."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La IA se está tomando un breve descanso. Inténtalo de nuevo más tarde. Tus herramientas gratis siguen funcionando."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L’IA fait une courte pause. Réessaie plus tard. Tes outils gratuits fonctionnent toujours."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI sedang istirahat sebentar. Coba lagi nanti ya. Alat gratismu tetap bisa dipakai."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L’IA si sta prendendo una breve pausa. Riprova più tardi. I tuoi strumenti gratis funzionano ancora."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIは少し休憩中です。しばらくしてからもう一度お試しください。無料ツールはそのまま使えます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI가 잠깐 쉬고 있어요. 나중에 다시 시도해 주세요. 무료 도구는 계속 쓸 수 있어요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A IA está fazendo uma pausa rápida. Tente de novo mais tarde. Suas ferramentas grátis continuam funcionando."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ИИ ненадолго взял паузу. Попробуй позже. Бесплатные инструменты по-прежнему работают."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yapay zekâ kısa bir mola veriyor. Lütfen daha sonra tekrar dene. Ücretsiz araçların çalışmaya devam ediyor."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI 正在短暂休息，请稍后再试。免费工具仍可使用。"
+          }
+        }
+      }
+    },
+    "Cloud AI is taking a little break for now. Your free tools still work in the meantime." : {
+      "comment" : "Error message",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Cloud-KI macht gerade eine kleine Pause. Deine Gratis-Tools funktionieren in der Zwischenzeit weiter."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La IA en la nube se está tomando un pequeño descanso. Mientras tanto, tus herramientas gratis siguen funcionando."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L’IA dans le cloud fait une petite pause. En attendant, tes outils gratuits fonctionnent toujours."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI cloud sedang istirahat sebentar. Sementara itu, alat gratismu tetap bisa dipakai."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L’IA nel cloud si sta prendendo una piccola pausa. Nel frattempo i tuoi strumenti gratis funzionano ancora."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "クラウドAIは少しお休み中です。その間も無料ツールは使えます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "클라우드 AI가 잠시 쉬고 있어요. 그동안 무료 도구는 계속 쓸 수 있어요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A IA na nuvem está fazendo uma pausa. Enquanto isso, suas ferramentas grátis continuam funcionando."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Облачный ИИ немного отдыхает. А бесплатные инструменты пока работают как обычно."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bulut yapay zekâsı şu an kısa bir mola veriyor. Bu sırada ücretsiz araçların çalışmaya devam ediyor."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "云端 AI 正在短暂休息，这段时间免费工具仍可使用。"
+          }
+        }
+      }
+    },
+    "Cloud AI is taking a little break until %@. Effects, Retro Cam, Cut out and your other free tools still work." : {
+      "comment" : "Shown when cloud AI rests for a while (after repeated blocked requests). %@ is a time, or a date and time. Kind, never blaming: the members are teens. Retro Cam is a feature name.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Cloud-KI macht bis %@ eine kleine Pause. Effekte, Retro Cam, Freistellen und deine anderen Gratis-Tools funktionieren weiter."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La IA en la nube se toma un pequeño descanso hasta %@. Efectos, Retro Cam, Recortar y tus otras herramientas gratis siguen funcionando."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L’IA dans le cloud fait une petite pause jusqu’à %@. Effets, Retro Cam, Détourer et tes autres outils gratuits fonctionnent toujours."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI cloud sedang istirahat sebentar sampai %@. Efek, Retro Cam, Potong, dan alat gratis lainnya tetap bisa dipakai."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L’IA nel cloud si prende una piccola pausa fino a %@. Effetti, Retro Cam, Scontorna e gli altri tuoi strumenti gratis funzionano ancora."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "クラウドAIは%@まで少しお休み中です。エフェクト、Retro Cam、切り抜きなどの無料ツールはそのまま使えます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "클라우드 AI가 %@까지 잠시 쉬고 있어요. 효과, Retro Cam, 누끼 등 무료 도구는 계속 쓸 수 있어요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A IA na nuvem está fazendo uma pausa até %@. Efeitos, Retro Cam, Recortar e suas outras ferramentas grátis continuam funcionando."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Облачный ИИ немного отдыхает до %@. Эффекты, Retro Cam, «Вырезать» и другие бесплатные инструменты по-прежнему работают."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bulut yapay zekâsı kısa bir mola veriyor; %@ itibarıyla yeniden kullanabilirsin. Efektler, Retro Cam, Dekupe ve diğer ücretsiz araçların çalışmaya devam ediyor."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "云端 AI 暂时休息到 %@。特效、Retro Cam、抠图等免费工具仍可使用。"
+          }
+        }
+      }
+    },
+    "Cloud AI is turned off here for now. Effects, Retro Cam, Cut out and your other free tools still work. If you think this is a mistake, write to us at %@." : {
+      "comment" : "Shown when cloud AI is off for this install until the team lifts it. %@ is the support email address. Kind, never blaming: the members are teens.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Cloud-KI ist hier vorerst ausgeschaltet. Effekte, Retro Cam, Freistellen und deine anderen Gratis-Tools funktionieren weiter. Wenn du denkst, dass das ein Fehler ist, schreib uns an %@."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La IA en la nube está desactivada aquí por ahora. Efectos, Retro Cam, Recortar y tus otras herramientas gratis siguen funcionando. Si crees que es un error, escríbenos a %@."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L’IA dans le cloud est désactivée ici pour le moment. Effets, Retro Cam, Détourer et tes autres outils gratuits fonctionnent toujours. Si tu penses que c’est une erreur, écris-nous à %@."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI cloud dimatikan di sini untuk sementara. Efek, Retro Cam, Potong, dan alat gratis lainnya tetap bisa dipakai. Kalau menurutmu ini keliru, kirim email ke %@."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L’IA nel cloud per ora è disattivata qui. Effetti, Retro Cam, Scontorna e gli altri tuoi strumenti gratis funzionano ancora. Se pensi che sia un errore, scrivici a %@."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "現在、ここではクラウドAIをオフにしています。エフェクト、Retro Cam、切り抜きなどの無料ツールはそのまま使えます。何かの間違いだと思う場合は、%@ までご連絡ください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "지금은 여기서 클라우드 AI가 꺼져 있어요. 효과, Retro Cam, 누끼 등 무료 도구는 계속 쓸 수 있어요. 잘못된 것 같다면 %@로 연락해 주세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A IA na nuvem está desligada aqui por enquanto. Efeitos, Retro Cam, Recortar e suas outras ferramentas grátis continuam funcionando. Se você acha que é um engano, escreva para %@."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Облачный ИИ здесь пока выключен. Эффекты, Retro Cam, «Вырезать» и другие бесплатные инструменты по-прежнему работают. Если считаешь, что это ошибка, напиши нам на %@."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bulut yapay zekâsı burada şimdilik kapalı. Efektler, Retro Cam, Dekupe ve diğer ücretsiz araçların çalışmaya devam ediyor. Bir hata olduğunu düşünüyorsan %@ adresine yaz."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "云端 AI 目前在这里已关闭。特效、Retro Cam、抠图等免费工具仍可使用。如果你认为这是误会，请写信到 %@。"
+          }
+        }
+      }
+    },
+    "Cloud AI is turned off here for now. Your free tools still work. If you think this is a mistake, contact us." : {
+      "comment" : "Error message",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Cloud-KI ist hier vorerst ausgeschaltet. Deine Gratis-Tools funktionieren weiter. Wenn du denkst, dass das ein Fehler ist, schreib uns."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La IA en la nube está desactivada aquí por ahora. Tus herramientas gratis siguen funcionando. Si crees que es un error, escríbenos."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L’IA dans le cloud est désactivée ici pour le moment. Tes outils gratuits fonctionnent toujours. Si tu penses que c’est une erreur, écris-nous."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI cloud dimatikan di sini untuk sementara. Alat gratismu tetap bisa dipakai. Kalau menurutmu ini keliru, hubungi kami."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L’IA nel cloud per ora è disattivata qui. I tuoi strumenti gratis funzionano ancora. Se pensi che sia un errore, scrivici."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "現在、ここではクラウドAIをオフにしています。無料ツールはそのまま使えます。何かの間違いだと思う場合はご連絡ください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "지금은 여기서 클라우드 AI가 꺼져 있어요. 무료 도구는 계속 쓸 수 있어요. 잘못된 것 같다면 연락해 주세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A IA na nuvem está desligada aqui por enquanto. Suas ferramentas grátis continuam funcionando. Se você acha que é um engano, fale com a gente."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Облачный ИИ здесь пока выключен. Бесплатные инструменты по-прежнему работают. Если считаешь, что это ошибка, напиши нам."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bulut yapay zekâsı burada şimdilik kapalı. Ücretsiz araçların çalışmaya devam ediyor. Bir hata olduğunu düşünüyorsan bize yaz."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "云端 AI 目前在这里已关闭，免费工具仍可使用。如果你认为这是误会，请联系我们。"
+          }
+        }
+      }
+    },
+    "Plus a free retry if it doesn't look like you, up to %lld a day" : {
+      "comment" : "Paywall benefit, under “Failed edits are always refunded”. %lld is how many free retries a day.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dazu ein Gratis-Versuch, falls es nicht aussieht wie du, bis zu %lld pro Tag"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Y un reintento gratis si no pareces tú, hasta %lld al día"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Et un nouvel essai gratuit si ça ne te ressemble pas, jusqu’à %lld par jour"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Plus coba lagi gratis kalau kurang mirip kamu, hingga %lld kali sehari"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "In più, un nuovo tentativo gratis se non ti somiglia, fino a %lld al giorno"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "あなたらしくなければ、無料でやり直しも（1日%lld回まで）"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "나 같지 않으면 무료로 한 번 더 (하루 최대 %lld번)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "E uma nova tentativa grátis se não parecer você, até %lld por dia"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "И бесплатный повтор, если не похоже на тебя, до %lld в день"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Üstelik sana benzemezse ücretsiz yeniden deneme, günde %lld kereye kadar"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "如果不像你，还能免费重试（每天最多 %lld 次）"
+          }
+        }
+      }
+    },
+    "That's a long description. Try a shorter one." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Das ist eine lange Beschreibung. Versuch eine kürzere."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Es una descripción muy larga. Prueba con una más corta."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cette description est longue. Essaie plus court."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deskripsinya terlalu panjang. Coba yang lebih singkat."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "È una descrizione lunga. Provane una più breve."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "説明が長すぎます。もう少し短くしてみてください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "설명이 너무 길어요. 더 짧게 써 보세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Essa descrição está longa. Tente uma mais curta."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Слишком длинное описание. Попробуй покороче."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu açıklama uzun. Daha kısa bir tane dene."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "描述太长了，试试短一点的吧。"
+          }
+        }
+      }
+    },
+    "This photo can't be edited. Try another one. Your credit was refunded." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dieses Foto kann nicht bearbeitet werden. Versuch ein anderes. Dein Credit wurde erstattet."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esta foto no se puede editar. Prueba con otra. Te devolvemos el crédito."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cette photo ne peut pas être modifiée. Essaie avec une autre. Ton crédit a été remboursé."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Foto ini tidak bisa diedit. Coba foto lain. Kreditmu sudah dikembalikan."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Questa foto non si può modificare. Provane un’altra. Il tuo credito è stato rimborsato."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "この写真は編集できません。別の写真をお試しください。クレジットは返却されました。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 사진은 편집할 수 없어요. 다른 사진으로 해 보세요. 크레딧은 환불됐어요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esta foto não pode ser editada. Tente outra. Seu crédito foi devolvido."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Это фото нельзя отредактировать. Попробуй другое. Кредит возвращён."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu fotoğraf düzenlenemiyor. Başka bir tane dene. Kredin iade edildi."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "这张照片无法编辑，换一张试试吧。你的点数已退还。"
+          }
+        }
+      }
+    },
+    "This photo couldn't be read. Try another one." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dieses Foto konnte nicht gelesen werden. Versuch ein anderes."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se pudo leer esta foto. Prueba con otra."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impossible de lire cette photo. Essaie avec une autre."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Foto ini tidak bisa dibaca. Coba foto lain."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impossibile leggere questa foto. Provane un’altra."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "この写真を読み込めませんでした。別の写真をお試しください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "사진을 읽을 수 없어요. 다른 사진으로 해 보세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não foi possível ler esta foto. Tente outra."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не удалось прочитать это фото. Попробуй другое."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu fotoğraf okunamadı. Başka bir tane dene."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无法读取这张照片，换一张试试吧。"
+          }
+        }
+      }
+    },
+    "Unlock everything, with %lld credits for your free trial. No charge today." : {
+      "comment" : "Free trial timeline, the “Today” step. %lld is the trial's credits (fewer than a month's).",
+      "localizations" : {
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Schalte alles frei, mit %lld Credit für deine Gratis-Testphase. Heute zahlst du nichts."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Schalte alles frei, mit %lld Credits für deine Gratis-Testphase. Heute zahlst du nichts."
+                }
+              }
+            }
+          }
+        },
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Unlock everything, with %lld credit for your free trial. No charge today."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Unlock everything, with %lld credits for your free trial. No charge today."
+                }
+              }
+            }
+          }
+        },
+        "es" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Desbloquea todo, con %lld crédito para tu prueba gratis. Hoy no pagas nada."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Desbloquea todo, con %lld créditos para tu prueba gratis. Hoy no pagas nada."
+                }
+              }
+            }
+          }
+        },
+        "fr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Débloque tout, avec %lld crédit pour ton essai gratuit. Rien à payer aujourd’hui."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Débloque tout, avec %lld crédits pour ton essai gratuit. Rien à payer aujourd’hui."
+                }
+              }
+            }
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buka semuanya, dengan %lld kredit untuk uji coba gratismu. Tanpa biaya hari ini."
+          }
+        },
+        "it" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Sblocca tutto, con %lld credito per la tua prova gratuita. Nessun addebito oggi."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Sblocca tutto, con %lld crediti per la tua prova gratuita. Nessun addebito oggi."
+                }
+              }
+            }
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "すべての機能が使えて、無料トライアル用に%lldクレジット付き。今日は料金はかかりません。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "모든 기능 잠금 해제, 무료 체험용 %lld크레딧 포함. 오늘은 결제되지 않아요."
+          }
+        },
+        "pt-BR" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Libere tudo, com %lld crédito para seu teste grátis. Nenhuma cobrança hoje."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Libere tudo, com %lld créditos para seu teste grátis. Nenhuma cobrança hoje."
+                }
+              }
+            }
+          }
+        },
+        "ru" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Открой всё и получи %lld кредита на пробный период. Сегодня без списаний."
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Открой всё и получи %lld кредитов на пробный период. Сегодня без списаний."
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Открой всё и получи %lld кредит на пробный период. Сегодня без списаний."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Открой всё и получи %lld кредита на пробный период. Сегодня без списаний."
+                }
+              }
+            }
+          }
+        },
+        "tr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Her şeyin kilidini aç; ücretsiz denemede %lld kredin olur. Bugün ücret alınmaz."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Her şeyin kilidini aç; ücretsiz denemede %lld kredin olur. Bugün ücret alınmaz."
+                }
+              }
+            }
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "解锁全部功能，免费试用期内含 %lld 个点数。今天不扣费。"
+          }
+        }
+      }
+    },
+    "We couldn't confirm your download with the App Store, so free credits aren't available right now. Check that you're signed in to the App Store, then try again." : {
+      "comment" : "Error message",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wir konnten deinen Download nicht beim App Store bestätigen, deshalb gibt es gerade keine Gratis-Credits. Prüf, ob du im App Store angemeldet bist, und versuch es noch einmal."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No pudimos confirmar tu descarga con el App Store, así que ahora no hay créditos gratis. Comprueba que hayas iniciado sesión en el App Store e inténtalo de nuevo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nous n’avons pas pu confirmer ton téléchargement auprès de l’App Store, les crédits gratuits ne sont donc pas disponibles pour le moment. Vérifie ta connexion à l’App Store, puis réessaie."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kami tidak bisa memastikan unduhanmu dengan App Store, jadi kredit gratis belum tersedia. Pastikan kamu sudah masuk ke App Store, lalu coba lagi."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Non siamo riusciti a confermare il tuo download con l’App Store, quindi ora i crediti gratis non sono disponibili. Controlla di aver effettuato l’accesso all’App Store e riprova."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App Storeでダウンロードを確認できなかったため、今は無料クレジットを使えません。App Storeにサインインしているか確認して、もう一度お試しください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App Store에서 다운로드를 확인하지 못해 지금은 무료 크레딧을 쓸 수 없어요. App Store에 로그인되어 있는지 확인한 뒤 다시 시도해 주세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não conseguimos confirmar seu download com a App Store, então os créditos grátis não estão disponíveis agora. Confira se sua conta da App Store está conectada e tente de novo."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не удалось подтвердить твою загрузку в App Store, поэтому бесплатные кредиты сейчас недоступны. Проверь вход в App Store и попробуй снова."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "İndirmeni App Store'da doğrulayamadık, bu yüzden şu an ücretsiz kredi kullanılamıyor. App Store'da oturum açık mı kontrol et ve tekrar dene."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无法通过 App Store 确认你的下载，所以暂时无法使用免费点数。请确认已登录 App Store，然后再试一次。"
+          }
+        }
+      }
+    },
+    "You've made a lot in a short time. Take a little break and try again later." : {
+      "comment" : "Error message",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Du hast in kurzer Zeit ganz schön viel gemacht. Mach eine kleine Pause und versuch es später noch einmal."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Has creado mucho en poco tiempo. Tómate un respiro e inténtalo más tarde."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tu as beaucoup créé en peu de temps. Fais une petite pause et réessaie plus tard."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kamu sudah membuat banyak dalam waktu singkat. Istirahat sebentar, lalu coba lagi nanti."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hai creato tanto in poco tempo. Fai una piccola pausa e riprova più tardi."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "短い時間にたくさん作りましたね。少し休んでから、もう一度お試しください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "짧은 시간에 많이 만들었어요. 잠깐 쉬었다가 나중에 다시 시도해 주세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Você criou bastante em pouco tempo. Faça uma pausa e tente de novo mais tarde."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Много всего за короткое время! Сделай небольшой перерыв и попробуй позже."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kısa sürede epey çok şey yaptın. Biraz mola ver ve daha sonra tekrar dene."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你在短时间内创作了很多。休息一下，稍后再试吧。"
+          }
+        }
+      }
+    },
+    "You've used today's free retries." : {
+      "comment" : "Error message",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Du hast die Gratis-Versuche für heute aufgebraucht."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ya usaste los reintentos gratis de hoy."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tu as utilisé tes nouveaux essais gratuits du jour."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kamu sudah memakai semua coba lagi gratis hari ini."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hai usato i tentativi gratis di oggi."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "今日の無料やり直しはすべて使いました。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오늘의 무료 재시도를 모두 사용했어요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Você já usou as novas tentativas grátis de hoje."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Бесплатные повторы на сегодня закончились."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bugünkü ücretsiz yeniden deneme haklarını kullandın."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "今天的免费重试次数已用完。"
+          }
+        }
+      }
+    },
+    "Your free trial includes %lld credits." : {
+      "comment" : "Settings › Credits and the credits sheet, during the free trial; Pro's monthly credits follow.",
+      "localizations" : {
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Deine Gratis-Testphase enthält %lld Credit."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Deine Gratis-Testphase enthält %lld Credits."
+                }
+              }
+            }
+          }
+        },
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Your free trial includes %lld credit."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Your free trial includes %lld credits."
+                }
+              }
+            }
+          }
+        },
+        "es" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Tu prueba gratis incluye %lld crédito."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Tu prueba gratis incluye %lld créditos."
+                }
+              }
+            }
+          }
+        },
+        "fr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Ton essai gratuit comprend %lld crédit."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Ton essai gratuit comprend %lld crédits."
+                }
+              }
+            }
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uji coba gratismu berisi %lld kredit."
+          }
+        },
+        "it" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "La tua prova gratuita include %lld credito."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "La tua prova gratuita include %lld crediti."
+                }
+              }
+            }
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "無料トライアルには%lldクレジットが含まれます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "무료 체험에는 %lld크레딧이 포함돼요."
+          }
+        },
+        "pt-BR" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Seu teste grátis inclui %lld crédito."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Seu teste grátis inclui %lld créditos."
+                }
+              }
+            }
+          }
+        },
+        "ru" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "В пробный период входят %lld кредита."
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "В пробный период входят %lld кредитов."
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "В пробный период входит %lld кредит."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "В пробный период входят %lld кредита."
+                }
+              }
+            }
+          }
+        },
+        "tr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Ücretsiz denemen %lld kredi içeriyor."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Ücretsiz denemen %lld kredi içeriyor."
+                }
+              }
+            }
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "免费试用含 %lld 个点数。"
+          }
+        }
+      }
+    },
     "“Give me pink hair.” “Add soft glam.” Describe any change and watch it happen." : {
       "localizations" : {
         "de" : {

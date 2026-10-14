@@ -142,8 +142,16 @@ export async function classifyImages(
 ): Promise<SafetyVerdict> {
   if (images.length === 0) return { ok: false, reason: "check_failed", detail: "no images" };
   const verdicts = await Promise.all(images.map((image) => classifyOne(image, subject, options)));
-  const flagged = verdicts.filter((v): v is Extract<SafetyVerdict, { reason: "flagged" }> => !v.ok && v.reason === "flagged");
-  if (flagged.length > 0) return { ok: false, reason: "flagged", categories: [...new Set(flagged.flatMap((v) => v.categories))] };
+  const flagged = verdicts.filter((v): v is Extract<SafetyVerdict, { reason: "flagged" }> =>
+    !v.ok && v.reason === "flagged"
+  );
+  if (flagged.length > 0) {
+    return {
+      ok: false,
+      reason: "flagged",
+      categories: [...new Set(flagged.flatMap((v) => v.categories))],
+    };
+  }
   const failed = verdicts.find((v): v is Extract<SafetyVerdict, { reason: "check_failed" }> => !v.ok);
   return failed ?? { ok: true };
 }

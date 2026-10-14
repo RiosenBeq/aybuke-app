@@ -29,7 +29,7 @@
 // images and clears them right away. Results the app never received are
 // refunded (cancel_job(), settle_unconfirmed(), sweep_jobs()).
 import type { SupabaseClient } from "npm:@supabase/supabase-js@2.117.3";
-import { type AdmitResult, admissionError } from "../_shared/admission.ts";
+import { admissionError, type AdmitResult } from "../_shared/admission.ts";
 import { type EntitlementStatus, type InstallProof, resolveEntitlement, verifyInstall } from "../_shared/apple.ts";
 import { requireUser, serviceClient } from "../_shared/auth.ts";
 import * as fal from "../_shared/fal.ts";
@@ -152,7 +152,9 @@ function requireImage(value: unknown, missing: string): string {
   const check = checkImage(value);
   if (!check.ok) {
     console.warn("image rejected:", check.reason);
-    if (check.code === "too_large") throw new HttpError(413, "too_large", "That photo is too large. Try a smaller one.");
+    if (check.code === "too_large") {
+      throw new HttpError(413, "too_large", "That photo is too large. Try a smaller one.");
+    }
     throw new HttpError(400, "image_invalid", "This photo couldn't be read. Try another one.");
   }
   return value as string;
@@ -190,8 +192,10 @@ async function createJob(
     throw new HttpError(402, "pro_required", "This style is part of Pro.");
   }
   const templateId = optionalString(body.template_id, 100);
-  if (body.retry_of !== undefined && body.retry_of !== null &&
-    (typeof body.retry_of !== "string" || !UUID_PATTERN.test(body.retry_of))) {
+  if (
+    body.retry_of !== undefined && body.retry_of !== null &&
+    (typeof body.retry_of !== "string" || !UUID_PATTERN.test(body.retry_of))
+  ) {
     throw new HttpError(400, "bad_request", "Invalid retry.");
   }
   const retryOf = typeof body.retry_of === "string" ? body.retry_of : null;
@@ -410,8 +414,9 @@ async function finish(db: SupabaseClient, jobId: string, outcome: fal.ResultOutc
   );
   if (second && !second.ok) {
     console.warn(`safety model blocked job ${jobId}:`, second.reason === "flagged" ? second.categories : second.detail);
-    if (second.reason === "flagged") await flagJob(db, jobId, BLOCKED_RESULT, second.categories.join(",") || "safety_model");
-    else await failJob(db, jobId, "safety_check_failed", SAFETY_CHECK_FAILED);
+    if (second.reason === "flagged") {
+      await flagJob(db, jobId, BLOCKED_RESULT, second.categories.join(",") || "safety_model");
+    } else await failJob(db, jobId, "safety_check_failed", SAFETY_CHECK_FAILED);
     return;
   }
   await db.from("jobs")

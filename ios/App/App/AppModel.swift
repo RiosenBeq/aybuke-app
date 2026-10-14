@@ -108,6 +108,11 @@ final class AppModel {
     var isPaywallPresented = false
     /// Pro without enough credits: next refill and packs (free members get the paywall).
     var outOfCredits: OutOfCreditsRequest?
+    /// Cloud AI rests after repeated safety blocks, or is off for this
+    /// install (the server's word, from a balance read or a refused job).
+    /// While it lasts, AI actions explain it kindly instead of trying, and
+    /// never open the paywall; the free on-device tools work as always.
+    private(set) var cloudPause: CloudPause?
     private(set) var paywallSource = "unknown"
     var isPhotoPickerPresented = false
     var editorLaunch: EditorLaunch? {
@@ -156,6 +161,8 @@ final class AppModel {
     let ai: AIImageService
     /// Present only when a backend is configured (production mode).
     private let remote: RemoteAIImageService?
+    /// StoreKit's signed AppTransaction: free credits belong to a verified App Store install.
+    let appTransactions: AppTransactionProvider
     private let container: ModelContainer
     private let defaults: UserDefaults
     /// Dynamic Island / Lock Screen progress for cloud jobs.
@@ -239,15 +246,17 @@ final class AppModel {
 
         let purchases = PurchaseManager()
         self.purchases = purchases
-        let credits = CreditsManager(isServerAuthoritative: config.backend != nil)
+        let credits = CreditsManager(policy: config.creditPolicy, isServerAuthoritative: config.backend != nil)
         self.credits = credits
+        let appTransactions = AppTransactionProvider()
+        self.appTransactions = appTransactions
 
         // Rewarded ads need the backend (and its session) to confirm the credit.
         var adRewards: AdRewardBackend?
         switch config.aiMode {
         case .backend(let backend):
             let auth = AuthSessionManager(config: backend)
-            adRewards = AdRewardBackend(config: backend, auth: auth) { [weak purchases] in
+            adRewards = AdRewardBackend(config: backend, auth: auth, appTransactions: appTransactions) { [weak purchases] in
                 purchases?.entitlementJWS
             }
             // The pill shows the charge as soon as a job starts, and the
@@ -256,6 +265,7 @@ final class AppModel {
                 config: backend,
                 auth: auth,
                 entitlementProvider: { [weak purchases] in purchases?.entitlementJWS },
+                appTransactions: appTransactions,
                 balanceObserver: { [weak credits] balance, asOf in credits?.sync(serverBalance: balance, asOf: asOf) }
             )
             self.remote = remote
@@ -397,6 +407,12 @@ final class AppModel {
         }
         libraryOutcome = .opened
         storefrontCountry = await Storefront.current?.countryCode
+        // Read on the device only (nothing is sent), so the first cloud job
+        // after consent doesn't wait for StoreKit.
+        if remote != nil, allowsCloudAI {
+            let appTransactions = appTransactions
+            Task.detached(priority: .utility) { _ = await appTransactions.jws(waitingAtMost: .seconds(30)) }
+        }
         // No account and no RevenueCat here: both wait until she buys or uses
         // a cloud feature (Privacy Policy §5).
         await configureRevenueCatForReturningBuyer()
@@ -559,6 +575,8 @@ final class AppModel {
         prompts.reset()
         ads.reset()
         credits.resetAll()
+        cloudPause = nil
+        await appTransactions.reset()
         credits.refresh(isPro: purchases.isPro)
         deleteAllCreations() // also resets the widgets, after the credits
         deferredSaves = []
@@ -665,8 +683,9 @@ final class AppModel {
     func refreshServerBalance() async {
         guard let remote, allowsCloudAI || allowsPurchases, await remote.existingUserID() != nil else { return }
         let sent = Date()
-        if let balance = try? await remote.fetchBalance() {
-            credits.sync(serverBalance: balance, asOf: sent)
+        if let state = try? await remote.fetchBalance() {
+            credits.apply(state, asOf: sent)
+            cloudPause = CloudPause.from(state)
         }
     }
 
@@ -819,6 +838,11 @@ final class AppModel {
         }
         if !operation.runsOnDevice && isCloudOffline {
             handle(AIServiceError.offline)
+            return
+        }
+        if !operation.runsOnDevice, let cloudPause, cloudPause.isActive() {
+            Haptics.error()
+            explain(cloudPause)
             return
         }
         if requiresPro && !purchases.isPro {
@@ -1028,7 +1052,8 @@ final class AppModel {
             creationsCount: count,
             breakdown: credits.breakdown,
             nextGrant: credits.nextSubscriptionGrant,
-            cloudAIAllowed: allowsCloudAI
+            cloudAIAllowed: allowsCloudAI,
+            allowance: purchases.isPro ? credits.policy.proMonthlyAllowance : credits.policy.freeDailyAllowance
         )
     }
 
@@ -1299,6 +1324,18 @@ final class AppModel {
         }
         Haptics.error()
         registerSetback()
+        // Resting or off: say so kindly; never the paywall.
+        if case AIServiceError.cooldown(let retryAfter) = error {
+            let pause = CloudPause.cooldown(until: Date().addingTimeInterval(retryAfter ?? 24 * 3600))
+            cloudPause = pause
+            explain(pause)
+            return
+        }
+        if case AIServiceError.cloudBlocked = error {
+            cloudPause = .blocked
+            explain(.blocked)
+            return
+        }
         if case AIServiceError.insufficientCredits(let remaining) = error {
             if purchases.isPro {
                 outOfCredits = OutOfCreditsRequest(available: remaining)
@@ -1320,6 +1357,23 @@ final class AppModel {
             return
         }
         showToast(verbatim: Self.localizedMessage(for: error), style: .error)
+    }
+
+    /// Why cloud AI isn't available right now, never as blame (the members
+    /// are teens), with the free tools that still work.
+    func explain(_ pause: CloudPause) {
+        showToast(verbatim: message(for: pause), style: .info)
+    }
+
+    func message(for pause: CloudPause) -> String {
+        switch pause {
+        case .cooldown(let until):
+            let time = until.formatted(date: Calendar.current.isDateInToday(until) ? .omitted : .abbreviated,
+                                       time: .shortened)
+            return String(localized: "Cloud AI is taking a little break until \(time). Effects, Retro Cam, Cut out and your other free tools still work.")
+        case .blocked:
+            return String(localized: "Cloud AI is turned off here for now. Effects, Retro Cam, Cut out and your other free tools still work. If you think this is a mistake, write to us at \(config.supportEmail).")
+        }
     }
 
     /// The user's language for any error: known server codes get their own
@@ -1376,6 +1430,10 @@ final class AppModel {
         "pro_required": String(localized: "This is part of Pro."),
         "retry_unavailable": String(localized: "This result can't be retried for free anymore."),
         "too_large": String(localized: "That photo is too large. Try a smaller one."),
+        "image_invalid": String(localized: "This photo couldn't be read. Try another one."),
+        "prompt_too_long": String(localized: "That's a long description. Try a shorter one."),
+        // The optional photo check (XAI_SAFETY_MODEL on the server).
+        "input_blocked": String(localized: "This photo can't be edited. Try another one. Your credit was refunded."),
         "content_blocked": String(localized: "This was blocked by our safety filters. Your credit was refunded."),
         // The output check fails closed: no verdict, no result.
         "safety_check_failed": String(localized: "Our safety check couldn't run, so this result wasn't shown. Your credit was refunded."),

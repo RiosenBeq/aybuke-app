@@ -6,24 +6,81 @@ import Foundation
 /// - Purchased credit packs never expire.
 /// - Failed generations are refunded automatically.
 ///
-/// The backend is the source of truth in production; the app mirrors the same
-/// rules for instant UI feedback and for the offline demo mode.
-public struct CreditPolicy: Equatable, Sendable {
+/// The backend is the source of truth in production (`credit_policy()` in
+/// SQL): `GET /ai-image` returns these numbers with the balance, the app
+/// keeps the last ones it saw and shows them in its copy, with bundled
+/// defaults in AppConfig.json. The app mirrors the same rules for instant UI
+/// feedback and for the offline demo mode.
+public struct CreditPolicy: Equatable, Sendable, Codable {
+    /// Free credits per App Store install per day (UTC on the server).
     public var freeDailyAllowance: Int
     public var proMonthlyAllowance: Int
     /// Maximum subscription credits that can be banked (allowance + rollover).
     public var proRolloverCap: Int
+    /// What the yearly plan's 7-day free trial brings, instead of a month's
+    /// credits; the full month starts with the first paid period.
+    public var trialCredits: Int
+    /// Likeness Lock: still one free retry per result, at most this many a day.
+    public var freeRetriesPerDay: Int
 
-    public init(freeDailyAllowance: Int, proMonthlyAllowance: Int, proRolloverCap: Int) {
+    public init(
+        freeDailyAllowance: Int, proMonthlyAllowance: Int, proRolloverCap: Int,
+        trialCredits: Int = CreditPolicy.standard.trialCredits,
+        freeRetriesPerDay: Int = CreditPolicy.standard.freeRetriesPerDay
+    ) {
         self.freeDailyAllowance = freeDailyAllowance
         self.proMonthlyAllowance = proMonthlyAllowance
         self.proRolloverCap = proRolloverCap
+        self.trialCredits = trialCredits
+        self.freeRetriesPerDay = freeRetriesPerDay
     }
 
-    /// Sized from the unit economics in docs/03-product-spec.md (~$0.06 per
-    /// cloud operation): 3 free creations a day, 100 a month on Pro with one
-    /// month of rollover. The server can change these without an app update.
-    public static let standard = CreditPolicy(freeDailyAllowance: 3, proMonthlyAllowance: 100, proRolloverCap: 200)
+    /// Sized from the unit economics in docs/03-product-spec.md (low quality
+    /// $0.04 and medium $0.06 per image, about $0.01 more per edited photo):
+    /// 2 free creations a day, 80 a month on Pro with one month of rollover,
+    /// 20 in the yearly plan's trial week. The server can change all of these
+    /// without an app update.
+    public static let standard = CreditPolicy(
+        freeDailyAllowance: 2, proMonthlyAllowance: 80, proRolloverCap: 160, trialCredits: 20, freeRetriesPerDay: 3
+    )
+
+    /// The server's numbers over `fallback`, each one only when it's sane, so
+    /// a missing or broken value never reaches the copy.
+    public init(server: ServerCreditPolicy, fallback: CreditPolicy) {
+        func pick(_ value: Int?, _ fallback: Int) -> Int {
+            guard let value, (0...10_000).contains(value) else { return fallback }
+            return value
+        }
+        self.init(
+            freeDailyAllowance: pick(server.freeDaily, fallback.freeDailyAllowance),
+            proMonthlyAllowance: pick(server.proMonthly, fallback.proMonthlyAllowance),
+            proRolloverCap: pick(server.rolloverCap, fallback.proRolloverCap),
+            trialCredits: pick(server.trialCredits, fallback.trialCredits),
+            freeRetriesPerDay: pick(server.freeRetriesDaily, fallback.freeRetriesPerDay)
+        )
+    }
+
+    /// The keys of AppConfig.json's `creditPolicy` and of the app's cache.
+    enum CodingKeys: String, CodingKey {
+        case freeDailyAllowance = "freeDaily"
+        case proMonthlyAllowance = "proMonthly"
+        case proRolloverCap = "rolloverCap"
+        case trialCredits
+        case freeRetriesPerDay = "freeRetriesDaily"
+    }
+
+    /// Missing keys keep `standard`'s numbers.
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        let base = CreditPolicy.standard
+        self.init(server: ServerCreditPolicy(
+            freeDaily: try container.decodeIfPresent(Int.self, forKey: .freeDailyAllowance),
+            proMonthly: try container.decodeIfPresent(Int.self, forKey: .proMonthlyAllowance),
+            rolloverCap: try container.decodeIfPresent(Int.self, forKey: .proRolloverCap),
+            trialCredits: try container.decodeIfPresent(Int.self, forKey: .trialCredits),
+            freeRetriesDaily: try container.decodeIfPresent(Int.self, forKey: .freeRetriesPerDay)
+        ), fallback: base)
+    }
 
     public func cost(of operation: AIOperation, outputs: Int = 1) -> Int {
         let unitCost: Int

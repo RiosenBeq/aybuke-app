@@ -92,7 +92,7 @@ We have zero tolerance for this. We block such content, close the account, prese
 You must not:
 
 - try to get around our safety filters, for example with "jailbreak" prompts, coded language, deliberate misspellings or by splitting a prohibited request into several parts;
-- abuse free credits, for example by creating multiple accounts, resetting the app or your device to get extra free credits, or using automation;
+- abuse free credits, for example by creating multiple accounts, resetting the app or your device to get extra free credits, or using automation (free credits are counted per App Store download, so this doesn't add any);
 - access the Service by automated means (such as bots, scripts or scrapers) or through anything other than the app, or reverse engineer the app or our servers, except where the law expressly allows it;
 - resell, sublicense or share access to the Service or to credits;
 - overload, disrupt or attack our systems, or deliberately exceed rate limits; or
@@ -111,6 +111,8 @@ We use several layers of safety measures:
 5. **Reports** from users are reviewed by a human.
 
 Automated filters aren't perfect. They can block harmless requests and miss harmful ones. Blocked or failed generations are never charged.
+
+When our servers' filters block 3 of your requests or results within 24 hours, cloud AI pauses for 24 hours for your account and your App Store download. After 3 pauses within 30 days, we switch cloud AI off for that download until we've reviewed it. On-device features keep working. You can appeal a pause or a switch-off (section 9).
 
 We don't store your inputs, and results are deleted from the cloud within an hour, so we don't routinely look at your creations. Human review happens when content is reported to us or when you appeal a decision.
 

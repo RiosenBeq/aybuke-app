@@ -8,7 +8,7 @@ Last updated: 14 October 2026
 > - These Terms are a contract between you and Okan Berk Manavoğlu (individual developer), the developer of Glowlit. They are not a contract with Apple.
 > - You must be at least 13. If you're under 18 (or under the age of majority where you live), you need permission from a parent or legal guardian. Section 4 is written for you.
 > - We design Glowlit with teens in mind: no tracking, no public feeds, no personalised ads, and cloud AI only after you opt in.
-> - On-device tools are always free. Free users get 3 credits a day, can watch an optional ad for 1 more credit up to 3 times a day, and see an occasional ad after saving. Pro has no ads. Pro subscriptions renew automatically until you cancel them in your Apple Account settings. Purchased credit packs never expire.
+> - On-device tools are always free. Free users get free credits every day, can watch an optional ad for 1 more credit a few times a day, and see an occasional ad after saving; the app shows the current numbers. Pro has no ads. Pro subscriptions renew automatically until you cancel them in your Apple Account settings. Purchased credit packs never expire.
 > - You keep the rights in your photos and, as far as the law allows, you own your results. Only upload photos you're allowed to use, and only edit people who agree to it.
 > - No sexual content, nothing sexual involving anyone under 18, no bullying or body-shaming edits, and no deep fakes meant to deceive. Our [Acceptable Use & AI Content Policy](acceptable-use-policy.md) has the details.
 > - AI can get things wrong. Your mandatory rights as a consumer are never affected.
@@ -56,7 +56,7 @@ This section is a plain-language summary for younger users. The rest of these Te
 - **Talk to a parent or guardian first.** You need their permission to use Glowlit. Talk to them before you buy anything or switch on cloud AI processing.
 - **Cloud AI may need their consent too.** In the EU and EEA, if you're under the age of digital consent in your country (between 13 and 16, depending on the country), a parent or guardian must give or approve consent for cloud AI processing. In Türkiye, if you're under 18, your parent or guardian should give or approve this consent. Read the consent screen together.
 - **Purchases go through Apple.** Purchases are charged to the Apple Account on your device. If you have a child account in Family Sharing, your parent or guardian may need to approve each purchase with "Ask to Buy". Never buy anything without permission.
-- **Ads are optional and never personalised.** Without Pro, you may see a few ads suitable for everyone: one you can choose to watch for 1 credit when you've run out (up to 3 a day), and sometimes one after you save. You never have to watch one, and they're never based on what you do in other apps.
+- **Ads are optional and never personalised.** Without Pro, you may see a few ads suitable for everyone: one you can choose to watch for 1 credit when you've run out (a few a day, as the app shows), and sometimes one after you save. You never have to watch one, and they're never based on what you do in other apps.
 - **Only edit people who say yes.** Don't upload or edit photos of other people, especially other young people, without their permission. Never create anything sexual, humiliating or mean about anyone.
 - **Think before you share.** Your creations stay on your phone unless you share them. Once something is online, it can be hard to take back.
 - **Help is here.** If something goes wrong, or someone uses Glowlit to hurt you, tell a trusted adult and report it to us (see the [AUP](acceptable-use-policy.md)). Parents and guardians can contact us at [hello@buaze.com](mailto:hello@buaze.com), including to delete their child's data.
@@ -81,7 +81,7 @@ If you haven't signed in with Apple, access to your account depends on your devi
 
 ### Deleting your account
 
-You can delete your account at any time in **Settings → Delete my data & account**. This permanently deletes your server account and all server-side records linked to it (credit wallet, credit ledger, job records, entitlement records, ad reward records and reports), as well as the creations library on your device. If you signed in with Apple, we also revoke Glowlit's access to your Apple ID.
+You can delete your account at any time in **Settings → Delete my data & account**. This permanently deletes your server account and all server-side records linked to it (credit wallet, credit ledger, job records, entitlement records, ad reward records and reports), as well as the creations library on your device. A one-way hash of your App Store download, with that day's free credits and any safety pause (section 8), isn't linked to your account after deletion and is kept for a limited time only to prevent abuse, as our [Privacy Policy](privacy-policy.md) explains; so deleting your account doesn't reset free credits or a pause. If you signed in with Apple, we also revoke Glowlit's access to your Apple ID.
 
 Any remaining credits, including purchased credits, are lost when you delete your account and cannot be restored or refunded. If you use a cloud AI feature again later, a new anonymous account is created.
 
@@ -105,7 +105,7 @@ Remove background (using Apple's Vision framework), Adjust (brightness, contrast
 
 ### Likeness Lock
 
-If you edit a photo of a person and the result doesn't look like you (or the person in the photo), you can re-run that edit once for free within 15 minutes.
+If you edit a photo of a person and the result doesn't look like you (or the person in the photo), you can re-run that edit once for free within 15 minutes, up to the number of free retries a day that the app shows.
 
 ### Your library ("My Works")
 
@@ -145,11 +145,13 @@ We process your inputs only to provide the feature you request and to keep the S
 
 ### Free daily credits
 
-Without an active Pro subscription, you get 3 free credits per day. They refill every day at 00:00 UTC. Unused daily credits don't carry over to the next day.
+Without an active Pro subscription, you get the number of free credits per day that the app shows. They refill every day at 00:00 UTC. Unused daily credits don't carry over to the next day.
+
+Free daily credits belong to your download of Glowlit from the App Store, not to an account: every device and anonymous account used with the same Apple Account shares one daily allowance. They need the App Store to confirm your download (the app sends Apple's signed confirmation to our server). Without that confirmation, free credits can't be used, but purchased and subscription credits still can.
 
 ### Pro credits
 
-With an active Pro subscription, you get 100 credits each month instead of daily credits. Unused subscription credits roll over to the following month, but your subscription credit balance can't exceed 200 credits. Subscription credits end when your subscription ends.
+With an active Pro subscription, you get the monthly number of credits that the app shows, instead of daily credits. The yearly plan's free trial includes a smaller number of credits, shown before you start it; the full monthly number starts with your first paid period. Unused subscription credits roll over to the following month, up to two months' worth. Subscription credits belong to the subscription: if it moves to another account, they move with it, and they end when your subscription ends.
 
 ### Credit packs
 
@@ -163,7 +165,7 @@ You can buy credit packs as consumable in-app purchases. Purchased credits:
 
 ### Credits from ads
 
-Without an active Pro subscription, when you're out of credits, you can choose to watch a short ad from Google AdMob for 1 credit, up to 3 times a day (UTC). Watching is always optional. The credit is added once Google confirms to our server that the ad played to the end; if it closes early, or Google doesn't confirm it, no credit is added. Credits from ads:
+Without an active Pro subscription, when you're out of credits, you can choose to watch a short ad from Google AdMob for 1 credit, up to the number of times a day (UTC) that the app shows; the limit counts for your account and for your App Store download. Watching is always optional. The credit is added once Google confirms to our server that the ad played to the end; if it closes early, or Google doesn't confirm it, no credit is added. Credits from ads:
 
 - are added to your free daily credits, are spent first and don't carry over to the next day;
 - have no cash value and can't be exchanged for money;
@@ -174,7 +176,9 @@ Free members may also see an occasional ad after saving or sharing a finished cr
 
 ### Fair use and limits
 
-To protect the Service, we limit how many cloud AI jobs an account can start: currently 6 per minute on the free tier and 20 per minute with Pro.
+To protect the Service, we limit how many cloud AI jobs an account, an App Store download and a network address can start per minute, per hour and per day, and how many jobs all users together can start per day. When a limit is reached, the app tells you and cloud AI pauses for a while; nothing is charged.
+
+If our safety filters block 3 of your requests or results within 24 hours, cloud AI pauses for 24 hours for your account and your App Store download. After 3 pauses within 30 days, we switch cloud AI off for that download until we've reviewed it. On-device features keep working, and you can ask for a human review (our [AUP](acceptable-use-policy.md), section 9).
 
 Credits are a licence to use cloud AI features in Glowlit. They are not money, property or a payment instrument, and they can only be used in the app.
 
@@ -200,7 +204,7 @@ These are reference prices in US dollars. The app shows the price in your local 
 
 ### What Pro includes
 
-- 100 credits per month, with rollover up to a cap of 200 subscription credits (section 8);
+- the monthly number of credits that the app shows, with rollover up to two months' worth (section 8);
 - up to 4 images per generation;
 - all templates and styles;
 - exports without the Glowlit watermark;
@@ -209,7 +213,7 @@ These are reference prices in US dollars. The app shows the price in your local 
 
 ### Free trial
 
-If you're eligible, the yearly plan starts with a 7-day free trial. Eligibility is decided under Apple's rules for introductory offers.
+If you're eligible, the yearly plan starts with a 7-day free trial. Eligibility is decided under Apple's rules for introductory offers. The trial includes the number of credits shown on the paywall before you start it; the full monthly number of credits starts with your first paid period.
 
 Unless you cancel at least 24 hours before the trial ends, your subscription starts automatically and you're charged the yearly price when the trial ends. If you allow notifications, the app reminds you before that cancel-by time: at least 26 hours before your trial ends, and earlier when that would fall at night or during school hours.
 

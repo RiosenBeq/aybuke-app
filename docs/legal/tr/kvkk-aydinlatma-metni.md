@@ -8,7 +8,7 @@ Son güncelleme: 14 Ekim 2026
 > - Glowlit uygulamasında sizden ad, e-posta veya şifre istemiyoruz; hesabınız anonim, rastgele bir kimlikten ibarettir.
 > - Fotoğraflarınız ve istemleriniz yalnızca bulut yapay zekâ işlemeye açık rıza verdiğinizde, yalnızca istediğiniz sonucu üretmek için işlenir; tarafımızca saklanmaz ve sonuçlar en geç 1 saat içinde buluttan silinir.
 > - Verilerinizi yapay zekâ eğitmek, kişiselleştirilmiş reklam, pazarlama veya profilleme için kullanmayız ve satmayız.
-> - Pro üyeliği olmayan, 13 yaş ve üzerindeki kullanıcılar Google AdMob'dan birkaç kişiselleştirilmemiş reklam görür: krediniz bittiğinde 1 kredi için isteğe bağlı olarak izleyebileceğiniz bir reklam (günde en fazla 3) ve ara sıra kaydettikten sonra bir reklam. 13 yaşın altında ve Pro'da reklam yoktur.
+> - Pro üyeliği olmayan, 13 yaş ve üzerindeki kullanıcılar Google AdMob'dan birkaç kişiselleştirilmemiş reklam görür: krediniz bittiğinde 1 kredi için isteğe bağlı olarak izleyebileceğiniz bir reklam (günde birkaç kez) ve ara sıra kaydettikten sonra bir reklam. 13 yaşın altında ve Pro'da reklam yoktur.
 > - Yurt dışına aktarımlar, Kişisel Verileri Koruma Kurulu'nun ilan ettiği standart sözleşmelere dayanır.
 > - KVKK md. 11'deki haklarınızı uygulama içinden veya aşağıdaki başvuru yollarıyla kullanabilirsiniz.
 
@@ -25,7 +25,7 @@ Bu Aydınlatma Metni, 6698 sayılı Kişisel Verilerin Korunması Kanunu ("**KVK
 ## 2. İşlenen kişisel veri kategorileri
 
 - **Kimlik / iletişim (isteğe bağlı hesap):** Apple ile giriş yaparsanız Apple kullanıcı tanımlayıcısı ve paylaşmayı seçerseniz e-posta adresiniz (Apple'ın gizli aktarma adresi olabilir) ile hesabınızı silerken erişimi iptal edebilmek için Apple'dan alınan anahtar.
-- **İşlem güvenliği:** anonim kullanıcı kimliği, oturum anahtarları (cihazınızın Anahtar Zinciri'nde saklanır), IP adresi, istek üst verileri ve zaman bilgilerini içeren sunucu kayıtları.
+- **İşlem güvenliği:** anonim kullanıcı kimliği, oturum anahtarları (cihazınızın Anahtar Zinciri'nde saklanır), IP adresi, istek üst verileri ve zaman bilgilerini içeren sunucu kayıtları; istekleri saatlik sayarken IP adresi yerine kullanılan tek yönlü, tuzlanmış özeti (hash); App Store indirmeniz için Apple'ın uygulama işlem kimliğinin tek yönlü, tuzlanmış özeti ile o günün ücretsiz kredileri, App Store ortamı ve kullanım tarihleri; güvenlik filtrelerinin engellediği istek ve sonuçlara ilişkin kayıtlar (içerik değil, kategori ve zaman) ve bunlara bağlı molalar.
 - **Müşteri işlem:** bulut yapay zekâ iş kayıtları (iş kimliği, işlem türü, şablon kimliği, model uç noktası, kredi tutarı, durum, hata kodu, sağlayıcı istek kimliği, zaman bilgileri), kredi cüzdanı ve kredi defteri kayıtları, Apple tarafından imzalanmış satın alma ve abonelik verileri (işlem kimlikleri, ürün kimliği, tarihler, ortam, uygulama hesap anahtarı), ödüllü reklam kayıtları (tek kullanımlık ödül kodu ile Google'ın onayladığı ödülün işlem kimliği, reklam birimi, ödül ve tarihi).
 - **Pazarlama (reklam gösterimi):** Pro üyeliği olmayan, 13 yaş ve üzerindeki kullanıcılarda, uygulamadaki Google reklam yazılımının Google'a ilettiği cihaz ve uygulama bilgileri (cihaz modeli, işletim sistemi ve uygulama sürümü, dil, ekran boyutu), IP adresi (Google bundan ülke veya şehir gibi genel bir konum tahmin eder), yalnızca bu uygulamada kullanılan tanımlayıcılar ve reklam etkileşimleri (gösterilen reklamlar, dokunmalar, videonun ne kadarının oynatıldığı). Cihazın reklam kimliğine (IDFA) erişilmez ve Google'a fotoğraf, istem, sonuç, ad veya kullanıcı kimliği gönderilmez.
 - **Görsel kayıtlar:** bulut yapay zekâ özelliklerine gönderdiğiniz fotoğraflar, çizdiğiniz maskeler ve üretilen sonuç görselleri.
@@ -42,7 +42,7 @@ Kütüphaneniz ("My Works", sildiğiniz görsellerin 30 gün kaldığı Recently
 - bulut yapay zekâ özelliklerinin (Magic Edit, Styles, AI Enhance, Erase, Create from text) sunulması, sonuçların üretilmesi ve size teslim edilmesi;
 - kredilerin düşülmesi ve başarısız işlerde iade edilmesi, Apple satın alımlarının doğrulanması, Pro avantajlarının ve kredi paketlerinin sağlanması, izlemeyi seçtiğiniz ödüllü reklam için kredinin bir kez ve günlük sınır içinde verilmesi;
 - ücretsiz katmanın finansmanı için Pro üyeliği olmayan kullanıcılara birkaç kişiselleştirilmemiş reklam gösterilmesi ve reklamların seyrek tutulması;
-- güvenlik filtrelerinin uygulanması, çocukların ve genç kullanıcıların korunması, kötüye kullanımın ve ücretsiz kredilerin suistimalinin önlenmesi, kullanım sınırlarının uygulanması;
+- güvenlik filtrelerinin uygulanması, çocukların ve genç kullanıcıların korunması, kötüye kullanımın ve ücretsiz kredilerin suistimalinin önlenmesi (ücretsiz kredilerin hesap başına değil App Store indirmesi başına verilmesi dahil), kullanım sınırlarının uygulanması, tekrarlanan engellemelerden sonra bulut yapay zekâya ara verilmesi;
 - bildirimlerin ve itirazların incelenmesi, [Kabul Edilebilir Kullanım ve Yapay Zekâ İçerik Politikası](kabul-edilebilir-kullanim-politikasi.md) metninin uygulanması;
 - bilgi güvenliği süreçlerinin yürütülmesi, hata ve saldırıların incelenmesi;
 - taleplerinizin, başvurularınızın ve destek mesajlarınızın yanıtlanması;
@@ -85,6 +85,10 @@ Kişisel verilerinizi satmayız. Ücretsiz üyelere gösterilen kişiselleştiri
 - Bildirimler: en fazla 12 ay.
 - Ödüllü reklam kayıtları: tek kullanımlık ödül kodları 30 dakika geçerlidir ve süreleri dolduktan bir gün sonra silinir; onaylanan ödüllerin kayıtları 30 gün saklanır. Google, aldığı reklam verilerini kendi politikalarına göre saklar.
 - Sunucu ve güvenlik kayıtları: genellikle en fazla 90 gün.
+- App Store indirmesinin özeti ve o günün ücretsiz kredileri: uygulamanın onu son kullanmasından 30 gün sonra silinir.
+- Güvenlik kayıtları (engellenen istek ve sonuçlar, molalar): 30 gün; tekrarlanan molalardan sonraki kapatma, kaldırılana kadar ve en fazla 12 ay.
+- Ağ adresi özetiyle tutulan istek sayımları: bir gün.
+- Son üç kayıt, hesabınızı sildikten sonra da hiçbir hesaba bağlı olmadan, yalnızca kötüye kullanımı önlemek için bu süreler boyunca saklanır.
 - E-postalar ve başvurular: talebin sonuçlandırılması ve belgelenmesi için gereken süre boyunca.
 
 Süreleri dolan veriler, Kişisel Verilerin Silinmesi, Yok Edilmesi veya Anonim Hâle Getirilmesi Hakkında Yönetmelik'e uygun olarak silinir. Kanunen daha uzun saklama yükümlülüğü bulunan hâller saklıdır.

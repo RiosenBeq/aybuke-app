@@ -38,7 +38,9 @@ The wire contract is defined (and unit-tested) in
 | **Apple-verified entitlements** | Pro status comes from a StoreKit 2 signed transaction verified with Apple's App Store Server Library, then bound to one user at a time. |
 | **No input storage** | Photos are passed to the provider as data URIs and never written to our database or storage. xAI results come back as base64, are held on the job only until the app confirms the download (then cleared; `sweep_jobs()` clears any left after an hour). With xAI Zero Data Retention on, xAI deletes requests within an hour and never trains on them. fal outputs expire after 1 hour (`X-Fal-Object-Lifecycle-Preference`) and request I/O history is disabled (`X-Fal-Store-IO: 0`). |
 | **Layered safety** | Prompt policy (client + server) → provider moderation (fal's strict `safety_tolerance`) → one output check on every result that fails closed (`_shared/moderation.ts`): fal.ai's NSFW classifier when `FAL_KEY` is set, otherwise xAI's own moderation verdict; a flag, an error or a missing verdict blocks the result and refunds it, and there's no switch to turn it off → in-app reporting. Documented for EU AI Act Art. 5(1)(ba) (from 2 Dec 2026). |
-| **Ad credits only from Google's signature** | The app never grants an ad credit. It gets a random single-use token, AdMob sends it back in an ECDSA-signed callback, and `redeem_ad_reward` grants one credit per AdMob transaction id, at most 3 a day in SQL. The token, not the user id, is all AdMob sees of the account. |
+| **Ad credits only from Google's signature** | The app never grants an ad credit. It gets a random single-use token, AdMob sends it back in an ECDSA-signed callback, and `redeem_ad_reward` grants one credit per AdMob transaction id, at most 2 a day per user and per App Store download in SQL. The token, not the user id, is all AdMob sees of the account. |
+| **Free credits per App Store download** | The free daily credits (and ad credits) belong to the App Store download, not the anonymous user: the app sends its StoreKit `AppTransaction` (JWS), `_shared/apple.ts` verifies Apple's signature, and SQL keys the allowance by a salted hash of `appTransactionId`, which stays the same across reinstalls and devices of one Apple Account. A new anonymous user on the same download shares the same daily credits. |
+| **One admission step** | `admit_job()` checks blocks, cool-downs, the owner's pause switch, the daily circuit breakers, per-user and per-IP rate limits, the free-retry allowance and the balance, then holds the credits and inserts the job, all in one transaction. |
 
 ## Models (late 2026 picks)
 
@@ -60,7 +62,7 @@ Prices, latency and alternatives: [`docs/research/tech-and-compliance.md`](../do
 ## Setup
 
 1. **Create a Supabase project** and install the [Supabase CLI](https://supabase.com/docs/guides/cli).
-2. **Enable anonymous sign-ins**: Authentication → Sign In / Providers → Anonymous. Turn on CAPTCHA (Turnstile) protection for sign-ups to limit abuse.
+2. **Enable anonymous sign-ins**: Authentication → Sign In / Providers → Anonymous, limited to 15 sign-ins per hour per IP (Authentication → Rate Limits), with the Email provider turned off (`supabase/config.toml` keeps the same settings for local runs). Don't turn on CAPTCHA: the app has no CAPTCHA widget, so every anonymous sign-up would fail. Free credits don't depend on the anonymous user anyway (see "Free credits per App Store download").
    **Enable Sign in with Apple** (optional accounts): Authentication → Sign In / Providers → Apple, and add the bundle id `app.glowlit.ios` under Client IDs. In the Apple Developer account, turn on the Sign in with Apple capability for the app id and create a Sign in with Apple key for `APPLE_SIGNIN_KEY_ID` / `APPLE_SIGNIN_PRIVATE_KEY`.
 3. **Link and migrate**
    ```bash
@@ -78,7 +80,7 @@ Prices, latency and alternatives: [`docs/research/tech-and-compliance.md`](../do
    # AdMob's callback has no JWT: the function checks Google's signature (and the app's session) itself.
    supabase functions deploy ad-reward --no-verify-jwt
    ```
-6. **Schedule the sweepers** (`sweep_jobs` fails and refunds stuck jobs, refunds results the app never received, clears job outputs after 1 hour, deletes job rows after 30 days and reports after 12 months; `sweep_ad_rewards` deletes reward tokens a day after they expire and reward records after 30 days): enable the `pg_cron` extension, then run
+6. **Schedule the sweepers** (`sweep_jobs` fails and refunds stuck jobs, refunds results the app never received, clears job outputs after 1 hour, deletes job rows after 30 days and reports after 12 months, App Store download hashes 30 days after last use (unless blocked), strikes and cool-downs after 30 days, IP counters after a day and usage counters after 90 days; `sweep_ad_rewards` deletes reward tokens a day after they expire and reward records after 30 days): enable the `pg_cron` extension, then run
    ```sql
    select cron.schedule('sweep-jobs', '*/5 * * * *', 'select public.sweep_jobs()');
    select cron.schedule('sweep-ad-rewards', '17 * * * *', 'select public.sweep_ad_rewards()');

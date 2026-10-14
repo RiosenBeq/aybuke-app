@@ -1,6 +1,8 @@
-// Rewarded ads: one credit for a watched ad, at most 3 a day (UTC), for free
-// members who are out of credits. Never trusts the app to grant anything:
-// only AdMob's signed callback does.
+// Rewarded ads: one credit for a watched ad, at most 2 a day (UTC) per user
+// and per App Store install, for free members who are out of credits. Never
+// trusts the app to grant anything: only AdMob's signed callback does. Like
+// the free credits, ad credits belong to the verified install (the app sends
+// X-App-Transaction, see _shared/apple.ts and the 20261023 migration).
 //
 //   POST   /ad-reward             → 201 { token, expires_at, remaining_today, daily_cap }
 //          A single-use token for the next ad. The app hands AdMob only this
@@ -28,7 +30,7 @@ import {
   VerifierKeys,
   verifyCallback,
 } from "../_shared/admob.ts";
-import { resolveEntitlement } from "../_shared/apple.ts";
+import { type InstallProof, resolveEntitlement, verifyInstall } from "../_shared/apple.ts";
 import { requireUser, serviceClient } from "../_shared/auth.ts";
 import { corsHeaders, errorResponse, HttpError, json } from "../_shared/http.ts";
 
@@ -46,12 +48,14 @@ Deno.serve(async (req) => {
     const token = url.searchParams.get("token");
     switch (req.method) {
       case "POST": {
-        const isPro = await resolveEntitlement(db, user.id, req.headers.get("x-entitlement-jws"));
-        return await issueToken(db, user.id, isPro);
+        const { isPro } = await resolveEntitlement(db, user.id, req.headers.get("x-entitlement-jws"));
+        const install = await verifyInstall(req.headers.get("x-app-transaction"));
+        return await issueToken(db, user.id, isPro, install);
       }
       case "GET": {
-        const isPro = await resolveEntitlement(db, user.id, req.headers.get("x-entitlement-jws"));
-        return token ? await tokenStatus(db, user.id, isPro, token) : await overview(db, user.id, isPro);
+        const { isPro } = await resolveEntitlement(db, user.id, req.headers.get("x-entitlement-jws"));
+        if (token) return await tokenStatus(db, user.id, token);
+        return await overview(db, user.id, isPro, await verifyInstall(req.headers.get("x-app-transaction")));
       }
       case "DELETE":
         if (!token || !isRewardToken(token)) throw new HttpError(400, "bad_request", "Missing token.");
@@ -123,15 +127,63 @@ async function adMobCallback(req: Request): Promise<Response> {
 
 // MARK: - The app's routes
 
-async function issueToken(db: SupabaseClient, userId: string, isPro: boolean): Promise<Response> {
-  const { data, error } = await db.rpc("issue_ad_reward_token", { p_user: userId, p_is_pro: isPro });
+function installParams(install: InstallProof): Record<string, string | null> {
+  return {
+    p_app_transaction_id: install.status === "verified" ? install.appTransactionId ?? null : null,
+    p_install_status: install.status,
+    p_install_environment: install.status === "verified" ? install.environment : null,
+  };
+}
+
+interface Overview {
+  remaining_today: number;
+  daily_cap: number;
+  credits_remaining: number;
+  eligible: boolean;
+}
+
+async function loadOverview(
+  db: SupabaseClient,
+  userId: string,
+  isPro: boolean,
+  install: InstallProof,
+): Promise<Overview> {
+  const { data, error } = await db.rpc("ad_reward_overview", {
+    p_user: userId,
+    p_is_pro: isPro,
+    ...installParams(install),
+  });
+  if (error || !data) throw new HttpError(500, "internal", "Couldn't check today's ads.");
+  return data as Overview;
+}
+
+async function issueToken(
+  db: SupabaseClient,
+  userId: string,
+  isPro: boolean,
+  install: InstallProof,
+): Promise<Response> {
+  const { data, error } = await db.rpc("issue_ad_reward_token", {
+    p_user: userId,
+    p_is_pro: isPro,
+    ...installParams(install),
+  });
   if (error) {
     const cap = await dailyCap(db);
     if (error.message.includes("AD_NOT_ELIGIBLE")) {
       throw new HttpError(403, "not_eligible", "Pro has no ads: your credits come every month.");
     }
+    if (error.message.includes("AD_NO_INSTALL")) {
+      // Nothing to count the daily cap on for this Apple Account: no ad.
+      throw new HttpError(
+        403,
+        "not_eligible",
+        "We couldn't confirm your download with the App Store, so ads can't add credits right now.",
+      );
+    }
     if (error.message.includes("AD_HAS_CREDITS")) {
-      throw new HttpError(409, "has_credits", "You still have credits to use.", await balance(db, userId, isPro));
+      const { credits_remaining } = await loadOverview(db, userId, isPro, install);
+      throw new HttpError(409, "has_credits", "You still have credits to use.", credits_remaining);
     }
     if (error.message.includes("AD_DAILY_CAP")) {
       throw new HttpError(409, "daily_cap", `That's all ${cap} ad credits for today. More tomorrow.`);
@@ -147,43 +199,36 @@ async function issueToken(db: SupabaseClient, userId: string, isPro: boolean): P
   }, 201);
 }
 
-async function tokenStatus(db: SupabaseClient, userId: string, isPro: boolean, token: string): Promise<Response> {
+async function tokenStatus(db: SupabaseClient, userId: string, token: string): Promise<Response> {
   const cap = await dailyCap(db);
   if (!isRewardToken(token)) {
     return json({ token, status: "unknown", remaining_today: 0, daily_cap: cap });
   }
   const { data, error } = await db.rpc("ad_reward_status", { p_user: userId, p_token: token });
   if (error) throw new HttpError(500, "internal", "Couldn't check the ad. Please try again.");
-  const row = (data as { outcome: string; remaining_today: number }[])[0];
+  const row = (data as { outcome: string; remaining_today: number; credits_remaining: number }[])[0];
   return json({
     token,
     status: row.outcome,
     remaining_today: row.remaining_today,
     daily_cap: cap,
-    credits_remaining: await balance(db, userId, isPro),
+    credits_remaining: row.credits_remaining,
   });
 }
 
-async function overview(db: SupabaseClient, userId: string, isPro: boolean): Promise<Response> {
-  const cap = await dailyCap(db);
-  const { data: used, error } = await db.rpc("ad_rewards_used_today", { p_user: userId });
-  if (error) throw new HttpError(500, "internal", "Couldn't check today's ads.");
-  const credits = await balance(db, userId, isPro);
-  const remaining = Math.max(0, cap - Number(used ?? 0));
-  return json({
-    remaining_today: remaining,
-    daily_cap: cap,
-    credits_remaining: credits,
-    eligible: !isPro && credits <= 0 && remaining > 0,
-  });
+async function overview(db: SupabaseClient, userId: string, isPro: boolean, install: InstallProof): Promise<Response> {
+  return json(await loadOverview(db, userId, isPro, install));
 }
 
 async function releaseToken(db: SupabaseClient, userId: string, token: string): Promise<Response> {
   const { data, error } = await db.rpc("release_ad_reward_token", { p_user: userId, p_token: token });
   if (error) throw new HttpError(500, "internal", "Couldn't release the ad.");
-  const cap = await dailyCap(db);
-  const { data: used } = await db.rpc("ad_rewards_used_today", { p_user: userId });
-  return json({ released: Boolean(data), remaining_today: Math.max(0, cap - Number(used ?? 0)), daily_cap: cap });
+  const row = (data as { released: boolean; remaining_today: number }[] | null)?.[0];
+  return json({
+    released: Boolean(row?.released),
+    remaining_today: row?.remaining_today ?? 0,
+    daily_cap: await dailyCap(db),
+  });
 }
 
 // MARK: - Helpers
@@ -191,12 +236,5 @@ async function releaseToken(db: SupabaseClient, userId: string, token: string): 
 async function dailyCap(db: SupabaseClient): Promise<number> {
   const { data } = await db.rpc("ad_reward_policy");
   const row = (Array.isArray(data) ? data[0] : data) as { daily_cap?: number } | null;
-  return row?.daily_cap ?? 3;
-}
-
-async function balance(db: SupabaseClient, userId: string, isPro: boolean): Promise<number> {
-  const { data, error } = await db.rpc("refresh_wallet", { p_user: userId, p_is_pro: isPro });
-  if (error || !data) return 0;
-  const wallet = data as { daily: number; subscription: number; purchased: number };
-  return wallet.daily + wallet.subscription + wallet.purchased;
+  return row?.daily_cap ?? 2;
 }

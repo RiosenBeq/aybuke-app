@@ -45,6 +45,20 @@ final class BackendAPITests: XCTestCase {
         XCTAssertEqual(request.value(forHTTPHeaderField: "Authorization"), "Bearer user-jwt")
         XCTAssertEqual(request.value(forHTTPHeaderField: "apikey"), "anon-key")
         XCTAssertEqual(request.value(forHTTPHeaderField: RequestFactory.entitlementHeader), "jws")
+        XCTAssertNil(request.value(forHTTPHeaderField: RequestFactory.appTransactionHeader), "nothing to send, nothing sent")
+    }
+
+    /// Free credits belong to a verified App Store install: every request
+    /// that spends or shows them carries StoreKit's AppTransaction.
+    func testAppTransactionRidesAlong() throws {
+        let job = try RequestFactory.generation(GenerationRequest(operation: .enhance, image: "data:x"), config: config,
+                                                accessToken: "user-jwt", appTransactionJWS: "app.jws")
+        XCTAssertEqual(job.value(forHTTPHeaderField: "X-App-Transaction"), "app.jws")
+        let balance = try RequestFactory.balance(config: config, accessToken: "user-jwt", appTransactionJWS: "app.jws")
+        XCTAssertEqual(balance.value(forHTTPHeaderField: "X-App-Transaction"), "app.jws")
+        let pack = try RequestFactory.redeemCreditPack(signedTransaction: "tx", config: config, accessToken: "user-jwt",
+                                                       appTransactionJWS: "app.jws")
+        XCTAssertEqual(pack.value(forHTTPHeaderField: "X-App-Transaction"), "app.jws")
     }
 
     func testRefreshRequestURL() throws {
@@ -106,6 +120,34 @@ final class BackendAPITests: XCTestCase {
     func testDecodesBalance() throws {
         XCTAssertEqual(try ResponseDecoder.decodeBalance(data: Data(#"{"credits_remaining":7}"#.utf8), statusCode: 200), 7)
         XCTAssertThrowsError(try ResponseDecoder.decodeBalance(data: Data(), statusCode: 401))
+    }
+
+    func testDecodesBalanceState() throws {
+        let state = try ResponseDecoder.decodeBalanceState(data: Data("""
+        {"credits_remaining": 2, "is_pro": false, "free_credits": "ok", "ai_status": "cooldown",
+         "cooldown_until": "2026-10-15T12:00:00.123456+00:00", "cooldown_seconds": 7200,
+         "policy": {"free_daily": 2, "pro_monthly": 80, "rollover_cap": 160, "trial_credits": 20, "free_retries_daily": 3}}
+        """.utf8), statusCode: 200)
+        XCTAssertEqual(state.creditsRemaining, 2)
+        XCTAssertEqual(state.freeCredits, .ok)
+        XCTAssertEqual(state.aiStatus, .cooldown)
+        XCTAssertEqual(state.policy, ServerCreditPolicy(freeDaily: 2, proMonthly: 80, rolloverCap: 160, trialCredits: 20,
+                                                        freeRetriesDaily: 3))
+        let now = Date(timeIntervalSince1970: 1_000_000)
+        XCTAssertEqual(CloudPause.from(state, now: now), .cooldown(until: now.addingTimeInterval(7200)))
+        XCTAssertTrue(try XCTUnwrap(CloudPause.from(state, now: now)).isActive(at: now))
+        XCTAssertFalse(CloudPause.cooldown(until: now).isActive(at: now.addingTimeInterval(1)))
+
+        // An older server, or a status this version doesn't know: nothing breaks.
+        let old = try ResponseDecoder.decodeBalanceState(data: Data(#"{"credits_remaining": 5, "ai_status": "later"}"#.utf8),
+                                                         statusCode: 200)
+        XCTAssertNil(old.freeCredits)
+        XCTAssertNil(old.aiStatus)
+        XCTAssertNil(CloudPause.from(old))
+        let unverified = try ResponseDecoder.decodeBalanceState(
+            data: Data(#"{"credits_remaining": 0, "free_credits": "unverified", "ai_status": "blocked"}"#.utf8), statusCode: 200)
+        XCTAssertEqual(unverified.freeCredits, .unverified)
+        XCTAssertEqual(CloudPause.from(unverified), .blocked)
     }
 
     func testJobRequests() throws {
@@ -221,6 +263,32 @@ final class BackendAPITests: XCTestCase {
         XCTAssertEqual(ResponseDecoder.error(from: Data(), statusCode: 429, retryAfter: "7"), .rateLimited(retryAfter: 7))
         XCTAssertEqual(ResponseDecoder.error(from: Data("oops".utf8), statusCode: 503),
                        .server(code: "http_503", message: "The AI service is busy. Please try again."))
+    }
+
+    /// The abuse controls' answers: never a paywall, never "your session expired".
+    func testMapsAbuseControlErrors() {
+        func error(_ status: Int, _ body: String, retryAfter: String? = nil) -> AIServiceError {
+            ResponseDecoder.error(from: Data(body.utf8), statusCode: status, retryAfter: retryAfter)
+        }
+        XCTAssertEqual(error(429, #"{"error":{"code":"cooldown","message":"x","retry_after":3600,"until":"2026-10-15"}}"#),
+                       .cooldown(retryAfter: 3600))
+        XCTAssertEqual(error(403, #"{"error":{"code":"install_blocked","message":"x"}}"#), .cloudBlocked,
+                       "a block isn't an expired session")
+        XCTAssertEqual(error(503, #"{"error":{"code":"ai_paused","message":"x"}}"#, retryAfter: "600"), .aiPaused(retryAfter: 600))
+        XCTAssertEqual(error(429, #"{"error":{"code":"usage_limit","message":"x","retry_after":1200}}"#),
+                       .usageLimit(retryAfter: 1200))
+        XCTAssertEqual(error(428, #"{"error":{"code":"app_transaction_required","message":"x"}}"#), .appStoreCheckFailed)
+        XCTAssertEqual(error(428, #"{"error":{"code":"app_transaction_invalid","message":"x"}}"#), .appStoreCheckFailed)
+        XCTAssertEqual(error(409, #"{"error":{"code":"retry_limit","message":"x"}}"#), .retryLimit)
+        XCTAssertEqual(error(429, #"{"error":{"code":"rate_limited","message":"x","retry_after":20}}"#), .rateLimited(retryAfter: 20))
+        XCTAssertEqual(error(402, #"{"error":{"code":"pro_required","message":"x"}}"#), .insufficientCredits(remaining: nil),
+                       "unchanged")
+        let errors: [AIServiceError] = [.cooldown(retryAfter: nil), .cloudBlocked, .aiPaused(retryAfter: nil),
+                                        .usageLimit(retryAfter: nil), .appStoreCheckFailed, .retryLimit]
+        for message in errors.compactMap(\.errorDescription) {
+            XCTAssertNil(message.range(of: #"abuse|violat|banned|suspend|fraud"#, options: [.regularExpression, .caseInsensitive]),
+                         "kind words for teens: \(message)")
+        }
     }
 
     func testDecodesSupabaseSession() throws {

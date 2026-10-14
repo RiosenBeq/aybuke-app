@@ -22,7 +22,9 @@ public enum PolicyCategory: String, CaseIterable, Codable, Sendable {
 /// optional. A term with Chinese, Japanese
 /// or Korean characters matches anywhere in the text. Both the terms and the
 /// prompt go through `words(in:)` first, so diacritics, case, leetspeak,
-/// stretched letters and "b i k i n i" spacing don't matter.
+/// stretched letters, lookalike letters from another script, invisible
+/// characters and "b i k i n i" spacing don't matter; the prompt is also
+/// matched squeezed (`squeezedWords(in:)`: "na.ked", "n@ked", "5exy").
 public enum ContentPolicy {
     public enum Verdict: Equatable, Sendable {
         case allowed
@@ -385,13 +387,28 @@ public enum ContentPolicy {
         return Term(tokens: tokens)
     }
 
+    /// The prompt's words twice: as written, and squeezed ("na.ked", "n@ked").
+    /// A term matches if it matches either view.
     struct MatchText {
+        let views: [View]
+
+        init(_ text: String) {
+            let plain = View(ContentPolicy.words(in: text))
+            let squeezed = View(ContentPolicy.squeezedWords(in: text))
+            views = squeezed.joined == plain.joined ? [plain] : [plain, squeezed]
+        }
+
+        func matches(_ term: Term) -> Bool {
+            views.contains { $0.matches(term) }
+        }
+    }
+
+    struct View {
         /// Each word with its stretched-letter variants ("skinnnier" → "skinnier", "skinier").
         let forms: [[String]]
         let joined: String
 
-        init(_ text: String) {
-            let words = ContentPolicy.words(in: text)
+        init(_ words: [String]) {
             forms = words.map(ContentPolicy.forms(of:))
             joined = words.joined(separator: " ")
         }
@@ -419,13 +436,71 @@ public enum ContentPolicy {
     // MARK: Normalisation (mirrored exactly in backend/.../_shared/policy.ts)
 
     /// NFKC, lowercase, Latin diacritics and Turkish dotless i folded, ё → е;
-    /// split on anything that isn't a letter or digit; leetspeak undone in
-    /// words that start with a letter ("s3xy", but not "1990s" or "3d");
-    /// runs of three or more single letters joined ("b i k i n i").
+    /// split on anything that isn't a letter or digit; lookalike letters read
+    /// in the word's script ("n\u{0430}ked", with a Cyrillic а); leetspeak undone in
+    /// words that start with a letter ("s3xy", but not "1990s" or "3d"); runs
+    /// of three or more single letters joined ("b i k i n i", "s.e.x").
+    /// Invisible characters can't split a word ("bi\u{200B}kini").
     static func words(in text: String) -> [String] {
+        joinSpelledOut(tokens(in: clean(text)).map(foldConfusables).map(undoLeet))
+    }
+
+    /// The same text squeezed: punctuation inside a run of non-space
+    /// characters joins the pieces ("na.ked", "se-xy"), @ $ ! read as a s i,
+    /// and leetspeak is undone in any word with a letter ("5exy"). Chunks
+    /// with Chinese, Japanese or Korean characters keep their usual words:
+    /// joining across 。 could form a term from two words.
+    static func squeezedWords(in text: String) -> [String] {
+        var chunks: [String] = []
+        var chunk = String.UnicodeScalarView()
+        for scalar in clean(text).unicodeScalars {
+            if scalar.properties.isWhitespace || scalar.properties.generalCategory == .control {
+                if !chunk.isEmpty { chunks.append(String(chunk)) }
+                chunk = String.UnicodeScalarView()
+            } else {
+                chunk.append(scalar)
+            }
+        }
+        if !chunk.isEmpty { chunks.append(String(chunk)) }
+        var result: [String] = []
+        for piece in chunks {
+            if piece.unicodeScalars.contains(where: isCJK) {
+                result.append(contentsOf: tokens(in: piece))
+                continue
+            }
+            var joined = String.UnicodeScalarView()
+            for scalar in piece.unicodeScalars {
+                let mapped = symbolLeet[scalar] ?? scalar
+                if isWordScalar(mapped) { joined.append(mapped) }
+            }
+            if !joined.isEmpty { result.append(String(joined)) }
+        }
+        return joinSpelledOut(result.map(foldConfusables).map(undoLeetFully))
+    }
+
+    /// NFKC, lowercase and folded; invisible characters (format characters
+    /// such as zero-width and bidi controls, combining marks, Hangul fillers)
+    /// and control characters other than tabs and line breaks removed.
+    static func clean(_ text: String) -> String {
+        var scalars = String.UnicodeScalarView()
+        for scalar in fold(text.precomposedStringWithCompatibilityMapping.lowercased()).unicodeScalars {
+            switch scalar.properties.generalCategory {
+            case .format, .nonspacingMark, .enclosingMark:
+                continue
+            case .control where !isSpacingControl(scalar):
+                continue
+            default:
+                if isFiller(scalar) { continue }
+                scalars.append(scalar)
+            }
+        }
+        return String(scalars)
+    }
+
+    static func tokens(in text: String) -> [String] {
         var words: [String] = []
         var current = String.UnicodeScalarView()
-        for scalar in fold(text.precomposedStringWithCompatibilityMapping.lowercased()).unicodeScalars {
+        for scalar in text.unicodeScalars {
             if isWordScalar(scalar) {
                 current.append(scalar)
             } else if !current.isEmpty {
@@ -434,7 +509,51 @@ public enum ContentPolicy {
             }
         }
         if !current.isEmpty { words.append(String(current)) }
-        return joinSpelledOut(words.map(undoLeet))
+        return words
+    }
+
+    /// Tabs, line breaks and the like separate words; other control characters vanish.
+    static func isSpacingControl(_ scalar: Unicode.Scalar) -> Bool {
+        switch scalar.value {
+        case 0x09...0x0D, 0x1C...0x1F, 0x85: return true
+        default: return false
+        }
+    }
+
+    /// Hangul fillers: letters that draw nothing.
+    static func isFiller(_ scalar: Unicode.Scalar) -> Bool {
+        [0x115F, 0x1160, 0x3164, 0xFFA0].contains(scalar.value)
+    }
+
+    /// Cyrillic and Greek letters that look Latin, read as Latin inside a mostly Latin word.
+    static let asLatin: [Unicode.Scalar: Unicode.Scalar] = [
+        "\u{0430}": "a", "\u{0432}": "b", "\u{0441}": "c", "\u{0435}": "e", "\u{043D}": "h", "\u{0456}": "i",
+        "\u{0458}": "j", "\u{043A}": "k", "\u{043C}": "m", "\u{043E}": "o", "\u{0440}": "p", "\u{0455}": "s",
+        "\u{0442}": "t", "\u{0443}": "y", "\u{0445}": "x", "\u{0501}": "d", "\u{04CF}": "l",
+        "\u{03B1}": "a", "\u{03B2}": "b", "\u{03B5}": "e", "\u{03B9}": "i", "\u{03BA}": "k", "\u{03BD}": "v",
+        "\u{03BF}": "o", "\u{03C1}": "p", "\u{03C4}": "t", "\u{03C5}": "u", "\u{03C7}": "x",
+    ]
+
+    /// Latin letters that look Cyrillic, read as Cyrillic inside a mostly Cyrillic word.
+    static let asCyrillic: [Unicode.Scalar: Unicode.Scalar] = [
+        "a": "\u{0430}", "b": "\u{0432}", "c": "\u{0441}", "e": "\u{0435}", "h": "\u{043D}", "k": "\u{043A}",
+        "m": "\u{043C}", "o": "\u{043E}", "p": "\u{0440}", "t": "\u{0442}", "x": "\u{0445}", "y": "\u{0443}",
+    ]
+
+    /// A word mixing Latin with Cyrillic or Greek, read in its main script ("n\u{0430}ked", "г\u{006F}лая").
+    static func foldConfusables(_ word: String) -> String {
+        var latin = 0, cyrillic = 0, greek = 0
+        for scalar in word.unicodeScalars {
+            switch scalar.value {
+            case 0x61...0x7A, 0xDF...0x24F, 0x1E00...0x1EFF: latin += 1
+            case 0x400...0x52F: cyrillic += 1
+            case 0x370...0x3FF, 0x1F00...0x1FFF: greek += 1
+            default: break
+            }
+        }
+        guard latin > 0, cyrillic + greek > 0 else { return word }
+        let table = cyrillic > latin ? asCyrillic : asLatin
+        return String(String.UnicodeScalarView(word.unicodeScalars.map { table[$0] ?? $0 }))
     }
 
     static func fold(_ text: String) -> String {
@@ -465,10 +584,27 @@ public enum ContentPolicy {
 
     static let leet: [Unicode.Scalar: Unicode.Scalar] = ["0": "o", "1": "i", "3": "e", "4": "a", "5": "s", "7": "t"]
 
+    /// Read as letters only in the squeezed view ("n@ked", "$exy", "b!k!n!").
+    static let symbolLeet: [Unicode.Scalar: Unicode.Scalar] = ["@": "a", "$": "s", "!": "i"]
+
     static func undoLeet(_ word: String) -> String {
         guard let first = word.unicodeScalars.first, !isNumber(first),
               word.unicodeScalars.contains(where: { leet[$0] != nil }) else { return word }
         return String(String.UnicodeScalarView(word.unicodeScalars.map { leet[$0] ?? $0 }))
+    }
+
+    /// The squeezed view's leetspeak: any word with a letter in it ("5exy").
+    static func undoLeetFully(_ word: String) -> String {
+        guard word.unicodeScalars.contains(where: isLetter),
+              word.unicodeScalars.contains(where: { leet[$0] != nil }) else { return word }
+        return String(String.UnicodeScalarView(word.unicodeScalars.map { leet[$0] ?? $0 }))
+    }
+
+    static func isLetter(_ scalar: Unicode.Scalar) -> Bool {
+        switch scalar.properties.generalCategory {
+        case .uppercaseLetter, .lowercaseLetter, .titlecaseLetter, .modifierLetter, .otherLetter: return true
+        default: return false
+        }
     }
 
     static func isNumber(_ scalar: Unicode.Scalar) -> Bool {
@@ -497,6 +633,7 @@ public enum ContentPolicy {
         return result
     }
 
+    /// Doubled letters stay: real words would collide ("tangga", "nuée").
     static func forms(of word: String) -> [String] {
         let scalars = Array(word.unicodeScalars)
         var longestRun = 1, run = 1
