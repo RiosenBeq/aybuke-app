@@ -294,7 +294,9 @@ struct RetroCamReviewView: View {
     }
 
     #if DEBUG
-    /// Screenshots: `-GLBoothLayout grid`, `-GLBoothCaption "…"`.
+    /// Screenshots: `-GLBoothLayout grid`, `-GLBoothCaption "…"`, and
+    /// `-GLCameraReviewAction edit|share` to go on to the editor or the
+    /// share composer.
     private func applyScreenshotOptions() {
         guard ScreenshotScene.current != nil else { return }
         let defaults = UserDefaults.standard
@@ -302,6 +304,12 @@ struct RetroCamReviewView: View {
         if let text = defaults.string(forKey: "GLBoothCaption") {
             caption = text
             commitCaption()
+        }
+        guard let action = defaults.string(forKey: "GLCameraReviewAction") else { return }
+        Task {
+            try? await Task.sleep(for: .seconds(2.5))
+            if action == "edit" { edit() }
+            if action == "share" { share() }
         }
     }
     #endif

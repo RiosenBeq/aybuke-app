@@ -198,7 +198,8 @@ struct RetroCamView: View {
     private var effectStrip: some View {
         ScrollView(.horizontal) {
             HStack(spacing: 8) {
-                ForEach(RetroCamModel.effects) { effect in
+                // Identified by the effect itself, like the scroll position.
+                ForEach(RetroCamModel.effects, id: \.self) { effect in
                     let isSelected = model.effect == effect
                     Button { model.select(effect) } label: {
                         VStack(spacing: 1) {

@@ -126,6 +126,8 @@ final class RetroCamera: NSObject, RetroCamSource, @unchecked Sendable {
                 wantsRunning = true
                 lock.withLock { startTime = CACurrentMediaTime() }
                 if !session.isRunning { session.startRunning() }
+                // A pause from before (say, the trip to the background) is over.
+                if !session.isInterrupted { report(nil) }
                 continuation.resume(returning: (features(), device))
             }
         }
