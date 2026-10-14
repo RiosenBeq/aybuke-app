@@ -10,6 +10,10 @@ Checks what actually ships:
   address, representatives…), and the bundled legal copies are current.
 - websiteURL (share captions and the invite QR code) is an https URL and not
   a GitHub blob page.
+- Ads: when AppConfig.json turns them on, the AdMob app id in Release.xcconfig
+  (Info.plist's GADApplicationIdentifier) is Glowlit's, not Google's sample,
+  and matches ads.appID and the units' publisher; otherwise the app quietly
+  shows no ads. An empty interstitial unit is reported as a note only.
 With --online, also: the website and its privacy policy answer 200, and the
 support and legal email domains can receive mail (MX records).
 
@@ -35,7 +39,40 @@ from urllib.parse import urlparse
 ROOT = Path(__file__).resolve().parent.parent
 APP_CONFIG = ROOT / "ios/App/Resources/AppConfig.json"
 LEGAL_CONFIG = ROOT / "legal/config.json"
+RELEASE_XCCONFIG = ROOT / "ios/Config/Release.xcconfig"
 PLACEHOLDER = re.compile(r"^\s*\[.*\]\s*$", re.DOTALL)
+ADMOB_APP_ID = re.compile(r"^ca-app-pub-(\d{10,20})~\d{6,14}$")
+ADMOB_UNIT_ID = re.compile(r"^ca-app-pub-(\d{10,20})/\d{6,14}$")
+GOOGLE_SAMPLE_PUBLISHER = "3940256099942544"
+
+
+def check_ads(config, findings, notes):
+    """The same rules AdsConfig applies at runtime (a mismatch turns ads off)."""
+    ads = config.get("ads") or {}
+    if not ads.get("enabled"):
+        notes.append("Ads are off (ads.enabled is false in AppConfig.json).")
+        return
+    app_id = (ads.get("appID") or "").strip()
+    match = ADMOB_APP_ID.match(app_id)
+    if not match or match.group(1) == GOOGLE_SAMPLE_PUBLISHER:
+        findings.append("ads.appID in AppConfig.json isn't Glowlit's AdMob app id; release builds would show no ads.")
+        return
+    publisher = match.group(1)
+    settings = {}
+    for line in RELEASE_XCCONFIG.read_text(encoding="utf-8").splitlines():
+        if "=" in line and not line.lstrip().startswith("//"):
+            key, value = line.split("=", 1)
+            settings[key.strip()] = value.split("//", 1)[0].strip()
+    if settings.get("GL_ADMOB_APP_ID") != app_id:
+        findings.append("GL_ADMOB_APP_ID in Release.xcconfig doesn't match ads.appID; release builds would show no ads.")
+    rewarded = ADMOB_UNIT_ID.match((ads.get("rewardedUnitID") or "").strip())
+    if not rewarded or rewarded.group(1) != publisher:
+        findings.append("ads.rewardedUnitID isn't one of this AdMob account's units; rewarded ads would stay off.")
+    interstitial = (ads.get("interstitialUnitID") or "").strip()
+    if not interstitial:
+        notes.append("ads.interstitialUnitID is empty: no interstitials until it's set.")
+    elif not ADMOB_UNIT_ID.match(interstitial) or ADMOB_UNIT_ID.match(interstitial).group(1) != publisher:
+        findings.append("ads.interstitialUnitID isn't one of this AdMob account's units; interstitials would stay off.")
 
 
 def check_app_config(findings):
@@ -125,11 +162,16 @@ def main(argv):
     preview = os.environ.get("GL_PREVIEW_BUILD") == "1"
 
     findings = []
+    notes = []
     app_config = check_app_config(findings)
+    if app_config:
+        check_ads(app_config, findings, notes)
     legal_config = check_legal(findings)
     if online:
         check_online(app_config, legal_config, findings)
 
+    for note in notes:
+        print(f"note: {note}")
     if not findings:
         print("Release config check passed.")
         return 0

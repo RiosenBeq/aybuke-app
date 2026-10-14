@@ -597,6 +597,8 @@ struct VideoEditorView: View {
                 shareItems = ActivityItems(items: [url])
                 app.countHappyMoment()
             }
+            // Free members: an ad may follow once the video editor closes.
+            app.ads.noteFinishedExport()
         } catch {
             // Cancelled or stopped by leaving the app: no error, no setback.
             // No Photos access: offer Settings, or sharing the video instead.

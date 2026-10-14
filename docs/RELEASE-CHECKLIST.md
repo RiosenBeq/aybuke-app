@@ -472,9 +472,9 @@ Değerlerin hepsi: [`marketing/app-store-connect-setup.md`](marketing/app-store-
   - Beklenen: Her birinde inceleme ekran görüntüsü ve not var, durumları "Ready to Submit"; abonelik grubunun en-US ve tr adları dolu.
 - [ ] **Paid Apps Agreement Active** (yalnızca sahip; banka ve vergi bilgisi tamam)
 - [ ] **App Privacy yayında**
-  - Beklenen: 5 veri türü: Photos or Videos, Other User Content, User ID, Purchase History, Email Address. User ID ve Purchase History'de RevenueCat nedeniyle Analytics amacı da işaretli; izleme (tracking) yok.
+  - Beklenen: 10 veri türü: Photos or Videos, Other User Content, User ID, Purchase History, Email Address (kullanıcıyla ilişkili); reklamlar nedeniyle Coarse Location, Device ID, Product Interaction, Performance Data (Third-Party Advertising ve Analytics, kullanıcıyla ilişkisiz) ve Advertising Data (App Functionality, Third-Party Advertising ve Analytics; ödüllü reklam kayıtlarımız nedeniyle kullanıcıyla ilişkili). User ID ve Purchase History'de RevenueCat nedeniyle Analytics amacı da işaretli; izleme (tracking) yok. Ayrıntı: kurulum dokümanı §5.
 - [ ] **Yaş derecelendirmesi**
-  - Beklenen: Kurulum dokümanı §2'deki gibi dürüst cevaplar ve 13+ ("Override to Higher Age Rating"). Kids kategorisi seçili değil. "Age Assurance" kutusunu dokümandaki nota göre karara bağla.
+  - Beklenen: Kurulum dokümanı §2'deki gibi dürüst cevaplar ve 13+ ("Override to Higher Age Rating"); Capabilities altında **Advertising** işaretli. Kids kategorisi seçili değil. "Age Assurance" kutusunu dokümandaki nota göre karara bağla.
 - [ ] **App Review Information**
   - Beklenen: Ad, soyad, **telefon** (+90…, sahip doğrular) ve e-posta `hello@buaze.com`. "Sign-in required" işaretsiz. Notlar `app-store-listing.md`'deki "App Review notes" metni; `{{SUPPORT_EMAIL}}` yer tutucusu kalmamış. macOS notuna şu cümle eklenmiş: "On the Mac, Instagram Stories sharing and the Live Activity aren't offered; everything else matches the iOS app."
 - [ ] **Export compliance**

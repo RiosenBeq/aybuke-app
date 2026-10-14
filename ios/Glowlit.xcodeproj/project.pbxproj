@@ -11,6 +11,8 @@
 		6A1B2C3D4E5F6000000000A3 /* GlowlitWidgetsExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 6A1B2C3D4E5F6000000000A4 /* GlowlitWidgetsExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		6A1B2C3D4E5F600000000101 /* AppCore in Frameworks */ = {isa = PBXBuildFile; productRef = 6A1B2C3D4E5F600000000301 /* AppCore */; };
 		6A1B2C3D4E5F600000000102 /* RevenueCat in Frameworks */ = {isa = PBXBuildFile; productRef = 6A1B2C3D4E5F600000000302 /* RevenueCat */; };
+		6A1B2C3D4E5F600000000103 /* GoogleMobileAds in Frameworks */ = {isa = PBXBuildFile; platformFilters = (ios, ); productRef = 6A1B2C3D4E5F600000000303 /* GoogleMobileAds */; };
+		6A1B2C3D4E5F600000000104 /* GoogleUserMessagingPlatform in Frameworks */ = {isa = PBXBuildFile; platformFilters = (ios, ); productRef = 6A1B2C3D4E5F600000000304 /* GoogleUserMessagingPlatform */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -83,6 +85,8 @@
 			files = (
 				6A1B2C3D4E5F600000000101 /* AppCore in Frameworks */,
 				6A1B2C3D4E5F600000000102 /* RevenueCat in Frameworks */,
+				6A1B2C3D4E5F600000000103 /* GoogleMobileAds in Frameworks */,
+				6A1B2C3D4E5F600000000104 /* GoogleUserMessagingPlatform in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -155,6 +159,8 @@
 			packageProductDependencies = (
 				6A1B2C3D4E5F600000000301 /* AppCore */,
 				6A1B2C3D4E5F600000000302 /* RevenueCat */,
+				6A1B2C3D4E5F600000000303 /* GoogleMobileAds */,
+				6A1B2C3D4E5F600000000304 /* GoogleUserMessagingPlatform */,
 			);
 			productName = Glowlit;
 			productReference = 6A1B2C3D4E5F600000000001 /* Glowlit.app */;
@@ -224,6 +230,8 @@
 			packageReferences = (
 				6A1B2C3D4E5F600000000201 /* XCLocalSwiftPackageReference "Packages/AppCore" */,
 				6A1B2C3D4E5F600000000202 /* XCRemoteSwiftPackageReference "purchases-ios-spm" */,
+				6A1B2C3D4E5F600000000203 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */,
+				6A1B2C3D4E5F600000000204 /* XCRemoteSwiftPackageReference "swift-package-manager-google-user-messaging-platform" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 6A1B2C3D4E5F600000000021 /* Products */;
@@ -594,6 +602,22 @@
 				minimumVersion = 5.95.0;
 			};
 		};
+		6A1B2C3D4E5F600000000203 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/googleads/swift-package-manager-google-mobile-ads";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 13.11.0;
+			};
+		};
+		6A1B2C3D4E5F600000000204 /* XCRemoteSwiftPackageReference "swift-package-manager-google-user-messaging-platform" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/googleads/swift-package-manager-google-user-messaging-platform";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 3.1.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -611,6 +635,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 6A1B2C3D4E5F600000000202 /* XCRemoteSwiftPackageReference "purchases-ios-spm" */;
 			productName = RevenueCat;
+		};
+		6A1B2C3D4E5F600000000303 /* GoogleMobileAds */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6A1B2C3D4E5F600000000203 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */;
+			productName = GoogleMobileAds;
+		};
+		6A1B2C3D4E5F600000000304 /* GoogleUserMessagingPlatform */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6A1B2C3D4E5F600000000204 /* XCRemoteSwiftPackageReference "swift-package-manager-google-user-messaging-platform" */;
+			productName = GoogleUserMessagingPlatform;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

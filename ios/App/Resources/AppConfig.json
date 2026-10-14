@@ -23,6 +23,13 @@
       "role": "images"
     }
   ],
+  "ads": {
+    "enabled": true,
+    "appID": "ca-app-pub-2292230772061554~5236020895",
+    "rewardedUnitID": "ca-app-pub-2292230772061554/1406702504",
+    "interstitialUnitID": "",
+    "dailyCap": 3
+  },
   "shareHashtags": [
     "Glowlit",
     "GlowUp"

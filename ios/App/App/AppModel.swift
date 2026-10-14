@@ -168,6 +168,8 @@ final class AppModel {
     let writer = OnDeviceWriter()
     /// Create's recent prompts and draft, kept only on this device.
     let prompts: PromptHistory
+    /// Rewarded and interstitial ads for free members 13+ (see `AdCoordinator`).
+    let ads: AdCoordinator
 
     // MARK: Account (optional Sign in with Apple)
     /// Signed in with Apple: Pro and credits follow her to other iPhones.
@@ -203,7 +205,7 @@ final class AppModel {
         static let wiped = [
             onboarding, onboardingPaywallPending, consent, ageRecord, interests, successfulSaves, reviewPolicy, appearance, deletionRequested,
             "credits.wallet.v2", "notifications.preferences.v1", "notifications.readyPingDeclined", "tour.seen.v1",
-            PromptHistory.recentKey, PromptHistory.draftKey,
+            PromptHistory.recentKey, PromptHistory.draftKey, AdCoordinator.pacingKey, AdCoordinator.usedKey,
         ] + legacyConsent
         static let wipedKeychain = [appleUserID, "auth.session", "auth.pendingMerge"]
     }
@@ -240,9 +242,14 @@ final class AppModel {
         let credits = CreditsManager(isServerAuthoritative: config.backend != nil)
         self.credits = credits
 
+        // Rewarded ads need the backend (and its session) to confirm the credit.
+        var adRewards: AdRewardBackend?
         switch config.aiMode {
         case .backend(let backend):
             let auth = AuthSessionManager(config: backend)
+            adRewards = AdRewardBackend(config: backend, auth: auth) { [weak purchases] in
+                purchases?.entitlementJWS
+            }
             // The pill shows the charge as soon as a job starts, and the
             // balance (or the refund) as soon as it ends.
             let remote = RemoteAIImageService(
@@ -263,12 +270,15 @@ final class AppModel {
             self.remote = nil
             self.ai = AIServiceRouter(cloud: DemoAIImageService(), onDevice: OnDeviceImageService())
         }
+        self.ads = AdCoordinator(config: config.ads, backend: adRewards)
+        ads.app = self
 
         purchases.creditPackHandler = { [weak self] credits, signedTransaction in
             await self?.grantCreditPack(credits, signedTransaction: signedTransaction) ?? false
         }
         purchases.onProStatusChange = { [weak self] isPro in
             guard let self else { return }
+            ads.proStatusChanged(isPro: isPro)
             credits.refresh(isPro: isPro)
             syncWidgets()
             Task { await self.refreshServerBalance() }
@@ -547,6 +557,7 @@ final class AppModel {
         tour.reset()
         GlowTips.eraseAll()
         prompts.reset()
+        ads.reset()
         credits.resetAll()
         credits.refresh(isPro: purchases.isPro)
         deleteAllCreations() // also resets the widgets, after the credits
@@ -699,6 +710,8 @@ final class AppModel {
     /// A paywall, account prompt or editor closed: a moment later (after a
     /// purchase the account prompt comes first), offer the tour.
     func presentationEnded() {
+        // A save in the editor, video editor or collage maker: its break is now.
+        ads.naturalBreak()
         guard hasCompletedOnboarding, !tour.hasSeen else { return }
         Task {
             try? await Task.sleep(for: .milliseconds(800))

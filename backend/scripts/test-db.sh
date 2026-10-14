@@ -31,7 +31,7 @@ for migration in "$ROOT"/supabase/migrations/*.sql; do
   "${PSQL[@]}" -f "$migration"
 done
 "${PSQL[@]}" -c "grant select on all tables in schema public to authenticated;"
-for test in credits reports accounts retry unclaimed revenuecat keepalive; do
+for test in credits reports accounts retry unclaimed revenuecat keepalive ad_rewards; do
   test="$ROOT/supabase/tests/${test}_test.sql"
   "${PSQL[@]}" -f "$test"
 done
