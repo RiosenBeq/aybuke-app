@@ -34,7 +34,7 @@ Son güncelleme: 14 Ekim 2026. Çalışma durduruldu; aşağıdaki "Açık işle
 - Abonelik grubu "Glowlit Pro": `app.glowlit.pro.yearly` ($39.99, 1 hafta ücretsiz deneme), `app.glowlit.pro.monthly` ($5.99, ilk ay $1.99), her ikisi için en-US ve tr metinleri, 174 ülke fiyatı, tanıtım teklifleri, inceleme ekran görüntüsü.
 - Krediler: `app.glowlit.credits.30` ($2.99) ve `app.glowlit.credits.100` ($7.99), en-US ve tr metinleri, fiyat, ülkeler, inceleme ekran görüntüsü.
 - RevenueCat: uygulama, public key, App Store bağlantısı; Apple sunucu bildirim URL'leri (üretim ve sandbox) ASC'ye girildi.
-- Web sitesi ve yasal metinler: operatör "Okan Berk Manavoğlu (bireysel geliştirici)", adres "İstanbul, Türkiye", şirket sicil/KEP yok, AB/İngiltere temsilcisi atanmadı, barındırma AB (Frankfurt). Tüm iletişim adresi `hello@buaze.com`.
+- Web sitesi ve yasal metinler: veri sorumlusu NEXTGEN YAZILIM EĞİTİM İNŞAAT SANAYİ VE TİCARET LİMİTED ŞİRKETİ (NextGen Yazılım Ltd. Şti.), Postane Mah. Atatürk Cad. No: 28 İç Kapı No: 1, 34940 Tuzla, İstanbul, MERSİS 0734069467300012; aybuke.org ile aynı bilgiler. KEP adresi bilinmediği için o satırlar gösterilmiyor; AB/İngiltere temsilcisi atanmadı, barındırma AB (Frankfurt). Tüm iletişim adresi `hello@buaze.com`.
 - Uygulama yapılandırması: backend URL, anon key, App Store ID, web ve yasal URL'ler, `forceDemoMode: false`. `check-release-config.py --report` geçiyor.
 - Çeviri: 11 dil uygulama kataloglarında.
 - Destek/gizlilik: `hello@buaze.com` her yerde.
@@ -80,7 +80,7 @@ Ağır derlemelerde disk alanı kontrol et (`df -h /System/Volumes/Data`). Önce
 - **Sign in with Apple:** bu sürümde gizli (`ios/App/Resources/AppConfig.json` › `signInWithApple: false`); kod duruyor. Açmadan önce Apple token iptali için `APPLE_SIGNIN_KEY_ID` ve `APPLE_SIGNIN_PRIVATE_KEY` eklenmeli, App Privacy'de e-posta beyan edilmeli ve App Store açıklamalarına giriş satırı geri konmalı. App Store Connect'e daha önce yüklenen açıklamalar (13 dil) ve App Review notları hâlâ girişten bahsediyorsa `docs/marketing/app-store-metadata.json` ve `app-store-listing.md`'deki güncel metinlerle değiştirilmeli.
 - **Açıklama uzunluğu:** Apple 4000 karakter üst sınırı var; uzun dillerde link etiketleri kısaltıldı. Yeni metin eklenirse tekrar ölç.
 - **Apple emoji kuralı:** açıklama ve promosyon metninde emoji yok (Apple reddediyor).
-- **Hukuki metinler:** operatör bilgisi bireysel geliştirici olarak dolduruldu; yayın öncesi bir avukat ya da uzman incelemesi önerilir.
+- **Hukuki metinler:** veri sorumlusu NextGen Yazılım Ltd. Şti.; şirketin KEP adresi `legal/config.json` içine eklenmeli (zorunlu), yayın öncesi bir avukat ya da uzman incelemesi önerilir.
 - **Codex inceleme kotası:** PR #1 incelemesi için otomatik bot kotası doldu; bu kod hatası değil.
 - **Notlar:** `.claude/` klasörü commit edilmez. Kişisel e-posta adresleri açık dosyalara yazılmaz (yalnızca `hello@buaze.com`).
 

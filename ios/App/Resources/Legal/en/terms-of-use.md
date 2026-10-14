@@ -3,7 +3,7 @@
 Last updated: 14 October 2026
 
 > **The short version.** This summary helps you find your way around. It doesn't replace the full Terms below.
-> - These Terms are a contract between you and Okan Berk Manavoğlu (individual developer), the developer of Glowlit. They are not a contract with Apple.
+> - These Terms are a contract between you and NEXTGEN YAZILIM EĞİTİM İNŞAAT SANAYİ VE TİCARET LİMİTED ŞİRKETİ (NextGen Yazılım Ltd. Şti.), the developer of Glowlit. They are not a contract with Apple.
 > - You must be at least 13. If you're under 18 (or under the age of majority where you live), you need permission from a parent or legal guardian. Section 4 is written for you.
 > - We design Glowlit with teens in mind: no tracking, no public feeds, no personalised ads, and cloud AI only after you opt in.
 > - On-device tools are always free. Free users get 3 credits a day, can watch an optional ad for 1 more credit up to 3 times a day, and see an occasional ad after saving. Pro has no ads. Pro subscriptions renew automatically until you cancel them in your Apple Account settings. Purchased credit packs never expire.
@@ -13,7 +13,7 @@ Last updated: 14 October 2026
 
 ## 1. About these Terms
 
-These Terms of Use ("**Terms**") govern your use of the Glowlit iOS app and the related online services (together, the "**Service**"). The Service is provided by Okan Berk Manavoğlu (individual developer), Istanbul, Türkiye, Türkiye ("**we**", "**us**" or "**our**"). Our full contact details are in section 26.
+These Terms of Use ("**Terms**") govern your use of the Glowlit iOS app and the related online services (together, the "**Service**"). The Service is provided by NEXTGEN YAZILIM EĞİTİM İNŞAAT SANAYİ VE TİCARET LİMİTED ŞİRKETİ (NextGen Yazılım Ltd. Şti.), Postane Mah. Atatürk Cad. No: 28 İç Kapı No: 1, 34940 Tuzla, İstanbul, Türkiye ("**we**", "**us**" or "**our**"). Our full contact details are in section 26.
 
 By downloading, installing or using Glowlit, you agree to these Terms. If you don't agree, please don't use the Service.
 
@@ -319,7 +319,7 @@ Our safety systems may block a request or a result. Blocked requests are never c
 
 ## 15. Our intellectual property and your licence to use the app
 
-The app, the Glowlit name and brand, the design, the template and style recipes and the software belong to Okan Berk Manavoğlu (individual developer) or its licensors and are protected by intellectual property laws.
+The app, the Glowlit name and brand, the design, the template and style recipes and the software belong to NEXTGEN YAZILIM EĞİTİM İNŞAAT SANAYİ VE TİCARET LİMİTED ŞİRKETİ (NextGen Yazılım Ltd. Şti.) or its licensors and are protected by intellectual property laws.
 
 Subject to these Terms, we grant you a personal, limited, non-exclusive, non-transferable and revocable licence to download, install and use the app on Apple-branded devices that you own or control, as permitted by Apple's Usage Rules (see section 24).
 
@@ -398,7 +398,7 @@ The liability cap above doesn't apply to you where mandatory law prevents it.
 
 ## 20. Indemnity
 
-To the extent permitted by applicable law, you agree to indemnify Okan Berk Manavoğlu (individual developer) against claims by third parties, and related reasonable costs (including reasonable legal fees), that arise from your inputs, your use of outputs or your breach of these Terms or of anyone's rights, to the extent the claim results from your fault.
+To the extent permitted by applicable law, you agree to indemnify NEXTGEN YAZILIM EĞİTİM İNŞAAT SANAYİ VE TİCARET LİMİTED ŞİRKETİ (NextGen Yazılım Ltd. Şti.) against claims by third parties, and related reasonable costs (including reasonable legal fees), that arise from your inputs, your use of outputs or your breach of these Terms or of anyone's rights, to the extent the claim results from your fault.
 
 This section doesn't apply if you're a consumer and the law where you live doesn't allow such an obligation.
 
@@ -454,14 +454,14 @@ Before starting formal proceedings, please contact us at [hello@buaze.com](mailt
 
 These terms apply because you got Glowlit from Apple's App Store. If they conflict with other provisions of these Terms, this section prevails with respect to your use of the app. These Terms don't set usage rules for the app that conflict with the Apple Media Services Terms and Conditions.
 
-1. **Parties.** These Terms are concluded between you and Okan Berk Manavoğlu (individual developer) only, and not with Apple Inc. ("**Apple**"). Okan Berk Manavoğlu (individual developer), not Apple, is solely responsible for the app and its content.
+1. **Parties.** These Terms are concluded between you and NEXTGEN YAZILIM EĞİTİM İNŞAAT SANAYİ VE TİCARET LİMİTED ŞİRKETİ (NextGen Yazılım Ltd. Şti.) only, and not with Apple Inc. ("**Apple**"). NEXTGEN YAZILIM EĞİTİM İNŞAAT SANAYİ VE TİCARET LİMİTED ŞİRKETİ (NextGen Yazılım Ltd. Şti.), not Apple, is solely responsible for the app and its content.
 2. **Scope of licence.** Your licence to use the app is limited to a non-transferable licence to use it on any Apple-branded products that you own or control, as permitted by the Usage Rules set out in the Apple Media Services Terms and Conditions, except that the app may be accessed and used by other accounts associated with you via Family Sharing or volume purchasing, where available.
-3. **Maintenance and support.** Okan Berk Manavoğlu (individual developer) is solely responsible for providing any maintenance and support services for the app, as set out in these Terms or as required by applicable law. Apple has no obligation whatsoever to furnish any maintenance and support services for the app.
-4. **Warranty.** Okan Berk Manavoğlu (individual developer) is solely responsible for any product warranties, whether express or implied by law, to the extent they are not effectively disclaimed. If the app fails to conform to any applicable warranty, you may notify Apple, and Apple will refund the purchase price (if any) of the app to you. To the maximum extent permitted by applicable law, Apple has no other warranty obligation whatsoever with respect to the app, and any other claims, losses, liabilities, damages, costs or expenses attributable to any failure to conform to any warranty are the sole responsibility of Okan Berk Manavoğlu (individual developer).
-5. **Product claims.** Okan Berk Manavoğlu (individual developer), not Apple, is responsible for addressing any claims by you or any third party relating to the app or your possession and use of it, including: (i) product liability claims; (ii) any claim that the app fails to conform to any applicable legal or regulatory requirement; and (iii) claims arising under consumer protection, privacy or similar legislation. These Terms don't limit the liability of Okan Berk Manavoğlu (individual developer) to you beyond what is permitted by applicable law.
-6. **Intellectual property.** If a third party claims that the app or your possession and use of it infringes that third party's intellectual property rights, Okan Berk Manavoğlu (individual developer), not Apple, is solely responsible for the investigation, defence, settlement and discharge of that claim.
+3. **Maintenance and support.** NEXTGEN YAZILIM EĞİTİM İNŞAAT SANAYİ VE TİCARET LİMİTED ŞİRKETİ (NextGen Yazılım Ltd. Şti.) is solely responsible for providing any maintenance and support services for the app, as set out in these Terms or as required by applicable law. Apple has no obligation whatsoever to furnish any maintenance and support services for the app.
+4. **Warranty.** NEXTGEN YAZILIM EĞİTİM İNŞAAT SANAYİ VE TİCARET LİMİTED ŞİRKETİ (NextGen Yazılım Ltd. Şti.) is solely responsible for any product warranties, whether express or implied by law, to the extent they are not effectively disclaimed. If the app fails to conform to any applicable warranty, you may notify Apple, and Apple will refund the purchase price (if any) of the app to you. To the maximum extent permitted by applicable law, Apple has no other warranty obligation whatsoever with respect to the app, and any other claims, losses, liabilities, damages, costs or expenses attributable to any failure to conform to any warranty are the sole responsibility of NEXTGEN YAZILIM EĞİTİM İNŞAAT SANAYİ VE TİCARET LİMİTED ŞİRKETİ (NextGen Yazılım Ltd. Şti.).
+5. **Product claims.** NEXTGEN YAZILIM EĞİTİM İNŞAAT SANAYİ VE TİCARET LİMİTED ŞİRKETİ (NextGen Yazılım Ltd. Şti.), not Apple, is responsible for addressing any claims by you or any third party relating to the app or your possession and use of it, including: (i) product liability claims; (ii) any claim that the app fails to conform to any applicable legal or regulatory requirement; and (iii) claims arising under consumer protection, privacy or similar legislation. These Terms don't limit the liability of NEXTGEN YAZILIM EĞİTİM İNŞAAT SANAYİ VE TİCARET LİMİTED ŞİRKETİ (NextGen Yazılım Ltd. Şti.) to you beyond what is permitted by applicable law.
+6. **Intellectual property.** If a third party claims that the app or your possession and use of it infringes that third party's intellectual property rights, NEXTGEN YAZILIM EĞİTİM İNŞAAT SANAYİ VE TİCARET LİMİTED ŞİRKETİ (NextGen Yazılım Ltd. Şti.), not Apple, is solely responsible for the investigation, defence, settlement and discharge of that claim.
 7. **Legal compliance.** You represent and warrant that (i) you are not located in a country that is subject to a U.S. Government embargo or that has been designated by the U.S. Government as a "terrorist supporting" country; and (ii) you are not listed on any U.S. Government list of prohibited or restricted parties.
-8. **Developer name and address.** Please direct any questions, complaints or claims about the app to Okan Berk Manavoğlu (individual developer), Istanbul, Türkiye, Türkiye, email [hello@buaze.com](mailto:hello@buaze.com).
+8. **Developer name and address.** Please direct any questions, complaints or claims about the app to NEXTGEN YAZILIM EĞİTİM İNŞAAT SANAYİ VE TİCARET LİMİTED ŞİRKETİ (NextGen Yazılım Ltd. Şti.), Postane Mah. Atatürk Cad. No: 28 İç Kapı No: 1, 34940 Tuzla, İstanbul, Türkiye, email [hello@buaze.com](mailto:hello@buaze.com).
 9. **Third-party terms.** You must comply with applicable third-party terms of agreement when using the app, for example your wireless data service agreement.
 10. **Third-party beneficiary.** Apple and Apple's subsidiaries are third-party beneficiaries of these Terms. Upon your acceptance of these Terms, Apple will have the right (and will be deemed to have accepted the right) to enforce these Terms against you as a third-party beneficiary.
 
@@ -477,11 +477,10 @@ These terms apply because you got Glowlit from Apple's App Store. If they confli
 
 ## 26. Contact us
 
-- **Company:** Okan Berk Manavoğlu (individual developer)
-- **Address:** Istanbul, Türkiye, Türkiye
-- **Trade registry / MERSİS number:** None (individual developer)
+- **Company:** NEXTGEN YAZILIM EĞİTİM İNŞAAT SANAYİ VE TİCARET LİMİTED ŞİRKETİ (NextGen Yazılım Ltd. Şti.)
+- **Address:** Postane Mah. Atatürk Cad. No: 28 İç Kapı No: 1, 34940 Tuzla, İstanbul, Türkiye
+- **Trade registry / MERSİS number:** MERSİS no. 0734069467300012 (Tuzla Tax Office, tax no. 6312110904)
 - **Email:** [hello@buaze.com](mailto:hello@buaze.com)
-- **Registered email (KEP):** None
 - **Privacy questions and parents' requests:** [hello@buaze.com](mailto:hello@buaze.com)
 
 ### Contact point under the EU Digital Services Act

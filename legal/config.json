@@ -1,5 +1,5 @@
 {
-  "_comment": "Values for the {{TOKENS}} in legal/en and legal/tr. Replace every [bracketed] value before publishing, then run: python3 scripts/build-legal.py",
+  "_comment": "Values for the {{TOKENS}} in legal/en and legal/tr. Company details are NextGen Yazılım's, as on aybuke.org (RiosenBeq/aybuke legal/config.json); an empty value leaves out every line that uses it. Then run: python3 scripts/build-legal.py",
   "shared": {
     "APP_NAME": "Glowlit",
     "CONTACT_EMAIL": "hello@buaze.com",
@@ -8,11 +8,11 @@
   },
   "en": {
     "EFFECTIVE_DATE": "14 October 2026",
-    "COMPANY_NAME": "Okan Berk Manavoğlu (individual developer)",
-    "COMPANY_ADDRESS": "Istanbul, Türkiye",
+    "COMPANY_NAME": "NEXTGEN YAZILIM EĞİTİM İNŞAAT SANAYİ VE TİCARET LİMİTED ŞİRKETİ (NextGen Yazılım Ltd. Şti.)",
+    "COMPANY_ADDRESS": "Postane Mah. Atatürk Cad. No: 28 İç Kapı No: 1, 34940 Tuzla, İstanbul",
     "COMPANY_COUNTRY": "Türkiye",
-    "COMPANY_REGISTRY": "None (individual developer)",
-    "KEP_ADDRESS": "None",
+    "COMPANY_REGISTRY": "MERSİS no. 0734069467300012 (Tuzla Tax Office, tax no. 6312110904)",
+    "KEP_ADDRESS": "",
     "EU_REPRESENTATIVE": "None appointed. Contact hello@buaze.com for any request.",
     "UK_REPRESENTATIVE": "None appointed. Contact hello@buaze.com for any request.",
     "GOVERNING_LAW": "the laws of the Republic of Türkiye",
@@ -21,11 +21,11 @@
   },
   "tr": {
     "EFFECTIVE_DATE": "14 Ekim 2026",
-    "COMPANY_NAME": "Okan Berk Manavoğlu (bireysel geliştirici)",
-    "COMPANY_ADDRESS": "İstanbul, Türkiye",
+    "COMPANY_NAME": "NEXTGEN YAZILIM EĞİTİM İNŞAAT SANAYİ VE TİCARET LİMİTED ŞİRKETİ (NextGen Yazılım Ltd. Şti.)",
+    "COMPANY_ADDRESS": "Postane Mah. Atatürk Cad. No: 28 İç Kapı No: 1, 34940 Tuzla, İstanbul",
     "COMPANY_COUNTRY": "Türkiye",
-    "COMPANY_REGISTRY": "Yok (bireysel geliştirici)",
-    "KEP_ADDRESS": "Yok",
+    "COMPANY_REGISTRY": "MERSİS No: 0734069467300012 (Tuzla Vergi Dairesi, VKN: 6312110904)",
+    "KEP_ADDRESS": "",
     "EU_REPRESENTATIVE": "Atanmış temsilci yok. Her talep için hello@buaze.com adresine yazabilirsiniz.",
     "UK_REPRESENTATIVE": "Atanmış temsilci yok. Her talep için hello@buaze.com adresine yazabilirsiniz.",
     "GOVERNING_LAW": "Türkiye Cumhuriyeti hukuku",
