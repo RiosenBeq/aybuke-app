@@ -71,7 +71,7 @@ struct ImagePlaygroundCreateButton: View {
     }
 
     private func start() {
-        if case .blocked(let reason) = ContentPolicy.evaluate(prompt) {
+        if case .blocked(let reason, _) = ContentPolicy.evaluate(prompt, operation: .textToImage) {
             app.showToast(verbatim: L10n.core(reason), style: .error)
             Haptics.error()
             return

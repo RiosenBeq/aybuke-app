@@ -30,6 +30,15 @@ final class OnDeviceWriter {
         case magicEdit(labels: [String], peopleCount: Int)
         /// Share captions; `look` is the template name when there is one.
         case caption(look: String?, madeWithAI: Bool)
+
+        /// The policy rules a line must pass. Edit ideas and captions are about
+        /// someone's photo, so they get the stricter photo rules.
+        var operation: AIOperation {
+            switch self {
+            case .create: .textToImage
+            case .magicEdit, .caption: .magicEdit
+            }
+        }
     }
 
     private(set) var isAvailable = false
@@ -72,7 +81,7 @@ final class OnDeviceWriter {
     /// in the prompt's own language. `nil` when the model can't help.
     func enhance(prompt: String, style: ImageStyle?) async -> String? {
         let idea = PromptBuilder.sanitize(prompt)
-        guard isAvailable, !idea.isEmpty, ContentPolicy.evaluate(idea) == .allowed else { return nil }
+        guard isAvailable, !idea.isEmpty, ContentPolicy.evaluate(idea, operation: .textToImage).isAllowed else { return nil }
         #if canImport(FoundationModels)
         if #available(iOS 26.0, *) {
             var request = """
@@ -85,7 +94,7 @@ final class OnDeviceWriter {
             }
             request += "\nIdea: \(idea)"
             guard let output = await respond(request, generating: EnhancedPrompt.self) else { return nil }
-            return Self.screened([output.prompt]).first
+            return Self.screened([output.prompt], for: .textToImage).first
         }
         #endif
         return nil
@@ -98,7 +107,7 @@ final class OnDeviceWriter {
         #if canImport(FoundationModels)
         if #available(iOS 26.0, *) {
             guard let output = await respond(Self.request(for: context), generating: Ideas.self) else { return [] }
-            return Array(Self.screened(output.items).prefix(count))
+            return Array(Self.screened(output.items, for: context.operation).prefix(count))
         }
         #endif
         return []
@@ -130,10 +139,10 @@ final class OnDeviceWriter {
     }
 
     /// Keeps lines that are non-empty, short enough and allowed by the policy.
-    private static func screened(_ lines: [String]) -> [String] {
+    private static func screened(_ lines: [String], for operation: AIOperation) -> [String] {
         lines
             .map { PromptBuilder.sanitize($0.trimmingCharacters(in: CharacterSet(charactersIn: "\"“”«»"))) }
-            .filter { !$0.isEmpty && $0.count <= 400 && ContentPolicy.evaluate($0) == .allowed }
+            .filter { !$0.isEmpty && $0.count <= 400 && ContentPolicy.evaluate($0, operation: operation).isAllowed }
     }
 
     /// The writer's rules, in English; it answers in the app's language.
