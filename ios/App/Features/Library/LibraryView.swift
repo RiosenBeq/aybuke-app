@@ -72,16 +72,20 @@ struct LibraryView: View {
             .navigationDestination(for: Creation.self) { creation in
                 CreationDetailView(creation: creation)
             }
-            .confirmationDialog(deleteTitle, isPresented: isPresented($pendingDelete), titleVisibility: .visible) {
-                Button("Delete", role: .destructive) { moveToRecentlyDeleted(pendingDelete) }
+            // `presenting:` hands the actions the creations as they were when
+            // asked: the binding clears the pending list before an action runs.
+            .confirmationDialog(deleteTitle, isPresented: isPresented($pendingDelete), titleVisibility: .visible,
+                                presenting: pendingDelete.isEmpty ? nil : pendingDelete) { items in
+                Button("Delete", role: .destructive) { moveToRecentlyDeleted(items) }
                 Button("Cancel", role: .cancel) {}
-            } message: {
+            } message: { _ in
                 Text("Deleted creations stay in Recently deleted for 30 days.")
             }
-            .confirmationDialog(purgeTitle, isPresented: isPresented($pendingPurge), titleVisibility: .visible) {
-                Button("Delete now", role: .destructive) { deleteForGood(pendingPurge) }
+            .confirmationDialog(purgeTitle, isPresented: isPresented($pendingPurge), titleVisibility: .visible,
+                                presenting: pendingPurge.isEmpty ? nil : pendingPurge) { items in
+                Button("Delete now", role: .destructive) { deleteForGood(items) }
                 Button("Cancel", role: .cancel) {}
-            } message: {
+            } message: { _ in
                 Text("This can't be undone.")
             }
             .confirmationDialog("Restore this creation?", isPresented: Binding(
@@ -334,7 +338,6 @@ struct LibraryView: View {
                     Haptics.selection()
                     selection = allSelected ? [] : Set(visible.map(\.id))
                 }
-                .keyboardShortcut("a", modifiers: .command)
             }
             ToolbarItem(placement: .topBarTrailing) {
                 Button("Done") { endSelecting() }
@@ -395,6 +398,8 @@ struct LibraryView: View {
             VStack(spacing: 4) {
                 Image(systemName: systemImage)
                     .font(.system(size: 19, weight: .semibold))
+                    // Same height for every symbol, so the labels line up.
+                    .frame(height: 24)
                 Text(title)
                     .font(.caption2.weight(.semibold))
                     .lineLimit(1)
@@ -657,14 +662,33 @@ struct LibraryView: View {
     }
 
     #if DEBUG
-    /// `-GLScreenshotScene librarySelect` and `libraryTrash`.
+    /// `-GLScreenshotScene librarySelect` and `libraryTrash`. QA:
+    /// `-GLLibraryAction favorite|delete|duplicate` acts on the selection,
+    /// `restore|purge` on the newest creation in Recently deleted.
     private func applyScreenshotState() {
+        let action = UserDefaults.standard.string(forKey: "GLLibraryAction")
         switch ScreenshotScene.current {
-        case .librarySelect where !isSelecting:
+        case .librarySelect where !isSelecting && selection.isEmpty:
             isSelecting = true
             selection = Set(creations.enumerated().filter { [1, 2, 4].contains($0.offset) }.map(\.element.id))
-        case .libraryTrash:
+            guard let action else { return }
+            Task {
+                try? await Task.sleep(for: .seconds(1))
+                switch action {
+                case "favorite": setFavorite(true, for: selected)
+                case "delete": moveToRecentlyDeleted(selected)
+                case "duplicate": if let first = selected.first { duplicate(first) }
+                default: break
+                }
+            }
+        case .libraryTrash where filter != .recentlyDeleted:
             filter = .recentlyDeleted
+            guard let action else { return }
+            Task {
+                try? await Task.sleep(for: .seconds(1))
+                guard let newest = visible.first else { return }
+                if action == "restore" { restore([newest]) } else if action == "purge" { deleteForGood([newest]) }
+            }
         default:
             break
         }

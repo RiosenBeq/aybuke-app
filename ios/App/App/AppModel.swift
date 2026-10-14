@@ -193,8 +193,10 @@ final class AppModel {
         self.config = config
         self.defaults = defaults
         #if DEBUG
-        // Screenshot scenes never read or keep her prompts.
-        self.prompts = PromptHistory(defaults: ScreenshotScene.current == nil ? defaults : nil)
+        // Screenshot scenes never read or keep her prompts, unless
+        // `-GLKeepPrompts YES` asks for the stored ones (QA).
+        let keepsPrompts = ScreenshotScene.current == nil || UserDefaults.standard.bool(forKey: "GLKeepPrompts")
+        self.prompts = PromptHistory(defaults: keepsPrompts ? defaults : nil)
         #else
         self.prompts = PromptHistory(defaults: defaults)
         #endif
@@ -1337,7 +1339,9 @@ extension AppModel {
             selectedTab = .create
         case .recentPrompts:
             selectedTab = .create
-            prompts.seedForScreenshots(ScreenshotFixtures.recentPrompts)
+            if !UserDefaults.standard.bool(forKey: "GLKeepPrompts") {
+                prompts.seedForScreenshots(ScreenshotFixtures.recentPrompts)
+            }
         case .edit:
             selectedTab = .edit
         case .library, .librarySelect, .libraryTrash:
@@ -1382,6 +1386,8 @@ extension AppModel {
     /// `trash`: four creations in Recently deleted (30, 19, 4 and 1 days
     /// left) and one past 30 days for the launch purge.
     private func seedScreenshotLibrary(trash: Bool = false) {
+        // `-GLKeepLibrary YES`: show the library already on disk (migration QA).
+        if UserDefaults.standard.bool(forKey: "GLKeepLibrary") { return }
         deleteAllCreations()
         let images = [ScreenshotFixtures.goldenLandscape] + ScreenshotFixtures.generatedArt(count: trash ? 13 : 8)
         let context = container.mainContext

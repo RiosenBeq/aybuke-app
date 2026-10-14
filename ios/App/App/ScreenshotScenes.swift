@@ -16,14 +16,17 @@ enum ScreenshotScene: String, CaseIterable {
     case ideas
     case crop
     case result
-    /// My Works; `-GLLibraryMissing YES` adds a tile whose file is gone.
+    /// My Works; `-GLLibraryMissing YES` adds a tile whose file is gone, and
+    /// `-GLKeepLibrary YES` shows the library on disk instead (migration QA).
     case library
-    /// My Works in select mode with three creations picked.
+    /// My Works in select mode with three creations picked;
+    /// `-GLLibraryAction favorite|delete|duplicate` acts on them.
     case librarySelect
-    /// Recently deleted with a few days-left badges (and one past 30 days,
-    /// which the launch purge removes).
+    /// Recently deleted with days-left badges (and one past 30 days, which
+    /// the launch purge removes); `-GLLibraryAction restore|purge`.
     case libraryTrash
-    /// Create with an empty prompt and recent prompts to pick from.
+    /// Create with an empty prompt and recent prompts to pick from;
+    /// `-GLKeepPrompts YES` shows the stored prompts and draft instead.
     case recentPrompts
     case paywall
     case consent

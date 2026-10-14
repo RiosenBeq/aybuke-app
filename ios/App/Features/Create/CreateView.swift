@@ -194,8 +194,11 @@ struct CreateView: View {
                             }
                     }
                 }
+                .padding(.horizontal, 16)
             }
             .scrollIndicators(.hidden)
+            // Scrolls edge to edge inside the card.
+            .padding(.horizontal, -16)
         }
     }
 
