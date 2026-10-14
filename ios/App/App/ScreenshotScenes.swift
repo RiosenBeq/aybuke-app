@@ -23,7 +23,9 @@ enum ScreenshotScene: String, CaseIterable {
     /// `-GLKeepLibrary YES` shows the library on disk instead (migration QA).
     case library
     /// My Works in select mode with three creations picked;
-    /// `-GLLibraryAction favorite|delete|duplicate` acts on them.
+    /// `-GLLibraryAction favorite|delete|duplicate` acts on them, `collage`
+    /// opens the collage maker with them, `drag` drag-selects the first six
+    /// tiles as a finger would, and `selectAll|clear` pick every tile or none.
     case librarySelect
     /// Recently deleted with days-left badges (and one past 30 days, which
     /// the launch purge removes); `-GLLibraryAction restore|purge`.

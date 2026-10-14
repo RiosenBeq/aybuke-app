@@ -121,8 +121,10 @@ final class AppModel {
     var isBestShotPresented = false
     /// The collage and photo dump maker (full screen, on-device).
     var isCollagePresented = false {
-        didSet { if isCollagePresented { GlowTips.noteUsed(.collage) } }
+        didSet { if isCollagePresented { GlowTips.noteUsed(.collage) } else { collageStartFiles = [] } }
     }
+    /// Pictures from My Works the collage maker opens with (`openCollage(with:)`).
+    @ObservationIgnored private var collageStartFiles: [Data] = []
     /// The simple video editor: picker, then the editor itself.
     var isVideoPickerPresented = false
     var videoSource: VideoSource?
@@ -1206,6 +1208,19 @@ final class AppModel {
 
     func share(_ payload: SharePayload) {
         shareRequest = payload
+    }
+
+    /// The collage maker with these pictures, in this order, instead of the
+    /// photo picker. They're encoded like exports, so each keeps its marking.
+    func openCollage(with files: [Data]) {
+        collageStartFiles = files
+        isCollagePresented = true
+    }
+
+    /// What `openCollage(with:)` sent, handed over once.
+    func takeCollageStartFiles() -> [Data] {
+        defer { collageStartFiles = [] }
+        return collageStartFiles
     }
 
     // MARK: Feedback

@@ -64,7 +64,8 @@ struct CollageView: View {
         .modifier(AppPresentations(isActive: true))
     }
 
-    /// Opens the picker straight away: choosing photos is the first step.
+    /// Opens the picker straight away: choosing photos is the first step,
+    /// unless My Works sent its pictures (`AppModel.openCollage(with:)`).
     private func prepare() async {
         #if DEBUG
         if ScreenshotScene.current == .collage {
@@ -77,6 +78,13 @@ struct CollageView: View {
             return
         }
         #endif
+        let sent = app.takeCollageStartFiles()
+        if !sent.isEmpty {
+            if await model.addDropped(sent) > 0 {
+                app.showToast("Couldn't open that photo. Try another one.", style: .error)
+            }
+            if !model.photos.isEmpty { return }
+        }
         try? await Task.sleep(for: .milliseconds(400))
         if model.photos.isEmpty { isPickerPresented = true }
     }

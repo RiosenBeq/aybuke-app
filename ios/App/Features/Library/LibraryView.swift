@@ -6,6 +6,8 @@ import AppCore
 struct LibraryView: View {
     @Environment(AppModel.self) private var app
     @Environment(\.modelContext) private var modelContext
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Query(filter: #Predicate<Creation> { $0.deletedAt == nil }, sort: \Creation.createdAt, order: .reverse)
     private var creations: [Creation]
     /// Recently deleted, last deleted first.
@@ -15,7 +17,13 @@ struct LibraryView: View {
     @State private var filter = Filter.all
     @State private var path = NavigationPath()
     @State private var isSelecting = false
-    @State private var selection: Set<UUID> = []
+    @State private var selection = LibrarySelection()
+    /// A sideways drag across the tiles is selecting them; scrolling waits.
+    @State private var isDragSelecting = false
+    @State private var dragTracker = LibraryDragTracker()
+    /// True while a finger drags in select mode. It resets even when the
+    /// system takes the touch, so scrolling always comes back.
+    @GestureState private var isDragging = false
     /// Image files found missing while their tiles loaded.
     @State private var missingFiles: Set<String> = []
     /// Waiting for "Delete" (to Recently deleted) to be confirmed.
@@ -29,6 +37,8 @@ struct LibraryView: View {
     @State private var isWorking = false
 
     private let columns = [GridItem(.adaptive(minimum: 108), spacing: 6)]
+    /// The grid's coordinate space, shared by the tile frames and the drag.
+    static let gridSpace = "libraryGrid"
 
     enum Filter {
         case all, favorites, recentlyDeleted
@@ -50,8 +60,26 @@ struct LibraryView: View {
         }
     }
 
+    /// What's picked, in grid order: what the actions work on.
     private var selected: [Creation] {
         visible.filter { selection.contains($0.id) }
+    }
+
+    /// What's picked, in the order she picked it: the collage's order.
+    private var pickedInOrder: [Creation] {
+        let byID = Dictionary(visible.map { ($0.id, $0) }, uniquingKeysWith: { first, _ in first })
+        return selection.order.compactMap { byID[$0] }
+    }
+
+    /// iPhone: the floating bar takes the tab bar's place while she picks,
+    /// like Photos. iPad and the Mac keep their tabs at the top.
+    private var hidesTabBar: Bool {
+        isSelecting && horizontalSizeClass == .compact && !Platform.isMac
+    }
+
+    /// Into and out of select mode; a plain fade with Reduce Motion.
+    private var modeAnimation: Animation {
+        reduceMotion ? .easeInOut(duration: 0.2) : Motion.reveal
     }
 
     var body: some View {
@@ -66,8 +94,15 @@ struct LibraryView: View {
             .background(Palette.background.ignoresSafeArea())
             .navigationTitle(title)
             .toolbar { toolbar }
+            // Not on the Mac, where `hidesMacTabs` owns the tabs' visibility.
+            #if !targetEnvironment(macCatalyst)
+            .toolbar(hidesTabBar ? .hidden : .automatic, for: .tabBar)
+            #endif
             .safeAreaInset(edge: .bottom) {
-                if isSelecting { actionBar }
+                if isSelecting {
+                    selectionBar
+                        .transition(reduceMotion ? .opacity : .move(edge: .bottom).combined(with: .opacity))
+                }
             }
             .navigationDestination(for: Creation.self) { creation in
                 CreationDetailView(creation: creation)
@@ -99,9 +134,17 @@ struct LibraryView: View {
                 Text("Deleting it now can't be undone.")
             }
             .shareSheet(item: $shareItems) { removeSharedFiles() }
-            .onChange(of: filter) { _, _ in selection = [] }
+            // Another filter shows other creations: start that pick afresh.
+            .onChange(of: filter) { _, _ in selection.removeAll() }
             .onChange(of: visible.isEmpty) { _, isEmpty in
                 if isEmpty { endSelecting() }
+            }
+            // Only what's on screen stays picked.
+            .onChange(of: visible.map(\.id)) { _, ids in
+                selection.keepOnly(Set(ids))
+            }
+            .onChange(of: isDragging) { _, dragging in
+                if !dragging { finishDrag() }
             }
             #if DEBUG
             .onAppear(perform: applyScreenshotState)
@@ -111,7 +154,8 @@ struct LibraryView: View {
 
     private var title: Text {
         guard isSelecting else { return Text("My Works") }
-        return selection.isEmpty ? Text("Select items") : Text("\(selection.count) selected")
+        let count = selected.count
+        return count == 0 ? Text("Select items") : Text("\(count) selected")
     }
 
     private var deleteTitle: Text {
@@ -144,13 +188,16 @@ struct LibraryView: View {
                 emptyFilterMessage
             }
             LazyVGrid(columns: columns, spacing: 6) {
-                ForEach(items) { creation in
-                    tile(for: creation)
+                ForEach(Array(items.enumerated()), id: \.element.id) { index, creation in
+                    tile(for: creation, position: index + 1, of: items.count)
                 }
             }
+            .simultaneousGesture(dragToSelect, including: isSelecting ? .all : .subviews)
+            .coordinateSpace(.named(Self.gridSpace))
             .padding(.horizontal, 12)
             .padding(.bottom, 12)
         }
+        .scrollDisabled(isDragSelecting)
         .animation(.snappy, value: filter)
     }
 
@@ -224,10 +271,12 @@ struct LibraryView: View {
     }
 
     @ViewBuilder
-    private func tile(for creation: Creation) -> some View {
+    private func tile(for creation: Creation, position: Int, of total: Int) -> some View {
+        let id = creation.id
         let name = creation.imageFileName
         let isMissing = missingFiles.contains(name)
-        let isSelected = selection.contains(creation.id)
+        let isSelected = selection.contains(id)
+        let space = Self.gridSpace
         let tile = LibraryTile(
             creation: creation,
             isMissing: isMissing,
@@ -237,7 +286,7 @@ struct LibraryView: View {
             onMissing: { missingFiles.insert(name) },
             onRemove: { removeMissing(creation) }
         )
-        Group {
+        ZStack {
             if isMissing && !isSelecting {
                 // Its own "Remove" button; nothing to open.
                 tile
@@ -251,12 +300,21 @@ struct LibraryView: View {
                 }
                 .buttonStyle(.pressable)
                 .accessibilityLabel(accessibilityLabel(for: creation, isMissing: isMissing))
+                // While she picks: where it is, "3 of 12" (and "Selected" from the trait).
+                .accessibilityValue(isSelecting ? Text("\(position) of \(total)") : Text(verbatim: ""))
                 .accessibilityAddTraits(isSelected ? .isSelected : [])
             }
         }
         .contextMenu {
             if !isSelecting { menu(for: creation, isMissing: isMissing) }
         }
+        // Where the tile is, for drag to select (only tiles on screen).
+        .onGeometryChange(for: CGRect.self) { proxy in
+            proxy.frame(in: .named(space))
+        } action: { frame in
+            dragTracker.frames[id] = frame
+        }
+        .onDisappear { dragTracker.frames[id] = nil }
     }
 
     private func accessibilityLabel(for creation: Creation, isMissing: Bool) -> String {
@@ -277,7 +335,22 @@ struct LibraryView: View {
             } label: {
                 Label("Remove", systemImage: "trash")
             }
-        } else if creation.isInRecentlyDeleted {
+        } else {
+            // A long press keeps opening this menu, as everywhere on iOS;
+            // Select starts select mode with this tile picked.
+            Button {
+                beginSelecting(with: creation)
+            } label: {
+                Label("Select", systemImage: "checkmark.circle")
+            }
+            Divider()
+            actions(for: creation)
+        }
+    }
+
+    @ViewBuilder
+    private func actions(for creation: Creation) -> some View {
+        if creation.isInRecentlyDeleted {
             Button {
                 restore([creation])
             } label: {
@@ -333,11 +406,15 @@ struct LibraryView: View {
     private var toolbar: some ToolbarContent {
         if isSelecting {
             ToolbarItem(placement: .topBarLeading) {
-                let allSelected = !visible.isEmpty && selection.count == visible.count
+                let ids = visible.map(\.id)
+                let allSelected = !ids.isEmpty && ids.allSatisfy { selection.contains($0) }
                 Button(allSelected ? "Deselect all" : "Select all") {
                     Haptics.selection()
-                    selection = allSelected ? [] : Set(visible.map(\.id))
+                    // Ones already picked keep their place in the pick order.
+                    selection = allSelected ? LibrarySelection() : selection.applying(ids, selected: true)
                 }
+                // ⌘A picks everything, like Photos; it never unpicks.
+                .keyboardShortcut(allSelected ? nil : KeyboardShortcut("a", modifiers: .command))
             }
             ToolbarItem(placement: .topBarTrailing) {
                 Button("Done") { endSelecting() }
@@ -346,79 +423,56 @@ struct LibraryView: View {
             }
         } else if !visible.isEmpty {
             ToolbarItem(placement: .topBarTrailing) {
-                Button("Select") {
-                    Haptics.selection()
-                    withAnimation(.snappy) { isSelecting = true }
-                }
+                Button("Select") { beginSelecting() }
             }
         }
     }
 
-    private var actionBar: some View {
+    private var selectionBar: some View {
         let items = selected
-        let allFavorite = !items.isEmpty && items.allSatisfy(\.isFavorite)
-        return HStack(spacing: 0) {
-            if isWorking {
-                ProgressView()
-                    .frame(maxWidth: .infinity, minHeight: 50)
-                    .accessibilityLabel("Preparing…")
-            } else if filter == .recentlyDeleted {
-                barButton("Restore", systemImage: "arrow.uturn.backward") { restore(items) }
-                barButton("Delete now", systemImage: "trash", role: .destructive) { pendingPurge = items }
-            } else {
-                barButton("Share", systemImage: "square.and.arrow.up") { share(items) }
-                barButton("Save", systemImage: "square.and.arrow.down", accessibilityLabel: "Save to Photos") { saveToPhotos(items) }
-                if allFavorite {
-                    barButton("Unfavorite", systemImage: "heart.slash", accessibilityLabel: "Remove from favorites") {
-                        setFavorite(false, for: items)
-                    }
-                } else {
-                    barButton("Favorite", systemImage: "heart", accessibilityLabel: "Add to favorites") {
-                        setFavorite(true, for: items)
-                    }
-                }
-                barButton("Delete", systemImage: "trash", role: .destructive) { pendingDelete = items }
-                    .keyboardShortcut(.delete, modifiers: [])
-            }
-        }
-        .disabled(items.isEmpty)
-        // The labels have their own colors, so "nothing selected" needs a dim.
-        .opacity(items.isEmpty ? 0.4 : 1)
+        let picked = pickedInOrder
+        return LibrarySelectionBar(
+            count: items.count,
+            collageCount: picked.filter { !missingFiles.contains($0.imageFileName) }.count,
+            isRecentlyDeleted: filter == .recentlyDeleted,
+            allFavorite: !items.isEmpty && items.allSatisfy(\.isFavorite),
+            isWorking: isWorking,
+            stack: picked.suffix(3).map(\.imageFileName),
+            perform: { handle($0, on: items) }
+        )
         .padding(.horizontal, 12)
-        .padding(.vertical, 6)
+        .padding(.bottom, 8)
         .readableWidth(Metrics.compactWidth, alignment: .center)
-        .background(.bar)
-        .overlay(alignment: .top) {
-            Rectangle().fill(Palette.stroke).frame(height: 1)
-        }
-        .transition(.move(edge: .bottom).combined(with: .opacity))
     }
 
-    private func barButton(_ title: LocalizedStringKey, systemImage: String, role: ButtonRole? = nil,
-                           accessibilityLabel: LocalizedStringKey? = nil, action: @escaping () -> Void) -> some View {
-        Button(role: role, action: action) {
-            VStack(spacing: 4) {
-                Image(systemName: systemImage)
-                    .font(.system(size: 19, weight: .semibold))
-                    // Same height for every symbol, so the labels line up.
-                    .frame(height: 24)
-                Text(title)
-                    .font(.caption2.weight(.semibold))
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.8)
-            }
-            .foregroundStyle(role == .destructive ? Palette.danger : Palette.textPrimary)
-            .frame(maxWidth: .infinity, minHeight: 50)
-            .contentShape(Rectangle())
+    private func handle(_ action: LibrarySelectionBar.Action, on items: [Creation]) {
+        switch action {
+        case .share: share(items)
+        case .save: saveToPhotos(items)
+        case .favorite: setFavorite(true, for: items)
+        case .unfavorite: setFavorite(false, for: items)
+        case .collage: makeCollage(pickedInOrder)
+        case .delete: pendingDelete = items
+        case .restore: restore(items)
+        case .deleteNow: pendingPurge = items
         }
-        .buttonStyle(.pressable)
-        .accessibilityLabel(accessibilityLabel ?? title)
+    }
+
+    /// Select mode, from the toolbar or with one tile picked from its menu.
+    private func beginSelecting(with creation: Creation? = nil) {
+        Haptics.selection()
+        withAnimation(modeAnimation) {
+            isSelecting = true
+            if let creation { selection.set([creation.id]) }
+        }
     }
 
     private func open(_ creation: Creation) {
         if isSelecting {
+            // The finger that drag-selected lifted over a tile: not a tap.
+            guard !dragTracker.isSelecting, Date().timeIntervalSince(dragTracker.endedAt) > 0.35 else { return }
             Haptics.selection()
-            if selection.contains(creation.id) { selection.remove(creation.id) } else { selection.insert(creation.id) }
+            selection.toggle(creation.id)
         } else if creation.isInRecentlyDeleted {
             trashChoice = creation
         } else {
@@ -428,10 +482,64 @@ struct LibraryView: View {
 
     private func endSelecting() {
         guard isSelecting || !selection.isEmpty else { return }
-        withAnimation(.snappy) {
+        finishDrag()
+        withAnimation(modeAnimation) {
             isSelecting = false
-            selection = []
+            selection.removeAll()
         }
+    }
+
+    // MARK: Drag to select
+
+    /// In select mode a drag that starts sideways on a tile picks every tile
+    /// from there to the finger (or unpicks them, if it started on a picked
+    /// one), like Photos. A drag that starts up or down stays a scroll.
+    private var dragToSelect: some Gesture {
+        DragGesture(minimumDistance: 12, coordinateSpace: .named(Self.gridSpace))
+            .updating($isDragging) { _, dragging, _ in dragging = true }
+            .onChanged { dragChanged($0) }
+            .onEnded { _ in finishDrag() }
+    }
+
+    private func dragChanged(_ value: DragGesture.Value) {
+        switch dragTracker.phase {
+        case .scrolling:
+            return
+        case .idle:
+            let order = visible.map(\.id)
+            let positions = Dictionary(order.enumerated().map { ($0.element, $0.offset) }, uniquingKeysWith: { first, _ in first })
+            guard abs(value.translation.width) > abs(value.translation.height),
+                  let id = dragTracker.tile(at: value.startLocation), let anchor = positions[id]
+            else {
+                dragTracker.phase = .scrolling
+                return
+            }
+            let run = LibraryDragTracker.Run(order: order, positions: positions, anchor: anchor, current: anchor,
+                                             selects: !selection.contains(id), baseline: selection)
+            dragTracker.phase = .selecting(run)
+            // Up and down now move the selection, not the page.
+            isDragSelecting = true
+            applyDrag(run)
+        case .selecting(var run):
+            guard let id = dragTracker.tile(at: value.location), let index = run.positions[id], index != run.current else { return }
+            run.current = index
+            dragTracker.phase = .selecting(run)
+            applyDrag(run)
+        }
+    }
+
+    private func applyDrag(_ run: LibraryDragTracker.Run) {
+        let next = run.selection
+        guard next != selection else { return }
+        selection = next
+        Haptics.selection()
+    }
+
+    /// The finger lifted, or the system took the touch: scrolling comes back.
+    private func finishDrag() {
+        if dragTracker.isSelecting { dragTracker.endedAt = Date() }
+        dragTracker.phase = .idle
+        if isDragSelecting { isDragSelecting = false }
     }
 
     // MARK: Actions
@@ -538,6 +646,38 @@ struct LibraryView: View {
         try? modelContext.save()
         if isFavorite { Haptics.heartbeat() } else { Haptics.selection() }
         app.syncWidgets()
+    }
+
+    /// The collage maker with exactly these pictures, in the order she picked
+    /// them. Each goes in as its export would: with its AI marking and, for a
+    /// free cloud result, the free mark, so the collage keeps both
+    /// (`Provenance.collage(of:)` reads the marking from each file).
+    private func makeCollage(_ items: [Creation]) {
+        let entries = items.filter { !missingFiles.contains($0.imageFileName) }
+            .map { (name: $0.imageFileName, provenance: $0.provenance) }
+        guard (CollageModel.minPhotos...CollageModel.maxPhotos).contains(entries.count), !isWorking else { return }
+        let isPro = app.purchases.isPro
+        let maxPixel = CollageImaging.decodeSize(forCount: entries.count)
+        isWorking = true
+        Haptics.tap()
+        Task {
+            let files = await Task.detached(priority: .userInitiated) { () -> [Data] in
+                var encoded: [Data] = []
+                for entry in entries {
+                    let file = autoreleasepool { () -> Data? in
+                        guard let image = ImageStore.decoded(entry.name, maxPixel: maxPixel) else { return nil }
+                        return ImageExporter.encode(image, sourceType: entry.provenance.sourceType,
+                                                    watermark: entry.provenance.showsMark(isPro: isPro))?.data
+                    }
+                    if let file { encoded.append(file) }
+                }
+                return encoded
+            }.value
+            isWorking = false
+            guard files.count >= CollageModel.minPhotos else { return couldNotOpen() }
+            endSelecting()
+            app.openCollage(with: files)
+        }
     }
 
     private func edit(_ creation: Creation) {
@@ -667,14 +807,16 @@ struct LibraryView: View {
 
     #if DEBUG
     /// `-GLScreenshotScene librarySelect` and `libraryTrash`. QA:
-    /// `-GLLibraryAction favorite|delete|duplicate` acts on the selection,
-    /// `restore|purge` on the newest creation in Recently deleted.
+    /// `-GLLibraryAction favorite|delete|duplicate|collage` acts on the
+    /// selection, `drag` drag-selects the first six tiles as a finger would,
+    /// `selectAll|clear` picks every tile or none; `restore|purge` act on the
+    /// newest creation in Recently deleted.
     private func applyScreenshotState() {
         let action = UserDefaults.standard.string(forKey: "GLLibraryAction")
         switch ScreenshotScene.current {
         case .librarySelect where !isSelecting && selection.isEmpty:
             isSelecting = true
-            selection = Set(creations.enumerated().filter { [1, 2, 4].contains($0.offset) }.map(\.element.id))
+            selection.set(creations.enumerated().filter { [1, 2, 4].contains($0.offset) }.map(\.element.id))
             guard let action else { return }
             Task {
                 try? await Task.sleep(for: .seconds(1))
@@ -682,6 +824,10 @@ struct LibraryView: View {
                 case "favorite": setFavorite(true, for: selected)
                 case "delete": moveToRecentlyDeleted(selected)
                 case "duplicate": if let first = selected.first { duplicate(first) }
+                case "collage": makeCollage(pickedInOrder)
+                case "drag": simulateDrag(from: 0, to: 5)
+                case "selectAll": selection = selection.applying(visible.map(\.id), selected: true)
+                case "clear": selection.removeAll()
                 default: break
                 }
             }
@@ -695,6 +841,20 @@ struct LibraryView: View {
             }
         default:
             break
+        }
+    }
+
+    /// What a finger dragging sideways from tile `start` to tile `end` leaves
+    /// picked, through the same steps as the gesture.
+    private func simulateDrag(from start: Int, to end: Int) {
+        let order = visible.map(\.id)
+        guard start <= end, order.indices.contains(start), order.indices.contains(end) else { return }
+        let positions = Dictionary(order.enumerated().map { ($0.element, $0.offset) }, uniquingKeysWith: { first, _ in first })
+        var run = LibraryDragTracker.Run(order: order, positions: positions, anchor: start, current: start,
+                                         selects: !selection.contains(order[start]), baseline: selection)
+        for index in start...end {
+            run.current = index
+            applyDrag(run)
         }
     }
     #endif
