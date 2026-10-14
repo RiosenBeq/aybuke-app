@@ -451,6 +451,6 @@ struct ModeBanner: View {
         }
         .padding(12)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .cardStyle(radius: 16)
+        .cardStyle()
     }
 }

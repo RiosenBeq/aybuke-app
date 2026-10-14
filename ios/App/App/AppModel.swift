@@ -98,7 +98,11 @@ final class AppModel {
     }
 
     // MARK: Navigation
-    var selectedTab: AppTab = .home
+    var selectedTab: AppTab = .home {
+        // Under 13 there's no Create tab: a button that asks for it (My
+        // Works' empty state, say) lands on the free tools instead of a blank.
+        didSet { if selectedTab == .create && !allowsCloudAI { selectedTab = .edit } }
+    }
     /// Settings: the gear on Explore, or Glowlit › Settings… on the Mac.
     var isSettingsPresented = false
     var isPaywallPresented = false
