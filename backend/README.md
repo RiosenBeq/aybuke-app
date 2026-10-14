@@ -40,7 +40,7 @@ The wire contract is defined (and unit-tested) in
 | **Layered safety** | Prompt policy (client + server) → provider moderation (fal's strict `safety_tolerance`) → one output check on every result that fails closed (`_shared/moderation.ts`): fal.ai's NSFW classifier when `FAL_KEY` is set, otherwise xAI's own moderation verdict; a flag, an error or a missing verdict blocks the result and refunds it, and there's no switch to turn it off → in-app reporting. Documented for EU AI Act Art. 5(1)(ba) (from 2 Dec 2026). |
 | **Ad credits only from Google's signature** | The app never grants an ad credit. It gets a random single-use token, AdMob sends it back in an ECDSA-signed callback, and `redeem_ad_reward` grants one credit per AdMob transaction id, at most 2 a day per user and per App Store download in SQL. The token, not the user id, is all AdMob sees of the account. |
 | **Free credits per App Store download** | The free daily credits (and ad credits) belong to the App Store download, not the anonymous user: the app sends its StoreKit `AppTransaction` (JWS), `_shared/apple.ts` verifies Apple's signature, and SQL keys the allowance by a salted hash of `appTransactionId`, which stays the same across reinstalls and devices of one Apple Account. A new anonymous user on the same download shares the same daily credits. |
-| **One admission step** | `admit_job()` checks blocks, cool-downs, the owner's pause switch, the daily circuit breakers, per-user and per-IP rate limits, the free-retry allowance and the balance, then holds the credits and inserts the job, all in one transaction. |
+| **One admission step** | `admit_job()` checks blocks and cool-downs, the owner's pause switch and the hard breaker, per-user and per-IP rate limits, then the prompt policy (a blocked prompt is a strike and a free, failed attempt that still counts toward the limits), the free-retry allowance, the free breakers and the balance, then holds the credits and inserts the job, all in one transaction. |
 
 ## Models (late 2026 picks)
 
@@ -119,9 +119,9 @@ Photos are not synced: the library stays on each iPhone.
 
 ## Rewarded ads (AdMob server-side verification)
 
-Free members 13+ who are out of credits can watch a rewarded ad for 1 credit, at most 3 a day (UTC). Pro never sees ads. The credit comes only from AdMob's signed callback, never from the app:
+Free members 13+ who are out of credits can watch a rewarded ad for 1 credit, at most 2 a day (UTC). Pro never sees ads. The credit comes only from AdMob's signed callback, never from the app:
 
-1. The app loads the ad, then calls `POST /ad-reward` (with her session and, like the balance call, `X-Entitlement-JWS`). `issue_ad_reward_token()` refuses Pro members (`not_eligible`), anyone with credits left (`has_credits`) and a fourth ad today (`daily_cap`; tokens still waiting for AdMob count), and otherwise returns a random token valid for 30 minutes.
+1. The app loads the ad, then calls `POST /ad-reward` (with her session and, like the balance call, `X-Entitlement-JWS`). `issue_ad_reward_token()` refuses Pro members (`not_eligible`), anyone with credits left (`has_credits`) and a third ad today (`daily_cap`; tokens still waiting for AdMob count), and otherwise returns a random token valid for 30 minutes.
 2. The app sets the token as the ad's server-side verification **custom data** (never the user id) and shows the ad.
 3. AdMob calls `GET /ad-reward?ad_network=…&ad_unit=…&custom_data=<token>&reward_amount=1&reward_item=credit&timestamp=…&transaction_id=…&signature=…&key_id=…`. `_shared/admob.ts` verifies the ECDSA (P-256, SHA-256, DER) signature over the query string up to `&signature=` with Google's keys from `https://www.gstatic.com/admob/reward/verifier-keys.json` (cached for at most 12 hours, fetched again for an unknown `key_id`), and the function checks `ad_unit` against `ADMOB_REWARDED_AD_UNIT`. `redeem_ad_reward()` then maps the token to the user and grants the credit through the ledger (kind `ad_reward`, `source_ref` `admob:<transaction_id>`), once per transaction and once per token, re-checking the daily cap under the wallet lock. Verified callbacks answer 200, granted or not (duplicates, other ad units, expired or unknown tokens grant nothing, and AdMob stops retrying); a bad signature answers 403, and unreachable keys or a missing `ADMOB_REWARDED_AD_UNIT` 503 (AdMob retries a few times).
 4. The app polls `GET /ad-reward?token=…` until the status is `granted`, or calls `DELETE /ad-reward?token=…` when the ad closed before its reward.
@@ -140,14 +140,40 @@ Ad credits go into the daily bucket: spent first, refunded like any credit, gone
 
 Defined once in SQL (`public.credit_policy()`) and mirrored in the app (`CreditPolicy.standard`):
 
-- Free: **3 credits per day**, refilled at 00:00 UTC, never accumulating.
-- Pro: **100 credits per month**, unused credits roll over one month (cap 200).
+- Free: **2 credits per day**, refilled at 00:00 UTC, never accumulating.
+- Pro: **80 credits per month**, unused credits roll over one month (cap 160). The free trial week gives **20 credits** instead (`trial_credits`).
 - Credit packs: never expire (App Review Guideline 3.1.1).
-- Rewarded ads (free members out of credits): **1 credit per ad, at most 3 a day** (`ad_reward_policy()`), added to the daily bucket.
+- Rewarded ads (free members out of credits): **1 credit per ad, at most 2 a day** (`ad_reward_policy()`), added to the daily bucket.
+- Likeness Lock: one free retry per result within 15 minutes, **3 a day** (`free_retries_daily`).
 - Spending order: daily → subscription → purchased (expiring credits first).
 - Any failure, cancellation, safety block or timeout is refunded exactly once, and so is a result that never reached the app. The poll that hands the results over records the delivery (`deliver_outputs()`); a finished job that was never handed over is refunded when its hour is up, or at once when the app cancels it, and one that was handed over but never confirmed (a download that broke) is refunded at most once a day per user, so skipping the confirmation can't keep both the images and the credit.
 
 Change the numbers in `credit_policy()` (new migration) to retune pricing without an app update; update `CreditPolicy.standard` so the app's copy matches.
+
+## Abuse runbook
+
+Every cloud job goes through `admit_job()`, which applies the numbers in `public.credit_policy()`:
+
+- **Strikes:** a prompt the policy blocks, or an output the moderation flags, is a strike. **3** strikes in **24 hours** start a **24-hour** cool-down (no cloud AI, nothing charged, no paywall). **3** cool-downs in **30 days** block the install until the owner lifts it. An install without a verified App Store transaction is kept to its network address instead: a salted hash of the address (`private.keyed_hash('ip', …)`), the same key the rate limit uses.
+- **Rate limits:** per user, free **6 a minute, 30 an hour, 100 a day**; Pro **20, 60 and 200**. Per address, **120 requests an hour**. Reports: **10 a day** per user.
+- **Breakers** (UTC day): free credits pause at **1,500** free jobs (`free_jobs_daily_cap`), the unverified allowance at **200** (`unverified_jobs_daily_cap`), and all AI at **8,000** jobs (`all_jobs_daily_cap`). Paid users keep working when only the free breaker trips.
+
+Owner tools run in the SQL editor (the service role). Clients have no access to any of them.
+
+1. **Read the day:** `select public.ops_daily_summary();` (or pass a date). It shows jobs and failures by code, the estimated provider cost, the breakers against their caps, strikes, cool-downs, blocks, open reports, and the top installs and addresses (hashed, shortened).
+2. **Find the strikes:** `select * from public.ops_strikes(7);` lists each install key (or `user:<id>`) with its strikes, categories, cool-down and whether it is blocked. Check `user_ids` before you block an address: one address can serve many people (a school, a mobile carrier).
+3. **Reports:** `select * from public.ops_reports('open');` lists the newest, with the operation and what the system knows about the sender. Mark each with `select public.ops_set_report_status('<report id>', 'reviewed' | 'actioned' | 'dismissed');`.
+4. **Block:** `select public.ops_block(p_job => '<job id>', p_reason => '…');` blocks the install and the user behind a job. Name `p_install` or `p_user` instead when you have the key. Blocks stop cloud AI at once.
+5. **Lift a block or cool-down:** `select public.ops_unblock(p_install => '<install key>');` or `p_user => '<user id>'`. It lifts the block and any running cool-down and clears the cool-down history for that install or user, so the next cool-down starts from none. It returns `blocks_lifted` and `cooldowns_lifted`. Lifting an address lifts every account on it.
+6. **Pause and resume AI:** `select public.ops_pause_ai('all', 2, 'why');` stops every job for 2 hours (`'free'` stops only the free credits, and paid users keep working). A paused request is refused before the prompt check, so blocked prompts get no strike while paused. `select public.ops_resume_ai();` resumes everything (or `ops_resume_ai('all')`). A pause also ends by itself at `paused_until`.
+7. **Retune the caps:** the rate limits, strikes, cool-downs, breakers and retention all live in `public.credit_policy()`. Change them in a new migration that replaces the function (copy it, change the numbers, keep the comment), then update `CreditPolicy.standard` in the app for the credit numbers. No app release is needed for the rest.
+8. **Check the address after a deploy:** the address is the last `x-forwarded-for` entry (`_shared/input.ts`). Send a generation request from a known network with a made-up `X-Forwarded-For: 1.2.3.4` header, then in the SQL editor compare `select ip_key, requests from private.ip_usage where hour = date_trunc('hour', now());` with `select private.keyed_hash('ip', '<your address>');` (IPv4 as is; IPv6 as its /64, for example `2001:db8:0:0::/64`). Your address must match a row, and `private.keyed_hash('ip', '1.2.3.4')` must not.
+
+**Never:**
+
+- Edit a migration the project has applied (`supabase db push` has run it), or change one in `supabase/migrations` after it is published. Add a new file with a later timestamp instead; only comments may change in an old one.
+- Grant `execute` on the `ops_*`, `admit_job`, `flag_job` or `private` functions to `anon` or `authenticated`, or put the service role key in the app or in a ticket.
+- Store a prompt, a photo or a raw IP address in a table, or paste one into a report.
 
 ## Local checks
 

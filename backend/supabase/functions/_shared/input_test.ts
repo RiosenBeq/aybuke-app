@@ -118,18 +118,30 @@ Deno.test("images: anything else is refused, closed", () => {
   refused(huge, "too_large");
 });
 
-Deno.test("client address: Cloudflare's, else the last forwarded hop", () => {
+Deno.test("client address: the last forwarded hop, never a client's cf-connecting-ip", () => {
   assert.equal(
-    clientIp(new Headers({ "cf-connecting-ip": "203.0.113.9", "x-forwarded-for": "1.2.3.4" })),
-    "203.0.113.9",
+    clientIp(new Headers({ "cf-connecting-ip": "203.0.113.9", "x-forwarded-for": "1.2.3.4, 198.51.100.7" })),
+    "198.51.100.7",
+    "cf-connecting-ip is ignored",
   );
   assert.equal(
     clientIp(new Headers({ "x-forwarded-for": "6.6.6.6, 198.51.100.7" })),
     "198.51.100.7",
     "a spoofed first entry",
   );
+  assert.equal(
+    clientIp(new Headers({ "x-forwarded-for": " 1.2.3.4 , 198.51.100.7 , " })),
+    "198.51.100.7",
+    "spaces and empty entries",
+  );
+  assert.equal(
+    clientIp(new Headers({ "x-forwarded-for": "6.6.6.6, 2001:db8:85a3:8d3:1319:8a2e:370:7348" })),
+    "2001:db8:85a3:8d3::/64",
+  );
+  assert.equal(clientIp(new Headers({ "cf-connecting-ip": "203.0.113.9" })), undefined);
   assert.equal(clientIp(new Headers({})), undefined);
   assert.equal(clientIp(new Headers({ "x-forwarded-for": "not-an-ip" })), undefined);
+  assert.equal(clientIp(new Headers({ "x-forwarded-for": "198.51.100.7, not-an-ip" })), undefined);
   assert.equal(ipBucket("2001:db8:85a3:8d3:1319:8a2e:370:7348"), "2001:db8:85a3:8d3::/64");
   assert.equal(ipBucket("2001:db8::1"), "2001:db8:0:0::/64");
   assert.equal(ipBucket("::ffff:192.0.2.1"), "192.0.2.1");

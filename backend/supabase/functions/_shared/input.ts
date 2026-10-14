@@ -238,17 +238,11 @@ export function ipBucket(text: string): string | undefined {
 }
 
 /**
- * The caller's address. Supabase's edge sits behind Cloudflare, which sets
- * cf-connecting-ip itself; otherwise the last x-forwarded-for entry is the one
- * the platform appended (earlier entries are whatever the client sent).
- * Verify on the live project with backend/README.md's "Abuse runbook".
+ * The caller's address: the last x-forwarded-for entry, which the platform
+ * appends (earlier ones are the client's). cf-connecting-ip is never read,
+ * since a client can send it. Check it with backend/README.md's "Abuse runbook".
  */
 export function clientIp(headers: Headers): string | undefined {
-  const cloudflare = headers.get("cf-connecting-ip");
-  if (cloudflare) {
-    const bucket = ipBucket(cloudflare);
-    if (bucket) return bucket;
-  }
   const forwarded = headers.get("x-forwarded-for")?.split(",").map((part) => part.trim()).filter(Boolean);
   const last = forwarded?.at(-1);
   return last ? ipBucket(last) : undefined;

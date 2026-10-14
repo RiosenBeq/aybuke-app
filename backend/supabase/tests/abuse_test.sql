@@ -12,7 +12,18 @@ insert into auth.users (id) values
   ('00000000-0000-0000-0000-0000000000d6'),
   ('00000000-0000-0000-0000-0000000000d7'),
   ('00000000-0000-0000-0000-0000000000d8'),
-  ('00000000-0000-0000-0000-0000000000d9');
+  ('00000000-0000-0000-0000-0000000000d9'),
+  ('00000000-0000-0000-0000-000000000d10'),
+  ('00000000-0000-0000-0000-000000000d11'),
+  ('00000000-0000-0000-0000-000000000d12'),
+  ('00000000-0000-0000-0000-000000000d13'),
+  ('00000000-0000-0000-0000-000000000d14'),
+  ('00000000-0000-0000-0000-000000000d15'),
+  ('00000000-0000-0000-0000-000000000d16'),
+  ('00000000-0000-0000-0000-000000000d17'),
+  ('00000000-0000-0000-0000-000000000d18'),
+  ('00000000-0000-0000-0000-000000000d19'),
+  ('00000000-0000-0000-0000-000000000d20');
 
 -- 1. Per-user limits: 6 a minute, 30 an hour and 100 a day on the free tier.
 do $$
@@ -156,7 +167,8 @@ begin
                         p_blocked_category => 'sexual');
   assert r->>'code' = 'cooldown' and (r->>'status')::int = 429, format('3rd starts a cool-down: %s', r);
   assert (r->>'retry_after')::int between 86000 and 86400, format('for 24 hours: %s', r);
-  assert not exists (select 1 from public.jobs where user_id = u), 'nothing booked, nothing charged';
+  assert not exists (select 1 from public.jobs where user_id = u and (cost > 0 or status <> 'failed')),
+    'a blocked prompt is booked as a failed attempt, never charged';
 
   r := public.admit_job(u, 'magic_edit', 'test', p_app_transaction_id => 'atid-strikes', p_install_status => 'verified');
   assert r->>'code' = 'cooldown', format('resting: %s', r);
@@ -334,7 +346,167 @@ begin
   delete from private.blocks where install_key = blocked_key;
 end $$;
 
--- 13. Clients can call none of it; the keep-alive stays open to anon on purpose.
+-- 13. A policy block is a strike only past the rate limits, and it counts toward
+--     them: a refused request writes nothing, a blocked one uses up its place.
+do $$
+declare
+  u uuid := '00000000-0000-0000-0000-000000000d10';
+  r jsonb;
+  strikes int;
+begin
+  perform public.grant_pack(u, 20, 'tx-abuse-10');
+  for i in 1..5 loop
+    r := public.admit_job(u, 'text_to_image', 'test');
+    assert (r->>'ok')::boolean, format('job %s: %s', i, r);
+  end loop;
+  r := public.admit_job(u, 'text_to_image', 'test', p_blocked_category => 'sexual');
+  assert r->>'code' = 'content_blocked', format('the sixth request, blocked: %s', r);
+  select count(*) into strikes from private.strikes where user_id = u;
+  assert strikes = 1, format('one strike: %s', strikes);
+  r := public.admit_job(u, 'text_to_image', 'test', p_blocked_category => 'sexual');
+  assert r->>'code' = 'rate_limited' and (r->>'status')::int = 429, format('a blocked request past the minute: %s', r);
+  assert (select count(*) from private.strikes where user_id = u) = strikes, 'a refused request writes no strike';
+  r := public.admit_job(u, 'text_to_image', 'test');
+  assert r->>'code' = 'rate_limited', format('the blocked request used up the minute: %s', r);
+  assert (select count(*) from public.jobs where user_id = u) = 6, 'the blocked attempt is booked, the refused ones are not';
+  update public.jobs set created_at = now() - interval '2 minutes' where user_id = u;
+  r := public.admit_job(u, 'text_to_image', 'test');
+  assert (r->>'ok')::boolean, format('the minute is free again: %s', r);
+end $$;
+
+-- 14. The owner's pause stops policy-blocked requests too, and writes nothing.
+do $$
+declare
+  u uuid := '00000000-0000-0000-0000-000000000d11';
+  r jsonb;
+begin
+  perform public.grant_pack(u, 5, 'tx-abuse-11');
+  perform public.ops_pause_ai('all', 0.5, 'test');
+  r := public.admit_job(u, 'magic_edit', 'test', p_blocked_category => 'sexual');
+  assert r->>'code' = 'ai_paused' and (r->>'status')::int = 503, format('paused, prompt blocked: %s', r);
+  assert not exists (select 1 from private.strikes where user_id = u), 'no strike while paused';
+  assert not exists (select 1 from public.jobs where user_id = u), 'nothing booked while paused';
+  assert public.ops_resume_ai('all')->'resumed' = '["all"]'::jsonb, 'resumed';
+  r := public.admit_job(u, 'magic_edit', 'test', p_blocked_category => 'sexual');
+  assert r->>'code' = 'content_blocked', format('after the pause the policy applies again: %s', r);
+end $$;
+
+-- 15. No verified App Store install: the address is the install. Fresh anonymous
+--     accounts on one address share its strikes, so rotating accounts gains nothing.
+do $$
+declare
+  ip text := '192.0.2.44';
+  k text := private.keyed_hash('ip', ip);
+  r jsonb;
+begin
+  r := public.admit_job('00000000-0000-0000-0000-000000000d12', 'magic_edit', 'test', p_ip => ip,
+                        p_blocked_category => 'sexual');
+  assert r->>'code' = 'content_blocked', format('1st: %s', r);
+  r := public.admit_job('00000000-0000-0000-0000-000000000d13', 'magic_edit', 'test', p_ip => ip,
+                        p_blocked_category => 'sexual');
+  assert r->>'code' = 'content_blocked', format('2nd, another new account: %s', r);
+  r := public.admit_job('00000000-0000-0000-0000-000000000d14', 'magic_edit', 'test', p_ip => ip,
+                        p_blocked_category => 'sexual');
+  assert r->>'code' = 'cooldown' and (r->>'status')::int = 429, format('3rd from the address: %s', r);
+  assert (r->>'retry_after')::int between 86000 and 86400, format('for 24 hours: %s', r);
+  assert (select count(*) from private.cooldowns where install_key = k) = 1, 'the cool-down is on the address';
+  assert (select count(*) from private.strikes where install_key = k) = 3, 'the strikes are on the address';
+  assert (select count(*) from public.jobs where install_key = k) = 3, 'the attempts carry the address key';
+  r := public.admit_job('00000000-0000-0000-0000-000000000d15', 'magic_edit', 'test', p_ip => ip);
+  assert r->>'code' = 'cooldown', format('a fourth account on the address rests too: %s', r);
+  r := public.admit_job('00000000-0000-0000-0000-000000000d15', 'magic_edit', 'test', p_ip => '192.0.2.45');
+  assert r->>'code' is distinct from 'cooldown', format('another address is not affected: %s', r);
+end $$;
+
+-- 16. A block on an address is not tied to the account that tripped it, so
+--     deleting that account does not lift it (the data is hashed; the account is not).
+do $$
+declare
+  ip text := '192.0.2.60';
+  k text := private.keyed_hash('ip', ip);
+  r jsonb;
+begin
+  insert into private.cooldowns (user_id, install_key, starts_at, ends_at) values
+    ('00000000-0000-0000-0000-000000000d16', k, now() - interval '12 days', now() - interval '11 days'),
+    ('00000000-0000-0000-0000-000000000d16', k, now() - interval '5 days', now() - interval '4 days');
+  r := public.admit_job('00000000-0000-0000-0000-000000000d16', 'magic_edit', 'test', p_ip => ip,
+                        p_blocked_category => 'sexual');
+  r := public.admit_job('00000000-0000-0000-0000-000000000d17', 'magic_edit', 'test', p_ip => ip,
+                        p_blocked_category => 'sexual');
+  r := public.admit_job('00000000-0000-0000-0000-000000000d18', 'magic_edit', 'test', p_ip => ip,
+                        p_blocked_category => 'sexual');
+  assert r->>'code' = 'install_blocked' and (r->>'status')::int = 403, format('third cool-down in 30 days: %s', r);
+  assert not exists (select 1 from private.blocks where user_id = '00000000-0000-0000-0000-000000000d18'),
+    'the block is on the address, not the account';
+  assert (select count(*) from private.blocks where install_key = k and lifted_at is null) = 1, 'one block on the address';
+  delete from auth.users where id = '00000000-0000-0000-0000-000000000d18';
+  r := public.admit_job('00000000-0000-0000-0000-000000000d19', 'magic_edit', 'test', p_ip => ip);
+  assert r->>'code' = 'install_blocked', format('a new account on the address, after the deletion: %s', r);
+end $$;
+
+-- 17. Lifting a block starts the cool-down history over. Each step is its own
+--     transaction, so the strikes and the lift get different timestamps.
+do $$
+declare
+  k text := private.keyed_hash('app_transaction', 'atid-lift');
+  u uuid := '00000000-0000-0000-0000-000000000d20';
+  r jsonb;
+begin
+  insert into private.cooldowns (user_id, install_key, starts_at, ends_at) values
+    (u, k, now() - interval '12 days', now() - interval '11 days'),
+    (u, k, now() - interval '5 days', now() - interval '4 days');
+  for i in 1..2 loop
+    r := public.admit_job(u, 'magic_edit', 'test', p_app_transaction_id => 'atid-lift',
+                          p_install_status => 'verified', p_blocked_category => 'sexual');
+    assert r->>'code' = 'content_blocked', format('strike %s: %s', i, r);
+  end loop;
+  r := public.admit_job(u, 'magic_edit', 'test', p_app_transaction_id => 'atid-lift',
+                        p_install_status => 'verified', p_blocked_category => 'sexual');
+  assert r->>'code' = 'install_blocked', format('third cool-down in 30 days: %s', r);
+end $$;
+
+do $$
+declare
+  k text := private.keyed_hash('app_transaction', 'atid-lift');
+  u uuid := '00000000-0000-0000-0000-000000000d20';
+begin
+  assert (public.ops_unblock(p_install => k)->>'blocks_lifted')::int = 1, 'lifted';
+  update public.jobs set created_at = now() - interval '2 minutes' where user_id = u;
+end $$;
+
+do $$
+declare
+  u uuid := '00000000-0000-0000-0000-000000000d20';
+  r jsonb;
+begin
+  r := public.admit_job(u, 'magic_edit', 'test', p_app_transaction_id => 'atid-lift',
+                        p_install_status => 'verified', p_blocked_category => 'sexual');
+  assert r->>'code' = 'content_blocked', format('one new blocked prompt does not block again: %s', r);
+end $$;
+
+do $$
+declare
+  u uuid := '00000000-0000-0000-0000-000000000d20';
+  r jsonb;
+begin
+  r := public.admit_job(u, 'magic_edit', 'test', p_app_transaction_id => 'atid-lift',
+                        p_install_status => 'verified', p_blocked_category => 'sexual');
+  assert r->>'code' = 'content_blocked', format('the second: %s', r);
+end $$;
+
+do $$
+declare
+  k text := private.keyed_hash('app_transaction', 'atid-lift');
+  u uuid := '00000000-0000-0000-0000-000000000d20';
+  r jsonb;
+begin
+  r := public.admit_job(u, 'magic_edit', 'test', p_app_transaction_id => 'atid-lift',
+                        p_install_status => 'verified', p_blocked_category => 'sexual');
+  assert r->>'code' = 'cooldown', format('the third starts a new cool-down, not a block: %s', r);
+  assert not exists (select 1 from private.blocks where install_key = k and lifted_at is null), 'no block again';
+end $$;
+
+-- 18. Clients can call none of it; the keep-alive stays open to anon on purpose.
 do $$
 begin
   assert not has_function_privilege('anon', 'public.admit_job(uuid, text, text, text, int, int, uuid, text, text, text, text, text)', 'execute');
@@ -344,6 +516,10 @@ begin
   assert not has_function_privilege('anon', 'public.ops_daily_summary(date)', 'execute');
   assert not has_function_privilege('authenticated', 'public.ops_block(text, uuid, uuid, text)', 'execute');
   assert not has_function_privilege('authenticated', 'public.ops_pause_ai(text, numeric, text)', 'execute');
+  assert not has_function_privilege('anon', 'public.ops_unblock(text, uuid)', 'execute');
+  assert not has_function_privilege('authenticated', 'public.ops_unblock(text, uuid)', 'execute');
+  assert not has_function_privilege('anon', 'public.ops_strikes(int)', 'execute');
+  assert not has_function_privilege('authenticated', 'public.ops_strikes(int)', 'execute');
   assert has_function_privilege('service_role', 'public.ops_daily_summary(date)', 'execute');
   assert has_function_privilege('anon', 'public.keepalive()', 'execute'), 'the documented exception';
 end $$;

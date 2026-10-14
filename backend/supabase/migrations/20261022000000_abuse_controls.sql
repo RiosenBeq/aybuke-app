@@ -6,12 +6,13 @@
 --
 --   1. refuses a blocked install or user ('install_blocked');
 --   2. refuses during a cool-down ('cooldown');
---   3. turns a prompt the server's policy blocked into a strike, never a
---      charge ('content_blocked', or 'cooldown' when that strike starts one);
---   4. pauses everything when the owner flipped the switch or the day's hard
+--   3. pauses everything when the owner flipped the switch or the day's hard
 --      breaker (all_jobs_daily_cap) is reached ('ai_paused');
---   5. applies the per-user limits per minute ('rate_limited') and per hour
+--   4. applies the per-user limits per minute ('rate_limited') and per hour
 --      and day ('usage_limit'), and the per-IP limit across users;
+--   5. turns a prompt the server's policy blocked into a strike, never a
+--      charge ('content_blocked', or 'cooldown' when that strike starts one);
+--      (this is the order since 20261024000001; 3 and 4 used to come after 5)
 --   6. checks a Likeness Lock retry (one per result, free_retries_daily a day);
 --   7. pays: free daily credits from the App Store install unless the free
 --      breaker (free_jobs_daily_cap, or unverified_jobs_daily_cap for installs
