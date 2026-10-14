@@ -9,6 +9,9 @@ struct BeforeAfterSlider: View {
     var showsTransparencyGrid = false
 
     @State private var position: CGFloat = 0.5
+    @State private var hasPeeked = false
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
 
     var body: some View {
         GeometryReader { proxy in
@@ -35,9 +38,9 @@ struct BeforeAfterSlider: View {
                     .position(x: width * position, y: proxy.size.height / 2)
 
                 HStack {
-                    tag("Before")
+                    tag(String(localized: "Before"))
                     Spacer()
-                    tag("After")
+                    tag(String(localized: "After"))
                 }
                 .padding(10)
                 .frame(maxHeight: .infinity, alignment: .top)
@@ -61,6 +64,17 @@ struct BeforeAfterSlider: View {
             }
         }
         .aspectRatio(after.size.width / max(after.size.height, 1), contentMode: .fit)
+        .task {
+            // A little "peek" so people discover the handle.
+            guard !hasPeeked, !reduceMotion else { return }
+            hasPeeked = true
+            try? await Task.sleep(for: .milliseconds(450))
+            withAnimation(.easeInOut(duration: 0.45)) { position = 0.3 }
+            try? await Task.sleep(for: .milliseconds(450))
+            withAnimation(.easeInOut(duration: 0.6)) { position = 0.7 }
+            try? await Task.sleep(for: .milliseconds(600))
+            withAnimation(.spring(response: 0.5, dampingFraction: 0.7)) { position = 0.5 }
+        }
     }
 
     private var handle: some View {
@@ -77,7 +91,7 @@ struct BeforeAfterSlider: View {
                 .overlay(
                     Image(systemName: "chevron.left.chevron.right")
                         .font(.system(size: 13, weight: .bold))
-                        .foregroundStyle(Palette.background)
+                        .foregroundStyle(Palette.ink)
                 )
         }
     }
@@ -85,9 +99,12 @@ struct BeforeAfterSlider: View {
     private func tag(_ text: String) -> some View {
         Text(text)
             .font(.caption2.weight(.bold))
+            // One line: on a narrow photo the words shrink instead of breaking.
+            .lineLimit(1)
+            .minimumScaleFactor(0.5)
             .foregroundStyle(.white)
             .padding(.horizontal, 8)
             .padding(.vertical, 4)
-            .background(.black.opacity(0.45), in: Capsule())
+            .background(Palette.ink.opacity(reduceTransparency ? 0.9 : 0.65), in: .tag)
     }
 }

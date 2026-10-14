@@ -29,17 +29,6 @@ public enum AIOperation: String, Codable, CaseIterable, Sendable, Identifiable {
         }
     }
 
-    public var tagline: String {
-        switch self {
-        case .textToImage: return "Type it. See it."
-        case .magicEdit: return "Describe any edit"
-        case .enhance: return "Sharpen & restore"
-        case .removeBackground: return "Free, on-device cut-out"
-        case .eraseObject: return "Brush away anything"
-        case .restyle: return "One-tap transformations"
-        }
-    }
-
     /// SF Symbol used across the UI.
     public var symbolName: String {
         switch self {
@@ -80,9 +69,30 @@ public enum AIOperation: String, Codable, CaseIterable, Sendable, Identifiable {
 public enum DigitalSourceType: String, Sendable, CaseIterable {
     case trainedAlgorithmicMedia
     case compositeWithTrainedAlgorithmicMedia
+    /// Elements from several images put together without generative AI,
+    /// such as a cut-out placed on another photo.
+    case composite
     case algorithmicallyEnhanced
 
     public static let vocabularyBase = "http://cv.iptc.org/newscodes/digitalsourcetype/"
 
     public var uri: String { Self.vocabularyBase + rawValue }
+
+    /// How much of the image generative AI made: after several steps, the
+    /// highest one describes the photo.
+    public var generativeRank: Int {
+        switch self {
+        case .trainedAlgorithmicMedia: return 4
+        case .compositeWithTrainedAlgorithmicMedia: return 3
+        case .composite: return 2
+        case .algorithmicallyEnhanced: return 1
+        }
+    }
+
+    /// The type that describes a photo made with both steps.
+    public static func strongest(_ lhs: DigitalSourceType?, _ rhs: DigitalSourceType?) -> DigitalSourceType? {
+        guard let lhs else { return rhs }
+        guard let rhs else { return lhs }
+        return rhs.generativeRank > lhs.generativeRank ? rhs : lhs
+    }
 }

@@ -45,6 +45,20 @@ final class BackendAPITests: XCTestCase {
         XCTAssertEqual(request.value(forHTTPHeaderField: "Authorization"), "Bearer user-jwt")
         XCTAssertEqual(request.value(forHTTPHeaderField: "apikey"), "anon-key")
         XCTAssertEqual(request.value(forHTTPHeaderField: RequestFactory.entitlementHeader), "jws")
+        XCTAssertNil(request.value(forHTTPHeaderField: RequestFactory.appTransactionHeader), "nothing to send, nothing sent")
+    }
+
+    /// Free credits belong to a verified App Store install: every request
+    /// that spends or shows them carries StoreKit's AppTransaction.
+    func testAppTransactionRidesAlong() throws {
+        let job = try RequestFactory.generation(GenerationRequest(operation: .enhance, image: "data:x"), config: config,
+                                                accessToken: "user-jwt", appTransactionJWS: "app.jws")
+        XCTAssertEqual(job.value(forHTTPHeaderField: "X-App-Transaction"), "app.jws")
+        let balance = try RequestFactory.balance(config: config, accessToken: "user-jwt", appTransactionJWS: "app.jws")
+        XCTAssertEqual(balance.value(forHTTPHeaderField: "X-App-Transaction"), "app.jws")
+        let pack = try RequestFactory.redeemCreditPack(signedTransaction: "tx", config: config, accessToken: "user-jwt",
+                                                       appTransactionJWS: "app.jws")
+        XCTAssertEqual(pack.value(forHTTPHeaderField: "X-App-Transaction"), "app.jws")
     }
 
     func testRefreshRequestURL() throws {
@@ -94,6 +108,12 @@ final class BackendAPITests: XCTestCase {
         XCTAssertThrowsError(try ResponseDecoder.decodeGeneration(data: generic, statusCode: 200)) { error in
             XCTAssertEqual(error as? AIServiceError, .server(code: "job_failed", message: "This creation failed. Your credit was refunded."))
         }
+        // The photo check (ai-image) fails with this code; the app's copy is keyed on it.
+        let photo = Data(#"{"job_id":"j1","status":"failed","error":{"code":"safety_check_failed","message":"We couldn't check this photo, so we didn't edit it. Your credit was refunded."}}"#.utf8)
+        XCTAssertThrowsError(try ResponseDecoder.decodeGeneration(data: photo, statusCode: 200)) { error in
+            XCTAssertEqual(error as? AIServiceError, .server(code: "safety_check_failed",
+                                                             message: "We couldn't check this photo, so we didn't edit it. Your credit was refunded."))
+        }
     }
 
     func testCancelledJobThrowsCancellation() {
@@ -106,6 +126,42 @@ final class BackendAPITests: XCTestCase {
     func testDecodesBalance() throws {
         XCTAssertEqual(try ResponseDecoder.decodeBalance(data: Data(#"{"credits_remaining":7}"#.utf8), statusCode: 200), 7)
         XCTAssertThrowsError(try ResponseDecoder.decodeBalance(data: Data(), statusCode: 401))
+    }
+
+    func testDecodesBalanceState() throws {
+        let state = try ResponseDecoder.decodeBalanceState(data: Data("""
+        {"credits_remaining": 2, "is_pro": false, "free_credits": "ok", "ai_status": "cooldown",
+         "cooldown_until": "2026-10-15T12:00:00.123456+00:00", "cooldown_seconds": 7200,
+         "policy": {"free_daily": 2, "pro_monthly": 80, "rollover_cap": 160, "trial_credits": 20, "free_retries_daily": 3}}
+        """.utf8), statusCode: 200)
+        XCTAssertEqual(state.creditsRemaining, 2)
+        XCTAssertEqual(state.freeCredits, .ok)
+        XCTAssertEqual(state.aiStatus, .cooldown)
+        XCTAssertEqual(state.policy, ServerCreditPolicy(freeDaily: 2, proMonthly: 80, rolloverCap: 160, trialCredits: 20,
+                                                        freeRetriesDaily: 3))
+        let now = Date(timeIntervalSince1970: 1_000_000)
+        XCTAssertEqual(CloudPause.from(state, now: now), .cooldown(until: now.addingTimeInterval(7200)))
+        XCTAssertTrue(try XCTUnwrap(CloudPause.from(state, now: now)).isActive(at: now))
+        XCTAssertFalse(CloudPause.cooldown(until: now).isActive(at: now.addingTimeInterval(1)))
+
+        // An older server, or a status this version doesn't know: nothing breaks.
+        let old = try ResponseDecoder.decodeBalanceState(data: Data(#"{"credits_remaining": 5, "ai_status": "later"}"#.utf8),
+                                                         statusCode: 200)
+        XCTAssertNil(old.freeCredits)
+        XCTAssertNil(old.aiStatus)
+        XCTAssertNil(CloudPause.from(old))
+        let unverified = try ResponseDecoder.decodeBalanceState(
+            data: Data(#"{"credits_remaining": 0, "free_credits": "unverified", "ai_status": "blocked"}"#.utf8), statusCode: 200)
+        XCTAssertEqual(unverified.freeCredits, .unverified)
+        XCTAssertEqual(CloudPause.from(unverified), .blocked)
+    }
+
+    func testCooldownWithoutSecondsRestsADay() throws {
+        let now = Date(timeIntervalSince1970: 1_000_000)
+        let state = try ResponseDecoder.decodeBalanceState(
+            data: Data(#"{"credits_remaining": 0, "ai_status": "cooldown"}"#.utf8), statusCode: 200)
+        XCTAssertNil(state.cooldownSeconds)
+        XCTAssertEqual(CloudPause.from(state, now: now), .cooldown(until: now.addingTimeInterval(24 * 3600)))
     }
 
     func testJobRequests() throws {
@@ -129,6 +185,11 @@ final class BackendAPITests: XCTestCase {
         let delete = try RequestFactory.deleteAccount(config: config, accessToken: "t")
         XCTAssertEqual(delete.httpMethod, "DELETE")
         XCTAssertEqual(delete.url?.path, "/functions/v1/account")
+        XCTAssertNil(delete.httpBody)
+
+        let deleteBoth = try RequestFactory.deleteAccount(config: config, accessToken: "t", anonymousToken: "anon")
+        let deleteBody = try XCTUnwrap(deleteBoth.httpBody.flatMap { try JSONSerialization.jsonObject(with: $0) as? [String: String] })
+        XCTAssertEqual(deleteBody["anonymous_token"], "anon")
     }
 
     func testPollingScheduleBacksOff() {
@@ -138,6 +199,71 @@ final class BackendAPITests: XCTestCase {
         XCTAssertEqual(schedule.delay(forAttempt: 50), 3)
         let total = (0..<80).map(schedule.delay(forAttempt:)).reduce(0, +)
         XCTAssertGreaterThan(total, schedule.timeout, "the deadline, not the attempt count, ends polling")
+    }
+
+    func testCancelAndConfirmAreDifferentRequests() throws {
+        let cancel = try RequestFactory.cancelJob(jobID: "j1", config: config, accessToken: "t")
+        XCTAssertEqual(cancel.httpMethod, "DELETE")
+        XCTAssertEqual(cancel.url?.absoluteString, "https://demo.supabase.co/functions/v1/ai-image?job_id=j1&intent=cancel")
+        let confirm = try RequestFactory.confirmJob(jobID: "j1", config: config, accessToken: "t")
+        XCTAssertEqual(confirm.httpMethod, "DELETE")
+        XCTAssertEqual(confirm.url?.absoluteString, "https://demo.supabase.co/functions/v1/ai-image?job_id=j1")
+        XCTAssertEqual(confirm.value(forHTTPHeaderField: "Authorization"), "Bearer t")
+    }
+
+    func testPollingRidesOutDroppedConnections() {
+        let schedule = PollingSchedule.standard
+        XCTAssertEqual(schedule.next(elapsed: 5, attempt: 0, failures: 0), .poll(after: 1))
+        XCTAssertEqual(schedule.next(elapsed: 60, attempt: 30, failures: 0), .poll(after: 3))
+        // A drop backs off instead of abandoning a job whose credit is reserved.
+        XCTAssertEqual(schedule.next(elapsed: 20, attempt: 5, failures: 1, outage: 0), .poll(after: 2))
+        XCTAssertEqual(schedule.next(elapsed: 40, attempt: 5, failures: 5, outage: 20), .poll(after: 13))
+        XCTAssertEqual(schedule.next(elapsed: 100, attempt: 5, failures: 40, outage: 80), .poll(after: 13))
+        // Past the deadline a job the server still runs is cancelled (and refunded)…
+        XCTAssertEqual(schedule.next(elapsed: 180, attempt: 70, failures: 0), .cancel)
+        // …while an unreachable server keeps being asked, even past the deadline…
+        XCTAssertEqual(schedule.next(elapsed: 200, attempt: 70, failures: 2, outage: 10), .poll(after: 3))
+        // …until it has been out of reach for the whole grace period.
+        XCTAssertEqual(schedule.next(elapsed: 300, attempt: 70, failures: 9, outage: 120), .giveUp)
+        // Back from the background long after the deadline: a poll cut off on
+        // the way out isn't an outage yet, so the app asks again.
+        XCTAssertEqual(schedule.next(elapsed: 900, attempt: 20, failures: 1, outage: 0), .poll(after: 2))
+
+        // Two minutes without a connection still leave room for many attempts.
+        var outage: TimeInterval = 0
+        var failures = 1
+        while case .poll(let wait) = schedule.next(elapsed: 30 + outage, attempt: 10, failures: failures, outage: outage) {
+            outage += wait
+            failures += 1
+        }
+        XCTAssertGreaterThanOrEqual(failures, 10)
+        XCTAssertGreaterThanOrEqual(outage, schedule.offlineGrace)
+    }
+
+    func testOnlyPassingFailuresAreRetried() {
+        XCTAssertTrue(PollingSchedule.isWorthRetrying(AIServiceError.offline))
+        XCTAssertTrue(PollingSchedule.isWorthRetrying(AIServiceError.timedOut))
+        XCTAssertTrue(PollingSchedule.isWorthRetrying(AIServiceError.network("Check your internet connection and try again.")))
+        XCTAssertTrue(PollingSchedule.isWorthRetrying(AIServiceError.rateLimited(retryAfter: 20)))
+        XCTAssertTrue(PollingSchedule.isWorthRetrying(AIServiceError.server(code: "http_502", message: "busy")))
+        XCTAssertTrue(PollingSchedule.isWorthRetrying(AIServiceError.server(code: "internal", message: "oops")))
+        XCTAssertFalse(PollingSchedule.isWorthRetrying(AIServiceError.server(code: "not_found", message: "gone")))
+        XCTAssertFalse(PollingSchedule.isWorthRetrying(AIServiceError.unauthorized))
+        XCTAssertFalse(PollingSchedule.isWorthRetrying(AIServiceError.contentBlocked("no")))
+        XCTAssertFalse(PollingSchedule.isWorthRetrying(CancellationError()))
+    }
+
+    func testReportedBalanceAndStatus() {
+        XCTAssertEqual(ResponseDecoder.reportedBalance(in: Data(#"{"job_id":"j1","status":"queued","credits_remaining":2}"#.utf8)), 2)
+        let failed = Data(#"{"job_id":"j1","status":"failed","error":{"code":"provider_failed","message":"x"},"credits_remaining":3}"#.utf8)
+        XCTAssertEqual(ResponseDecoder.reportedBalance(in: failed), 3)
+        let empty = Data(#"{"error":{"code":"insufficient_credits","message":"x","credits_remaining":0}}"#.utf8)
+        XCTAssertEqual(ResponseDecoder.reportedBalance(in: empty), 0)
+        XCTAssertNil(ResponseDecoder.reportedBalance(in: Data(#"{"job_id":"j1","status":"processing"}"#.utf8)))
+        XCTAssertNil(ResponseDecoder.reportedBalance(in: Data("<html>".utf8)))
+        let cancelled = Data(#"{"job_id":"j1","status":"cancelled","credits_remaining":3}"#.utf8)
+        XCTAssertEqual(ResponseDecoder.reportedStatus(in: cancelled), .cancelled)
+        XCTAssertNil(ResponseDecoder.reportedStatus(in: Data("{}".utf8)))
     }
 
     func testMapsErrors() {
@@ -153,6 +279,34 @@ final class BackendAPITests: XCTestCase {
                        .server(code: "http_503", message: "The AI service is busy. Please try again."))
     }
 
+    /// The abuse controls' answers: never a paywall, never "your session expired".
+    func testMapsAbuseControlErrors() {
+        func error(_ status: Int, _ body: String, retryAfter: String? = nil) -> AIServiceError {
+            ResponseDecoder.error(from: Data(body.utf8), statusCode: status, retryAfter: retryAfter)
+        }
+        XCTAssertEqual(error(429, #"{"error":{"code":"cooldown","message":"x","retry_after":3600,"until":"2026-10-15"}}"#),
+                       .cooldown(retryAfter: 3600))
+        XCTAssertEqual(error(403, #"{"error":{"code":"install_blocked","message":"x"}}"#), .cloudBlocked,
+                       "a block isn't an expired session")
+        XCTAssertEqual(error(503, #"{"error":{"code":"ai_paused","message":"x"}}"#, retryAfter: "600"), .aiPaused(retryAfter: 600))
+        XCTAssertEqual(error(429, #"{"error":{"code":"usage_limit","message":"x","retry_after":1200}}"#),
+                       .usageLimit(retryAfter: 1200))
+        XCTAssertEqual(error(428, #"{"error":{"code":"app_transaction_required","message":"x"}}"#), .appStoreCheckFailed)
+        XCTAssertEqual(error(428, #"{"error":{"code":"app_transaction_invalid","message":"x"}}"#), .appStoreCheckFailed)
+        XCTAssertEqual(error(409, #"{"error":{"code":"retry_limit","message":"x"}}"#), .retryLimit)
+        XCTAssertEqual(error(429, #"{"error":{"code":"rate_limited","message":"x","retry_after":20}}"#), .rateLimited(retryAfter: 20))
+        // The code decides, not the status: a proxy's 503 with the same code is still a rate limit.
+        XCTAssertEqual(error(503, #"{"error":{"code":"rate_limited","message":"x","retry_after":20}}"#), .rateLimited(retryAfter: 20))
+        XCTAssertEqual(error(402, #"{"error":{"code":"pro_required","message":"x"}}"#), .insufficientCredits(remaining: nil),
+                       "unchanged")
+        let errors: [AIServiceError] = [.cooldown(retryAfter: nil), .cloudBlocked, .aiPaused(retryAfter: nil),
+                                        .usageLimit(retryAfter: nil), .appStoreCheckFailed, .retryLimit]
+        for message in errors.compactMap(\.errorDescription) {
+            XCTAssertNil(message.range(of: #"abuse|violat|banned|suspend|fraud"#, options: [.regularExpression, .caseInsensitive]),
+                         "kind words for teens: \(message)")
+        }
+    }
+
     func testDecodesSupabaseSession() throws {
         let now = Date(timeIntervalSince1970: 1_000)
         let data = Data("""
@@ -163,6 +317,39 @@ final class BackendAPITests: XCTestCase {
         XCTAssertEqual(session.expiresAt, Date(timeIntervalSince1970: 4_600))
         XCTAssertFalse(session.isExpired(at: now))
         XCTAssertTrue(session.isExpired(at: Date(timeIntervalSince1970: 4_560)))
+        XCTAssertEqual(session.isAnonymous, true)
+        XCTAssertFalse(session.isAccount)
+    }
+
+    func testSignInWithAppleRequestAndAccountSession() throws {
+        let request = try RequestFactory.signInWithApple(idToken: "id.token", nonce: "raw-nonce", config: config)
+        XCTAssertEqual(request.httpMethod, "POST")
+        XCTAssertEqual(request.url?.absoluteString, "https://demo.supabase.co/auth/v1/token?grant_type=id_token")
+        XCTAssertEqual(request.value(forHTTPHeaderField: "apikey"), "anon-key")
+        let body = try JSONDecoder().decode([String: String].self, from: request.httpBody ?? Data())
+        XCTAssertEqual(body, ["provider": "apple", "id_token": "id.token", "nonce": "raw-nonce"])
+
+        let data = Data("""
+        {"access_token":"at","expires_in":3600,"refresh_token":"rt","user":{"id":"u-2","is_anonymous":false,"email":"x@privaterelay.appleid.com"}}
+        """.utf8)
+        let session = try ResponseDecoder.decodeSession(data: data, statusCode: 200)
+        XCTAssertTrue(session.isAccount)
+        XCTAssertEqual(session.email, "x@privaterelay.appleid.com")
+    }
+
+    func testLinkAccountRequestOmitsMissingFields() throws {
+        let request = try RequestFactory.linkAccount(anonymousToken: "anon.jwt", authorizationCode: nil, config: config, accessToken: "account.jwt")
+        XCTAssertEqual(request.url?.path, "/functions/v1/account/link")
+        XCTAssertEqual(request.value(forHTTPHeaderField: "Authorization"), "Bearer account.jwt")
+        let body = try JSONDecoder().decode([String: String].self, from: request.httpBody ?? Data())
+        XCTAssertEqual(body, ["anonymous_token": "anon.jwt"])
+    }
+
+    func testSessionsSavedBeforeAccountsStillDecode() throws {
+        let legacy = Data(#"{"accessToken":"a","refreshToken":"r","expiresAt":0,"userID":"u"}"#.utf8)
+        let session = try JSONDecoder().decode(AuthSession.self, from: legacy)
+        XCTAssertNil(session.isAnonymous)
+        XCTAssertFalse(session.isAccount)
     }
 
     func testDigitalSourceTypes() {
@@ -171,5 +358,15 @@ final class BackendAPITests: XCTestCase {
         XCTAssertEqual(AIOperation.eraseObject.digitalSourceType, .compositeWithTrainedAlgorithmicMedia)
         XCTAssertTrue(AIOperation.removeBackground.runsOnDevice)
         XCTAssertFalse(AIOperation.magicEdit.runsOnDevice)
+    }
+
+    func testCompositeProvenance() {
+        XCTAssertEqual(DigitalSourceType.composite.uri, "http://cv.iptc.org/newscodes/digitalsourcetype/composite")
+        // A cut-out on another photo is a composite, unless generative AI made more of it.
+        XCTAssertEqual(DigitalSourceType.strongest(AIOperation.removeBackground.digitalSourceType, .composite), .composite)
+        XCTAssertEqual(DigitalSourceType.strongest(.composite, AIOperation.restyle.digitalSourceType), .trainedAlgorithmicMedia)
+        XCTAssertEqual(DigitalSourceType.strongest(AIOperation.magicEdit.digitalSourceType, .composite), .compositeWithTrainedAlgorithmicMedia)
+        XCTAssertEqual(DigitalSourceType.strongest(nil, .composite), .composite)
+        XCTAssertNil(DigitalSourceType.strongest(nil, nil))
     }
 }

@@ -1,37 +1,99 @@
 import SwiftUI
 
-/// Paywall, AI-consent sheet and toasts. Attached to the root view and to the
-/// full-screen editor; only the topmost (`isActive`) one presents, because a
-/// view that is already presenting a full-screen cover can't present a sheet.
+/// Paywall, AI-consent sheet, share composer and toasts. Attached to the root
+/// view and to the full-screen editor; only the topmost (`isActive`) one
+/// presents, because a view that is already presenting a full-screen cover
+/// can't present a sheet.
 struct AppPresentations: ViewModifier {
     let isActive: Bool
     @Environment(AppModel.self) private var app
+    @Environment(\.openURL) private var openURL
 
     func body(content: Content) -> some View {
         content
             .sheet(isPresented: Binding(
                 get: { isActive && app.isPaywallPresented },
                 set: { app.isPaywallPresented = $0 }
-            )) {
+            ), onDismiss: { app.presentationEnded() }) {
                 PaywallView(source: app.paywallSource)
                     .environment(app)
+                    .pageSheetSizing()
+            }
+            .sheet(item: Binding(
+                get: { isActive ? app.outOfCredits : nil },
+                set: { app.outOfCredits = $0 }
+            )) { request in
+                OutOfCreditsSheet(request: request)
+                    .environment(app)
+                    .presentationDetents([.medium, .large])
+                    .presentationBackground(Palette.background)
+                    .macSheet(.form)
+            }
+            .sheet(isPresented: Binding(
+                get: { isActive && app.isBestShotPresented },
+                set: { app.isBestShotPresented = $0 }
+            )) {
+                BestShotView()
+                    .environment(app)
+                    .pageSheetSizing()
+            }
+            .sheet(isPresented: Binding(
+                get: { isActive && app.isAccountPromptPresented && !app.isPaywallPresented && app.outOfCredits == nil },
+                set: { app.isAccountPromptPresented = $0 }
+            ), onDismiss: { app.presentationEnded() }) {
+                AccountPromptSheet()
+                    .environment(app)
+                    .macSheet(.form)
             }
             .sheet(item: Binding(
                 get: { isActive ? app.consentRequest : nil },
                 set: { app.consentRequest = $0 }
             )) { request in
                 AIConsentView(
-                    providerName: app.config.aiProviderName,
-                    retentionHours: app.config.dataRetentionHours,
-                    onAccept: {
+                    providerName: app.config.processorName,
+                    processors: app.config.consentProcessors,
+                    retention: app.config.retentionPhrase,
+                    asksGuardian: app.ageDefaults.requiresGuardianStep,
+                    onAccept: { guardianConfirmed in
                         app.consentRequest = nil
+                        app.grantAIConsent(guardianConfirmed: guardianConfirmed)
                         request.onAccept()
                     },
                     onDecline: { app.consentRequest = nil }
                 )
                 .environment(app)
                 .presentationDetents([.large])
+                .presentationDragIndicator(.visible)
                 .presentationBackground(Palette.background)
+                .macSheet(.form)
+            }
+            .sheet(item: Binding(
+                get: { isActive ? app.shareRequest : nil },
+                set: { app.shareRequest = $0 }
+            ), onDismiss: { app.ads.naturalBreak() }) { payload in
+                ShareComposerView(payload: payload)
+                    .environment(app)
+                    .presentationDetents([.large])
+                    .presentationBackground(Palette.background)
+                    .pageSheetSizing()
+            }
+            .alert(
+                "Photos access is off",
+                isPresented: Binding(
+                    get: { isActive && app.photosAccessRequest != nil },
+                    set: { if !$0 { app.photosAccessRequest = nil } }
+                ),
+                presenting: app.photosAccessRequest
+            ) { request in
+                Button("Open Settings") {
+                    if let url = PhotosAccessRequest.settingsURL { openURL(url) }
+                }
+                if let shareInstead = request.shareInstead {
+                    Button("Share instead", action: shareInstead)
+                }
+                Button("Cancel", role: .cancel) {}
+            } message: { _ in
+                Text("Allow photo access in Settings to save your creations.")
             }
             .toast(Binding(
                 get: { isActive ? app.toast : nil },

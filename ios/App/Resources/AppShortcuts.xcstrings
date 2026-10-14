@@ -1,0 +1,506 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "Edit a photo with ${applicationName}" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "de" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Bearbeite ein Foto mit ${applicationName}",
+              "Foto in ${applicationName} bearbeiten",
+              "Bearbeite mein Foto in ${applicationName}"
+            ]
+          }
+        },
+        "en" : {
+          "stringSet" : {
+            "state" : "new",
+            "values" : [
+              "Edit a photo with ${applicationName}",
+              "Edit a photo in ${applicationName}",
+              "Edit my photo in ${applicationName}"
+            ]
+          }
+        },
+        "es" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Edita una foto con ${applicationName}",
+              "Editar una foto en ${applicationName}",
+              "Edita mi foto en ${applicationName}"
+            ]
+          }
+        },
+        "fr" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Modifie une photo avec ${applicationName}",
+              "Retouche une photo dans ${applicationName}",
+              "Modifie ma photo dans ${applicationName}"
+            ]
+          }
+        },
+        "id" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Edit foto di ${applicationName}",
+              "Edit foto pakai ${applicationName}",
+              "Edit fotoku di ${applicationName}"
+            ]
+          }
+        },
+        "it" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Modifica una foto con ${applicationName}",
+              "Modifica una foto in ${applicationName}",
+              "Ritocca la mia foto con ${applicationName}"
+            ]
+          }
+        },
+        "ja" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "${applicationName}で写真を編集",
+              "${applicationName}で写真を加工",
+              "${applicationName}で写真を編集して"
+            ]
+          }
+        },
+        "ko" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "${applicationName}에서 사진 편집",
+              "${applicationName}으로 사진 편집하기",
+              "${applicationName}에서 내 사진 편집해 줘"
+            ]
+          }
+        },
+        "pt-BR" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Editar uma foto no ${applicationName}",
+              "Edita minha foto no ${applicationName}",
+              "Editar foto com o ${applicationName}"
+            ]
+          }
+        },
+        "ru" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Отредактируй фото в ${applicationName}",
+              "Измени фото в ${applicationName}",
+              "Открой фото в ${applicationName}"
+            ]
+          }
+        },
+        "tr" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "${applicationName} ile fotoğraf düzenle",
+              "${applicationName} ile fotoğrafımı düzenle",
+              "${applicationName} uygulamasında fotoğraf düzenle"
+            ]
+          }
+        },
+        "zh-Hans" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "用 ${applicationName} 编辑照片",
+              "在 ${applicationName} 中编辑照片",
+              "用 ${applicationName} 修图"
+            ]
+          }
+        }
+      }
+    },
+    "Make a collage in ${applicationName}" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "de" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Erstelle eine Collage mit ${applicationName}",
+              "Collage in ${applicationName} erstellen",
+              "Mach einen Photo Dump mit ${applicationName}"
+            ]
+          }
+        },
+        "en" : {
+          "stringSet" : {
+            "state" : "new",
+            "values" : [
+              "Make a collage in ${applicationName}",
+              "Make a collage with ${applicationName}",
+              "Make a photo dump in ${applicationName}"
+            ]
+          }
+        },
+        "es" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Haz un collage en ${applicationName}",
+              "Crea un collage con ${applicationName}",
+              "Haz un photo dump en ${applicationName}"
+            ]
+          }
+        },
+        "fr" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Fais un collage avec ${applicationName}",
+              "Crée un collage dans ${applicationName}",
+              "Fais un photo dump avec ${applicationName}"
+            ]
+          }
+        },
+        "id" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Bikin kolase di ${applicationName}",
+              "Buat kolase dengan ${applicationName}",
+              "Bikin photo dump di ${applicationName}"
+            ]
+          }
+        },
+        "it" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Crea un collage con ${applicationName}",
+              "Fai un collage in ${applicationName}",
+              "Crea un photo dump con ${applicationName}"
+            ]
+          }
+        },
+        "ja" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "${applicationName}でコラージュを作成",
+              "${applicationName}でコラージュをつくる",
+              "${applicationName}でフォトダンプをつくる"
+            ]
+          }
+        },
+        "ko" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "${applicationName}에서 콜라주 만들기",
+              "${applicationName}으로 콜라주 만들어 줘",
+              "${applicationName}에서 포토 덤프 만들기"
+            ]
+          }
+        },
+        "pt-BR" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Fazer uma colagem no ${applicationName}",
+              "Criar uma colagem com o ${applicationName}",
+              "Fazer um photo dump no ${applicationName}"
+            ]
+          }
+        },
+        "ru" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Сделай коллаж в ${applicationName}",
+              "Создай коллаж в ${applicationName}",
+              "Сделай фотодамп в ${applicationName}"
+            ]
+          }
+        },
+        "tr" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "${applicationName} ile kolaj yap",
+              "${applicationName} ile photo dump yap",
+              "${applicationName} uygulamasında kolaj yap"
+            ]
+          }
+        },
+        "zh-Hans" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "用 ${applicationName} 制作拼图",
+              "在 ${applicationName} 中拼图",
+              "用 ${applicationName} 做照片合集"
+            ]
+          }
+        }
+      }
+    },
+    "Open Retro Cam in ${applicationName}" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "de" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Öffne Retro Cam in ${applicationName}",
+              "Mach ein Retro-Foto mit ${applicationName}",
+              "Öffne die ${applicationName}-Kamera"
+            ]
+          }
+        },
+        "en" : {
+          "stringSet" : {
+            "state" : "new",
+            "values" : [
+              "Open Retro Cam in ${applicationName}",
+              "Take a retro photo with ${applicationName}",
+              "Open the ${applicationName} camera"
+            ]
+          }
+        },
+        "es" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Abre Retro Cam en ${applicationName}",
+              "Toma una foto retro con ${applicationName}",
+              "Abre la cámara de ${applicationName}"
+            ]
+          }
+        },
+        "fr" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Ouvre Retro Cam dans ${applicationName}",
+              "Prends une photo rétro avec ${applicationName}",
+              "Ouvre la caméra ${applicationName}"
+            ]
+          }
+        },
+        "id" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Buka Retro Cam di ${applicationName}",
+              "Ambil foto retro dengan ${applicationName}",
+              "Buka kamera ${applicationName}"
+            ]
+          }
+        },
+        "it" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Apri Retro Cam in ${applicationName}",
+              "Scatta una foto retrò con ${applicationName}",
+              "Apri la fotocamera di ${applicationName}"
+            ]
+          }
+        },
+        "ja" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "${applicationName}でRetro Camを開く",
+              "${applicationName}でレトロな写真を撮る",
+              "${applicationName}のカメラを開く"
+            ]
+          }
+        },
+        "ko" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "${applicationName}에서 Retro Cam 열기",
+              "${applicationName}으로 레트로 사진 찍기",
+              "${applicationName} 카메라 열기"
+            ]
+          }
+        },
+        "pt-BR" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Abrir a Retro Cam no ${applicationName}",
+              "Tirar uma foto retrô com o ${applicationName}",
+              "Abre a câmera do ${applicationName}"
+            ]
+          }
+        },
+        "ru" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Открой Retro Cam в ${applicationName}",
+              "Сделай ретрофото в ${applicationName}",
+              "Открой камеру ${applicationName}"
+            ]
+          }
+        },
+        "tr" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "${applicationName} uygulamasında Retro Cam'i aç",
+              "${applicationName} ile retro fotoğraf çek",
+              "${applicationName} kamerasını aç"
+            ]
+          }
+        },
+        "zh-Hans" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "在 ${applicationName} 中打开 Retro Cam",
+              "用 ${applicationName} 拍复古照片",
+              "打开 ${applicationName} 相机"
+            ]
+          }
+        }
+      }
+    },
+    "Start a photo booth in ${applicationName}" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "de" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Starte eine Fotobox in ${applicationName}",
+              "Starte die ${applicationName}-Fotobox",
+              "Mach Fotobox-Bilder mit ${applicationName}"
+            ]
+          }
+        },
+        "en" : {
+          "stringSet" : {
+            "state" : "new",
+            "values" : [
+              "Start a photo booth in ${applicationName}",
+              "Start the ${applicationName} photo booth",
+              "Take photo booth pictures with ${applicationName}"
+            ]
+          }
+        },
+        "es" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Inicia un fotomatón en ${applicationName}",
+              "Abre el fotomatón de ${applicationName}",
+              "Toma fotos de fotomatón con ${applicationName}"
+            ]
+          }
+        },
+        "fr" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Lance un photomaton dans ${applicationName}",
+              "Lance le photomaton ${applicationName}",
+              "Prends des photos photomaton avec ${applicationName}"
+            ]
+          }
+        },
+        "id" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Mulai photobooth di ${applicationName}",
+              "Buka photobooth ${applicationName}",
+              "Foto di photobooth ${applicationName}"
+            ]
+          }
+        },
+        "it" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Avvia una cabina fotografica in ${applicationName}",
+              "Apri la cabina fotografica di ${applicationName}",
+              "Scatta foto da cabina con ${applicationName}"
+            ]
+          }
+        },
+        "ja" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "${applicationName}でフォトブースを開始",
+              "${applicationName}のフォトブースを始める",
+              "${applicationName}でフォトブースの写真を撮る"
+            ]
+          }
+        },
+        "ko" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "${applicationName}에서 포토부스 시작",
+              "${applicationName} 포토부스 열기",
+              "${applicationName}으로 네 컷 사진 찍기"
+            ]
+          }
+        },
+        "pt-BR" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Iniciar a cabine de fotos no ${applicationName}",
+              "Abre a cabine de fotos do ${applicationName}",
+              "Tirar fotos de cabine com o ${applicationName}"
+            ]
+          }
+        },
+        "ru" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Запусти фотобудку в ${applicationName}",
+              "Открой фотобудку ${applicationName}",
+              "Сделай снимки в фотобудке ${applicationName}"
+            ]
+          }
+        },
+        "tr" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "${applicationName} ile fotoğraf kabini başlat",
+              "${applicationName} fotoğraf kabinini başlat",
+              "${applicationName} ile Retro Booth'u başlat"
+            ]
+          }
+        },
+        "zh-Hans" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "在 ${applicationName} 中拍大头贴",
+              "打开 ${applicationName} 大头贴",
+              "用 ${applicationName} 拍大头贴"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}

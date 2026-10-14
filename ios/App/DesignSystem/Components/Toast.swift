@@ -18,6 +18,13 @@ struct ToastMessage: Identifiable, Equatable {
         }
     }
 
+    /// Long enough to read: by characters, since Japanese and Chinese have no
+    /// spaces to count words by, and twice as long while VoiceOver reads it.
+    fileprivate var duration: Double {
+        let reading = min(8, max(3, Double(text.count) / 14))
+        return UIAccessibility.isVoiceOverRunning ? reading * 2 : reading
+    }
+
     fileprivate var tint: Color {
         switch style {
         case .info: return Palette.textPrimary
@@ -29,6 +36,8 @@ struct ToastMessage: Identifiable, Equatable {
 
 private struct ToastModifier: ViewModifier {
     @Binding var message: ToastMessage?
+    /// A finger on the toast holds it on screen.
+    @State private var isHeld = false
 
     func body(content: Content) -> some View {
         content
@@ -43,14 +52,30 @@ private struct ToastModifier: ViewModifier {
                     }
                     .padding(.horizontal, 16)
                     .padding(.vertical, 12)
-                    .glassPanel(radius: 18)
+                    .glassPanel()
                     .padding(.horizontal, Metrics.gutter)
                     .padding(.top, 6)
                     .transition(.move(edge: .top).combined(with: .opacity))
-                    .onTapGesture { self.message = nil }
+                    .gesture(
+                        DragGesture(minimumDistance: 0)
+                            .onChanged { _ in isHeld = true }
+                            .onEnded { value in
+                                isHeld = false
+                                // A tap (or a flick up) dismisses it.
+                                if abs(value.translation.height) < 10 || value.translation.height < -20 {
+                                    self.message = nil
+                                }
+                            }
+                    )
+                    .accessibilityAction { self.message = nil }
                     .task(id: message.id) {
                         UIAccessibility.post(notification: .announcement, argument: message.text)
-                        try? await Task.sleep(for: .seconds(3))
+                        var remaining = message.duration
+                        while remaining > 0 {
+                            try? await Task.sleep(for: .milliseconds(250))
+                            if Task.isCancelled { return }
+                            if !isHeld { remaining -= 0.25 }
+                        }
                         if self.message?.id == message.id {
                             self.message = nil
                         }
@@ -65,15 +90,4 @@ extension View {
     func toast(_ message: Binding<ToastMessage?>) -> some View {
         modifier(ToastModifier(message: message))
     }
-}
-
-/// UIKit share sheet (lets us share files that carry provenance metadata).
-struct ShareSheet: UIViewControllerRepresentable {
-    let items: [Any]
-
-    func makeUIViewController(context: Context) -> UIActivityViewController {
-        UIActivityViewController(activityItems: items, applicationActivities: nil)
-    }
-
-    func updateUIViewController(_ controller: UIActivityViewController, context: Context) {}
 }

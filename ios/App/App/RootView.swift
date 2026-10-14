@@ -1,16 +1,29 @@
 import SwiftUI
 import PhotosUI
+import AppCore
 
 struct RootView: View {
     @Environment(AppModel.self) private var app
     @State private var pickerItem: PhotosPickerItem?
+    @State private var videoItem: PhotosPickerItem?
 
     var body: some View {
         @Bindable var app = app
 
         Group {
-            if app.hasCompletedOnboarding {
-                MainTabView()
+            if app.hasCompletedOnboarding && app.needsAgeStep {
+                // Once, for people who finished onboarding before the age step.
+                ZStack {
+                    AuroraBackground(intensity: 0.9)
+                    AgeStepView(mode: .returning) { app.recordAge($0) }
+                        .readableWidth(Metrics.compactWidth, alignment: .center)
+                }
+            } else if app.hasCompletedOnboarding {
+                if Platform.isMac {
+                    MacShellView()
+                } else {
+                    MainTabView()
+                }
             } else {
                 OnboardingView()
             }
@@ -23,12 +36,39 @@ struct RootView: View {
                 pickerItem = nil
             }
         }
-        .fullScreenCover(item: $app.editorLaunch) { launch in
+        .photosPicker(isPresented: $app.isVideoPickerPresented, selection: $videoItem, matching: .videos)
+        .onChange(of: videoItem) { _, newItem in
+            guard let newItem else { return }
+            Task {
+                await app.handlePickedVideo(newItem)
+                videoItem = nil
+            }
+        }
+        .fullScreenCover(item: $app.editorLaunch, onDismiss: { app.editorDidClose() }) { launch in
             EditorView(launch: launch)
                 .environment(app)
         }
-        .modifier(AppPresentations(isActive: app.editorLaunch == nil))
-        .tint(Palette.primary)
+        .fullScreenCover(item: $app.videoSource, onDismiss: { app.presentationEnded() }) { source in
+            VideoEditorView(source: source)
+                .environment(app)
+        }
+        .retroCamCover()
+        .fullScreenCover(isPresented: $app.isCollagePresented, onDismiss: { app.presentationEnded() }) {
+            CollageView()
+                .environment(app)
+        }
+        .overlay {
+            if app.tour.isRunning {
+                TourOverlay()
+                    .transition(.opacity)
+            }
+        }
+        .animation(.easeInOut(duration: 0.25), value: app.tour.isRunning)
+        .modifier(AppPresentations(isActive: !app.isFullScreenCoverPresented))
+        .onOpenURL { url in
+            if let link = GlowDeepLink(url: url) { app.handle(link) }
+        }
+        .tint(Palette.accent)
     }
 }
 
@@ -37,14 +77,15 @@ struct MainTabView: View {
 
     var body: some View {
         @Bindable var app = app
-
         TabView(selection: $app.selectedTab) {
             HomeView()
                 .tabItem { Label("Explore", systemImage: "sparkles") }
                 .tag(AppTab.home)
-            CreateView()
-                .tabItem { Label("Create", systemImage: "wand.and.stars") }
-                .tag(AppTab.create)
+            if app.allowsCloudAI {
+                CreateView()
+                    .tabItem { Label("Create", systemImage: "wand.and.stars") }
+                    .tag(AppTab.create)
+            }
             EditHubView()
                 .tabItem { Label("Edit", systemImage: "photo.badge.plus") }
                 .tag(AppTab.edit)
@@ -52,6 +93,16 @@ struct MainTabView: View {
                 .tabItem { Label("My Works", systemImage: "square.grid.2x2") }
                 .tag(AppTab.library)
         }
+        .minimizingTabBar()
+        .sheet(isPresented: $app.isSettingsPresented) {
+            SettingsView()
+                .environment(app)
+        }
         .onChange(of: app.selectedTab) { _, _ in Haptics.selection() }
+        .task {
+            // Let the first screen settle, then offer the tour once.
+            try? await Task.sleep(for: .seconds(0.8))
+            app.offerTourIfNeeded()
+        }
     }
 }

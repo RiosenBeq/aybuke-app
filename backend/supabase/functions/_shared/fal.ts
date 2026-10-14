@@ -88,8 +88,10 @@ export interface QueuedRequest {
   cancel_url: string;
 }
 
+/** A result: a provider CDN link (fal) or the image itself, base64 (xAI). */
 export interface Output {
-  url: string;
+  url?: string;
+  base64?: string;
   width?: number;
   height?: number;
   content_type?: string;
@@ -128,8 +130,9 @@ export async function status(statusUrl: string): Promise<QueueStatus | "UNKNOWN"
   return body.status ?? "UNKNOWN";
 }
 
+/** `moderatedBy`: the provider whose own moderation already passed every output (moderation.ts). */
 export type ResultOutcome =
-  | { ok: true; outputs: Output[] }
+  | { ok: true; outputs: Output[]; moderatedBy?: "xai" }
   | { ok: false; code: string; message: string };
 
 /** Fetches a completed request's output, mapping provider errors to app error codes. */
@@ -164,22 +167,6 @@ export function normalizeOutputs(payload: unknown): Output[] {
   return list
     .filter((item): item is Output => !!item && typeof (item as Output).url === "string")
     .map(({ url, width, height, content_type }) => ({ url, width, height, content_type }));
-}
-
-/**
- * Second safety net on outputs (on by default; `OUTPUT_MODERATION=off` disables it).
- * Part of the documented safeguards for EU AI Act Art. 5(1)(ba) (from 2 Dec 2026).
- */
-export async function outputsLookUnsafe(outputs: Output[]): Promise<boolean> {
-  if (Deno.env.get("OUTPUT_MODERATION") === "off" || outputs.length === 0) return false;
-  const response = await fetch("https://fal.run/fal-ai/x-ailab/nsfw", {
-    method: "POST",
-    headers: headers(),
-    body: JSON.stringify({ image_urls: outputs.map((o) => o.url) }),
-  });
-  if (!response.ok) return false;
-  const body = await response.json() as { has_nsfw_concepts?: boolean[] };
-  return (body.has_nsfw_concepts ?? []).some(Boolean);
 }
 
 async function safeText(response: Response): Promise<string> {

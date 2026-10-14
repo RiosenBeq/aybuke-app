@@ -17,4 +17,13 @@ enum Haptics {
     static func error() {
         UINotificationFeedbackGenerator().notificationOccurred(.error)
     }
+
+    /// Two soft beats, for hearting a creation.
+    static func heartbeat() {
+        let generator = UIImpactFeedbackGenerator(style: .soft)
+        generator.impactOccurred(intensity: 1)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.14) {
+            generator.impactOccurred(intensity: 0.6)
+        }
+    }
 }

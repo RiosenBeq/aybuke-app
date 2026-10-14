@@ -37,6 +37,7 @@ This document turns that brief into a product definition grounded in the researc
   4. **Restore old photos**: emotional, giftable.
   5. **Create from text**: ideas, wallpapers, posts.
   6. **Quick fixes**: remove background, erase objects, light and colour.
+  7. **Retro looks and quick videos**: 80s, 90s and Y2K effects, and a talking video with the silences cut out, for Stories and TikTok.
 
 ## 3. Feature set
 
@@ -44,22 +45,32 @@ This document turns that brief into a product definition grounded in the researc
 
 | Area | Feature | Where |
 |---|---|---|
-| Onboarding | 3 value pages → interests ("What will you create first?") → **free on-device "try it on your photo"** before/after → soft paywall | `Features/Onboarding` |
+| Onboarding | 2 value pages → age step → interests ("What are you here for?") → **free on-device "Try Digicam '04 on your photo"** before/after → Keep editing (editor on Effects) or Save to My Works → soft paywall (adults only, after the editor closes) → tour | `Features/Onboarding` |
+| Guided tour | 7 spotlight steps with Next/Skip across the tabs (Magic Edit, daily credits, free tools, Create, photos & videos, private gallery, Settings); shown once after onboarding, replayable from Settings → "Show me around" | `Features/Tour` |
 | Consent | Explicit **AI data-sharing consent**, asked in context before the first cloud job (App Review 5.1.2(i)); revocable in Settings | `AIConsentView` |
-| Explore (home) | Magic Edit hero, quick tools, template rows personalised by onboarding interests, "Create from text" | `Features/Home` |
+| Explore (home) | Magic Edit hero, daily credits (a tap opens "Your credits": the balance, when free credits are back, what uses a credit and what is always free), quick tools (Retro Cam, Makeup Studio, then Effects; Makeup Studio leads for "Makeup & hair looks"), template rows personalised by onboarding interests, collection pages with the price per look, "Create from text", "Glow together" invite | `Features/Home`, `CreditsSheet` |
 | Magic Edit | Prompt-based edit with suggestion chips ("Golden hour light", "Put me in a black suit"…) | `Features/Edit` |
-| Styles (templates) | 19 one-tap templates in 6 categories (trending, seasonal, portraits, fun, art, business); server-side recipes | `AppCore/TemplateCatalog` |
+| Makeup Studio | Makeup as play and self-expression: 14 one-tap looks (Soft Glam, Strawberry Girl, Cherry Lips, Latte, Cold Girl, Glitter Pop, Y2K Frost, Graphic Liner, Peachy Doll, Festival Gems, Ballet Blush, Goth Glam, Rainbow Liner, Sunset Shimmer) or her own mix under Customize: lips (8 colors), eyes (7 shadows and liners), cheeks (4 blushes), extras (face gems, faux freckles, star stickers, glitter), an optional hair color (5) and Soft / Medium / Vivid. The app writes the request and sends it as a Magic Edit, so consent, credits (1 per try), Likeness Lock, the free retry and AI marking are the same. Another look right after one starts again from her photo and replaces it, so looks never pile up. Color, shine and sparkle only: her face, features, expression, skin tone, skin texture (freckles, pores, marks) and age stay; no contour, lip plumping, eye enlarging or smoothing; no scores or "better" language. NEW card in Edit, Explore quick tool (first for "Makeup & hair looks"); hidden under 13 | `MakeupPanel`, `AppCore/MakeupStudio` |
+| Styles (templates) | 51 year-round one-tap looks in 8 collections (Trending now, Glow-up looks, Aesthetic edits, Bestie pics, Dreamy portraits, Art styles, Pet portraits, For your shop & career), plus seasonal looks in a row named after the season (Spooky season Oct 1–Nov 2, Cozy winter Dec 1–Jan 6, Galentine's Feb 1–14; hidden from Home between seasons, always in the editor); server-side recipes | `AppCore/TemplateCatalog` |
+| Effects | Twelve retro effects: VHS '86, Disposable '98, Kira Kira, Digicam '04, Instant '82, Glamour '92, Neon '84, Throwback '16 (optional white square border), Camcorder '06 (REC display; blinking dot and running timecode on video), Toy Cam '09 (cross-processed colour and dark corners), Rainbow '17 (a band of prism light across the top left corner), Film Still (halation, optional letterbox and a one-line subtitle checked by the content policy); optional date stamp; plus **Tiny World** (tilt-shift: a sharp band, blur growing toward the top and bottom, a little more colour; suggested first for city streets); on-device (Core Image), free | `RetroEffects.swift` |
 | Enhance | Cloud generative upscale/restore | Edit |
-| Remove background | **On-device** (Vision), free and private | `OnDeviceImageService` |
-| Erase | Brush mask → AI object removal | `MaskCanvas` |
-| Adjust | Brightness, contrast, saturation, warmth, sharpness, vignette (on-device, free) | `AdjustPanel` |
-| Editor | Undo/redo, hold-to-see-original, before/after compare slider, save, share | `EditorView` |
-| Create | Text-to-image with 13 styles, 5 aspect ratios, 1–4 images (2+ is Pro), "Surprise me", "Enhance prompt" | `Features/Create` |
+| Remove background | **On-device** (Vision), free and private: tap to pick subjects, **Keep more / Keep less** refine brush over the mask, colour, gradient, blurred-original or own-photo backgrounds with an optional soft contact **Shadow**, outlined stickers | `CutoutTool`, `Cutout.swift`, `OnDeviceImageService` |
+| Erase | Brush mask → AI object removal; one finger paints, two fingers pan and pinch-zoom up to 4× (the brush keeps its size on screen, so it paints finer zoomed in) | `MaskCanvas` |
+| Adjust | Brightness, contrast, saturation, warmth, sharpness, vignette, plus one-tap **Auto** (on-device, free). RAW photos (ProRAW, DNG) are developed automatically with the best settings when opened | `AdjustPanel`, `AutoDevelop`, `AppCore/AutoAdjust` |
+| Crop | Original, Freeform, 1:1, 4:5, 9:16 and 16:9 (exact pixel ratios), rotate left, mirror, straighten ±15° that enlarges the photo just enough to never show empty corners; uniform scaling only. On-device, free | `CropPanel`, `CropCanvas`, `AppCore/CropGeometry` |
+| Editor | Undo/redo, hold-to-see-original, before/after compare slider (lined up after a crop), pinch or double-tap zoom up to 4× with trackpad support, save and share (both apply a pending effect, adjustment or crop first, so they export what's on screen); Liquid Glass tool bar on iOS 26 that keeps every label whole at any text size and in every language (one row on iPad and the Mac, scrolling with the chosen tool in view on iPhone) | `EditorView`, `EditorToolBar`, `ZoomableCanvas` |
+| Video | Simple on-device editor: **Auto-cut silences** (jump cut), ten of the retro effects (with their date stamps, letterbox or camcorder display) and Tiny World, trim, save to Photos or share. Free, no watermark, no ending clip, clips up to 5 minutes | `Features/Video`, `VideoEngine`, `AppCore/SilenceCutter` |
+| Create | Text-to-image with 20 styles, 5 aspect ratios, 1–4 images (2+ is Pro), "Inspire me" (seasonal ideas) and "Make it magic" (Apple's on-device model when available, otherwise the offline "Enhance prompt"); "Create with Image Playground" on supported devices (iOS 18.4+): Apple's own image maker, Apple's cartoon styles only, no Glowlit credits, under Apple's terms and limits (never called free or unlimited) | `Features/Create` |
+| Share | Photo, Before/After, Story card, **Cover star** (4:5 magazine cover; the masthead tucks behind her head with on-device Vision person segmentation), **Photo strip** (date-stamped photo booth), Which vibe? (two variations of one creation, never the original against an edit); caption and hashtags; **Hide other faces** for group photos shared from My Works or Create (keeps the biggest face or the ones she taps and blurs the others, on device, in every format). Stories without a Meta App ID: the system share sheet with just the image and a "Tap Instagram, then Stories" hint | `Features/Share`, `Services/Sharing` |
+| Invite | "Glow together": a 9:16 story card with the app icon and a QR code to the App Store page or website, from Settings and Home; never includes her photos | `InviteView` |
 | Library ("My Works") | Every creation saved on-device (SwiftData + protected files); detail view with save/share/edit/delete | `Features/Library` |
-| Paywall | Annual (7-day trial, preselected) + monthly; trial timeline; credit-pack downsell; restore; legal copy | `Features/Paywall` |
-| Settings | Membership, credits, consent toggle, delete creations, **delete account & data**, legal, acknowledgements | `Features/Settings` |
+| Paywall | Annual ($39.99, 7-day trial, preselected) + monthly ($5.99, first month $1.99 if eligible); a card on top says why it opened (out of free credits with when they're back, a Pro look or style, several images, the mark); trial timeline; "Always free" line; credit-pack downsell; restore; legal copy | `Features/Paywall` |
+| Settings | Membership, credits, consent toggle, **Language** (opens iOS Settings for the per-app language), "Show me around", delete creations, **delete account & data**, legal, acknowledgements | `Features/Settings` |
+| Languages | 12 languages via String Catalogs: English, Turkish, Spanish, Brazilian Portuguese, French, German, Italian, Russian, Japanese, Korean, Simplified Chinese, Indonesian. Follows the iPhone's language; legal documents in English and Turkish only | `Localizable.xcstrings`, `L10n.core` |
+| iPhone and iPad | Universal app: adaptive grids and readable widths; iOS 26 Liquid Glass tab bar (minimises on scroll), frosted fallback on iOS 17–18 | `DesignSystem/LiquidGlass.swift` |
 | Trust | Exact refunds on failure, free retry, trial reminder notification, report image, no fake timers | across |
 | Provenance | IPTC `DigitalSourceType` XMP on every AI export (EU AI Act Art. 50) | `ImageExporter` |
+| Analytics | RevenueCat in observer mode for subscription analytics (StoreKit 2 and the backend still sell and verify); on with the public SDK key in `AppConfig.json`, off when it's empty | `RevenueCatBridge` |
 | Demo mode | The whole app runs offline with simulated AI when no backend is configured | `DemoAIImageService` |
 
 ### Next (see [roadmap](06-roadmap.md))
@@ -70,7 +81,7 @@ This document turns that brief into a product definition grounded in the researc
 - C2PA manifests.
 - App Attest.
 - Remote template catalog with thumbnails.
-- Localization.
+- Native-speaker review of the 11 translations; localized App Store pages.
 - iPhone Duo layouts.
 - Declared Age Range API.
 
@@ -83,50 +94,65 @@ This document turns that brief into a product definition grounded in the researc
 
 ## 4. Key flows
 
-1. **First launch.** Onboarding (about 30 s). The user picks interests, optionally tries the free on-device glow on their own photo, sees the soft paywall, and either closes it or starts a trial. They land on Explore with categories ordered by their interests.
+1. **First launch.** Onboarding (about 30 s). The user picks interests, tries the free on-device Digicam '04 effect on their own photo (keeps editing it or saves it to My Works), sees the soft paywall (adults only), and either closes it or starts a trial. They land on Explore with categories ordered by their interests, and a 7-step guided tour points out the essentials (Skip ends it at any step).
 2. **One-tap template.** Tap a card → photo picker → editor opens and the template starts immediately (consent sheet first time) → result with before/after → Save / Share / "Retry free".
 3. **Magic Edit.** Pick a photo → type or choose a suggestion → result → keep editing (undo/redo) → Save.
-4. **Create.** Type an idea → pick a style and size → Generate → results (paged) → Save / Share / Edit.
-5. **Out of credits.**
-   - Free user → paywall (or a credit pack).
-   - Pro user → friendly fair-use message: credits refill monthly and packs never expire.
+4. **Makeup Studio.** Edit tab → Makeup Studio (or the Explore quick tool) → pick a photo → tap a look, or open Customize for lips, eyes, cheeks, extras, hair color and intensity → Try it (consent sheet first time) → before/after → "Retry free" if it doesn't look like her → Save / Share.
+5. **Create.** Type an idea → pick a style and size → Generate → results (paged) → Save / Share / Edit.
+6. **Out of credits.**
+   - Free user → paywall (or a credit pack). Its top card says she has used today's free credits and when they're back, and "Remind me when they're back" sits under the plans.
+   - Pro user → a sheet (only after she tries an AI action, with a close button): the next monthly refill date when the app knows it (otherwise "within a month"), the credit packs with their real prices ("≈ price per credit" below the billed price), and a reminder that the free tools still work. Not enough for several images → "This needs N credits. You have M."
+7. **Video.** Edit tab → "Edit a video" → pick a clip (up to 5 minutes) → toggle "Auto-cut silences", pick an effect, trim → Save to Photos or Share. Everything runs on the iPhone; no credits.
+8. **Share.** Result → Share → pick a format (Photo, Before/After, Story card, Cover star, Photo strip, Which vibe?) → edit the caption → Stories, Photos or the share sheet.
 
 ## 5. Monetization — the Fair-Price Promise
 
 | Tier | Price (US) | Includes |
 |---|---|---|
-| **Free** | $0 | 3 credits every day (standard 1K resolution, small corner wordmark on exports). Unlimited on-device tools: background removal and adjustments. |
-| **Pro Yearly** *(default)* | **$59.99/yr** (≈ $1.15/week), **7-day free trial** for eligible users | 100 credits/month with one month of rollover, every template and style, HD (2K) output, up to 4 images at once, no watermark |
-| **Pro Monthly** | **$9.99/mo**, no trial | Same as yearly |
-| **Credit packs** (consumable) | 30 credits **$4.99**, 100 credits **$12.99** | Never expire; for occasional users who don't want a subscription |
+| **Free** | $0 | 2 credits every day (low AI quality at 1k, small corner wordmark on exports of cloud AI results, also after a re-edit; share cards of them say "Made with Glowlit"). Unlimited on-device tools: effects, Auto and adjustments, background removal, Best shot and video editing (no watermark on anything made only with them). |
+| **Pro Yearly** *(default)* | **$39.99/yr** (≈ $3.33/month), **7-day free trial** for eligible users | 80 credits/month with one month of rollover (cap 160), every template and style, our best-quality AI (medium instead of low quality), up to 4 images at once, no watermark |
+| **Pro Monthly** | **$5.99/mo**; first month **$1.99** for eligible users (introductory offer), no free trial | Same as yearly |
+| **Credit packs** (consumable) | 30 credits **$2.99**, 100 credits **$7.99** | Never expire; for occasional users who don't want a subscription |
+
+The paywall sums it up: *"No weekly plans, ever."* (No price comparison: our own research puts $39.99/year at the North American median.)
 
 **Rules**
-- 1 credit = 1 cloud creation or edit. Background removal and adjustments are free.
+- 1 credit = 1 cloud creation or edit. Background removal, adjustments, effects and video editing are free.
 - Expiring credits are spent first: daily → subscription → packs.
 - Failed, cancelled, blocked or timed-out jobs are **refunded exactly**.
 - One **free retry** per people edit, within 15 minutes.
-- The paywall makes the **billed amount the most prominent price** (Apple 3.1.2). The weekly equivalent is subordinate. There is no free-trial toggle; Apple has rejected these since January 2026.
-- A trial-end **reminder notification** fires 24 hours before billing.
+- The paywall makes the **billed amount the most prominent price** (Apple 3.1.2). The yearly plan's monthly equivalent ("just $3.33/month") is subordinate. There is no free-trial toggle; Apple has rejected these since January 2026.
+- A trial-end **reminder notification** fires at least 26 hours before the trial ends (earlier when that would fall at night or in school hours).
 
 **Pricing rationale**
-- Competitor annual prices: Picsart $57, Meitu $59.99, Hypic $69.99, YouCam $69.99, Facetune $77.99, Remini $79.99, Photoroom $79.99.
-- The RevenueCat North-American medians ($39.99/yr, $9.99/mo) span all categories, and AI apps cost more to run.
+- Competitor annual prices: Picsart $57, Meitu $59.99, Hypic $69.99, YouCam $69.99, Facetune $77.99, Remini $79.99, Photoroom $79.99. At $39.99, Glowlit costs about half the typical ~$70.
+- $39.99/yr matches the RevenueCat North-American cross-category annual median, and $5.99/mo is well under the $9.99 monthly median.
 
 ### Unit economics (from [tech research §3.9](research/tech-and-compliance.md#39-rough-cost-per-active-user))
 
-- Blended cloud cost is about **$0.06 per operation**, including retries. Infrastructure is ≲ $0.01 per monthly active user.
-- **Free user**, worst case: 3 operations/day ≈ $0.18/day. Mitigations: rate limits, DeviceCheck/appTransactionID binding (planned) and lower free resolution. Typical usage is far lower.
-- **Pro Monthly** ($9.99, about $8.49 net): 100 credits × $0.06 = **$6.00 worst case** (71% of net). The expected cost at typical utilisation (30–40%) is about $2.
-- **Pro Yearly** ($59.99, about $51 net, ≈ $4.25/mo): a heavy user who spends the full 100/month costs about $6/mo and is unprofitable. RevenueCat calls Photo & Video "one-off project apps", and median annual renewal is 23%, so most annual users use far less.
+- Blended cloud cost is about **$0.06 per operation**, including retries: on xAI, about $0.04 per created image and $0.05–0.07 per edit (see [AI provider](#ai-provider)). Infrastructure is ≲ $0.01 per monthly active user.
+- **Free user**, worst case: 2 operations/day ≈ $0.12/day. Mitigations: rate limits, DeviceCheck/appTransactionID binding (planned) and low quality for free users. Typical usage is far lower.
+- **Pro Monthly** ($5.99, about $5.09 net): 80 credits × $0.06 = **$4.80 worst case**, about 94% of the net price. The expected cost at typical utilisation (30–40%) is about $1.44–1.92 (28–38% of net). The $1.99 first month (about $1.69 net) works as an acquisition cost.
+- **Pro Yearly** ($39.99, about $34 net, ≈ $2.83/mo): a heavy user who spends the full 80/month costs about $4.80/mo and is unprofitable. RevenueCat calls Photo & Video "one-off project apps", and median annual renewal is 23%, so most annual users use far less.
+- **Credit packs** (about $2.54 and $6.79 net): if every credit is used, 30 × $0.06 = $1.80 (71% of net) and 100 × $0.06 = $6.00 (88% of net).
 - **Monitor `credits used ÷ allowance`.** Allowances live in SQL (`credit_policy()`) and can be retuned without an app release.
-- Route free users and default templates to Flash-class models; reserve Pro-class models for an explicit "premium" option at 3–5× credits.
+- Free users already run at low quality and Pro at medium (both 1k); reserve anything costlier for an explicit "premium" option at 3–5× credits.
+
+### AI provider
+
+Cloud jobs run on **xAI Grok Imagine**, chosen as the best quality for the price.
+- **Model and cost:** `grok-imagine-image-2.0` at 1k for every cloud operation, low quality for free users and medium for Pro. That's about $0.04 per created image and $0.05–0.07 per edit (input included), so about $0.06 per cloud operation on average, the figure the credit plan is sized for. Enhance and Erase are edits with a fixed instruction; background removal always runs on the device.
+- **What Pro buys:** quality, not pixels. The Pro benefit is "Our best-quality AI, no watermark" (no longer "HD exports").
+- **Privacy:** each request runs in the background (`EdgeRuntime.waitUntil`). Results come back inline (base64) and are cleared as soon as the app confirms the download, and `sweep_jobs()` clears any left after an hour. xAI doesn't train on API data without permission. **Switch on Zero Data Retention in the xAI console before launch:** selfies are personal data.
+- **Alternative:** fal.ai stays available with `AI_PROVIDER=fal` (Nano Banana 2, SeedVR2, object removal; 2K for Pro). When `FAL_KEY` is set, fal also runs the output NSFW check (then fal.ai must be listed in the consent sheet first); otherwise xAI's own moderation verdict is the output check. Either way it fails closed.
+- The server picks the model per operation (`XAI_IMAGE_MODEL` / `XAI_EDIT_MODEL` override it), so the provider or model can change without an app release.
 
 ## 6. Success metrics
 
 | Stage | Metric | Target (first 90 days) |
 |---|---|---|
 | Activation | % of new users completing a first AI result on Day 0 | ≥ 60% |
-| Aha | % of onboarding users who try the free glow | ≥ 35% |
+| Aha | % of onboarding users who try the free Digicam '04 look | ≥ 35% |
 | Conversion | Install → trial start (Day 0) | ≥ 6% (annual-default paywall) |
 | Conversion | Trial → paid | ≥ 30% (category median 22.2%) |
 | Trust | Refund rate | ≤ 4% (AI-app median 4.2%) |
@@ -139,6 +165,6 @@ This document turns that brief into a product definition grounded in the researc
 
 1. **TestFlight**: real backend; QA identity fidelity across skin tones and hair textures; red-team the safety filters and keep the logs for EU AI Act evidence.
 2. **US soft launch**: Apple Ads on job keywords (headshot, restore, figurine) plus trend keywords; one Custom Product Page per trend.
-3. **Trend ops**: monitor TikTok, Instagram, X and South/South-East-Asian creators daily; ship a new template within **24–48 hours** of a trend breaking.
+3. **Trend ops**: monitor TikTok, Instagram, X and South/South-East-Asian creators daily; prepare a new template within **24–48 hours** of a trend breaking and ship it with the next app update (aim: weekly). Prompts of existing looks can be tuned on the server at any time; a remote catalog (new looks without an update) is on the roadmap.
 4. **Ratings**: ask only after a successful save on the 2nd or 3rd session; never after a failure or a paywall dismissal.
-5. **Expand**: UK, CA and AU, then localized metadata (about 92% of top apps localize).
+5. **Expand**: UK, CA and AU, then the markets of the app's 11 other languages with localized metadata (about 92% of top apps localize).

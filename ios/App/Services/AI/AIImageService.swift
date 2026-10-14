@@ -13,14 +13,29 @@ struct AIJob {
     var mask: UIImage?
     /// Set when re-rolling a result for free (Likeness Lock).
     var retryOf: String?
+    /// Makeup Studio's look, sent as a Magic Edit whose prompt the app wrote.
+    var makeup: MakeupRecipe?
 
     /// Short human-readable title used in the library.
     var title: String {
         if let template { return template.title }
+        // The look's name, never the long instruction behind it.
+        if let makeup {
+            return MakeupStudio.preset(matching: makeup).map { L10n.core($0.name) } ?? String(localized: "Makeup Studio")
+        }
         if let prompt, operation == .textToImage || operation == .magicEdit {
             return PromptBuilder.sanitize(prompt)
         }
         return operation.displayName
+    }
+
+    /// Catalog text for the Lock Screen and the Dynamic Island, never a prompt.
+    var activityTitle: String {
+        makeup != nil ? title : L10n.core(template?.title ?? operation.displayName)
+    }
+
+    var activitySymbol: String {
+        makeup != nil ? EditorTool.makeup.symbolName : template?.symbolName ?? operation.symbolName
     }
 
     var isProOnly: Bool {

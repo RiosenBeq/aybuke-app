@@ -8,6 +8,18 @@ export function serviceClient(): SupabaseClient {
   });
 }
 
+/**
+ * For scheduled maintenance calls (pg_cron + pg_net): the bearer token must be
+ * the service role key itself. Compared in constant time.
+ */
+export function requireServiceRole(req: Request): void {
+  const token = new TextEncoder().encode(req.headers.get("Authorization")?.replace(/^Bearer\s+/i, "") ?? "");
+  const expected = new TextEncoder().encode(requireEnv("SUPABASE_SERVICE_ROLE_KEY"));
+  let difference = token.length ^ expected.length;
+  for (let i = 0; i < expected.length; i++) difference |= (token[i] ?? 0) ^ expected[i];
+  if (difference !== 0) throw new HttpError(403, "forbidden", "Not allowed.");
+}
+
 /** Resolves the (anonymous) user from the `Authorization: Bearer <jwt>` header. */
 export async function requireUser(db: SupabaseClient, req: Request): Promise<User> {
   const token = req.headers.get("Authorization")?.replace(/^Bearer\s+/i, "") ?? "";

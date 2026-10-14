@@ -1,0 +1,12 @@
+// Release build settings for the Glowlit target.
+//
+// Shipping builds never carry AI provider keys: cloud jobs go through the
+// backend (backend/README.md), which holds the keys server-side.
+GL_AI_PROVIDER =
+GL_AI_API_KEY =
+GL_AI_IMAGE_MODEL =
+GL_AI_EDIT_MODEL =
+
+// Glowlit's AdMob app id (Info.plist's GADApplicationIdentifier). Public, not
+// a secret; it must match "ads.appID" in AppConfig.json, or ads stay off.
+GL_ADMOB_APP_ID = ca-app-pub-2292230772061554~5236020895

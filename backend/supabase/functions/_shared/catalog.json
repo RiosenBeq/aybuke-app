@@ -4,20 +4,28 @@
     "fantasy",
     "oil",
     "neon",
-    "clay"
+    "clay",
+    "knit",
+    "papercraft"
   ],
   "templates" : [
     {
+      "id" : "doll-box",
+      "isPro" : true,
+      "prompt" : "Turn the person in this photo into a collectible fashion doll standing inside a pink cardboard toy box with a clear plastic window. Next to the doll, show three small matching accessories in their own compartments: a handbag, sunglasses and a phone. Glossy toy-packaging design with an empty header area and no text or logos. Keep the outfit modest and age-appropriate. Keep the person's face, identity, skin tone, body shape and expression exactly the same.",
+      "title" : "Doll Box"
+    },
+    {
       "id" : "figurine",
       "isPro" : true,
-      "prompt" : "Create a 1/7 scale commercialized collectible figure of the person in this photo, realistic style, standing on a round transparent acrylic base on a computer desk. Behind it, show the figure's colorful retail packaging box with matching artwork, and a monitor displaying the figure's 3D modeling process. Keep the person's face, identity, skin tone and expression exactly the same.",
+      "prompt" : "Create a 1/7 scale commercialized collectible figure of the person in this photo, realistic style, standing on a round transparent acrylic base on a computer desk. Behind it, show the figure's colorful retail packaging box with matching artwork, and a monitor displaying the figure's 3D modeling process. Keep the person's face, identity, skin tone, body shape and expression exactly the same.",
       "title" : "3D Figurine"
     },
     {
-      "id" : "action-figure",
-      "isPro" : true,
-      "prompt" : "Turn the person in this photo into a realistic action figure sealed in a clear blister-pack toy box, with three small accessories that match their personal style placed beside the figure. Bold toy-brand header at the top of the box. Keep the person's face, identity, skin tone and expression exactly the same.",
-      "title" : "Action Figure"
+      "id" : "y2k",
+      "isPro" : false,
+      "prompt" : "Make this look like an authentic early-2000s digital camera photo: direct on-camera flash, slightly bright highlights, a cool tint, soft focus, light noise and an orange date stamp in the bottom corner. Keep the person's face, identity, skin tone, body shape and expression exactly the same.",
+      "title" : "Y2K Digicam"
     },
     {
       "id" : "anime-film",
@@ -28,38 +36,86 @@
     {
       "id" : "polaroid",
       "isPro" : false,
-      "prompt" : "Make this look like an authentic 1990s instant-film photo: direct on-camera flash, soft focus, warm color shift, light grain and a white instant-film border. Keep the person's face, identity, skin tone and expression exactly the same.",
-      "title" : "Retro Polaroid"
+      "prompt" : "Make this look like an authentic 1990s instant-film photo: direct on-camera flash, soft focus, warm color shift, light grain and a white instant-film border. Keep the person's face, identity, skin tone, body shape and expression exactly the same.",
+      "title" : "Bestie Polaroid"
     },
     {
-      "id" : "spooky",
-      "isPro" : true,
-      "prompt" : "Transform this photo into a cinematic Halloween portrait: moody candle-lit atmosphere, carved glowing pumpkins, light fog, autumn leaves and a subtle gothic costume. Keep the person's face, identity, skin tone and expression exactly the same.",
-      "title" : "Spooky Portrait"
+      "id" : "soft-glam",
+      "isPro" : false,
+      "prompt" : "Add soft, natural-looking glam makeup: a light dewy base that keeps the real skin texture, rosy blush, soft brown eyeshadow, defined lashes and a glossy pink lip. Change only the makeup. Keep the person's face, identity, skin tone, body shape and expression exactly the same.",
+      "title" : "Soft Glam"
     },
     {
-      "id" : "vampire",
-      "isPro" : true,
-      "prompt" : "Restyle the person as an elegant vampire in a dark velvet outfit inside a candle-lit gothic castle hall, cinematic lighting, dramatic shadows. Keep the person's face, identity, skin tone and expression exactly the same.",
-      "title" : "Vampire Glam"
-    },
-    {
-      "id" : "headshot",
-      "isPro" : true,
-      "prompt" : "Turn this into a professional corporate headshot of the same person wearing a tailored navy blazer, soft studio lighting, neutral gray backdrop, shallow depth of field, natural skin texture. Keep the person's face, identity, skin tone and expression exactly the same.",
-      "title" : "Pro Headshot"
-    },
-    {
-      "id" : "old-money",
-      "isPro" : true,
-      "prompt" : "Restyle as an 'old money' editorial portrait: tailored neutral-toned clothing, elegant estate garden background, golden-hour light, 35mm film look. Keep the person's face, identity, skin tone and expression exactly the same.",
-      "title" : "Old Money"
+      "id" : "pink-hair",
+      "isPro" : false,
+      "prompt" : "Change only the hair color to a soft pastel pink with natural highlights and realistic strands. Keep the hairstyle, haircut and everything else in the photo unchanged. Keep the person's face, identity, skin tone, body shape and expression exactly the same.",
+      "title" : "Pink Hair"
     },
     {
       "id" : "glam",
       "isPro" : false,
-      "prompt" : "Create a studio beauty portrait with soft glam makeup, glossy hair, rim lighting and a seamless pastel backdrop. Preserve natural skin texture. Keep the person's face, identity, skin tone and expression exactly the same.",
+      "prompt" : "Create a studio beauty portrait with soft glam makeup, glossy hair, rim lighting and a seamless pastel pink backdrop. Preserve the natural skin texture. Keep the person's face, identity, skin tone, body shape and expression exactly the same.",
       "title" : "Glam Studio"
+    },
+    {
+      "id" : "curls",
+      "isPro" : true,
+      "prompt" : "Restyle the hair into voluminous, bouncy salon curls with a healthy shine, keeping the original hair color and length. Keep everything else in the photo unchanged. Keep the person's face, identity, skin tone, body shape and expression exactly the same.",
+      "title" : "Bouncy Curls"
+    },
+    {
+      "id" : "clean-girl",
+      "isPro" : true,
+      "prompt" : "Give the photo a fresh 'clean girl' look: dewy skin that keeps its natural texture, brushed-up brows, a hint of tinted lip balm, small gold hoop earrings, a sleek low bun and soft morning daylight. Keep the person's face, identity, skin tone, body shape and expression exactly the same.",
+      "title" : "Clean Girl"
+    },
+    {
+      "id" : "ballet",
+      "isPro" : false,
+      "prompt" : "Restyle the photo with a soft balletcore aesthetic: satin ribbon bows in the hair, a pastel pink wrap cardigan with a flowing tulle skirt, a sunlit dance studio with a barre and tall mirrors, and airy pastel light. Keep the person's face, identity, skin tone, body shape and expression exactly the same.",
+      "title" : "Ballet Core"
+    },
+    {
+      "id" : "cherry-blossom",
+      "isPro" : false,
+      "prompt" : "Place the person under blooming pink cherry blossom trees on a sunny spring day, with soft petals drifting in the air and dreamy bokeh. Match the lighting naturally. Keep the person's face, identity, skin tone, body shape and expression exactly the same.",
+      "title" : "Cherry Blossom"
+    },
+    {
+      "id" : "cafe",
+      "isPro" : false,
+      "prompt" : "Place the person in a cozy, aesthetic café with warm fairy lights, a latte with heart latte art and a pastry on the table, and soft afternoon light. Match the lighting naturally. Keep the person's face, identity, skin tone, body shape and expression exactly the same.",
+      "title" : "Café Date"
+    },
+    {
+      "id" : "paris",
+      "isPro" : true,
+      "prompt" : "Place the person on a charming Paris street on a sunny day, with the Eiffel Tower in the soft-focus background, flower boxes on the balconies and warm golden light. Match the lighting naturally. Keep the person's face, identity, skin tone, body shape and expression exactly the same.",
+      "title" : "Paris Trip"
+    },
+    {
+      "id" : "old-money",
+      "isPro" : true,
+      "prompt" : "Restyle as an 'old money' editorial portrait: tailored neutral-toned clothing, an elegant estate garden background, golden-hour light and a 35mm film look. Keep the person's face, identity, skin tone, body shape and expression exactly the same.",
+      "title" : "Old Money"
+    },
+    {
+      "id" : "fairy",
+      "isPro" : true,
+      "prompt" : "Transform the photo into an ethereal fairy princess portrait: an elegant flowing pastel gown with long sleeves, delicate translucent wings, a flower crown, and a glowing enchanted forest with fireflies and soft sparkles. Keep the person's face, identity, skin tone, body shape and expression exactly the same.",
+      "title" : "Fairy Princess"
+    },
+    {
+      "id" : "golden-glow",
+      "isPro" : false,
+      "prompt" : "Relight this photo with warm golden-hour sunlight: a soft glowing backlight in the hair, a gentle lens flare and a warm, flattering color grade. Keep the scene unchanged. Keep the person's face, identity, skin tone, body shape and expression exactly the same.",
+      "title" : "Golden Hour Glow"
+    },
+    {
+      "id" : "birthday",
+      "isPro" : false,
+      "prompt" : "Turn this into a festive birthday photoshoot: pastel pink and silver balloons, a sparkly backdrop, floating confetti and a birthday cake with sparkler candles nearby. Keep the person's face, identity, skin tone, body shape and expression exactly the same.",
+      "title" : "Birthday Glam"
     },
     {
       "id" : "restore",
@@ -68,28 +124,16 @@
       "title" : "Restore Old Photo"
     },
     {
-      "id" : "3d-cartoon",
-      "isPro" : false,
-      "prompt" : "Turn the person into a cute 3D animated movie character with big expressive eyes, soft subsurface lighting and a colorful background. Keep their hairstyle, outfit and recognizable features.",
-      "title" : "3D Cartoon"
-    },
-    {
-      "id" : "superhero",
+      "id" : "spooky",
       "isPro" : true,
-      "prompt" : "Turn the person into a cinematic superhero with an original suit design, a dramatic city skyline at dusk behind them and dynamic rim lighting. Keep the person's face, identity, skin tone and expression exactly the same.",
-      "title" : "Superhero"
+      "prompt" : "Transform this photo into a cinematic Halloween portrait: a moody candle-lit atmosphere, carved glowing pumpkins, light fog, autumn leaves and a subtle gothic costume. Keep the person's face, identity, skin tone, body shape and expression exactly the same.",
+      "title" : "Spooky Portrait"
     },
     {
-      "id" : "claymation",
+      "id" : "witchy",
       "isPro" : false,
-      "prompt" : "Recreate this photo as a handmade claymation scene with plasticine textures, visible fingerprints and soft stop-motion lighting. Keep the composition.",
-      "title" : "Claymation"
-    },
-    {
-      "id" : "oil-painting",
-      "isPro" : false,
-      "prompt" : "Repaint this photo as a classical oil painting with visible brush strokes, rich chiaroscuro lighting and a museum-quality finish. Keep the composition and likeness.",
-      "title" : "Oil Painting"
+      "prompt" : "Restyle the person as a cute, glamorous witch: an elegant black witch hat, a cozy dark knit dress, a little black cat nearby, candles, pumpkins and a soft purple-and-pink glow. Keep the person's face, identity, skin tone, body shape and expression exactly the same.",
+      "title" : "Witchy Glam"
     },
     {
       "id" : "watercolor",
@@ -98,28 +142,220 @@
       "title" : "Watercolor"
     },
     {
+      "id" : "3d-cartoon",
+      "isPro" : false,
+      "prompt" : "Turn the person into a cute 3D animated movie character with big expressive eyes, soft subsurface lighting and a colorful background. Keep their hairstyle, outfit and recognizable features.",
+      "title" : "3D Cartoon"
+    },
+    {
+      "id" : "oil-painting",
+      "isPro" : false,
+      "prompt" : "Repaint this photo as a classical oil painting with visible brush strokes, rich chiaroscuro lighting and a museum-quality finish. Keep the composition and likeness.",
+      "title" : "Oil Painting"
+    },
+    {
       "id" : "comic",
       "isPro" : false,
       "prompt" : "Redraw this photo as a bold comic book panel with confident ink outlines, halftone shading and vibrant flat colors. Keep the composition and likeness.",
       "title" : "Comic Book"
     },
     {
+      "id" : "claymation",
+      "isPro" : false,
+      "prompt" : "Recreate this photo as a handmade claymation scene with plasticine textures, visible fingerprints and soft stop-motion lighting. Keep the composition.",
+      "title" : "Claymation"
+    },
+    {
       "id" : "neon-city",
       "isPro" : true,
-      "prompt" : "Restyle this photo with a neon-noir cyberpunk look: rainy night street, glowing pink and teal neon reflections and cinematic haze. Keep the person's face, identity, skin tone and expression exactly the same.",
+      "prompt" : "Restyle this photo with a neon-noir look: a rainy night street, glowing pink and teal neon reflections and cinematic haze. Keep the person's face, identity, skin tone, body shape and expression exactly the same.",
       "title" : "Neon City"
     },
     {
       "id" : "product-studio",
       "isPro" : true,
-      "prompt" : "Place the main product from this photo on a clean seamless studio background with soft natural shadows and premium e-commerce lighting. Keep the product's shape, label, text and colors exactly the same.",
+      "prompt" : "Place the main product from this photo on a clean seamless pastel studio background with soft natural shadows and premium e-commerce lighting. Keep the product's shape, label, text and colors exactly the same.",
       "title" : "Product Studio"
+    },
+    {
+      "id" : "headshot",
+      "isPro" : true,
+      "prompt" : "Turn this into a professional headshot of the same person wearing a tailored blazer, soft studio lighting, a neutral light-gray backdrop, shallow depth of field and natural skin texture. Keep the person's face, identity, skin tone, body shape and expression exactly the same.",
+      "title" : "Pro Headshot"
     },
     {
       "id" : "golden-sky",
       "isPro" : false,
       "prompt" : "Replace the sky with a dramatic golden-hour sunset and match the lighting, color temperature and reflections of the rest of the scene. Change nothing else.",
       "title" : "Golden Sky"
+    },
+    {
+      "id" : "80s-studio",
+      "isPro" : false,
+      "prompt" : "Make this a 1980s photo-studio portrait: a mottled blue studio backdrop, big soft curls in her real hair color, a puffy-sleeve blouse, warm studio lighting and a faded film print look. Keep natural skin texture, no skin smoothing. Keep the outfit modest and age-appropriate, with sleeves and a high neckline. Keep the person's face, identity, skin tone, body shape and expression exactly the same.",
+      "title" : "80s Studio Portrait"
+    },
+    {
+      "id" : "laser-yearbook",
+      "isPro" : true,
+      "prompt" : "Make this a 1986 school yearbook portrait: a dark backdrop with bright pink and blue laser beams, a head-and-shoulders pose, a crew-neck sweater and a slightly faded print. Keep natural skin texture, no skin smoothing. Keep the outfit modest and age-appropriate, with sleeves and a high neckline. Keep the person's face, identity, skin tone, body shape and expression exactly the same.",
+      "title" : "Laser Yearbook '86"
+    },
+    {
+      "id" : "disco-79",
+      "isPro" : false,
+      "prompt" : "Place the person at a 1970s roller-disco party: mirror-ball bokeh, warm colored lights, a sparkly sequin top with long sleeves, and the grain of 1979 film. No alcohol. Keep natural skin texture, no skin smoothing. Keep the outfit modest and age-appropriate, with sleeves and a high neckline. Keep the person's face, identity, skin tone, body shape and expression exactly the same.",
+      "title" : "Disco '79"
+    },
+    {
+      "id" : "plushie",
+      "isPro" : true,
+      "prompt" : "Turn the person into a cute handmade stitched plush toy sitting on a cozy bed: soft fabric with visible seams, yarn hair in her real hair color and hairstyle, fabric in a shade that matches her real skin tone, embroidered features and a little matching outfit. No logos, labels or brand names. Keep the person's face, identity, skin tone, body shape and expression exactly the same.",
+      "title" : "Plushie Me"
+    },
+    {
+      "id" : "bag-charm",
+      "isPro" : false,
+      "prompt" : "Turn the person into a tiny glossy vinyl bag charm figure hanging from a keyring on a canvas tote bag strap, with her real hairstyle, hair color, skin tone and outfit in chibi proportions. Soft daylight product photo. No logos, labels or brand names. Keep the person's face, identity, skin tone, body shape and expression exactly the same.",
+      "title" : "Bag Charm Mini"
+    },
+    {
+      "id" : "royal-pet",
+      "isPro" : false,
+      "prompt" : "Repaint the pet in this photo as a regal classical oil portrait: a velvet cape with gold trim, a small jeweled crown, a carved gold frame and a rich dark background. Keep the animal's breed, markings, colors and face exactly the same. If a person is in the photo, keep them exactly the same too. Keep the person's face, identity, skin tone, body shape and expression exactly the same.",
+      "title" : "Royal Pet Portrait"
+    },
+    {
+      "id" : "pet-figurine",
+      "isPro" : false,
+      "prompt" : "Turn the pet in this photo into a cute collectible vinyl figurine on a round clear base on a tidy desk, with its matching toy box behind it. No logos or brand names. Keep the animal's breed, markings, colors and face exactly the same. If a person is in the photo, keep them exactly the same too. Keep the person's face, identity, skin tone, body shape and expression exactly the same.",
+      "title" : "Pet Figurine"
+    },
+    {
+      "id" : "pet-astronaut",
+      "isPro" : false,
+      "prompt" : "Show the pet in this photo as a brave astronaut in a little white space suit with a clear helmet, floating in front of a glowing planet and soft pink stars. Keep the animal's breed, markings, colors and face exactly the same. If a person is in the photo, keep them exactly the same too. Keep the person's face, identity, skin tone, body shape and expression exactly the same.",
+      "title" : "Pet Astronaut"
+    },
+    {
+      "id" : "snow-globe",
+      "isPro" : true,
+      "prompt" : "Turn the person into a small hand-painted figurine standing inside a glass snow globe, with drifting snowflakes, a tiny snowy pine tree and a wooden base, on a windowsill with warm fairy lights. She wears a cozy winter coat and scarf. Keep the person's face, identity, skin tone, body shape and expression exactly the same.",
+      "title" : "Snow Globe Me"
+    },
+    {
+      "id" : "cozy-sweater",
+      "isPro" : false,
+      "prompt" : "Make this a 2000s digital-camera photo on a snowy winter evening: a chunky knit sweater and a knit hat, falling snow caught in the direct flash, warm string lights behind and an orange date stamp. Keep natural skin texture, no skin smoothing. Keep the outfit modest and age-appropriate, with sleeves and a high neckline. Keep the person's face, identity, skin tone, body shape and expression exactly the same.",
+      "title" : "Cozy Sweater Digicam"
+    },
+    {
+      "id" : "new-year",
+      "isPro" : false,
+      "prompt" : "Turn this into a New Year's Eve digital-camera photo: bright on-camera flash, gold and pink confetti in the air, a sparkly party hat, sparklers and a 00:00 time stamp in the corner. No alcohol. Keep natural skin texture, no skin smoothing. Keep the outfit modest and age-appropriate, with sleeves and a high neckline. Keep the person's face, identity, skin tone, body shape and expression exactly the same.",
+      "title" : "New Year Confetti"
+    },
+    {
+      "id" : "galentines-brunch",
+      "isPro" : false,
+      "prompt" : "Place the people in this photo at a daytime brunch in a pink café: heart-shaped pancakes, strawberries, pink lemonade, paper hearts and soft window light. No alcohol. Match the lighting naturally. Keep the outfit modest and age-appropriate, with sleeves and a high neckline. Keep every person's face, identity, skin tone, body shape and expression exactly the same.",
+      "title" : "Galentine's Brunch"
+    },
+    {
+      "id" : "heart-booth",
+      "isPro" : false,
+      "prompt" : "Turn this into a retro photo-booth picture: a pink curtain with paper hearts, heart-shaped sunglasses as props, bright even flash and a light film grain. Keep the outfit modest and age-appropriate, with sleeves and a high neckline. Keep every person's face, identity, skin tone, body shape and expression exactly the same.",
+      "title" : "Heart Photo Booth"
+    },
+    {
+      "id" : "concert-night",
+      "isPro" : true,
+      "prompt" : "Place the people in this photo in the crowd at an outdoor evening concert: colorful stage lights and light beams, floating confetti, glow sticks and a soft haze. Give everyone a sparkly sequin jacket over their outfit. No alcohol, no band names, logos or readable text. Keep natural skin texture, no skin smoothing. Keep the outfit modest and age-appropriate, with sleeves and a high neckline. Keep every person's face, identity, skin tone, body shape and expression exactly the same.",
+      "title" : "Concert Night"
+    },
+    {
+      "id" : "pet-studio",
+      "isPro" : false,
+      "prompt" : "Turn this into a soft studio portrait by a pet photographer: a seamless pastel backdrop, gentle studio lighting and a soft shadow on the floor. Change only the background and the light. Keep the animal's breed, markings, colors and face exactly the same. If a person is in the photo, keep them exactly the same too. Keep the person's face, identity, skin tone, body shape and expression exactly the same.",
+      "title" : "Pet & Me Studio"
+    },
+    {
+      "id" : "sticker-sheet",
+      "isPro" : false,
+      "prompt" : "Turn the person in this photo into a sheet of six glossy die-cut vinyl stickers on a pastel backing sheet: cute illustrated versions of her in cheerful poses, each with a small prop such as a heart, a star, a bubble tea, a camera, a flower or a rainbow. Thick white sticker borders, soft shadows and no text, logos or brand names. Keep her real hairstyle, hair color, skin tone and outfit in every sticker. Keep the person's face, identity, skin tone, body shape and expression exactly the same.",
+      "title" : "Sticker Sheet"
+    },
+    {
+      "id" : "tennis-club",
+      "isPro" : true,
+      "prompt" : "Restyle the photo as a sunny tennis-club moment: a white sleeved tennis polo with a pastel sweater tied over the shoulders, a knee-length pleated tennis skirt, a racket and tennis balls, a green court with crisp white lines and bright midday light. No logos or brand names. Keep natural skin texture, no skin smoothing. Keep the outfit modest and age-appropriate, with sleeves and a high neckline. Keep the person's face, identity, skin tone, body shape and expression exactly the same.",
+      "title" : "Tennis Club"
+    },
+    {
+      "id" : "grad-day",
+      "isPro" : false,
+      "prompt" : "Turn this into a graduation-day photo: a classic graduation cap and gown over her outfit, a sunny campus lawn with leafy trees, golden confetti and tossed caps in the air, and warm afternoon light. Keep natural skin texture, no skin smoothing. Keep the person's face, identity, skin tone, body shape and expression exactly the same.",
+      "title" : "Grad Day"
+    },
+    {
+      "id" : "bracelet-club",
+      "isPro" : false,
+      "prompt" : "Turn this into a sunny friendship-bracelet afternoon: colorful beaded friendship bracelets on everyone's wrists, a picnic blanket with little boxes of beads and string, wildflowers and soft golden light. Keep everyone's outfits from the photo. Match the lighting naturally. Keep every person's face, identity, skin tone, body shape and expression exactly the same.",
+      "title" : "Bracelet Club"
+    },
+    {
+      "id" : "trading-card",
+      "isPro" : true,
+      "prompt" : "Turn the person in this photo into a shiny holographic collectible trading card: her portrait as glossy card art inside an ornate pastel frame with a rainbow foil shimmer and sparkles, the card standing on a desk in soft light. No text, numbers, logos or brand names. Keep the person's face, identity, skin tone, body shape and expression exactly the same.",
+      "title" : "Holo Card"
+    },
+    {
+      "id" : "twinning",
+      "isPro" : false,
+      "prompt" : "Give everyone in this photo matching outfits: cozy pastel-pink zip hoodies, with a soft pastel color grade and light film grain. Keep the background and each person's hairstyle and hair color. No logos or brand names. Keep natural skin texture, no skin smoothing. Keep the outfit modest and age-appropriate, with sleeves and a high neckline. Keep every person's face, identity, skin tone, body shape and expression exactly the same.",
+      "title" : "Twinning"
+    },
+    {
+      "id" : "pet-party",
+      "isPro" : false,
+      "prompt" : "Turn this into a cute birthday party for the pet: a tiny striped party hat, pastel balloons, paper bunting, confetti and a small pet-safe cake with one candle on the table. Keep the animal's breed, markings, colors and face exactly the same. If a person is in the photo, keep them exactly the same too. Keep the person's face, identity, skin tone, body shape and expression exactly the same.",
+      "title" : "Pawty Time"
+    },
+    {
+      "id" : "manga",
+      "isPro" : false,
+      "prompt" : "Redraw this photo as a classic black-and-white manga panel with clean ink lines, soft screentone shading, sparkles and floating flowers around the people, and gentle speed lines in the background. Keep the composition and each person's recognizable features.",
+      "title" : "Manga Panel"
+    },
+    {
+      "id" : "postcard",
+      "isPro" : true,
+      "prompt" : "Turn this photo into a vintage travel postcard: place the person on a sunny seaside promenade with pastel houses, a lighthouse and sailboats, inside a white deckled postcard border with a decorative stamp and a round postmark in the corner. No readable text. Match the lighting naturally. Keep the person's face, identity, skin tone, body shape and expression exactly the same.",
+      "title" : "Travel Postcard"
+    },
+    {
+      "id" : "bow-era",
+      "isPro" : false,
+      "prompt" : "Restyle the photo with a soft bow aesthetic: pink satin ribbon bows in her hair, a cream knit cardigan with a lace collar and pearl buttons, a pastel pink backdrop with little bows, soft daylight and light film grain. Keep her hairstyle and hair color; just add the bows. Keep the outfit modest and age-appropriate, with sleeves and a high neckline. Keep the person's face, identity, skin tone, body shape and expression exactly the same.",
+      "title" : "Bow Era"
+    },
+    {
+      "id" : "sleepover",
+      "isPro" : false,
+      "prompt" : "Turn this into a cozy sleepover photo: a pillow fort with fairy lights, soft blankets, popcorn bowls, instant photos pinned to a string and a warm movie-night glow. Everyone wears matching long-sleeve pastel pajamas. Keep natural skin texture, no skin smoothing. Keep the outfit modest and age-appropriate, with sleeves and a high neckline. Keep every person's face, identity, skin tone, body shape and expression exactly the same.",
+      "title" : "Sleepover"
+    },
+    {
+      "id" : "plushie-pet",
+      "isPro" : true,
+      "prompt" : "Turn the pet in this photo into a cute handmade stitched plush toy sitting on a cozy knitted blanket: soft fabric in the pet's real colors and markings, visible seams, embroidered details and a little ribbon collar. No logos, labels or brand names. Keep the animal's breed, markings, colors and face exactly the same. If a person is in the photo, keep them exactly the same too. Keep the person's face, identity, skin tone, body shape and expression exactly the same.",
+      "title" : "Plushie Pet"
+    },
+    {
+      "id" : "soft-film",
+      "isPro" : false,
+      "prompt" : "Make this look like a dreamy 35mm film snapshot: soft window light, a pastel color grade, gentle halation around the highlights, a faint light leak at the edge and fine grain. Keep the scene and the outfit unchanged. Keep natural skin texture, no skin smoothing. Keep the person's face, identity, skin tone, body shape and expression exactly the same.",
+      "title" : "Soft Film"
     }
   ]
 }

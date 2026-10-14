@@ -1,22 +1,68 @@
 import Foundation
 import AppCore
 
-/// Keeps a Supabase anonymous session alive so the backend can meter credits
-/// per user without asking anyone to sign up. Tokens live in the Keychain.
+/// Keeps a Supabase session alive so the backend can meter credits per user
+/// without asking anyone to sign up: anonymous by default, or an account after
+/// Sign in with Apple. Tokens live in the Keychain.
 actor AuthSessionManager {
     private let config: BackendConfiguration
     private let session: URLSession
     private var current: AuthSession?
+    /// The anonymous session from before Sign in with Apple, kept until its
+    /// credits have been merged into the account (so a failed merge can retry).
+    private var pendingMerge: AuthSession?
     private var inFlight: Task<AuthSession, Error>?
+    /// A refresh that never falls back to signing up (`existingAccessToken`).
+    private var refreshInFlight: Task<AuthSession, Error>?
     private static let keychainKey = "auth.session"
+    private static let pendingMergeKey = "auth.pendingMerge"
 
     init(config: BackendConfiguration, session: URLSession = .shared) {
         self.config = config
         self.session = session
         self.current = Keychain.load(AuthSession.self, key: Self.keychainKey)
+        self.pendingMerge = Keychain.load(AuthSession.self, key: Self.pendingMergeKey)
     }
 
     var userID: String? { current?.userID }
+
+    /// The signed-in account, or nil while anonymous.
+    var account: AuthSession? { current?.isAccount == true ? current : nil }
+
+    /// Swaps the anonymous session for the Apple account. The anonymous session
+    /// is kept aside until `pendingAnonymousToken()` has been merged.
+    func signInWithApple(idToken: String, nonce: String) async throws {
+        if current != nil, current?.isAccount != true {
+            _ = try? await validAccessToken() // refreshes the anonymous session if needed
+            if let anonymous = current, !anonymous.isAccount {
+                pendingMerge = anonymous
+                Keychain.save(anonymous, key: Self.pendingMergeKey)
+            }
+        }
+        let request = try RequestFactory.signInWithApple(idToken: idToken, nonce: nonce, config: config)
+        let (data, response) = try await session.mappedData(for: request)
+        let account = try ResponseDecoder.decodeSession(data: data, statusCode: (response as? HTTPURLResponse)?.statusCode ?? 0)
+        current = account
+        Keychain.save(account, key: Self.keychainKey)
+    }
+
+    /// A valid access token for the anonymous user waiting to be merged, if any.
+    func pendingAnonymousToken() async -> String? {
+        guard let pending = pendingMerge else { return nil }
+        if !pending.isExpired() { return pending.accessToken }
+        if let refreshed = try? await Self.refresh(pending.refreshToken, config: config, session: session) {
+            pendingMerge = refreshed
+            Keychain.save(refreshed, key: Self.pendingMergeKey)
+            return refreshed.accessToken
+        }
+        clearPendingMerge() // expired for good: nothing left to recover
+        return nil
+    }
+
+    func clearPendingMerge() {
+        pendingMerge = nil
+        Keychain.delete(key: Self.pendingMergeKey)
+    }
 
     /// Returns a non-expired access token, refreshing or signing up as needed.
     /// Concurrent callers share a single network round-trip.
@@ -47,6 +93,28 @@ actor AuthSessionManager {
         return newSession.accessToken
     }
 
+    /// A valid token for the stored session, refreshed if needed, or nil when
+    /// there is no session. Never signs up: deleting an account (or polling a
+    /// job, or reading the balance) must not create a new one. Throws
+    /// `unauthorized` when the refresh token was rejected (the user was
+    /// deleted, or the session revoked). Concurrent callers share one refresh.
+    func existingAccessToken() async throws -> String? {
+        guard let current else { return nil }
+        if !current.isExpired() { return current.accessToken }
+        if let refreshInFlight {
+            return try await refreshInFlight.value.accessToken
+        }
+        let task = Task<AuthSession, Error> { [config, session] in
+            try await Self.refresh(current.refreshToken, config: config, session: session)
+        }
+        refreshInFlight = task
+        defer { refreshInFlight = nil }
+        let refreshed = try await task.value
+        self.current = refreshed
+        Keychain.save(refreshed, key: Self.keychainKey)
+        return refreshed.accessToken
+    }
+
     /// Forces a refresh on the next call (e.g. after a 401).
     func invalidate() {
         current = current.map {
@@ -57,18 +125,19 @@ actor AuthSessionManager {
     func signOut() {
         current = nil
         Keychain.delete(key: Self.keychainKey)
+        clearPendingMerge()
     }
 
     private static func refresh(_ refreshToken: String, config: BackendConfiguration, session: URLSession) async throws -> AuthSession {
         let request = try RequestFactory.refreshSession(refreshToken: refreshToken, config: config)
-        let (data, response) = try await session.data(for: request)
+        let (data, response) = try await session.mappedData(for: request)
         let status = (response as? HTTPURLResponse)?.statusCode ?? 0
         return try ResponseDecoder.decodeSession(data: data, statusCode: status)
     }
 
     private static func signUpAnonymously(config: BackendConfiguration, session: URLSession) async throws -> AuthSession {
         let request = RequestFactory.anonymousSignUp(config: config)
-        let (data, response) = try await session.data(for: request)
+        let (data, response) = try await session.mappedData(for: request)
         let status = (response as? HTTPURLResponse)?.statusCode ?? 0
         return try ResponseDecoder.decodeSession(data: data, statusCode: status)
     }

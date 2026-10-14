@@ -36,14 +36,33 @@ jobs:
         run: |
           deno fmt --check
           deno lint
-          deno check ai-image/index.ts credits-redeem/index.ts account/index.ts
+          deno check ai-image/index.ts credits-redeem/index.ts account/index.ts report/index.ts ad-reward/index.ts
+      - name: Prompt policy tests (shared vectors with the app)
+        working-directory: backend/supabase/functions
+        run: deno test _shared/
       - name: Credit ledger tests on PostgreSQL
         run: backend/scripts/test-db.sh
 
+  docs:
+    name: Legal documents in sync
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Bundled and published copies match legal/
+        run: python3 scripts/build-legal.py --check
+      - name: AppCore strings registered for translation
+        run: python3 scripts/export-core-strings.py --check
+      - name: Copy matches the code (no unsupported claims, device-neutral)
+        run: python3 scripts/check-honest-copy.py
+      - name: Release blockers (report only; upload-app-store.sh enforces them)
+        run: python3 scripts/check-release-config.py --report
+
   ios:
     name: iOS app build (Xcode)
-    runs-on: macos-15
-    timeout-minutes: 40
+    # Xcode 26 (iOS 26 SDK): App Store uploads need it, and the on-device
+    # AI and age-range code only compiles against it.
+    runs-on: macos-26
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
       - name: Toolchain
@@ -55,6 +74,16 @@ jobs:
             -scheme Glowlit \
             -configuration Debug \
             -destination 'generic/platform=iOS' \
+            -derivedDataPath build/DerivedData \
+            CODE_SIGNING_ALLOWED=NO \
+            -quiet
+      - name: Build Glowlit for Mac Catalyst (unsigned)
+        run: |
+          xcodebuild build \
+            -project ios/Glowlit.xcodeproj \
+            -scheme Glowlit \
+            -configuration Debug \
+            -destination 'generic/platform=macOS,variant=Mac Catalyst' \
             -derivedDataPath build/DerivedData \
             CODE_SIGNING_ALLOWED=NO \
             -quiet

@@ -12,9 +12,16 @@ enum ImageExporter {
     private static let iptcExtPrefix = "Iptc4xmpExt" as CFString
 
     /// `operation == nil` means no AI was involved (manual adjustments only),
-    /// so no AI provenance is claimed.
-    static func encode(_ image: UIImage, operation: AIOperation?, watermark: Bool = false) -> (data: Data, fileExtension: String)? {
-        var normalized = ImageUtilities.normalized(image, maxLongEdge: 4096)
+    /// so no AI provenance is claimed. `composite`: a cut-out was placed on
+    /// another photo.
+    static func encode(_ image: UIImage, operation: AIOperation?, watermark: Bool = false, composite: Bool = false) -> (data: Data, fileExtension: String)? {
+        encode(image, sourceType: DigitalSourceType.strongest(operation?.digitalSourceType, composite ? .composite : nil), watermark: watermark)
+    }
+
+    /// `sourceType == nil` claims no AI. Only this one value is written, so
+    /// a source's EXIF and location never reach the file.
+    static func encode(_ image: UIImage, sourceType: DigitalSourceType?, watermark: Bool = false) -> (data: Data, fileExtension: String)? {
+        var normalized = ImageUtilities.droppingUnusedAlpha(ImageUtilities.normalized(image, maxLongEdge: 4096))
         if watermark {
             normalized = Watermark.apply(to: normalized)
         }
@@ -27,12 +34,12 @@ enum ImageExporter {
             return nil
         }
         let metadata = CGImageMetadataCreateMutable()
-        if let operation {
+        if let sourceType {
             _ = CGImageMetadataRegisterNamespaceForPrefix(metadata, iptcExtNamespace, iptcExtPrefix, nil)
             _ = CGImageMetadataSetValueWithPath(
                 metadata, nil,
                 "Iptc4xmpExt:DigitalSourceType" as CFString,
-                operation.digitalSourceType.uri as CFString
+                sourceType.uri as CFString
             )
         }
         _ = CGImageMetadataSetValueWithPath(
@@ -43,12 +50,32 @@ enum ImageExporter {
         let options = [kCGImageDestinationLossyCompressionQuality: 0.92] as CFDictionary
         CGImageDestinationAddImageAndMetadata(destination, cgImage, metadata, options)
         guard CGImageDestinationFinalize(destination) else { return nil }
+        #if DEBUG
+        // There's no app test target, so the ImageIO round trip is checked here.
+        assert(digitalSourceType(in: output as Data) == sourceType, "The exported file lost its IPTC DigitalSourceType")
+        #endif
         return (output as Data, usePNG ? "png" : "jpg")
     }
 
+    /// The AI marking an image file already carries (IPTC DigitalSourceType
+    /// in its XMP), so re-edits keep it. Other values, such as a camera's
+    /// `digitalCapture`, give `nil`.
+    static func digitalSourceType(in data: Data) -> DigitalSourceType? {
+        guard
+            let source = CGImageSourceCreateWithData(data as CFData, nil),
+            let metadata = CGImageSourceCopyMetadataAtIndex(source, 0, nil),
+            let value = CGImageMetadataCopyStringValueWithPath(metadata, nil, "Iptc4xmpExt:DigitalSourceType" as CFString)
+        else { return nil }
+        return DigitalSourceType(uri: value as String)
+    }
+
     /// Writes a temporary file for the share sheet.
-    static func temporaryFile(for image: UIImage, operation: AIOperation?, watermark: Bool = false) throws -> URL {
-        guard let encoded = encode(image, operation: operation, watermark: watermark) else { throw CocoaError(.fileWriteUnknown) }
+    static func temporaryFile(for image: UIImage, operation: AIOperation?, watermark: Bool = false, composite: Bool = false) throws -> URL {
+        try temporaryFile(for: image, sourceType: DigitalSourceType.strongest(operation?.digitalSourceType, composite ? .composite : nil), watermark: watermark)
+    }
+
+    static func temporaryFile(for image: UIImage, sourceType: DigitalSourceType?, watermark: Bool = false) throws -> URL {
+        guard let encoded = encode(image, sourceType: sourceType, watermark: watermark) else { throw CocoaError(.fileWriteUnknown) }
         let name = "creation-\(Int(Date().timeIntervalSince1970)).\(encoded.fileExtension)"
         let url = FileManager.default.temporaryDirectory.appendingPathComponent(name)
         try encoded.data.write(to: url, options: .atomic)
@@ -63,19 +90,28 @@ enum PhotoLibrarySaver {
 
         var errorDescription: String? {
             switch self {
-            case .denied: return "Allow photo access in Settings to save your creations."
-            case .encodingFailed: return "Couldn't prepare the image. Please try again."
+            case .denied: return String(localized: "Allow photo access in Settings to save your creations.")
+            case .encodingFailed: return String(localized: "Couldn't prepare the image. Please try again.")
             }
         }
     }
 
-    static func save(_ image: UIImage, operation: AIOperation?, watermark: Bool = false) async throws {
+    static func save(_ image: UIImage, operation: AIOperation?, watermark: Bool = false, composite: Bool = false) async throws {
+        try await save(image, sourceType: DigitalSourceType.strongest(operation?.digitalSourceType, composite ? .composite : nil), watermark: watermark)
+    }
+
+    static func save(_ image: UIImage, sourceType: DigitalSourceType?, watermark: Bool = false) async throws {
+        guard let encoded = ImageExporter.encode(image, sourceType: sourceType, watermark: watermark) else { throw SaveError.encodingFailed }
+        try await save(data: encoded.data)
+    }
+
+    /// Saves an already encoded image (with its metadata) as it is.
+    static func save(data: Data) async throws {
         let status = await PHPhotoLibrary.requestAuthorization(for: .addOnly)
         guard status == .authorized || status == .limited else { throw SaveError.denied }
-        guard let encoded = ImageExporter.encode(image, operation: operation, watermark: watermark) else { throw SaveError.encodingFailed }
         try await PHPhotoLibrary.shared().performChanges {
             let request = PHAssetCreationRequest.forAsset()
-            request.addResource(with: .photo, data: encoded.data, options: nil)
+            request.addResource(with: .photo, data: data, options: nil)
         }
     }
 }
@@ -84,10 +120,8 @@ enum PhotoLibrarySaver {
 /// exports never carry it, and the in-app preview never shows it.
 enum Watermark {
     static func apply(to image: UIImage) -> UIImage {
-        let format = UIGraphicsImageRendererFormat()
-        format.scale = image.scale
-        format.opaque = !ImageUtilities.hasAlpha(image)
-        return UIGraphicsImageRenderer(size: image.size, format: format).image { _ in
+        ImageUtilities.draw(size: image.size, scale: image.scale, opaque: !ImageUtilities.hasAlpha(image),
+                            colorSpace: image.cgImage?.colorSpace) { _ in
             image.draw(at: .zero)
             let fontSize = max(12, image.size.width * 0.032)
             let font = UIFont(name: BrandFont.postScriptName(for: .bold), size: fontSize)

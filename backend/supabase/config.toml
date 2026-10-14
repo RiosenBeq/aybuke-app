@@ -6,6 +6,14 @@ project_id = "glowlit"
 # Every user starts as an anonymous user (no sign-up wall, Guideline 5.1.1(v)).
 enable_anonymous_sign_ins = true
 
+# Optional Sign in with Apple (native ID token from the app), so Pro and credits
+# follow the user to other iPhones. The client id is the app's bundle id. On the
+# hosted project: Authentication → Providers → Apple → add app.glowlit.ios.
+[auth.external.apple]
+enabled = true
+client_id = "app.glowlit.ios"
+secret = ""
+
 [functions.ai-image]
 verify_jwt = true
 
@@ -14,3 +22,13 @@ verify_jwt = true
 
 [functions.account]
 verify_jwt = true
+
+[functions.report]
+verify_jwt = true
+
+# Rewarded ads. AdMob's server-side verification callback carries no JWT, so
+# the gateway can't check one: the function verifies Google's ECDSA signature
+# on the callback, and checks the user's session itself on the app's routes.
+# Deploy with: supabase functions deploy ad-reward --no-verify-jwt
+[functions.ad-reward]
+verify_jwt = false

@@ -4,27 +4,47 @@ import SwiftData
 @main
 struct GlowlitApp: App {
     @State private var app: AppModel
+    @Environment(\.scenePhase) private var scenePhase
     private let container: ModelContainer
 
     init() {
+        perfMark("main")
         FontRegistrar.registerBundledFonts()
-        let container: ModelContainer
-        do {
-            container = try ModelContainer(for: Creation.self)
-        } catch {
-            fatalError("Couldn't open the library database: \(error)")
-        }
+        // Before the model: the tour sets a tip rule as it starts.
+        GlowTips.configure()
+        perfMark("fonts+tips")
+        let (container, outcome) = LibraryStore.open()
+        perfMark("library")
         self.container = container
-        _app = State(initialValue: AppModel(container: container))
+        let app = AppModel(container: container)
+        app.libraryOutcome = outcome
+        GlowIntents.register(app)
+        _app = State(initialValue: app)
+        perfMark("model")
     }
 
     var body: some Scene {
         WindowGroup {
             RootView()
                 .environment(app)
-                .preferredColorScheme(.dark)
+                .preferredColorScheme(app.appearance.colorScheme)
                 .task { await app.start() }
+                #if DEBUG
+                .task { ScreenshotScene.applyOrientation() }
+                #endif
+                #if targetEnvironment(macCatalyst)
+                // One window on the Mac: links from widgets and notifications
+                // go to the open window instead of opening another one.
+                .handlesExternalEvents(preferring: ["*"], allowing: ["*"])
+                .background { MacWindowSetup() }
+                #endif
+        }
+        .onChange(of: scenePhase) { _, phase in
+            if phase == .active { app.becameActive() }
         }
         .modelContainer(container)
+        #if targetEnvironment(macCatalyst)
+        .commands { GlowlitCommands(app: app) }
+        #endif
     }
 }

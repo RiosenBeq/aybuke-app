@@ -1,0 +1,127 @@
+# Kişisel Verilerin Korunması Kanunu Kapsamında Aydınlatma Metni
+
+Son güncelleme: 14 Ekim 2026
+
+> **Kısaca**
+> - Glowlit uygulamasında sizden ad, e-posta veya şifre istemiyoruz; hesabınız anonim, rastgele bir kimlikten ibarettir.
+> - Fotoğraflarınız ve istemleriniz yalnızca bulut yapay zekâ işlemeye açık rıza verdiğinizde, yalnızca istediğiniz sonucu üretmek için işlenir; tarafımızca saklanmaz ve sonuçlar en geç 1 saat içinde buluttan silinir.
+> - Verilerinizi yapay zekâ eğitmek, kişiselleştirilmiş reklam, pazarlama veya profilleme için kullanmayız ve satmayız.
+> - Pro üyeliği olmayan, 13 yaş ve üzerindeki kullanıcılar Google AdMob'dan birkaç kişiselleştirilmemiş reklam görür: krediniz bittiğinde 1 kredi için isteğe bağlı olarak izleyebileceğiniz bir reklam (günde birkaç kez) ve ara sıra kaydettikten sonra bir reklam. 13 yaşın altında ve Pro'da reklam yoktur.
+> - Yurt dışına aktarımlar, Kişisel Verileri Koruma Kurulu'nun ilan ettiği standart sözleşmelere dayanır.
+> - KVKK md. 11'deki haklarınızı uygulama içinden veya aşağıdaki başvuru yollarıyla kullanabilirsiniz.
+
+Bu Aydınlatma Metni, 6698 sayılı Kişisel Verilerin Korunması Kanunu ("**KVKK**") md. 10 ve Aydınlatma Yükümlülüğünün Yerine Getirilmesinde Uyulacak Usul ve Esaslar Hakkında Tebliğ uyarınca, Glowlit mobil uygulamasını ve buna bağlı çevrim içi hizmetleri ("**Hizmet**") kullanan ilgili kişileri bilgilendirmek amacıyla hazırlanmıştır. Ayrıntılı bilgi [Gizlilik Politikası](glowlit-legal://privacy) metnimizdedir.
+
+## 1. Veri sorumlusu
+
+- **Veri sorumlusu:** Okan Berk Manavoğlu (bireysel geliştirici)
+- **Adres:** İstanbul, Türkiye, Türkiye
+- **Ticaret sicili / MERSİS numarası:** Yok (bireysel geliştirici)
+- **E-posta:** [hello@buaze.com](mailto:hello@buaze.com)
+
+## 2. İşlenen kişisel veri kategorileri
+
+- **Kimlik / iletişim (isteğe bağlı hesap):** Apple ile giriş yaparsanız Apple kullanıcı tanımlayıcısı ve paylaşmayı seçerseniz e-posta adresiniz (Apple'ın gizli aktarma adresi olabilir) ile hesabınızı silerken erişimi iptal edebilmek için Apple'dan alınan anahtar.
+- **İşlem güvenliği:** anonim kullanıcı kimliği, oturum anahtarları (cihazınızın Anahtar Zinciri'nde saklanır), IP adresi, istek üst verileri ve zaman bilgilerini içeren sunucu kayıtları; istekleri saatlik sayarken IP adresi yerine kullanılan tek yönlü, tuzlanmış özeti (hash); App Store indirmeniz için Apple'ın uygulama işlem kimliğinin tek yönlü, tuzlanmış özeti ile o günün ücretsiz kredileri, App Store ortamı ve kullanım tarihleri (App Store indirmeniz doğrulanmamışsa iş ve güvenlik kayıtları ağ adresinizin tuzlanmış özetiyle tutulur); güvenlik filtrelerinin engellediği istek ve sonuçlara ilişkin kayıtlar (içerik değil, kategori ve zaman) ve bunlara bağlı molalar.
+- **Müşteri işlem:** bulut yapay zekâ iş kayıtları (iş kimliği, işlem türü, şablon kimliği, model uç noktası, kredi tutarı, durum, hata kodu, sağlayıcı istek kimliği, zaman bilgileri), kredi cüzdanı ve kredi defteri kayıtları, Apple tarafından imzalanmış satın alma ve abonelik verileri (işlem kimlikleri, ürün kimliği, tarihler, ortam, uygulama hesap anahtarı), ödüllü reklam kayıtları (tek kullanımlık ödül kodu ile Google'ın onayladığı ödülün işlem kimliği, reklam birimi, ödül ve tarihi).
+- **Pazarlama (reklam gösterimi):** Pro üyeliği olmayan, 13 yaş ve üzerindeki kullanıcılarda, uygulamadaki Google reklam yazılımının Google'a ilettiği cihaz ve uygulama bilgileri (cihaz modeli, işletim sistemi ve uygulama sürümü, dil, ekran boyutu), IP adresi (Google bundan ülke veya şehir gibi genel bir konum tahmin eder), yalnızca bu uygulamada kullanılan tanımlayıcılar ve reklam etkileşimleri (gösterilen reklamlar, dokunmalar, videonun ne kadarının oynatıldığı). Cihazın reklam kimliğine (IDFA) erişilmez ve Google'a fotoğraf, istem, sonuç, ad veya kullanıcı kimliği gönderilmez.
+- **Görsel kayıtlar:** bulut yapay zekâ özelliklerine gönderdiğiniz fotoğraflar, çizdiğiniz maskeler ve üretilen sonuç görselleri.
+- **Diğer (kullanıcı içeriği):** yazdığınız metin istemleri (prompt).
+- **Talep / şikâyet yönetimi:** "Bu görseli bildir" kayıtları (neden, isteğe bağlı açıklama, ilgili iş kimliği) ile bize ilettiğiniz e-postalar ve başvurular.
+- **İletişim:** bize yazdığınızda e-posta adresiniz.
+- **Özel nitelikli kişisel veriler:** Bu tür verileri işleme amacımız yoktur. Bir fotoğraf tesadüfen sağlık, din veya etnik köken gibi bilgiler ortaya koyabilir; bu durumda veriler yalnızca istediğiniz düzenleme için ve açık rızanıza dayanılarak işlenir. Biyometrik veri oluşturmayız; yüz tanıma yapmayız. Best shot, nezaket hatırlatması, benzerlik kontrolü, Hide faces, Cover star ve Photo strip tasarımları ile Photo Booth baskıları yüzleri yalnızca cihazınızda, kimseyi tanımadan ve hiçbir şey saklamadan inceler.
+
+Kütüphaneniz ("My Works", sildiğiniz görsellerin 30 gün kaldığı Recently deleted bölümüyle birlikte), uygulama ayarlarınız, Create bölümündeki son istemleriniz ve seçtiğiniz ilgi alanları yalnızca cihazınızda saklanır; bunlara erişimimiz yoktur. Uygulama ayarlarına yaş aralığınız (doğum tarihiniz değil), nereden geldiği ve ne zaman belirlendiği ile bulut yapay zekâ onayınız ve sorulduysa veli veya vasi cevabınız da dahildir; bunlar bize gönderilmez. Reklamları seyrek tutmak için kullanılan sayılar (uygulamanın ilk açıldığı zaman, kaydedilen çalışma sayısı, son reklamın zamanı ve o gün gösterilen reklam sayısı) ve Google'ın onay aracının sakladığı reklam rıza tercihleriniz de yalnızca cihazınızda tutulur. 13 yaşından küçükler yalnızca cihaz üzerindeki ücretsiz araçları kullanabilir ve bu modda bize veri gönderilmez. Arka plan kaldırma ve elle ayarlama gibi cihaz üzerindeki özellikler fotoğraflarınızı tamamen iPhone'unuzda işler. Apple Intelligence destekli cihazlarda Create bölümündeki fikir ve istem önerileri Apple'ın cihaz üzerindeki dil modeli tarafından yazılabilir; yazdıklarınız ve öneriler cihazınızda kalır, bize veya Apple'a gönderilmez. Video düzenleyicideki Captions (altyazılar) özelliği, videonuzda söylenenleri Apple'ın konuşma tanıma özelliğiyle cihazınızda altyazıya dönüştürür; videonuzun sesi ve altyazı metni cihazınızda kalır, bize veya Apple'a gönderilmez (dil modelleri Apple'dan bir kez indirilir; bu indirmeyle ses veya metin gönderilmez).
+
+## 3. İşleme amaçları
+
+- Anonim hesabınızın oluşturulması ve oturumunuzun sürdürülmesi;
+- bulut yapay zekâ özelliklerinin (Magic Edit, Styles, AI Enhance, Erase, Create from text) sunulması, sonuçların üretilmesi ve size teslim edilmesi;
+- kredilerin düşülmesi ve başarısız işlerde iade edilmesi, Apple satın alımlarının doğrulanması, Pro avantajlarının ve kredi paketlerinin sağlanması, izlemeyi seçtiğiniz ödüllü reklam için kredinin bir kez ve günlük sınır içinde verilmesi;
+- ücretsiz katmanın finansmanı için Pro üyeliği olmayan kullanıcılara birkaç kişiselleştirilmemiş reklam gösterilmesi ve reklamların seyrek tutulması;
+- güvenlik filtrelerinin uygulanması, çocukların ve genç kullanıcıların korunması, kötüye kullanımın ve ücretsiz kredilerin suistimalinin önlenmesi (ücretsiz kredilerin hesap başına değil App Store indirmesi başına verilmesi dahil), kullanım sınırlarının uygulanması, tekrarlanan engellemelerden sonra bulut yapay zekâya ara verilmesi;
+- bildirimlerin ve itirazların incelenmesi, [Kabul Edilebilir Kullanım ve Yapay Zekâ İçerik Politikası](glowlit-legal://acceptableUse) metninin uygulanması;
+- bilgi güvenliği süreçlerinin yürütülmesi, hata ve saldırıların incelenmesi;
+- taleplerinizin, başvurularınızın ve destek mesajlarınızın yanıtlanması;
+- mevzuattan kaynaklanan yükümlülüklerin yerine getirilmesi ve yetkili kurum ve kuruluşların hukuka uygun taleplerinin karşılanması;
+- hukuki uyuşmazlıklarda bir hakkın tesisi, kullanılması veya korunması.
+
+Kişisel verilerinizi kişiselleştirilmiş (davranışsal) reklam, pazarlama, profilleme veya yapay zekâ modellerinin eğitimi amacıyla işlemeyiz. Ücretsiz üyelere gösterilen reklamlar asla kişiselleştirilmez; 18 yaşından küçükler ve yaşını bilmediğimiz kullanıcılar için istekler rıza yaşının altındaki kullanıcılar olarak işaretlenir ve yalnızca genel izleyiciye uygun reklamlar gösterilir.
+
+## 4. Kişisel verilerin toplanma yöntemi ve hukuki sebepleri
+
+Kişisel verileriniz, Glowlit mobil uygulaması aracılığıyla elektronik ortamda ve otomatik yollarla; satın alımlara ilişkin veriler Apple'dan imzalı işlem bilgisi olarak; ödüllü reklam onayları Google'dan imzalı bildirim olarak; bize yazdığınızda e-posta yoluyla toplanır. Reklam verileri, uygulamadaki Google reklam yazılımı aracılığıyla doğrudan Google tarafından toplanır. Bu veriler aşağıdaki hukuki sebeplere dayanılarak işlenir:
+
+- **Bir sözleşmenin kurulması veya ifasıyla doğrudan ilgili olması (md. 5/2-c):** anonim hesabın ve isteğe bağlı Apple ile giriş hesabının işletilmesi (hesapların birleştirilmesi dahil), iş kayıtları, krediler (ödüllü reklamlardan kazanılanlar dahil), satın alımlar ve abonelikler, destek talepleri.
+- **Açık rıza (md. 5/1):** bulut yapay zekâ işleme kapsamında fotoğraf, maske ve istemlerin işlenmesi. Bu rızayı uygulama içindeki onay ekranında verirsiniz ve **Ayarlar → Cloud AI processing** seçeneğiyle dilediğiniz zaman geri alabilirsiniz. Bir fotoğraf özel nitelikli kişisel veri ortaya koyuyorsa md. 6/3 kapsamındaki açık rızanıza dayanırız.
+- **Veri sorumlusunun meşru menfaati (md. 5/2-f):** güvenlik filtreleri, kötüye kullanımın önlenmesi, sunucu ve güvenlik kayıtları, bildirimlerin incelenmesi, fotoğraflarınızda görünen diğer kişilerin görüntülerinin yalnızca istenen düzenleme için kısa süreli işlenmesi ve ücretsiz üyelere birkaç kişiselleştirilmemiş reklam gösterilmesi. AEA, Birleşik Krallık ve İsviçre'de cihazda bilgi saklanması veya okunması için gereken rızayı Google'ın rıza formu ister. Meşru menfaatimiz, genç kullanıcıların verilerinin korunmasına ilişkin menfaatlerin önüne geçmez.
+- **Hukuki yükümlülüğün yerine getirilmesi (md. 5/2-ç):** başvuruların yanıtlanması, mevzuatın gerektirdiği kayıtlar ve yetkili makamlara bildirimler (örneğin çocukların cinsel istismarı materyali).
+- **Bir hakkın tesisi, kullanılması veya korunması (md. 5/2-e):** hukuki uyuşmazlıklar.
+
+**18 yaşından küçük kullanıcılar.** Glowlit en az 13 yaşındaki kullanıcılar içindir. Türk Medeni Kanunu uyarınca 18 yaşından küçükler sınırlı ehliyetli olduğundan, açık rıza gerektiren işlemlerde (örneğin bulut yapay zekâ işleme) rızanın velisi veya vasisi tarafından verilmesi ya da onaylanması gerekir. Veliler ve vasiler çocukları adına bize başvurabilir.
+
+## 5. Kişisel verilerin aktarılması
+
+Kişisel verileriniz, yukarıdaki amaçlarla sınırlı olarak ve KVKK md. 8 ve 9'a uygun şekilde şu alıcılara aktarılabilir:
+
+- **Yurt dışındaki hizmet sağlayıcılarımız (veri işleyenler):** arka uç barındırma, veritabanı ve anonim kimlik doğrulama için Supabase Inc. (ABD; barındırma bölgesi: AB (Frankfurt)); yapay zekâ çıkarımı için xAI (X.AI LLC ve bağlı şirketleri, ABD; Sıfır Veri Saklama açık); kullandığımız durumlarda otomatik çıktı güvenlik kontrolü için ve sağlayıcı değiştirmemiz hâlinde Features & Labels, Inc. (fal.ai, ABD) ve fal.ai'ın çalıştırdığı modellerin geliştiricileri (örneğin Google LLC), Google LLC (Gemini API) veya OpenAI (Images API); abonelik analizi için RevenueCat, Inc. (ABD; fotoğraf, istem veya sonuç almaz); ücretsiz üyelerin gördüğü reklamlar ve ödüllü reklamların onayı için Google LLC (AdMob, ABD; fotoğraf, istem, sonuç veya kullanıcı kimliği almaz; reklam verilerinin bir kısmını bağımsız veri sorumlusu olarak [Google Gizlilik Politikası](https://policies.google.com/privacy) kapsamında işler); e-posta hizmet sağlayıcımız.
+- **Apple:** satın alma ve abonelik işlemlerinin yürütülmesi ile Apple ile girişin doğrulanması ve hesap silindiğinde iptal edilmesi amacıyla; Apple bu işlemleri satıcı ve bağımsız veri sorumlusu sıfatıyla yürütür. Fotoğraflarınızı veya istemlerinizi Apple'a göndermeyiz; tek istisna, Create bölümünde **Create with Image Playground** seçeneğini kullandığınızda açıklamanızın Apple'ın Image Playground özelliğine gitmesidir. Bu, Apple'ın kendi özelliğidir: görsel cihazınızda veya iOS 27'den itibaren Apple'ın Private Cloud Compute sunucularında, Apple'ın koşulları ve kullanım sınırlarıyla oluşturulur; bu sürümlerde uygulama ilk kullanımdan önce sizi bilgilendirir. Uygulama yalnızca bitmiş görseli alır; görsel cihazınızdaki kütüphanede kalır ve bize gönderilmez.
+- **Yetkili kamu kurum ve kuruluşları ile adli makamlar:** kanunen yetkili oldukları hâllerde ve hukuki yükümlülüklerimizin gerektirdiği ölçüde.
+
+**Yurt dışına aktarım.** Hizmet sağlayıcılarımızın çoğu yurt dışında bulunduğundan kişisel verileriniz yurt dışına aktarılır. 7499 sayılı Kanun ile değişik KVKK md. 9 uyarınca bu aktarımlar, Kişisel Verileri Koruma Kurulu tarafından ilan edilen standart sözleşmeler gibi uygun güvencelere dayanır; standart sözleşmeler imzalandıktan sonra beş iş günü içinde Kişisel Verileri Koruma Kurumuna bildirilir. Düzenli aktarımlarımız açık rızanıza dayanmaz. Yalnızca yeterlilik kararı veya uygun güvence bulunmayan istisnai ve arızi hâllerde, olası riskler hakkında bilgilendirilmeniz kaydıyla md. 9/6'daki şartlardan birine dayanılabilir.
+
+Kişisel verilerinizi satmayız. Ücretsiz üyelere gösterilen kişiselleştirilmemiş reklamlar dışında, üçüncü kişilerle reklam veya pazarlama amacıyla paylaşmayız. Bir sonucu Instagram gibi başka bir uygulamada paylaşmayı seçtiğinizde, içeriği o hizmete siz aktarmış olursunuz ve o hizmetin kendi koşulları geçerli olur.
+
+## 6. Saklama süreleri
+
+- Bulut yapay zekâ özelliklerine gönderilen fotoğraf, maske ve istemler: tarafımızca saklanmaz.
+- Bulutta üretilen sonuçlar: en fazla 1 saat.
+- İş kayıtları: 30 gün.
+- Hesap, kredi ve hak kayıtları (Apple ile giriş bilgileri dahil): hesabınız var olduğu sürece; hesabınızı sildiğinizde silinir ve Apple anahtarı iptal edilir.
+- RevenueCat'teki abonelik analizi kayıtları (yalnızca satın alma yaptıysanız): hesabınız var olduğu sürece; hesabınızı sildiğinizde, hesabınızla birleştirilmiş anonim kimliklere ait kayıtlar dahil, RevenueCat'ten silinmesini isteriz ve RevenueCat silmeyi kısa süre içinde tamamlar; RevenueCat talebi o an alamazsa yalnızca ilgili rastgele kimlikleri bir silme kuyruğunda tutar ve RevenueCat onaylayana kadar yeniden deneriz.
+- Bildirimler: en fazla 12 ay.
+- Ödüllü reklam kayıtları: tek kullanımlık ödül kodları 30 dakika geçerlidir ve süreleri dolduktan bir gün sonra silinir; onaylanan ödüllerin kayıtları 30 gün saklanır. Google, aldığı reklam verilerini kendi politikalarına göre saklar.
+- Sunucu ve güvenlik kayıtları: genellikle en fazla 90 gün.
+- App Store indirmesinin özeti ve o günün ücretsiz kredileri: uygulamanın onu son kullanmasından 30 gün sonra silinir.
+- Güvenlik kayıtları (engellenen istek ve sonuçlar, molalar): 30 gün; tekrarlanan molalardan sonraki kapatma, kaldırılana kadar ve en fazla 12 ay.
+- Ağ adresi özetiyle tutulan istek sayımları: bir gün. App Store indirmeniz doğrulanmamışsa, iş ve güvenlik kayıtlarındaki indirme özeti yerine bu adres özeti kullanılır; süreler yukarıdakiler gibidir.
+- Son üç kayıt, hesabınızı sildikten sonra da hiçbir hesaba bağlı olmadan, yalnızca kötüye kullanımı önlemek için bu süreler boyunca saklanır.
+- E-postalar ve başvurular: talebin sonuçlandırılması ve belgelenmesi için gereken süre boyunca.
+
+Süreleri dolan veriler, Kişisel Verilerin Silinmesi, Yok Edilmesi veya Anonim Hâle Getirilmesi Hakkında Yönetmelik'e uygun olarak silinir. Kanunen daha uzun saklama yükümlülüğü bulunan hâller saklıdır.
+
+## 7. KVKK md. 11 kapsamındaki haklarınız
+
+Veri sorumlusuna başvurarak:
+
+- kişisel verilerinizin işlenip işlenmediğini öğrenme;
+- işlenmişse buna ilişkin bilgi talep etme;
+- işlenme amacını ve bunların amacına uygun kullanılıp kullanılmadığını öğrenme;
+- yurt içinde veya yurt dışında kişisel verilerinizin aktarıldığı üçüncü kişileri bilme;
+- eksik veya yanlış işlenmiş olması hâlinde bunların düzeltilmesini isteme;
+- KVKK md. 7'de öngörülen şartlar çerçevesinde silinmesini veya yok edilmesini isteme;
+- düzeltme, silme veya yok etme işlemlerinin kişisel verilerin aktarıldığı üçüncü kişilere bildirilmesini isteme;
+- işlenen verilerin münhasıran otomatik sistemler vasıtasıyla analiz edilmesi suretiyle aleyhinize bir sonucun ortaya çıkmasına itiraz etme ve
+- kişisel verilerin kanuna aykırı olarak işlenmesi sebebiyle zarara uğramanız hâlinde zararın giderilmesini talep etme
+
+haklarına sahipsiniz.
+
+## 8. Başvuru yolları
+
+Haklarınızı kullanmak için, Veri Sorumlusuna Başvuru Usul ve Esasları Hakkında Tebliğ uyarınca başvurunuzu Türkçe olarak şu yollarla iletebilirsiniz:
+
+- **Yazılı olarak:** İstanbul, Türkiye, Türkiye adresine ıslak imzalı dilekçeyle;
+- **Güvenli elektronik imza veya mobil imza ile:** [hello@buaze.com](mailto:hello@buaze.com) adresine;
+- **E-posta ile:** daha önce bize bildirdiğiniz ve sistemimizde kayıtlı olan e-posta adresinizden [hello@buaze.com](mailto:hello@buaze.com) adresine.
+
+Başvurunuzda; adınız, soyadınız ve yazılı başvurularda imzanız, Türkiye Cumhuriyeti vatandaşları için T.C. kimlik numaranız, yabancılar için uyruğunuz ile pasaport veya varsa kimlik numaranız, tebligata esas yerleşim yeri veya iş yeri adresiniz, varsa bildirime esas e-posta adresiniz, telefon veya faks numaranız ve talep konunuz bulunmalıdır. Hesabınız anonim olduğundan, verilerinizi bulabilmemiz için bir Glowlit satın alımına ait Apple Sipariş Kimliği (Order ID) gibi ek bilgiler isteyebiliriz.
+
+Verilerinizin hemen silinmesi için uygulamadaki **Ayarlar → Verilerimi ve hesabımı sil** seçeneğini de kullanabilirsiniz.
+
+Başvurunuz, talebin niteliğine göre en kısa sürede ve en geç 30 gün içinde ücretsiz olarak sonuçlandırılır. İşlemin ayrıca bir maliyet gerektirmesi hâlinde, Kişisel Verileri Koruma Kurulu tarafından belirlenen tarifedeki ücret alınabilir.
+
+Başvurunuzun reddedilmesi, verilen cevabı yetersiz bulmanız veya süresi içinde cevap verilmemesi hâllerinde; cevabı öğrendiğiniz tarihten itibaren 30 gün ve her hâlde başvuru tarihinden itibaren 60 gün içinde Kişisel Verileri Koruma Kuruluna şikâyette bulunabilirsiniz ([kvkk.gov.tr](https://www.kvkk.gov.tr)).
+
+## 9. Değişiklikler
+
+Bu Aydınlatma Metni'ni mevzuattaki veya veri işleme faaliyetlerimizdeki değişikliklere göre güncelleyebiliriz. Önemli değişiklikleri uygulama içinde duyururuz. En üstteki "Son güncelleme" tarihi geçerli sürümü gösterir.

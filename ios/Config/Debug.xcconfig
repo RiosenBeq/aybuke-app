@@ -1,0 +1,12 @@
+// Debug build settings for the Glowlit target.
+//
+// To try a real AI provider before the backend is deployed, copy
+// Secrets.example.xcconfig to Secrets.xcconfig (git-ignored) and add your key.
+// The key is only read by DEBUG builds; Release builds never include it.
+
+// AdMob app id (Info.plist's GADApplicationIdentifier): Google's sample app,
+// so DEBUG builds only ever request Google's test ads (AdsConfig picks the
+// matching test units). Not a secret.
+GL_ADMOB_APP_ID = ca-app-pub-3940256099942544~1458002511
+
+#include? "Secrets.xcconfig"

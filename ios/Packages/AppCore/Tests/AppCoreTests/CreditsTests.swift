@@ -21,19 +21,19 @@ final class CreditsTests: XCTestCase {
 
     func testFreeDailyAllowanceRefillsWithoutAccumulating() throws {
         var wallet = CreditWallet.fresh(now: date(10, 11), policy: policy)
-        XCTAssertEqual(wallet.balance, 3)
-        try wallet.spend(3)
+        XCTAssertEqual(wallet.balance, 2)
+        try wallet.spend(2)
         wallet.refresh(now: date(10, 11, 23), isPro: false, policy: policy, calendar: calendar)
         XCTAssertEqual(wallet.balance, 0, "same day: no refill")
         wallet.refresh(now: date(10, 12, 1), isPro: false, policy: policy, calendar: calendar)
-        XCTAssertEqual(wallet.balance, 3)
+        XCTAssertEqual(wallet.balance, 2)
         wallet.refresh(now: date(10, 15, 1), isPro: false, policy: policy, calendar: calendar)
-        XCTAssertEqual(wallet.balance, 3, "unused daily credits don't roll over")
+        XCTAssertEqual(wallet.balance, 2, "unused daily credits don't roll over")
     }
 
     func testInsufficientAndInvalidAmounts() throws {
         var wallet = CreditWallet.fresh(now: date(10, 11), policy: policy)
-        try wallet.spend(2)
+        try wallet.spend(1)
         XCTAssertThrowsError(try wallet.spend(2)) { error in
             XCTAssertEqual(error as? CreditError, .insufficient(needed: 2, available: 1))
         }
@@ -45,17 +45,17 @@ final class CreditsTests: XCTestCase {
     func testSubscribingGrantsMonthlyAllowanceThatRollsOverUpToCap() {
         var wallet = CreditWallet.fresh(now: date(10, 11), policy: policy)
         wallet.refresh(now: date(10, 11, 10), isPro: true, policy: policy, calendar: calendar)
-        XCTAssertEqual(wallet.subscription, 100)
-        XCTAssertEqual(wallet.balance, 103, "today's free credits stay until midnight")
+        XCTAssertEqual(wallet.subscription, 80)
+        XCTAssertEqual(wallet.balance, 82, "today's free credits stay until midnight")
 
         wallet.refresh(now: date(10, 12), isPro: true, policy: policy, calendar: calendar)
         XCTAssertEqual(wallet.daily, 0, "Pro doesn't also accrue free daily credits")
 
         wallet.refresh(now: date(11, 12), isPro: true, policy: policy, calendar: calendar)
-        XCTAssertEqual(wallet.subscription, 200, "one month of rollover")
+        XCTAssertEqual(wallet.subscription, 160, "one month of rollover")
 
         wallet.refresh(now: date(12, 13), isPro: true, policy: policy, calendar: calendar)
-        XCTAssertEqual(wallet.subscription, 200, "capped at allowance + one month")
+        XCTAssertEqual(wallet.subscription, 160, "capped at allowance + one month")
     }
 
     func testLosingProExpiresSubscriptionCreditsButKeepsPurchased() {
@@ -66,7 +66,7 @@ final class CreditsTests: XCTestCase {
         XCTAssertEqual(wallet.subscription, 0)
         XCTAssertFalse(wallet.isSubscribed)
         XCTAssertEqual(wallet.purchased, 30)
-        XCTAssertEqual(wallet.daily, 3, "back on the free daily allowance")
+        XCTAssertEqual(wallet.daily, 2, "back on the free daily allowance")
     }
 
     func testSpendsExpiringCreditsFirstAndRefundsExactly() throws {
@@ -83,7 +83,45 @@ final class CreditsTests: XCTestCase {
         let charge = try wallet.spend(1)
         wallet.refresh(now: date(10, 12), isPro: false, policy: policy, calendar: calendar)
         wallet.refund(charge, policy: policy)
-        XCTAssertEqual(wallet.daily, 3)
+        XCTAssertEqual(wallet.daily, 2)
+    }
+
+    /// The bundled numbers match the server's credit_policy() (backend
+    /// migration 20261020) and AppConfig.json's creditPolicy.
+    func testStandardPolicyMatchesTheServer() throws {
+        XCTAssertEqual(policy, CreditPolicy(freeDailyAllowance: 2, proMonthlyAllowance: 80, proRolloverCap: 160,
+                                            trialCredits: 20, freeRetriesPerDay: 3))
+        let root = URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
+            .deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
+        let config = root.appendingPathComponent("ios/App/Resources/AppConfig.json")
+        guard FileManager.default.fileExists(atPath: config.path) else { throw XCTSkip("AppConfig.json not found") }
+        struct Config: Decodable { let creditPolicy: CreditPolicy }
+        XCTAssertEqual(try JSONDecoder().decode(Config.self, from: Data(contentsOf: config)).creditPolicy, policy,
+                       "AppConfig.json's creditPolicy is the bundled default")
+        let migration = root.appendingPathComponent("backend/supabase/migrations/20261020000000_credit_policy_v2.sql")
+        guard let sql = try? String(contentsOf: migration, encoding: .utf8) else { throw XCTSkip("migration not found") }
+        for (number, name) in [(2, "free_daily"), (80, "pro_monthly"), (160, "pro_rollover_cap"), (20, "trial_credits"),
+                               (3, "free_retries_daily")] {
+            XCTAssertTrue(sql.contains("\(number),") && sql.contains("-- \(name)"), "credit_policy() says \(number) for \(name)")
+            let line = sql.split(separator: "\n").first { $0.hasSuffix("-- \(name)") }
+            XCTAssertEqual(line?.trimmingCharacters(in: .whitespaces).hasPrefix("\(number),"), true, name)
+        }
+    }
+
+    func testServerPolicyWinsWhenSane() throws {
+        let server = try JSONDecoder().decode(BalanceState.self, from: Data("""
+        {"credits_remaining": 4, "policy": {"free_daily": 1, "pro_monthly": 60, "rollover_cap": -5, "trial_credits": 15}}
+        """.utf8))
+        let merged = CreditPolicy(server: try XCTUnwrap(server.policy), fallback: .standard)
+        XCTAssertEqual(merged, CreditPolicy(freeDailyAllowance: 1, proMonthlyAllowance: 60, proRolloverCap: 160,
+                                            trialCredits: 15, freeRetriesPerDay: 3), "a broken number keeps the fallback's")
+        // The app's cache and AppConfig.json use the same keys; missing ones keep the standard numbers.
+        let partial = try JSONDecoder().decode(CreditPolicy.self, from: Data(#"{"freeDaily": 5}"#.utf8))
+        XCTAssertEqual(partial.freeDailyAllowance, 5)
+        XCTAssertEqual(partial.proMonthlyAllowance, 80)
+        let roundTrip = try JSONDecoder().decode(CreditPolicy.self, from: JSONEncoder().encode(merged))
+        XCTAssertEqual(roundTrip, merged)
     }
 
     func testNextDailyRefillIsNextMidnight() {
@@ -97,6 +135,50 @@ final class CreditsTests: XCTestCase {
         wallet.addPurchased(5)
         let decoded = try JSONDecoder().decode(CreditWallet.self, from: JSONEncoder().encode(wallet))
         XCTAssertEqual(decoded, wallet)
+    }
+
+    func testNextSubscriptionGrantIsTheFirstMomentRefreshGrants() throws {
+        var wallet = CreditWallet.fresh(now: date(1, 31, 10), policy: policy)
+        XCTAssertNil(wallet.nextSubscriptionGrant(calendar: calendar), "no subscription yet")
+        wallet.refresh(now: date(1, 31, 10), isPro: true, policy: policy, calendar: calendar)
+        let grant = try XCTUnwrap(wallet.nextSubscriptionGrant(calendar: calendar))
+
+        var justBefore = wallet
+        justBefore.refresh(now: grant.addingTimeInterval(-1), isPro: true, policy: policy, calendar: calendar)
+        XCTAssertEqual(justBefore.subscription, wallet.subscription)
+        var atGrant = wallet
+        atGrant.refresh(now: grant, isPro: true, policy: policy, calendar: calendar)
+        XCTAssertEqual(atGrant.subscription, wallet.subscription + policy.proMonthlyAllowance)
+        XCTAssertEqual(atGrant.nextSubscriptionGrant(calendar: calendar).map { $0 > grant }, true)
+
+        atGrant.refresh(now: date(4, 1), isPro: false, policy: policy, calendar: calendar)
+        XCTAssertNil(atGrant.nextSubscriptionGrant(calendar: calendar), "none after Pro ends")
+    }
+
+    func testTrialGrantsItsCreditsOnceThenTheFirstPaidPeriodAddsAMonth() {
+        var wallet = CreditWallet.fresh(now: date(10, 11), policy: policy)
+        wallet.refresh(now: date(10, 11, 10), isPro: true, isTrial: true, policy: policy, calendar: calendar)
+        XCTAssertEqual(wallet.subscription, policy.trialCredits)
+        XCTAssertTrue(wallet.trialGranted)
+        XCTAssertNil(wallet.nextSubscriptionGrant(calendar: calendar), "the trial's end isn't known here")
+
+        wallet.refresh(now: date(10, 12), isPro: true, isTrial: true, policy: policy, calendar: calendar)
+        XCTAssertEqual(wallet.subscription, policy.trialCredits, "a refresh in the trial grants nothing")
+
+        wallet.refresh(now: date(10, 18), isPro: true, isTrial: false, policy: policy, calendar: calendar)
+        XCTAssertEqual(wallet.subscription, policy.trialCredits + policy.proMonthlyAllowance, "the first paid period adds a month")
+        XCTAssertNotNil(wallet.nextSubscriptionGrant(calendar: calendar))
+
+        wallet.refresh(now: date(10, 19), isPro: true, isTrial: false, policy: policy, calendar: calendar)
+        XCTAssertEqual(wallet.subscription, policy.trialCredits + policy.proMonthlyAllowance, "a second refresh grants nothing")
+    }
+
+    func testWalletsSavedBeforeTrialFieldsStillDecode() throws {
+        let legacy = Data(#"{"daily":2,"dailyPeriodStart":0,"subscription":5,"purchased":3}"#.utf8)
+        let wallet = try JSONDecoder().decode(CreditWallet.self, from: legacy)
+        XCTAssertEqual(wallet.balance, 10)
+        XCTAssertFalse(wallet.trialGranted)
+        XCTAssertFalse(wallet.subscriptionIsTrial)
     }
 }
 

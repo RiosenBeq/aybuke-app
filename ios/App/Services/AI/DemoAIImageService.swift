@@ -7,13 +7,23 @@ import AppCore
 /// local Core Image approximations — not real AI output.
 final class DemoAIImageService: AIImageService {
     func perform(_ job: AIJob) async throws -> AIJobResult {
-        try await Task.sleep(for: .milliseconds(Int.random(in: 1600...2800)))
+        try await Task.sleep(for: .milliseconds(Self.simulatedDelayMilliseconds))
         try Task.checkCancellation()
 
         let images: [UIImage] = try await Task.detached(priority: .userInitiated) {
             try Self.render(job)
         }.value
         return AIJobResult(images: images, creditsRemaining: nil, requestID: "demo-\(UUID().uuidString)")
+    }
+
+    /// 1.6–2.8 s. DEBUG builds accept `-GLDemoDelaySeconds 15` to demo the
+    /// Live Activity in the Dynamic Island.
+    private static var simulatedDelayMilliseconds: Int {
+        #if DEBUG
+        let override = UserDefaults.standard.double(forKey: "GLDemoDelaySeconds")
+        if override > 0 { return Int(override * 1000) }
+        #endif
+        return Int.random(in: 1600...2800)
     }
 
     private static func render(_ job: AIJob) throws -> [UIImage] {
@@ -33,18 +43,18 @@ final class DemoAIImageService: AIImageService {
             return [try transform(job.sourceImage) { ImageFilters.stylize($0, seed: seed) }]
         case .eraseObject:
             guard let maskImage = job.mask, let mask = ImageFilters.ciImage(maskImage) else {
-                throw AIServiceError.invalidRequest("Brush over the area you want to erase.")
+                throw AIServiceError.invalidRequest(String(localized: "Brush over the area you want to erase."))
             }
             return [try transform(job.sourceImage) { ImageFilters.blurInpaint($0, mask: mask) }]
         case .removeBackground:
-            guard let source = job.sourceImage else { throw AIServiceError.invalidRequest("Pick a photo first.") }
+            guard let source = job.sourceImage else { throw AIServiceError.invalidRequest(String(localized: "Pick a photo first.")) }
             return [try OnDeviceImageService.removeBackground(from: source)]
         }
     }
 
     private static func transform(_ image: UIImage?, _ body: (CIImage) -> CIImage) throws -> UIImage {
         guard let image, let input = ImageFilters.ciImage(image) else {
-            throw AIServiceError.invalidRequest("Pick a photo first.")
+            throw AIServiceError.invalidRequest(String(localized: "Pick a photo first."))
         }
         let output = body(input)
         let extent = output.extent.isInfinite ? input.extent : output.extent.integral
@@ -57,22 +67,15 @@ final class DemoAIImageService: AIImageService {
 
 /// Procedural "art" for demo text-to-image results.
 enum DemoArt {
-    static func render(prompt: String, style: ImageStyle, size: PixelSize, variant: Int) -> UIImage {
+    /// `stamped: false` is for brand art (the invite card, screenshots), never for results.
+    static func render(prompt: String, style: ImageStyle, size: PixelSize, variant: Int, stamped: Bool = true) -> UIImage {
         var generator = SplitMix64(seed: UInt64(truncatingIfNeeded: stableHash(prompt + style.id)) &+ UInt64(variant) &* 7919)
         let swatch = style.swatch.compactMap { UIColor(hexString: $0) }
-        let accents: [UIColor] = [
-            UIColor(red: 1.0, green: 0.76, blue: 0.36, alpha: 1),  // #FFC25C
-            UIColor(red: 1.0, green: 0.48, blue: 0.24, alpha: 1),  // #FF7A3D
-            UIColor(red: 0.36, green: 0.55, blue: 1.0, alpha: 1),  // #5B8CFF
-        ]
+        let accents: [UIColor] = [.brandBlush, .brandPetal, .white]
         let colors = swatch + accents
         let canvas = CGSize(width: size.width, height: size.height)
 
-        let format = UIGraphicsImageRendererFormat()
-        format.scale = 1
-        format.opaque = true
-        let image = UIGraphicsImageRenderer(size: canvas, format: format).image { context in
-            let cg = context.cgContext
+        let image = ImageUtilities.draw(size: canvas, opaque: true, colorSpace: CGColorSpace(name: CGColorSpace.sRGB)) { cg in
             let space = CGColorSpaceCreateDeviceRGB()
             let base = colors.first ?? .darkGray
             let baseEnd = colors.dropFirst().first ?? .black
@@ -92,15 +95,13 @@ enum DemoArt {
                 }
             }
         }
-        return stamp(image)
+        return stamped ? stamp(image) : image
     }
 
     /// Adds a small "DEMO" label so simulated results are never mistaken for real output.
     static func stamp(_ image: UIImage) -> UIImage {
-        let format = UIGraphicsImageRendererFormat()
-        format.scale = image.scale
-        format.opaque = !ImageUtilities.hasAlpha(image)
-        return UIGraphicsImageRenderer(size: image.size, format: format).image { _ in
+        ImageUtilities.draw(size: image.size, scale: image.scale, opaque: !ImageUtilities.hasAlpha(image),
+                            colorSpace: image.cgImage?.colorSpace) { _ in
             image.draw(at: .zero)
             let fontSize = max(14, image.size.width * 0.028)
             let attributes: [NSAttributedString.Key: Any] = [
@@ -144,18 +145,5 @@ struct SplitMix64: RandomNumberGenerator {
         z = (z ^ (z >> 30)) &* 0xBF58_476D_1CE4_E5B9
         z = (z ^ (z >> 27)) &* 0x94D0_49BB_1331_11EB
         return z ^ (z >> 31)
-    }
-}
-
-extension UIColor {
-    convenience init?(hexString: String) {
-        let digits = hexString.hasPrefix("#") ? String(hexString.dropFirst()) : hexString
-        guard digits.count == 6, let value = UInt32(digits, radix: 16) else { return nil }
-        self.init(
-            red: CGFloat((value >> 16) & 0xFF) / 255,
-            green: CGFloat((value >> 8) & 0xFF) / 255,
-            blue: CGFloat(value & 0xFF) / 255,
-            alpha: 1
-        )
     }
 }

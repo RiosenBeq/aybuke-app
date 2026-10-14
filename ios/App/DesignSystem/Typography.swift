@@ -2,18 +2,19 @@ import SwiftUI
 import UIKit
 import CoreText
 
-/// Display typeface: Bricolage Grotesque (SIL Open Font License 1.1), bundled
-/// as static cuts generated from the variable font — display optical size
-/// (opsz 96) for headlines, text optical size (opsz 24) for small titles.
-/// Body text uses SF Pro so it inherits Dynamic Type and Apple's legibility tuning.
+/// Display typeface: Poppins (SIL Open Font License 1.1), a geometric sans
+/// with round, friendly forms, the same face as the website. Medium,
+/// SemiBold, Bold and ExtraBold are bundled. Body text uses SF Pro so it
+/// inherits Dynamic Type and Apple's legibility tuning.
 enum BrandFont {
-    static let familyName = "Bricolage Grotesque"
+    static let familyName = "Poppins"
 
     static func postScriptName(for weight: Font.Weight) -> String {
         switch weight {
-        case .black, .heavy: return "BricolageGrotesque-DisplayExtraBold"
-        case .bold: return "BricolageGrotesque-DisplayBold"
-        default: return "BricolageGrotesque-TextSemiBold"
+        case .black, .heavy: return "Poppins-ExtraBold"
+        case .bold: return "Poppins-Bold"
+        case .medium, .regular, .light, .thin, .ultraLight: return "Poppins-Medium"
+        default: return "Poppins-SemiBold"
         }
     }
 }
@@ -42,9 +43,71 @@ extension Font {
         return .system(size: size, weight: weight, design: .rounded)
     }
 
-    static var heroTitle: Font { .display(34, weight: .bold, relativeTo: .largeTitle) }
-    static var screenTitle: Font { .display(28, weight: .bold, relativeTo: .largeTitle) }
-    static var sectionTitle: Font { .display(20, weight: .semibold, relativeTo: .title3) }
-    static var cardTitle: Font { .display(17, weight: .semibold, relativeTo: .headline) }
-    static var buttonLabel: Font { .display(17, weight: .semibold, relativeTo: .headline) }
+    static var heroTitle: Font { .display(30, weight: .bold, relativeTo: .largeTitle) }
+    static var screenTitle: Font { .display(25, weight: .bold, relativeTo: .largeTitle) }
+    static var sectionTitle: Font { .display(19, weight: .semibold, relativeTo: .title3) }
+    static var cardTitle: Font { .display(16, weight: .semibold, relativeTo: .headline) }
+    static var buttonLabel: Font { .display(16, weight: .semibold, relativeTo: .headline) }
+
+    /// Editorial accent: Apple's New York serif in italic — the one soft,
+    /// elegant word in a headline ("Make it *glow*"). Scales with Dynamic Type.
+    static func accent(_ size: CGFloat, relativeTo style: Font.TextStyle = .title) -> Font {
+        let scaled = UIFontMetrics(forTextStyle: style.uiTextStyle).scaledValue(for: size)
+        return .system(size: scaled, weight: .medium, design: .serif).italic()
+    }
+}
+
+private extension Font.TextStyle {
+    var uiTextStyle: UIFont.TextStyle {
+        switch self {
+        case .largeTitle: return .largeTitle
+        case .title: return .title1
+        case .title2: return .title2
+        case .title3: return .title3
+        case .headline: return .headline
+        case .subheadline: return .subheadline
+        case .callout: return .callout
+        case .footnote: return .footnote
+        case .caption: return .caption1
+        case .caption2: return .caption2
+        default: return .body
+        }
+    }
+}
+
+extension Text {
+    /// Display headline where words wrapped in `*asterisks*` are set in the
+    /// italic serif accent: `Text(styled: "Your photos, in their *best light*", size: 30)`.
+    init(styled source: LocalizedStringResource, size: CGFloat, weight: Font.Weight = .bold, relativeTo style: Font.TextStyle = .largeTitle) {
+        self.init(styled: String(localized: source), size: size, weight: weight, relativeTo: style)
+    }
+
+    /// For text that's already localized.
+    @_disfavoredOverload
+    init(styled source: String, size: CGFloat, weight: Font.Weight = .bold, relativeTo style: Font.TextStyle = .largeTitle) {
+        let parts = source.components(separatedBy: "*")
+        var text = Text(verbatim: "")
+        for (index, part) in parts.enumerated() where !part.isEmpty {
+            let isAccent = !index.isMultiple(of: 2)
+            let piece = Text(verbatim: part).font(isAccent
+                ? .accent(size * 1.06, relativeTo: style)
+                : .display(size, weight: weight, relativeTo: style))
+            text = Text("\(text)\(piece)")
+        }
+        self = text
+    }
+}
+
+// MARK: - Small text on the Mac
+
+// The Mac app ("Scale Interface to Match iPad") keeps the iPad's text sizes
+// and draws them at 77%, and Dynamic Type doesn't reach it, so footnotes and
+// captions came out at 8.5 to 10 pt. These helpers give the Mac sizes that
+// read at about 11 and 10 pt. They are named apart from SwiftUI's own
+// `.caption` and `.footnote`, which keep their exact sizes everywhere else,
+// so iPhone and iPad never see a different font.
+extension Font {
+    static var legibleFootnote: Font { Platform.isMac ? .system(size: 14) : .system(.footnote) }
+    static var legibleCaption: Font { Platform.isMac ? .system(size: 13) : .system(.caption) }
+    static var legibleCaption2: Font { Platform.isMac ? .system(size: 13) : .system(.caption2) }
 }

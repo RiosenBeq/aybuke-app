@@ -1,6 +1,7 @@
 import SwiftUI
 
-/// Gradient capsule for the one primary action on a screen.
+/// Ink button with a blush label (blush with ink on the dark canvas) for the
+/// one primary action on a screen.
 struct PrimaryButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         PrimaryButtonBody(configuration: configuration)
@@ -13,38 +14,47 @@ struct PrimaryButtonStyle: ButtonStyle {
         var body: some View {
             configuration.label
                 .font(.buttonLabel)
-                .foregroundStyle(Palette.onPrimary)
+                .multilineTextAlignment(.center)
+                .foregroundStyle(isEnabled ? Palette.onAccent : Palette.textTertiary)
+                // Long translations and large text wrap instead of truncating.
+                .padding(.vertical, 6)
                 .frame(maxWidth: .infinity, minHeight: Metrics.buttonHeight)
                 .padding(.horizontal, 20)
                 .background {
-                    Capsule()
-                        .fill(isEnabled ? AnyShapeStyle(Palette.brandGradient) : AnyShapeStyle(Palette.surfaceRaised))
+                    // Disabled: the tint sits on the page color, so content
+                    // scrolling under a floating button doesn't show through.
+                    RoundedRectangle.button
+                        .fill(isEnabled ? Palette.accent : Palette.strokeStrong)
+                        .background(isEnabled ? .clear : Palette.background, in: .button)
                 }
-                .overlay(Capsule().strokeBorder(Color.white.opacity(isEnabled ? 0.18 : 0.06), lineWidth: 1))
-                .shadow(color: Palette.primary.opacity(isEnabled ? 0.35 : 0), radius: 18, y: 8)
-                .opacity(isEnabled ? 1 : 0.6)
+                .shadow(color: Palette.ink.opacity(isEnabled ? 0.18 : 0), radius: 16, y: 8)
                 .scaleEffect(configuration.isPressed ? 0.97 : 1)
                 .animation(.spring(response: 0.25, dampingFraction: 0.7), value: configuration.isPressed)
         }
     }
 }
 
-/// Quiet capsule for secondary actions.
+/// White button for secondary actions.
 struct SecondaryButtonStyle: ButtonStyle {
+    /// `Metrics.buttonHeight` when it sits under a primary button as an equal choice.
+    var minHeight: CGFloat = 46
+
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .font(.buttonLabel)
+            .multilineTextAlignment(.center)
             .foregroundStyle(Palette.textPrimary)
-            .frame(maxWidth: .infinity, minHeight: 50)
+            .padding(.vertical, 6)
+            .frame(maxWidth: .infinity, minHeight: minHeight)
             .padding(.horizontal, 18)
-            .background(Palette.surfaceRaised, in: Capsule())
-            .overlay(Capsule().strokeBorder(Palette.stroke, lineWidth: 1))
+            .background(Palette.surface, in: .button)
+            .overlay(RoundedRectangle.button.strokeBorder(Palette.strokeStrong, lineWidth: 1))
             .scaleEffect(configuration.isPressed ? 0.97 : 1)
             .animation(.spring(response: 0.25, dampingFraction: 0.7), value: configuration.isPressed)
     }
 }
 
-/// Round icon button used in toolbars over photos.
+/// Round Liquid Glass icon button used in toolbars and over photos.
 struct IconButtonStyle: ButtonStyle {
     var size: CGFloat = 40
 
@@ -53,8 +63,12 @@ struct IconButtonStyle: ButtonStyle {
             .font(.system(size: size * 0.42, weight: .semibold))
             .foregroundStyle(Palette.textPrimary)
             .frame(width: size, height: size)
-            .background(.ultraThinMaterial, in: Circle())
-            .overlay(Circle().strokeBorder(Palette.stroke, lineWidth: 1))
+            .liquidGlass(in: Circle(), tint: Palette.white.opacity(0.35))
+            .shadow(color: Palette.shadow, radius: 8, y: 3)
+            // The circle can stay 40 pt; the touch target is never under 44.
+            .frame(width: max(size, 44), height: max(size, 44))
+            .contentShape(Circle())
+            .macHoverLift()
             .scaleEffect(configuration.isPressed ? 0.92 : 1)
             .animation(.spring(response: 0.25, dampingFraction: 0.7), value: configuration.isPressed)
     }
@@ -66,36 +80,81 @@ extension ButtonStyle where Self == PrimaryButtonStyle {
 
 extension ButtonStyle where Self == SecondaryButtonStyle {
     static var secondary: SecondaryButtonStyle { SecondaryButtonStyle() }
+    /// As tall as the primary button: an equal choice, not small print.
+    static var secondaryFull: SecondaryButtonStyle { SecondaryButtonStyle(minHeight: Metrics.buttonHeight) }
 }
 
 extension ButtonStyle where Self == IconButtonStyle {
     static var icon: IconButtonStyle { IconButtonStyle() }
 }
 
+/// Two buttons side by side, the primary action last; stacked, primary on
+/// top, when their labels don't fit in one row (long translations, large
+/// text), so no label is cut short or broken mid-word.
+struct ButtonRow<Secondary: View, Primary: View>: View {
+    var spacing: CGFloat = 12
+    @ViewBuilder var secondary: Secondary
+    @ViewBuilder var primary: Primary
+
+    var body: some View {
+        ViewThatFits(in: .horizontal) {
+            HStack(spacing: spacing) {
+                secondary
+                primary
+            }
+            VStack(spacing: 10) {
+                primary
+                secondary
+            }
+        }
+    }
+}
+
 /// Label for a primary action that costs credits, e.g. "Generate · 1 ⚡︎".
 struct CostLabel: View {
-    let title: String
+    let title: LocalizedStringKey
     let cost: Int
     var isLoading = false
 
     var body: some View {
-        HStack(spacing: 10) {
-            if isLoading {
-                ProgressView().tint(Palette.onPrimary)
-            } else {
-                Image(systemName: "sparkles")
+        // One line when it fits; with long translations or large text the
+        // title gets a line of its own, so no word breaks in the middle.
+        ViewThatFits(in: .horizontal) {
+            HStack(spacing: 10) {
+                icon
+                Text(title)
+                costBadge
             }
-            Text(title)
-            if cost > 0 && !isLoading {
-                HStack(spacing: 3) {
-                    Image(systemName: "bolt.fill").font(.caption)
-                    Text("\(cost)").monospacedDigit()
+            VStack(spacing: 4) {
+                Text(title)
+                HStack(spacing: 8) {
+                    icon
+                    costBadge
                 }
-                .font(.subheadline.weight(.bold))
-                .padding(.horizontal, 8)
-                .padding(.vertical, 3)
-                .background(Palette.onPrimary.opacity(0.12), in: Capsule())
             }
+        }
+    }
+
+    @ViewBuilder
+    private var icon: some View {
+        if isLoading {
+            ProgressView().tint(Palette.onAccent)
+        } else {
+            Image(systemName: "sparkles")
+        }
+    }
+
+    @ViewBuilder
+    private var costBadge: some View {
+        if cost > 0 && !isLoading {
+            HStack(spacing: 3) {
+                Image(systemName: "bolt.fill").font(.legibleCaption)
+                Text("\(cost)").monospacedDigit()
+            }
+            .font(.subheadline.weight(.bold))
+            .padding(.horizontal, 8)
+            .padding(.vertical, 3)
+            .background(Palette.onAccent.opacity(0.18), in: .tag)
         }
     }
 }

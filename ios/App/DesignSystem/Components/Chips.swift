@@ -1,48 +1,63 @@
 import SwiftUI
 
+/// Chip: white when idle, blush with ink text when selected.
 struct SelectableChip: View {
-    let title: String
+    let title: LocalizedStringKey
     var symbolName: String?
     let isSelected: Bool
     var isLocked = false
     let action: () -> Void
 
+    @Environment(\.accessibilityDifferentiateWithoutColor) private var differentiateWithoutColor
+
     var body: some View {
         Button(action: action) {
             HStack(spacing: 6) {
-                if let symbolName {
+                if isSelected && differentiateWithoutColor {
+                    Image(systemName: "checkmark").font(.footnote.weight(.bold))
+                } else if let symbolName {
                     Image(systemName: symbolName).font(.footnote.weight(.semibold))
                 }
-                Text(title)
-                    .font(.subheadline.weight(.semibold))
-                    .lineLimit(1)
-                    .fixedSize(horizontal: true, vertical: false)
+                // One line where the row has room (scrolling rows); where it
+                // hasn't (large text, long translations), the words wrap
+                // instead of pushing the screen wider than the window.
+                ViewThatFits(in: .horizontal) {
+                    titleText
+                        .lineLimit(1)
+                        .fixedSize(horizontal: true, vertical: false)
+                    titleText
+                        .lineLimit(3)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
                 if isLocked {
-                    Image(systemName: "lock.fill").font(.caption2)
+                    Image(systemName: "lock.fill").font(.legibleCaption2)
                 }
             }
             .padding(.horizontal, 14)
-            .padding(.vertical, 9)
+            .frame(minHeight: 44)
             .foregroundStyle(isSelected ? Palette.onPrimary : Palette.textPrimary)
-            .background {
-                if isSelected {
-                    Capsule().fill(Palette.brandGradient)
-                } else {
-                    Capsule().fill(Palette.surfaceRaised)
-                }
-            }
-            .overlay(Capsule().strokeBorder(isSelected ? Color.clear : Palette.stroke, lineWidth: 1))
+            .background(isSelected ? Palette.primary : Palette.surface, in: .chip)
+            // Blush on white is too faint to show selection alone, so the
+            // selected chip always gets an ink edge as well.
+            .overlay(RoundedRectangle.chip.strokeBorder(isSelected ? Palette.ink : Palette.stroke, lineWidth: isSelected ? 1.5 : 1))
+            .animation(Motion.press, value: isSelected)
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.pressable)
+        .macHoverLift()
         .accessibilityAddTraits(isSelected ? .isSelected : [])
+    }
+
+    private var titleText: Text {
+        Text(title).font(.subheadline.weight(isSelected ? .bold : .semibold))
     }
 }
 
-/// Style chip with a color swatch preview, used on the Create screen.
-struct StyleSwatchChip: View {
+/// Square style tile on the Create screen: a flat brand-tone swatch with the
+/// style's symbol; the selected tile gets an accent ring and a check.
+struct StyleTile: View {
     let name: String
-    let colors: [Color]
     let symbolName: String
+    let tone: PaletteTone
     let isSelected: Bool
     var isLocked = false
     let action: () -> Void
@@ -51,34 +66,49 @@ struct StyleSwatchChip: View {
         Button(action: action) {
             VStack(spacing: 8) {
                 ZStack {
-                    RoundedRectangle(cornerRadius: 18, style: .continuous)
-                        .fill(LinearGradient(colors: colors, startPoint: .topLeading, endPoint: .bottomTrailing))
+                    RoundedRectangle.control
+                        .fill(tone.fill)
                     Image(systemName: symbolName)
                         .font(.system(size: 22, weight: .semibold))
-                        .foregroundStyle(.white.opacity(0.92))
+                        .foregroundStyle(tone.foreground)
                     if isLocked {
                         Image(systemName: "lock.fill")
                             .font(.caption2.weight(.bold))
-                            .foregroundStyle(.white)
+                            .foregroundStyle(tone.isDark ? Palette.ink : Palette.blush)
                             .padding(5)
-                            .background(.black.opacity(0.45), in: Circle())
+                            .background(tone.isDark ? Palette.blush : Palette.ink, in: Circle())
                             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
                             .padding(6)
                     }
                 }
                 .frame(width: 72, height: 72)
                 .overlay(
-                    RoundedRectangle(cornerRadius: 18, style: .continuous)
-                        .strokeBorder(isSelected ? Palette.primary : Color.clear, lineWidth: 2.5)
+                    RoundedRectangle.control
+                        .strokeBorder(Palette.stroke, lineWidth: 1)
                 )
+                .padding(3)
+                .overlay(
+                    RoundedRectangle(cornerRadius: Metrics.controlRadius + 3, style: .continuous)
+                        .strokeBorder(isSelected ? Palette.accent : Color.clear, lineWidth: 2.5)
+                )
+                .overlay(alignment: .bottomTrailing) {
+                    if isSelected {
+                        Image(systemName: "checkmark.circle.fill")
+                            .font(.system(size: 18, weight: .bold))
+                            .foregroundStyle(Palette.onAccent, Palette.accent)
+                            .offset(x: 3, y: 3)
+                            .transition(.scale.combined(with: .opacity))
+                    }
+                }
                 Text(name)
                     .font(.caption.weight(isSelected ? .bold : .medium))
                     .foregroundStyle(isSelected ? Palette.textPrimary : Palette.textSecondary)
                     .lineLimit(1)
             }
-            .frame(width: 76)
+            .frame(width: Platform.isMac ? 92 : 80)
+            .animation(.snappy, value: isSelected)
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.pressable)
         .accessibilityLabel(name)
         .accessibilityAddTraits(isSelected ? .isSelected : [])
     }

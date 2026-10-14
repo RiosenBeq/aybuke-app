@@ -1,0 +1,40 @@
+name: Backend keep-alive
+
+# Free Supabase projects are paused after about a week without user database
+# activity, which would take the AI features offline. Once a day this calls
+# public.keepalive() (backend/supabase/migrations/20261019500000_keepalive.sql)
+# through the public API with the anon key, which is public by design and
+# already ships in AppConfig.json, so no secret is needed. GitHub runs
+# schedules from the default branch only, and pauses them in a public repo
+# after 60 days without commits: re-enable it under Actions if that happens.
+on:
+  schedule:
+    - cron: "23 7 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  heartbeat:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: ios/App/Resources/AppConfig.json
+          sparse-checkout-cone-mode: false
+      - name: Write the heartbeat row
+        run: |
+          base=$(jq -r .backendBaseURL ios/App/Resources/AppConfig.json)
+          key=$(jq -r .supabaseAnonKey ios/App/Resources/AppConfig.json)
+          for attempt in 1 2 3; do
+            if curl -fsS -X POST "$base/rest/v1/rpc/keepalive" \
+                -H "apikey: $key" -H "Authorization: Bearer $key" \
+                -H "Content-Type: application/json" -d '{}'; then
+              echo
+              exit 0
+            fi
+            sleep 30
+          done
+          exit 1
