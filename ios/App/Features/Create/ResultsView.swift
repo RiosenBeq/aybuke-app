@@ -11,11 +11,20 @@ struct ResultsView: View {
     /// `Creation.imagePlaygroundSource` for Apple-made images: no mark, no
     /// report to Glowlit (we never see them), credited to Image Playground.
     var source: String? = nil
+    /// Create's results: run the same job again, after a confirm with its cost.
+    var regenerate: Regenerate? = nil
+
+    struct Regenerate {
+        let cost: Int
+        let perform: () -> Void
+    }
 
     @Environment(AppModel.self) private var app
     @Environment(\.requestReview) private var requestReview
     @State private var selection = 0
     @State private var showReport = false
+    @State private var confirmRegenerate = false
+    @State private var isSavingAll = false
     /// Keys the develop reveal, so each image of this batch plays it once.
     @State private var batch = UUID()
 
@@ -71,9 +80,17 @@ struct ResultsView: View {
                 .accessibilityLabel("Edit this image")
             }
             .padding(.horizontal, Metrics.gutter)
-            .padding(.bottom, 12)
+            .padding(.bottom, regenerate == nil && images.count < 2 ? 12 : 0)
             .readableWidth(Metrics.compactWidth, alignment: .center)
             .reveal(2)
+
+            if regenerate != nil || images.count > 1 {
+                moreActions
+                    .padding(.horizontal, Metrics.gutter)
+                    .padding(.bottom, 12)
+                    .readableWidth(Metrics.compactWidth, alignment: .center)
+                    .reveal(3)
+            }
         }
         .background(AuroraBackground(intensity: 0.35))
         .navigationTitle("Your creation")
@@ -84,6 +101,57 @@ struct ResultsView: View {
             }
         }
         .reportDialog(isPresented: $showReport, requestID: requestID)
+        .confirmationDialog("Regenerate?", isPresented: $confirmRegenerate, titleVisibility: .visible, presenting: regenerate) { action in
+            Button("Regenerate") { action.perform() }
+            Button("Cancel", role: .cancel) {}
+        } message: { action in
+            Text(regenerateMessage(cost: action.cost))
+        }
+        // A regenerate brings new pictures: start at the first, with the reveal.
+        .onChange(of: images.map { ObjectIdentifier($0) }) { _, _ in
+            selection = 0
+            batch = UUID()
+        }
+    }
+
+    /// Regenerate and, with more than one image, Save all.
+    private var moreActions: some View {
+        HStack(spacing: 10) {
+            if regenerate != nil {
+                Button {
+                    confirmRegenerate = true
+                } label: {
+                    Label("Regenerate", systemImage: "arrow.clockwise")
+                }
+                .buttonStyle(.secondary)
+            }
+            if images.count > 1 {
+                Button {
+                    saveAll()
+                } label: {
+                    if isSavingAll {
+                        ProgressView()
+                            .accessibilityLabel("Saving…")
+                    } else {
+                        Label("Save all", systemImage: "square.and.arrow.down.on.square")
+                    }
+                }
+                .buttonStyle(.secondary)
+                .disabled(isSavingAll)
+                .accessibilityHint("Saves every image here to Photos")
+            }
+        }
+        .labelStyle(.titleAndIcon)
+        .lineLimit(1)
+        .minimumScaleFactor(0.8)
+    }
+
+    private func regenerateMessage(cost: Int) -> String {
+        switch cost {
+        case 0: return String(localized: "Same prompt and style, new pictures.")
+        case 1: return String(localized: "Same prompt and style, new pictures. Uses 1 credit, refunded if it fails.")
+        default: return String(localized: "Same prompt and style, new pictures. Uses \(cost) credits; any that fail are refunded.")
+        }
     }
 
     private var isFromImagePlayground: Bool { source == Creation.imagePlaygroundSource }
@@ -127,6 +195,30 @@ struct ResultsView: View {
                 }
             } catch {
                 app.handleSaveError(error, shareInstead: sharePayload(for: current))
+            }
+        }
+    }
+
+    /// Every image of this batch, one after another, each with its marking.
+    private func saveAll() {
+        guard !isSavingAll else { return }
+        let images = images
+        let provenance = provenance
+        let watermark = provenance.showsMark(isPro: app.purchases.isPro)
+        isSavingAll = true
+        Task {
+            defer { isSavingAll = false }
+            do {
+                for image in images {
+                    try await PhotoLibrarySaver.save(image, sourceType: provenance.sourceType, watermark: watermark)
+                }
+                app.showToast("Saved to Photos", style: .success)
+                Haptics.success()
+                if app.registerHappyMoment() {
+                    requestReview()
+                }
+            } catch {
+                app.handleSaveError(error, shareInstead: current.map(sharePayload(for:)))
             }
         }
     }

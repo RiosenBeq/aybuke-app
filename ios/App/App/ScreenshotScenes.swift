@@ -16,7 +16,18 @@ enum ScreenshotScene: String, CaseIterable {
     case ideas
     case crop
     case result
+    /// My Works; `-GLLibraryMissing YES` adds a tile whose file is gone, and
+    /// `-GLKeepLibrary YES` shows the library on disk instead (migration QA).
     case library
+    /// My Works in select mode with three creations picked;
+    /// `-GLLibraryAction favorite|delete|duplicate` acts on them.
+    case librarySelect
+    /// Recently deleted with days-left badges (and one past 30 days, which
+    /// the launch purge removes); `-GLLibraryAction restore|purge`.
+    case libraryTrash
+    /// Create with an empty prompt and recent prompts to pick from;
+    /// `-GLKeepPrompts YES` shows the stored prompts and draft instead.
+    case recentPrompts
     case paywall
     case consent
     case settings
@@ -62,6 +73,14 @@ enum ScreenshotFixtures {
     static let goldenLandscape = landscape(golden: true)
 
     static let createPrompt = "A dreamy pastel bedroom with fairy lights and a canopy bed at sunset"
+
+    static let recentPrompts = [
+        "A kawaii strawberry cat in a teacup",
+        createPrompt,
+        "My dog as a tiny astronaut, watercolor",
+        "Retro mall photo booth with pink neon",
+        "A cozy reading nook on a rainy day",
+    ]
 
     static func generatedArt(count: Int) -> [UIImage] {
         let styles = ["pastel", "kawaii", "anime", "watercolor", "fantasy", "neon"].map { StyleCatalog.style(id: $0) }

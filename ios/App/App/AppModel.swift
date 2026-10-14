@@ -125,6 +125,7 @@ final class AppModel {
     /// Library saves that failed while the device was locked, retried after unlock.
     @ObservationIgnored private var deferredSaves: [DeferredSave] = []
     @ObservationIgnored private var unlockWatcher: Task<Void, Never>?
+    @ObservationIgnored private var widgetImageTask: Task<Void, Never>?
     private(set) var isOnline = true
     @ObservationIgnored private var pathMonitor: NWPathMonitor?
 
@@ -145,6 +146,8 @@ final class AppModel {
     let tour = TourGuide()
     /// Prompt upgrades and ideas from Apple's on-device model (when available).
     let writer = OnDeviceWriter()
+    /// Create's recent prompts and draft, kept only on this device.
+    let prompts: PromptHistory
 
     // MARK: Account (optional Sign in with Apple)
     /// Signed in with Apple: Pro and credits follow her to other iPhones.
@@ -180,6 +183,7 @@ final class AppModel {
         static let wiped = [
             onboarding, onboardingPaywallPending, consent, ageRecord, interests, successfulSaves, reviewPolicy, appearance, deletionRequested,
             "credits.wallet.v2", "notifications.preferences.v1", "notifications.readyPingDeclined", "tour.seen.v1",
+            PromptHistory.recentKey, PromptHistory.draftKey,
         ] + legacyConsent
         static let wipedKeychain = [appleUserID, "auth.session", "auth.pendingMerge"]
     }
@@ -188,6 +192,14 @@ final class AppModel {
         self.container = container
         self.config = config
         self.defaults = defaults
+        #if DEBUG
+        // Screenshot scenes never read or keep her prompts, unless
+        // `-GLKeepPrompts YES` asks for the stored ones (QA).
+        let keepsPrompts = ScreenshotScene.current == nil || UserDefaults.standard.bool(forKey: "GLKeepPrompts")
+        self.prompts = PromptHistory(defaults: keepsPrompts ? defaults : nil)
+        #else
+        self.prompts = PromptHistory(defaults: defaults)
+        #endif
         self.hasCompletedOnboarding = defaults.bool(forKey: Keys.onboarding)
         self.consentRecord = AIConsentRecord.decode(defaults.data(forKey: Keys.consent))
         for key in Keys.legacyConsent { defaults.removeObject(forKey: key) }
@@ -339,6 +351,7 @@ final class AppModel {
         watchNetwork()
         liveActivity.endLeftovers()
         Task { await TemporaryFiles.sweep() }
+        Task { await LibraryTrash.purgeExpired(in: container) }
         switch libraryOutcome {
         case .opened: break
         case .rebuilt:
@@ -500,6 +513,7 @@ final class AppModel {
         isSignedIn = false
         accountEmail = nil
         tour.reset()
+        prompts.reset()
         credits.resetAll()
         credits.refresh(isPro: purchases.isPro)
         deleteAllCreations() // also resets the widgets, after the credits
@@ -934,9 +948,11 @@ final class AppModel {
     /// Writes credits and the newest creation for the Home Screen widgets.
     func syncWidgets() {
         let context = container.mainContext
-        var newest = FetchDescriptor<Creation>(sortBy: [SortDescriptor(\.createdAt, order: .reverse)])
+        // Creations in Recently deleted are gone as far as the widgets know.
+        let kept = #Predicate<Creation> { $0.deletedAt == nil }
+        var newest = FetchDescriptor<Creation>(predicate: kept, sortBy: [SortDescriptor(\.createdAt, order: .reverse)])
         newest.fetchLimit = 1
-        let count = (try? context.fetchCount(FetchDescriptor<Creation>())) ?? 0
+        let count = (try? context.fetchCount(FetchDescriptor<Creation>(predicate: kept))) ?? 0
         if count == 0 { GlowWidgetBridge.updateLatestImage(nil) }
         GlowWidgetBridge.update(
             credits: credits.balance,
@@ -950,11 +966,36 @@ final class AppModel {
         )
     }
 
+    /// The file of the newest creation that isn't in Recently deleted.
+    func newestCreationFile() -> String? {
+        var newest = FetchDescriptor<Creation>(predicate: #Predicate { $0.deletedAt == nil },
+                                               sortBy: [SortDescriptor(\.createdAt, order: .reverse)])
+        newest.fetchLimit = 1
+        return (try? container.mainContext.fetch(newest))?.first?.imageFileName
+    }
+
+    /// After My Works changed without a new result (deleted, restored,
+    /// duplicated): the widgets get the counts and, when the newest creation
+    /// changed, its picture, made off the main thread.
+    func libraryDidChange(newestBefore: String?) {
+        syncWidgets()
+        let newest = newestCreationFile()
+        guard newest != newestBefore else { return }
+        widgetImageTask?.cancel()
+        widgetImageTask = Task.detached(priority: .utility) {
+            let image = newest.flatMap { ImageStore.downsampled($0, maxPixel: 600) }
+            guard !Task.isCancelled else { return }
+            GlowWidgetBridge.updateLatestImage(image)
+        }
+    }
+
     func deleteAllCreations() {
         let context = container.mainContext
+        // Every row, Recently deleted included.
         try? context.delete(model: Creation.self)
         try? context.save()
         ImageStore.deleteAll()
+        widgetImageTask?.cancel()
         GlowWidgetBridge.updateLatestImage(nil)
         syncWidgets()
     }
@@ -1296,11 +1337,16 @@ extension AppModel {
             }
         case .create, .results:
             selectedTab = .create
+        case .recentPrompts:
+            selectedTab = .create
+            if !UserDefaults.standard.bool(forKey: "GLKeepPrompts") {
+                prompts.seedForScreenshots(ScreenshotFixtures.recentPrompts)
+            }
         case .edit:
             selectedTab = .edit
-        case .library:
+        case .library, .librarySelect, .libraryTrash:
             selectedTab = .library
-            seedScreenshotLibrary()
+            seedScreenshotLibrary(trash: scene == .libraryTrash)
         case .editor:
             selectedTab = .home
             editorLaunch = EditorLaunch(image: ScreenshotFixtures.overcastLandscape, tool: .magicEdit, prompt: String(localized: "Golden hour light"))
@@ -1337,14 +1383,20 @@ extension AppModel {
         }
     }
 
-    private func seedScreenshotLibrary() {
+    /// `trash`: four creations in Recently deleted (30, 19, 4 and 1 days
+    /// left) and one past 30 days for the launch purge.
+    private func seedScreenshotLibrary(trash: Bool = false) {
+        // `-GLKeepLibrary YES`: show the library already on disk (migration QA).
+        if UserDefaults.standard.bool(forKey: "GLKeepLibrary") { return }
         deleteAllCreations()
-        let images = [ScreenshotFixtures.goldenLandscape] + ScreenshotFixtures.generatedArt(count: 8)
+        let images = [ScreenshotFixtures.goldenLandscape] + ScreenshotFixtures.generatedArt(count: trash ? 13 : 8)
         let context = container.mainContext
+        let day: TimeInterval = 24 * 3600
+        let deletedAgo: [Int: TimeInterval] = trash ? [9: 0.5 * day, 10: 11.5 * day, 11: 26.5 * day, 12: 29.5 * day, 13: 31 * day] : [:]
         for (index, image) in images.enumerated() {
             guard let name = try? ImageStore.save(image, tag: ImageStore.Tag(operation: index == 0 ? .magicEdit : .textToImage)) else { continue }
             let size = ImageUtilities.pixelSize(of: image)
-            context.insert(Creation(
+            let creation = Creation(
                 createdAt: Date().addingTimeInterval(TimeInterval(-index * 3600)),
                 operation: index == 0 ? .magicEdit : .textToImage,
                 title: index == 0 ? String(localized: "Golden hour light") : ScreenshotFixtures.createPrompt,
@@ -1352,7 +1404,15 @@ extension AppModel {
                 imageFileName: name,
                 pixelWidth: size.width,
                 pixelHeight: size.height
-            ))
+            )
+            creation.deletedAt = deletedAgo[index].map { Date().addingTimeInterval(-$0) }
+            context.insert(creation)
+        }
+        if UserDefaults.standard.bool(forKey: "GLLibraryMissing") {
+            // A row whose file is gone, second in the grid.
+            context.insert(Creation(createdAt: Date().addingTimeInterval(-1800), operation: .textToImage,
+                                    title: ScreenshotFixtures.createPrompt, prompt: nil,
+                                    imageFileName: "missing-\(UUID().uuidString).jpg", pixelWidth: 1024, pixelHeight: 1536))
         }
         try? context.save()
         GlowWidgetBridge.updateLatestImage(images.first)
