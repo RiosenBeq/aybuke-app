@@ -736,12 +736,7 @@ struct CollageHubCard: View {
                     .frame(width: 54, height: 54)
                     .background(AuraFill(palette: .lilac).clipShape(.control))
                 VStack(alignment: .leading, spacing: 3) {
-                    HStack(spacing: 6) {
-                        Text("Make a collage")
-                            .font(.cardTitle)
-                            .foregroundStyle(Palette.textPrimary)
-                        NewBadge()
-                    }
+                    TitleWithNewBadge(title: "Make a collage")
                     Text("Photo dumps & carousels · free, on-device")
                         .font(.footnote)
                         .foregroundStyle(Palette.textSecondary)

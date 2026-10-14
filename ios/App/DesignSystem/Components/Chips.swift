@@ -18,10 +18,17 @@ struct SelectableChip: View {
                 } else if let symbolName {
                     Image(systemName: symbolName).font(.footnote.weight(.semibold))
                 }
-                Text(title)
-                    .font(.subheadline.weight(isSelected ? .bold : .semibold))
-                    .lineLimit(1)
-                    .fixedSize(horizontal: true, vertical: false)
+                // One line where the row has room (scrolling rows); where it
+                // hasn't (large text, long translations), the words wrap
+                // instead of pushing the screen wider than the window.
+                ViewThatFits(in: .horizontal) {
+                    titleText
+                        .lineLimit(1)
+                        .fixedSize(horizontal: true, vertical: false)
+                    titleText
+                        .lineLimit(3)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
                 if isLocked {
                     Image(systemName: "lock.fill").font(.caption2)
                 }
@@ -37,6 +44,10 @@ struct SelectableChip: View {
         }
         .buttonStyle(.pressable)
         .accessibilityAddTraits(isSelected ? .isSelected : [])
+    }
+
+    private var titleText: Text {
+        Text(title).font(.subheadline.weight(isSelected ? .bold : .semibold))
     }
 }
 

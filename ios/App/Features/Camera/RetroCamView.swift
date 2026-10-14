@@ -468,12 +468,7 @@ struct RetroCamHubCard: View {
                     .frame(width: 54, height: 54)
                     .background(AuraFill(palette: .mint).clipShape(.control))
                 VStack(alignment: .leading, spacing: 3) {
-                    HStack(spacing: 6) {
-                        Text("Retro Cam")
-                            .font(.cardTitle)
-                            .foregroundStyle(Palette.textPrimary)
-                        NewBadge()
-                    }
+                    TitleWithNewBadge(title: "Retro Cam")
                     Text("Live retro effects & photo booth · free")
                         .font(.footnote)
                         .foregroundStyle(Palette.textSecondary)

@@ -75,12 +75,7 @@ struct EditHubView: View {
                                 .frame(width: 54, height: 54)
                                 .background(Palette.petal, in: .control)
                             VStack(alignment: .leading, spacing: 3) {
-                                HStack(spacing: 6) {
-                                    Text("Find your best shot")
-                                        .font(.cardTitle)
-                                        .foregroundStyle(Palette.textPrimary)
-                                    NewBadge()
-                                }
+                                TitleWithNewBadge(title: "Find your best shot")
                                 Text("Finds the best light & focus · free, on-device")
                                     .font(.footnote)
                                     .foregroundStyle(Palette.textSecondary)
@@ -109,12 +104,7 @@ struct EditHubView: View {
                                 .frame(width: 54, height: 54)
                                 .background(Palette.ink, in: .control)
                             VStack(alignment: .leading, spacing: 3) {
-                                HStack(spacing: 6) {
-                                    Text("Edit a video")
-                                        .font(.cardTitle)
-                                        .foregroundStyle(Palette.textPrimary)
-                                    NewBadge()
-                                }
+                                TitleWithNewBadge(title: "Edit a video")
                                 Text("Cut silences, 80s & 90s effects · free")
                                     .font(.footnote)
                                     .foregroundStyle(Palette.textSecondary)
@@ -205,12 +195,7 @@ struct EditHubView: View {
                     .frame(width: 54, height: 54)
                     .background(AuraFill(palette: .bubblegum).clipShape(.control))
                 VStack(alignment: .leading, spacing: 3) {
-                    HStack(spacing: 6) {
-                        Text("Makeup Studio")
-                            .font(.cardTitle)
-                            .foregroundStyle(Palette.textPrimary)
-                        NewBadge()
-                    }
+                    TitleWithNewBadge(title: "Makeup Studio")
                     Text("Try lips, eyes, blush and sparkle on your photo")
                         .font(.footnote)
                         .foregroundStyle(Palette.textSecondary)

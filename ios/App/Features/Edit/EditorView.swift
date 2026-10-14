@@ -58,6 +58,9 @@ struct EditorView: View {
                         .padding(.bottom, 8)
                         .disabled(model.isProcessing)
                 }
+                // The panels keep their full height (large text grows them);
+                // the photo above gives up the room instead of squeezing them.
+                .fixedSize(horizontal: false, vertical: true)
                 .readableWidth(Metrics.compactWidth, alignment: .center)
                 toolBar
                     .disabled(model.isProcessing)

@@ -279,10 +279,11 @@ struct AdjustPanel: View {
             .tint(Palette.accent)
             .accessibilityLabel(selected.title)
 
-            HStack(spacing: 12) {
+            ButtonRow {
                 Button("Reset", action: onReset)
                     .buttonStyle(.secondary)
                     .disabled(settings.isNeutral)
+            } primary: {
                 Button("Apply", action: onApply)
                     .buttonStyle(.primary)
                     .disabled(settings.isNeutral)
@@ -352,10 +353,11 @@ struct EffectsPanel: View {
                 .background(Palette.petal, in: .control)
             }
 
-            HStack(spacing: 12) {
+            ButtonRow {
                 Button("Reset", action: onReset)
                     .buttonStyle(.secondary)
                     .disabled(selected == nil)
+            } primary: {
                 Button("Apply", action: onApply)
                     .buttonStyle(.primary)
                     .disabled(selected == nil)
@@ -463,10 +465,11 @@ struct CropPanel: View {
                     .accessibilityHidden(true)
             }
 
-            HStack(spacing: 12) {
+            ButtonRow {
                 Button("Reset", action: onReset)
                     .buttonStyle(.secondary)
                     .disabled(!canApply)
+            } primary: {
                 Button("Apply", action: onApply)
                     .buttonStyle(.primary)
                     .disabled(!canApply)

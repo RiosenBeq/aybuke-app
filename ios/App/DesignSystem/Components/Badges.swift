@@ -17,6 +17,32 @@ struct ProBadge: View {
     }
 }
 
+/// A card title with the NEW badge after it; when they don't fit on one
+/// line (large text, long translations), the badge goes under the title
+/// instead of squeezing it into a mid-word break.
+struct TitleWithNewBadge: View {
+    let title: LocalizedStringKey
+
+    var body: some View {
+        ViewThatFits(in: .horizontal) {
+            HStack(spacing: 6) {
+                text.lineLimit(1)
+                NewBadge()
+            }
+            VStack(alignment: .leading, spacing: 4) {
+                text
+                NewBadge()
+            }
+        }
+    }
+
+    private var text: some View {
+        Text(title)
+            .font(.cardTitle)
+            .foregroundStyle(Palette.textPrimary)
+    }
+}
+
 struct NewBadge: View {
     var onDark = false
 
