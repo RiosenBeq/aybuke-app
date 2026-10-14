@@ -5,7 +5,7 @@
 // certificate the library doesn't check, which is exactly why it's refused
 // unless the dev flag is set on a local backend.
 import assert from "node:assert/strict";
-import { isFreeTrial, verifyInstall, xcodeAllowed } from "./apple.ts";
+import { isFreeTrial, ROOT_CERTIFICATE_URLS, verifyInstall, xcodeAllowed } from "./apple.ts";
 
 const env = (values: Record<string, string>) => ({ get: (name: string) => values[name] });
 const base64url = (value: unknown) =>
@@ -41,6 +41,10 @@ Deno.test("the free trial is the yearly plan's FREE_TRIAL offer", () => {
   assert.ok(isFreeTrial({ offerType: 1, productId: "app.glowlit.pro.yearly" }));
   assert.ok(!isFreeTrial({ offerType: 1, productId: "app.glowlit.pro.monthly" }));
   assert.ok(!isFreeTrial({ offerType: 2, productId: "app.glowlit.pro.yearly" }), "a promotional offer isn't the trial");
+});
+
+Deno.test("only Apple Root CA G3 anchors the signed data", () => {
+  assert.deepEqual(ROOT_CERTIFICATE_URLS, ["https://www.apple.com/certificateauthority/AppleRootCA-G3.cer"]);
 });
 
 Deno.test("Xcode AppTransactions only on a local backend with the flag", () => {

@@ -235,4 +235,41 @@ begin
      and not has_schema_privilege('service_role', 'private', 'usage'), 'no API role can use the private schema';
 end $$;
 
+-- 11. A subscription only moves forward: an older signed transaction never replaces the stored one
+-- with an earlier expiry, and a revocation can be undone only by a later purchase.
+do $$
+declare
+  a uuid := '00000000-0000-0000-0000-000000000001';
+  b uuid := '00000000-0000-0000-0000-000000000002';
+  e public.entitlements;
+begin
+  assert public.record_entitlement(a, 'otx-order', 'app.glowlit.pro.monthly', now() + interval '1 month', false, 'Production', false),
+    'a new subscription is stored';
+  assert not public.record_entitlement(b, 'otx-order', 'app.glowlit.pro.monthly', now() + interval '1 week', false, 'Production', false),
+    'an older transaction never replaces a newer one';
+  select * into e from public.entitlements where original_transaction_id = 'otx-order';
+  assert e.user_id = a and e.expires_at > now() + interval '3 weeks', format('the newer row is untouched: %s', row_to_json(e));
+  assert public.record_entitlement(a, 'otx-order', 'app.glowlit.pro.monthly', now() + interval '2 months', false, 'Production', false),
+    'a renewal replaces it';
+  assert public.record_entitlement(b, 'otx-order', 'app.glowlit.pro.monthly', now() + interval '2 months', true, 'Production', false),
+    'a revocation always lands, even with the same expiry';
+  assert not public.record_entitlement(a, 'otx-order', 'app.glowlit.pro.monthly', now() + interval '2 months', false, 'Production', false),
+    'the transaction from before the refund cannot undo it';
+  select * into e from public.entitlements where original_transaction_id = 'otx-order';
+  assert e.revoked and e.user_id = b, format('still revoked: %s', row_to_json(e));
+  assert public.record_entitlement(a, 'otx-order', 'app.glowlit.pro.monthly', now() + interval '3 months', false, 'Production', false),
+    'a later purchase is stored';
+end $$;
+
+-- 12. Row level security is on for every private table, and no policy opens one (the definer functions own them).
+do $$
+begin
+  assert exists (select 1 from pg_class c join pg_namespace n on n.oid = c.relnamespace
+                  where n.nspname = 'private' and c.relkind = 'r'), 'the private schema has tables';
+  assert not exists (select 1 from pg_class c join pg_namespace n on n.oid = c.relnamespace
+                      where n.nspname = 'private' and c.relkind = 'r' and not c.relrowsecurity),
+    'every private table has row level security on';
+  assert not exists (select 1 from pg_policies where schemaname = 'private'), 'no policy on the private schema';
+end $$;
+
 select 'all credit ledger tests passed' as result;

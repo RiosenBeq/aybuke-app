@@ -106,7 +106,7 @@ end $$;
 revoke all on function private.touch_install(uuid, text, text, text) from public;
 
 -- The most free daily credits an install can hold today: the allowance
--- (20261021100000 adds today's rewarded-ad credits). Refunds never go above it.
+-- (20261023000000 adds today's rewarded-ad credits). Refunds never go above it.
 create function private.daily_ceiling(p_key text)
 returns int
 language sql stable
@@ -156,7 +156,7 @@ comment on column public.entitlements.credits is
 comment on column public.entitlements.credits_trial is
   'The current credit period is the free trial week (trial_credits instead of pro_monthly).';
 comment on column public.entitlements.trial_granted is
-  'Trial credits were granted for this subscription (once ever).';
+  'Trial credits were granted for this subscription: once per original_transaction_id, never again.';
 
 -- Grants what the subscription is due and locks it: trial credits once for
 -- the trial week, the full month from the first paid period, then one month

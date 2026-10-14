@@ -19,6 +19,8 @@
 //          the ad unit allow-list (ADMOB_REWARDED_AD_UNIT) and a live,
 //          unredeemed token. Fail-closed: anything else grants nothing.
 //
+// daily_cap is null when the policy can't be read right now; the app keeps its copy.
+//
 // The other routes check the user's session themselves (requireUser), since
 // the gateway doesn't. Contract: ios/Packages/AppCore/Sources/AppCore/Ads.swift
 import type { SupabaseClient } from "npm:@supabase/supabase-js@2.117.3";
@@ -33,6 +35,7 @@ import {
 import { type InstallProof, resolveEntitlement, verifyInstall } from "../_shared/apple.ts";
 import { requireUser, serviceClient } from "../_shared/auth.ts";
 import { corsHeaders, errorResponse, HttpError, json } from "../_shared/http.ts";
+import { readDailyCap } from "./cap.ts";
 
 const keys = new VerifierKeys();
 
@@ -169,7 +172,6 @@ async function issueToken(
     ...installParams(install),
   });
   if (error) {
-    const cap = await dailyCap(db);
     if (error.message.includes("AD_NOT_ELIGIBLE")) {
       throw new HttpError(403, "not_eligible", "Pro has no ads: your credits come every month.");
     }
@@ -186,7 +188,14 @@ async function issueToken(
       throw new HttpError(409, "has_credits", "You still have credits to use.", credits_remaining);
     }
     if (error.message.includes("AD_DAILY_CAP")) {
-      throw new HttpError(409, "daily_cap", `That's all ${cap} ad credits for today. More tomorrow.`);
+      const cap = await dailyCap(db);
+      throw new HttpError(
+        409,
+        "daily_cap",
+        cap === null
+          ? "That's all your ad credits for today. More tomorrow."
+          : `That's all ${cap} ad credits for today. More tomorrow.`,
+      );
     }
     throw new HttpError(500, "internal", "Couldn't start the ad. Please try again.");
   }
@@ -233,8 +242,6 @@ async function releaseToken(db: SupabaseClient, userId: string, token: string): 
 
 // MARK: - Helpers
 
-async function dailyCap(db: SupabaseClient): Promise<number> {
-  const { data } = await db.rpc("ad_reward_policy");
-  const row = (Array.isArray(data) ? data[0] : data) as { daily_cap?: number } | null;
-  return row?.daily_cap ?? 2;
+async function dailyCap(db: SupabaseClient): Promise<number | null> {
+  return await readDailyCap(() => db.rpc("ad_reward_policy"));
 }

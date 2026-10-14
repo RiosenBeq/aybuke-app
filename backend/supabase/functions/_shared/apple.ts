@@ -29,9 +29,9 @@ export const CREDIT_PACKS: Record<string, number> = {
   "app.glowlit.credits.100": 100,
 };
 
-const ROOT_CERTIFICATE_URLS = [
+// Apple Root CA G3 only: the root of the StoreKit signing chain. G2 is not trusted.
+export const ROOT_CERTIFICATE_URLS = [
   "https://www.apple.com/certificateauthority/AppleRootCA-G3.cer",
-  "https://www.apple.com/certificateauthority/AppleRootCA-G2.cer",
 ];
 
 interface Env {
@@ -104,6 +104,7 @@ export function isFreeTrial(
   transaction: Pick<JWSTransactionDecodedPayload, "offerType" | "offerDiscountType" | "productId">,
 ): boolean {
   if (transaction.offerDiscountType) return transaction.offerDiscountType === OfferDiscountType.FREE_TRIAL;
+  // Depends on App Store Connect: the yearly plan has only the 7-day free trial as an introductory offer.
   return transaction.offerType === OfferType.INTRODUCTORY_OFFER && transaction.productId === YEARLY_PRODUCT;
 }
 
@@ -148,16 +149,18 @@ export async function resolveEntitlement(
     const expiresAt = transaction.expiresDate ? new Date(transaction.expiresDate) : undefined;
     const revoked = Boolean(transaction.revocationDate);
     const isTrial = isFreeTrial(transaction);
-    await db.from("entitlements").upsert({
-      original_transaction_id: transaction.originalTransactionId,
-      user_id: userId,
-      product_id: transaction.productId,
-      expires_at: expiresAt?.toISOString() ?? null,
-      revoked,
-      environment: String(transaction.environment ?? ""),
-      is_trial: isTrial,
-      updated_at: now,
+    const { data: saved, error: saveError } = await db.rpc("record_entitlement", {
+      p_user: userId,
+      p_original_transaction_id: transaction.originalTransactionId,
+      p_product_id: transaction.productId,
+      p_expires_at: expiresAt?.toISOString() ?? null,
+      p_revoked: revoked,
+      p_environment: String(transaction.environment ?? ""),
+      p_is_trial: isTrial,
     });
+    if (saveError) console.warn("entitlement not saved", saveError.message);
+    // The stored transaction is newer than this one: it grants nothing here.
+    if (!saveError && saved === false) return { isPro: false, isTrial: false };
     const isPro = !revoked && !!expiresAt && expiresAt.getTime() > Date.now();
     return { isPro, isTrial: isPro && isTrial };
   } catch (error) {
