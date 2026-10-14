@@ -52,6 +52,7 @@ struct ShareComposerView: View {
                     }
                     if faces.isOffered {
                         HideOtherFacesSection(faces: faces)
+                            .transition(.opacity)
                     }
                     destinations
                     if madeWithAI {
@@ -73,6 +74,8 @@ struct ShareComposerView: View {
                 .padding(.horizontal, Metrics.gutter)
                 .padding(.bottom, 24)
                 .readableWidth(Metrics.compactWidth)
+                // The face switch arrives once the photo has been looked at.
+                .animation(.snappy, value: faces.isOffered)
             }
             .scrollIndicators(.hidden)
             #if DEBUG
