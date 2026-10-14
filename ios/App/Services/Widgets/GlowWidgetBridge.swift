@@ -113,6 +113,11 @@ extension GlowActivityController {
 
 /// Keeps the widgets' App Group snapshot (credits, latest creation) current.
 enum GlowWidgetBridge {
+    /// File reads and writes in the App Group, the picture's JPEG and the
+    /// WidgetKit reloads happen here, in order, off the main thread (a save
+    /// used to wait for them).
+    private static let queue = DispatchQueue(label: "app.glowlit.widgets", qos: .utility)
+
     static func update(
         credits: Int, isPro: Bool, nextRefill: Date?, latest: Creation?, creationsCount: Int,
         breakdown: CreditBreakdown? = nil, nextGrant: Date? = nil, cloudAIAllowed: Bool = true
@@ -130,13 +135,15 @@ enum GlowWidgetBridge {
             nextGrant: isPro ? nextGrant : nil,
             cloudAIAllowed: cloudAIAllowed
         )
-        let previous = GlowSharedStore.load()
-        var unchanged = snapshot
-        unchanged.updatedAt = previous?.updatedAt ?? snapshot.updatedAt
-        guard previous != unchanged else { return }
-        GlowSharedStore.save(snapshot)
-        WidgetCenter.shared.reloadAllTimelines()
-        if previous?.showsCloudAI != snapshot.showsCloudAI { reloadControls() }
+        queue.async {
+            let previous = GlowSharedStore.load()
+            var unchanged = snapshot
+            unchanged.updatedAt = previous?.updatedAt ?? snapshot.updatedAt
+            guard previous != unchanged else { return }
+            GlowSharedStore.save(snapshot)
+            WidgetCenter.shared.reloadAllTimelines()
+            if previous?.showsCloudAI != snapshot.showsCloudAI { reloadControls() }
+        }
     }
 
     /// Only catalog text reaches the widget (it can show on the Lock Screen
@@ -158,8 +165,10 @@ enum GlowWidgetBridge {
 
     /// A ~600 px thumbnail of the newest creation for the "My glow" widget.
     static func updateLatestImage(_ image: UIImage?) {
-        let jpeg = image.flatMap { ImageUtilities.jpegData($0, maxLongEdge: 600, quality: 0.85) }
-        GlowSharedStore.saveLatestImage(jpeg)
-        WidgetCenter.shared.reloadAllTimelines()
+        queue.async {
+            let jpeg = image.flatMap { ImageUtilities.jpegData($0, maxLongEdge: 600, quality: 0.85) }
+            GlowSharedStore.saveLatestImage(jpeg)
+            WidgetCenter.shared.reloadAllTimelines()
+        }
     }
 }
