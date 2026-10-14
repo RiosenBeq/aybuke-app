@@ -37,8 +37,8 @@ October 2026. We audited our own ideas against user reviews and competitor apps 
 | Feature | Competitors | What we built |
 |---|---|---|
 | **Likeness check** | None found; others rely on users flagging bad results | After a people edit, Vision compares face proportions and skin lightness with the original, on the device. If the result drifted (for example lighter skin), it says so and offers the free retry. Otherwise it shows "Still you ✓" |
-| **Help me pick** | None found among photo editors | A 9:16 "A or B?" card with two prints (two variations, or the original and the glow-up) for Stories or group chats |
-| **Best shot** | None among editors (Tinder has a dating-only version) | Pick up to 12 selfies; Apple's face capture quality ranks them by light, focus and how clearly the face shows. Never by looks. Free and on-device |
+| **Which vibe?** | None found among photo editors | A 9:16 "A or B?" card with two variations of one creation (never her original photo against an edit) for Stories or group chats. Needs a multi-image Create, so Pro |
+| **Best shot** | None among editors (Tinder has a dating-only version) | Pick up to 12 selfies; Apple's face capture quality sorts them by light, focus and how clearly the face shows, and the top one gets a "Best light & focus" chip (no crown, no rank numbers). Never by looks. Free and on-device |
 | **Kindness reminder** | None found | Two or more faces → a gentle, skippable "Ask them first 💗" with **Only edit me** (Magic Edit keeps everyone else as they are) |
 | **Visible "AI-edited" label** | None found | An optional corner label in the share composer, on top of the invisible IPTC label |
 

@@ -60,7 +60,7 @@ This document turns that brief into a product definition grounded in the researc
 | Editor | Undo/redo, hold-to-see-original, before/after compare slider (lined up after a crop), pinch or double-tap zoom up to 4× with trackpad support, save and share (both apply a pending effect, adjustment or crop first, so they export what's on screen); Liquid Glass toolbar on iOS 26 | `EditorView`, `ZoomableCanvas` |
 | Video | Simple on-device editor: **Auto-cut silences** (jump cut), eight of the retro effects (with their date stamps, letterbox or camcorder display), trim, save to Photos or share. Free, no watermark, no ending clip, clips up to 5 minutes | `Features/Video`, `VideoEngine`, `AppCore/SilenceCutter` |
 | Create | Text-to-image with 14 styles, 5 aspect ratios, 1–4 images (2+ is Pro), "Inspire me" (seasonal ideas) and "Make it magic" (Apple's on-device model when available, otherwise the offline "Enhance prompt"); "Create with Image Playground" on supported devices (iOS 18.4+): Apple's own image maker, Apple's cartoon styles only, no Glowlit credits, under Apple's terms and limits (never called free or unlimited) | `Features/Create` |
-| Share | Photo, Before/After, Story card, **Cover star** (4:5 magazine cover; the masthead tucks behind her head with on-device Vision person segmentation), **Photo strip** (date-stamped photo booth), Help me pick; caption and hashtags. Stories without a Meta App ID: the system share sheet with just the image and a "Tap Instagram, then Stories" hint | `Features/Share`, `Services/Sharing` |
+| Share | Photo, Before/After, Story card, **Cover star** (4:5 magazine cover; the masthead tucks behind her head with on-device Vision person segmentation), **Photo strip** (date-stamped photo booth), Which vibe? (two variations of one creation, never the original against an edit); caption and hashtags. Stories without a Meta App ID: the system share sheet with just the image and a "Tap Instagram, then Stories" hint | `Features/Share`, `Services/Sharing` |
 | Invite | "Glow together": a 9:16 story card with the app icon and a QR code to the App Store page or website, from Settings and Home; never includes her photos | `InviteView` |
 | Library ("My Works") | Every creation saved on-device (SwiftData + protected files); detail view with save/share/edit/delete | `Features/Library` |
 | Paywall | Annual ($39.99, 7-day trial, preselected) + monthly ($5.99, first month $1.99 if eligible); trial timeline; credit-pack downsell; restore; legal copy | `Features/Paywall` |
@@ -101,13 +101,13 @@ This document turns that brief into a product definition grounded in the researc
    - Free user → paywall (or a credit pack).
    - Pro user → a sheet (only after she tries an AI action, with a close button): the next monthly refill date when the app knows it (otherwise "within a month"), the credit packs with their real prices ("≈ price per credit" below the billed price), and a reminder that the free tools still work. Not enough for several images → "This needs N credits. You have M."
 6. **Video.** Edit tab → "Edit a video" → pick a clip (up to 5 minutes) → toggle "Auto-cut silences", pick an effect, trim → Save to Photos or Share. Everything runs on the iPhone; no credits.
-7. **Share.** Result → Share → pick a format (Photo, Before/After, Story card, Cover star, Photo strip, Help me pick) → edit the caption → Stories, Photos or the share sheet.
+7. **Share.** Result → Share → pick a format (Photo, Before/After, Story card, Cover star, Photo strip, Which vibe?) → edit the caption → Stories, Photos or the share sheet.
 
 ## 5. Monetization — the Fair-Price Promise
 
 | Tier | Price (US) | Includes |
 |---|---|---|
-| **Free** | $0 | 3 credits every day (low AI quality at 1k, small corner wordmark on photo exports). Unlimited on-device tools: effects, Auto and adjustments, background removal, Best shot and video editing (videos carry no watermark). |
+| **Free** | $0 | 3 credits every day (low AI quality at 1k, small corner wordmark on exports of cloud AI results, also after a re-edit; share cards of them say "Made with Glowlit"). Unlimited on-device tools: effects, Auto and adjustments, background removal, Best shot and video editing (no watermark on anything made only with them). |
 | **Pro Yearly** *(default)* | **$39.99/yr** (≈ $3.33/month), **7-day free trial** for eligible users | 100 credits/month with one month of rollover (cap 200), every template and style, our best-quality AI (medium instead of low quality), up to 4 images at once, no watermark |
 | **Pro Monthly** | **$5.99/mo**; first month **$1.99** for eligible users (introductory offer), no free trial | Same as yearly |
 | **Credit packs** (consumable) | 30 credits **$2.99**, 100 credits **$7.99** | Never expire; for occasional users who don't want a subscription |

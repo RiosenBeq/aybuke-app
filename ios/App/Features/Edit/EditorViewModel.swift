@@ -17,7 +17,15 @@ final class EditorViewModel {
     /// line up with the edited photo.
     private(set) var before: UIImage
     /// Strongest AI operation applied so far — drives the provenance label on export.
+    /// Starts at the source's own operation when re-editing an AI result.
     private(set) var appliedOperation: AIOperation?
+    /// The AI marking the opened file already carried (imported file, Image Playground).
+    let inheritedSourceType: DigitalSourceType?
+
+    /// Export markings for the current image.
+    var provenance: Provenance {
+        Provenance(operation: appliedOperation, inheritedSourceType: inheritedSourceType)
+    }
 
     var activeTool: EditorTool?
     var magicPrompt = ""
@@ -82,6 +90,8 @@ final class EditorViewModel {
         original = launch.image
         current = launch.image
         before = launch.image
+        appliedOperation = launch.provenance.operation
+        inheritedSourceType = launch.provenance.inheritedSourceType
         activeTool = launch.tool ?? .magicEdit
         magicPrompt = launch.prompt ?? ""
         if let previewResult = launch.previewResult {
@@ -212,7 +222,7 @@ final class EditorViewModel {
         current = image
         if let newBefore { before = newBefore }
         if let operation {
-            appliedOperation = Self.stronger(appliedOperation, operation)
+            appliedOperation = AIOperation.stronger(appliedOperation, operation)
         }
         afterHistoryChange()
     }
@@ -236,18 +246,6 @@ final class EditorViewModel {
             effectPreview = nil
             previewEffect(effect, haptic: false)
         }
-    }
-
-    private static func stronger(_ lhs: AIOperation?, _ rhs: AIOperation) -> AIOperation {
-        func rank(_ operation: AIOperation) -> Int {
-            switch operation.digitalSourceType {
-            case .trainedAlgorithmicMedia: return 3
-            case .compositeWithTrainedAlgorithmicMedia: return 2
-            case .algorithmicallyEnhanced: return 1
-            }
-        }
-        guard let lhs else { return rhs }
-        return rank(rhs) >= rank(lhs) ? rhs : lhs
     }
 
     // MARK: AI tools

@@ -63,7 +63,7 @@ struct ResultsView: View {
 
                 Button {
                     guard let current else { return }
-                    app.openEditor(with: current, tool: .magicEdit)
+                    app.openEditor(with: current, tool: .magicEdit, provenance: provenance)
                 } label: {
                     Image(systemName: "wand.and.stars")
                 }
@@ -87,6 +87,7 @@ struct ResultsView: View {
     }
 
     private var isFromImagePlayground: Bool { source == Creation.imagePlaygroundSource }
+    private var provenance: Provenance { Creation.provenance(operation: operation, source: source) }
 
     private var reportMenu: some View {
         Menu {
@@ -118,7 +119,7 @@ struct ResultsView: View {
         guard let current else { return }
         Task {
             do {
-                try await PhotoLibrarySaver.save(current, operation: operation, watermark: !app.purchases.isPro && !isFromImagePlayground)
+                try await PhotoLibrarySaver.save(current, sourceType: provenance.sourceType, watermark: provenance.showsMark(isPro: app.purchases.isPro))
                 app.showToast("Saved to Photos", style: .success)
                 Haptics.success()
                 if app.registerHappyMoment() {
@@ -134,7 +135,9 @@ struct ResultsView: View {
         guard let current else { return }
         Haptics.tap()
         let others = images.indices.filter { $0 != selection }.map { images[$0] }
-        app.share(SharePayload(image: current, operation: operation, prompt: prompt, alternatives: others))
+        let provenance = provenance
+        app.share(SharePayload(image: current, operation: provenance.operation, prompt: prompt, alternatives: others,
+                               inheritedSourceType: provenance.inheritedSourceType))
     }
 }
 

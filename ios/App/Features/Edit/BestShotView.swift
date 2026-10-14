@@ -1,9 +1,11 @@
 import SwiftUI
 import PhotosUI
+import AppCore
 
-/// "Best shot": pick up to 12 selfies and the iPhone ranks them by light,
+/// "Best shot": pick up to 12 selfies and the iPhone sorts them by light,
 /// focus and how clearly the face shows (Apple's face capture quality),
-/// never by looks. Free, on the device, nothing uploaded.
+/// never by looks. No crown or rank numbers on selfies: the top one just
+/// gets a "Best light & focus" chip. Free, on the device, nothing uploaded.
 struct BestShotView: View {
     @Environment(AppModel.self) private var app
     @Environment(\.dismiss) private var dismiss
@@ -52,9 +54,9 @@ struct BestShotView: View {
                 if let selected, !isAnalyzing {
                     VStack(spacing: 10) {
                         Button {
-                            glowUp(selected)
+                            edit(selected)
                         } label: {
-                            Label(selected.id == shots.first?.id ? "Glow up my best shot" : "Glow up this one", systemImage: "wand.and.stars")
+                            Label("Edit this one", systemImage: "slider.horizontal.3")
                         }
                         .buttonStyle(.primary)
                         PhotosPicker(selection: $items, maxSelectionCount: Self.maxPhotos, matching: .images) {
@@ -73,6 +75,15 @@ struct BestShotView: View {
         .onChange(of: items) { _, newItems in
             Task { await analyze(newItems) }
         }
+        #if DEBUG
+        .onAppear {
+            // Sample pictures (no real faces), already sorted, for screenshots.
+            guard ScreenshotScene.current == .bestShot, shots.isEmpty else { return }
+            shots = ScreenshotFixtures.generatedArt(count: 6).enumerated().compactMap { index, image in
+                image.jpegData(compressionQuality: 0.8).map { Shot(data: $0, thumbnail: image, quality: 1 - Float(index) / 10) }
+            }
+        }
+        #endif
     }
 
     // MARK: Sections
@@ -84,7 +95,7 @@ struct BestShotView: View {
             Text(styled: "Find your *best shot*", size: 32)
                 .foregroundStyle(Palette.textPrimary)
                 .accessibilityAddTraits(.isHeader)
-            Text("Took 20 selfies? Pick up to \(Self.maxPhotos). We rank them by light, focus and how clearly your face shows. Never by looks.")
+            Text("Took a bunch of selfies? Pick up to \(Self.maxPhotos). We find the one with the best light and focus. Never by looks.")
                 .font(.subheadline)
                 .foregroundStyle(Palette.textSecondary)
         }
@@ -135,7 +146,7 @@ struct BestShotView: View {
                         Haptics.selection()
                         chosen = shot.id
                     } label: {
-                        ShotTile(shot: shot, rank: index + 1, isSelected: selected?.id == shot.id)
+                        ShotTile(shot: shot, isTop: index == 0, isSelected: selected?.id == shot.id)
                     }
                     .buttonStyle(.pressable)
                     .reveal(min(index, 8))
@@ -181,19 +192,22 @@ struct BestShotView: View {
         }
     }
 
-    private func glowUp(_ shot: Shot) {
+    /// Opens the free, on-device Adjust tool; she can switch tools there.
+    private func edit(_ shot: Shot) {
         guard let image = UIImage(data: shot.data) else { return }
+        // Keeps an AI marking the file already carries.
+        let provenance = Provenance(inheritedSourceType: ImageExporter.digitalSourceType(in: shot.data))
         dismiss()
         Task {
             try? await Task.sleep(for: .milliseconds(450))
-            app.openEditor(with: image, tool: .magicEdit)
+            app.openEditor(with: image, tool: .adjust, provenance: provenance)
         }
     }
 }
 
 private struct ShotTile: View {
     let shot: BestShotView.Shot
-    let rank: Int
+    let isTop: Bool
     let isSelected: Bool
 
     var body: some View {
@@ -209,28 +223,23 @@ private struct ShotTile: View {
                 RoundedRectangle(cornerRadius: Metrics.printRadius)
                     .strokeBorder(isSelected ? Palette.accent : Palette.stroke, lineWidth: isSelected ? 3 : 1)
             )
-            .overlay(alignment: .topLeading) {
-                Group {
-                    if rank == 1 {
-                        Label("Best", systemImage: "crown.fill")
-                            .font(.caption2.weight(.heavy))
-                            .foregroundStyle(Palette.ink)
-                            .padding(.horizontal, 8)
-                            .padding(.vertical, 4)
-                            .background(Palette.blush, in: Capsule())
-                    } else {
-                        Text("\(rank)")
-                            .font(.caption2.weight(.heavy))
-                            .foregroundStyle(Palette.white)
-                            .frame(width: 22, height: 22)
-                            .background(Palette.ink.opacity(0.6), in: Circle())
-                    }
+            .overlay(alignment: .bottomLeading) {
+                // A capture-quality fact, not a verdict on the person.
+                if isTop {
+                    Label("Best light & focus", systemImage: "sun.max.fill")
+                        .font(.caption2.weight(.bold))
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.7)
+                        .foregroundStyle(Palette.ink)
+                        .padding(.horizontal, 7)
+                        .padding(.vertical, 4)
+                        .background(Palette.blush, in: Capsule())
+                        .padding(5)
                 }
-                .padding(6)
             }
             .shadow(color: Palette.shadow, radius: 8, y: 4)
             .accessibilityElement()
-            .accessibilityLabel(rank == 1 ? "Best shot" : "Photo ranked \(rank)")
+            .accessibilityLabel(isTop ? "Photo with the best light and focus" : "Photo")
             .accessibilityAddTraits(isSelected ? .isSelected : [])
     }
 }

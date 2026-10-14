@@ -61,7 +61,7 @@ struct HomeView: View {
             .legalSheet($legalDocument)
             #if DEBUG
             .onAppear {
-                if ScreenshotScene.current == .settings { app.isSettingsPresented = true }
+                if ScreenshotScene.current == .settings || ScreenshotScene.current == .feelGood { app.isSettingsPresented = true }
                 if ScreenshotScene.current == .invite { showInvite = true }
                 if ScreenshotScene.current == .legal { legalDocument = .privacy }
                 if ScreenshotScene.current == .collection {
@@ -167,7 +167,7 @@ struct HomeView: View {
                         Haptics.tap()
                         app.isVideoPickerPresented = true
                     }
-                    QuickToolTile(title: "Best shot", caption: "Free · ranks selfies", symbolName: "photo.stack", palette: .lilac) {
+                    QuickToolTile(title: "Best shot", caption: "Free · sorts by light", symbolName: "photo.stack", palette: .lilac) {
                         Haptics.tap()
                         app.isBestShotPresented = true
                     }

@@ -17,8 +17,13 @@ struct ShareComposerView: View {
     @State private var rendered: UIImage?
     @State private var isWorking = false
     @State private var activityItems: ActivityItems?
+    @State private var captionIdeas: [String] = []
+    @State private var ideasFromWriter = false
+    @State private var isLoadingIdeas = false
 
-    private var branded: Bool { !app.purchases.isPro }
+    /// On-device edits are never branded; free cloud AI results are.
+    private var branded: Bool { payload.provenance.showsMark(isPro: app.purchases.isPro) }
+    private var madeWithAI: Bool { payload.provenance.carriesAIProvenance }
 
     private var formats: [ShareFormat] {
         ShareFormat.allCases.filter { format in
@@ -45,7 +50,7 @@ struct ShareComposerView: View {
                             .tint(Palette.accent)
                     }
                     destinations
-                    if payload.operation != nil {
+                    if madeWithAI {
                         Toggle(isOn: $showsAILabel) {
                             VStack(alignment: .leading, spacing: 2) {
                                 Text("Add a visible “AI-edited” label")
@@ -58,6 +63,7 @@ struct ShareComposerView: View {
                         .tint(Palette.accent)
                     }
                     captionCard
+                    captionIdeasCard
                     notes
                 }
                 .padding(.horizontal, Metrics.gutter)
@@ -65,6 +71,10 @@ struct ShareComposerView: View {
                 .readableWidth(Metrics.compactWidth)
             }
             .scrollIndicators(.hidden)
+            #if DEBUG
+            // `-GLShareScrollBottom YES` shows the caption ideas in screenshots.
+            .defaultScrollAnchor(UserDefaults.standard.bool(forKey: "GLShareScrollBottom") ? .bottom : nil)
+            #endif
             .background(AuroraBackground(intensity: 0.45))
             .navigationTitle("Share your glow")
             .navigationBarTitleDisplayMode(.inline)
@@ -79,9 +89,14 @@ struct ShareComposerView: View {
         .task(id: RenderKey(format: format, showPrompt: showPrompt, branded: branded, aiLabel: showsAILabel)) {
             await render()
         }
+        .task {
+            app.writer.prewarm()
+            await loadCaptionIdeas()
+        }
         .onAppear {
             if caption.isEmpty {
-                caption = ShareCaption.make(for: payload, hashtags: app.config.shareHashtags, link: app.config.shareLinkURL)
+                caption = ShareCaption.make(for: payload, hashtags: app.config.shareHashtags,
+                                            aiHashtags: app.config.aiShareHashtags, link: app.config.shareLinkURL)
             }
             #if DEBUG
             if ScreenshotScene.current == .share, payload.original != nil {
@@ -187,6 +202,62 @@ struct ShareComposerView: View {
         .cardStyle()
     }
 
+    /// Three short captions about the vibe, never about how anyone looks:
+    /// from Apple's on-device writer when it's available, otherwise
+    /// hand-written ones. Instagram can't prefill text, so a tap copies one.
+    private var captionIdeasCard: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            HStack {
+                Text("Caption ideas")
+                    .font(.cardTitle)
+                    .foregroundStyle(Palette.textPrimary)
+                Spacer()
+                Button {
+                    Haptics.tap()
+                    Task { await loadCaptionIdeas() }
+                } label: {
+                    Image(systemName: "arrow.clockwise")
+                        .font(.subheadline.weight(.semibold))
+                }
+                .foregroundStyle(Palette.accent)
+                .disabled(isLoadingIdeas)
+                .accessibilityLabel("New caption ideas")
+            }
+            if isLoadingIdeas {
+                Label("Writing new ideas on your device…", systemImage: "sparkles")
+                    .font(.caption)
+                    .foregroundStyle(Palette.textSecondary)
+            }
+            ForEach(captionIdeas, id: \.self) { idea in
+                Button {
+                    copyCaptionIdea(idea)
+                } label: {
+                    HStack(spacing: 10) {
+                        Text(idea)
+                            .font(.subheadline)
+                            .foregroundStyle(Palette.textPrimary)
+                            .multilineTextAlignment(.leading)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                        Image(systemName: "doc.on.doc")
+                            .font(.footnote.weight(.semibold))
+                            .foregroundStyle(Palette.accent)
+                    }
+                    .padding(.horizontal, 14)
+                    .padding(.vertical, 12)
+                    .background(Palette.background, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+                }
+                .buttonStyle(.pressable)
+                .accessibilityLabel(Text("Copy caption: \(idea)"))
+            }
+            Text(ideasFromWriter ? "Written on your device. Tap one to copy it with the hashtags." : "Tap one to copy it with the hashtags.")
+                .font(.caption)
+                .foregroundStyle(Palette.textTertiary)
+        }
+        .padding(16)
+        .cardStyle()
+        .animation(.snappy, value: captionIdeas)
+    }
+
     private var notes: some View {
         VStack(alignment: .leading, spacing: 12) {
             if branded {
@@ -206,12 +277,14 @@ struct ShareComposerView: View {
                     }
                 }
             }
-            HStack(alignment: .top, spacing: 10) {
-                Image(systemName: "sparkles")
-                    .foregroundStyle(Palette.accent)
-                Text("Posting publicly? Switch on the app's AI label (for example Instagram's “AI info”). Your file already carries an invisible “made with AI” tag.")
-                    .font(.footnote)
-                    .foregroundStyle(Palette.textSecondary)
+            if madeWithAI {
+                HStack(alignment: .top, spacing: 10) {
+                    Image(systemName: "sparkles")
+                        .foregroundStyle(Palette.accent)
+                    Text("Posting publicly? Switch on the app's AI label (for example Instagram's “AI info”). Your file already carries an invisible “made with AI” tag.")
+                        .font(.footnote)
+                        .foregroundStyle(Palette.textSecondary)
+                }
             }
         }
     }
@@ -238,10 +311,39 @@ struct ShareComposerView: View {
         rendered = image
     }
 
-    /// The rendered image as a file with IPTC "made with AI" metadata.
+    /// The rendered image as a file with IPTC "made with AI" metadata when
+    /// AI was involved.
     private func encodedFile() throws -> URL {
         guard let rendered else { throw CocoaError(.fileWriteUnknown) }
-        return try ImageExporter.temporaryFile(for: rendered, operation: payload.operation, watermark: false)
+        return try ImageExporter.temporaryFile(for: rendered, sourceType: payload.provenance.sourceType, watermark: false)
+    }
+
+    // MARK: Caption ideas
+
+    private func loadCaptionIdeas() async {
+        guard !isLoadingIdeas else { return }
+        let context = OnDeviceWriter.IdeaContext.caption(look: nil, madeWithAI: madeWithAI)
+        // Hand-written ones show at once (the model can take a few seconds),
+        // different from the last set where possible.
+        let pool = CuratedIdeas.for(context)
+        let unseen = pool.filter { !captionIdeas.contains($0) }
+        captionIdeas = Array((unseen.count >= 3 ? unseen : pool).shuffled().prefix(3))
+        ideasFromWriter = false
+        guard app.writer.isAvailable else { return }
+        isLoadingIdeas = true
+        defer { isLoadingIdeas = false }
+        let fresh = await app.writer.ideas(context)
+        if !fresh.isEmpty {
+            captionIdeas = fresh
+            ideasFromWriter = true
+        }
+    }
+
+    private func copyCaptionIdea(_ idea: String) {
+        let tags = ShareCaption.hashtagLine(app.config.shareHashtags, aiHashtags: app.config.aiShareHashtags, madeWithAI: madeWithAI)
+        UIPasteboard.general.string = tags.isEmpty ? idea : idea + "\n" + tags
+        Haptics.success()
+        app.showToast("Caption copied", style: .success)
     }
 
     // MARK: Destinations
@@ -278,7 +380,7 @@ struct ShareComposerView: View {
         isWorking = true
         defer { isWorking = false }
         do {
-            try await PhotoLibrarySaver.save(rendered, operation: payload.operation, watermark: false)
+            try await PhotoLibrarySaver.save(rendered, sourceType: payload.provenance.sourceType, watermark: false)
             Haptics.success()
             app.countHappyMoment()
             app.showToast("Saved to Photos", style: .success)
@@ -289,11 +391,17 @@ struct ShareComposerView: View {
 
     private func copyImage() {
         guard let rendered else { return }
-        if let encoded = ImageExporter.encode(rendered, operation: payload.operation) {
+        let provenance = payload.provenance
+        if let encoded = ImageExporter.encode(rendered, sourceType: provenance.sourceType) {
             let type = encoded.fileExtension == "png" ? UTType.png : UTType.jpeg
             UIPasteboard.general.setData(encoded.data, forPasteboardType: type.identifier)
-        } else {
+        } else if !provenance.carriesAIProvenance {
+            // A plain image has no marking to lose.
             UIPasteboard.general.image = rendered
+        } else {
+            // Never hand over an AI image stripped of its "made with AI" tag.
+            app.showToast("Couldn't prepare the image. Please try again.", style: .error)
+            return
         }
         Haptics.success()
         app.showToast("Image copied", style: .success)

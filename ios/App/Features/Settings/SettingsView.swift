@@ -13,6 +13,9 @@ struct SettingsView: View {
     @State private var confirmSignOut = false
     @State private var showInvite = false
     @State private var showPacks = false
+    #if DEBUG
+    @State private var showsFeelGoodScene = ScreenshotScene.current == .feelGood
+    #endif
 
     var body: some View {
         NavigationStack {
@@ -29,6 +32,9 @@ struct SettingsView: View {
                 shareSection
                 aboutSection
             }
+            #if DEBUG
+            .navigationDestination(isPresented: $showsFeelGoodScene) { FeelGoodView() }
+            #endif
             .scrollContentBackground(.hidden)
             .background(Palette.background.ignoresSafeArea())
             .navigationTitle("Settings")
@@ -341,6 +347,11 @@ struct SettingsView: View {
                 }
             } label: {
                 Label("Show me around", systemImage: "sparkles")
+            }
+            NavigationLink {
+                FeelGoodView()
+            } label: {
+                Label("Feel good", systemImage: "heart")
             }
             NavigationLink {
                 LegalCenterView()

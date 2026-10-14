@@ -8,8 +8,14 @@ struct SharePayload: Identifiable {
     var original: UIImage?
     let operation: AIOperation?
     var prompt: String?
-    /// Other variations from the same creation, for "Help me pick".
+    /// Other variations from the same creation, for "Which vibe?".
     var alternatives: [UIImage] = []
+    /// The AI marking the source file already carried (see `Provenance`).
+    var inheritedSourceType: DigitalSourceType? = nil
+
+    /// Decides the IPTC field, the free-tier branding, the AI hashtags and
+    /// the AI label.
+    var provenance: Provenance { Provenance(operation: operation, inheritedSourceType: inheritedSourceType) }
 
     /// Photo strip frames: the original first, then the glow-up and its
     /// variations (up to four).
@@ -17,11 +23,10 @@ struct SharePayload: Identifiable {
         Array(([original].compactMap { $0 } + [image] + alternatives).prefix(4))
     }
 
-    /// "Help me pick": two variations, or the original and the glow-up.
+    /// "Which vibe?": two variations of one creation. Never her original
+    /// photo against an edit: friends would be voting on her face.
     var pickPair: (a: UIImage, b: UIImage)? {
-        if let other = alternatives.first { return (image, other) }
-        if let original { return (original, image) }
-        return nil
+        alternatives.first.map { (image, $0) }
     }
 
     /// Prompts are only offered on the card for text-to-image creations;
@@ -49,7 +54,7 @@ enum ShareFormat: String, CaseIterable, Identifiable {
         case .story: return String(localized: "Story card")
         case .cover: return String(localized: "Cover star")
         case .strip: return String(localized: "Photo strip")
-        case .pick: return String(localized: "Help me pick")
+        case .pick: return String(localized: "Which vibe?")
         }
     }
 
@@ -68,15 +73,17 @@ enum ShareFormat: String, CaseIterable, Identifiable {
     var isStory: Bool { self == .story || self == .strip || self == .pick }
 }
 
-/// Renders share formats. Free exports carry Glowlit branding (the corner
-/// watermark, or a "Made with Glowlit" line on collages and cards); Pro
-/// removes it everywhere. Pure functions, safe off the main thread.
+/// Renders share formats. Free exports of Glowlit's cloud AI results carry
+/// Glowlit branding (the corner watermark, or a "Made with Glowlit" line on
+/// collages and cards); on-device edits and Pro never do. Pure functions,
+/// safe off the main thread.
 enum ShareRenderer {
     static func render(_ payload: SharePayload, format: ShareFormat, branded: Bool, showPrompt: Bool, aiLabel: Bool = false) -> UIImage {
         let rendered = render(payload, format: format, branded: branded, showPrompt: showPrompt)
-        guard aiLabel, let operation = payload.operation else { return rendered }
+        let provenance = payload.provenance
+        guard aiLabel, provenance.carriesAIProvenance else { return rendered }
         let reservedBottom: CGFloat = format.isStory ? 300 : format == .cover ? 70 : 0
-        return addAILabel(to: rendered, text: operation == .textToImage ? String(localized: "Made with AI") : String(localized: "AI-edited"), reservedBottom: reservedBottom)
+        return addAILabel(to: rendered, text: provenance.isFullyGenerated ? String(localized: "Made with AI") : String(localized: "AI-edited"), reservedBottom: reservedBottom)
     }
 
     private static func render(_ payload: SharePayload, format: ShareFormat, branded: Bool, showPrompt: Bool) -> UIImage {
@@ -133,10 +140,10 @@ enum ShareRenderer {
         }
     }
 
-    // MARK: Help me pick (9:16)
+    // MARK: Which vibe? (9:16)
 
-    /// "A or B?" story card: two prints side by side for friends to vote on,
-    /// in a Story (with a poll sticker) or a group chat.
+    /// "A or B?" story card: two variations of one creation side by side
+    /// for friends to vote on, in a Story (with a poll sticker) or a group chat.
     static func pickCard(a: UIImage, b: UIImage, branded: Bool) -> UIImage {
         let canvas = storySize
         return renderer(canvas, opaque: true).image { context in
@@ -147,7 +154,7 @@ enum ShareRenderer {
             radialGlow(cg, center: CGPoint(x: 940, y: 1650), radius: 760, color: .brandBlush, alpha: 0.9)
 
             // Instagram keeps ~250 px at the top and bottom for its own UI.
-            drawText(String(localized: "Help me pick"), font: brandFont(96, weight: .heavy), color: .brandInk,
+            drawText(String(localized: "Which vibe?"), font: brandFont(96, weight: .heavy), color: .brandInk,
                      centeredIn: CGRect(x: 0, y: 300, width: canvas.width, height: 120))
             drawText(String(localized: "which one should I post?"), font: accentFont(54), color: .brandInk,
                      centeredIn: CGRect(x: 0, y: 420, width: canvas.width, height: 80))
@@ -349,7 +356,9 @@ enum ShareRenderer {
 
 /// Default caption with hashtags and a link people can tap.
 enum ShareCaption {
-    static func make(for payload: SharePayload, hashtags: [String], link: URL?) -> String {
+    /// `aiHashtags` (#MadeWithAI…) are added only when generative AI made or
+    /// changed the picture, never for on-device edits.
+    static func make(for payload: SharePayload, hashtags: [String], aiHashtags: [String], link: URL?) -> String {
         var lines: [String] = []
         if let prompt = payload.shareablePrompt {
             lines.append("“\(prompt)”")
@@ -358,13 +367,19 @@ enum ShareCaption {
         if let link {
             lines.append(link.absoluteString)
         }
-        let tags = hashtags
+        let tags = hashtagLine(hashtags, aiHashtags: aiHashtags, madeWithAI: payload.provenance.carriesAIProvenance)
+        if !tags.isEmpty {
+            lines.append(tags)
+        }
+        return lines.joined(separator: "\n")
+    }
+
+    /// "#Glowlit #GlowUp", plus the AI tags when they apply.
+    static func hashtagLine(_ hashtags: [String], aiHashtags: [String], madeWithAI: Bool) -> String {
+        (hashtags + (madeWithAI ? aiHashtags : []))
             .map { $0.trimmingCharacters(in: CharacterSet(charactersIn: "# ")) }
             .filter { !$0.isEmpty }
             .map { "#\($0)" }
-        if !tags.isEmpty {
-            lines.append(tags.joined(separator: " "))
-        }
-        return lines.joined(separator: "\n")
+            .joined(separator: " ")
     }
 }

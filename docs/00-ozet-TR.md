@@ -46,7 +46,7 @@
 - **Yeni şablonlar:** Yıl boyu 36 görünüm, ayrıca mevsimlik görünümler (Cadılar Bayramı, kış, Galentine's; Ana sayfada yalnızca mevsiminde öne çıkar, düzenleyicide her zaman vardır). Örneğin Doll Box, Pembe Saç, Soft Glam, Bouncy Curls, Clean Girl, Ballet Core, Kiraz Çiçeği, Kafe Buluşması, Paris Gezisi, Peri Prensesi, Doğum Günü Glam ve Witchy Glam. 14 stil var (Pastel Dream ve Kawaii eklendi).
   - Tüm şablonlar yüzü, ten rengini ve **vücut şeklini** korur.
   - Vücut inceltme veya cilt açma gibi özellikler bilinçli olarak yok.
-- **Paylaşım (tanıtım için):** Yeni Paylaş ekranından Instagram Hikâyeler, Önce/Sonra kolajı, 9:16 hikâye kartı, görsel kopyalama, hazır açıklama ve hashtag'ler kullanılabiliyor. Ücretsiz paylaşımlarda küçük "Made with Glowlit" işareti var (Pro'da yok). Her dosyada görünmez "yapay zekâ ile yapıldı" etiketi korunuyor.
+- **Paylaşım (tanıtım için):** Yeni Paylaş ekranından Instagram Hikâyeler, Önce/Sonra kolajı, 9:16 hikâye kartı, görsel kopyalama, hazır açıklama ve hashtag'ler kullanılabiliyor. Bulut yapay zekâ sonuçlarının ücretsiz paylaşımlarında küçük "Made with Glowlit" işareti var (Pro'da ve yalnızca cihaz içi araçlarla yapılan düzenlemelerde yok). Yapay zekâ ile yapılan her dosyada görünmez "yapay zekâ ile yapıldı" etiketi korunuyor, yeniden düzenlemeden sonra da; #AIphoto #MadeWithAI hashtag'leri ve bu not yalnızca o zaman çıkıyor.
 - **Animasyonlar ve süslemeler:** Kartlar sırayla belirir, butonlar dokununca yaylanır. Kalp ve parıltılar yanıp söner, ana karttan ışık geçer. Beklerken kalpler ve yıldızlar ışığın etrafında döner. Önce/sonra kaydırıcısı kendini kısaca gösterir, kredi sayısı animasyonla değişir. "Hareketi azalt" açıksa animasyonlar kapanır.
 - **Widget'lar ve Dynamic Island:**
   - "Günün trendi" ve "My glow" widget'ları (ana ekran ve kilit ekranı). My glow son görseli, kalan krediyi ve Magic / Create / Cut out kısayollarını gösterir.
@@ -63,7 +63,7 @@
   - *Özellik (rakiplerde yok):*
     - Benzerlik kontrolü ("Still you" / cilt tonu değiştiyse ücretsiz tekrar).
     - Best shot (selfie'leri ışık ve netliğe göre sıralar, asla görünüşe göre değil).
-    - Help me pick (A mı B mi kartı).
+    - Which vibe? (A mı B mi kartı; yalnızca aynı yaratımın iki versiyonu, asla orijinal fotoğraf ile düzenlenmiş hali değil).
     - Arkadaş yüzü varsa nezaket hatırlatması ("Only edit me").
     - İsteğe bağlı görünür "AI-edited" etiketi.
   - *Çıkarılanlar:*

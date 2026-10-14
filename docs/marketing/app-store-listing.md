@@ -60,7 +60,6 @@ MADE TO SHARE
 • Share straight to Instagram Stories
 • Cover star: turn your photo into a magazine cover
 • Photo strips, Before / After collages and 9:16 story cards
-• Help me pick: an "A or B?" card your friends can vote on
 • Ready-made captions and hashtags
 • Invite your besties with a story card and a QR code
 • Heart your favorites in your gallery
@@ -173,7 +172,6 @@ PAYLAŞMAK İÇİN YAPILDI
 • Doğrudan Instagram Hikâyeler'e paylaş
 • Cover star: fotoğrafını bir dergi kapağına dönüştür
 • Fotoğraf şeritleri, önce/sonra kolajları ve 9:16 hikâye kartları
-• Help me pick: arkadaşlarının oy verebileceği "A mı B mi?" kartı
 • Hazır açıklamalar ve hashtag'ler
 • QR kodlu bir hikâye kartıyla arkadaşlarını davet et
 • Galerinde favorilerini kalple işaretle

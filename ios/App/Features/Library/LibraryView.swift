@@ -227,7 +227,7 @@ struct CreationDetailView: View {
                 .buttonStyle(IconButtonStyle(size: 56))
                 .accessibilityLabel("Save to Photos")
                 Button {
-                    if let image { app.openEditor(with: image, tool: .magicEdit) }
+                    if let image { app.openEditor(with: image, tool: .magicEdit, provenance: creation.provenance) }
                 } label: {
                     Image(systemName: "wand.and.stars")
                 }
@@ -271,8 +271,8 @@ struct CreationDetailView: View {
         Task {
             do {
                 // Apple made Image Playground pictures, so they don't carry Glowlit's mark.
-                let usedCloudAI = !creation.isFromImagePlayground && (creation.operation.map { !$0.runsOnDevice } ?? false)
-                try await PhotoLibrarySaver.save(image, operation: creation.operation, watermark: !app.purchases.isPro && usedCloudAI)
+                let provenance = creation.provenance
+                try await PhotoLibrarySaver.save(image, sourceType: provenance.sourceType, watermark: provenance.showsMark(isPro: app.purchases.isPro))
                 app.showToast("Saved to Photos", style: .success)
                 Haptics.success()
             } catch {
@@ -294,7 +294,9 @@ struct CreationDetailView: View {
     private func share() {
         guard let image else { return }
         Haptics.tap()
-        app.share(SharePayload(image: image, operation: creation.operation, prompt: creation.prompt))
+        let provenance = creation.provenance
+        app.share(SharePayload(image: image, operation: provenance.operation, prompt: creation.prompt,
+                               inheritedSourceType: provenance.inheritedSourceType))
     }
 
     private func delete() {

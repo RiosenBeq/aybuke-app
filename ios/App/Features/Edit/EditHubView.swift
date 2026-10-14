@@ -69,7 +69,7 @@ struct EditHubView: View {
                                         .foregroundStyle(Palette.textPrimary)
                                     NewBadge()
                                 }
-                                Text("Ranks your selfies · free, on-device")
+                                Text("Finds the best light & focus · free, on-device")
                                     .font(.footnote)
                                     .foregroundStyle(Palette.textSecondary)
                             }

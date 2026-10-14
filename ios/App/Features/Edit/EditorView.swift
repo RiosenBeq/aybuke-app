@@ -462,10 +462,13 @@ struct EditorView: View {
             defer { isSaving = false }
             await model.commitPending()
             do {
-                // Free tools never add a mark; free cloud AI results carry a small one.
-                let usedCloudAI = model.appliedOperation.map { !$0.runsOnDevice } ?? false
-                try await PhotoLibrarySaver.save(model.current, operation: model.appliedOperation, watermark: !app.purchases.isPro && usedCloudAI)
-                await app.saveToLibrary([model.current], operation: model.appliedOperation, title: model.libraryTitle, prompt: nil)
+                // Free tools never add a mark; free cloud AI results carry a
+                // small one, also after a re-edit of a Create or Library result.
+                let provenance = model.provenance
+                try await PhotoLibrarySaver.save(model.current, sourceType: provenance.sourceType,
+                                                 watermark: provenance.showsMark(isPro: app.purchases.isPro))
+                await app.saveToLibrary([model.current], operation: model.appliedOperation, title: model.libraryTitle, prompt: nil,
+                                        inheritedSourceType: provenance.inheritedSourceType)
                 app.showToast("Saved to Photos", style: .success)
                 Haptics.success()
                 if app.registerHappyMoment() {
@@ -486,7 +489,8 @@ struct EditorView: View {
                 image: model.current,
                 original: model.hasChanges ? model.before : nil,
                 operation: model.appliedOperation,
-                prompt: nil
+                prompt: nil,
+                inheritedSourceType: model.inheritedSourceType
             ))
         }
     }

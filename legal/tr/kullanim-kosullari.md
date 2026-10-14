@@ -270,11 +270,11 @@ Girdilerinizden ve çıktılarınızı nasıl kullandığınızdan siz sorumlusu
 
 ### Yapay zekâ içeriklerini nasıl etiketliyoruz?
 
-Yapay zekâ ile üretilmiş veya düzenlenmiş olup dışa aktardığınız her görsel, AB Yapay Zekâ Tüzüğü'nün (Tüzük (AB) 2024/1689) 50. maddesinin 2. fıkrasının gerektirdiği şekilde, makine tarafından okunabilir köken (provenance) meta verisi taşır (XMP içindeki IPTC "Digital Source Type" alanı). Yapay zekâ sağlayıcıları ayrıca görünmez filigranlar (örneğin Google'ın SynthID filigranı) ekleyebilir. Yalnızca elle ayarladığınız görseller yapay zekâ etiketi taşımaz.
+Yapay zekâ ile üretilmiş veya düzenlenmiş olup dışa aktardığınız her görsel, AB Yapay Zekâ Tüzüğü'nün (Tüzük (AB) 2024/1689) 50. maddesinin 2. fıkrasının gerektirdiği şekilde, makine tarafından okunabilir köken (provenance) meta verisi taşır (XMP içindeki IPTC "Digital Source Type" alanı). Yapay zekâ sağlayıcıları ayrıca görünmez filigranlar (örneğin Google'ın SynthID filigranı) ekleyebilir. Bir yapay zekâ sonucunu uygulamada yeniden düzenlediğinizde bu etiket korunur; böyle bir etiket taşıyan bir fotoğrafı açtığınızda da uygulama etiketi dışa aktarımda korur. Yalnızca elle ayarladığınız görseller yapay zekâ etiketi taşımaz.
 
 ### Ücretsiz dışa aktarımlarda filigran
 
-Ücretsiz kullanımda yapılan dışa aktarımların bir köşesinde küçük ve görünür bir "{{APP_NAME}} ✦" filigranı bulunur. Pro ile yapılan dışa aktarımlarda bu filigran bulunmaz.
+Ücretsiz kullanımda, bulut yapay zekâmızla üretilen veya düzenlenen görsellerin dışa aktarımlarının bir köşesinde küçük ve görünür bir "{{APP_NAME}} ✦" filigranı bulunur. Pro ile yapılan dışa aktarımlarda ve yalnızca ücretsiz cihaz içi araçlarla değiştirdiğiniz fotoğraflarda bu filigran bulunmaz.
 
 ### Yükümlülükleriniz
 
@@ -284,7 +284,7 @@ Yapay zekâ ile üretilmiş veya düzenlenmiş olup dışa aktardığınız her 
 
 ## 13. Sonuçlarınızı paylaşma
 
-Sonuçlarınızı iOS paylaşım menüsüyle, doğrudan Instagram Stories (Hikâyeler) bölümüne (uygulama görseli iOS panosu aracılığıyla Instagram uygulamasına aktarır), "Before / After" (önce / sonra) kolajı olarak veya 9:16 oranlı hikâye kartı olarak paylaşabilirsiniz. Ücretsiz kullanımda kolajlarda ve hikâye kartlarında küçük bir "Made with {{APP_NAME}}" işareti bulunur; Pro bu işareti kaldırır. Uygulama ayrıca kopyalayabileceğiniz, hashtag içeren bir açıklama metni önerebilir.
+Sonuçlarınızı iOS paylaşım menüsüyle (Instagram Stories (Hikâyeler) seçeneği de buradadır), "Before / After" (önce / sonra) kolajı olarak veya 9:16 oranlı hikâye kartı ya da başka bir kart tasarımı olarak paylaşabilirsiniz. Ücretsiz kullanımda, bulut yapay zekâmızla üretilen veya düzenlenen görsellerin kolajlarında ve kartlarında küçük bir "Made with {{APP_NAME}}" işareti bulunur; Pro bu işareti kaldırır. Uygulama ayrıca kopyalayabileceğiniz, hashtag içeren açıklama metinleri önerebilir; bu metinler cihazınızda yazılır ve bunun için hiçbir yere veri gönderilmez.
 
 Paylaştığınızda içeriği alan hizmetin kendi koşulları ve gizlilik politikası geçerli olur ve yayımladığınız içerikten siz sorumlusunuz. Önce/sonra görselleri dahil, bir görselde yer alan herkesin paylaşıma onay verdiğinden emin olun.
 

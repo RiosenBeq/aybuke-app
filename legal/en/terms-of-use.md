@@ -270,11 +270,11 @@ You're responsible for your inputs and for how you use your outputs. You confirm
 
 ### How we label AI content
 
-Every image you export that was generated or edited with AI carries machine-readable provenance metadata (the IPTC "Digital Source Type" field in XMP), as required by Article 50(2) of the EU AI Act (Regulation (EU) 2024/1689). AI providers may also embed invisible watermarks, for example Google's SynthID. Images you have only adjusted manually don't carry an AI label.
+Every image you export that was generated or edited with AI carries machine-readable provenance metadata (the IPTC "Digital Source Type" field in XMP), as required by Article 50(2) of the EU AI Act (Regulation (EU) 2024/1689). AI providers may also embed invisible watermarks, for example Google's SynthID. The label stays when you edit an AI result again in the app, and when you open a photo that already carries such a label, the app keeps it on export. Images you have only adjusted manually don't carry an AI label.
 
 ### Watermark on free exports
 
-Exports made on the free tier carry a small visible "{{APP_NAME}} ✦" watermark in a corner. Pro exports don't.
+On the free tier, exports of images made or edited with our cloud AI carry a small visible "{{APP_NAME}} ✦" watermark in a corner. Pro exports don't, and neither do photos you have only changed with the free on-device tools.
 
 ### Your obligations
 
@@ -284,7 +284,7 @@ Exports made on the free tier carry a small visible "{{APP_NAME}} ✦" watermark
 
 ## 13. Sharing your results
 
-You can share results with the iOS share sheet, directly to Instagram Stories (the app hands the image to Instagram through the iOS pasteboard), as a "Before / After" collage, or as a 9:16 story card. On the free tier, collages and story cards include a small "Made with {{APP_NAME}}" mark; Pro removes it. The app can also suggest a caption with hashtags for you to copy.
+You can share results with the iOS share sheet (which also offers Instagram Stories), as a "Before / After" collage, or as a 9:16 story card or another card design. On the free tier, collages and cards of images made or edited with our cloud AI include a small "Made with {{APP_NAME}}" mark; Pro removes it. The app can also suggest captions, with hashtags, for you to copy; captions are written on your device and nothing is sent anywhere to write them.
 
 When you share, the receiving service's own terms and privacy policy apply, and you're responsible for what you publish. Make sure everyone shown in an image, including a before-and-after image, agrees to it being shared.
 
