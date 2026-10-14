@@ -9,7 +9,8 @@ Bu liste yalnızca sahibin yapabileceği işleri içerir: Supabase, xAI, AdMob, 
 ## 1) Önce bunlar (acil)
 
 ### 1.1 xAI kredisini yükle ya da aylık limiti artır
-- [ ] **Ne:** xAI ekip kredisi ya da aylık harcama limiti bitti. Bu yüzden her AI işi şu an başarısız oluyor ve kredi iade ediliyor.
+- [x] **Kredi yüklendi:** 14 Ekim 2026, 10 USD. Kalan: aylık harcama limitini belirle ve ilk gerçek Magic Edit'i dene (aşağıdaki sıra, adım 2 ve 3).
+- [ ] **Ne:** xAI ekip kredisi ya da aylık harcama limiti bitmişti. Bu yüzden her AI işi başarısız oluyor ve kredi iade ediliyordu.
   - **Neden:** `docs/HANDOFF-PROMPT.md`, "xAI" bölümü. Faturalandırma ve harcama limiti: `docs/SUPABASE-TODO.md` §7.
   - **Nerede:** console.x.ai, ekip faturalandırma ve harcama limiti. Menü adları konsolun güncel arayüzüne göre değişebilir.
   - **Sıra:** 1) Kredi yükle. 2) Aylık harcama limiti belirle. 3) Uygulamada bir Magic Edit dene; sonuç gelmeli (`docs/RELEASE-CHECKLIST.md` §3.4).

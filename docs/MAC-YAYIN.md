@@ -12,7 +12,7 @@ setopt interactivecomments
 
 ## 0) Başlamadan önce (yalnızca sen)
 
-1. **xAI.** console.x.ai'de kredi yükle ve aylık harcama limiti koy. Sohbete bir kez yapıştırılmış eski anahtar güvenli değil: yeni bir anahtar oluştur, Supabase panelinde (proje `efapupjvidyqhqdevmcu` › Edge Functions › Secrets) `XAI_API_KEY` değerini yenisiyle değiştir. Eski anahtarı, ilk gerçek AI işi çalıştıktan sonra (12. bölüm) xAI'de iptal et. Ekip ayarlarında Zero Data Retention'ın açık olduğunu doğrula; gizlilik metinleri bunu söylüyor.
+1. **xAI.** Kredi yüklendi (14 Ekim, 10 USD); console.x.ai'de aylık harcama limiti koy. Sohbete bir kez yapıştırılmış eski anahtar güvenli değil: yeni bir anahtar oluştur, Supabase panelinde (proje `efapupjvidyqhqdevmcu` › Edge Functions › Secrets) `XAI_API_KEY` değerini yenisiyle değiştir. Eski anahtarı, ilk gerçek AI işi çalıştıktan sonra (12. bölüm) xAI'de iptal et. Ekip ayarlarında Zero Data Retention'ın açık olduğunu doğrula; gizlilik metinleri bunu söylüyor.
 2. **Supabase.** Projenin sahibi olan hesapla giriş yapabildiğini ve veritabanı şifresini bildiğini kontrol et (bilmiyorsan Project Settings › Database'den sıfırlanabilir; Edge Functions bu şifreyi kullanmaz).
 3. **App Store Connect.** Agreements, Tax, and Banking'de Paid Apps sözleşmesi, banka ve vergi bilgileri "Active" olmalı; yoksa satın almalar incelemeye giremez. Users and Access › Integrations › App Store Connect API'de **Admin** rolünde bir anahtar oluştur (otomatik imzalama için gerekir), `.p8` dosyasını indir.
 4. **AdMob (isteğe bağlı).** Geçiş reklamı istiyorsan "After save interstitial" adında bir geçiş birimi oluştur (sıklık sınırı kullanıcı başına günde 3) ve kimliğini hazır tut. Boş kalırsa 1.0'da geçiş reklamı olmaz; bu da geçerli bir karar.
