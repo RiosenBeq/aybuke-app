@@ -2,9 +2,9 @@
 
 Bu liste yalnızca sahibin yapabileceği işleri içerir: Supabase, xAI, AdMob, AdSense, App Store Connect, Search Console, Vercel ve Mac'te Xcode. Ajan (bu depoda kod ve belge değiştiren asistan) bu hesaplara giremez, anahtar giremez ve gönderme kararı veremez. "Öneri" satırları yalnızca yardımcı görüştür; karar sahibindedir.
 
-**Durum.** 14 Ekim 2026. `pink-girls-redesign` dalının origin'deki son commit'i `09e1b19`. `main` `d007a8b` (PR #1 birleşti); yeniden adlandırma (`6f2959d`), ad-reward CI testleri (`31f8817`), aybuke.org adresleri ve belgeler (`28c16eb`, `09e1b19`) henüz `main`'de değil. Bu ortamdan dış sitelere çıkılamadı (proxy 403); aybuke.org ve github.io adresleri burada kontrol edilemedi, tarayıcıdan bakılmalı.
+**Durum.** 14 Ekim 2026. `pink-girls-redesign` ve `main` aynı commit'te; CI yeşil olunca `main` ileri alınır. Yeniden adlandırma, aybuke.org adresleri, kredi kontrolü (`scripts/check-credit-policy.py`) ve App Store iade bildirimleri uç noktası (`functions/app-store-notifications`) depoda. Canlıda henüz hiçbir şey yok: Supabase, AdMob, App Store Connect ve ekran görüntüleri sahibin hesaplarında ya da Mac'te yapılır. Bu ortamdan dış sitelere çıkılamadı (proxy 403); aybuke.org burada kontrol edilemedi. Mac'te hepsini bir ajana yaptırmak için tek prompt: [`docs/MAC-YAYIN.md`](MAC-YAYIN.md) (tüm komutlar ve Claude Code promptu).
 
-**Önerilen sıra.** 1.1 ve 1.3 (xAI), 1.4 (migrasyon), 1.5 (gizli değer), 1.6 (fonksiyon), 1.7 ve 1.8 (zamanlama, kimlik), 1.9 (kontrol), 3.1–3.4 (AdMob), 2.1 (URL), 2.2–2.12 (derleme ve testler), 4 (arama), 5 ve 6 (kararlar), en son 2.13 (gönderme kararı).
+**Önerilen sıra.** 1.1 ve 1.3 (xAI), 1.4 (migrasyon), 1.5 (gizli değer), 1.6 (fonksiyon), 1.7 ve 1.8 (zamanlama, kimlik), 1.9 (kontrol), 3.1–3.4 (AdMob), 2.1 (URL), 2.2–2.12 (derleme ve testler), 2.14 (iade bildirimleri adresi), 4 (arama), 5 ve 6 (kararlar), en son 2.13 (gönderme kararı).
 
 ## 1) Önce bunlar (acil)
 
@@ -28,9 +28,9 @@ Bu liste yalnızca sahibin yapabileceği işleri içerir: Supabase, xAI, AdMob, 
 
 ### 1.4 Supabase migrasyonlarını sırayla uygula
 - [ ] **Ne:** `backend/supabase/migrations/` içindeki dosyaları zaman damgası sırasıyla SQL Editor'da çalıştır. Her dosyayı `begin;` ile `commit;` arasına al. Dosyaların içinde kendi transaction ifadesi yok (kontrol edildi), bu yüzden sarmalamak güvenli.
-  - **Neden:** Dizinde 17 dosya var. Commit'li `docs/SUPABASE-TODO.md` §3 yalnızca 10 dosya listeliyordu; çalışma ağacındaki taslak §1'de 1.1–1.9 sırasını veriyor. Yedi dosya ilk listede yoktu: `20261020000000_credit_policy_v2.sql`, `20261021000000_install_and_subscription_credits.sql`, `20261022000000_abuse_controls.sql`, `20261023000000_ad_rewards_per_install.sql`, `20261024000000_private_rls.sql`, `20261024000001_abuse_fixes.sql`, `20261024000002_entitlement_order.sql`. `docs/HANDOFF-PROMPT.md`'ye göre `20261011000000`–`20261018000000` ile `20261019500000_keepalive.sql` uygulanmış; taslağın §0 sorgusu `20261017000000` ve `20261018000000` nesnelerini kontrol ediyor.
+  - **Neden:** Dizinde 19 dosya var. En yeni ikisi `20261025000000_app_store_notifications.sql` (iade bildirimleri) ve `20261025000001_sql_gaps.sql` (bakiye ve tekrar sayımı düzeltmeleri); `docs/SUPABASE-TODO.md` §1'de 1.10 ve 1.11. Commit'li `docs/SUPABASE-TODO.md` §3 yalnızca 10 dosya listeliyordu; çalışma ağacındaki taslak §1'de 1.1–1.9 sırasını veriyor. Yedi dosya ilk listede yoktu: `20261020000000_credit_policy_v2.sql`, `20261021000000_install_and_subscription_credits.sql`, `20261022000000_abuse_controls.sql`, `20261023000000_ad_rewards_per_install.sql`, `20261024000000_private_rls.sql`, `20261024000001_abuse_fixes.sql`, `20261024000002_entitlement_order.sql`. `docs/HANDOFF-PROMPT.md`'ye göre `20261011000000`–`20261018000000` ile `20261019500000_keepalive.sql` uygulanmış; taslağın §0 sorgusu `20261017000000` ve `20261018000000` nesnelerini kontrol ediyor.
   - **Nerede:** Supabase panosu > SQL Editor (proje `efapupjvidyqhqdevmcu`, Frankfurt).
-  - **Sıra:** 1) `docs/SUPABASE-TODO.md` §0'daki sorguyu çalıştır; eksik nesne varsa ilgili dosyayı önce uygula. 2) Uygulanmış dosyaları atla. 3) §1'deki sırayla, uygulanmamış olanları (1.1–1.9) çalıştır; her dosya kendi `begin;` ... `commit;` bloğunda. 4) Bir dosya hata verirse dur, hata metnini ajana ver; sonraki dosyaya geçme.
+  - **Sıra:** 1) `docs/SUPABASE-TODO.md` §0'daki sorguyu çalıştır; eksik nesne varsa ilgili dosyayı önce uygula. 2) Uygulanmış dosyaları atla. 3) §1'deki sırayla, uygulanmamış olanları (1.1–1.11) çalıştır; her dosya kendi `begin;` ... `commit;` bloğunda. 4) Bir dosya hata verirse dur, hata metnini ajana ver; sonraki dosyaya geçme.
 
 ### 1.5 Gizli değerleri kontrol et ve eksiği ekle
 - [ ] **Ne:** Adları kontrol et, `ADMOB_REWARDED_AD_UNIT` değerini ekle. Değerleri hiçbir yere yazma.
@@ -39,7 +39,7 @@ Bu liste yalnızca sahibin yapabileceği işleri içerir: Supabase, xAI, AdMob, 
   - **Sıra:** 1) `ADMOB_REWARDED_AD_UNIT` = `ca-app-pub-2292230772061554/1406702504`. 2) `FAL_KEY` ve `XAI_SAFETY_MODEL` şimdilik eklenmez (bkz. 5.8). 3) `GLOWLIT_ALLOW_XCODE_APP_TRANSACTIONS` üretimde olmamalı; varsa sil. 4) Apple ile giriş ve RevenueCat anahtarları isteğe bağlı (bkz. 5.6, 5.7).
 
 ### 1.6 Edge Functions'ı yayımla
-- [ ] **Ne:** Migrasyon ve gizli değerlerden sonra beş fonksiyonu yayımla. `ad-reward` ilk kez yayımlanıyor ve JWT doğrulaması kapalı olmalı.
+- [ ] **Ne:** Migrasyon ve gizli değerlerden sonra altı fonksiyonu yayımla. `ad-reward` ve `app-store-notifications` ilk kez yayımlanıyor; ikisinde de JWT doğrulaması kapalı olmalı (AdMob ve Apple JWT göndermez; fonksiyonlar imzayı kendileri denetler).
   - **Neden:** Canlıdaki `ai-image`, `account`, `credits-redeem` ve `report` 47b5c6f sürümünden (`docs/HANDOFF-PROMPT.md`); depo daha yeni (`docs/RELEASE-CHECKLIST.md` §12: `ai-image` ve `account` yeniden yayımlanmalı). `ad-reward` hiç yayımlanmadı. AdMob geri çağrısında JWT yoktur (`backend/README.md`, "Setup" 5). Önkoşul: `ai-image` ve `account`, §1 migrasyonları ve §0 nesneleri olmadan yayımlanmamalı (`docs/SUPABASE-TODO.md` §5).
   - **Nerede:** Mac'te Terminal, repo içinde `backend` klasörü, Supabase CLI.
   - **Sıra:** 1) `supabase login` (kendi hesabınla). 2) `cd backend`. 3) Aşağıdaki komutları ayrı ayrı çalıştır (`--use-api`: CLI paketlemeyi Docker yerine Yönetim API'siyle yapar; `docs/HANDOFF-PROMPT.md`'deki yöntem). 4) Yayımdan sonra 1.9'daki kontrolleri yap.
@@ -50,6 +50,7 @@ supabase functions deploy credits-redeem --project-ref efapupjvidyqhqdevmcu --us
 supabase functions deploy account --project-ref efapupjvidyqhqdevmcu --use-api
 supabase functions deploy report --project-ref efapupjvidyqhqdevmcu --use-api
 supabase functions deploy ad-reward --project-ref efapupjvidyqhqdevmcu --use-api --no-verify-jwt
+supabase functions deploy app-store-notifications --project-ref efapupjvidyqhqdevmcu --use-api --no-verify-jwt
 ```
 
 ### 1.7 Zamanlanmış işleri kontrol et
@@ -94,7 +95,7 @@ supabase functions deploy ad-reward --project-ref efapupjvidyqhqdevmcu --use-api
 - [ ] **Ne:** iOS 1.0 ve macOS 1.0 sürümlerine derlemeyi, iki aboneliği ve iki kredi paketini ekle.
   - **Neden:** `docs/HANDOFF-PROMPT.md` ("App Store Connect"): abonelikler MISSING_METADATA, paketler READY_TO_SUBMIT. İlk abonelik uygulama sürümüyle birlikte incelemeye gönderilmeli (`docs/RELEASE-CHECKLIST.md` §11).
   - **Nerede:** App Store Connect > Aybuke > iOS 1.0 > In-App Purchases and Subscriptions; macOS 1.0'da da aynı bölüm.
-  - **Sıra:** 1) `app.glowlit.pro.yearly`, `app.glowlit.pro.monthly`, `app.glowlit.credits.30` ve `app.glowlit.credits.100` ekle. 2) İnceleme ekran görüntüsü ve notu olsun. Paywall görüntüsü `docs/marketing/app-store/en/09-paywall.jpg` (kurulum dokümanı `10-paywall.jpg` yazıyor; bkz. 2.9). 3) Durumlar "Ready to Submit" olsun.
+  - **Sıra:** 1) `app.glowlit.pro.yearly`, `app.glowlit.pro.monthly`, `app.glowlit.credits.30` ve `app.glowlit.credits.100` ekle. 2) İnceleme ekran görüntüsü ve notu olsun. Paywall görüntüsü `docs/marketing/app-store/en/09-paywall.jpg`. 3) Durumlar "Ready to Submit" olsun.
 
 ### 2.4 Destek ve gizlilik adresleri
 - [ ] **Ne:** App Store Connect'teki Support URL, Marketing URL ve gizlilik URL'lerini tek bir karara bağla.
@@ -131,7 +132,7 @@ supabase functions deploy ad-reward --project-ref efapupjvidyqhqdevmcu --use-api
 
 ### 2.9 Ekran görüntüleri (12 dil)
 - [ ] **Ne:** Görüntüler eksik. `docs/marketing/app-store/` içinde yalnızca `en` ve `tr` var; ikisinde de iPhone 9, iPad 9, Mac 8 dosya var. Diğer on dil yok.
-  - **Neden:** `docs/RELEASE-CHECKLIST.md` §11 her dil için iPhone 10, iPad 10, Mac 8 diyor. Kurulum dokümanı §4 `10-paywall.jpg` yolunu veriyor, dosya `09-paywall.jpg`. `docs/HANDOFF-PROMPT.md` adım 8: Mac yakalamaları henüz yapılmadı.
+  - **Neden:** `docs/RELEASE-CHECKLIST.md` §11 her dil için iPhone 10, iPad 10, Mac 8 diyor. `docs/HANDOFF-PROMPT.md` adım 8: Mac yakalamaları henüz yapılmadı.
   - **Nerede:** Mac; `scripts/marketing-images.py` (başlıktaki sahne listesi); `docs/marketing/screenshot-captions.json`; çıktı `docs/marketing/app-store/<dil>/`.
   - **Sıra:** 1) Mac'te iPhone 17 Pro Max ve iPad Pro 13 inç M5 simülatörlerinde ile Mac penceresinde (`-GLWindowSize 1600x1000`, `screencapture -x -o -l <CGWindowID>`) yakalamaları al. Dil için `-AppleLanguages "(tr)" -AppleLocale tr`; örnek fotoğraflar için `-GLSamplePhotos docs/marketing/samples`. 2) `python3 scripts/marketing-images.py <yakalamalar>` çalıştır. 3) Her görüntüye bak: kredi sayısı olmamalı. 4) `cd scripts/asc && python3 asc_screenshots.py ../..` ile yükle.
 
@@ -158,6 +159,12 @@ supabase functions deploy ad-reward --project-ref efapupjvidyqhqdevmcu --use-api
   - **Neden:** `AGENTS.md` §6 (3. madde): "Submit for Review" için sahibin onayı gerekir. `docs/SUPABASE-TODO.md` başlığına göre Supabase adımları bitmeden uygulama incelemeye gönderilmez. `docs/RELEASE-CHECKLIST.md` §14.
   - **Nerede:** App Store Connect > iOS 1.0 ve macOS 1.0 sürüm sayfaları.
   - **Sıra:** 1) `docs/RELEASE-CHECKLIST.md` §1.1 ve §11 maddelerini işaretle. 2) Backend canlı ve derleme demo modunda değil (§1.1). 3) Ajan "Her şey hazır. Gönderelim mi?" diye kısa bir özetle sorar; açık "evet" gelirse gönderilir.
+
+### 2.14 App Store Server Notifications V2 adresi
+- [ ] **Ne:** İade ve iptal bildirimlerinin Supabase'e gelmesi için adresi gir.
+  - **Neden:** Uç nokta yazıldı (`backend/supabase/functions/app-store-notifications`). İade ya da iptal edilen Pro abonelik hemen kapanır; iade edilen kredi paketi geri alınır (bakiye sıfırın altına inmez). Adres girilmezse iade edilen Pro, süresi dolana kadar açık kalır.
+  - **Nerede:** App Store Connect > Aybuke > App Information > App Store Server Notifications.
+  - **Sıra:** 1) Önce 1.4 (1.10 dahil) ve 1.6 (`app-store-notifications` yayımlandı). 2) Version 2 seç. 3) Production Server URL ve Sandbox Server URL: `https://efapupjvidyqhqdevmcu.supabase.co/functions/v1/app-store-notifications`. 4) Test bildirimi gönder ya da bir Sandbox satın alması yap; Supabase > Edge Functions > Logs'ta 200 görünmeli. 5) `APPLE_APP_ID` secret'ı ayarlı olmalı (1.5), yoksa üretim bildirimleri reddedilir.
 
 ## 3) Reklam (AdMob ve AdSense)
 
@@ -219,9 +226,7 @@ supabase functions deploy ad-reward --project-ref efapupjvidyqhqdevmcu --use-api
   - **Öneri:** Mevcut davranışı koru; paywall ve hukuki metinler bunu açıkça söylesin. Böylece kullanıcı kredisini kaybetmez.
 
 ### 5.2 App Store Server Notifications V2
-- [ ] **Karar:** Lansmandan önce iade ve iptal bildirimleri için uç nokta kurulsun mu?
-  - **Neden:** `backend/README.md`, "Before launch". Uç nokta yokken iade edilen Pro abonelik `expires_at` tarihine kadar Pro kalır.
-  - **Öneri:** Lansmandan önce kur. Ajan uç noktayı yazar; sen App Store Connect'te URL'yi girersin.
+- [x] **Karar verildi ve yapıldı:** uç nokta lansmandan önce kuruldu (`functions/app-store-notifications`, migrasyon `20261025000000`). Kalan sahip işi: yayımlama (1.6) ve adresi girmek (2.14).
 
 ### 5.3 Paylaşılan IP adresleri
 - [ ] **Karar:** Doğrulanmamış bir adresten üç strike, o adresteki herkesi cool-down'a sokuyor. Adres anahtarları için daha yüksek bir eşik uygulansın mı?
@@ -281,7 +286,7 @@ supabase functions deploy ad-reward --project-ref efapupjvidyqhqdevmcu --use-api
 | GitHub (Actions) | 1.7 |
 | AdMob | 2.12 (test cihazı), 3.1–3.4 |
 | AdSense | 3.6 |
-| App Store Connect | 2.2–2.8, 2.12 (sandbox), 2.13, 5.2 |
+| App Store Connect | 2.2–2.8, 2.12 (sandbox), 2.13, 2.14 |
 | Search Console ve IndexNow | 4.1, 4.2 |
 | Vercel ve alan adı | 2.1, 3.5 |
 | Apple Developer | 5.6 (isteğe bağlı) |
@@ -295,10 +300,11 @@ supabase functions deploy ad-reward --project-ref efapupjvidyqhqdevmcu --use-api
 - Mac dalı birleşti. Doğrulama: Mac Catalyst derlemesi CI'da; ekran yakalamaları henüz yapılmadı (2.10).
 - Web sitesi (`RiosenBeq/aybuke`, `main` `c750808`) birleşti; Vercel üretime yayınlıyor; hukuk metinleri uygulamadan senkron. Doğrulama: aybuke.org bu ortamdan açılamadı.
 - Yeniden adlandırma (`6f2959d`, Glowlit → Aybuke) ve `31f8817` (ad-reward Deno testleri CI'da). CI, `6f2959d` için `workflow_dispatch` ile çalıştırıldı ve tamamen yeşil (iOS derlemesi iPhone ve Mac Catalyst için dahil). AppCore testleri yeniden adlandırmadan sonra 319 geçti (yerel Linux Swift 6.1).
+- App Store Server Notifications V2 uç noktası, iade edilen paketlerin geri alınması ve SQL düzeltmeleri (tekrar sayımı, iptal edilen işe uyarı yok, bakiyede adres beklemesi) yazıldı; Deno ve PostgreSQL testleri yerelde geçti. Uygulama: fotoğraf kontrolü çalışamadığında ayrı ve doğru bir mesaj; Mac'te ⌘W editörü ve Retro Cam'i kapatır; şablon kartlarında sağ tık menüsü; Mac'te küçük kalan yazılar büyütüldü.
+- `scripts/check-credit-policy.py`: sunucu, `AppConfig.json` ve AppCore'daki kredi sayıları ayrışırsa CI kırmızı olur.
 - Bu oturumda yerelde geçen kontroller: `build-legal.py --check`, `export-core-strings.py --check`, `check-honest-copy.py`, `check-release-config.py --report`. `--online` iki github.io adresini doğrulayamadı (2.1).
 
 ## Belgelerde kalan düzeltmeler
 
-- `docs/marketing/app-store-connect-setup.md` §4: `10-paywall.jpg` yerine `09-paywall.jpg` (dosya öyle). §5 ve §2: kurulum anahtarı hash'i ve Age Assurance kararları 2.7 ve 2.8'e göre yazılacak.
-- `backend/README.md` 'Reports' bölümünde 'günde 20 rapor' yazıyor; politika ve runbook 10 diyor. Ajan düzeltir.
+- `docs/marketing/app-store-connect-setup.md` §5 ve §2: kurulum anahtarı hash'i ve Age Assurance kararları 2.7 ve 2.8'e göre yazılacak.
 - `docs/research/2026-10-ux-audit.md` eski '3 AI credits' ifadesini tarihsel kayıt olarak taşıyor; değiştirilmez.

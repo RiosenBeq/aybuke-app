@@ -1,6 +1,6 @@
 # Aybuke: kalan işler ve devam promptları
 
-> **Türkçe özet:** Uygulama kodu, backend kodu ve yasal metinler hazır; App Store Connect kaydının büyük bölümü sahibin notlarına göre girildi. PR #1 `main`'e birleşti. Henüz yapılmayanlar: 31f8817 ve 28c16eb için CI çalıştırması, `pink-girls-redesign`'in `main`'e alınması, canlı Supabase kurulumu (migrasyonlar, gizli değerler, fonksiyonlar), xAI kredisi, reklam kurulumu, derlemelerin App Store Connect'e yüklenmesi ve ekran görüntüleri. Bu dosya üç bölümden oluşur: (1) ajanın yapacağı açık işler, (2) sahibin işleri (ilk beş madde; tam liste [`SAHIP-YAPILACAKLAR.md`](SAHIP-YAPILACAKLAR.md)), (3) sahibin kararını bekleyen konular. İncelemeye gönderme adımı yalnızca sahibin açık onayıyla yapılır.
+> **Türkçe özet:** Kod tarafında ajanın yapabileceği lansman işleri bitti (iade bildirimleri, SQL düzeltmeleri, politika testleri, Mac düzeltmeleri, hukuk metinleri). Kalanlar sahibin hesaplarında ve Mac'te: Supabase'i canlıya almak, AdMob ve App Store Connect panelleri, ekran görüntüleri, derlemelerin yüklenmesi ve gönderme. Hepsinin komutları ve Claude Code'a verilecek tek prompt: [`MAC-YAYIN.md`](MAC-YAYIN.md). Aşağıdaki bölümler geçmiş kayıt ve ayrıntı içindir; çelişki olursa `MAC-YAYIN.md` ve [`SAHIP-YAPILACAKLAR.md`](SAHIP-YAPILACAKLAR.md) geçerlidir. İncelemeye gönderme yalnızca sahibin açık onayıyla yapılır.
 
 Son güncelleme: 14 Ekim 2026. Ajan işlerinin sıralı ve tam listesi [`AI-TODO.md`](AI-TODO.md) dosyasındadır; burada yalnızca hemen yapılacaklar var. Başlamadan önce [`AGENTS.md`](../AGENTS.md) §6'yı oku.
 
