@@ -70,6 +70,7 @@ struct EditorIdeasRow: View {
                 .buttonStyle(.plain)
                 .accessibilityLabel("Hide ideas")
             }
+            .tipSlot(.editorIdeas, edge: .top, spacing: 8)
             ScrollView(.horizontal) {
                 HStack(spacing: 8) {
                     surpriseChip
@@ -141,6 +142,7 @@ struct EditorIdeasRow: View {
     /// that costs a credit, so it needs no confirmation.
     private func surprise() {
         guard let insight else { return }
+        GlowTips.noteUsed(.ideas)
         let effect = suggestions(for: insight, rotation: surpriseCount).lazy.compactMap { suggestion -> RetroEffect? in
             if case .effect(let id) = suggestion { return RetroEffect(rawValue: id) }
             return nil

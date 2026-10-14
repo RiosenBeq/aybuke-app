@@ -22,6 +22,7 @@ struct EditHubView: View {
                             .font(.subheadline)
                             .foregroundStyle(Palette.textSecondary)
                     }
+                    .tipSlot(.editHub)
 
                     Button {
                         Haptics.tap()

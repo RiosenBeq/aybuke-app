@@ -84,6 +84,7 @@ final class TourGuide {
     init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
         self.hasSeen = defaults.bool(forKey: Self.seenKey)
+        GlowTips.isTourOver = hasSeen
     }
 
     var isRunning: Bool { current != nil }
@@ -98,6 +99,7 @@ final class TourGuide {
     func start(steps: [TourStep] = TourStep.allCases) {
         self.steps = steps
         current = steps.first
+        GlowTips.isTourOver = false
     }
 
     func next() {
@@ -113,6 +115,7 @@ final class TourGuide {
         current = nil
         hasSeen = true
         defaults.set(true, forKey: Self.seenKey)
+        GlowTips.isTourOver = true
     }
 
     /// "Delete my data": the tour shows again after onboarding.
@@ -120,6 +123,7 @@ final class TourGuide {
         current = nil
         hasSeen = false
         defaults.removeObject(forKey: Self.seenKey)
+        GlowTips.isTourOver = false
     }
 }
 

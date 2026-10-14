@@ -169,6 +169,7 @@ struct HomeView: View {
     private var quickTools: some View {
         VStack(alignment: .leading, spacing: 14) {
             SectionHeader(title: "Quick tools")
+                .tipSlot(.explore)
                 .padding(.horizontal, Metrics.gutter)
             ScrollView(.horizontal) {
                 HStack(spacing: 12) {

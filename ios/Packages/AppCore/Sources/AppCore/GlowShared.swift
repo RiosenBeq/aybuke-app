@@ -18,6 +18,10 @@ public enum GlowDeepLink: Equatable, Sendable {
     case video
     case template(String)
     case library
+    /// Retro Cam, and Retro Cam already in Photo Booth mode.
+    case retroCam
+    case photoBooth
+    case collage
 
     public static let scheme = "glowlit"
 
@@ -30,6 +34,9 @@ public enum GlowDeepLink: Equatable, Sendable {
         case .video: return URL(string: "\(Self.scheme)://video")!
         case .template(let id): return URL(string: "\(Self.scheme)://template/\(id)")!
         case .library: return URL(string: "\(Self.scheme)://library")!
+        case .retroCam: return URL(string: "\(Self.scheme)://camera")!
+        case .photoBooth: return URL(string: "\(Self.scheme)://camera/booth")!
+        case .collage: return URL(string: "\(Self.scheme)://collage")!
         }
     }
 
@@ -43,6 +50,9 @@ public enum GlowDeepLink: Equatable, Sendable {
         case ("video", nil): self = .video
         case ("create", nil): self = .create
         case ("library", nil): self = .library
+        case ("camera", nil): self = .retroCam
+        case ("camera", "booth"?): self = .photoBooth
+        case ("collage", nil): self = .collage
         case ("template", let id?) where TemplateCatalog.template(id: id) != nil: self = .template(id)
         default: return nil
         }

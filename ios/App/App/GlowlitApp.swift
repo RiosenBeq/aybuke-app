@@ -9,10 +9,13 @@ struct GlowlitApp: App {
 
     init() {
         FontRegistrar.registerBundledFonts()
+        // Before the model: the tour sets a tip rule as it starts.
+        GlowTips.configure()
         let (container, outcome) = LibraryStore.open()
         self.container = container
         let app = AppModel(container: container)
         app.libraryOutcome = outcome
+        GlowIntents.register(app)
         _app = State(initialValue: app)
     }
 
