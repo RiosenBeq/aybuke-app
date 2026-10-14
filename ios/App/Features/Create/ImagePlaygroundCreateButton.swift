@@ -98,13 +98,16 @@ struct ImagePlaygroundCreateButton: View {
 @available(iOS 18.4, *)
 private struct NoPersonalization: ViewModifier {
     func body(content: Content) -> some View {
+        // ImagePlaygroundOptions arrived with the iOS 26.4 SDK (Swift 6.3);
+        // older toolchains, such as CI's, only know the policy modifier.
+        #if compiler(>=6.3)
         if #available(iOS 26.4, *) {
             var options = ImagePlaygroundOptions()
             options.personalization = .disabled
             return AnyView(content.imagePlaygroundOptions(options))
-        } else {
-            return AnyView(content.imagePlaygroundPersonalizationPolicy(.disabled))
         }
+        #endif
+        return AnyView(content.imagePlaygroundPersonalizationPolicy(.disabled))
     }
 }
 #endif
