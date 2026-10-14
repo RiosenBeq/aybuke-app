@@ -36,6 +36,9 @@ final class EditorViewModel {
     var magicPrompt = ""
     /// Makeup Studio's look; a fresh editor starts on the first one.
     var makeup = MakeupStudio.defaultPreset.recipe
+    /// The step a makeup look made and the photo it was made from: trying
+    /// another look on that step starts again from the photo.
+    @ObservationIgnored private var makeupBase: (version: Int, photo: UIImage)?
     var adjustments = AdjustmentSettings()
     private(set) var adjustPreview: UIImage?
     var strokes: [MaskStroke] = []
@@ -339,6 +342,8 @@ final class EditorViewModel {
     func run(_ tool: EditorTool, template: PhotoTemplate? = nil, app: AppModel) {
         guard let operation = tool.operation, !isProcessing else { return }
         var job = AIJob(operation: operation, sourceImage: current)
+        // The history step a new makeup look replaces, if any.
+        var replacedStep: Int?
 
         switch tool {
         case .magicEdit:
@@ -370,6 +375,12 @@ final class EditorViewModel {
             }
             job.prompt = editsOnlyMainPerson ? PromptBuilder.onlyMainPerson(instruction) : instruction
             job.makeup = makeup
+            // Another look straight after one starts again from her photo and
+            // takes its place, so looks never pile up on an AI result.
+            if let base = makeupBase, base.version == historyVersion {
+                job.sourceImage = base.photo
+                replacedStep = historyVersion
+            }
         case .styles:
             guard let template else { return }
             job.template = template
@@ -385,11 +396,13 @@ final class EditorViewModel {
         }
 
         app.requestAccess(for: operation, requiresPro: template?.isPro ?? false) { [weak self] in
-            self?.execute(job, app: app)
+            self?.execute(job, app: app, replacing: replacedStep)
         }
     }
 
-    private func execute(_ job: AIJob, app: AppModel) {
+    /// `replacing`: the history step (a makeup look) this result takes the
+    /// place of, when it's still the one on the canvas.
+    private func execute(_ job: AIJob, app: AppModel, replacing replacedStep: Int? = nil) {
         processingTitle = Self.progressTitle(for: job)
         isProcessingInCloud = !job.operation.runsOnDevice
         isProcessing = true
@@ -399,7 +412,14 @@ final class EditorViewModel {
                 let result = try await app.run(job, saveToLibrary: false)
                 guard let image = result.images.first else { return }
                 let edited = ImageUtilities.normalized(image)
+                // One Undo still goes back to her photo, not through every look.
+                if let replacedStep, replacedStep == historyVersion, let previous = undoStack.popLast() {
+                    restore(previous)
+                }
                 commit(edited, operation: job.operation)
+                if job.makeup != nil, let photo = job.sourceImage {
+                    makeupBase = (historyVersion, photo)
+                }
                 checkLikeness(of: job, edited: edited)
                 lastRequestID = result.requestID
                 lastStepTitle = job.title
