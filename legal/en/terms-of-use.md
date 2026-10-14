@@ -6,7 +6,7 @@ Last updated: {{EFFECTIVE_DATE}}
 > - These Terms are a contract between you and {{COMPANY_NAME}}, the developer of {{APP_NAME}}. They are not a contract with Apple.
 > - You must be at least {{MIN_AGE}}. If you're under 18 (or under the age of majority where you live), you need permission from a parent or legal guardian. Section 4 is written for you.
 > - We design {{APP_NAME}} with teens in mind: no tracking, no public feeds, no personalised ads, and cloud AI only after you opt in.
-> - On-device tools are always free. Free users get free credits every day, can watch an optional ad for 1 more credit a few times a day, and see an occasional ad after saving; the app shows the current numbers. Pro has no ads. Pro subscriptions renew automatically until you cancel them in your Apple Account settings. Purchased credit packs never expire.
+> - On-device tools are always free. Free users get free credits every day, can watch an optional ad for 1 more credit a few times a day, and see an occasional ad after saving; the app shows the current numbers. Pro has no ads. Pro subscriptions renew automatically until you cancel them in your Apple Account settings. Purchased credits never expire, but if Apple refunds a purchase, we take back what's left of it (section 9).
 > - You keep the rights in your photos and, as far as the law allows, you own your results. Only upload photos you're allowed to use, and only edit people who agree to it.
 > - No sexual content, nothing sexual involving anyone under 18, no bullying or body-shaming edits, and no deep fakes meant to deceive. Our [Acceptable Use & AI Content Policy]({{LINK_AUP}}) has the details.
 > - AI can get things wrong. Your mandatory rights as a consumer are never affected.
@@ -149,17 +149,19 @@ Free daily credits belong to your download of {{APP_NAME}} from the App Store, n
 
 ### Pro credits
 
-With an active Pro subscription, you get the monthly number of credits that the app shows, instead of daily credits. The yearly plan's free trial includes a smaller number of credits, shown before you start it; the full monthly number starts with your first paid period. Unused subscription credits roll over to the following month, up to two months' worth. Subscription credits belong to the subscription: if it moves to another account, they move with it, and they end when your subscription ends.
+With an active Pro subscription, you get the monthly number of credits that the app shows, instead of daily credits. The yearly plan's free trial includes a smaller number of credits, shown before you start it; the full monthly number starts with your first paid period. Unused subscription credits roll over to the following month, up to two months' worth. Subscription credits belong to the subscription: if it moves to another account, they move with it, and they end when your subscription ends. If Apple refunds the subscription, or revokes it (for example when Family Sharing access to it ends), Pro and its subscription credits end at once, without waiting for the end of the period. If Apple reverses the refund, Pro comes back for the rest of that period (section 9).
 
 ### Credit packs
 
 You can buy credit packs as consumable in-app purchases. Purchased credits:
 
-- never expire;
+- never expire (but if Apple refunds a pack, its unused credits are taken back, as explained below);
 - stay in your balance if your subscription ends;
 - have no cash value and can't be exchanged for money;
 - can't be transferred to another person or account; and
 - are non-refundable, except through Apple's refund process or where mandatory law provides otherwise.
+
+If Apple refunds a credit pack, we take back the credits from it that you haven't used yet: up to as many credits as the pack gave you come off your purchased credits. Credits you've already used stay used, and your balance never goes below zero. If Apple reverses the refund, we give those credits back.
 
 ### Credits from ads
 
@@ -232,6 +234,12 @@ If we change the price of a subscription, Apple will notify you in advance and, 
 ### Refunds
 
 Apple handles refunds under its own policies. You can request a refund at [reportaproblem.apple.com](https://reportaproblem.apple.com). We can't issue refunds for App Store purchases ourselves.
+
+When Apple refunds or revokes a purchase, Apple tells our server, and we update your account to match:
+
+- **Pro**: if Apple refunds your subscription, or revokes it (for example when Family Sharing access to it ends), Pro and its subscription credits end at once, without waiting for the end of the period. A refund for an earlier period doesn't end a newer period you've paid for.
+- **Credit packs**: if Apple refunds a pack, we take back the credits from it that you haven't used yet, never taking your balance below zero (section 8).
+- **If Apple reverses a refund**: Pro comes back for the rest of that period, and the credits we took back from a pack are returned to your balance.
 
 ### Restoring purchases
 

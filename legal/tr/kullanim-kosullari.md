@@ -6,7 +6,7 @@ Son güncelleme: {{EFFECTIVE_DATE}}
 > - Bu Koşullar, sizinle {{APP_NAME}} uygulamasının geliştiricisi {{COMPANY_NAME}} arasında yapılan bir sözleşmedir. Apple bu sözleşmenin tarafı değildir.
 > - En az {{MIN_AGE}} yaşında olmalısınız. 18 yaşından küçükseniz velinizin veya vasinizin izni gerekir. 4. bölüm sizin için yazıldı.
 > - {{APP_NAME}} uygulamasını gençleri düşünerek tasarlıyoruz: takip yok, herkese açık akış yok, kişiselleştirilmiş reklam yok; bulut yapay zekâ ancak siz onay verdikten sonra çalışır.
-> - Cihaz üzerindeki araçlar her zaman ücretsizdir. Ücretsiz kullanıcılar her gün ücretsiz kredi alır, günde birkaç kez isteğe bağlı bir reklam izleyerek 1 kredi daha kazanabilir ve kaydettikten sonra ara sıra bir reklam görür; güncel sayıları uygulama gösterir. Pro'da reklam yoktur. Pro abonelikleri, siz Apple Hesabı ayarlarınızdan iptal edene kadar otomatik olarak yenilenir. Satın aldığınız kredi paketlerinin süresi hiçbir zaman dolmaz.
+> - Cihaz üzerindeki araçlar her zaman ücretsizdir. Ücretsiz kullanıcılar her gün ücretsiz kredi alır, günde birkaç kez isteğe bağlı bir reklam izleyerek 1 kredi daha kazanabilir ve kaydettikten sonra ara sıra bir reklam görür; güncel sayıları uygulama gösterir. Pro'da reklam yoktur. Pro abonelikleri, siz Apple Hesabı ayarlarınızdan iptal edene kadar otomatik olarak yenilenir. Satın aldığınız kredilerin süresi hiçbir zaman dolmaz; ancak Apple bir satın alımın ücretini iade ederse, o satın alımdan kalanı geri alırız (9. bölüm).
 > - Fotoğraflarınız üzerindeki haklarınız sizde kalır; sonuçlar ise kanunun izin verdiği ölçüde size aittir. Yalnızca kullanma hakkınız olan fotoğrafları yükleyin ve yalnızca buna onay veren kişileri düzenleyin.
 > - Cinsel içerik, 18 yaşından küçükleri içeren her türlü cinsel içerik, zorbalık veya bedenle alay eden düzenlemeler ve aldatmaya yönelik deepfake yasaktır. Ayrıntılar için [Kabul Edilebilir Kullanım ve Yapay Zekâ İçerik Politikası]({{LINK_AUP}}) metnine bakın.
 > - Yapay zekâ hata yapabilir. Tüketici olarak sahip olduğunuz emredici haklar hiçbir şekilde etkilenmez.
@@ -149,17 +149,19 @@ Etkin bir Pro aboneliğiniz yoksa her gün uygulamanın gösterdiği sayıda üc
 
 ### Pro kredileri
 
-Etkin bir Pro aboneliğiniz varsa günlük krediler yerine her ay uygulamanın gösterdiği sayıda kredi alırsınız. Yıllık planın ücretsiz deneme süresi, başlamadan önce gösterilen daha az sayıda kredi içerir; aylık kredilerin tamamı ilk ücretli dönemle başlar. Kullanılmayan abonelik kredileri sonraki aya devreder; ancak en fazla iki aylık miktar birikebilir. Abonelik kredileri aboneliğe aittir: abonelik başka bir hesaba geçerse onunla birlikte geçer ve abonelik sona erdiğinde sona erer.
+Etkin bir Pro aboneliğiniz varsa günlük krediler yerine her ay uygulamanın gösterdiği sayıda kredi alırsınız. Yıllık planın ücretsiz deneme süresi, başlamadan önce gösterilen daha az sayıda kredi içerir; aylık kredilerin tamamı ilk ücretli dönemle başlar. Kullanılmayan abonelik kredileri sonraki aya devreder; ancak en fazla iki aylık miktar birikebilir. Abonelik kredileri aboneliğe aittir: abonelik başka bir hesaba geçerse onunla birlikte geçer ve abonelik sona erdiğinde sona erer. Apple aboneliğin ücretini iade eder veya aboneliği geri alırsa (örneğin Aile Paylaşımı üzerinden erişim sona erdiğinde), Pro ve abonelik kredileri dönem sonunu beklemeden hemen sona erer. Apple iadeyi geri alırsa Pro, o dönemin kalanı için yeniden açılır (9. bölüm).
 
 ### Kredi paketleri
 
 Kredi paketlerini tüketilebilir (consumable) uygulama içi satın alım olarak alabilirsiniz. Satın aldığınız krediler:
 
-- süresizdir, hiçbir zaman sona ermez;
+- süresizdir, hiçbir zaman sona ermez (ancak Apple bir paketin ücretini iade ederse, aşağıda açıklandığı gibi o paketin kullanılmamış kredileri geri alınır);
 - aboneliğiniz sona erse de bakiyenizde kalır;
 - nakit değeri taşımaz ve paraya çevrilemez;
 - başka bir kişiye veya hesaba devredilemez; ve
 - Apple'ın iade süreci veya emredici mevzuatın aksini öngördüğü haller dışında iade edilmez.
+
+Apple bir kredi paketinin ücretini iade ederse, o paketten henüz kullanmadığınız kredileri geri alırız: paketin size verdiği sayıya kadar kredi, satın aldığınız kredilerden düşülür. Daha önce kullandığınız krediler kullanılmış olarak kalır ve bakiyeniz hiçbir zaman sıfırın altına düşmez. Apple iadeyi geri alırsa bu kredileri size geri veririz.
 
 ### Reklamlardan krediler
 
@@ -232,6 +234,12 @@ Bir aboneliğin fiyatını değiştirirsek Apple sizi önceden bilgilendirir ve 
 ### İadeler
 
 İadeler, Apple tarafından kendi politikaları çerçevesinde yönetilir. İade talebinizi [reportaproblem.apple.com](https://reportaproblem.apple.com) adresinden iletebilirsiniz. App Store satın alımları için kendimiz iade yapamayız.
+
+Apple bir satın alımın ücretini iade ettiğinde veya bir satın alımı geri aldığında bunu sunucumuza bildirir ve hesabınızı buna göre güncelleriz:
+
+- **Pro**: Apple aboneliğinizin ücretini iade eder veya aboneliği geri alırsa (örneğin Aile Paylaşımı üzerinden erişim sona erdiğinde), Pro ve abonelik kredileri dönem sonunu beklemeden hemen sona erer. Önceki bir dönemin iadesi, ücretini ödediğiniz daha yeni bir dönemi sona erdirmez.
+- **Kredi paketleri**: Apple bir paketin ücretini iade ederse, o paketten henüz kullanmadığınız kredileri, bakiyenizi hiçbir zaman sıfırın altına düşürmeden geri alırız (8. bölüm).
+- **Apple iadeyi geri alırsa**: Pro o dönemin kalanı için yeniden açılır ve bir paketten geri aldığımız krediler bakiyenize yeniden eklenir.
 
 ### Satın alımları geri yükleme
 
