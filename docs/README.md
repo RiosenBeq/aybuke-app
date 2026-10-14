@@ -22,6 +22,7 @@
 | [research/brand-contrast-tables.md](research/brand-contrast-tables.md) | WCAG contrast tables |
 | [research/tech-and-compliance.md](research/tech-and-compliance.md) | Models and APIs, backend, Apple frameworks, App Review, regulation |
 | [research/2026-10-feature-audit.md](research/2026-10-feature-audit.md) | October 2026 audit: competitor matrix, trends, teen wellbeing and monetization research, compliance, what was built, deferred or rejected |
+| [research/2026-10-ux-audit.md](research/2026-10-ux-audit.md) | October 2026 UX audit: friction in every flow, credit and paywall clarity, what was fixed and what's next |
 
 **Visual assets:**
 - [`assets/brand/`](assets/brand/): icon and brand board
