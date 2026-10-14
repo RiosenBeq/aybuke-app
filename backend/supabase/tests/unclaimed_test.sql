@@ -95,33 +95,42 @@ begin
 end $$;
 
 -- 4. Cancelling: a running job and a finished job the app never received are refunded
---    right away; on a delivered job a DELETE is the "got it" that clears the results.
+--    right away; on a delivered job a plain DELETE is the "got it" that clears the
+--    results, and a cancel (the app gave up waiting) settles it like the cleanup.
 do $$
 declare
   u uuid := '00000000-0000-0000-0000-0000000000b1';
   running uuid := gen_random_uuid();
   unreceived uuid := gen_random_uuid();
   received uuid := gen_random_uuid();
+  lost uuid := gen_random_uuid();
+  lost_again uuid := gen_random_uuid();
   result jsonb;
   before int;
 begin
   perform public.grant_pack(u, 10, 'tx-unclaimed-4');
   insert into public.jobs (id, user_id, operation, endpoint, cost) values
-    (running, u, 'magic_edit', 'test', 1), (unreceived, u, 'magic_edit', 'test', 1), (received, u, 'magic_edit', 'test', 1);
+    (running, u, 'magic_edit', 'test', 1), (unreceived, u, 'magic_edit', 'test', 1), (received, u, 'magic_edit', 'test', 1),
+    (lost, u, 'magic_edit', 'test', 1), (lost_again, u, 'magic_edit', 'test', 1);
   perform public.reserve_credits(u, false, 1, running);
   perform public.reserve_credits(u, false, 1, unreceived);
   perform public.reserve_credits(u, false, 1, received);
+  perform public.reserve_credits(u, false, 1, lost);
+  perform public.reserve_credits(u, false, 1, lost_again);
   update public.jobs set status = 'processing' where id = running;
-  update public.jobs set status = 'completed', outputs = '[{"base64":"AAAA"}]' where id in (unreceived, received);
+  update public.jobs set status = 'completed', outputs = '[{"base64":"AAAA"}]'
+   where id in (unreceived, received, lost, lost_again);
   perform public.deliver_outputs(received, u);
+  perform public.deliver_outputs(lost, u);
+  perform public.deliver_outputs(lost_again, u);
   select daily + subscription + purchased into before from public.credit_wallets where user_id = u;
 
-  result := public.cancel_job(running, u);
+  result := public.cancel_job(running, u, true);
   assert result->>'status' = 'cancelled', format('running job cancelled, got %s', result);
   assert (result->>'credits_remaining')::int = before + 1, 'and refunded';
 
   result := public.cancel_job(unreceived, u);
-  assert result->>'status' = 'cancelled', 'an unreceived result is cancelled';
+  assert result->>'status' = 'cancelled', 'an unreceived result is cancelled, whatever the intent';
   assert (result->>'credits_remaining')::int = before + 2, 'and refunded';
   assert (select outputs from public.jobs where id = unreceived) is null, 'its results are deleted';
 
@@ -129,19 +138,34 @@ begin
   assert result->>'status' = 'completed', 'a received result is confirmed, not cancelled';
   assert (result->>'credits_remaining')::int = before + 2, 'and stays paid';
   assert (select outputs from public.jobs where id = received) is null, 'its results are deleted';
+  result := public.cancel_job(received, u, true);
+  assert result->>'status' = 'completed' and (result->>'credits_remaining')::int = before + 2,
+    'a cancel after the "got it" changes nothing';
 
-  result := public.cancel_job(unreceived, u);
-  assert result->>'status' = 'cancelled' and (result->>'credits_remaining')::int = before + 2, 'cancelling twice refunds once';
+  -- The response with the results was lost and the app gave up: refunded, once a day.
+  result := public.cancel_job(lost, u, true);
+  assert result->>'status' = 'failed' and (result->>'credits_remaining')::int = before + 3,
+    format('lost result refunded, got %s', result);
+  assert (select error_code from public.jobs where id = lost) = 'unconfirmed';
+  result := public.cancel_job(lost_again, u, true);
+  assert result->>'status' = 'completed' and (result->>'credits_remaining')::int = before + 3,
+    'the second one that day stays paid';
+  assert (select outputs from public.jobs where id = lost_again) is null, 'its results are deleted anyway';
+
+  result := public.cancel_job(unreceived, u, true);
+  assert result->>'status' = 'cancelled' and (result->>'credits_remaining')::int = before + 3, 'cancelling twice refunds once';
   assert public.cancel_job(received, '00000000-0000-0000-0000-0000000000b2') is null, 'only the owner can cancel';
-  assert (select count(*) from public.credit_ledger where job_id in (running, unreceived) and kind = 'release') = 2;
+  assert (select count(*) from public.credit_ledger where job_id in (running, unreceived, lost) and kind = 'release') = 3;
+  assert (select count(*) from public.credit_ledger where job_id in (received, lost_again) and kind = 'release') = 0;
 end $$;
 
 -- 5. Clients can't call the job functions.
 do $$
 begin
   assert not has_function_privilege('authenticated', 'public.deliver_outputs(uuid, uuid)', 'execute');
-  assert not has_function_privilege('authenticated', 'public.cancel_job(uuid, uuid)', 'execute');
-  assert not has_function_privilege('anon', 'public.cancel_job(uuid, uuid)', 'execute');
+  assert not has_function_privilege('authenticated', 'public.settle_unconfirmed(uuid)', 'execute');
+  assert not has_function_privilege('authenticated', 'public.cancel_job(uuid, uuid, boolean)', 'execute');
+  assert not has_function_privilege('anon', 'public.cancel_job(uuid, uuid, boolean)', 'execute');
 end $$;
 
 delete from auth.users where id in ('00000000-0000-0000-0000-0000000000b1', '00000000-0000-0000-0000-0000000000b2');

@@ -76918,6 +76918,76 @@
         }
       }
     },
+    "The connection dropped before your result arrived. If it never reaches you, your credit comes back automatically within about an hour." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Verbindung ist abgebrochen, bevor dein Ergebnis da war. Kommt es nicht bei dir an, bekommst du deinen Credit innerhalb von etwa einer Stunde automatisch zurück."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se cortó la conexión antes de que llegara tu resultado. Si no te llega, te devolvemos el crédito automáticamente en aproximadamente una hora."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La connexion a été coupée avant l’arrivée de ton résultat. S’il ne t’arrive pas, ton crédit te sera rendu automatiquement d’ici une heure environ."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Koneksi terputus sebelum hasilmu sampai. Kalau hasilnya tidak sampai ke kamu, kreditmu dikembalikan otomatis dalam sekitar satu jam."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La connessione si è interrotta prima che arrivasse il tuo risultato. Se non ti arriva, il credito ti viene restituito automaticamente entro circa un'ora."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "結果が届く前に接続が切れました。結果が届かなかった場合、クレジットは約1時間以内に自動で返却されます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "결과가 도착하기 전에 연결이 끊겼어요. 결과를 받지 못하면 크레딧은 약 1시간 안에 자동으로 환불돼요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A conexão caiu antes de o resultado chegar. Se ele não chegar até você, seu crédito volta automaticamente em cerca de uma hora."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Соединение прервалось до того, как пришёл результат. Если он до тебя не дойдёт, кредит автоматически вернётся примерно в течение часа."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sonucun gelmeden bağlantı koptu. Sonuç sana ulaşmazsa kredin yaklaşık bir saat içinde otomatik olarak iade edilir."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "结果送达前连接中断了。如果你没有收到结果，点数会在大约一小时内自动退还。"
+          }
+        }
+      }
+    },
     "THE GLOW ISSUE" : {
       "localizations" : {
         "de" : {

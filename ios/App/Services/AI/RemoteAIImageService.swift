@@ -5,13 +5,18 @@ import AppCore
 /// AI-provider keys; the backend authenticates the user, meters credits,
 /// moderates and forwards the job to the model provider.
 ///
-/// Jobs are asynchronous: submit → poll until finished → download results.
+/// Jobs are asynchronous: submit → poll until finished → download results →
+/// confirm. Every balance the server reports on the way (the charge in the
+/// 202, a finished job, a cancel's refund) goes to `balanceObserver`.
 final class RemoteAIImageService: AIImageService {
     private let config: BackendConfiguration
     private let auth: AuthSessionManager
     private let session: URLSession
     private let schedule: PollingSchedule
     private let entitlementProvider: () async -> String?
+    /// The server's balance and when the request that reported it was sent,
+    /// so an older answer never overwrites a newer one.
+    private let balanceObserver: @MainActor (Int, Date) -> Void
 
     /// Uploads are capped so requests stay small and fast.
     static let uploadLongEdge = 1536
@@ -21,13 +26,15 @@ final class RemoteAIImageService: AIImageService {
         auth: AuthSessionManager,
         session: URLSession = .shared,
         schedule: PollingSchedule = .standard,
-        entitlementProvider: @escaping () async -> String?
+        entitlementProvider: @escaping () async -> String?,
+        balanceObserver: @escaping @MainActor (Int, Date) -> Void = { _, _ in }
     ) {
         self.config = config
         self.auth = auth
         self.session = session
         self.schedule = schedule
         self.entitlementProvider = entitlementProvider
+        self.balanceObserver = balanceObserver
     }
 
     // MARK: Jobs
@@ -52,9 +59,10 @@ final class RemoteAIImageService: AIImageService {
                 images.append(image)
             }
         }
+        // Not confirmed: the server refunds results that never reached the app.
         guard !images.isEmpty else { throw AIServiceError.invalidResponse }
-        // Tell the server we have them, so it clears the results right away.
-        if let jobID = finished.jobID { cancelInBackground(jobID: jobID) }
+        // "Got it": the server clears the results right away.
+        if let jobID = finished.jobID { release(jobID: jobID, cancel: false) }
         return AIJobResult(images: images, creditsRemaining: finished.creditsRemaining, requestID: finished.jobID)
     }
 
@@ -65,41 +73,88 @@ final class RemoteAIImageService: AIImageService {
         return try await decodeJob(request)
     }
 
+    /// Polls until the job is finished. A poll that can't reach the server
+    /// doesn't end the wait (the job and its credit are still there); the
+    /// schedule backs off and gives up only after `offlineGrace` without an
+    /// answer.
     private func waitUntilFinished(_ initial: GenerationResponse) async throws -> GenerationResponse {
         var response = initial
         let started = Date()
         var attempt = 0
-        var droppedPolls = 0
+        var failures = 0
+        var outageStarted: Date?
         while !response.isFinished {
             guard let jobID = response.jobID else { throw AIServiceError.invalidResponse }
-            guard Date().timeIntervalSince(started) < schedule.timeout else {
-                cancelInBackground(jobID: jobID)
-                throw AIServiceError.server(code: "timeout", message: String(localized: "This is taking longer than usual. Your credit was refunded — please try again."))
-            }
-            do {
-                try await Task.sleep(for: .seconds(schedule.delay(forAttempt: attempt)))
-            } catch {
-                // The user cancelled: stop the job so its credit is released.
-                cancelInBackground(jobID: jobID)
-                throw CancellationError()
+            let outage = outageStarted.map { Date().timeIntervalSince($0) } ?? 0
+            switch schedule.next(elapsed: Date().timeIntervalSince(started), attempt: attempt, failures: failures, outage: outage) {
+            case .poll(let delay):
+                do {
+                    try await Task.sleep(for: .seconds(delay))
+                } catch {
+                    // The user cancelled: stop the job so its credit is released.
+                    release(jobID: jobID, cancel: true)
+                    throw CancellationError()
+                }
+            case .cancel:
+                throw await cancelOverdue(jobID: jobID)
+            case .giveUp:
+                // No cancel either: if the results were handed over in an
+                // answer that never arrived, a DELETE would read as "got it".
+                throw Self.resultNotReceived
             }
             attempt += 1
             do {
-                let token = try await auth.validAccessToken()
+                // Never a new account mid-job: the job belongs to this session.
+                guard let token = try await auth.existingAccessToken() else { throw AIServiceError.unauthorized }
                 response = try await decodeJob(RequestFactory.jobStatus(jobID: jobID, config: config, accessToken: token))
-                droppedPolls = 0
-            } catch where NetworkFailure.isTransient(error) && droppedPolls < 4 {
-                // A short drop (a lift, a tunnel) shouldn't abandon a job
-                // whose credit is already reserved; ask again next round.
-                droppedPolls += 1
+                failures = 0
+                outageStarted = nil
+            } catch where PollingSchedule.isWorthRetrying(error) {
+                failures += 1
+                if outageStarted == nil { outageStarted = Date() }
+            } catch is CancellationError {
+                release(jobID: jobID, cancel: true)
+                throw CancellationError()
             }
         }
         return response
     }
 
+    /// Still running at the deadline: cancel it and say what really happened.
+    private func cancelOverdue(jobID: String) async -> Error {
+        let sent = Date()
+        guard let token = try? await auth.existingAccessToken(),
+              var request = try? RequestFactory.cancelJob(jobID: jobID, config: config, accessToken: token) else {
+            return Self.resultNotReceived
+        }
+        request.timeoutInterval = 15
+        guard let (data, response) = try? await load(request),
+              (200..<300).contains((response as? HTTPURLResponse)?.statusCode ?? 0) else {
+            return Self.resultNotReceived
+        }
+        await report(ResponseDecoder.reportedBalance(in: data), sent: sent)
+        switch ResponseDecoder.reportedStatus(in: data) {
+        case .cancelled, .failed:
+            // Cancelled or failed jobs are refunded (or were never charged).
+            return AIServiceError.server(code: "timeout", message: String(localized: "This is taking longer than usual. Your credit was refunded — please try again."))
+        default:
+            return Self.resultNotReceived
+        }
+    }
+
+    /// The connection dropped and never came back in time. The server
+    /// refunds a result that never reached the app, so no refund is claimed
+    /// beyond that.
+    static let resultNotReceived = AIServiceError.server(
+        code: "result_not_received",
+        message: String(localized: "The connection dropped before your result arrived. If it never reaches you, your credit comes back automatically within about an hour.")
+    )
+
     private func decodeJob(_ request: URLRequest) async throws -> GenerationResponse {
+        let sent = Date()
         let (data, response) = try await load(request)
         let http = response as? HTTPURLResponse
+        await report(ResponseDecoder.reportedBalance(in: data), sent: sent)
         return try ResponseDecoder.decodeGeneration(
             data: data,
             statusCode: http?.statusCode ?? 0,
@@ -107,25 +162,46 @@ final class RemoteAIImageService: AIImageService {
         )
     }
 
+    private func report(_ balance: Int?, sent: Date) async {
+        guard let balance else { return }
+        await balanceObserver(balance, sent)
+    }
+
     /// Fire-and-forget so it still runs when the calling task was cancelled.
-    /// On a pending job it cancels and refunds; on a finished one it confirms
-    /// the download, and the server deletes the results.
-    private func cancelInBackground(jobID: String) {
+    /// `cancel`: she stopped it, so the server cancels and refunds it (unless
+    /// its results already reached the app). Otherwise it's the "got it" after
+    /// the download, and the server deletes the results; retried a few times,
+    /// since a lost confirmation keeps them on the server for up to an hour.
+    private func release(jobID: String, cancel: Bool) {
         let config = config
         let auth = auth
         let session = session
+        let observer = balanceObserver
+        let makeRequest: (String, BackendConfiguration, String?) throws -> URLRequest = cancel
+            ? RequestFactory.cancelJob(jobID:config:accessToken:)
+            : RequestFactory.confirmJob(jobID:config:accessToken:)
         Task.detached(priority: .utility) {
-            guard let token = try? await auth.validAccessToken(),
-                  let request = try? RequestFactory.cancelJob(jobID: jobID, config: config, accessToken: token) else { return }
-            _ = try? await session.data(for: request)
+            for retryDelay in [0, 2, 5] as [Double] {
+                if retryDelay > 0 { try? await Task.sleep(for: .seconds(retryDelay)) }
+                let sent = Date()
+                guard let token = try? await auth.existingAccessToken(),
+                      let request = try? makeRequest(jobID, config, token),
+                      let (data, response) = try? await session.data(for: request) else { continue }
+                let status = (response as? HTTPURLResponse)?.statusCode ?? 0
+                if cancel, (200..<300).contains(status), let balance = ResponseDecoder.reportedBalance(in: data) {
+                    await observer(balance, sent)
+                }
+                if status < 500 { return }
+            }
         }
     }
 
     // MARK: Account & credits
 
-    /// Current server-side balance.
-    func fetchBalance() async throws -> Int {
-        let token = try await auth.validAccessToken()
+    /// Current server-side balance, or nil without a session. Never signs
+    /// up: reading a balance must not create an account.
+    func fetchBalance() async throws -> Int? {
+        guard let token = try await auth.existingAccessToken() else { return nil }
         let jws = await entitlementProvider()
         let (data, response) = try await load(RequestFactory.balance(config: config, accessToken: token, entitlementJWS: jws))
         return try ResponseDecoder.decodeBalance(data: data, statusCode: (response as? HTTPURLResponse)?.statusCode ?? 0)

@@ -4,7 +4,8 @@
 //   GET    /ai-image?job_id=ID  poll a job            → { job_id, status, outputs?, error?, credits_remaining? }
 //                               (credits_remaining once the job is finished)
 //   DELETE /ai-image?job_id=ID  cancel + refund a job → { job_id, status: "cancelled", credits_remaining }
-//                               (on a completed job the app received: "got it", the results are cleared)
+//          [&intent=cancel]     (on a completed job the app received: a plain DELETE is the "got it" that
+//                               clears the results; intent=cancel means the app gave up waiting)
 //   GET    /ai-image            current balance       → { credits_remaining, is_pro }
 //
 // Contract: ios/Packages/AppCore/Sources/AppCore/BackendAPI.swift
@@ -15,7 +16,7 @@
 // the output check (moderation.ts) or is blocked and refunded. The poll that
 // returns the results records the delivery; a DELETE on a delivered job
 // confirms the app has the images and clears them right away. Results the app
-// never received are refunded (cancel_job(), sweep_jobs()).
+// never received are refunded (cancel_job(), settle_unconfirmed(), sweep_jobs()).
 import type { SupabaseClient } from "npm:@supabase/supabase-js@2.117.3";
 import { resolveEntitlement } from "../_shared/apple.ts";
 import { requireUser, serviceClient } from "../_shared/auth.ts";
@@ -85,7 +86,7 @@ Deno.serve(async (req) => {
       }
       case "DELETE":
         if (!jobId) throw new HttpError(400, "bad_request", "Missing job_id.");
-        return await cancelJob(db, user.id, jobId);
+        return await cancelJob(db, user.id, jobId, url.searchParams.get("intent") === "cancel");
       default:
         throw new HttpError(405, "method_not_allowed", "Method not allowed.");
     }
@@ -335,13 +336,14 @@ async function finish(db: SupabaseClient, jobId: string, outcome: fal.ResultOutc
 
 /**
  * Cancels and refunds a job that is still running, or that finished without
- * its results ever reaching the app. On a delivered job it is the app's "got
- * it": the results are cleared right away (cancel_job()).
+ * its results ever reaching the app. On a delivered job a plain DELETE is the
+ * app's "got it" (the results are cleared right away), and `giveUp` (the app
+ * stopped waiting and never got them) settles it as the cleanup would.
  */
-async function cancelJob(db: SupabaseClient, userId: string, jobId: string): Promise<Response> {
+async function cancelJob(db: SupabaseClient, userId: string, jobId: string, giveUp: boolean): Promise<Response> {
   const job = await loadJob(db, userId, jobId);
   if ((job.status === "queued" || job.status === "processing") && job.cancel_url) await fal.cancel(job.cancel_url);
-  const { data, error } = await db.rpc("cancel_job", { p_job: job.id, p_user: userId });
+  const { data, error } = await db.rpc("cancel_job", { p_job: job.id, p_user: userId, p_cancel: giveUp });
   if (error || !data) throw new HttpError(500, "internal", "Something went wrong. Please try again.");
   const result = data as { status: JobRow["status"]; credits_remaining: number | null };
   if (result.status === "cancelled" || result.status === "completed") {

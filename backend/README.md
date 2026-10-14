@@ -11,7 +11,7 @@ iOS app ──► Supabase Auth (anonymous JWT; optional Sign in with Apple ID t
    │
    ├─► POST   /functions/v1/ai-image            enqueue job  ──► xAI request in the background (or fal's queue)
    ├─► GET    /functions/v1/ai-image?job_id=…   poll job     ──► job status / results (+ output safety check, delivery recorded)
-   ├─► DELETE /functions/v1/ai-image?job_id=…   cancel job   ──► exact credit refund; on a delivered job: results cleared
+   ├─► DELETE /functions/v1/ai-image?job_id=…   cancel job   ──► exact credit refund (&intent=cancel); on a delivered job, a plain DELETE is the "got it": results cleared
    ├─► GET    /functions/v1/ai-image            balance
    ├─► POST   /functions/v1/credits-redeem      credit pack  ──► Apple JWS verification → grant once
    ├─► POST   /functions/v1/report              "Report this image" (reason, job id) → public.reports

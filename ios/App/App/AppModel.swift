@@ -230,14 +230,20 @@ final class AppModel {
 
         let purchases = PurchaseManager()
         self.purchases = purchases
-        self.credits = CreditsManager(isServerAuthoritative: config.backend != nil)
+        let credits = CreditsManager(isServerAuthoritative: config.backend != nil)
+        self.credits = credits
 
         switch config.aiMode {
         case .backend(let backend):
             let auth = AuthSessionManager(config: backend)
-            let remote = RemoteAIImageService(config: backend, auth: auth) { [weak purchases] in
-                purchases?.entitlementJWS
-            }
+            // The pill shows the charge as soon as a job starts, and the
+            // balance (or the refund) as soon as it ends.
+            let remote = RemoteAIImageService(
+                config: backend,
+                auth: auth,
+                entitlementProvider: { [weak purchases] in purchases?.entitlementJWS },
+                balanceObserver: { [weak credits] balance, asOf in credits?.sync(serverBalance: balance, asOf: asOf) }
+            )
             self.remote = remote
             self.ai = AIServiceRouter(cloud: remote, onDevice: OnDeviceImageService())
         case .direct(let direct):
@@ -399,6 +405,11 @@ final class AppModel {
         syncReminders()
         // A trial cancelled in Settings › Subscriptions loses its reminder.
         Task { await purchases.refreshEntitlements() }
+        // Refunds can land while she's away (a result that never reached the app).
+        Task {
+            await refreshServerBalance()
+            syncWidgets()
+        }
     }
 
     /// The trial reminder exists only while a trial runs and will renew.
@@ -417,8 +428,9 @@ final class AppModel {
             return true
         }
         do {
+            let sent = Date()
             let balance = try await remote.redeemCreditPack(signedTransaction: signedTransaction)
-            self.credits.sync(serverBalance: balance)
+            self.credits.sync(serverBalance: balance, asOf: sent)
             return true
         } catch {
             // The transaction stays unfinished, so StoreKit redelivers it and we retry.
@@ -622,12 +634,15 @@ final class AppModel {
         }
     }
 
-    /// Reads the balance only for an existing session: a balance alone never
-    /// creates an account (the local free allowance shows until then).
+    /// Reads the balance whenever a session exists, consent or not, so
+    /// credits bought before consenting show at launch too. Never creates an
+    /// account to read it (the local free allowance shows until one exists),
+    /// and never under 13, when the app sends nothing to us.
     func refreshServerBalance() async {
-        guard let remote, hasAIConsent, await remote.existingUserID() != nil else { return }
+        guard let remote, allowsCloudAI || allowsPurchases, await remote.existingUserID() != nil else { return }
+        let sent = Date()
         if let balance = try? await remote.fetchBalance() {
-            credits.sync(serverBalance: balance)
+            credits.sync(serverBalance: balance, asOf: sent)
         }
     }
 
@@ -1312,6 +1327,9 @@ final class AppModel {
         "job_failed": String(localized: "This creation failed. Your credit was refunded."),
         "empty_result": String(localized: "The AI returned no image. Your credit was refunded."),
         "timeout": String(localized: "This took too long. Your credit was refunded."),
+        // The app stopped waiting through a lost connection; the server refunds a
+        // result that never reached the app, so nothing more is promised.
+        "result_not_received": String(localized: "The connection dropped before your result arrived. If it never reaches you, your credit comes back automatically within about an hour."),
         "rate_limited": String(localized: "Too many requests. Please wait a moment."),
         "pro_required": String(localized: "This is part of Pro."),
         "retry_unavailable": String(localized: "This result can't be retried for free anymore."),

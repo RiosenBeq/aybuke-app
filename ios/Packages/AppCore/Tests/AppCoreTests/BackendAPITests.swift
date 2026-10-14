@@ -145,6 +145,71 @@ final class BackendAPITests: XCTestCase {
         XCTAssertGreaterThan(total, schedule.timeout, "the deadline, not the attempt count, ends polling")
     }
 
+    func testCancelAndConfirmAreDifferentRequests() throws {
+        let cancel = try RequestFactory.cancelJob(jobID: "j1", config: config, accessToken: "t")
+        XCTAssertEqual(cancel.httpMethod, "DELETE")
+        XCTAssertEqual(cancel.url?.absoluteString, "https://demo.supabase.co/functions/v1/ai-image?job_id=j1&intent=cancel")
+        let confirm = try RequestFactory.confirmJob(jobID: "j1", config: config, accessToken: "t")
+        XCTAssertEqual(confirm.httpMethod, "DELETE")
+        XCTAssertEqual(confirm.url?.absoluteString, "https://demo.supabase.co/functions/v1/ai-image?job_id=j1")
+        XCTAssertEqual(confirm.value(forHTTPHeaderField: "Authorization"), "Bearer t")
+    }
+
+    func testPollingRidesOutDroppedConnections() {
+        let schedule = PollingSchedule.standard
+        XCTAssertEqual(schedule.next(elapsed: 5, attempt: 0, failures: 0), .poll(after: 1))
+        XCTAssertEqual(schedule.next(elapsed: 60, attempt: 30, failures: 0), .poll(after: 3))
+        // A drop backs off instead of abandoning a job whose credit is reserved.
+        XCTAssertEqual(schedule.next(elapsed: 20, attempt: 5, failures: 1, outage: 0), .poll(after: 2))
+        XCTAssertEqual(schedule.next(elapsed: 40, attempt: 5, failures: 5, outage: 20), .poll(after: 13))
+        XCTAssertEqual(schedule.next(elapsed: 100, attempt: 5, failures: 40, outage: 80), .poll(after: 13))
+        // Past the deadline a job the server still runs is cancelled (and refunded)…
+        XCTAssertEqual(schedule.next(elapsed: 180, attempt: 70, failures: 0), .cancel)
+        // …while an unreachable server keeps being asked, even past the deadline…
+        XCTAssertEqual(schedule.next(elapsed: 200, attempt: 70, failures: 2, outage: 10), .poll(after: 3))
+        // …until it has been out of reach for the whole grace period.
+        XCTAssertEqual(schedule.next(elapsed: 300, attempt: 70, failures: 9, outage: 120), .giveUp)
+        // Back from the background long after the deadline: a poll cut off on
+        // the way out isn't an outage yet, so the app asks again.
+        XCTAssertEqual(schedule.next(elapsed: 900, attempt: 20, failures: 1, outage: 0), .poll(after: 2))
+
+        // Two minutes without a connection still leave room for many attempts.
+        var outage: TimeInterval = 0
+        var failures = 1
+        while case .poll(let wait) = schedule.next(elapsed: 30 + outage, attempt: 10, failures: failures, outage: outage) {
+            outage += wait
+            failures += 1
+        }
+        XCTAssertGreaterThanOrEqual(failures, 10)
+        XCTAssertGreaterThanOrEqual(outage, schedule.offlineGrace)
+    }
+
+    func testOnlyPassingFailuresAreRetried() {
+        XCTAssertTrue(PollingSchedule.isWorthRetrying(AIServiceError.offline))
+        XCTAssertTrue(PollingSchedule.isWorthRetrying(AIServiceError.timedOut))
+        XCTAssertTrue(PollingSchedule.isWorthRetrying(AIServiceError.network("Check your internet connection and try again.")))
+        XCTAssertTrue(PollingSchedule.isWorthRetrying(AIServiceError.rateLimited(retryAfter: 20)))
+        XCTAssertTrue(PollingSchedule.isWorthRetrying(AIServiceError.server(code: "http_502", message: "busy")))
+        XCTAssertTrue(PollingSchedule.isWorthRetrying(AIServiceError.server(code: "internal", message: "oops")))
+        XCTAssertFalse(PollingSchedule.isWorthRetrying(AIServiceError.server(code: "not_found", message: "gone")))
+        XCTAssertFalse(PollingSchedule.isWorthRetrying(AIServiceError.unauthorized))
+        XCTAssertFalse(PollingSchedule.isWorthRetrying(AIServiceError.contentBlocked("no")))
+        XCTAssertFalse(PollingSchedule.isWorthRetrying(CancellationError()))
+    }
+
+    func testReportedBalanceAndStatus() {
+        XCTAssertEqual(ResponseDecoder.reportedBalance(in: Data(#"{"job_id":"j1","status":"queued","credits_remaining":2}"#.utf8)), 2)
+        let failed = Data(#"{"job_id":"j1","status":"failed","error":{"code":"provider_failed","message":"x"},"credits_remaining":3}"#.utf8)
+        XCTAssertEqual(ResponseDecoder.reportedBalance(in: failed), 3)
+        let empty = Data(#"{"error":{"code":"insufficient_credits","message":"x","credits_remaining":0}}"#.utf8)
+        XCTAssertEqual(ResponseDecoder.reportedBalance(in: empty), 0)
+        XCTAssertNil(ResponseDecoder.reportedBalance(in: Data(#"{"job_id":"j1","status":"processing"}"#.utf8)))
+        XCTAssertNil(ResponseDecoder.reportedBalance(in: Data("<html>".utf8)))
+        let cancelled = Data(#"{"job_id":"j1","status":"cancelled","credits_remaining":3}"#.utf8)
+        XCTAssertEqual(ResponseDecoder.reportedStatus(in: cancelled), .cancelled)
+        XCTAssertNil(ResponseDecoder.reportedStatus(in: Data("{}".utf8)))
+    }
+
     func testMapsErrors() {
         let credits = Data(#"{"error":{"code":"insufficient_credits","message":"No credits","credits_remaining":0}}"#.utf8)
         XCTAssertEqual(ResponseDecoder.error(from: credits, statusCode: 402), .insufficientCredits(remaining: 0))
