@@ -46,7 +46,9 @@ Options:
 
 Captions: per language a list of {scene, title, subtitle}, optionally with a
 "chip" (a short callout) and, for the before/after slide, "before" and
-"after"; "mac" holds the Mac lists. *Asterisks* mark the accent word.
+"after"; "mac" holds the Mac lists. *Asterisks* mark the accent word, a
+no-break space (\\u00a0) keeps words together, and "\\n" marks where a title
+breaks when it needs two lines.
 
 The look: Aura gradients that flow from one image into the next, a headline in
 Poppins ExtraBold with the accent word in New York Italic (Japanese, Korean and
@@ -506,7 +508,13 @@ def arrange(style: Style, text: str, max_width: float) -> list[list[Word]]:
 
 
 def fit(script: Script, text: str, max_width: float, sizes, max_lines: int, **style) -> tuple[Style, list]:
-    """The biggest size whose lines fit; past the smallest, more lines."""
+    """The biggest size whose lines fit; past the smallest, more lines. A "\\n"
+    marks where to break only when the text doesn't fit on one line."""
+    if "\n" in text:
+        one = Style(script, sizes[0], **style)
+        lines = arrange(one, text.replace("\n", " "), max_width)
+        if len(lines) == 1 and line_width(one, lines[0]) <= max_width + 0.5:
+            return one, lines
     result = None
     for size in sizes:
         s = Style(script, size, **style)
@@ -1471,7 +1479,7 @@ def save(image: Image.Image, path: Path, size) -> None:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0], formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("captures", type=Path)
     parser.add_argument("--out", type=Path, help="write under this folder instead of the repo")
     parser.add_argument("--lang", help="comma-separated languages")
@@ -1494,6 +1502,9 @@ def main() -> None:
             ("mac", MAC, captures / "mac", "mac", mac_slide, mac_captions, MAC_LOOKS)]
     for name, size, base, sub, render, lists, looks in jobs:
         if name not in sets:
+            continue
+        if not base.exists() and not args.stand_ins:
+            print(f"skip the {name} set: no {base}")
             continue
         backgrounds: dict = {}
         for lang in langs:
