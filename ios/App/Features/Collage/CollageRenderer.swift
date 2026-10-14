@@ -70,6 +70,15 @@ enum CollageArt {
     /// The white veil over the blurred photo background.
     static let backdropVeil: CGFloat = 0.22
     static let captionFontName = "Courier-Bold"
+    /// Caption sizes as shares of its band's height.
+    static let captionFontShare: CGFloat = 0.34
+    static let captionPillHeight: CGFloat = 0.58
+    static let captionPillPadding: CGFloat = 0.3
+    static let captionPillOpacity: CGFloat = 0.8
+
+    /// A blurred photo can be light or dark under the caption, so the
+    /// caption sits on a white pill there.
+    static func captionHasPill(_ background: CollageBackground) -> Bool { background == .photo }
 
     static func pixels(_ rect: CollageRect, in canvas: CGSize) -> CGRect {
         CGRect(x: rect.x * canvas.width, y: rect.y * canvas.height, width: rect.width * canvas.width, height: rect.height * canvas.height)
@@ -149,20 +158,44 @@ struct CollageSnapshot {
 /// picture, or one carousel slide at a time so a five-slide canvas never
 /// becomes one giant bitmap.
 enum CollageRenderer {
-    static func image(_ snapshot: CollageSnapshot, size: PixelSize) -> UIImage {
+    static func image(_ snapshot: CollageSnapshot, size: PixelSize) -> UIImage? {
         let canvas = CGSize(width: size.width, height: size.height)
-        return ShareRenderer.renderer(canvas, opaque: true).image { context in
-            draw(snapshot, canvas: canvas, in: context.cgContext)
+        return bitmap(width: size.width, height: size.height) { cg in
+            draw(snapshot, canvas: canvas, in: cg)
         }
     }
 
     /// One slide: the whole canvas drawn shifted, so only its columns land.
-    static func slide(_ snapshot: CollageSnapshot, _ slice: CarouselSlicer.Slice, canvas size: PixelSize) -> UIImage {
+    static func slide(_ snapshot: CollageSnapshot, _ slice: CarouselSlicer.Slice, canvas size: PixelSize) -> UIImage? {
         let canvas = CGSize(width: size.width, height: size.height)
-        return ShareRenderer.renderer(CGSize(width: slice.width, height: slice.height), opaque: true).image { context in
-            context.cgContext.translateBy(x: -CGFloat(slice.x), y: 0)
-            draw(snapshot, canvas: canvas, in: context.cgContext)
+        return bitmap(width: slice.width, height: slice.height) { cg in
+            cg.translateBy(x: -CGFloat(slice.x), y: 0)
+            draw(snapshot, canvas: canvas, in: cg)
         }
+    }
+
+    /// An opaque 8-bit Display P3 bitmap. UIGraphicsImageRenderer keeps an
+    /// alpha channel even when asked for an opaque image, which would make
+    /// every export a big PNG; this way it's a JPEG, and photos keep their
+    /// wide colour.
+    private static func bitmap(width: Int, height: Int, draw: (CGContext) -> Void) -> UIImage? {
+        guard width > 0, height > 0,
+              let space = CGColorSpace(name: CGColorSpace.displayP3),
+              let context = CGContext(data: nil, width: width, height: height, bitsPerComponent: 8, bytesPerRow: 0,
+                                      space: space, bitmapInfo: CGImageAlphaInfo.noneSkipLast.rawValue) else { return nil }
+        // UIKit's top-left origin, so images, text and symbols draw as usual.
+        context.translateBy(x: 0, y: CGFloat(height))
+        context.scaleBy(x: 1, y: -1)
+        UIGraphicsPushContext(context)
+        draw(context)
+        UIGraphicsPopContext()
+        return context.makeImage().map { UIImage(cgImage: $0) }
+    }
+
+    /// A drop shadow `drop` pixels below. Shadow offsets ignore the flip
+    /// above (they're in the bitmap's own y-up space), hence the minus.
+    private static func setDropShadow(_ cg: CGContext, drop: CGFloat, blur: CGFloat, opacity: CGFloat) {
+        cg.setShadow(offset: CGSize(width: 0, height: -drop), blur: blur, color: UIColor.black.withAlphaComponent(opacity).cgColor)
     }
 
     private static func draw(_ snapshot: CollageSnapshot, canvas: CGSize, in cg: CGContext) {
@@ -177,7 +210,7 @@ enum CollageRenderer {
             cg.saveGState()
             cg.translateBy(x: rect.midX, y: rect.midY)
             cg.rotate(by: strip.rotation * .pi / 180)
-            cg.setShadow(offset: CGSize(width: 0, height: short * 0.008), blur: short * 0.025, color: UIColor.black.withAlphaComponent(0.28).cgColor)
+            setDropShadow(cg, drop: short * 0.008, blur: short * 0.025, opacity: 0.28)
             cg.addPath(CollageArt.stripPath(strip, in: CGRect(x: -rect.width / 2, y: -rect.height / 2, width: rect.width, height: rect.height)))
             cg.setFillColor(UIColor.brandInk.cgColor)
             cg.fillPath(using: .evenOdd)
@@ -196,7 +229,7 @@ enum CollageRenderer {
                 let card = CGRect(x: -frame.width / 2, y: -frame.height / 2, width: frame.width, height: frame.height)
                 let radius = min(radii.card * canvas.height, min(card.width, card.height) / 2)
                 cg.saveGState()
-                cg.setShadow(offset: CGSize(width: 0, height: short * 0.01), blur: short * 0.035, color: UIColor.black.withAlphaComponent(0.22).cgColor)
+                setDropShadow(cg, drop: short * 0.01, blur: short * 0.035, opacity: 0.22)
                 cg.addPath(CGPath(roundedRect: card, cornerWidth: radius, cornerHeight: radius, transform: nil))
                 cg.setFillColor(UIColor.white.cgColor)
                 cg.fillPath()
@@ -224,7 +257,7 @@ enum CollageRenderer {
                 ShareRenderer.drawSymbol(sticker.symbol, in: rect, color: sticker.color, outline: .white, angle: decoration.rotation)
             case .palette:
                 cg.saveGState()
-                cg.setShadow(offset: CGSize(width: 0, height: short * 0.004), blur: short * 0.014, color: UIColor.black.withAlphaComponent(0.12).cgColor)
+                setDropShadow(cg, drop: short * 0.004, blur: short * 0.014, opacity: 0.12)
                 let radius = min(rect.height * 0.16, rect.width / 2)
                 cg.addPath(CGPath(roundedRect: rect, cornerWidth: radius, cornerHeight: radius, transform: nil))
                 cg.setFillColor(UIColor.white.cgColor)
@@ -244,13 +277,24 @@ enum CollageRenderer {
         if let frame = snapshot.layout.captionFrame {
             let rect = CollageArt.pixels(frame, in: canvas)
             let text = CollageArt.captionText(design.caption, date: snapshot.date)
-            var size = rect.height * 0.34
+            let hasPill = CollageArt.captionHasPill(design.background)
+            let padding = hasPill ? rect.height * CollageArt.captionPillPadding : 0
+            let available = rect.width - 2 * padding
+            var size = rect.height * CollageArt.captionFontShare
             var font = UIFont(name: CollageArt.captionFontName, size: size) ?? .monospacedSystemFont(ofSize: size, weight: .bold)
             // Shrink to fit, like the preview's minimum scale factor.
             let width = (text as NSString).size(withAttributes: [.font: font]).width
-            if width > rect.width, width > 0 {
-                size *= max(rect.width / width, 0.3)
+            if width > available, width > 0 {
+                size *= max(available / width, 0.3)
                 font = font.withSize(size)
+            }
+            if hasPill {
+                let textWidth = min((text as NSString).size(withAttributes: [.font: font]).width, available)
+                let height = rect.height * CollageArt.captionPillHeight
+                let pill = CGRect(x: rect.midX - textWidth / 2 - padding, y: rect.midY - height / 2, width: textWidth + 2 * padding, height: height)
+                cg.addPath(CGPath(roundedRect: pill, cornerWidth: height / 2, cornerHeight: height / 2, transform: nil))
+                cg.setFillColor(UIColor.white.withAlphaComponent(CollageArt.captionPillOpacity).cgColor)
+                cg.fillPath()
             }
             ShareRenderer.drawText(text, font: font, color: design.background.isDark ? .white : .brandInk, centeredIn: rect)
         }

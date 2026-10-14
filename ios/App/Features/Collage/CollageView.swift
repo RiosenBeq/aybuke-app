@@ -126,15 +126,23 @@ struct CollageView: View {
                         .cardStyle()
                     }
                     .buttonStyle(.pressable)
+                    // A layout tapped here is the one she starts with.
                     HStack(spacing: 10) {
                         ForEach(CollageStyle.allCases, id: \.self) { style in
-                            CollageLayoutThumbnail(style: style, count: 4)
-                                .padding(6)
-                                .background(Palette.surface, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+                            Button {
+                                Haptics.selection()
+                                model.design.style = style
+                                isPickerPresented = true
+                            } label: {
+                                CollageLayoutThumbnail(style: style, count: 4)
+                                    .padding(6)
+                                    .background(Palette.surface, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+                            }
+                            .buttonStyle(.pressable)
+                            .accessibilityLabel(style.title)
                         }
                     }
                     .frame(maxWidth: 420)
-                    .accessibilityHidden(true)
                 }
                 .padding(.horizontal, Metrics.gutter)
                 .padding(.top, 8)
@@ -389,7 +397,7 @@ struct CollageView: View {
     }
 
     private var sizePanel: some View {
-        VStack(alignment: .leading, spacing: 10) {
+        VStack(alignment: .leading, spacing: 8) {
             ScrollView(.horizontal) {
                 HStack(spacing: 8) {
                     ForEach(CollageFormat.presets, id: \.self) { format in
@@ -399,22 +407,20 @@ struct CollageView: View {
                             withAnimation(.snappy) { model.design.format = format }
                         }
                     }
-                    SelectableChip(title: "Carousel", symbolName: "rectangle.split.3x1", isSelected: model.design.format.isCarousel) {
-                        Haptics.selection()
-                        withAnimation(.snappy) { model.design.format = .carousel(slides: lastSlides) }
-                    }
                 }
                 .padding(.horizontal, Metrics.gutter)
             }
             .scrollIndicators(.hidden)
             .padding(.horizontal, -Metrics.gutter)
 
-            if model.design.format.isCarousel {
-                HStack(spacing: 6) {
-                    Text("Slides")
-                        .font(.subheadline.weight(.semibold))
-                        .foregroundStyle(Palette.textPrimary)
-                    Spacer(minLength: 0)
+            // The carousel gets its own row, with its slide count beside it.
+            HStack(spacing: 6) {
+                SelectableChip(title: "Carousel", symbolName: "rectangle.split.3x1", isSelected: model.design.format.isCarousel) {
+                    Haptics.selection()
+                    withAnimation(.snappy) { model.design.format = .carousel(slides: lastSlides) }
+                }
+                Spacer(minLength: 8)
+                if model.design.format.isCarousel {
                     ForEach(Array(CollageFormat.slideRange), id: \.self) { count in
                         let isSelected = model.design.format.slides == count
                         Button {
@@ -434,6 +440,8 @@ struct CollageView: View {
                         .accessibilityAddTraits(isSelected ? .isSelected : [])
                     }
                 }
+            }
+            if model.design.format.isCarousel {
                 Text("One wide picture, cut into 4:5 slides that swipe as one.")
                     .font(.caption)
                     .foregroundStyle(Palette.textSecondary)

@@ -343,11 +343,19 @@ private struct CollageCaptionView: View {
 
     var body: some View {
         let rect = CollageArt.pixels(frame, in: canvas)
+        let hasPill = CollageArt.captionHasPill(design.background)
         Text(verbatim: CollageArt.captionText(design.caption, date: Date()))
-            .font(.custom(CollageArt.captionFontName, fixedSize: rect.height * 0.34))
+            .font(.custom(CollageArt.captionFontName, fixedSize: rect.height * CollageArt.captionFontShare))
             .foregroundStyle(design.background.isDark ? Color.white : Palette.ink)
             .lineLimit(1)
             .minimumScaleFactor(0.3)
+            .padding(.horizontal, hasPill ? rect.height * CollageArt.captionPillPadding : 0)
+            .frame(height: hasPill ? rect.height * CollageArt.captionPillHeight : rect.height)
+            .background {
+                if hasPill {
+                    Capsule().fill(Color.white.opacity(CollageArt.captionPillOpacity))
+                }
+            }
             .frame(width: rect.width, height: rect.height)
             .position(x: rect.midX, y: rect.midY)
             .allowsHitTesting(false)

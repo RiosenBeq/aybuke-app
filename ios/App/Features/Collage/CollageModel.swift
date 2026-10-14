@@ -81,16 +81,18 @@ final class CollageModel {
     }
 
     private func importPicked() async -> Int {
-        let items = pickerItems
-        var next = photos.filter { photo in photo.item.map { items.contains($0) } ?? true }
-        let known = next.compactMap(\.item)
-        let fresh = Array(items.filter { !known.contains($0) }.prefix(Self.maxPhotos - next.count))
-        guard next.count != photos.count || !fresh.isEmpty else { return 0 }
+        let kept = stillPicked()
+        let known = kept.compactMap(\.item)
+        let fresh = Array(pickerItems.filter { !known.contains($0) }.prefix(Self.maxPhotos - kept.count))
+        guard kept.count != photos.count || !fresh.isEmpty else { return 0 }
         isImporting = true
         defer { isImporting = false }
-        let decoded = await Self.load(fresh, maxPixel: CollageImaging.decodeSize(forCount: next.count + fresh.count))
+        let decoded = await Self.load(fresh, maxPixel: CollageImaging.decodeSize(forCount: kept.count + fresh.count))
+        // Start again from the photos as they are now: she may have moved
+        // one, or dropped a file, while these loaded.
+        var next = stillPicked()
         var failed = 0
-        for (item, result) in zip(fresh, decoded) {
+        for (item, result) in zip(fresh, decoded) where next.count < Self.maxPhotos && !next.contains(where: { $0.item == item }) {
             guard let result else {
                 failed += 1
                 continue
@@ -99,6 +101,11 @@ final class CollageModel {
         }
         setPhotos(next)
         return failed
+    }
+
+    /// The photos the picker still selects, plus every dropped file.
+    private func stillPicked() -> [Photo] {
+        photos.filter { photo in photo.item.map { pickerItems.contains($0) } ?? true }
     }
 
     /// Three at a time: each holds a whole file's data until it's decoded.
@@ -299,7 +306,7 @@ final class CollageModel {
             var files: [(data: Data, fileExtension: String)] = []
             for slice in CarouselSlicer.slices(of: canvas, count: format.slides) {
                 let encoded = autoreleasepool {
-                    ImageExporter.encode(CollageRenderer.slide(snapshot, slice, canvas: canvas), sourceType: sourceType)
+                    CollageRenderer.slide(snapshot, slice, canvas: canvas).flatMap { ImageExporter.encode($0, sourceType: sourceType) }
                 }
                 guard let encoded else { return nil }
                 files.append(encoded)
@@ -318,6 +325,8 @@ final class CollageModel {
         guard isReady, !isExporting else { return nil }
         isExporting = true
         defer { isExporting = false }
+        // A blurred background picked a moment ago may still be on its way.
+        await backdropTask?.value
         return try await work()
     }
 
@@ -391,8 +400,11 @@ extension CollageModel {
         let art = ScreenshotFixtures.generatedArt(count: 6)
         let pool = [ScreenshotFixtures.goldenLandscape, art[0], ScreenshotFixtures.groupPhoto, art[1], art[2],
                     ScreenshotFixtures.cutoutPhoto, art[3], art[4], art[5]]
-        let next = pool.prefix(count).map { image in
-            Photo(image: image, sourceType: nil, swatch: CollageImaging.swatch(of: image))
+        // `-GLCollageAI YES`: the first photo carries an AI marking, to check
+        // that the export is marked as a composite with AI.
+        let marked = defaults.bool(forKey: "GLCollageAI")
+        let next = pool.prefix(count).enumerated().map { index, image in
+            Photo(image: image, sourceType: marked && index == 0 ? .trainedAlgorithmicMedia : nil, swatch: CollageImaging.swatch(of: image))
         }
         var design = CollageDesign()
         if let style = defaults.string(forKey: "GLCollageStyle").flatMap(CollageStyle.init(rawValue:)) { design.style = style }
@@ -424,6 +436,7 @@ extension CollageModel {
         let folder = FileManager.default.temporaryDirectory.appendingPathComponent("glowlit-collage-qa", isDirectory: true)
         try? FileManager.default.removeItem(at: folder)
         try? FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
+        await backdropTask?.value
         if design.format.isCarousel {
             for (index, slide) in (await renderSlides() ?? []).enumerated() {
                 try? slide.data.write(to: folder.appendingPathComponent("slide-\(index + 1).\(slide.fileExtension)"))

@@ -509,13 +509,13 @@ private struct Builder {
 
     // MARK: Scattered prints
 
-    /// Instant-camera prints (the instax mini's 54 × 86 mm card) on a
+    /// Instant-camera prints (a 54 × 86 mm mini print card) on a
     /// jittered grid, each tilted a little the other way from its neighbour.
     mutating func addPolaroids(_ count: Int, seed: UInt64) {
         let cardAspect = 54.0 / 86.0
         var random = CollageRandom(seed: seed)
-        let spots = scatter(count, cardAspects: Array(repeating: cardAspect, count: count), fill: 1.18 - 0.35 * gapShare,
-                            jitter: 0.12, maxTilt: 9, random: &random)
+        let spots = scatter(count, cardAspects: Array(repeating: cardAspect, count: count), sameSize: true,
+                            fill: 1.18 - 0.35 * gapShare, jitter: 0.12, maxTilt: 9, random: &random)
         for spot in spots {
             let card = spot.box
             let window = Box(x: card.x + card.w * 0.074, y: card.y + card.h * 0.0756, w: card.w * 0.852, h: card.h * 0.7209)
@@ -528,7 +528,8 @@ private struct Builder {
     mutating func addScrapbook(_ count: Int, aspects: [Double], seed: UInt64) {
         var random = CollageRandom(seed: seed)
         let shapes = aspects.map { min(max($0, 0.65), 1.5) }
-        let spots = scatter(count, cardAspects: shapes, fill: 1.02 - 0.3 * gapShare, jitter: 0.08, maxTilt: 5, random: &random)
+        let spots = scatter(count, cardAspects: shapes, sameSize: false, fill: 1.02 - 0.3 * gapShare, jitter: 0.08, maxTilt: 5,
+                            random: &random)
         for (index, spot) in spots.enumerated() {
             let card = spot.box
             let border = 0.045 * min(card.w, card.h)
@@ -569,24 +570,44 @@ private struct Builder {
 
     /// Cards on a jittered grid of rows, as big as the cells allow (`fill`
     /// above 1 lets neighbours overlap), kept on the canvas after tilting.
-    private func scatter(_ count: Int, cardAspects: [Double], fill: Double, jitter: Double, maxTilt: Double,
+    /// `sameSize` keeps every card alike (instant prints); otherwise a row
+    /// with fewer prints gets bigger ones, like a real scrapbook page.
+    private func scatter(_ count: Int, cardAspects: [Double], sameSize: Bool, fill: Double, jitter: Double, maxTilt: Double,
                          random: inout CollageRandom) -> [Spot] {
         let typical = cardAspects.reduce(0, +) / Double(max(cardAspects.count, 1))
+        func widthOfCells(_ items: Int, _ plan: [Int]) -> Double {
+            content.w / Double(sameSize ? plan.max() ?? 1 : items)
+        }
         var best = (rows: 1, area: 0.0)
         for rows in 1...count {
-            let columns = Double(CollageLayout.distribute(count, into: rows).max() ?? 1)
-            let height = min(content.h / Double(rows), content.w / columns / typical)
-            let area = height * height * typical
+            let plan = CollageLayout.distribute(count, into: rows)
+            let area = plan.reduce(0.0) { total, items in
+                let height = min(content.h / Double(rows), widthOfCells(items, plan) / typical)
+                return total + Double(items) * height * height * typical
+            }
             if area > best.area * 1.0001 { best = (rows, area) }
         }
         let plan = CollageLayout.distribute(count, into: best.rows)
         let cellHeight = content.h / Double(best.rows)
-        let cellWidth = content.w / Double(plan.max() ?? 1)
         let edge = 0.012 * short
 
+        // Rows are spread by their tallest card, so a row of smaller prints
+        // doesn't leave a band of empty page.
+        var first = 0
+        let rowHeights = plan.map { items -> Double in
+            defer { first += items }
+            let width = widthOfCells(items, plan)
+            return cardAspects[first..<(first + items)].map { min(cellHeight, width / $0) * fill }.max() ?? 0
+        }
+        let rowGap = (content.h - rowHeights.reduce(0, +)) / Double(plan.count + 1)
+
         var spots: [Spot] = []
+        var rowTop = content.y + rowGap
         for (row, items) in plan.enumerated() {
+            let cellWidth = widthOfCells(items, plan)
             let rowStart = content.x + (content.w - Double(items) * cellWidth) / 2
+            let rowCenter = rowTop + rowHeights[row] / 2
+            rowTop += rowHeights[row] + rowGap
             for item in 0..<items {
                 let cardAspect = cardAspects[spots.count]
                 var height = min(cellHeight, cellWidth / cardAspect) * fill
@@ -594,7 +615,7 @@ private struct Builder {
                 let sign: Double = (row + item).isMultiple(of: 2) ? -1 : 1
                 let tilt = sign * maxTilt * (0.35 + 0.65 * random.next())
                 var centerX = rowStart + (Double(item) + 0.5) * cellWidth + (random.next() - 0.5) * 2 * jitter * cellWidth
-                var centerY = content.y + (Double(row) + 0.5) * cellHeight + (random.next() - 0.5) * 2 * jitter * cellHeight
+                var centerY = rowCenter + (random.next() - 0.5) * 2 * jitter * cellHeight
                 // The tilted card's bounding box stays inside the content:
                 // first shrunk to fit (one row on a wide carousel), then moved.
                 let radians = tilt * .pi / 180

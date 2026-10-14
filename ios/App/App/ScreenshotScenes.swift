@@ -48,7 +48,8 @@ enum ScreenshotScene: String, CaseIterable {
     /// `-GLCollageFormat portrait|square|story|classic|carousel` (`-GLCollageSlides <2…5>`),
     /// `-GLCollageBackground <name>`, `-GLCollageCaption <text>`, `-GLCollagePanel
     /// layout|size|style|text`, `-GLCollageSelect <slot>`, `-GLCollageEmpty YES` (before
-    /// photos) and `-GLCollageExport YES` (writes the export to tmp/glowlit-collage-qa).
+    /// photos), `-GLCollageAI YES` (the first photo is marked as AI-made) and
+    /// `-GLCollageExport YES` (writes the export to tmp/glowlit-collage-qa).
     case collage
 
     static var current: ScreenshotScene? {
