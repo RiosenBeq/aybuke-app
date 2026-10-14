@@ -16,9 +16,14 @@ final class Creation {
     var pixelHeight: Int
     /// Hearted in My Works.
     var isFavorite: Bool = false
+    /// Who made the pixels when it wasn't Glowlit's own pipeline
+    /// (`imagePlaygroundSource`); `nil` for everything else.
+    var source: String? = nil
 
     /// Stored for images that only received manual adjustments (no AI).
     static let manualEditRaw = "adjust"
+    /// Made by Apple's Image Playground sheet.
+    static let imagePlaygroundSource = "imagePlayground"
 
     init(
         id: UUID = UUID(),
@@ -28,7 +33,8 @@ final class Creation {
         prompt: String?,
         imageFileName: String,
         pixelWidth: Int,
-        pixelHeight: Int
+        pixelHeight: Int,
+        source: String? = nil
     ) {
         self.id = id
         self.createdAt = createdAt
@@ -38,11 +44,17 @@ final class Creation {
         self.imageFileName = imageFileName
         self.pixelWidth = pixelWidth
         self.pixelHeight = pixelHeight
+        self.source = source
     }
 
     /// The AI operation behind this image; `nil` when it was only adjusted
     /// by hand (so exports make no AI claim).
     var operation: AIOperation? { AIOperation(rawValue: operationRaw) }
 
-    var kindTitle: String { operation.map { L10n.core($0.displayName) } ?? String(localized: "Adjusted") }
+    var isFromImagePlayground: Bool { source == Self.imagePlaygroundSource }
+
+    var kindTitle: String {
+        if isFromImagePlayground { return String(localized: "Made with Image Playground") }
+        return operation.map { L10n.core($0.displayName) } ?? String(localized: "Adjusted")
+    }
 }

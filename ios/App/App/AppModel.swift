@@ -107,6 +107,8 @@ final class AppModel {
     let notifier = GlowNotifier()
     /// The first-run tour ("Next, Next…" through every tab).
     let tour = TourGuide()
+    /// Prompt upgrades and ideas from Apple's on-device model (when available).
+    let writer = OnDeviceWriter()
 
     // MARK: Account (optional Sign in with Apple)
     /// Signed in with Apple: Pro and credits follow her to other iPhones.
@@ -554,7 +556,7 @@ final class AppModel {
 
     /// Adds images to the library (SwiftData metadata + files on disk).
     /// `operation == nil` marks a manually adjusted photo (no AI claim).
-    func saveToLibrary(_ images: [UIImage], operation: AIOperation?, title: String, prompt: String?) async {
+    func saveToLibrary(_ images: [UIImage], operation: AIOperation?, title: String, prompt: String?, source: String? = nil) async {
         let context = container.mainContext
         for image in images {
             let stored = await Task.detached(priority: .utility) { () -> (String, PixelSize)? in
@@ -569,7 +571,8 @@ final class AppModel {
                 prompt: prompt,
                 imageFileName: name,
                 pixelWidth: size.width,
-                pixelHeight: size.height
+                pixelHeight: size.height,
+                source: source
             ))
         }
         try? context.save()

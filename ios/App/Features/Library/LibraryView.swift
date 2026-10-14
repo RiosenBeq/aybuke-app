@@ -270,7 +270,8 @@ struct CreationDetailView: View {
         guard let image else { return }
         Task {
             do {
-                let usedCloudAI = creation.operation.map { !$0.runsOnDevice } ?? false
+                // Apple made Image Playground pictures, so they don't carry Glowlit's mark.
+                let usedCloudAI = !creation.isFromImagePlayground && (creation.operation.map { !$0.runsOnDevice } ?? false)
                 try await PhotoLibrarySaver.save(image, operation: creation.operation, watermark: !app.purchases.isPro && usedCloudAI)
                 app.showToast("Saved to Photos", style: .success)
                 Haptics.success()

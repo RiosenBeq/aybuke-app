@@ -37,7 +37,7 @@ Glowlit is designed with teen users in mind. That's why we apply high-privacy de
 - **No public profiles or feeds.** Nothing about you is public in Glowlit. Your creations are shared only if you choose to share them.
 - **No sharing for marketing.** We don't sell personal information or share it for advertising or marketing, and we don't work with data brokers. We don't send you marketing messages.
 - **Your library stays on your device.** The creations you keep are stored only on your iPhone.
-- **Cloud processing only after you opt in.** Nothing leaves your device for a cloud AI feature until you agree.
+- **Cloud processing only after you opt in.** Nothing leaves your device for one of our cloud AI features until you agree. Apple's Image Playground has its own notice (section 6).
 - **No AI training.** We never use your photos, prompts or results to train AI models, and we use only AI provider plans whose terms don't allow training on customer content without our permission, which we never give.
 - **No face recognition.** We don't perform face recognition, create biometric templates or face embeddings, or try to identify the people in your photos.
 
@@ -68,6 +68,8 @@ Much of Glowlit works without sending anything to us. The following data is stor
 **On-device features.** Remove background (using Apple's Vision framework), Adjust and the "quick glow" enhance during onboarding process your photos entirely on your iPhone.
 
 **On-device face checks.** Three features look at faces, only on your iPhone, with Apple's Vision framework: **Best shot** ranks the selfies you pick by light, focus and how clearly the face shows; the **kindness reminder** counts how many people are in a photo; and the **likeness check** compares an AI edit with your original photo (face proportions and skin lightness) so it can offer a free retry if the result drifted. Nothing is stored or sent to us, nobody is identified or recognised, and nothing rates anyone's looks.
+
+**On-device writing help.** On devices with Apple Intelligence, the idea and prompt suggestions in Create ("Inspire me" and "Make it magic") may be written by Apple's on-device language model. Your text and the suggestions stay on your device and are not sent to us or to Apple.
 
 **Photo access.** You pick photos with Apple's system photo picker, so Glowlit can see only the photos you choose, not your whole library. To save results to your Photos library, the app asks for add-only permission, which lets it add images but not read your library.
 
@@ -121,7 +123,7 @@ If you email us, we receive your email address, the content of your message and 
 
 ## 6. How cloud AI processing works
 
-1. **Your consent comes first.** Before any photo or prompt leaves your device for a cloud AI feature, the app shows an opt-in screen that names the companies that process it. Nothing is sent until you agree. If you're under the age required by law, a parent or guardian must give or approve this consent (sections 3, 17 and 19). You can withdraw consent at any time in **Settings → Cloud AI processing**, and on-device features keep working.
+1. **Your consent comes first.** Before any photo or prompt leaves your device for one of our cloud AI features, the app shows an opt-in screen that names the companies that process it. Nothing is sent until you agree. If you're under the age required by law, a parent or guardian must give or approve this consent (sections 3, 17 and 19). You can withdraw consent at any time in **Settings → Cloud AI processing**, and on-device features keep working.
 2. **Upload.** The app sends your input over an encrypted connection to our backend (Supabase Edge Functions; hosting region: [Supabase region, e.g. EU (Frankfurt)]).
 3. **Safety checks.** Your prompt is checked by our safety filters before the request is processed (section 9).
 4. **AI processing.** Our backend passes your input to our AI inference provider for that request only. By default, this is xAI (X.AI LLC and its affiliates, USA), which runs its Grok Imagine image models. If we change providers, jobs may instead go to fal.ai (Features & Labels, Inc., USA), which runs third-party models (where fal.ai uses a model developer's own service to run a model, for example Google for its Gemini image models, that developer also processes the request), or directly to Google (Gemini API) or OpenAI (Images API). The current list is in section 12.
@@ -130,6 +132,8 @@ If you email us, we receive your email address, the content of your message and 
 7. **On your device.** If you keep the result, it's saved to your library on your iPhone.
 
 We use only provider plans whose terms don't allow using customer content to train their models without our permission, and we never give that permission. We never use your photos, prompts or results to train AI models, sell them, or use them for advertising, marketing or data mining.
+
+**Create with Image Playground (Apple).** On devices that support it, Create also offers **Create with Image Playground**, Apple's own image maker. It's Apple's feature, not one of our cloud AI features, so our consent screen and credits don't apply. Your description goes to Apple's Image Playground, which makes the image on your device or, from iOS 27, on Apple's Private Cloud Compute servers, under Apple's terms and with Apple's own usage limits; on those versions the app tells you before the first use. The app allows only Apple's illustration styles and turns off the option to use people from your photo library. Glowlit receives only the finished image, which is kept in your library on your device and is never sent to us.
 
 ## 7. Why we use your data and our legal bases
 
@@ -182,7 +186,7 @@ These filters are the only automated decisions we make about your requests. They
 We share personal data only as described below. We require every service provider that receives your data to protect it at least as well as described in this policy, under written contracts (data processing agreements) that allow them to use your data only to provide services to us.
 
 - **Service providers (processors)**: our backend and hosting provider and our AI inference providers, listed in section 12. They process data only on our instructions.
-- **Apple**: Apple processes your payments and subscriptions as the seller and as an independent controller, under [Apple's Privacy Policy](https://www.apple.com/legal/privacy/). We don't send your content to Apple. We receive Apple-signed transaction data to verify purchases. If you sign in with Apple, Apple verifies your sign-in, and we contact Apple to revoke that sign-in when you delete your account.
+- **Apple**: Apple processes your payments and subscriptions as the seller and as an independent controller, under [Apple's Privacy Policy](https://www.apple.com/legal/privacy/). We don't send your content to Apple, except your description when you choose **Create with Image Playground** (section 6). We receive Apple-signed transaction data to verify purchases. If you sign in with Apple, Apple verifies your sign-in, and we contact Apple to revoke that sign-in when you delete your account.
 - **Authorities**: we disclose data to courts, law enforcement or other authorities where the law requires it, for example in response to a valid legal order, or where necessary to protect someone's safety. We report child sexual abuse material to the competent authorities (such as NCMEC in the United States) where the law requires it.
 - **Business transfers**: if we're involved in a merger, acquisition or sale of all or part of our business, personal data may be transferred to the new owner, who must continue to protect it in line with this policy. We'll inform you where the law requires it.
 - **Services you choose to share with**: when you share a result through the share sheet, Instagram or another app, you send it to that service yourself, and its own terms and privacy policy apply.

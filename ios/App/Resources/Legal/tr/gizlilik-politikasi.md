@@ -35,7 +35,7 @@ Glowlit genç kullanıcılar düşünülerek tasarlanmıştır. Bu nedenle yaş�
 - **Herkese açık profil veya akış yok.** Glowlit içinde hakkınızdaki hiçbir şey herkese açık değildir. Oluşturduklarınız yalnızca siz paylaşmayı seçerseniz paylaşılır.
 - **Pazarlama için paylaşım yok.** Kişisel verileri satmayız, reklam veya pazarlama amacıyla paylaşmayız ve veri simsarlarıyla çalışmayız. Size pazarlama mesajı göndermeyiz.
 - **Kütüphaneniz cihazınızda kalır.** Sakladığınız görseller yalnızca iPhone'unuzda tutulur.
-- **Bulut işleme yalnızca onayınızla.** Siz kabul edene kadar bir bulut yapay zekâ özelliği için cihazınızdan hiçbir şey çıkmaz.
+- **Bulut işleme yalnızca onayınızla.** Siz kabul edene kadar bulut yapay zekâ özelliklerimiz için cihazınızdan hiçbir şey çıkmaz. Apple'ın Image Playground özelliğinin kendi bildirimi vardır (6. bölüm).
 - **Yapay zekâ eğitimi yok.** Fotoğraflarınızı, istemlerinizi veya sonuçlarınızı yapay zekâ modellerini eğitmek için asla kullanmayız; yalnızca müşteri içeriğiyle iznimiz olmadan model eğitilmesine izin vermeyen yapay zekâ sağlayıcı planlarını kullanırız ve bu izni asla vermeyiz.
 - **Yüz tanıma yok.** Yüz tanıma yapmayız, biyometrik şablon veya yüz vektörü (embedding) oluşturmayız, fotoğraflarınızdaki kişileri tanımlamaya çalışmayız.
 
@@ -66,6 +66,8 @@ Glowlit uygulamasının büyük bölümü bize hiçbir şey göndermeden çalı�
 **Cihaz üzerindeki özellikler.** Remove background (Apple'ın Vision çerçevesiyle), Adjust ve tanıtım sırasındaki "quick glow" iyileştirmesi fotoğraflarınızı tamamen iPhone'unuzda işler.
 
 **Cihaz üzerindeki yüz kontrolleri.** Üç özellik, yalnızca iPhone'unuzda ve Apple'ın Vision çerçevesiyle yüzlere bakar: **Best shot**, seçtiğiniz selfie'leri ışık, netlik ve yüzün ne kadar net göründüğüne göre sıralar; **nezaket hatırlatması** bir fotoğrafta kaç kişi olduğunu sayar; **benzerlik kontrolü** ise sonuç sizden uzaklaşmışsa ücretsiz yeniden deneme sunabilmek için bir yapay zekâ düzenlemesini orijinal fotoğrafınızla karşılaştırır (yüz oranları ve cilt açıklığı). Hiçbir şey saklanmaz veya bize gönderilmez, kimse tanınmaz veya kimliği belirlenmez ve hiçbir şey kimsenin görünüşünü puanlamaz.
+
+**Cihaz üzerinde yazım yardımı.** Apple Intelligence destekli cihazlarda, Create bölümündeki fikir ve istem önerileri ("Inspire me" ve "Make it magic") Apple'ın cihaz üzerindeki dil modeli tarafından yazılabilir. Yazdıklarınız ve öneriler cihazınızda kalır; bize veya Apple'a gönderilmez.
 
 **Fotoğraf erişimi.** Fotoğrafları Apple'ın sistem fotoğraf seçicisiyle seçersiniz; bu nedenle Glowlit tüm kitaplığınızı değil, yalnızca seçtiğiniz fotoğrafları görebilir. Sonuçları Fotoğraflar kitaplığınıza kaydetmek için uygulama yalnızca ekleme izni ister; bu izin görsel eklemeye olanak tanır, kitaplığınızı okumaya değil.
 
@@ -119,7 +121,7 @@ Bize e-posta gönderirseniz e-posta adresinizi, mesajınızın içeriğini ve ek
 
 ## 6. Bulut yapay zekâ işleme nasıl çalışır?
 
-1. **Önce onayınız.** Bir bulut yapay zekâ özelliği için herhangi bir fotoğraf veya istem cihazınızdan çıkmadan önce uygulama, içeriği işleyecek şirketlerin adlarını gösteren bir onay ekranı açar. Siz kabul etmeden hiçbir şey gönderilmez. Kanunun öngördüğü yaşın altındaysanız bu onayı veliniz veya vasiniz vermeli ya da onaylamalıdır (3., 17. ve 19. bölümler). Onayınızı **Ayarlar → Cloud AI processing** üzerinden istediğiniz zaman geri alabilirsiniz; cihaz üzerindeki özellikler çalışmaya devam eder.
+1. **Önce onayınız.** Bulut yapay zekâ özelliklerimizden biri için herhangi bir fotoğraf veya istem cihazınızdan çıkmadan önce uygulama, içeriği işleyecek şirketlerin adlarını gösteren bir onay ekranı açar. Siz kabul etmeden hiçbir şey gönderilmez. Kanunun öngördüğü yaşın altındaysanız bu onayı veliniz veya vasiniz vermeli ya da onaylamalıdır (3., 17. ve 19. bölümler). Onayınızı **Ayarlar → Cloud AI processing** üzerinden istediğiniz zaman geri alabilirsiniz; cihaz üzerindeki özellikler çalışmaya devam eder.
 2. **Yükleme.** Uygulama girdinizi şifreli bir bağlantıyla arka ucumuza gönderir (Supabase Edge Functions; barındırma bölgesi: [Supabase bölgesi, örn. AB (Frankfurt)]).
 3. **Güvenlik kontrolleri.** İsteminiz, işlenmeden önce güvenlik filtrelerimizden geçer (9. bölüm).
 4. **Yapay zekâ işleme.** Arka ucumuz girdinizi yalnızca o istek için yapay zekâ çıkarım (inference) sağlayıcımıza iletir. Varsayılan sağlayıcı, Grok Imagine görsel modellerini çalıştıran xAI'dır (X.AI LLC ve bağlı şirketleri, ABD). Sağlayıcı değiştirirsek işler, üçüncü taraf modelleri çalıştıran fal.ai'a (Features & Labels, Inc., ABD; fal.ai bir modeli çalıştırmak için model geliştiricisinin kendi hizmetini kullanıyorsa, örneğin Gemini görsel modelleri için Google, o geliştirici de isteği işler) ya da doğrudan Google'a (Gemini API) veya OpenAI'a (Images API) gidebilir. Güncel liste 12. bölümdedir.
@@ -128,6 +130,8 @@ Bize e-posta gönderirseniz e-posta adresinizi, mesajınızın içeriğini ve ek
 7. **Cihazınızda.** Sonucu saklamayı seçerseniz, iPhone'unuzdaki kütüphanenize kaydedilir.
 
 Yalnızca müşteri içeriğinin iznimiz olmadan model eğitiminde kullanılmasına izin vermeyen sağlayıcı planlarını kullanırız ve bu izni asla vermeyiz. Fotoğraflarınızı, istemlerinizi veya sonuçlarınızı yapay zekâ eğitmek, satmak ya da reklam, pazarlama veya veri madenciliği için asla kullanmayız.
+
+**Create with Image Playground (Apple).** Destekleyen cihazlarda Create bölümü, Apple'ın kendi görsel oluşturucusu olan **Create with Image Playground** seçeneğini de sunar. Bu, bizim bulut yapay zekâ özelliklerimizden biri değil, Apple'ın özelliğidir; bu nedenle onay ekranımız ve kredilerimiz bu seçenek için geçerli değildir. Açıklamanız Apple'ın Image Playground özelliğine gider; görsel cihazınızda veya iOS 27'den itibaren Apple'ın Private Cloud Compute sunucularında, Apple'ın koşulları ve kendi kullanım sınırlarıyla oluşturulur; bu sürümlerde uygulama ilk kullanımdan önce sizi bilgilendirir. Uygulama yalnızca Apple'ın illüstrasyon stillerine izin verir ve fotoğraf arşivinizdeki kişileri kullanma seçeneğini kapatır. Glowlit yalnızca bitmiş görseli alır; bu görsel cihazınızdaki kütüphanede tutulur ve bize hiçbir zaman gönderilmez.
 
 ## 7. Verilerinizi neden kullanıyoruz ve hukuki dayanaklarımız
 
@@ -180,7 +184,7 @@ Bu filtreler, istekleriniz hakkında verdiğimiz tek otomatik kararlardır. GDPR
 Kişisel verileri yalnızca aşağıda açıklandığı şekilde paylaşırız. Verilerinizi alan her hizmet sağlayıcısının, verilerinizi en az bu politikada açıklandığı kadar korumasını; yazılı sözleşmelerle (veri işleme sözleşmeleri) ve yalnızca bize hizmet sunmak için kullanmasını şart koşarız.
 
 - **Hizmet sağlayıcılar (veri işleyenler)**: 12. bölümde listelenen arka uç ve barındırma sağlayıcımız ile yapay zekâ çıkarım sağlayıcılarımız. Verileri yalnızca talimatlarımız doğrultusunda işlerler.
-- **Apple**: Apple, ödemelerinizi ve aboneliklerinizi satıcı sıfatıyla ve bağımsız veri sorumlusu olarak, [Apple Gizlilik Politikası](https://www.apple.com/legal/privacy/) kapsamında işler. İçeriğinizi Apple'a göndermeyiz; satın alımları doğrulamak için Apple tarafından imzalanmış işlem verilerini alırız. Apple ile giriş yaparsanız girişinizi Apple doğrular; hesabınızı sildiğinizde bu girişi iptal etmek için Apple ile iletişime geçeriz.
+- **Apple**: Apple, ödemelerinizi ve aboneliklerinizi satıcı sıfatıyla ve bağımsız veri sorumlusu olarak, [Apple Gizlilik Politikası](https://www.apple.com/legal/privacy/) kapsamında işler. **Create with Image Playground** seçeneğini kullandığınızda açıklamanız dışında (6. bölüm) içeriğinizi Apple'a göndermeyiz; satın alımları doğrulamak için Apple tarafından imzalanmış işlem verilerini alırız. Apple ile giriş yaparsanız girişinizi Apple doğrular; hesabınızı sildiğinizde bu girişi iptal etmek için Apple ile iletişime geçeriz.
 - **Yetkili makamlar**: Kanunun gerektirdiği hâllerde (örneğin geçerli bir hukuki karara yanıt olarak) veya bir kişinin güvenliğini korumak için gerekli olduğunda verileri mahkemelere, kolluğa veya diğer yetkili makamlara açıklarız. Kanunun gerektirdiği hâllerde çocukların cinsel istismarı materyalini yetkili makamlara (örneğin ABD'de NCMEC) bildiririz.
 - **İşletme devirleri**: Birleşme, devralma veya işletmemizin tamamının ya da bir kısmının satışı söz konusu olursa, kişisel veriler yeni sahibe devredilebilir; yeni sahip verileri bu politikaya uygun şekilde korumaya devam etmek zorundadır. Kanunun gerektirdiği hâllerde sizi bilgilendiririz.
 - **Paylaşmayı seçtiğiniz hizmetler**: Bir sonucu paylaşım menüsü, Instagram veya başka bir uygulama aracılığıyla paylaştığınızda, içeriği o hizmete siz göndermiş olursunuz ve o hizmetin kendi koşulları ile gizlilik politikası geçerli olur.

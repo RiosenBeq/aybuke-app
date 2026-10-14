@@ -8,12 +8,16 @@ struct ResultsView: View {
     let prompt: String?
     let operation: AIOperation
     var requestID: String?
+    /// `Creation.imagePlaygroundSource` for Apple-made images: no mark, no
+    /// report to Glowlit (we never see them), credited to Image Playground.
+    var source: String? = nil
 
     @Environment(AppModel.self) private var app
     @Environment(\.requestReview) private var requestReview
     @State private var selection = 0
     @State private var showReport = false
-    @State private var celebrate = 0
+    /// Keys the develop reveal, so each image of this batch plays it once.
+    @State private var batch = UUID()
 
     private var current: UIImage? {
         images.indices.contains(selection) ? images[selection] : images.first
@@ -23,20 +27,17 @@ struct ResultsView: View {
         VStack(spacing: 16) {
             TabView(selection: $selection) {
                 ForEach(images.indices, id: \.self) { index in
-                    Image(uiImage: images[index])
-                        .resizable()
-                        .scaledToFit()
-                        .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
-                        .shadow(color: Palette.shadow, radius: 16, y: 8)
-                        .padding(.horizontal, Metrics.gutter)
-                        .tag(index)
-                        .accessibilityLabel("Generated image \(index + 1) of \(images.count)")
+                    page(index)
                 }
             }
             .tabViewStyle(.page(indexDisplayMode: images.count > 1 ? .always : .never))
-            .overlay { SparkleBurst(trigger: celebrate) }
 
-            if let prompt, !prompt.isEmpty {
+            if isFromImagePlayground {
+                Label("Made with Image Playground", systemImage: "apple.image.playground")
+                    .font(.footnote)
+                    .foregroundStyle(Palette.textSecondary)
+                    .padding(.horizontal, Metrics.gutter)
+            } else if let prompt, !prompt.isEmpty {
                 Text(prompt)
                     .font(.footnote)
                     .foregroundStyle(Palette.textSecondary)
@@ -79,30 +80,45 @@ struct ResultsView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                Menu {
-                    Button(role: .destructive) {
-                        showReport = true
-                    } label: {
-                        Label("Report this image", systemImage: "flag")
-                    }
-                } label: {
-                    Image(systemName: "ellipsis.circle")
-                }
-                .accessibilityLabel("More")
+                if !isFromImagePlayground { reportMenu }
             }
         }
         .reportDialog(isPresented: $showReport, requestID: requestID)
-        .task {
-            try? await Task.sleep(for: .milliseconds(250))
-            celebrate += 1
+    }
+
+    private var isFromImagePlayground: Bool { source == Creation.imagePlaygroundSource }
+
+    private var reportMenu: some View {
+        Menu {
+            Button(role: .destructive) {
+                showReport = true
+            } label: {
+                Label("Report this image", systemImage: "flag")
+            }
+        } label: {
+            Image(systemName: "ellipsis.circle")
         }
+        .accessibilityLabel("More")
+    }
+
+    private func page(_ index: Int) -> some View {
+        let key = batch.uuidString + "-" + String(index)
+        return Image(uiImage: images[index])
+            .resizable()
+            .scaledToFit()
+            .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+            .developReveal(id: key, haptic: index == 0)
+            .shadow(color: Palette.shadow, radius: 16, y: 8)
+            .padding(.horizontal, Metrics.gutter)
+            .tag(index)
+            .accessibilityLabel("Generated image \(index + 1) of \(images.count)")
     }
 
     private func save() {
         guard let current else { return }
         Task {
             do {
-                try await PhotoLibrarySaver.save(current, operation: operation, watermark: !app.purchases.isPro)
+                try await PhotoLibrarySaver.save(current, operation: operation, watermark: !app.purchases.isPro && !isFromImagePlayground)
                 app.showToast("Saved to Photos", style: .success)
                 Haptics.success()
                 if app.registerHappyMoment() {
