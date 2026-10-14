@@ -11,13 +11,23 @@ struct VideoSource: Identifiable {
 @MainActor
 @Observable
 final class VideoEditorModel {
+    /// Save writes the video to Photos; Share hands the file to the share sheet.
+    enum ExportAction { case save, share }
+
     let asset: AVURLAsset
     private(set) var duration: Double = 0
+    /// The clip is longer than `VideoEngine.maxDuration`, so only its start is used.
+    private(set) var isCutToLimit = false
+    /// AVFoundation couldn't read the clip (no video track, or a broken file).
+    private(set) var loadFailed = false
     private(set) var thumbnail: UIImage?
     private(set) var effectThumbnails: [RetroEffect: UIImage] = [:]
     private(set) var silencePlan: SilenceCutter.Plan?
     private(set) var isAnalyzing = true
     private(set) var isExporting = false
+    private(set) var exportProgress: Double = 0
+    /// Set when leaving the app stopped an export, so it can start again on return.
+    private(set) var interruptedAction: ExportAction?
     private(set) var resultDuration: Double = 0
     @ObservationIgnored private var frameRate: Double = 30
 
@@ -39,6 +49,25 @@ final class VideoEditorModel {
     @ObservationIgnored private var rebuildTask: Task<Void, Never>?
     @ObservationIgnored private var loopObserver: NSObjectProtocol?
 
+    @ObservationIgnored private var exportTask: Task<URL, Error>?
+    @ObservationIgnored private var cancelledByUser = false
+    @ObservationIgnored private var leftAppDuringExport = false
+    /// Restarts in a row, so an export that keeps getting stopped can't loop.
+    @ObservationIgnored private var restarts = 0
+    /// The edits last saved or shared: closing after that needs no warning.
+    private var savedEdits: Edits?
+
+    private struct Edits: Equatable {
+        let cutSilences: Bool
+        let effect: RetroEffect?
+        let showsExtra: Bool
+        let trim: ClosedRange<Double>
+    }
+
+    private var edits: Edits {
+        Edits(cutSilences: cutSilences, effect: effect, showsExtra: showsExtra, trim: trim)
+    }
+
     init(url: URL) {
         asset = AVURLAsset(url: url)
         player.isMuted = false
@@ -47,8 +76,18 @@ final class VideoEditorModel {
 
     var hasSound: Bool { silencePlan != nil }
 
+    /// Changes she'd lose by closing: anything but the untouched clip, unless
+    /// exactly this version was already saved or shared.
+    var hasUnsavedEdits: Bool {
+        let edited = cutSilences || effect != nil || trim != 0...max(duration, 0.1)
+        return edited && edits != savedEdits
+    }
+
     func load() async {
-        duration = min((try? await VideoEngine.duration(of: asset)) ?? 0, VideoEngine.maxDuration)
+        let full = (try? await VideoEngine.duration(of: asset)) ?? 0
+        guard full.isFinite, full > 0 else { return failLoading() }
+        isCutToLimit = full > VideoEngine.maxDuration + 0.5
+        duration = min(full, VideoEngine.maxDuration)
         trim = 0...max(duration, 0.1)
         thumbnail = await VideoEngine.thumbnail(of: asset)
         frameRate = await VideoEngine.frameRate(of: asset)
@@ -58,11 +97,16 @@ final class VideoEditorModel {
                 Dictionary(uniqueKeysWithValues: RetroEffect.videoEffects.map { ($0, $0.apply(to: small, options: .plain)) })
             }.value
         }
-        await rebuild()
+        guard await rebuild() else { return failLoading() }
         let levels = (try? await VideoEngine.loudness(of: asset)) ?? []
         silencePlan = levels.isEmpty ? nil : SilenceCutter.plan(levels: levels, window: VideoEngine.levelWindow)
         isAnalyzing = false
         if cutSilences { await rebuild() }
+    }
+
+    private func failLoading() {
+        loadFailed = true
+        isAnalyzing = false
     }
 
     func trimChanged() {
@@ -88,11 +132,13 @@ final class VideoEditorModel {
         }
     }
 
-    private func rebuild() async {
+    /// False when the clip can't be turned into a playable composition.
+    @discardableResult
+    private func rebuild() async -> Bool {
         let ranges = keptRanges
-        guard !ranges.isEmpty, let composition = try? await VideoEngine.composition(of: asset, keeping: ranges) else { return }
+        guard !ranges.isEmpty, let composition = try? await VideoEngine.composition(of: asset, keeping: ranges) else { return false }
         let videoComposition = try? await VideoEngine.videoComposition(for: composition, effect: effect, showsExtra: showsExtra, fps: frameRate)
-        guard !Task.isCancelled else { return }
+        guard !Task.isCancelled else { return true }
         resultDuration = ranges.reduce(0) { $0 + ($1.upperBound - $1.lowerBound) }
         let item = AVPlayerItem(asset: composition)
         item.videoComposition = videoComposition
@@ -104,8 +150,12 @@ final class VideoEditorModel {
                 self?.player.play()
             }
         }
-        player.play()
-        isPlaying = true
+        // Exports render on the same GPU; the preview waits.
+        if !isExporting {
+            player.play()
+            isPlaying = true
+        }
+        return true
     }
 
     func togglePlayback() {
@@ -114,19 +164,105 @@ final class VideoEditorModel {
         Haptics.tap()
     }
 
-    /// Renders the final video into a temporary .mp4.
-    func export() async throws -> URL {
+    /// Renders the final video and, for Save, writes it to Photos. Returns the
+    /// file for Share. Throws `CancellationError` when she cancels, and also
+    /// when leaving the app stopped the export: then `interruptedAction` is
+    /// set and the view starts it again once she's back.
+    func run(_ action: ExportAction, isRestart: Bool = false) async throws -> URL? {
+        guard !isExporting, !loadFailed else { return nil }
         isExporting = true
-        defer { isExporting = false }
-        let composition = try await VideoEngine.composition(of: asset, keeping: keptRanges)
-        let videoComposition = try await VideoEngine.videoComposition(for: composition, effect: effect, showsExtra: showsExtra, fps: frameRate)
-        return try await VideoEngine.export(composition, videoComposition: videoComposition)
+        exportProgress = 0
+        interruptedAction = nil
+        cancelledByUser = false
+        leftAppDuringExport = false
+        if !isRestart { restarts = 0 }
+        player.pause()
+        isPlaying = false
+        let edits = self.edits
+        // Keeps the app running for the Photos write and an export that's
+        // nearly done. When the time runs out, stop cleanly instead of being
+        // killed; the export starts again on return.
+        let background = BackgroundTime(name: "glowlit.video-export") { [weak self] in
+            self?.leftAppDuringExport = true
+            self?.exportTask?.cancel()
+        }
+        defer {
+            background.end()
+            exportTask = nil
+            isExporting = false
+        }
+        do {
+            // Ask before the export, so a long render isn't wasted on a "no".
+            if action == .save { try await VideoEngine.requestPhotosAccess() }
+            let ranges = keptRanges, effect = effect, showsExtra = showsExtra, fps = frameRate, asset = asset
+            let task = Task<URL, Error> {
+                let composition = try await VideoEngine.composition(of: asset, keeping: ranges)
+                let videoComposition = try await VideoEngine.videoComposition(for: composition, effect: effect, showsExtra: showsExtra, fps: fps)
+                try Task.checkCancellation()
+                return try await VideoEngine.export(composition, videoComposition: videoComposition) { [weak self] value in
+                    self?.exportProgress = value
+                }
+            }
+            exportTask = task
+            if cancelledByUser { task.cancel() }
+            let url = try await task.value
+            if action == .save {
+                defer { try? FileManager.default.removeItem(at: url) }
+                try await VideoEngine.saveToPhotos(url)
+            }
+            savedEdits = edits
+            restarts = 0
+            return action == .share ? url : nil
+        } catch {
+            // The Mac keeps rendering in the background, so a failure there is real.
+            let stoppedByLeaving = !Platform.isMac && (leftAppDuringExport || VideoEngine.isInterruption(error)
+                || UIApplication.shared.applicationState != .active)
+            if !cancelledByUser, stoppedByLeaving, restarts < 3 {
+                restarts += 1
+                interruptedAction = action
+                throw CancellationError()
+            }
+            throw error
+        }
+    }
+
+    func cancelExport() {
+        cancelledByUser = true
+        interruptedAction = nil
+        exportTask?.cancel()
+    }
+
+    /// The app went to the background while exporting: iOS stops the GPU work.
+    func noteLeftApp() {
+        if isExporting { leftAppDuringExport = true }
     }
 
     func stop() {
         player.pause()
         isPlaying = false
         if let loopObserver { NotificationCenter.default.removeObserver(loopObserver) }
+    }
+}
+
+/// A UIKit background-task assertion that ends exactly once.
+@MainActor
+private final class BackgroundTime {
+    private var identifier: UIBackgroundTaskIdentifier = .invalid
+
+    init(name: String, onExpiry: @escaping @MainActor () -> Void) {
+        identifier = UIApplication.shared.beginBackgroundTask(withName: name) { [weak self] in
+            // UIKit calls this on the main thread.
+            MainActor.assumeIsolated {
+                onExpiry()
+                self?.end()
+            }
+        }
+    }
+
+    func end() {
+        guard identifier != .invalid else { return }
+        UIApplication.shared.endBackgroundTask(identifier)
+        identifier = .invalid
     }
 }
 
@@ -137,8 +273,12 @@ struct VideoEditorView: View {
 
     @Environment(AppModel.self) private var app
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.scenePhase) private var scenePhase
     @State private var model: VideoEditorModel
     @State private var shareItems: ActivityItems?
+    /// The exported file on the share sheet, deleted when the sheet closes.
+    @State private var sharedFile: URL?
+    @State private var showDiscardAlert = false
 
     init(source: VideoSource) {
         self.source = source
@@ -147,80 +287,144 @@ struct VideoEditorView: View {
 
     var body: some View {
         NavigationStack {
-            VStack(spacing: 14) {
-                // The player takes whatever height is left, at 9:16.
-                GeometryReader { proxy in
-                    let height = min(proxy.size.height, proxy.size.width * 16 / 9)
-                    playerCard
-                        .frame(width: height * 9 / 16, height: height)
-                        .position(x: proxy.size.width / 2, y: proxy.size.height / 2)
+            Group {
+                if model.loadFailed {
+                    loadError
+                } else {
+                    editor
                 }
-                controls
-                    .readableWidth(Metrics.compactWidth, alignment: .center)
             }
-            .padding(.horizontal, Metrics.gutter)
-            .padding(.bottom, 8)
             .background(Palette.background.ignoresSafeArea())
             .navigationTitle("Video")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button {
-                        model.stop()
-                        try? FileManager.default.removeItem(at: source.url)
-                        dismiss()
+                        // Esc on the Mac still reaches this under the export overlay.
+                        if model.isExporting {
+                            model.cancelExport()
+                        } else if model.hasUnsavedEdits {
+                            showDiscardAlert = true
+                        } else {
+                            close()
+                        }
                     } label: { Image(systemName: "xmark") }
                     .accessibilityLabel("Close")
                     .macKeyboardShortcut(.cancelAction)
                 }
-                ToolbarItemGroup(placement: .primaryAction) {
-                    Button { Task { await shareVideo() } } label: { Image(systemName: "paperplane.fill") }
-                        .accessibilityLabel("Share")
-                    Button("Save") { Task { await saveVideo() } }
-                        .fontWeight(.bold)
-                        .macKeyboardShortcut(KeyboardShortcut("s"))
+                if !model.loadFailed {
+                    ToolbarItemGroup(placement: .primaryAction) {
+                        Button { Task { await perform(.share) } } label: { Image(systemName: "paperplane.fill") }
+                            .accessibilityLabel("Share")
+                        Button("Save") { Task { await perform(.save) } }
+                            .fontWeight(.bold)
+                            .macKeyboardShortcut(KeyboardShortcut("s"))
+                    }
                 }
             }
         }
         .tint(Palette.accent)
         .overlay {
             if model.isExporting {
-                GeneratingOverlay(title: String(localized: "Saving your video…"))
+                // On-device work: no AI tips, but real progress and a way out.
+                GeneratingOverlay(title: String(localized: "Saving your video…"), progress: model.exportProgress,
+                                  showsTips: false, onCancel: { model.cancelExport() })
                     .transition(.opacity)
             }
         }
         .animation(.easeInOut(duration: 0.25), value: model.isExporting)
-        .task { await model.load() }
+        .alert("Discard your edits?", isPresented: $showDiscardAlert) {
+            Button("Discard", role: .destructive) { close() }
+            Button("Keep editing", role: .cancel) {}
+        } message: {
+            Text("Save to Photos first if you want to keep them.")
+        }
+        .task {
+            await model.load()
+            #if DEBUG
+            applyScreenshotOptions()
+            #endif
+        }
         .onDisappear { model.stop() }
-        .shareSheet(item: $shareItems)
+        .onChange(of: scenePhase) { _, phase in
+            if phase == .background { model.noteLeftApp() }
+            if phase == .active { restartInterruptedExport() }
+        }
+        .shareSheet(item: $shareItems) {
+            if let sharedFile { try? FileManager.default.removeItem(at: sharedFile) }
+            sharedFile = nil
+        }
+    }
+
+    private var editor: some View {
+        VStack(spacing: 14) {
+            // The player takes whatever height is left, at 9:16.
+            GeometryReader { proxy in
+                let height = min(proxy.size.height, proxy.size.width * 16 / 9)
+                playerCard
+                    .frame(width: height * 9 / 16, height: height)
+                    .position(x: proxy.size.width / 2, y: proxy.size.height / 2)
+            }
+            controls
+                .readableWidth(Metrics.compactWidth, alignment: .center)
+        }
+        .padding(.horizontal, Metrics.gutter)
+        .padding(.bottom, 8)
+    }
+
+    private var loadError: some View {
+        VStack(spacing: 16) {
+            Image(systemName: "video.slash")
+                .font(.system(size: 44, weight: .semibold))
+                .foregroundStyle(Palette.accent)
+                .accessibilityHidden(true)
+            Text("Couldn't open that video. Try another one.")
+                .font(.headline)
+                .foregroundStyle(Palette.textPrimary)
+                .multilineTextAlignment(.center)
+            Button("Choose another video") { chooseAnotherVideo() }
+                .buttonStyle(.primary)
+                .frame(maxWidth: 260)
+                .padding(.top, 8)
+        }
+        .padding(Metrics.gutter)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 
     private var playerCard: some View {
-        PlayerView(player: model.player)
-            .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
-            .overlay(alignment: .topTrailing) {
-                if model.resultDuration > 0 {
-                    Text(timeLabel)
-                        .font(.caption.weight(.bold).monospacedDigit())
-                        .foregroundStyle(Palette.textPrimary)
-                        .padding(.horizontal, 10)
-                        .padding(.vertical, 5)
-                        .liquidGlass(in: Capsule())
-                        .padding(10)
+        Button { model.togglePlayback() } label: {
+            PlayerView(player: model.player)
+                .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
+                .overlay(alignment: .topTrailing) {
+                    if model.resultDuration > 0 {
+                        Text(timeLabel)
+                            .font(.caption.weight(.bold).monospacedDigit())
+                            .foregroundStyle(Palette.textPrimary)
+                            .padding(.horizontal, 10)
+                            .padding(.vertical, 5)
+                            .liquidGlass(in: Capsule())
+                            .padding(10)
+                    }
                 }
-            }
-            .overlay {
-                if !model.isPlaying {
-                    Image(systemName: "play.fill")
-                        .font(.system(size: 30, weight: .bold))
-                        .foregroundStyle(Palette.ink)
-                        .frame(width: 72, height: 72)
-                        .liquidGlass(in: Circle())
-                        .allowsHitTesting(false)
+                .overlay {
+                    if !model.isPlaying {
+                        Image(systemName: "play.fill")
+                            .font(.system(size: 30, weight: .bold))
+                            .foregroundStyle(Palette.ink)
+                            .frame(width: 72, height: 72)
+                            .liquidGlass(in: Circle())
+                    }
                 }
-            }
-            .shadow(color: Palette.shadow, radius: 16, y: 8)
-            .onTapGesture { model.togglePlayback() }
+                .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .shadow(color: Palette.shadow, radius: 16, y: 8)
+        // A real button, so VoiceOver, Voice Control ("Tap Play") and Switch
+        // Control can reach it; Space plays and pauses on the Mac.
+        .accessibilityLabel(model.isPlaying ? Text("Pause") : Text("Play"))
+        .accessibilityValue(model.resultDuration > 0 ? timeLabel : "")
+        .accessibilityAddTraits(.startsMediaSession)
+        .macKeyboardShortcut(KeyboardShortcut(.space, modifiers: []))
     }
 
     private var timeLabel: String {
@@ -239,6 +443,13 @@ struct VideoEditorView: View {
     private var controls: some View {
         @Bindable var model = model
         return VStack(spacing: 14) {
+            if model.isCutToLimit {
+                // The trim handles stay inside the first 5:00, so say only that.
+                Label("This video is longer than 5 minutes, so we'll use the first 5:00.", systemImage: "info.circle")
+                    .font(.caption)
+                    .foregroundStyle(Palette.textSecondary)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
             silenceCard
             ScrollView(.horizontal) {
                 HStack(spacing: 10) {
@@ -311,28 +522,65 @@ struct VideoEditorView: View {
 
     // MARK: Actions
 
-    private func saveVideo() async {
+    private func perform(_ action: VideoEditorModel.ExportAction, isRestart: Bool = false) async {
         do {
-            let url = try await model.export()
-            try await VideoEngine.saveToPhotos(url)
-            try? FileManager.default.removeItem(at: url)
-            Haptics.success()
-            app.countHappyMoment()
-            app.showToast("Video saved to Photos ✨", style: .success)
+            let url = try await model.run(action, isRestart: isRestart)
+            switch action {
+            case .save:
+                Haptics.success()
+                app.countHappyMoment()
+                app.showToast("Video saved to Photos ✨", style: .success)
+            case .share:
+                guard let url else { return }
+                sharedFile = url
+                shareItems = ActivityItems(items: [url])
+                app.countHappyMoment()
+            }
         } catch {
+            // Cancelled or stopped by leaving the app: no error, no setback.
             app.handle(error)
+            // Already back by the time the stop surfaced.
+            restartInterruptedExport()
         }
     }
 
-    private func shareVideo() async {
-        do {
-            let url = try await model.export()
-            shareItems = ActivityItems(items: [url])
-            app.countHappyMoment()
-        } catch {
-            app.handle(error)
+    /// iOS stops GPU work in the background, so an export cut short by leaving
+    /// the app starts over from 0% once she's back.
+    private func restartInterruptedExport() {
+        guard scenePhase == .active, let action = model.interruptedAction, !model.isExporting else { return }
+        Task { await perform(action, isRestart: true) }
+    }
+
+    private func close() {
+        model.stop()
+        try? FileManager.default.removeItem(at: source.url)
+        dismiss()
+    }
+
+    private func chooseAnotherVideo() {
+        close()
+        // The picker opens once the editor has finished closing.
+        Task { @MainActor [app] in
+            try? await Task.sleep(for: .milliseconds(600))
+            app.isVideoPickerPresented = true
         }
     }
+
+    #if DEBUG
+    /// Screenshot scene `video`: `-GLEffect <effect>`, `-GLCutSilences YES`,
+    /// and `-GLVideoAction share|close` to export or ask before closing.
+    private func applyScreenshotOptions() {
+        guard ScreenshotScene.current == .video, !model.loadFailed else { return }
+        let defaults = UserDefaults.standard
+        if let effect = defaults.string(forKey: "GLEffect").flatMap(RetroEffect.init(rawValue:)) { model.effect = effect }
+        if defaults.bool(forKey: "GLCutSilences") { model.cutSilences = true }
+        switch defaults.string(forKey: "GLVideoAction") {
+        case "share"?: Task { await perform(.share) }
+        case "close"?: showDiscardAlert = model.hasUnsavedEdits
+        default: break
+        }
+    }
+    #endif
 }
 
 private struct EffectChoice: View {
@@ -376,6 +624,8 @@ struct TrimSlider: View {
     var minimumLength: Double = 0.5
     let onChange: () -> Void
 
+    private enum Handle { case start, end }
+
     var body: some View {
         GeometryReader { proxy in
             let width = proxy.size.width - 28
@@ -387,33 +637,68 @@ struct TrimSlider: View {
                 Capsule().fill(Palette.accent)
                     .frame(width: max(endX - startX, 0), height: 6)
                     .offset(x: startX + 14)
-                handle.offset(x: startX)
+                // 44 pt touch targets, centred on the 28 pt knobs.
+                handle(.start).offset(x: startX - 8)
                     .gesture(DragGesture(minimumDistance: 0, coordinateSpace: .named("trim")).onChanged { value in
                         let seconds = bounds.lowerBound + min(max(value.location.x - 14, 0), width) / width * span
                         range = min(seconds, range.upperBound - minimumLength)...range.upperBound
                         onChange()
                     })
-                    .accessibilityLabel("Start")
-                handle.offset(x: endX)
+                handle(.end).offset(x: endX - 8)
                     .gesture(DragGesture(minimumDistance: 0, coordinateSpace: .named("trim")).onChanged { value in
                         let seconds = bounds.lowerBound + min(max(value.location.x - 14, 0), width) / width * span
                         range = range.lowerBound...max(seconds, range.lowerBound + minimumLength)
                         onChange()
                     })
-                    .accessibilityLabel("End")
             }
-            .frame(height: 28)
+            .frame(height: 44)
             .coordinateSpace(name: "trim")
         }
-        .frame(height: 28)
+        .frame(height: 44)
     }
 
-    private var handle: some View {
+    private func handle(_ which: Handle) -> some View {
         Circle()
             .fill(Palette.white)
             .frame(width: 28, height: 28)
             .shadow(color: Palette.shadow, radius: 4, y: 2)
             .overlay(Circle().strokeBorder(Palette.accent, lineWidth: 2))
+            .frame(width: 44, height: 44)
+            .contentShape(Rectangle())
+            // VoiceOver: swipe up or down to move the handle. The value names
+            // the new length, so nothing extra needs announcing.
+            .accessibilityElement()
+            .accessibilityLabel(which == .start ? Text("Start") : Text("End"))
+            .accessibilityValue(Text(verbatim: spoken(which == .start ? range.lowerBound : range.upperBound) + ", ")
+                + Text("Clip length \(spoken(range.upperBound - range.lowerBound))"))
+            .accessibilityAdjustableAction { direction in
+                adjust(which, by: direction)
+            }
+    }
+
+    /// Steps of at least half a second, and no more than 20 across the clip.
+    private func adjust(_ which: Handle, by direction: AccessibilityAdjustmentDirection) {
+        let step = max(0.5, (bounds.upperBound - bounds.lowerBound) / 20)
+        let delta: Double
+        switch direction {
+        case .increment: delta = step
+        case .decrement: delta = -step
+        @unknown default: return
+        }
+        switch which {
+        case .start:
+            let lower = min(max(range.lowerBound + delta, bounds.lowerBound), range.upperBound - minimumLength)
+            range = max(lower, bounds.lowerBound)...range.upperBound
+        case .end:
+            let upper = max(min(range.upperBound + delta, bounds.upperBound), range.lowerBound + minimumLength)
+            range = range.lowerBound...min(upper, bounds.upperBound)
+        }
+        onChange()
+    }
+
+    private func spoken(_ seconds: Double) -> String {
+        Duration.milliseconds(Int64((seconds * 10).rounded()) * 100)
+            .formatted(.units(allowed: [.minutes, .seconds], width: .wide, fractionalPart: .show(length: 1)))
     }
 }
 
@@ -431,6 +716,8 @@ private struct PlayerView: UIViewRepresentable {
         view.playerLayer.player = player
         view.playerLayer.videoGravity = .resizeAspect
         view.backgroundColor = UIColor.black
+        // Taps go to the play button around it.
+        view.isUserInteractionEnabled = false
         return view
     }
 
