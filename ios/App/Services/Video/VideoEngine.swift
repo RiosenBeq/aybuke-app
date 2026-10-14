@@ -157,6 +157,11 @@ enum VideoEngine {
     }
 
     /// Overlays are drawn once per frame size, not every frame.
+    private struct ExportCanceller: @unchecked Sendable {
+        let session: AVAssetExportSession
+        func cancel() { session.cancelExport() }
+    }
+
     private final class OverlayCache: @unchecked Sendable {
         private let effect: RetroEffect?
         private var cached: (CGRect, CIImage?)?
@@ -219,12 +224,15 @@ enum VideoEngine {
                     }
                 }
                 defer { poller.cancel() }
+                // cancelExport() is safe from any thread; the box only tells
+                // the compiler so for the @Sendable cancellation handler.
+                let canceller = ExportCanceller(session: session)
                 await withTaskCancellationHandler {
                     await withCheckedContinuation { continuation in
                         session.exportAsynchronously { continuation.resume() }
                     }
                 } onCancel: {
-                    session.cancelExport()
+                    canceller.cancel()
                 }
                 if session.status == .cancelled { throw CancellationError() }
                 guard session.status == .completed else { throw session.error ?? VideoError.exportFailed }
