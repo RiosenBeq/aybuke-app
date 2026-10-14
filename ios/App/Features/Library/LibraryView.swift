@@ -83,30 +83,43 @@ struct LibraryView: View {
     }
 
     var body: some View {
+        // In three parts: one modifier chain this long is too slow to type-check.
         NavigationStack(path: $path) {
-            Group {
-                if creations.isEmpty && deleted.isEmpty {
-                    emptyState
-                } else {
-                    grid
-                }
+            tracking(dialogs(screen))
+                #if DEBUG
+                .onAppear(perform: applyScreenshotState)
+                #endif
+        }
+    }
+
+    private var screen: some View {
+        Group {
+            if creations.isEmpty && deleted.isEmpty {
+                emptyState
+            } else {
+                grid
             }
-            .background(Palette.background.ignoresSafeArea())
-            .navigationTitle(title)
-            .toolbar { toolbar }
-            // Not on the Mac, where `hidesMacTabs` owns the tabs' visibility.
-            #if !targetEnvironment(macCatalyst)
-            .toolbar(hidesTabBar ? .hidden : .automatic, for: .tabBar)
-            #endif
-            .safeAreaInset(edge: .bottom) {
-                if isSelecting {
-                    selectionBar
-                        .transition(reduceMotion ? .opacity : .move(edge: .bottom).combined(with: .opacity))
-                }
+        }
+        .background(Palette.background.ignoresSafeArea())
+        .navigationTitle(title)
+        .toolbar { toolbar }
+        // Not on the Mac, where `hidesMacTabs` owns the tabs' visibility.
+        #if !targetEnvironment(macCatalyst)
+        .toolbar(hidesTabBar ? .hidden : .automatic, for: .tabBar)
+        #endif
+        .safeAreaInset(edge: .bottom) {
+            if isSelecting {
+                selectionBar
+                    .transition(reduceMotion ? .opacity : .move(edge: .bottom).combined(with: .opacity))
             }
-            .navigationDestination(for: Creation.self) { creation in
-                CreationDetailView(creation: creation)
-            }
+        }
+        .navigationDestination(for: Creation.self) { creation in
+            CreationDetailView(creation: creation)
+        }
+    }
+
+    private func dialogs(_ content: some View) -> some View {
+        content
             // `presenting:` hands the actions the creations as they were when
             // asked: the binding clears the pending list before an action runs.
             .confirmationDialog(deleteTitle, isPresented: isPresented($pendingDelete), titleVisibility: .visible,
@@ -134,6 +147,11 @@ struct LibraryView: View {
                 Text("Deleting it now can't be undone.")
             }
             .shareSheet(item: $shareItems) { removeSharedFiles() }
+    }
+
+    /// Keeps the selection in step with what's on screen.
+    private func tracking(_ content: some View) -> some View {
+        content
             // Another filter shows other creations: start that pick afresh.
             .onChange(of: filter) { _, _ in selection.removeAll() }
             .onChange(of: visible.isEmpty) { _, isEmpty in
@@ -146,10 +164,6 @@ struct LibraryView: View {
             .onChange(of: isDragging) { _, dragging in
                 if !dragging { finishDrag() }
             }
-            #if DEBUG
-            .onAppear(perform: applyScreenshotState)
-            #endif
-        }
     }
 
     private var title: Text {
