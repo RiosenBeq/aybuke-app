@@ -8,15 +8,19 @@ struct GlowlitApp: App {
     private let container: ModelContainer
 
     init() {
+        perfMark("main")
         FontRegistrar.registerBundledFonts()
         // Before the model: the tour sets a tip rule as it starts.
         GlowTips.configure()
+        perfMark("fonts+tips")
         let (container, outcome) = LibraryStore.open()
+        perfMark("library")
         self.container = container
         let app = AppModel(container: container)
         app.libraryOutcome = outcome
         GlowIntents.register(app)
         _app = State(initialValue: app)
+        perfMark("model")
     }
 
     var body: some Scene {

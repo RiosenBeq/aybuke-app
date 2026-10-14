@@ -141,6 +141,41 @@ With `AI_PROVIDER=fal`, the job goes to fal's queue instead (`queue.fal.run`), e
 5. Output NSFW check (on by default; runs on fal when `FAL_KEY` is set, otherwise xAI's moderation is the output check).
 6. "Report this image".
 
+## Performance
+
+Measured with `PerfProbe` (`App/PerfProbe.swift`, DEBUG builds, or Release with the `GL_PERF` condition): every launch prints process start → Explore's first frame; `-GLPerfBench <photo>` times decoding, effects, the encoders, Vision and the widget work on a 12 MP HEIC (4032 × 3024, Display P3), and `-GLPerfOpen <photo>` times a photo opening in the editor. Numbers below are from the iPhone 17 Pro simulator and the Mac Catalyst app on an M1 Mac (8 GB) that was building other branches at the same time, so they are relative, medians of several runs, and only comparable within a row. The bench also keeps every output's pixels and checks later builds against them.
+
+| | Before | After |
+|---|---|---|
+| Launch → Explore's first frame (Release, simulator / Mac) | ~1.7 s / ~2.1 s | unchanged within noise |
+| Memory at Explore's first frame (Release, simulator) | ~88 MB | ~59 MB |
+| Open a 12 MP HEIC: decode + downsample (off the main actor) | 97 ms | 235 ms (one extra copy, see below) |
+| Preview copy (1200 px) on the main actor when a tool opens | 146 ms | 18 ms, usually 0 (made in the background) |
+| Effect at preview size (1200 px) | ~65 ms | ~65 ms (unchanged) |
+| Effect at full size (2048 px), simulator / Mac | ~300 ms / 24 ms | ~125 ms / 34 ms |
+| Effects strip (11 thumbnails) | 429 ms | 178 ms |
+| One edit: preview, full-size effect, save to Photos and My Works (simulator / Mac) | 1065 ms / 632 ms | 352 ms / 193 ms |
+| Saved file of an effect, filter or share design | PNG 2.8–6.8 MB (16 MB with the AI label) | JPEG 0.6–1.7 MB |
+| Encoding a save (JPEG of a decoded photo / an effect) | 232 ms / 173 ms (PNG) | 38 ms / 27 ms |
+| Editor step bitmaps (crop, hide faces, text, watermark) | 24 MB (16-bit float) | 12 MB (8-bit) |
+| Vision when the editor opens (ideas / kindness check) | 337 ms / 161 ms | 114 ms / 14 ms |
+| Main-actor work for the widgets after a save | ~200 ms | ~33 ms (SwiftData fetches only) |
+| Peak memory of one edit (bench) | 158 MB | 174 MB |
+| App bundle (simulator Release; the executable is 35 MB of it) | 41 MB | 41 MB |
+
+What changed, in order of effect:
+
+- **One plain copy of every decoded photo.** ImageIO's downsampled HEIC (and RGBA PNG/JPEG on the Mac) is converted again every time anything reads it: the canvas on the main thread, previews, Vision, effects, encoders. `ImageUtilities.decodedImage` now copies it once into an 8-bit bitmap off the main actor; AI results (`RemoteAIImageService`) and photos opened from My Works (`ImageStore.decoded`) go the same way. Opening costs one copy more; everything after it is 2–9× cheaper.
+- **Opaque results are opaque.** Core Image and `UIGraphicsImageRenderer` hand back opaque pictures with an alpha channel (and 16-bit floats for wide colour), so effects, the AI label, cut-out backdrops and other steps were saved as large PNGs. Opaque results are drawn with `ImageUtilities.draw(…, opaque: true)` (8-bit, the photo's colour space, no alpha), Core Image renders known-opaque output with `settingAlphaOne`, and the encoders drop an alpha channel no pixel uses (`droppingUnusedAlpha`). Cut-outs and stickers stay PNG. Pixels are identical except the last part-pixel row of framed effects (now frame colour instead of see-through) and sub-level resampling differences in 8-bit steps (mean < 0.5 levels).
+- **8-bit downscaling** in the photo's colour space (`ImageUtilities.redraw`): half the memory and no colour conversion.
+- **Editor work off the main actor:** the preview copy is made in the background after each step and shared by Effects, Adjust, Crop and Hide faces; the strip's thumbnails render side by side; a stale strip is dropped.
+- **Widgets:** the snapshot, the widget picture's JPEG and the WidgetKit reloads run in order on a utility queue.
+- **Two Core Image contexts** for the whole app (`ImageFilters.context`, `ImageFilters.measuringContext`), instead of one per feature and one per call in the photo insights and QR codes.
+- **Explore:** each template card's art is one flattened layer (`drawingGroup`), rows build their cards lazily, cards compare by value, and the credit pill observes credits itself (a `_printChanges` pass showed all forty cards rebuilt after launch when the storefront and wallet arrived).
+- **Memory:** the photo insights cache no longer keeps closed photos alive (weak keys).
+
+What didn't improve, or wasn't changed: launch time is dominated by loading system frameworks (~0.5 s before `main` in the simulator), SwiftData (~90 ms) and SwiftUI building the first screen, and stayed the same within the noise of this shared machine; `xctrace` hung when recording the simulator headless, so there is no Time Profiler breakdown. Explore's looping decorations (aurora, twinkles, glow sweep) use about 6% of one core while it sits idle; the aurora is 1–2 points of that and was kept as it looks. Opening the editor shows its first frame at about the same time (the extra copy moves work off the main thread rather than removing it). The bench's peak memory rose about 15 MB (the extra decoded copy while opening). Video export, captions and the app's size weren't changed; the probe can time an export with `-GLPerfVideo <clip>`.
+
 ## Testing & CI
 
 | Layer | How | Where |

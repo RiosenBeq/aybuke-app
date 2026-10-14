@@ -284,11 +284,9 @@ enum OverlayRenderer {
         let canvas = OverlayCanvas(width: Double(pixels.width), height: Double(pixels.height))
         let size = CGSize(width: pixels.width, height: pixels.height)
         let doodleImage = doodle.flatMap { doodleLayer($0, onto: canvas) }
-        let format = UIGraphicsImageRendererFormat()
-        format.scale = 1
-        format.opaque = !ImageUtilities.hasAlpha(photo)
-        return UIGraphicsImageRenderer(size: size, format: format).image { context in
-            let cg = context.cgContext
+        // Text and sticker glows have no offset, so the bitmap's own shadow
+        // space doesn't matter.
+        return ImageUtilities.draw(size: size, opaque: !ImageUtilities.hasAlpha(photo), colorSpace: photo.cgImage?.colorSpace) { cg in
             photo.draw(in: CGRect(origin: .zero, size: size))
             for layer in layers {
                 let t = layer.placement.transform(in: canvas)

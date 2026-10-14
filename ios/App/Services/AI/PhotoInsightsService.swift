@@ -10,11 +10,9 @@ import AppCore
 @MainActor
 enum PhotoInsightsService {
     /// Keyed by the image object; the editor asks again after each step.
-    private static let cache: NSCache<UIImage, Box> = {
-        let cache = NSCache<UIImage, Box>()
-        cache.countLimit = 4
-        return cache
-    }()
+    /// Weak keys: an NSCache kept the last four full-size photos alive after
+    /// the editor closed.
+    private static let cache = NSMapTable<UIImage, Box>.weakToStrongObjects()
 
     private final class Box {
         let insight: PhotoInsight
@@ -72,7 +70,7 @@ enum PhotoInsightsService {
             kCIInputExtentKey: CIVector(cgRect: input.extent),
         ]), let output = filter.outputImage else { return nil }
         var pixel = [UInt8](repeating: 0, count: 4)
-        CIContext(options: [.workingColorSpace: NSNull()])
+        ImageFilters.measuringContext
             .render(output, toBitmap: &pixel, rowBytes: 4, bounds: CGRect(x: 0, y: 0, width: 1, height: 1), format: .RGBA8, colorSpace: nil)
         return (0.2126 * Double(pixel[0]) + 0.7152 * Double(pixel[1]) + 0.0722 * Double(pixel[2])) / 255
     }

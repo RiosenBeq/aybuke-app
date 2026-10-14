@@ -89,6 +89,9 @@ struct EditorView: View {
             #endif
             await model.checkForOtherPeople()
         }
+        #if DEBUG || GL_PERF
+        .onAppear { PerfProbe.editorAppeared() }
+        #endif
         .animation(.snappy, value: model.showsKindnessNote)
         .animation(.easeInOut(duration: 0.2), value: isTypingOverlayText)
         .onChange(of: model.overlays.notice) { _, notice in

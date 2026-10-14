@@ -17,7 +17,7 @@ struct SubjectAnalysis {
     /// Person mask (white = person), with the photo's extent.
     private var mask: CIImage?
 
-    private static let context = CIContext(options: [.workingColorSpace: NSNull()])
+    private static let context = ImageFilters.measuringContext
 
     static func analyze(_ image: UIImage, includingCutout: Bool) -> SubjectAnalysis {
         guard let cgImage = image.cgImage else { return SubjectAnalysis() }
@@ -497,7 +497,7 @@ enum QRCode {
         ])
         let scale = max(1, floor(side / output.extent.width))
         let scaled = colored.samplingNearest().transformed(by: CGAffineTransform(scaleX: scale, y: scale))
-        guard let cgImage = CIContext().createCGImage(scaled, from: scaled.extent) else { return nil }
+        guard let cgImage = ImageFilters.context.createCGImage(scaled, from: scaled.extent) else { return nil }
         return UIImage(cgImage: cgImage)
     }
 }

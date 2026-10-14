@@ -264,13 +264,15 @@ final class RemoteAIImageService: AIImageService {
         try await session.mappedData(for: request)
     }
 
+    /// Decoded once into a plain bitmap here, off the main actor: the editor,
+    /// My Works and the encoders read a result many times.
     private func loadImage(_ output: GenerationResponse.Output) async throws -> UIImage? {
         if let base64 = output.base64, let data = Data(base64Encoded: base64) {
-            return UIImage(data: data)
+            return ImageUtilities.decodedImage(from: data, maxPixel: 4096)
         }
         guard let url = output.url else { return nil }
         let (data, _) = try await load(URLRequest(url: url))
-        return UIImage(data: data)
+        return ImageUtilities.decodedImage(from: data, maxPixel: 4096)
     }
 }
 

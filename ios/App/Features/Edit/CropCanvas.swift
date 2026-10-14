@@ -10,13 +10,10 @@ enum CropRenderer {
         let source = CropSize(width: Double(pixels.width), height: Double(pixels.height))
         let output = geometry.outputSize(for: source, aspect: aspect)
         let t = geometry.transform(source: source, output: output)
-        let format = UIGraphicsImageRendererFormat()
-        format.scale = 1
-        format.opaque = !ImageUtilities.hasAlpha(image)
         let size = CGSize(width: output.width, height: output.height)
-        return UIGraphicsImageRenderer(size: size, format: format).image { context in
-            context.cgContext.interpolationQuality = .high
-            context.cgContext.concatenate(CGAffineTransform(a: t.a, b: t.b, c: t.c, d: t.d, tx: t.tx, ty: t.ty))
+        return ImageUtilities.draw(size: size, opaque: !ImageUtilities.hasAlpha(image), colorSpace: image.cgImage?.colorSpace) { cg in
+            cg.interpolationQuality = .high
+            cg.concatenate(CGAffineTransform(a: t.a, b: t.b, c: t.c, d: t.d, tx: t.tx, ty: t.ty))
             image.draw(in: CGRect(x: 0, y: 0, width: source.width, height: source.height))
         }
     }

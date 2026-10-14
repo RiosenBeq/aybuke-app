@@ -47,6 +47,7 @@ enum ImageStore {
 
     /// PNG keeps transparency (cut-outs); everything else is stored as JPEG.
     static func save(_ image: UIImage, tag: Tag) throws -> String {
+        let image = ImageUtilities.droppingUnusedAlpha(image)
         let usePNG = ImageUtilities.hasAlpha(image)
         let name = UUID().uuidString + (usePNG ? ".png" : ".jpg")
         let data = try encode(image, png: usePNG, tag: tag)
@@ -118,6 +119,13 @@ enum ImageStore {
 
     static func load(_ name: String) -> UIImage? {
         UIImage(contentsOfFile: url(for: name).path)
+    }
+
+    /// The file decoded once into a plain bitmap of at most `maxPixel`, for
+    /// the editor, which reads it many times (`load` decodes on every read).
+    static func decoded(_ name: String, maxPixel: Int = 2048) -> UIImage? {
+        guard let data = try? Data(contentsOf: url(for: name)) else { return nil }
+        return ImageUtilities.decodedImage(from: data, maxPixel: maxPixel)
     }
 
     /// Whether the file is still there. Works while the device is locked:

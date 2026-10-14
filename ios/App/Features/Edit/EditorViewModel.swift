@@ -94,6 +94,8 @@ final class EditorViewModel {
     @ObservationIgnored private var jobTask: Task<Void, Never>?
     @ObservationIgnored private var previewTask: Task<Void, Never>?
     @ObservationIgnored private var previewSource: (source: UIImage, proxy: UIImage)?
+    /// The preview copy being made in the background, and for which image.
+    @ObservationIgnored private var proxyJob: (source: UIImage, task: Task<UIImage, Never>)?
     @ObservationIgnored private var lastJob: AIJob?
     @ObservationIgnored private var memoryWatcher: Task<Void, Never>?
     private(set) var historyVersion = 0
@@ -128,6 +130,7 @@ final class EditorViewModel {
             crop.angle = launch.cropAngle
         }
         if activeTool == .hideFaces { startHidingFaces(preselect: true) }
+        prepareProxy()
         #if DEBUG
         // Screenshot QA: -GLOverlayMode text|stickers|doodle picks the panel.
         if ScreenshotScene.current == .textStickers {
@@ -310,6 +313,7 @@ final class EditorViewModel {
         adjustments = .neutral
         adjustPreview = nil
         previewSource = nil
+        prepareProxy()
         crop = CropGeometry()
         cropAspect = .original
         if activeTool == .crop { refreshCropProxy() }
@@ -504,8 +508,9 @@ final class EditorViewModel {
     func updateAdjustPreview() {
         previewTask?.cancel()
         let settings = adjustments
-        let proxy = adjustProxy()
         previewTask = Task {
+            let proxy = await previewProxy()
+            guard !Task.isCancelled else { return }
             let rendered = await Task.detached(priority: .userInitiated) {
                 OnDeviceImageService.adjust(proxy, with: settings)
             }.value
@@ -516,8 +521,8 @@ final class EditorViewModel {
 
     /// "Auto": the best light and colour for this photo, on the sliders.
     func autoAdjust() {
-        let proxy = adjustProxy()
         Task {
+            let proxy = await previewProxy()
             let settings = await Task.detached(priority: .userInitiated) { AutoDevelop.settings(for: proxy) }.value
             withAnimation(.snappy) { adjustments = settings }
             updateAdjustPreview()
@@ -529,12 +534,11 @@ final class EditorViewModel {
 
     func loadEffectThumbnails() async {
         guard effectThumbnails.isEmpty else { return }
-        let source = ImageUtilities.normalized(current, maxLongEdge: 240)
-        let thumbnails = await Task.detached(priority: .userInitiated) {
-            Dictionary(uniqueKeysWithValues: RetroEffect.allCases.map {
-                ($0, $0.apply(to: source, options: RetroEffect.Options(extra: $0.option?.isOnByDefault ?? true)))
-            })
-        }.value
+        let image = current
+        let version = historyVersion
+        let thumbnails = await Task.detached(priority: .userInitiated) { RetroEffect.thumbnails(of: image) }.value
+        // A step taken meanwhile brings its own thumbnails.
+        guard version == historyVersion else { return }
         effectThumbnails = thumbnails
     }
 
@@ -551,9 +555,10 @@ final class EditorViewModel {
         }
         self.effect = effect
         effectTask?.cancel()
-        let proxy = adjustProxy()
         let options = effectOptions
         effectTask = Task {
+            let proxy = await previewProxy()
+            guard !Task.isCancelled else { return }
             let rendered = await Task.detached(priority: .userInitiated) { effect.apply(to: proxy, options: options) }.value
             guard !Task.isCancelled else { return }
             effectPreview = rendered
@@ -892,7 +897,8 @@ final class EditorViewModel {
         return ImageExporter.encode(sticker, sourceType: provenance.sourceType, watermark: provenance.showsMark(isPro: isPro))
     }
 
-    /// Downscaled copy of the current image for live slider previews.
+    /// Downscaled copy of the current image for live previews. Crop and Hide
+    /// faces need it at once; it's usually ready from `prepareProxy`.
     private func adjustProxy() -> UIImage {
         if let previewSource, previewSource.source === current {
             return previewSource.proxy
@@ -900,5 +906,28 @@ final class EditorViewModel {
         let proxy = ImageUtilities.normalized(current, maxLongEdge: 1200)
         previewSource = (current, proxy)
         return proxy
+    }
+
+    /// The same copy, made off the main actor (once per step, shared by
+    /// every preview that asks meanwhile).
+    private func previewProxy() async -> UIImage {
+        let source = current
+        if let previewSource, previewSource.source === source { return previewSource.proxy }
+        let task: Task<UIImage, Never>
+        if let proxyJob, proxyJob.source === source {
+            task = proxyJob.task
+        } else {
+            task = Task.detached(priority: .userInitiated) { ImageUtilities.normalized(source, maxLongEdge: 1200) }
+            proxyJob = (source, task)
+        }
+        let proxy = await task.value
+        if source === current, previewSource?.source !== source { previewSource = (source, proxy) }
+        return proxy
+    }
+
+    /// Starts the copy for a new photo or step in the background, so the
+    /// tool she opens next doesn't make it on the main actor.
+    private func prepareProxy() {
+        Task { _ = await previewProxy() }
     }
 }

@@ -136,25 +136,12 @@ enum RetroEffectFile {
         guard let image else { return nil }
         let options = RetroEffect.Options(extra: effect.option?.isOnByDefault ?? true)
         var output = effect.apply(to: image, options: options)
-        // Core Image and UIKit hand back bitmaps with an alpha channel, which
-        // would make every photo a big PNG; only a transparent source keeps one.
+        // Core Image can hand back a developed RAW with an alpha channel, which
+        // would make the photo a big PNG; only a transparent source keeps one.
         if isRAW || !ImageUtilities.hasAlpha(image) {
-            output = opaque(output)
+            output = ImageUtilities.opaque(output)
         }
         return ImageExporter.encode(output, sourceType: ImageExporter.digitalSourceType(in: data))
-    }
-
-    private static func opaque(_ image: UIImage) -> UIImage {
-        guard let cgImage = image.cgImage else { return image }
-        let width = cgImage.width, height = cgImage.height
-        func context(_ space: CGColorSpace) -> CGContext? {
-            CGContext(data: nil, width: width, height: height, bitsPerComponent: 8, bytesPerRow: 0,
-                      space: space, bitmapInfo: CGImageAlphaInfo.noneSkipLast.rawValue)
-        }
-        // The image's own colour space when an 8-bit bitmap can use it (wide colour stays).
-        guard let context = cgImage.colorSpace.flatMap(context) ?? context(CGColorSpaceCreateDeviceRGB()) else { return image }
-        context.draw(cgImage, in: CGRect(x: 0, y: 0, width: width, height: height))
-        return context.makeImage().map { UIImage(cgImage: $0) } ?? image
     }
 }
 
