@@ -686,7 +686,7 @@ final class EditorViewModel {
     }
 
     /// Covers the chosen faces at full size. The before photo gets the same
-    /// covers, because Before/After, Photo strip and Help me pick share it.
+    /// covers, because Before/After, Photo strip and Which vibe? share it.
     func applyHideFaces() async {
         let faces = faceHider.hiddenRects
         let cover = faceHider.cover

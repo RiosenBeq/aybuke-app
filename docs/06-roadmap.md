@@ -44,7 +44,7 @@ Legend: ✅ done in this repository · ⏳ next · 🔭 later
 - ✅ Widgets: Today's trend and My glow (Home and Lock Screen), App Group snapshot, `glowlit://` deep links
 - ✅ Live Activity: Dynamic Island (compact, expanded, minimal) and Lock Screen progress for cloud jobs
 - ✅ Audit → [07](07-audit-and-differentiators.md): sharp lookbook collection pages, double-tap to heart, opt-in notifications with quiet and school hours, happy-moment rating prompts
-- ✅ Differentiators: likeness check, Best shot, Help me pick, kindness reminder, visible AI-edited label
+- ✅ Differentiators: likeness check, Best shot, Which vibe?, kindness reminder, visible AI-edited label
 - ✅ Optional Sign in with Apple: account merge (`merge_accounts`), Apple token revocation on deletion
 
 ## Phase 3 — Backend ✅ (code) / ⏳ (deploy)

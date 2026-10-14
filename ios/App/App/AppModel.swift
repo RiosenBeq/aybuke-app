@@ -103,7 +103,7 @@ final class AppModel {
     var shareRequest: SharePayload?
     /// "Keep your glow on every iPhone": offered after a purchase.
     var isAccountPromptPresented = false
-    /// "Find your best shot" (on-device selfie ranking).
+    /// "Find your best shot" (on-device, by light and focus).
     var isBestShotPresented = false
     /// The simple video editor: picker, then the editor itself.
     var isVideoPickerPresented = false
