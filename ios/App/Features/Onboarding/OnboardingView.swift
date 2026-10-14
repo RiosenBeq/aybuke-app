@@ -91,6 +91,8 @@ struct OnboardingView: View {
                 }
 
                 PageDots(count: pages.count + 3, current: page)
+                    // A gap, so scrolled content never meets the dots.
+                    .padding(.top, 8)
                     .padding(.bottom, 20)
 
                 if isLastPage {
@@ -461,20 +463,30 @@ private struct TryItPage<Footer: View>: View {
     let isWorking: Bool
     @Binding var item: PhotosPickerItem?
     @ViewBuilder var footer: Footer
+    /// The photo takes the room the words leave on the page, so it's never cut
+    /// off under the page dots on short screens, with long translations or
+    /// large text (the page scrolls when even the smallest size doesn't fit).
+    @State private var pageHeight: CGFloat = 0
+    @State private var wordsHeight: CGFloat = 0
 
     var body: some View {
         OnboardingScroll {
             VStack(alignment: .leading, spacing: 16) {
-                Text(styled: "Try *Digicam '04*\non your photo", size: 34)
-                    .foregroundStyle(Palette.textPrimary)
-                Text("A free Y2K camera look, made right on your device. Nothing is uploaded.")
-                    .font(.body)
-                    .foregroundStyle(Palette.textSecondary)
+                VStack(alignment: .leading, spacing: 16) {
+                    Text(styled: "Try *Digicam '04*\non your photo", size: 34)
+                        .foregroundStyle(Palette.textPrimary)
+                    Text("A free Y2K camera look, made right on your device. Nothing is uploaded.")
+                        .font(.body)
+                        .foregroundStyle(Palette.textSecondary)
+                }
+                // Never squeezed to make room for the photo; the page scrolls instead.
+                .fixedSize(horizontal: false, vertical: true)
+                .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { wordsHeight = $0 }
 
                 if let photo {
                     BeforeAfterSlider(before: photo.original, after: photo.result)
                         .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
-                        .frame(maxHeight: 320)
+                        .frame(height: room(from: 180, upTo: 320))
                         .frame(maxWidth: .infinity)
                         .transition(.opacity.combined(with: .scale(scale: 0.96)))
                 } else {
@@ -493,7 +505,7 @@ private struct TryItPage<Footer: View>: View {
                                 .font(.headline)
                                 .foregroundStyle(Palette.textPrimary)
                         }
-                        .frame(maxWidth: .infinity, minHeight: 220)
+                        .frame(maxWidth: .infinity, minHeight: room(from: 150, upTo: 220))
                         .glassPanel()
                     }
                     .disabled(isWorking)
@@ -503,7 +515,14 @@ private struct TryItPage<Footer: View>: View {
             .padding(.horizontal, Metrics.gutter)
             .padding(.vertical, 8)
         }
+        .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { pageHeight = $0 }
         .animation(.snappy, value: photo != nil)
+    }
+
+    /// The height left under the words (16 pt spacing and 8 pt padding above
+    /// and below), between `floor` and `cap`.
+    private func room(from floor: CGFloat, upTo cap: CGFloat) -> CGFloat {
+        min(cap, max(floor, pageHeight - wordsHeight - 32))
     }
 }
 
