@@ -8,8 +8,8 @@ import Foundation
 // Edit, so it goes through the same gates, guard and server checks.
 //
 // Names are English; the app shows them with `L10n.core(_:)`, and
-// scripts/export-core-strings.py registers every `look("…")` and
-// `option("…")` for translators. Requests are English for the image model and
+// scripts/export-core-strings.py registers every name marked with `look` or
+// `option` for translators. Requests are English for the image model and
 // never shown.
 
 /// Marks a look's name for scripts/export-core-strings.py.
