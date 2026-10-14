@@ -124,34 +124,39 @@ struct HomeView: View {
             Haptics.tap()
             app.startEditing(tool: .magicEdit)
         } label: {
-            ZStack(alignment: .bottomLeading) {
-                Palette.blush
-                Circle()
-                    .fill(Palette.white.opacity(0.5))
-                    .frame(width: 260, height: 260)
-                    .blur(radius: 40)
-                    .offset(x: 170, y: -90)
-                HeroSparkles()
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("Magic Edit")
-                        .eyebrowStyle(Palette.ink.opacity(0.7))
-                    Text(styled: "Say the change.\nWatch it *glow.*", size: 26)
-                        .foregroundStyle(Palette.ink)
-                        .multilineTextAlignment(.leading)
-                    HStack(spacing: 6) {
-                        Text("Try it on your photo")
-                        Image(systemName: "arrow.right")
-                    }
-                    .font(.subheadline.weight(.bold))
-                    .foregroundStyle(Palette.blush)
-                    .padding(.horizontal, 14)
-                    .padding(.vertical, 9)
-                    .background(Palette.ink, in: Capsule())
-                    .padding(.top, 6)
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Magic Edit")
+                    .eyebrowStyle(Palette.ink.opacity(0.7))
+                Text(styled: "Say the change.\nWatch it *glow.*", size: 26)
+                    .foregroundStyle(Palette.ink)
+                    .multilineTextAlignment(.leading)
+                HStack(spacing: 6) {
+                    Text("Try it on your photo")
+                    Image(systemName: "arrow.right")
                 }
-                .padding(20)
+                .font(.subheadline.weight(.bold))
+                .foregroundStyle(Palette.blush)
+                .padding(.horizontal, 14)
+                .padding(.vertical, 9)
+                .background(Palette.ink, in: Capsule())
+                .padding(.top, 6)
             }
-            .frame(height: 220)
+            .padding(20)
+            // At least 220 pt, but taller when the words need it (long
+            // translations, large text), so the button never hits the edge.
+            .frame(maxWidth: .infinity, minHeight: 220, alignment: .bottomLeading)
+            .background {
+                // Overlays, so the fixed-size glow can't change the card's size.
+                Palette.blush
+                    .overlay(alignment: .bottomLeading) {
+                        Circle()
+                            .fill(Palette.white.opacity(0.5))
+                            .frame(width: 260, height: 260)
+                            .blur(radius: 40)
+                            .offset(x: 170, y: -90)
+                    }
+                    .overlay { HeroSparkles() }
+            }
             .clipShape(RoundedRectangle(cornerRadius: Metrics.cardRadius, style: .continuous))
             .glowSweep()
             .overlay(
