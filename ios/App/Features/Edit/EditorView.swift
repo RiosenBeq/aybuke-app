@@ -217,7 +217,7 @@ struct EditorView: View {
         } label: {
             HStack(spacing: 6) {
                 Image(systemName: "arrow.triangle.2.circlepath")
-                Text(emphasised ? "Retry free" : model.likeness == .stillYou ? "Retry free" : "Doesn't look like you? Retry free")
+                Text(emphasised || model.likeness == .stillYou || !model.retryIsAboutLikeness ? "Retry free" : "Doesn't look like you? Retry free")
             }
             .font(.footnote.weight(.semibold))
             .foregroundStyle(emphasised ? Palette.onAccent : Palette.textPrimary)
@@ -334,16 +334,26 @@ struct EditorView: View {
             EffectsPanel(
                 thumbnails: model.effectThumbnails,
                 selected: model.effect,
-                dateStamp: Binding(
-                    get: { model.effectDateStamp },
+                showsExtra: Binding(
+                    get: { model.effectExtra },
                     set: { value in
-                        model.effectDateStamp = value
+                        model.effectExtra = value
                         if let effect = model.effect { model.previewEffect(effect) }
+                    }
+                ),
+                subtitle: Binding(
+                    get: { model.effectSubtitle },
+                    set: { value in
+                        model.effectSubtitle = String(value.prefix(FilmSubtitle.maxLength))
+                        model.subtitleChanged(app: app)
                     }
                 ),
                 onSelect: { model.previewEffect($0) },
                 onReset: { model.clearEffect() },
-                onApply: { Task { await model.applyEffect() } }
+                onApply: {
+                    guard model.commitSubtitle(app: app) else { return }
+                    Task { await model.applyEffect() }
+                }
             )
             .task(id: model.historyVersion) { await model.loadEffectThumbnails() }
         case nil:

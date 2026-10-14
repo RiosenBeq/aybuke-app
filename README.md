@@ -7,9 +7,9 @@
 > Working on this repository with an AI agent (or new to it)? Start with [AGENTS.md](AGENTS.md): what the app is, where the code lives, how to build and test, the rules and what's next.
 
 - **Say it, see it:** "give me pink hair", "add soft glam makeup", "put me in a pink dress".
-- **One-tap looks:** 30 trends such as Doll Box, Y2K Digicam, Ballet Core, Fairy Princess and Restore Old Photo.
+- **One-tap looks:** 35+ trends such as Doll Box, Y2K Digicam, 80s Studio Portrait, Plushie Me, Fairy Princess and pet portraits, plus seasonal looks (Halloween, winter, Galentine's) promoted on Home in season.
 - **Dream it, create it:** turn any idea into art with 14 styles, from Pastel Dream and Kawaii to Watercolor.
-- **80s, 90s and Y2K effects:** seven free on-device effects (VHS '86, Disposable '98, Kira Kira, Digicam '04, Instant '82, Glamour '92 and Neon '84) with an optional date stamp, one-tap **Auto** for light and colour, and RAW photos developed automatically with the best settings.
+- **Retro effects:** free on-device effects from the 80s to the 2010s (VHS '86, Disposable '98, Kira Kira, Digicam '04, Instant '82, Glamour '92, Neon '84, Throwback '16, Camcorder '06 and Film Still) with an optional date stamp, border, letterbox or camcorder display, one-tap **Auto** for light and colour, and RAW photos developed automatically with the best settings.
 - **Simple video editing:** auto-cut the silences (a jump cut), add a retro effect, trim, then save to Photos or share. Free and on-device, with no watermark and no ending clip, for clips up to 5 minutes.
 - **Made to share:** one tap to Instagram Stories, a "Cover star" magazine cover, a photo-booth "Photo strip", before/after collages, 9:16 story cards and ready-made captions, plus a "Glow together" invite card with a QR code.
 - **Free on your iPhone:** effects, video editing, background removal, adjustments and Best shot run on-device.

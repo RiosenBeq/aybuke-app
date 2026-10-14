@@ -8,7 +8,7 @@ struct CategoryView: View {
 
     @Environment(AppModel.self) private var app
 
-    private var templates: [PhotoTemplate] { TemplateCatalog.templates(in: category) }
+    private var templates: [PhotoTemplate] { TemplateCatalog.templates(in: category, on: AppClock.now) }
     /// Two columns on iPhone, up to eight on a big iPad in landscape.
     private let columns = [GridItem(.adaptive(minimum: 136), spacing: 12)]
 
@@ -66,7 +66,7 @@ struct CategoryView: View {
 extension TemplateCategory {
     /// "Glow-up *looks*": the last word in the italic accent.
     var styledTitle: String {
-        let title = L10n.core(self.title)
+        let title = L10n.core(self.title(on: AppClock.now))
         var words = title.split(separator: " ").map(String.init)
         // Languages written without spaces (Japanese, Chinese) keep it plain.
         guard words.count > 1, let last = words.popLast() else { return title }
@@ -79,8 +79,16 @@ extension TemplateCategory {
         case .glowUp: return String(localized: "Hair, makeup and glam, and still 100% you.")
         case .aesthetic: return String(localized: "Moods, places and colours for your feed.")
         case .dreamy: return String(localized: "Soft, magical portraits.")
-        case .seasonal: return String(localized: "Limited looks for this season.")
+        case .seasonal:
+            // No scarcity talk: seasonal looks stay in the editor all year.
+            switch SeasonalTheme.current(on: AppClock.now) {
+            case .halloween: return String(localized: "Cute, cozy and a little spooky.")
+            case .winter: return String(localized: "Snow, sweaters and New Year sparkle.")
+            case .galentines: return String(localized: "Pink brunches and photo booths with your besties.")
+            case nil: return String(localized: "Looks for this time of year.")
+            }
         case .art: return String(localized: "Turn any photo into art.")
+        case .pets: return String(localized: "Your pet, starring in their own photoshoot.")
         case .business: return String(localized: "Polished photos for work and your shop.")
         }
     }

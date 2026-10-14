@@ -1,11 +1,13 @@
 import UIKit
 import CoreImage
 import CoreImage.CIFilterBuiltins
+import AppCore
 
 /// On-device "special effects" with an era: VHS tapes, disposable cameras,
-/// Y2K digicams, instant film, 90s glamour shots and glitter. Pure Core Image
-/// plus a little UIKit drawing (date stamps, frames, sparkles), so they're
-/// instant, free for everyone and never leave the iPhone.
+/// Y2K digicams, instant film, 90s glamour shots, glitter, 2016 phone
+/// photos, a 2006 camcorder and film stills. Pure Core Image plus a little
+/// UIKit drawing (date stamps, frames, sparkles, camera chrome), so they're
+/// instant, free for everyone and never leave the device.
 enum RetroEffect: String, CaseIterable, Identifiable {
     case vhs
     case disposable
@@ -14,9 +16,13 @@ enum RetroEffect: String, CaseIterable, Identifiable {
     case instant
     case glamour
     case neon
+    case throwback16
+    case camcorder06
+    case filmStill
 
     var id: String { rawValue }
 
+    /// Effect names are kept as they are in every language.
     var title: String {
         switch self {
         case .vhs: return "VHS '86"
@@ -26,6 +32,9 @@ enum RetroEffect: String, CaseIterable, Identifiable {
         case .instant: return "Instant '82"
         case .glamour: return "Glamour '92"
         case .neon: return "Neon '84"
+        case .throwback16: return "Throwback '16"
+        case .camcorder06: return "Camcorder '06"
+        case .filmStill: return "Film Still"
         }
     }
 
@@ -33,23 +42,73 @@ enum RetroEffect: String, CaseIterable, Identifiable {
         switch self {
         case .vhs, .instant, .neon: return "80s"
         case .disposable, .glamour: return "90s"
-        case .digicam: return "Y2K"
+        case .digicam, .camcorder06: return "Y2K"
+        case .throwback16: return "2010s"
         case .kira: return String(localized: "Sparkle")
+        case .filmStill: return String(localized: "Film", comment: "Era tag of the Film Still effect: the look of a movie frame")
+        }
+    }
+
+    /// The one switch an effect offers under the strip.
+    enum Option {
+        case dateStamp, border, letterbox, cameraInfo
+
+        var label: LocalizedStringResource {
+            switch self {
+            case .dateStamp: return "Date stamp"
+            case .border: return LocalizedStringResource("Border", comment: "Effect switch: a white square border around the photo")
+            case .letterbox: return LocalizedStringResource("Letterbox", comment: "Effect switch: black cinema bars at the top and bottom")
+            case .cameraInfo: return LocalizedStringResource("Camera info", comment: "Effect switch: the camcorder's REC, battery and time display")
+            }
+        }
+
+        var symbolName: String {
+            switch self {
+            case .dateStamp: return "calendar"
+            case .border: return "square.dashed"
+            case .letterbox: return "rectangle.ratio.16.to.9"
+            case .cameraInfo: return "record.circle"
+            }
+        }
+
+        /// On when the effect is picked. The border changes the photo's shape,
+        /// so she opts in.
+        var isOnByDefault: Bool { self != .border }
+
+        /// The border makes a bigger canvas, which a video frame can't do.
+        var worksOnVideo: Bool { self != .border }
+    }
+
+    var option: Option? {
+        switch self {
+        case .vhs, .disposable, .digicam: return .dateStamp
+        case .throwback16: return .border
+        case .camcorder06: return .cameraInfo
+        case .filmStill: return .letterbox
+        default: return nil
         }
     }
 
     /// Effects that print a date on the photo, like the real thing did.
-    var hasDateStamp: Bool {
-        switch self {
-        case .vhs, .disposable, .digicam: return true
-        default: return false
-        }
+    var hasDateStamp: Bool { option == .dateStamp }
+
+    /// Film Still can carry one line of subtitle (photos only).
+    var takesSubtitle: Bool { self == .filmStill }
+
+    /// What she chose under the strip: the effect's switch and, for Film
+    /// Still, a subtitle that has already passed the content policy.
+    struct Options: Equatable, Sendable {
+        var extra = true
+        var subtitle = ""
+
+        static let plain = Options(extra: false)
     }
 
     // MARK: Rendering
 
-    /// Renders the effect at the image's own size (the instant frame adds a border).
-    func apply(to image: UIImage, dateStamp: Bool = true, date: Date = Date()) -> UIImage {
+    /// Renders the effect at the image's own size (the instant frame and the
+    /// 2016 border add a canvas around it).
+    func apply(to image: UIImage, options: Options = Options(), date: Date = Date()) -> UIImage {
         let source = ImageUtilities.normalized(image, maxLongEdge: 4096)
         guard let input = ImageFilters.ciImage(source) else { return image }
         let graded = grade(input)
@@ -62,14 +121,17 @@ enum RetroEffect: String, CaseIterable, Identifiable {
         default:
             break
         }
-        if dateStamp, hasDateStamp {
-            output = RetroEffect.stamp(stampText(for: date), style: self, on: output)
+        if let layer = photoOverlay(size: output.size, options: options, date: date) {
+            output = RetroEffect.draw(layer, over: output)
+        }
+        if options.extra, option == .border {
+            output = RetroEffect.squareBorder(around: output)
         }
         return output
     }
 
     /// Effects that also work on video frames (no frames or per-frame sparkles).
-    static let videoEffects: [RetroEffect] = [.vhs, .disposable, .digicam, .glamour, .neon]
+    static let videoEffects: [RetroEffect] = [.vhs, .disposable, .digicam, .glamour, .neon, .throwback16, .camcorder06, .filmStill]
 
     /// The colour, grain and light of the effect, for photos and video frames.
     func grade(_ input: CIImage) -> CIImage {
@@ -138,6 +200,142 @@ enum RetroEffect: String, CaseIterable, Identifiable {
                 .applyingFilter("CIColorControls", parameters: [kCIInputContrastKey: 1.15, kCIInputSaturationKey: 1.3])
                 .applyingFilter("CIBloom", parameters: [kCIInputRadiusKey: 10 * unit, kCIInputIntensityKey: 0.5])
                 .cropped(to: extent)
+        case .throwback16:
+            // Early-phone-camera 2016: bright, punchy and very saturated, with
+            // only a hint of the matte fade.
+            var image = input
+                .applyingFilter("CIExposureAdjust", parameters: [kCIInputEVKey: 0.18])
+                .applyingFilter("CIColorControls", parameters: [kCIInputSaturationKey: 1.28, kCIInputContrastKey: 1.06])
+                .applyingFilter("CITemperatureAndTint", parameters: [
+                    "inputNeutral": CIVector(x: 6500, y: 0), "inputTargetNeutral": CIVector(x: 7000, y: 4),
+                ])
+            image = RetroEffect.liftBlacks(image, amount: 0.03)
+            return image.applyingFilter("CIVignette", parameters: [kCIInputIntensityKey: 0.35, kCIInputRadiusKey: 2])
+        case .camcorder06:
+            // A MiniDV tape: cool and a little green, soft but over-sharpened,
+            // clipped highlights and faint interlacing. Kept far lighter than
+            // VHS '86 on purpose.
+            var image = input
+                .applyingFilter("CITemperatureAndTint", parameters: [
+                    "inputNeutral": CIVector(x: 6500, y: 0), "inputTargetNeutral": CIVector(x: 5400, y: -18),
+                ])
+                .applyingFilter("CIColorControls", parameters: [kCIInputSaturationKey: 0.92, kCIInputContrastKey: 1.1])
+                .applyingFilter("CIToneCurve", parameters: [
+                    "inputPoint0": CIVector(x: 0, y: 0.02),
+                    "inputPoint1": CIVector(x: 0.25, y: 0.24),
+                    "inputPoint2": CIVector(x: 0.5, y: 0.54),
+                    "inputPoint3": CIVector(x: 0.75, y: 0.88),
+                    "inputPoint4": CIVector(x: 0.9, y: 1),
+                ])
+            image = image.clampedToExtent().applyingGaussianBlur(sigma: 0.6 * unit).cropped(to: extent)
+            image = image.applyingFilter("CIUnsharpMask", parameters: [kCIInputRadiusKey: 2.5 * unit, kCIInputIntensityKey: 0.6]).cropped(to: extent)
+            image = RetroEffect.chromaticShift(image, offset: 0.8 * unit)
+            image = RetroEffect.scanlines(over: image, spacing: max(2, 2 * unit), strength: 0.06)
+            return RetroEffect.grain(over: image, amount: 0.05, scale: unit)
+        case .filmStill:
+            // A warm movie frame. Halation blooms only from the brightest
+            // lights (a high threshold), so skin is never softened.
+            var image = input
+                .applyingFilter("CITemperatureAndTint", parameters: [
+                    "inputNeutral": CIVector(x: 6500, y: 0), "inputTargetNeutral": CIVector(x: 7400, y: 6),
+                ])
+                .applyingFilter("CIColorControls", parameters: [kCIInputContrastKey: 1.05, kCIInputSaturationKey: 0.95])
+            image = RetroEffect.liftBlacks(image, amount: 0.05)
+            image = RetroEffect.halation(over: image, unit: unit)
+            return RetroEffect.grain(over: image, amount: 0.07, scale: unit)
+        }
+    }
+
+    // MARK: Overlays
+
+    /// Everything drawn on top of a photo for the chosen options.
+    private func photoOverlay(size: CGSize, options: Options, date: Date) -> UIImage? {
+        let subtitle = takesSubtitle ? FilmSubtitle.clean(options.subtitle) : ""
+        switch option {
+        case .dateStamp? where options.extra:
+            return RetroEffect.stampLayer(stampText(for: date), style: self, size: size)
+        case .cameraInfo? where options.extra:
+            return CamcorderChrome.layer(size: size, date: date, showsDot: true)
+        case .letterbox?:
+            guard options.extra || !subtitle.isEmpty else { return nil }
+            return RetroEffect.filmLayer(size: size, letterbox: options.extra, subtitle: subtitle)
+        default:
+            return nil
+        }
+    }
+
+    /// The static part of the overlay on a video frame (a date stamp, the
+    /// camcorder chrome without its blinking dot, or letterbox bars).
+    func videoOverlay(size: CGSize, date: Date = Date()) -> CIImage? {
+        let layer: UIImage?
+        switch option {
+        case .dateStamp?: layer = RetroEffect.stampLayer(stampText(for: date), style: self, size: size)
+        case .cameraInfo?: layer = CamcorderChrome.layer(size: size, date: date, showsDot: false)
+        case .letterbox?: layer = RetroEffect.filmLayer(size: size, letterbox: true, subtitle: "")
+        case .border?, nil: layer = nil
+        }
+        return layer.flatMap { CIImage(image: $0) }
+    }
+
+    private static func draw(_ layer: UIImage, over image: UIImage) -> UIImage {
+        let format = UIGraphicsImageRendererFormat()
+        format.scale = 1
+        return UIGraphicsImageRenderer(size: image.size, format: format).image { _ in
+            image.draw(at: .zero)
+            layer.draw(at: .zero)
+        }
+    }
+
+    /// Black cinema bars and a one-line subtitle in the system font (it has
+    /// glyphs for every app language, the brand fonts don't).
+    private static func filmLayer(size: CGSize, letterbox: Bool, subtitle: String) -> UIImage {
+        let unit = max(size.width, size.height) / 1000
+        let bar = letterbox ? Letterbox.barHeight(width: size.width, height: size.height) : 0
+        let format = UIGraphicsImageRendererFormat()
+        format.scale = 1
+        format.opaque = false
+        return UIGraphicsImageRenderer(size: size, format: format).image { context in
+            if bar > 0 {
+                UIColor.black.setFill()
+                context.fill(CGRect(x: 0, y: 0, width: size.width, height: bar))
+                context.fill(CGRect(x: 0, y: size.height - bar, width: size.width, height: bar))
+            }
+            guard !subtitle.isEmpty else { return }
+            let shadow = NSShadow()
+            shadow.shadowColor = UIColor.black.withAlphaComponent(0.85)
+            shadow.shadowBlurRadius = 6 * unit
+            shadow.shadowOffset = CGSize(width: 0, height: 1.5 * unit)
+            let paragraph = NSMutableParagraphStyle()
+            paragraph.alignment = .center
+            paragraph.lineBreakMode = .byTruncatingTail
+            let attributes: [NSAttributedString.Key: Any] = [
+                .font: UIFont.systemFont(ofSize: 36 * unit, weight: .medium),
+                .foregroundColor: UIColor(white: 1, alpha: 0.96),
+                .shadow: shadow,
+                .paragraphStyle: paragraph,
+            ]
+            let text = subtitle as NSString
+            let margin = 40 * unit
+            let height = ceil(text.boundingRect(with: CGSize(width: size.width - margin * 2, height: .greatestFiniteMagnitude),
+                                                options: [.usesLineFragmentOrigin], attributes: attributes, context: nil).height)
+            let lineHeight = min(height, 60 * unit)
+            let bottom = size.height - max(bar, margin) - 18 * unit
+            text.draw(with: CGRect(x: margin, y: bottom - lineHeight, width: size.width - margin * 2, height: lineHeight),
+                      options: [.usesLineFragmentOrigin, .truncatesLastVisibleLine], attributes: attributes, context: nil)
+        }
+    }
+
+    /// 2016's "no crop" posts: the whole photo centred on a white square.
+    private static func squareBorder(around image: UIImage) -> UIImage {
+        let size = image.size
+        let side = max(size.width, size.height) * 1.08
+        let format = UIGraphicsImageRendererFormat()
+        format.scale = 1
+        format.opaque = true
+        return UIGraphicsImageRenderer(size: CGSize(width: side, height: side), format: format).image { context in
+            UIColor.white.setFill()
+            context.fill(CGRect(x: 0, y: 0, width: side, height: side))
+            image.draw(in: CGRect(x: (side - size.width) / 2, y: (side - size.height) / 2, width: size.width, height: size.height))
         }
     }
 
@@ -228,6 +426,27 @@ enum RetroEffect: String, CaseIterable, Identifiable {
         return leak.applyingFilter("CIScreenBlendMode", parameters: [kCIInputBackgroundImageKey: image])
     }
 
+    /// Red-orange glow around the brightest lights, like light scattering
+    /// back through film.
+    private static func halation(over image: CIImage, unit: CGFloat) -> CIImage {
+        let extent = image.extent
+        let glow = image
+            // Threshold the brightness, not each channel, so warm skin tones
+            // don't count as "lights".
+            .applyingFilter("CIColorControls", parameters: [kCIInputSaturationKey: 0])
+            .applyingFilter("CIColorThreshold", parameters: ["inputThreshold": 0.86])
+            .applyingFilter("CIColorMatrix", parameters: [
+                "inputRVector": CIVector(x: 0.55, y: 0, z: 0, w: 0),
+                "inputGVector": CIVector(x: 0.2, y: 0, z: 0, w: 0),
+                "inputBVector": CIVector(x: 0.06, y: 0, z: 0, w: 0),
+                "inputAVector": CIVector(x: 0, y: 0, z: 0, w: 1),
+            ])
+            .clampedToExtent()
+            .applyingGaussianBlur(sigma: 12 * unit)
+            .cropped(to: extent)
+        return glow.applyingFilter("CIScreenBlendMode", parameters: [kCIInputBackgroundImageKey: image]).cropped(to: extent)
+    }
+
     // MARK: UIKit overlays
 
     private func stampText(for date: Date) -> String {
@@ -243,22 +462,6 @@ enum RetroEffect: String, CaseIterable, Identifiable {
             return String(format: "'98 %02d %02d", month, day)
         default:
             return String(format: "2004/%02d/%02d", month, day)
-        }
-    }
-
-    /// The date stamp on a transparent layer the size of a video frame.
-    func videoStampOverlay(size: CGSize, date: Date = Date()) -> CIImage? {
-        guard hasDateStamp else { return nil }
-        let layer = RetroEffect.stampLayer(stampText(for: date), style: self, size: size)
-        return CIImage(image: layer)
-    }
-
-    private static func stamp(_ text: String, style: RetroEffect, on image: UIImage) -> UIImage {
-        let format = UIGraphicsImageRendererFormat()
-        format.scale = 1
-        return UIGraphicsImageRenderer(size: image.size, format: format).image { _ in
-            image.draw(at: .zero)
-            stampLayer(text, style: style, size: image.size).draw(at: .zero)
         }
     }
 

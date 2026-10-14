@@ -55,7 +55,10 @@ extension TemplateCatalog {
     /// Free-to-try and trending looks first, one per calendar day, so the
     /// widget and the app agree on "today's" trend without any network call.
     public static func trendOfTheDay(on date: Date = Date(), calendar: Calendar = .current) -> PhotoTemplate {
-        let pool = all.filter { $0.category == .trending || $0.category == .glowUp || $0.category == .aesthetic }
+        // Never an out-of-season look (none is in these categories today; this keeps it so).
+        let pool = all.filter {
+            ($0.category == .trending || $0.category == .glowUp || $0.category == .aesthetic) && $0.season == nil
+        }
         let day = calendar.ordinality(of: .day, in: .era, for: date) ?? 0
         return pool[day % pool.count]
     }

@@ -64,6 +64,9 @@ struct HomeView: View {
                 if ScreenshotScene.current == .settings { app.isSettingsPresented = true }
                 if ScreenshotScene.current == .invite { showInvite = true }
                 if ScreenshotScene.current == .legal { legalDocument = .privacy }
+                if ScreenshotScene.current == .collection {
+                    openCategory = UserDefaults.standard.string(forKey: "GLCategory").flatMap(TemplateCategory.init(rawValue:)) ?? .seasonal
+                }
             }
             #endif
         }
@@ -176,14 +179,14 @@ struct HomeView: View {
 
     private func templateRow(_ category: TemplateCategory) -> some View {
         VStack(alignment: .leading, spacing: 14) {
-            SectionHeader(title: LocalizedStringKey(category.title), actionTitle: "See all") {
+            SectionHeader(title: LocalizedStringKey(category.title(on: AppClock.now)), actionTitle: "See all") {
                 Haptics.tap()
                 openCategory = category
             }
             .padding(.horizontal, Metrics.gutter)
             ScrollView(.horizontal) {
                 HStack(spacing: 12) {
-                    ForEach(TemplateCatalog.templates(in: category)) { template in
+                    ForEach(TemplateCatalog.templates(in: category, on: AppClock.now)) { template in
                         Button {
                             Haptics.tap()
                             app.startEditing(tool: .styles, template: template)
@@ -270,7 +273,7 @@ struct HomeView: View {
         ]
         let boosted = app.interests.compactMap { preferred[$0] }
         let order = TemplateCategory.allCases
-        return TemplateCatalog.categories.sorted { lhs, rhs in
+        return TemplateCatalog.categories(on: AppClock.now).sorted { lhs, rhs in
             let lhsScore = (lhs == .trending ? 2 : 0) + (boosted.contains(lhs) ? 1 : 0)
             let rhsScore = (rhs == .trending ? 2 : 0) + (boosted.contains(rhs) ? 1 : 0)
             if lhsScore != rhsScore { return lhsScore > rhsScore }

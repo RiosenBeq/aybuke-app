@@ -113,7 +113,7 @@ Legend: ✅ done in this repository · ⏳ next · 🔭 later
 ## Phase 5 — Girls-first redesign and growth ✅ (October 2026)
 
 - ✅ Pink "Blush" palette (sampled from the owner's reference brand), light-first with Dark and Automatic appearances
-- ✅ Girls-first catalog: 30 looks in Trending, Glow-up looks, Aesthetic edits, Dreamy portraits, Spooky season, Art and For your shop; 14 styles incl. Pastel Dream and Kawaii; identity clause now protects body shape too
+- ✅ Girls-first catalog: 36 year-round looks in Trending, Glow-up looks, Aesthetic edits, Dreamy portraits, Art, Pet portraits and For your shop, plus seasonal looks (Halloween, winter, Galentine's) promoted on Home in season; 14 styles incl. Pastel Dream and Kawaii; identity clause now protects body shape too
 - ✅ Share composer: Instagram Stories, before/after collage, 9:16 story card, caption and hashtags, copy image, AI-label tip
 - ✅ Favorites in My Works, sparkle celebration, editorial serif accents, Settings › Appearance and "Spread the glow"
 - ✅ Developer AI key slot (`ios/Config/Secrets.xcconfig`, DEBUG only) with direct xAI, fal.ai, OpenAI and Gemini adapters
@@ -126,7 +126,7 @@ Legend: ✅ done in this repository · ⏳ next · 🔭 later
 ## Phase 6 — Video, retro effects, xAI and 12 languages ✅ (October 2026)
 
 - ✅ Simple on-device video editor: auto-cut silences (jump cut), retro effects with their date stamps, trim, save to Photos or share; free, no watermark, no ending clip, clips up to 5 minutes (`Features/Video`, `VideoEngine`, AppCore `SilenceCutter`)
-- ✅ Seven free on-device 80s/90s/Y2K photo effects (VHS '86, Disposable '98, Kira Kira, Digicam '04, Instant '82, Glamour '92, Neon '84) with an optional date stamp; one-tap Auto adjust; RAW photos developed automatically (`AutoDevelop`, AppCore `AutoAdjust`)
+- ✅ Free on-device retro photo effects (VHS '86, Disposable '98, Kira Kira, Digicam '04, Instant '82, Glamour '92, Neon '84, Throwback '16, Camcorder '06, Film Still) with an optional date stamp, border, letterbox or camcorder display; one-tap Auto adjust; RAW photos developed automatically (`AutoDevelop`, AppCore `AutoAdjust`)
 - ✅ xAI Grok Imagine as the default AI provider, fal.ai as the alternative; Pro's benefit is now "Our best-quality AI, no watermark"
 - ✅ New prices: Pro Yearly $39.99 with a 7-day free trial (≈ $3.33/month), Pro Monthly $5.99 (first month $1.99 if eligible), packs 30 for $2.99 and 100 for $7.99
 - ✅ Share formats: Cover star magazine cover (masthead behind the head with Vision person segmentation) and date-stamped Photo strip; Instagram Stories without a Meta App ID; "Glow together" invite card with a QR code

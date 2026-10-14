@@ -43,9 +43,15 @@ final class EditorViewModel {
     private(set) var editsOnlyMainPerson = false
     @ObservationIgnored private var likenessTask: Task<Void, Never>?
 
-    // Effects (on-device, 80s / 90s / Y2K)
+    // Effects (on-device, 80s to 2010s)
     private(set) var effect: RetroEffect?
-    var effectDateStamp = true
+    /// The effect's switch (date stamp, border, letterbox or camera info).
+    var effectExtra = true
+    /// Film Still's subtitle as she types it.
+    var effectSubtitle = ""
+    /// The subtitle that passed the content policy; only this one is drawn.
+    @ObservationIgnored private var approvedSubtitle = ""
+    @ObservationIgnored private var subtitleTask: Task<Void, Never>?
     private(set) var effectPreview: UIImage?
     private(set) var effectThumbnails: [RetroEffect: UIImage] = [:]
     @ObservationIgnored private var effectTask: Task<Void, Never>?
@@ -68,6 +74,14 @@ final class EditorViewModel {
             isComparing = true
         }
         if let effect = launch.previewEffect {
+            #if DEBUG
+            // Screenshot QA of subtitles in every script: -GLSubtitle "…"
+            // (fixed test text, so the policy check is skipped here).
+            if ScreenshotScene.current != nil, let subtitle = UserDefaults.standard.string(forKey: "GLSubtitle") {
+                effectSubtitle = subtitle
+                approvedSubtitle = FilmSubtitle.clean(subtitle)
+            }
+            #endif
             previewEffect(effect)
         }
     }
@@ -77,6 +91,8 @@ final class EditorViewModel {
     var hasChanges: Bool { canUndo }
     var hasTransparency: Bool { ImageUtilities.hasAlpha(current) }
     var canRetryFree: Bool { retryRequestID != nil && !isProcessing }
+    /// Pet looks restyle the animal, so "doesn't look like you" would be odd.
+    var retryIsAboutLikeness: Bool { lastJob?.template?.category != .pets }
 
     /// Library title: the latest AI step, or the tool that was used.
     var libraryTitle: String {
@@ -255,7 +271,7 @@ final class EditorViewModel {
         let keepsPerson: Bool
         switch job.operation {
         case .magicEdit: keepsPerson = true
-        case .restyle: keepsPerson = [.glowUp, .aesthetic, .dreamy, .business].contains(job.template?.category)
+        case .restyle: keepsPerson = job.template?.keepsLikeness == true
         default: keepsPerson = false
         }
         guard keepsPerson, let source = job.sourceImage else { return }
@@ -332,22 +348,63 @@ final class EditorViewModel {
         guard effectThumbnails.isEmpty else { return }
         let source = ImageUtilities.normalized(current, maxLongEdge: 240)
         let thumbnails = await Task.detached(priority: .userInitiated) {
-            Dictionary(uniqueKeysWithValues: RetroEffect.allCases.map { ($0, $0.apply(to: source)) })
+            Dictionary(uniqueKeysWithValues: RetroEffect.allCases.map {
+                ($0, $0.apply(to: source, options: RetroEffect.Options(extra: $0.option?.isOnByDefault ?? true)))
+            })
         }.value
         effectThumbnails = thumbnails
     }
 
+    private var effectOptions: RetroEffect.Options {
+        RetroEffect.Options(extra: effectExtra, subtitle: effect?.takesSubtitle == true ? approvedSubtitle : "")
+    }
+
     func previewEffect(_ effect: RetroEffect) {
+        if effect != self.effect {
+            // Each effect starts with its own switch at its default.
+            effectExtra = effect.option?.isOnByDefault ?? true
+            Haptics.selection()
+        }
         self.effect = effect
         effectTask?.cancel()
         let proxy = adjustProxy()
-        let stamp = effectDateStamp
-        Haptics.selection()
+        let options = effectOptions
         effectTask = Task {
-            let rendered = await Task.detached(priority: .userInitiated) { effect.apply(to: proxy, dateStamp: stamp) }.value
+            let rendered = await Task.detached(priority: .userInitiated) { effect.apply(to: proxy, options: options) }.value
             guard !Task.isCancelled else { return }
             effectPreview = rendered
         }
+    }
+
+    /// Re-renders a moment after she stops typing, not on every key.
+    func subtitleChanged(app: AppModel) {
+        subtitleTask?.cancel()
+        subtitleTask = Task {
+            try? await Task.sleep(for: .milliseconds(300))
+            guard !Task.isCancelled else { return }
+            commitSubtitle(app: app)
+        }
+    }
+
+    /// Checks the subtitle with the content policy before it is drawn. A
+    /// blocked one shows why and isn't drawn. False when blocked.
+    @discardableResult
+    func commitSubtitle(app: AppModel) -> Bool {
+        subtitleTask?.cancel()
+        let text = FilmSubtitle.clean(effectSubtitle)
+        var allowed = true
+        var approved = text
+        if case .blocked(let reason) = ContentPolicy.evaluate(text) {
+            app.showToast(verbatim: L10n.core(reason), style: .error)
+            Haptics.error()
+            approved = ""
+            allowed = false
+        }
+        if approved != approvedSubtitle {
+            approvedSubtitle = approved
+            if let effect, effect.takesSubtitle { previewEffect(effect) }
+        }
+        return allowed
     }
 
     func clearEffect() {
@@ -360,11 +417,11 @@ final class EditorViewModel {
     func applyEffect() async {
         guard let effect, !isProcessing else { return }
         let source = current
-        let stamp = effectDateStamp
+        let options = effectOptions
         processingTitle = String(localized: "Adding \(effect.title)…")
         isProcessingInCloud = false
         isProcessing = true
-        let output = await Task.detached(priority: .userInitiated) { effect.apply(to: source, dateStamp: stamp) }.value
+        let output = await Task.detached(priority: .userInitiated) { effect.apply(to: source, options: options) }.value
         isProcessing = false
         clearEffect()
         commit(output, operation: nil)

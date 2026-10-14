@@ -78,7 +78,7 @@ struct StylesPanel: View {
     var body: some View {
         ScrollView(.horizontal) {
             HStack(spacing: 10) {
-                ForEach(TemplateCatalog.all) { template in
+                ForEach(TemplateCatalog.editorOrder(on: AppClock.now)) { template in
                     Button {
                         Haptics.tap()
                         onSelect(template)
@@ -270,12 +270,14 @@ struct AdjustPanel: View {
     }
 }
 
-/// 80s, 90s and Y2K effects: live thumbnails of her own photo, a date stamp
-/// switch for the cameras that had one, and Apply (or Unlock with Pro).
+/// Retro effects: live thumbnails of her own photo, the effect's one switch
+/// (date stamp, border, letterbox or camera info), Film Still's subtitle,
+/// and Apply.
 struct EffectsPanel: View {
     let thumbnails: [RetroEffect: UIImage]
     let selected: RetroEffect?
-    @Binding var dateStamp: Bool
+    @Binding var showsExtra: Bool
+    @Binding var subtitle: String
     let onSelect: (RetroEffect) -> Void
     let onReset: () -> Void
     let onApply: () -> Void
@@ -298,12 +300,24 @@ struct EffectsPanel: View {
             .scrollIndicators(.hidden)
             .scrollClipDisabled()
 
-            if selected?.hasDateStamp == true {
-                Toggle(isOn: $dateStamp) {
-                    Label("Date stamp", systemImage: "calendar")
+            if let option = selected?.option {
+                Toggle(isOn: $showsExtra) {
+                    Label { Text(option.label) } icon: { Image(systemName: option.symbolName) }
                         .font(.subheadline.weight(.semibold))
                 }
                 .tint(Palette.accent)
+            }
+
+            if selected?.takesSubtitle == true {
+                TextField(text: $subtitle) {
+                    Text("Add a subtitle (optional)", comment: "Placeholder of the Film Still effect's one-line subtitle field")
+                }
+                .accessibilityLabel(Text("Subtitle", comment: "Accessibility label of the Film Still effect's subtitle field"))
+                .submitLabel(.done)
+                .font(.subheadline)
+                .padding(.horizontal, 14)
+                .padding(.vertical, 10)
+                .background(Palette.petal, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
             }
 
             HStack(spacing: 12) {
