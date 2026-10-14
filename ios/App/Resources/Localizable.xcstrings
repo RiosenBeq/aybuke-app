@@ -25249,6 +25249,76 @@
         }
       }
     },
+    "Captions in one click" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tek tıklamayla altyazı"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Subtítulos con un clic"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Legendas em um clique"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Des sous-titres en un clic"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Untertitel mit einem Klick"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sottotitoli con un clic"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Субтитры в один клик"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ワンクリックで字幕"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "클릭 한 번으로 자막"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "一键加字幕"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Subtitle sekali klik"
+          }
+        }
+      }
+    },
     "Carousel" : {
       "localizations" : {
         "de" : {
@@ -38531,6 +38601,76 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "盒装娃娃、Y2K、芭蕾风、精灵公主等——每种都只需轻点一下。"
+          }
+        }
+      }
+    },
+    "Doll box, Y2K, ballet core, fairy princess and more — one click each." : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Doll box, Y2K, ballet core, peri prenses ve daha fazlası — her biri tek tıklamayla."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Doll Box, Y2K, ballet core, princesa hada y más — con un clic cada uno."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Doll Box, Y2K, ballet core, princesa fada e muito mais — cada um com um clique."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Doll box, Y2K, ballet core, princesse féerique et plus encore — chacun en un clic."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Doll Box, Y2K, Ballet Core, Feenprinzessin und mehr — jeweils mit einem Klick."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Doll Box, Y2K, ballet core, principessa fatata e altro — ognuno con un clic."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Doll Box, Y2K, Ballet Core, принцесса-фея и не только — каждый в один клик."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ドールボックス、Y2K、バレエコア、妖精プリンセスなど — どれもワンクリック。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "인형 박스, Y2K, 발레코어, 페어리 프린세스 등 — 모두 클릭 한 번이면 끝."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "盒装娃娃、Y2K、芭蕾风、精灵公主等——每种都只需点一下。"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Doll box, Y2K, ballet core, putri peri, dan lainnya — masing-masing sekali klik."
           }
         }
       }
@@ -65264,6 +65404,76 @@
         }
       }
     },
+    "One click,\na whole new *aesthetic*" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tek tıklama,\nbambaşka bir *hava*"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un clic,\nuna *estética* nueva"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Um clique,\numa *vibe* totalmente nova"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un clic,\nun tout nouveau *look*"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ein Klick,\neine ganz neue *Ästhetik*"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un clic,\nun'*estetica* tutta nuova"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Один клик —\nи совсем новая *эстетика*"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ワンクリックで、\nまったく新しい*世界観*"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "클릭 한 번으로\n완전히 새로운 *감성*"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "点一下，\n换上全新*氛围感*"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sekali klik,\nlangsung *estetik*"
+          }
+        }
+      }
+    },
     "One wide picture, cut into 4:5 slides that swipe as one." : {
       "localizations" : {
         "de" : {
@@ -65400,6 +65610,76 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "一键造型"
+          }
+        }
+      }
+    },
+    "One-click looks" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tek tıklamayla trend"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Looks en un clic"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Looks em um clique"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Looks instantanés"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Looks per Klick"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Look in un clic"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Образы в один клик"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ワンクリックルック"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "원클릭 룩"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "一键造型"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gaya sekali klik"
           }
         }
       }
