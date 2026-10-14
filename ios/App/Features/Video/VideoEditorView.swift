@@ -363,12 +363,14 @@ struct VideoEditorView: View {
                         }
                     } label: { Image(systemName: "xmark") }
                     .accessibilityLabel("Close")
+                    .macHelp("Close")
                     .macKeyboardShortcut(.cancelAction)
                 }
                 if !model.loadFailed {
                     ToolbarItemGroup(placement: .primaryAction) {
                         Button { Task { await perform(.share) } } label: { Image(systemName: "paperplane.fill") }
                             .accessibilityLabel("Share")
+                            .macHelp("Share")
                         Button("Save") { Task { await perform(.save) } }
                             .fontWeight(.bold)
                             .macKeyboardShortcut(KeyboardShortcut("s"))

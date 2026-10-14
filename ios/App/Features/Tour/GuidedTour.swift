@@ -44,7 +44,9 @@ enum TourStep: Int, CaseIterable, Identifiable {
     func message(isPro: Bool, policy: CreditPolicy, cloudAI: Bool = true) -> String {
         switch self {
         case .hero:
-            return String(localized: "Describe any change, like pink hair, golden hour or soft glam, and watch your photo glow. Or tap a trend below.")
+            return Platform.isMac
+                ? String(localized: "Describe any change, like pink hair, golden hour or soft glam, and watch your photo glow. Or click a trend below.")
+                : String(localized: "Describe any change, like pink hair, golden hour or soft glam, and watch your photo glow. Or tap a trend below.")
         case .credits:
             return isPro
                 ? String(localized: "Pro gives you \(policy.proMonthlyAllowance) credits every month. Free tools never use credits, and failed edits are always refunded.")

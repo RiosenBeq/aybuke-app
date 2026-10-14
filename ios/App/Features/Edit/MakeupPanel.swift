@@ -13,6 +13,7 @@ struct MakeupPanel: View {
 
     @State private var isCustomizing: Bool
     @State private var area: Area
+    @Environment(\.editorPanelPlacement) private var placement
 
     init(recipe: Binding<MakeupRecipe>, cost: Int, onTry: @escaping () -> Void) {
         _recipe = recipe
@@ -98,42 +99,51 @@ struct MakeupPanel: View {
     // MARK: Looks
 
     private var looksRow: some View {
-        ScrollViewReader { proxy in
-            ScrollView(.horizontal) {
-                HStack(spacing: 8) {
-                    ForEach(MakeupStudio.presets) { preset in
-                        MakeupChip(title: L10n.core(preset.name), swatches: preset.swatches, isSelected: look == preset) {
-                            // Her hair color choice stays when she switches looks.
-                            withAnimation(.snappy) { recipe = preset.recipe.withHair(recipe.hair) }
-                            Haptics.selection()
+        Group {
+            if placement == .inspector {
+                FlowLayout {
+                    lookChips
+                }
+            } else {
+                ScrollViewReader { proxy in
+                    ScrollView(.horizontal) {
+                        HStack(spacing: 8) {
+                            lookChips
                         }
-                        .id(preset.id)
+                    }
+                    .scrollIndicators(.hidden)
+                    .onAppear {
+                        if let look { proxy.scrollTo(look.id, anchor: .center) }
                     }
                 }
-            }
-            .scrollIndicators(.hidden)
-            .onAppear {
-                if let look { proxy.scrollTo(look.id, anchor: .center) }
             }
         }
         .accessibilityElement(children: .contain)
         .accessibilityLabel("Makeup looks")
     }
 
+    private var lookChips: some View {
+        ForEach(MakeupStudio.presets) { preset in
+            MakeupChip(title: L10n.core(preset.name), swatches: preset.swatches, isSelected: look == preset) {
+                // Her hair color choice stays when she switches looks.
+                withAnimation(.snappy) { recipe = preset.recipe.withHair(recipe.hair) }
+                Haptics.selection()
+            }
+            .id(preset.id)
+        }
+    }
+
     // MARK: Customize
 
     private var areaRow: some View {
-        ScrollView(.horizontal) {
-            HStack(spacing: 8) {
-                ForEach(Area.allCases) { item in
-                    SelectableChip(title: item.title, symbolName: item.symbolName, isSelected: area == item) {
-                        withAnimation(.snappy) { area = item }
-                        Haptics.selection()
-                    }
+        ChipRow {
+            ForEach(Area.allCases) { item in
+                SelectableChip(title: item.title, symbolName: item.symbolName, isSelected: area == item) {
+                    withAnimation(.snappy) { area = item }
+                    Haptics.selection()
                 }
             }
         }
-        .scrollIndicators(.hidden)
     }
 
     @ViewBuilder
@@ -148,39 +158,44 @@ struct MakeupPanel: View {
     }
 
     /// One choice per row ("As is" first), scrolled to the one she has.
+    @ViewBuilder
     private func choices<Choice: MakeupChoice>(_ all: [Choice], selected: Choice, select: @escaping (Choice) -> Void) -> some View {
-        ScrollViewReader { proxy in
-            ScrollView(.horizontal) {
-                HStack(spacing: 8) {
-                    ForEach(all) { choice in
-                        MakeupChip(title: L10n.core(choice.name), swatches: choice.swatch.map { [$0] } ?? [],
-                                   isSelected: choice == selected) {
-                            select(choice)
-                            Haptics.selection()
-                        }
-                        .id(choice.id)
+        let chips = ForEach(all) { choice in
+            MakeupChip(title: L10n.core(choice.name), swatches: choice.swatch.map { [$0] } ?? [],
+                       isSelected: choice == selected) {
+                select(choice)
+                Haptics.selection()
+            }
+            .id(choice.id)
+        }
+        if placement == .inspector {
+            FlowLayout {
+                chips
+            }
+        } else {
+            ScrollViewReader { proxy in
+                ScrollView(.horizontal) {
+                    HStack(spacing: 8) {
+                        chips
                     }
                 }
+                .scrollIndicators(.hidden)
+                .onAppear { proxy.scrollTo(selected.id, anchor: .center) }
             }
-            .scrollIndicators(.hidden)
-            .onAppear { proxy.scrollTo(selected.id, anchor: .center) }
         }
     }
 
     /// Any number of extras.
     private var extrasRow: some View {
-        ScrollView(.horizontal) {
-            HStack(spacing: 8) {
-                ForEach(MakeupExtra.allCases) { extra in
-                    MakeupChip(title: L10n.core(extra.name), swatches: extra.swatch.map { [$0] } ?? [],
-                               isSelected: recipe.extras.contains(extra), isToggle: true) {
-                        recipe.toggle(extra)
-                        Haptics.selection()
-                    }
+        ChipRow {
+            ForEach(MakeupExtra.allCases) { extra in
+                MakeupChip(title: L10n.core(extra.name), swatches: extra.swatch.map { [$0] } ?? [],
+                           isSelected: recipe.extras.contains(extra), isToggle: true) {
+                    recipe.toggle(extra)
+                    Haptics.selection()
                 }
             }
         }
-        .scrollIndicators(.hidden)
     }
 
     /// The label sits beside the control when both fit, above it otherwise.

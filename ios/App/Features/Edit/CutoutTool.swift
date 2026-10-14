@@ -371,6 +371,7 @@ struct CutoutPanel: View {
     @State private var photoItem: PhotosPickerItem?
     @State private var isLoadingPhoto = false
     @Environment(AppModel.self) private var app
+    @Environment(\.editorPanelPlacement) private var placement
 
     private static let gradientThumbnails: [CutoutGradient: UIImage] = Dictionary(
         uniqueKeysWithValues: CutoutGradient.allCases.map { ($0, CutoutRenderer.thumbnail(of: $0, side: 88)) }
@@ -393,7 +394,7 @@ struct CutoutPanel: View {
                     HStack(spacing: 8) {
                         Image(systemName: "hand.tap")
                             .foregroundStyle(Palette.accent)
-                        Text("Tap who or what to keep")
+                        Text(Platform.isMac ? "Click who or what to keep" : "Tap who or what to keep")
                             .font(.footnote.weight(.semibold))
                             .foregroundStyle(Palette.textSecondary)
                             .fixedSize(horizontal: false, vertical: true)
@@ -454,73 +455,101 @@ struct CutoutPanel: View {
 
     /// The refine brushes for the edge Vision drew, and Undo for their strokes.
     private var refineRow: some View {
-        ScrollView(.horizontal) {
-            HStack(spacing: 8) {
-                SelectableChip(title: "Keep more", symbolName: "plus.circle", isSelected: session.refineMode == .keepMore) {
-                    session.setRefineMode(.keepMore)
+        Group {
+            if placement == .inspector {
+                FlowLayout {
+                    refineChips
                 }
-                SelectableChip(title: "Keep less", symbolName: "minus.circle", isSelected: session.refineMode == .keepLess) {
-                    session.setRefineMode(.keepLess)
-                }
-                if !session.refineStrokes.isEmpty {
-                    Button { session.undoRefineStroke() } label: {
-                        Image(systemName: "arrow.uturn.backward")
+            } else {
+                ScrollView(.horizontal) {
+                    HStack(spacing: 8) {
+                        refineChips
                     }
-                    .buttonStyle(.icon)
-                    .accessibilityLabel("Undo stroke")
-                    .transition(.opacity)
+                    .padding(.horizontal, 2)
                 }
+                .scrollIndicators(.hidden)
             }
-            .padding(.horizontal, 2)
         }
-        .scrollIndicators(.hidden)
         .animation(.snappy, value: session.refineStrokes.isEmpty)
     }
 
-    private var backdropRow: some View {
-        ScrollView(.horizontal) {
-            HStack(spacing: 10) {
-                tile(.transparent, label: "Transparent") { CheckerboardBackground() }
-                ForEach(CutoutBackdrop.swatches, id: \.self) { hex in
-                    tile(.color(hex), label: colorName(hex)) { Color(hex: hex) }
-                }
-                ColorPicker(
-                    "Custom color",
-                    selection: Binding(get: { session.customColor }, set: { session.setCustomColor($0) }),
-                    supportsOpacity: false
-                )
-                .labelsHidden()
-                .frame(width: 44, height: 44)
-                .overlay(Circle().strokeBorder(Palette.accent, lineWidth: session.backdrop == .custom ? 2.5 : 0).padding(-4))
-                if !session.sourceHasAlpha {
-                    tile(.blurOriginal, label: "Blur original") {
-                        ZStack {
-                            Palette.petal
-                            Image(systemName: "drop.halffull")
-                                .font(.system(size: 17, weight: .semibold))
-                                .foregroundStyle(Palette.ink)
-                        }
-                    }
-                }
-                ForEach(CutoutGradient.allCases) { gradient in
-                    tile(.gradient(gradient), label: gradientName(gradient)) {
-                        Image(uiImage: Self.gradientThumbnails[gradient] ?? UIImage())
-                            .resizable()
-                            .scaledToFill()
-                    }
-                }
-                // The picker's label is built off the main actor: read state first.
-                let photoTile = PhotoTile(photo: session.backdropPhoto, isLoading: isLoadingPhoto, isSelected: session.backdrop == .photo)
-                PhotosPicker(selection: $photoItem, matching: .images) {
-                    photoTile
-                }
-                .accessibilityLabel("Your photo")
-                .accessibilityAddTraits(session.backdrop == .photo ? .isSelected : [])
-            }
-            .padding(.vertical, 4)
-            .padding(.horizontal, 2)
+    @ViewBuilder
+    private var refineChips: some View {
+        SelectableChip(title: "Keep more", symbolName: "plus.circle", isSelected: session.refineMode == .keepMore) {
+            session.setRefineMode(.keepMore)
         }
-        .scrollIndicators(.hidden)
+        SelectableChip(title: "Keep less", symbolName: "minus.circle", isSelected: session.refineMode == .keepLess) {
+            session.setRefineMode(.keepLess)
+        }
+        if !session.refineStrokes.isEmpty {
+            Button { session.undoRefineStroke() } label: {
+                Image(systemName: "arrow.uturn.backward")
+            }
+            .buttonStyle(.icon)
+            .accessibilityLabel("Undo stroke")
+            .macHelp("Undo stroke")
+            .transition(.opacity)
+        }
+    }
+
+    @ViewBuilder
+    private var backdropRow: some View {
+        if placement == .inspector {
+            // Room for the selection rings drawn outside each tile.
+            FlowLayout(spacing: 14, lineSpacing: 14) {
+                backdropTiles
+            }
+            .padding(4)
+        } else {
+            ScrollView(.horizontal) {
+                HStack(spacing: 10) {
+                    backdropTiles
+                }
+                .padding(.vertical, 4)
+                .padding(.horizontal, 2)
+            }
+            .scrollIndicators(.hidden)
+        }
+    }
+
+    @ViewBuilder
+    private var backdropTiles: some View {
+        tile(.transparent, label: "Transparent") { CheckerboardBackground() }
+        ForEach(CutoutBackdrop.swatches, id: \.self) { hex in
+            tile(.color(hex), label: colorName(hex)) { Color(hex: hex) }
+        }
+        ColorPicker(
+            "Custom color",
+            selection: Binding(get: { session.customColor }, set: { session.setCustomColor($0) }),
+            supportsOpacity: false
+        )
+        .labelsHidden()
+        .frame(width: 44, height: 44)
+        .overlay(Circle().strokeBorder(Palette.accent, lineWidth: session.backdrop == .custom ? 2.5 : 0).padding(-4))
+        if !session.sourceHasAlpha {
+            tile(.blurOriginal, label: "Blur original") {
+                ZStack {
+                    Palette.petal
+                    Image(systemName: "drop.halffull")
+                        .font(.system(size: 17, weight: .semibold))
+                        .foregroundStyle(Palette.ink)
+                }
+            }
+        }
+        ForEach(CutoutGradient.allCases) { gradient in
+            tile(.gradient(gradient), label: gradientName(gradient)) {
+                Image(uiImage: Self.gradientThumbnails[gradient] ?? UIImage())
+                    .resizable()
+                    .scaledToFill()
+            }
+        }
+        // The picker's label is built off the main actor: read state first.
+        let photoTile = PhotoTile(photo: session.backdropPhoto, isLoading: isLoadingPhoto, isSelected: session.backdrop == .photo)
+        PhotosPicker(selection: $photoItem, matching: .images) {
+            photoTile
+        }
+        .accessibilityLabel("Your photo")
+        .accessibilityAddTraits(session.backdrop == .photo ? .isSelected : [])
     }
 
     private func tile(_ backdrop: CutoutBackdrop, label: LocalizedStringKey, @ViewBuilder content: () -> some View) -> some View {

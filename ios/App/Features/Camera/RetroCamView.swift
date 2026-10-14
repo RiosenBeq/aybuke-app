@@ -387,6 +387,7 @@ private struct CamButton: View {
         }
         .buttonStyle(PressableButtonStyle(scale: 0.92))
         .accessibilityLabel(label)
+        .macHelp(label)
         .accessibilityAddTraits(isOn ? .isSelected : [])
     }
 }
@@ -478,9 +479,11 @@ struct RetroCamHubCard: View {
                 Image(systemName: "chevron.right")
                     .foregroundStyle(Palette.textTertiary)
             }
+            .macFillsCell()
             .padding(14)
             .cardStyle()
         }
         .buttonStyle(PressableButtonStyle(scale: 0.97))
+        .macHoverLift()
     }
 }

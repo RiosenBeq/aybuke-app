@@ -103,6 +103,13 @@ final class AppModel {
         // Works' empty state, say) lands on the free tools instead of a blank.
         didSet { if selectedTab == .create && !allowsCloudAI { selectedTab = .edit } }
     }
+    /// Mac: the sidebar shows (View › Show Sidebar, ⌃⌘S) or not.
+    var macSidebarVisibility: NavigationSplitViewVisibility = .all
+    /// The editor on screen, so Edit › Undo and Redo (⌘Z, ⇧⌘Z) on the Mac
+    /// step through its history.
+    var activeEditor: EditorViewModel?
+    /// File › New Creation asks Create to put the cursor in its prompt.
+    var wantsPromptFocus = false
     /// Settings: the gear on Explore, or Glowlit › Settings… on the Mac.
     var isSettingsPresented = false
     var isPaywallPresented = false
@@ -698,8 +705,15 @@ final class AppModel {
         defaults.set(true, forKey: Keys.onboardingPaywallPending)
     }
 
+    func toggleMacSidebar() {
+        withAnimation(.snappy) {
+            macSidebarVisibility = macSidebarVisibility == .detailOnly ? .all : .detailOnly
+        }
+    }
+
     /// The editor's full-screen cover closed.
     func editorDidClose() {
+        activeEditor = nil
         GlowTips.noteEditorClosed()
         if defaults.bool(forKey: Keys.onboardingPaywallPending) {
             offerOnboardingPaywall()

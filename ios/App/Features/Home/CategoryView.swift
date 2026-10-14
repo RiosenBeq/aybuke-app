@@ -9,8 +9,9 @@ struct CategoryView: View {
     @Environment(AppModel.self) private var app
 
     private var templates: [PhotoTemplate] { TemplateCatalog.templates(in: category, on: AppClock.now) }
-    /// Two columns on iPhone, up to eight on a big iPad in landscape.
-    private let columns = [GridItem(.adaptive(minimum: 136), spacing: 12)]
+    /// Two columns on iPhone, up to eight on a big iPad in landscape; on
+    /// the Mac, cards about as big as on Explore.
+    private let columns = [GridItem(.adaptive(minimum: Platform.isMac ? 176 : 136), spacing: Platform.isMac ? 14 : 12)]
 
     var body: some View {
         ScrollView {
@@ -29,13 +30,15 @@ struct CategoryView: View {
                             .aspectRatio(3 / 4, contentMode: .fit)
                         }
                         .buttonStyle(.pressable)
+                        .macHoverLift()
                         .accessibilityHint(template.lookHint(isPro: app.purchases.isPro))
                         .reveal(1 + min(index, 7))
                     }
                 }
             }
-            .padding(.horizontal, Metrics.gutter)
+            .padding(.horizontal, Metrics.pageGutter)
             .padding(.bottom, 32)
+            .macPageWidth()
         }
         .scrollIndicators(.hidden)
         .background(AuroraBackground(intensity: 0.35))

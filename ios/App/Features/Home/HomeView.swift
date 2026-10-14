@@ -7,33 +7,47 @@ struct HomeView: View {
     @State private var legalDocument: LegalDocument?
     @State private var openCategory: TemplateCategory?
     @State private var showInvite = false
+    /// Mac: the page's width, for a hero row with Create beside Magic Edit.
+    @State private var pageWidth: CGFloat = 0
 
     var body: some View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: Metrics.sectionSpacing) {
                     header
-                        .padding(.horizontal, Metrics.gutter)
+                        .padding(.horizontal, Metrics.pageGutter)
                         .reveal(0)
 
                     if let banner = app.modeBanner {
                         ModeBanner(text: banner)
-                            .padding(.horizontal, Metrics.gutter)
+                            .padding(.horizontal, Metrics.pageGutter)
                             .reveal(1)
                     }
 
                     if app.allowsCloudAI && app.isCloudOffline {
                         OfflineNotice()
-                            .padding(.horizontal, Metrics.gutter)
+                            .padding(.horizontal, Metrics.pageGutter)
                             .transition(.opacity)
                     }
 
                     // Under 13 Explore shows only the free on-device tools.
                     if app.allowsCloudAI {
-                        heroCard
-                            .tourAnchor(.hero)
-                            .padding(.horizontal, Metrics.gutter)
+                        if showsCreateBesideHero {
+                            HStack(alignment: .top, spacing: 16) {
+                                heroCard
+                                    .tourAnchor(.hero)
+                                macCreateCard
+                                    .frame(width: 360)
+                            }
+                            .fixedSize(horizontal: false, vertical: true)
+                            .padding(.horizontal, Metrics.pageGutter)
                             .reveal(1)
+                        } else {
+                            heroCard
+                                .tourAnchor(.hero)
+                                .padding(.horizontal, Metrics.pageGutter)
+                                .reveal(1)
+                        }
                     }
 
                     quickTools
@@ -46,21 +60,30 @@ struct HomeView: View {
                                 .reveal(3 + index)
                         }
 
-                        createBanner
-                            .padding(.horizontal, Metrics.gutter)
-                            .reveal(8)
+                        if !Platform.isMac {
+                            createBanner
+                                .padding(.horizontal, Metrics.pageGutter)
+                                .reveal(8)
+                        }
                     }
 
-                    inviteBanner
-                        .padding(.horizontal, Metrics.gutter)
-                        .reveal(9)
+                    if Platform.isMac {
+                        macBanners
+                            .padding(.horizontal, Metrics.pageGutter)
+                            .reveal(8)
+                    } else {
+                        inviteBanner
+                            .padding(.horizontal, Metrics.pageGutter)
+                            .reveal(9)
+                    }
                 }
                 .padding(.vertical, 12)
-                .readableWidth()
+                .readableWidth(Metrics.pageWidth)
             }
             .scrollIndicators(.hidden)
             .background(AuroraBackground(intensity: 0.55))
             .toolbar(.hidden, for: .navigationBar)
+            .modifier(MacPageWidthReader(width: $pageWidth))
             .navigationDestination(item: $openCategory) { category in
                 CategoryView(category: category)
                     .environment(app)
@@ -93,7 +116,11 @@ struct HomeView: View {
     private var header: some View {
         // At accessibility sizes the buttons go above the name, so "Glowlit"
         // and the line under it get the whole width and never break mid-word.
-        if typeSize.isAccessibilitySize {
+        // The Mac shows credits and Settings in its sidebar instead.
+        if Platform.isMac {
+            headerTitle
+                .frame(maxWidth: .infinity, alignment: .leading)
+        } else if typeSize.isAccessibilitySize {
             VStack(alignment: .leading, spacing: 8) {
                 HStack(spacing: 12) {
                     Spacer()
@@ -190,42 +217,59 @@ struct HomeView: View {
         .accessibilityInputLabels(["Magic Edit", "Try it on your photo"])
     }
 
+    @ViewBuilder
     private var quickTools: some View {
-        VStack(alignment: .leading, spacing: 14) {
-            SectionHeader(title: "Quick tools")
-                .tipSlot(.explore)
-                .padding(.horizontal, Metrics.gutter)
-            ScrollView(.horizontal) {
-                HStack(spacing: 12) {
-                    if makeupLeads {
-                        toolTile(.makeup, palette: .bubblegum)
-                    }
-                    if RetroCam.isAvailable {
-                        QuickToolTile(title: "Retro Cam", caption: "Live effects · booth", symbolName: "camera.fill", palette: .mint) {
-                            Haptics.tap()
-                            app.isRetroCamPresented = true
-                        }
-                    }
-                    ForEach(Array(editorQuickTools.enumerated()), id: \.element) { index, tool in
-                        toolTile(tool, palette: Self.toolPalettes[index % Self.toolPalettes.count])
-                    }
-                    QuickToolTile(title: "Collage", caption: "Photo dump · carousel", symbolName: "rectangle.3.offgrid.fill", palette: .mint) {
-                        Haptics.tap()
-                        app.isCollagePresented = true
-                    }
-                    QuickToolTile(title: "Video", caption: "Cut silences · effects", symbolName: "video.fill", palette: .sunset) {
-                        Haptics.tap()
-                        app.isVideoPickerPresented = true
-                    }
-                    QuickToolTile(title: "Best shot", caption: "Free · sorts by light", symbolName: "photo.stack", palette: .lilac) {
-                        Haptics.tap()
-                        app.isBestShotPresented = true
-                    }
+        if Platform.isMac {
+            VStack(alignment: .leading, spacing: 14) {
+                SectionHeader(title: "Quick tools")
+                    .tipSlot(.explore)
+                BalancedGrid(minimumWidth: 176, spacing: 12) {
+                    quickToolTiles
                 }
-                .padding(.horizontal, Metrics.gutter)
             }
-            .scrollIndicators(.hidden)
-            .scrollClipDisabled()
+            .padding(.horizontal, Metrics.pageGutter)
+        } else {
+            VStack(alignment: .leading, spacing: 14) {
+                SectionHeader(title: "Quick tools")
+                    .tipSlot(.explore)
+                    .padding(.horizontal, Metrics.gutter)
+                ScrollView(.horizontal) {
+                    HStack(spacing: 12) {
+                        quickToolTiles
+                    }
+                    .padding(.horizontal, Metrics.gutter)
+                }
+                .scrollIndicators(.hidden)
+                .scrollClipDisabled()
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var quickToolTiles: some View {
+        if makeupLeads {
+            toolTile(.makeup, palette: .bubblegum)
+        }
+        if RetroCam.isAvailable {
+            QuickToolTile(title: "Retro Cam", caption: "Live effects · booth", symbolName: "camera.fill", palette: .mint) {
+                Haptics.tap()
+                app.isRetroCamPresented = true
+            }
+        }
+        ForEach(Array(editorQuickTools.enumerated()), id: \.element) { index, tool in
+            toolTile(tool, palette: Self.toolPalettes[index % Self.toolPalettes.count])
+        }
+        QuickToolTile(title: "Collage", caption: "Photo dump · carousel", symbolName: "rectangle.3.offgrid.fill", palette: .mint) {
+            Haptics.tap()
+            app.isCollagePresented = true
+        }
+        QuickToolTile(title: "Video", caption: "Cut silences · effects", symbolName: "video.fill", palette: .sunset) {
+            Haptics.tap()
+            app.isVideoPickerPresented = true
+        }
+        QuickToolTile(title: "Best shot", caption: "Free · sorts by light", symbolName: "photo.stack", palette: .lilac) {
+            Haptics.tap()
+            app.isBestShotPresented = true
         }
     }
 
@@ -248,7 +292,43 @@ struct HomeView: View {
         }
     }
 
+    @ViewBuilder
     private func templateRow(_ category: TemplateCategory) -> some View {
+        if Platform.isMac {
+            VStack(alignment: .leading, spacing: 14) {
+                SectionHeader(title: LocalizedStringKey(category.title(on: AppClock.now)), actionTitle: "See all") {
+                    openCategory = category
+                }
+                // Inside the scroll view's own bounds: a card past the edge of
+                // a row whose clipping is off would draw without its art (the
+                // art is a drawing group).
+                Shelf(items: TemplateCatalog.templates(in: category, on: AppClock.now), itemWidth: Self.macCardSize.width) { template in
+                    templateButton(template, size: Self.macCardSize)
+                }
+            }
+            .padding(.horizontal, Metrics.pageGutter)
+        } else {
+            phoneTemplateRow(category)
+        }
+    }
+
+    /// Bigger cards on the Mac, where the row has the room.
+    private static let macCardSize = CGSize(width: 176, height: 234)
+
+    private func templateButton(_ template: PhotoTemplate, size: CGSize) -> some View {
+        Button {
+            Haptics.tap()
+            app.startEditing(tool: .styles, template: template)
+        } label: {
+            TemplateCard(template: template, width: size.width, height: size.height)
+                .equatable()
+        }
+        .buttonStyle(.pressable)
+        .macHoverLift()
+        .accessibilityHint(template.lookHint(isPro: app.purchases.isPro))
+    }
+
+    private func phoneTemplateRow(_ category: TemplateCategory) -> some View {
         VStack(alignment: .leading, spacing: 14) {
             SectionHeader(title: LocalizedStringKey(category.title(on: AppClock.now)), actionTitle: "See all") {
                 Haptics.tap()
@@ -303,6 +383,66 @@ struct HomeView: View {
             .cardStyle()
         }
         .buttonStyle(PressableButtonStyle(scale: 0.97))
+    }
+
+    /// Mac: a wide page has room for Create beside Magic Edit.
+    private var showsCreateBesideHero: Bool {
+        Platform.isMac && pageWidth >= 1000
+    }
+
+    /// Mac: "Create from text" beside the Magic Edit card; a click puts the
+    /// cursor in Create's prompt.
+    private var macCreateCard: some View {
+        Button {
+            app.selectedTab = .create
+            app.wantsPromptFocus = true
+        } label: {
+            VStack(alignment: .leading, spacing: 4) {
+                HStack(alignment: .top) {
+                    Image(systemName: "text.cursor")
+                        .font(.title2.weight(.semibold))
+                        .foregroundStyle(Palette.blush)
+                        .frame(width: 52, height: 52)
+                        .background(Palette.ink, in: .control)
+                    Spacer()
+                    Image(systemName: "arrow.right")
+                        .font(.body.weight(.semibold))
+                        .foregroundStyle(Palette.textTertiary)
+                }
+                Spacer(minLength: 16)
+                Text("Create from text")
+                    .font(.cardTitle)
+                    .foregroundStyle(Palette.textPrimary)
+                Text("Turn any idea into an image")
+                    .font(.footnote)
+                    .foregroundStyle(Palette.textSecondary)
+            }
+            .padding(20)
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+            .cardStyle()
+        }
+        .buttonStyle(PressableButtonStyle(scale: 0.97))
+        .macHoverLift()
+    }
+
+    /// Mac: "Create from text" (unless it's beside Magic Edit) and "Glow
+    /// together", side by side when they fit.
+    private var macBanners: some View {
+        let showsCreate = app.allowsCloudAI && !showsCreateBesideHero
+        return ViewThatFits(in: .horizontal) {
+            HStack(alignment: .top, spacing: 16) {
+                if showsCreate {
+                    createBanner.frame(maxWidth: .infinity)
+                }
+                inviteBanner.frame(maxWidth: .infinity)
+            }
+            VStack(spacing: 16) {
+                if showsCreate {
+                    createBanner
+                }
+                inviteBanner
+            }
+        }
     }
 
     /// "Glow together": share the app with friends (a story card with a QR code).
@@ -408,11 +548,13 @@ private struct QuickToolTile: View {
                         .lineLimit(1)
                 }
             }
-            .frame(width: 128, alignment: .leading)
+            .frame(width: Platform.isMac ? nil : 128, alignment: .leading)
+            .frame(maxWidth: Platform.isMac ? .infinity : nil, maxHeight: Platform.isMac ? .infinity : nil, alignment: .topLeading)
             .padding(14)
             .cardStyle(radius: 20)
         }
         .buttonStyle(.pressable)
+        .macHoverLift()
     }
 }
 

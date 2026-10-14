@@ -409,7 +409,7 @@ struct CaptionsEditor: View {
                     Text("Add a caption where the video is now, or make them from what's said.")
                 }
             } else {
-                Text("Tap a time to see that caption on the video.")
+                Text(Platform.isMac ? "Click a time to see that caption on the video." : "Tap a time to see that caption on the video.")
             }
         }
         .listRowBackground(Palette.surface)

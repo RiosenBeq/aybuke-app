@@ -17,6 +17,8 @@ struct EditorView: View {
     @State private var isZoomed = false
     @State private var ideasDismissed = false
     @State private var ideasShown = false
+    /// Mac: the window's width, for the inspector beside the photo.
+    @State private var editorWidth: CGFloat = 0
     @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
 
     init(launch: EditorLaunch) {
@@ -28,42 +30,12 @@ struct EditorView: View {
         ZStack {
             Palette.background.ignoresSafeArea()
 
-            VStack(spacing: 0) {
-                topBar
-                    .disabled(model.isProcessing)
-                    // Typing covers it; only its Esc shortcut stays.
-                    .opacity(isTypingOverlayText ? 0 : 1)
-                    .background { applyShortcut }
-                canvas
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .padding(.horizontal, 12)
-                    .padding(.vertical, 8)
-                    .overlay { SparkleBurst(trigger: model.celebration) }
-                Group {
-                    if model.showsKindnessNote && !model.isProcessing {
-                        kindnessNote
-                    }
-                    if model.lastRequestID != nil && !model.isProcessing {
-                        resultActions
-                    }
-                    if showsIdeas {
-                        EditorIdeasRow(model: model, onShown: { ideasShown = true }) {
-                            withAnimation(.snappy) { ideasDismissed = true }
-                        }
-                        .padding(.horizontal, Metrics.gutter)
-                        .padding(.bottom, 6)
-                    }
-                    toolPanel
-                        .padding(.horizontal, Metrics.gutter)
-                        .padding(.bottom, 8)
-                        .disabled(model.isProcessing)
+            Group {
+                if usesInspector {
+                    inspectorLayout
+                } else {
+                    stackedLayout
                 }
-                // The panels keep their full height (large text grows them);
-                // the photo above gives up the room instead of squeezing them.
-                .fixedSize(horizontal: false, vertical: true)
-                .readableWidth(Metrics.compactWidth, alignment: .center)
-                toolBar
-                    .disabled(model.isProcessing)
             }
             // The typing screen brings its own room above the keyboard.
             .ignoresSafeArea(.keyboard, edges: isTypingOverlayText ? .bottom : [])
@@ -78,6 +50,7 @@ struct EditorView: View {
                     .transition(.opacity)
             }
         }
+        .modifier(MacPageWidthReader(width: $editorWidth))
         .animation(.easeInOut(duration: 0.25), value: model.isProcessing)
         .animation(.snappy, value: model.activeTool)
         .task {
@@ -95,6 +68,9 @@ struct EditorView: View {
         #if DEBUG || GL_PERF
         .onAppear { PerfProbe.editorAppeared() }
         #endif
+        // Edit › Undo and Redo on the Mac reach this editor's history.
+        .onAppear { app.activeEditor = model }
+        .onDisappear { if app.activeEditor === model { app.activeEditor = nil } }
         .animation(.snappy, value: model.showsKindnessNote)
         .animation(.easeInOut(duration: 0.2), value: isTypingOverlayText)
         .onChange(of: model.overlays.notice) { _, notice in
@@ -116,6 +92,138 @@ struct EditorView: View {
         }
         .reportDialog(isPresented: $showReport, requestID: model.lastRequestID)
         .modifier(AppPresentations(isActive: true))
+    }
+
+    // MARK: Layouts
+
+    /// A wide Mac window: the tool's panel in an inspector beside the photo.
+    private var usesInspector: Bool {
+        Platform.isMac && editorWidth >= Self.inspectorMinimumWidth
+    }
+
+    /// Room for the photo and the whole tool bar in one row beside it.
+    private static let inspectorMinimumWidth: CGFloat = 1180
+    private static let inspectorWidth: CGFloat = 380
+
+    /// iPhone, iPad and a narrow Mac window: the photo, then the tool's
+    /// panel and the tool bar under it.
+    private var stackedLayout: some View {
+        VStack(spacing: 0) {
+            topBar
+                .disabled(model.isProcessing)
+                // Typing covers it; only its Esc shortcut stays.
+                .opacity(isTypingOverlayText ? 0 : 1)
+                .background { applyShortcut }
+            canvas
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .padding(.horizontal, 12)
+                .padding(.vertical, 8)
+                .overlay { SparkleBurst(trigger: model.celebration) }
+            Group {
+                if model.showsKindnessNote && !model.isProcessing {
+                    kindnessNote
+                        .padding(.horizontal, Metrics.gutter)
+                        .padding(.bottom, 6)
+                        .transition(.move(edge: .bottom).combined(with: .opacity))
+                }
+                if model.lastRequestID != nil && !model.isProcessing {
+                    resultActions
+                }
+                if showsIdeas {
+                    ideasRow
+                        .padding(.horizontal, Metrics.gutter)
+                        .padding(.bottom, 6)
+                }
+                toolPanel
+                    .padding(.horizontal, Metrics.gutter)
+                    .padding(.bottom, 8)
+                    .disabled(model.isProcessing)
+            }
+            // The panels keep their full height (large text grows them);
+            // the photo above gives up the room instead of squeezing them.
+            .fixedSize(horizontal: false, vertical: true)
+            .readableWidth(Metrics.compactWidth, alignment: .center)
+            toolBar
+                .disabled(model.isProcessing)
+        }
+    }
+
+    /// A wide Mac window: the photo keeps the middle with the tool bar under
+    /// it, and the tool's panel (with ideas, the kindness note and a result's
+    /// retry) sits in an inspector on the right, like the Mac's own editors.
+    private var inspectorLayout: some View {
+        VStack(spacing: 0) {
+            topBar
+                .disabled(model.isProcessing)
+                .opacity(isTypingOverlayText ? 0 : 1)
+                .background { applyShortcut }
+            HStack(alignment: .top, spacing: 0) {
+                VStack(spacing: 0) {
+                    canvas
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        .padding(.horizontal, 24)
+                        .padding(.vertical, 12)
+                        .overlay { SparkleBurst(trigger: model.celebration) }
+                    toolBar
+                        .disabled(model.isProcessing)
+                }
+                inspector
+                    .frame(width: Self.inspectorWidth)
+                    .padding(.top, 8)
+                    .padding(.trailing, Metrics.gutter)
+                    .padding(.bottom, 12)
+            }
+        }
+    }
+
+    private var inspector: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            if let tool = model.activeTool {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(tool.title)
+                        .font(.sectionTitle)
+                        .foregroundStyle(Palette.textPrimary)
+                        .accessibilityAddTraits(.isHeader)
+                    Text(tool.caption)
+                        .font(.footnote)
+                        .foregroundStyle(Palette.textSecondary)
+                }
+                .padding(.horizontal, 18)
+                .padding(.top, 18)
+                .padding(.bottom, 10)
+            }
+            ScrollView {
+                VStack(alignment: .leading, spacing: 16) {
+                    if model.showsKindnessNote && !model.isProcessing {
+                        kindnessNote
+                            .transition(.opacity)
+                    }
+                    if model.lastRequestID != nil && !model.isProcessing {
+                        resultActions
+                    }
+                    if showsIdeas {
+                        ideasRow
+                    }
+                    toolPanel
+                        .disabled(model.isProcessing)
+                }
+                .padding(.horizontal, 18)
+                .padding(.top, 6)
+                .padding(.bottom, 18)
+            }
+            .scrollIndicators(.automatic)
+        }
+        .frame(maxHeight: .infinity, alignment: .top)
+        .background(Palette.surface.opacity(0.7), in: .card)
+        .overlay(RoundedRectangle.card.strokeBorder(Palette.stroke, lineWidth: 1))
+        .shadow(color: Palette.shadow, radius: 14, y: 6)
+        .environment(\.editorPanelPlacement, .inspector)
+    }
+
+    private var ideasRow: some View {
+        EditorIdeasRow(model: model, onShown: { ideasShown = true }) {
+            withAnimation(.snappy) { ideasDismissed = true }
+        }
     }
 
     /// Ideas stay out of the way: hidden under a fresh cloud result or the
@@ -165,12 +273,14 @@ struct EditorView: View {
                 .disabled(!model.canUndo)
                 .opacity(model.canUndo ? 1 : 0.4)
                 .accessibilityLabel("Undo")
+                .macHelp("Undo")
                 .padKeyboardShortcut("z")
             Button { model.redo() } label: { Image(systemName: "arrow.uturn.forward") }
                 .buttonStyle(.icon)
                 .disabled(!model.canRedo)
                 .opacity(model.canRedo ? 1 : 0.4)
                 .accessibilityLabel("Redo")
+                .macHelp("Redo")
                 .padKeyboardShortcut("z", modifiers: [.command, .shift])
             Button { model.isComparing.toggle() } label: {
                 Image(systemName: model.isComparing ? "square.split.2x1.fill" : "square.split.2x1")
@@ -179,12 +289,14 @@ struct EditorView: View {
             .disabled(!canCompare)
             .opacity(canCompare ? 1 : 0.4)
             .accessibilityLabel("Compare with original")
+            .macHelp("Compare with original")
 
             Spacer(minLength: 0)
 
             Button { share() } label: { Image(systemName: "paperplane.fill") }
                 .buttonStyle(.icon)
                 .accessibilityLabel("Share")
+                .macHelp("Share")
                 .padKeyboardShortcut("e")
 
             Button { save() } label: {
@@ -257,6 +369,7 @@ struct EditorView: View {
         }
         .buttonStyle(.icon)
         .accessibilityLabel("Close editor")
+        .macHelp("Close editor")
     }
 
     private var isCropPending: Bool {
@@ -418,9 +531,6 @@ struct EditorView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(Palette.surface, in: .card)
         .overlay(RoundedRectangle.card.strokeBorder(Palette.stroke, lineWidth: 1))
-        .padding(.horizontal, Metrics.gutter)
-        .padding(.bottom, 6)
-        .transition(.move(edge: .bottom).combined(with: .opacity))
     }
 
     @ViewBuilder
@@ -475,6 +585,7 @@ struct EditorView: View {
         }
         .buttonStyle(.plain)
         .accessibilityLabel("Report this result")
+        .macHelp("Report this result")
     }
 
     // MARK: Tool panel
@@ -500,7 +611,7 @@ struct EditorView: View {
         case .enhance?:
             OneTapPanel(
                 title: "AI Enhance",
-                message: "Unblur, sharpen details and restore faces in one tap.",
+                message: Platform.isMac ? "Unblur, sharpen details and restore faces in one click." : "Unblur, sharpen details and restore faces in one tap.",
                 buttonTitle: "Enhance",
                 cost: app.credits.cost(of: .enhance)
             ) {

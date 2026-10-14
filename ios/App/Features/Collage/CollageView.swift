@@ -208,6 +208,7 @@ struct CollageView: View {
             }
             .buttonStyle(.icon)
             .accessibilityLabel("Add or remove photos")
+            .macHelp("Add or remove photos")
 
             Spacer(minLength: 0)
 
@@ -215,10 +216,12 @@ struct CollageView: View {
                 Button { edit() } label: { Image(systemName: "slider.horizontal.3") }
                     .buttonStyle(.icon)
                     .accessibilityLabel("Open in the editor")
+                    .macHelp("Open in the editor")
             }
             Button { share() } label: { Image(systemName: "paperplane.fill") }
                 .buttonStyle(.icon)
                 .accessibilityLabel("Share")
+                .macHelp("Share")
                 .padKeyboardShortcut("e")
             Button { save() } label: {
                 ViewThatFits(in: .horizontal) {
@@ -264,6 +267,7 @@ struct CollageView: View {
         }
         .buttonStyle(.icon)
         .accessibilityLabel("Close")
+        .macHelp("Close")
         .keyboardShortcut(.cancelAction)
     }
 
@@ -272,7 +276,7 @@ struct CollageView: View {
     private var hint: some View {
         if model.swapping != nil {
             HStack(spacing: 10) {
-                Label("Tap another photo to swap", systemImage: "arrow.left.arrow.right")
+                Label(Platform.isMac ? "Click another photo to swap" : "Tap another photo to swap", systemImage: "arrow.left.arrow.right")
                     .font(.footnote.weight(.semibold))
                     .foregroundStyle(Palette.textPrimary)
                 Spacer(minLength: 0)
@@ -749,9 +753,11 @@ struct CollageHubCard: View {
                 Image(systemName: "chevron.right")
                     .foregroundStyle(Palette.textTertiary)
             }
+            .macFillsCell()
             .padding(14)
             .cardStyle()
         }
         .buttonStyle(PressableButtonStyle(scale: 0.97))
+        .macHoverLift()
     }
 }

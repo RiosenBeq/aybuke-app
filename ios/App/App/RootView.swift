@@ -19,7 +19,11 @@ struct RootView: View {
                         .readableWidth(Metrics.compactWidth, alignment: .center)
                 }
             } else if app.hasCompletedOnboarding {
-                MainTabView()
+                if Platform.isMac {
+                    MacShellView()
+                } else {
+                    MainTabView()
+                }
             } else {
                 OnboardingView()
             }
@@ -73,30 +77,23 @@ struct MainTabView: View {
 
     var body: some View {
         @Bindable var app = app
-        let isCovered = app.isFullScreenCoverPresented
-
         TabView(selection: $app.selectedTab) {
             HomeView()
-                .hidesMacTabs(isCovered)
                 .tabItem { Label("Explore", systemImage: "sparkles") }
                 .tag(AppTab.home)
             if app.allowsCloudAI {
                 CreateView()
-                    .hidesMacTabs(isCovered)
                     .tabItem { Label("Create", systemImage: "wand.and.stars") }
                     .tag(AppTab.create)
             }
             EditHubView()
-                .hidesMacTabs(isCovered)
                 .tabItem { Label("Edit", systemImage: "photo.badge.plus") }
                 .tag(AppTab.edit)
             LibraryView()
-                .hidesMacTabs(isCovered)
                 .tabItem { Label("My Works", systemImage: "square.grid.2x2") }
                 .tag(AppTab.library)
         }
         .minimizingTabBar()
-        .acceptsDroppedPhotos()
         .sheet(isPresented: $app.isSettingsPresented) {
             SettingsView()
                 .environment(app)

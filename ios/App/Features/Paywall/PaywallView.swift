@@ -98,6 +98,7 @@ struct PaywallView: View {
             .buttonStyle(.icon)
             .padding(Metrics.gutter)
             .accessibilityLabel("Close")
+            .macHelp("Close")
             // VoiceOver reaches Close first, not after every plan.
             .accessibilitySortPriority(1)
         }

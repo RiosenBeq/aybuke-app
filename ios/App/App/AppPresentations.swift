@@ -27,6 +27,7 @@ struct AppPresentations: ViewModifier {
                     .environment(app)
                     .presentationDetents([.medium, .large])
                     .presentationBackground(Palette.background)
+                    .macSheet(.form)
             }
             .sheet(isPresented: Binding(
                 get: { isActive && app.isBestShotPresented },
@@ -42,6 +43,7 @@ struct AppPresentations: ViewModifier {
             ), onDismiss: { app.presentationEnded() }) {
                 AccountPromptSheet()
                     .environment(app)
+                    .macSheet(.form)
             }
             .sheet(item: Binding(
                 get: { isActive ? app.consentRequest : nil },
@@ -63,6 +65,7 @@ struct AppPresentations: ViewModifier {
                 .presentationDetents([.large])
                 .presentationDragIndicator(.visible)
                 .presentationBackground(Palette.background)
+                .macSheet(.form)
             }
             .sheet(item: Binding(
                 get: { isActive ? app.shareRequest : nil },

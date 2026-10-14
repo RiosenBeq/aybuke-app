@@ -89,6 +89,7 @@ struct RetroCamReviewView: View {
             }
             .buttonStyle(.pressable)
             .accessibilityLabel("Close")
+            .macHelp("Close")
             .macKeyboardShortcut(.cancelAction)
         }
         .padding(.horizontal, Metrics.gutter)

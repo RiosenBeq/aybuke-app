@@ -104,7 +104,7 @@ struct StyleTile: View {
                     .foregroundStyle(isSelected ? Palette.textPrimary : Palette.textSecondary)
                     .lineLimit(1)
             }
-            .frame(width: 80)
+            .frame(width: Platform.isMac ? 92 : 80)
             .animation(.snappy, value: isSelected)
         }
         .buttonStyle(.pressable)

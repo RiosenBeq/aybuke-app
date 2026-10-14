@@ -3,61 +3,43 @@ import AppCore
 
 struct CreateView: View {
     @Environment(AppModel.self) private var app
-    @State private var model = CreateViewModel()
+    @State private var model: CreateViewModel
     @State private var showsCredits = false
     @FocusState private var isPromptFocused: Bool
+    /// Mac: the page's width, to split it into the form and a preview.
+    @State private var pageWidth: CGFloat = 0
+
+    /// The Mac keeps one model in its window, so a draft, a running job and
+    /// its results survive switching sections.
+    init(model: CreateViewModel? = nil) {
+        _model = State(initialValue: model ?? CreateViewModel())
+    }
+
+    /// Mac: the form on the left and the picture on the right, once the
+    /// window is wide enough; a narrow window gets the single column.
+    private var usesColumns: Bool {
+        Platform.isMac && pageWidth >= Metrics.macColumnsWidth
+    }
 
     var body: some View {
         NavigationStack {
-            ScrollView {
-                VStack(alignment: .leading, spacing: Metrics.sectionSpacing) {
-                    VStack(alignment: .leading, spacing: 6) {
-                        Text(styled: "Create *anything*", size: 25)
-                            .foregroundStyle(Palette.textPrimary)
-                            .accessibilityAddTraits(.isHeader)
-                        Text("Describe it, pick a vibe — we'll handle the magic words.")
-                            .font(.subheadline)
-                            .foregroundStyle(Palette.textSecondary)
-                    }
-
-                    if app.isCloudOffline {
-                        OfflineNotice()
-                    }
-
-                    promptCard
-                        .tourAnchor(.create)
-                    styleSection
-                    ratioSection
-                    countSection
-                    if #available(iOS 18.4, *) {
-                        ImagePlaygroundCreateButton(prompt: model.prompt) { image in
-                            model.finishPlayground(image, app: app)
-                        }
-                    }
+            Group {
+                if usesColumns {
+                    macColumns
+                } else {
+                    singleColumn
                 }
-                .padding(.horizontal, Metrics.gutter)
-                .padding(.top, 12)
-                .padding(.bottom, 120)
-                .readableWidth()
             }
-            .scrollIndicators(.hidden)
-            .scrollDismissesKeyboard(.interactively)
-            .background(AuroraBackground(intensity: 0.3))
-            .toolbar(.hidden, for: .navigationBar)
-            .safeAreaInset(edge: .bottom) { generateBar }
-            .navigationDestination(isPresented: $model.showResults) {
-                ResultsView(
-                    images: model.results,
-                    prompt: model.resultsSource == nil ? (model.resultsJob?.prompt ?? model.prompt) : nil,
-                    operation: .textToImage,
-                    requestID: model.requestID,
-                    source: model.resultsSource,
-                    regenerate: model.resultsJob.map { job in
-                        ResultsView.Regenerate(cost: app.credits.cost(of: .textToImage, outputs: job.numOutputs)) {
-                            model.regenerate(app: app)
-                        }
-                    }
-                )
+            // In the preview column on a wide Mac window, pushed otherwise.
+            .navigationDestination(isPresented: Binding(
+                get: { model.showResults && !usesColumns },
+                set: { model.showResults = $0 }
+            )) {
+                results(isEmbedded: false)
+            }
+            // Pushed while the window was narrow: the preview column takes over.
+            .onChange(of: usesColumns) { _, columns in
+                if columns { model.showResults = false }
             }
             .animation(.easeInOut(duration: 0.2), value: model.undoPrompt)
             .animation(.snappy, value: model.prompt.isEmpty)
@@ -66,6 +48,7 @@ struct CreateView: View {
                     .environment(app)
                     .presentationDetents([.medium, .large])
                     .presentationBackground(Palette.background)
+                    .macSheet(.form)
             }
             .onAppear {
                 app.writer.prewarm()
@@ -73,6 +56,13 @@ struct CreateView: View {
                 if model.prompt.isEmpty, !app.prompts.draft.isEmpty { model.prompt = app.prompts.draft }
             }
             .onChange(of: model.prompt) { _, prompt in app.prompts.draft = prompt }
+            // File › New Creation on the Mac: the cursor goes to the prompt.
+            .task(id: app.wantsPromptFocus) {
+                guard app.wantsPromptFocus else { return }
+                app.wantsPromptFocus = false
+                try? await Task.sleep(for: .milliseconds(150))
+                isPromptFocused = true
+            }
             #if DEBUG
             .onAppear {
                 guard let scene = ScreenshotScene.current, scene == .create || scene == .results, model.prompt.isEmpty else { return }
@@ -80,7 +70,12 @@ struct CreateView: View {
                 model.prompt = UserDefaults.standard.string(forKey: "GLPrompt") ?? ScreenshotFixtures.createPrompt
                 model.style = StyleCatalog.style(id: "pastel")
                 if scene == .results {
-                    model.showScreenshotResults(ScreenshotFixtures.createResults)
+                    // After the first layout, so a wide Mac window shows them in
+                    // its preview column instead of pushing them.
+                    Task {
+                        try? await Task.sleep(for: .milliseconds(400))
+                        model.showScreenshotResults(ScreenshotFixtures.createResults)
+                    }
                 }
                 // QA: `-GLWriterAction magic|inspire` runs a writer chip once.
                 switch UserDefaults.standard.string(forKey: "GLWriterAction") {
@@ -93,6 +88,7 @@ struct CreateView: View {
             }
             #endif
         }
+        .modifier(MacPageWidthReader(width: $pageWidth))
         // Over the results too, so Regenerate shows the same progress.
         .overlay {
             ZStack {
@@ -104,6 +100,122 @@ struct CreateView: View {
                 }
             }
             .animation(.easeInOut(duration: 0.25), value: model.isGenerating)
+        }
+    }
+
+    // MARK: Layouts
+
+    /// iPhone, iPad and a narrow Mac window: one column with the Generate
+    /// bar floating at the bottom.
+    private var singleColumn: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: Metrics.sectionSpacing) {
+                header
+
+                if app.isCloudOffline {
+                    OfflineNotice()
+                }
+
+                promptCard
+                    .tourAnchor(.create)
+                styleSection
+                ratioSection
+                countSection
+                if #available(iOS 18.4, *) {
+                    ImagePlaygroundCreateButton(prompt: model.prompt) { image in
+                        model.finishPlayground(image, app: app)
+                    }
+                }
+            }
+            .padding(.horizontal, Metrics.pageGutter)
+            .padding(.top, 12)
+            .padding(.bottom, 120)
+            .readableWidth(Metrics.pageWidth)
+        }
+        .scrollIndicators(.hidden)
+        .scrollDismissesKeyboard(.interactively)
+        .background(AuroraBackground(intensity: 0.3))
+        .toolbar(.hidden, for: .navigationBar)
+        .safeAreaInset(edge: .bottom) { generateBar }
+    }
+
+    /// A wide Mac window: the form scrolls on the left, with Generate at its
+    /// end; the picture (or where it will appear) stays in view on the right.
+    private var macColumns: some View {
+        HStack(alignment: .top, spacing: 36) {
+            ScrollView {
+                VStack(alignment: .leading, spacing: Metrics.sectionSpacing) {
+                    header
+                    if app.isCloudOffline {
+                        OfflineNotice()
+                    }
+                    promptCard
+                        .tourAnchor(.create)
+                    styleSection
+                    ratioSection
+                    countSection
+                    VStack(spacing: 0) {
+                        generateButton
+                        creditsLink
+                    }
+                    if #available(iOS 18.4, *) {
+                        ImagePlaygroundCreateButton(prompt: model.prompt) { image in
+                            model.finishPlayground(image, app: app)
+                        }
+                    }
+                }
+                .padding(.vertical, 24)
+            }
+            .scrollIndicators(.hidden)
+            .frame(width: Self.macFormWidth)
+
+            preview
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .padding(.vertical, 24)
+        }
+        .padding(.horizontal, Metrics.pageGutter)
+        .frame(maxWidth: Metrics.pageWidth)
+        .frame(maxWidth: .infinity)
+        .background(AuroraBackground(intensity: 0.3))
+        .toolbar(.hidden, for: .navigationBar)
+    }
+
+    private static let macFormWidth: CGFloat = 540
+
+    private var header: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            Text(styled: "Create *anything*", size: 25)
+                .foregroundStyle(Palette.textPrimary)
+                .accessibilityAddTraits(.isHeader)
+            Text("Describe it, pick a vibe — we'll handle the magic words.")
+                .font(.subheadline)
+                .foregroundStyle(Palette.textSecondary)
+        }
+    }
+
+    private func results(isEmbedded: Bool) -> some View {
+        ResultsView(
+            images: model.results,
+            prompt: model.resultsSource == nil ? (model.resultsJob?.prompt ?? model.prompt) : nil,
+            operation: .textToImage,
+            requestID: model.requestID,
+            source: model.resultsSource,
+            regenerate: model.resultsJob.map { job in
+                ResultsView.Regenerate(cost: app.credits.cost(of: .textToImage, outputs: job.numOutputs)) {
+                    model.regenerate(app: app)
+                }
+            },
+            isEmbedded: isEmbedded
+        )
+    }
+
+    /// The latest pictures, or a frame in the chosen size where they'll appear.
+    @ViewBuilder
+    private var preview: some View {
+        if model.results.isEmpty {
+            CreatePreviewPlaceholder(ratio: model.aspectRatio, style: model.style)
+        } else {
+            results(isEmbedded: true)
         }
     }
 
@@ -139,6 +251,7 @@ struct CreateView: View {
                             .contentShape(Rectangle())
                     }
                     .accessibilityLabel("Clear prompt")
+                    .macHelp("Clear prompt")
                 }
             }
 
@@ -234,42 +347,63 @@ struct CreateView: View {
     private var styleSection: some View {
         VStack(alignment: .leading, spacing: 12) {
             SectionHeader(title: "Style")
-            ScrollView(.horizontal) {
-                HStack(spacing: 10) {
-                    ForEach(Array(StyleCatalog.all.enumerated()), id: \.element.id) { index, style in
-                        StyleTile(
-                            name: L10n.core(style.name),
-                            symbolName: style.symbolName,
-                            tone: PaletteTone.at(index),
-                            isSelected: model.style == style,
-                            isLocked: style.isPro && !app.purchases.isPro
-                        ) {
-                            Haptics.selection()
-                            model.style = style
-                        }
-                    }
+            if Platform.isMac {
+                LazyVGrid(columns: [GridItem(.adaptive(minimum: 92), spacing: 6, alignment: .top)], alignment: .leading, spacing: 14) {
+                    styleTiles
                 }
-                .padding(.horizontal, 2)
+            } else {
+                ScrollView(.horizontal) {
+                    HStack(spacing: 10) {
+                        styleTiles
+                    }
+                    .padding(.horizontal, 2)
+                }
+                .scrollIndicators(.hidden)
+                .scrollClipDisabled()
             }
-            .scrollIndicators(.hidden)
-            .scrollClipDisabled()
+        }
+    }
+
+    private var styleTiles: some View {
+        ForEach(Array(StyleCatalog.all.enumerated()), id: \.element.id) { index, style in
+            StyleTile(
+                name: L10n.core(style.name),
+                symbolName: style.symbolName,
+                tone: PaletteTone.at(index),
+                isSelected: model.style == style,
+                isLocked: style.isPro && !app.purchases.isPro
+            ) {
+                Haptics.selection()
+                model.style = style
+            }
+            .macHoverLift(scale: 1.04)
         }
     }
 
     private var ratioSection: some View {
         VStack(alignment: .leading, spacing: 12) {
             SectionHeader(title: "Size")
-            ScrollView(.horizontal) {
-                HStack(spacing: 8) {
-                    ForEach(AspectRatio.allCases) { ratio in
-                        SelectableChip(title: LocalizedStringKey(L10n.core(ratio.label) + " " + ratio.rawValue), isSelected: model.aspectRatio == ratio) {
-                            Haptics.selection()
-                            model.aspectRatio = ratio
-                        }
+            if Platform.isMac {
+                FlowLayout(spacing: 8, lineSpacing: 8) {
+                    ratioChips
+                }
+            } else {
+                ScrollView(.horizontal) {
+                    HStack(spacing: 8) {
+                        ratioChips
                     }
                 }
+                .scrollIndicators(.hidden)
             }
-            .scrollIndicators(.hidden)
+        }
+    }
+
+    private var ratioChips: some View {
+        ForEach(AspectRatio.allCases) { ratio in
+            SelectableChip(title: LocalizedStringKey(L10n.core(ratio.label) + " " + ratio.rawValue), isSelected: model.aspectRatio == ratio) {
+                Haptics.selection()
+                model.aspectRatio = ratio
+            }
         }
     }
 
@@ -302,17 +436,21 @@ struct CreateView: View {
         }
     }
 
+    private var generateButton: some View {
+        Button {
+            isPromptFocused = false
+            model.generate(app: app)
+        } label: {
+            CostLabel(title: "Generate", cost: app.credits.cost(of: .textToImage, outputs: model.count), isLoading: model.isGenerating)
+        }
+        .buttonStyle(.primary)
+        .disabled(!model.canGenerate)
+        .keyboardShortcut(.return, modifiers: .command)
+    }
+
     private var generateBar: some View {
         VStack(spacing: 0) {
-            Button {
-                isPromptFocused = false
-                model.generate(app: app)
-            } label: {
-                CostLabel(title: "Generate", cost: app.credits.cost(of: .textToImage, outputs: model.count), isLoading: model.isGenerating)
-            }
-            .buttonStyle(.primary)
-            .disabled(!model.canGenerate)
-            .keyboardShortcut(.return, modifiers: .command)
+            generateButton
             creditsLink
         }
         .padding(.horizontal, Metrics.gutter)
@@ -349,6 +487,55 @@ struct CreateView: View {
         }
         .buttonStyle(.plain)
         .accessibilityHint("Shows your credits and how they work")
+    }
+}
+
+/// Where Create's pictures will appear on a wide Mac window: a frame in the
+/// chosen size with the chosen style's swatch.
+private struct CreatePreviewPlaceholder: View {
+    let ratio: AspectRatio
+    let style: ImageStyle
+
+    var body: some View {
+        let index = StyleCatalog.all.firstIndex(of: style) ?? 0
+        let tone = PaletteTone.at(index)
+        VStack(spacing: 14) {
+            Image(systemName: style.symbolName)
+                .font(.system(size: 30, weight: .semibold))
+                .foregroundStyle(tone.foreground)
+                .frame(width: 76, height: 76)
+                .background(tone.fill, in: .control)
+                .overlay(RoundedRectangle.control.strokeBorder(Palette.stroke, lineWidth: 1))
+            Text("Your picture appears here")
+                .font(.cardTitle)
+                .foregroundStyle(Palette.textPrimary)
+            Text(verbatim: "\(L10n.core(style.name)) · \(L10n.core(ratio.label)) \(ratio.rawValue)")
+                .font(.footnote)
+                .foregroundStyle(Palette.textSecondary)
+        }
+        .multilineTextAlignment(.center)
+        .padding(24)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(Palette.surface.opacity(0.55), in: .card)
+        .overlay(RoundedRectangle.card.strokeBorder(Palette.strokeStrong, style: StrokeStyle(lineWidth: 1.5, dash: [8, 6])))
+        .aspectRatio(ratio.widthOverHeight, contentMode: .fit)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .animation(.snappy, value: ratio)
+        .accessibilityElement(children: .combine)
+    }
+}
+
+/// Mac: reads a page's width for layouts that split into columns. Nothing
+/// on iPhone and iPad.
+struct MacPageWidthReader: ViewModifier {
+    @Binding var width: CGFloat
+
+    func body(content: Content) -> some View {
+        if Platform.isMac {
+            content.onGeometryChange(for: CGFloat.self) { $0.size.width } action: { width = $0 }
+        } else {
+            content
+        }
     }
 }
 

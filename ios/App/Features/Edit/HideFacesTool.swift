@@ -215,16 +215,13 @@ struct HideFacesPanel: View {
                 Spacer(minLength: 0)
             }
 
-            ScrollView(.horizontal) {
-                HStack(spacing: 8) {
-                    ForEach(FaceCover.allCases) { cover in
-                        SelectableChip(title: title(of: cover), symbolName: cover.symbolName, isSelected: hider.cover == cover) {
-                            hider.setCover(cover)
-                        }
+            ChipRow {
+                ForEach(FaceCover.allCases) { cover in
+                    SelectableChip(title: title(of: cover), symbolName: cover.symbolName, isSelected: hider.cover == cover) {
+                        hider.setCover(cover)
                     }
                 }
             }
-            .scrollIndicators(.hidden)
 
             ButtonRow {
                 Button("Reset") { withAnimation(.snappy) { hider.showAll() } }
@@ -240,9 +237,9 @@ struct HideFacesPanel: View {
 
     private var hint: LocalizedStringKey {
         if hider.isDetecting { return "Looking for faces…" }
-        if hider.faces.isEmpty { return "Tap the photo to hide a spot" }
+        if hider.faces.isEmpty { return Platform.isMac ? "Click the photo to hide a spot" : "Tap the photo to hide a spot" }
         // Vision misses some faces, so never suggest every face was found.
-        return "Check every face. Tap to hide any we missed."
+        return Platform.isMac ? "Check every face. Click to hide any we missed." : "Check every face. Tap to hide any we missed."
     }
 
     private func title(of cover: FaceCover) -> LocalizedStringKey {

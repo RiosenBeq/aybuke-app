@@ -10,6 +10,7 @@ struct MagicEditPanel: View {
     let onSubmit: () -> Void
 
     @FocusState private var isFocused: Bool
+    @Environment(\.editorPanelPlacement) private var placement
 
     private let suggestions = [
         String(localized: "Golden hour light", comment: "Example Magic Edit request on a chip; tapping it fills the prompt"),
@@ -38,55 +39,67 @@ struct MagicEditPanel: View {
 
     var body: some View {
         VStack(spacing: 12) {
-            if showsExamples {
-                ScrollView(.horizontal) {
-                    HStack(spacing: 8) {
-                        ForEach(suggestions, id: \.self) { suggestion in
-                            SelectableChip(title: LocalizedStringKey(suggestion), isSelected: prompt == suggestion) {
-                                prompt = suggestion
-                                Haptics.selection()
-                            }
-                        }
-                    }
-                }
-                .scrollIndicators(.hidden)
-                .transition(.opacity)
+            if showsExamples && placement == .bar {
+                examples
+                    .transition(.opacity)
             }
 
-            HStack(alignment: .bottom, spacing: 10) {
-                TextField("Describe your edit…", text: $prompt, axis: .vertical)
-                    .lineLimit(1...3)
-                    .focused($isFocused)
-                    .submitLabel(.go)
-                    // A multi-line field turns Go (Return) into a newline
-                    // instead of submitting, so a trailing one sends.
-                    .onChange(of: prompt) { _, text in
-                        guard text.contains("\n") else { return }
-                        let pressedGo = text.hasSuffix("\n")
-                        prompt = text.replacingOccurrences(of: "\n", with: " ").trimmingCharacters(in: .whitespaces)
-                        if pressedGo { submit() }
-                    }
-                    .onSubmit(submit)
-                    .padding(.horizontal, 14)
-                    .padding(.vertical, 12)
-                    .background(Palette.surface, in: .card)
-                    .overlay(
-                        RoundedRectangle.card
-                            .strokeBorder(isFocused ? Palette.accent : Palette.strokeStrong, lineWidth: isFocused ? 1.5 : 1)
-                    )
-                Button(action: submit) {
-                    Image(systemName: "arrow.up")
-                        .font(.headline.weight(.bold))
-                        .foregroundStyle(canSubmit ? Palette.onAccent : Palette.textTertiary)
-                        .frame(width: 46, height: 46)
-                        .background(canSubmit ? Palette.accent : Palette.strokeStrong, in: Circle())
-                }
-                .disabled(!canSubmit)
-                .accessibilityLabel("Apply edit")
-            }
+            promptRow
             Text("\(cost) credit per edit · failed edits are refunded")
                 .font(.caption2)
                 .foregroundStyle(Palette.textTertiary)
+
+            if showsExamples && placement == .inspector {
+                examples
+                    .padding(.top, 4)
+                    .transition(.opacity)
+            }
+        }
+    }
+
+    private var examples: some View {
+        ChipRow {
+            ForEach(suggestions, id: \.self) { suggestion in
+                SelectableChip(title: LocalizedStringKey(suggestion), isSelected: prompt == suggestion) {
+                    prompt = suggestion
+                    Haptics.selection()
+                }
+            }
+        }
+    }
+
+    private var promptRow: some View {
+        HStack(alignment: .bottom, spacing: 10) {
+            TextField("Describe your edit…", text: $prompt, axis: .vertical)
+                .lineLimit(1...3)
+                .focused($isFocused)
+                .submitLabel(.go)
+                // A multi-line field turns Go (Return) into a newline
+                // instead of submitting, so a trailing one sends.
+                .onChange(of: prompt) { _, text in
+                    guard text.contains("\n") else { return }
+                    let pressedGo = text.hasSuffix("\n")
+                    prompt = text.replacingOccurrences(of: "\n", with: " ").trimmingCharacters(in: .whitespaces)
+                    if pressedGo { submit() }
+                }
+                .onSubmit(submit)
+                .padding(.horizontal, 14)
+                .padding(.vertical, 12)
+                .background(Palette.surface, in: .card)
+                .overlay(
+                    RoundedRectangle.card
+                        .strokeBorder(isFocused ? Palette.accent : Palette.strokeStrong, lineWidth: isFocused ? 1.5 : 1)
+                )
+            Button(action: submit) {
+                Image(systemName: "arrow.up")
+                    .font(.headline.weight(.bold))
+                    .foregroundStyle(canSubmit ? Palette.onAccent : Palette.textTertiary)
+                    .frame(width: 46, height: 46)
+                    .background(canSubmit ? Palette.accent : Palette.strokeStrong, in: Circle())
+            }
+            .disabled(!canSubmit)
+            .accessibilityLabel("Apply edit")
+            .macHelp("Apply edit")
         }
     }
 }
@@ -96,23 +109,50 @@ struct StylesPanel: View {
     let isPro: Bool
     let onSelect: (PhotoTemplate) -> Void
 
+    @Environment(\.editorPanelPlacement) private var placement
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+
+    /// A row as wide as the screen (iPhone) can let its shadows spill; a
+    /// narrower panel clips its row, with room inside for the shadows.
+    private var clipsRow: Bool { horizontalSizeClass == .regular }
+
     var body: some View {
-        ScrollView(.horizontal) {
-            HStack(spacing: 10) {
-                ForEach(TemplateCatalog.editorOrder(on: AppClock.now)) { template in
-                    Button {
-                        Haptics.tap()
-                        onSelect(template)
-                    } label: {
-                        TemplateCard(template: template, width: 104, height: 136, showsLock: template.isPro && !isPro)
+        if placement == .inspector {
+            // Two big cards a row in the Mac's inspector.
+            LazyVGrid(columns: [GridItem(.flexible(), spacing: 12), GridItem(.flexible(), spacing: 12)], spacing: 12) {
+                cards(fillingWidth: true)
+            }
+        } else {
+            ScrollView(.horizontal) {
+                HStack(spacing: 10) {
+                    cards(fillingWidth: false)
+                }
+                .padding(.vertical, clipsRow ? 16 : 4)
+            }
+            .scrollIndicators(.hidden)
+            .scrollClipDisabled(!clipsRow)
+            .padding(.vertical, clipsRow ? -12 : 0)
+        }
+    }
+
+    private func cards(fillingWidth: Bool) -> some View {
+        ForEach(TemplateCatalog.editorOrder(on: AppClock.now)) { template in
+            Button {
+                Haptics.tap()
+                onSelect(template)
+            } label: {
+                if fillingWidth {
+                    GeometryReader { proxy in
+                        TemplateCard(template: template, width: proxy.size.width, height: proxy.size.height, showsLock: template.isPro && !isPro)
                     }
-                    .buttonStyle(.plain)
+                    .aspectRatio(3 / 4, contentMode: .fit)
+                } else {
+                    TemplateCard(template: template, width: 104, height: 136, showsLock: template.isPro && !isPro)
                 }
             }
-            .padding(.vertical, 4)
+            .buttonStyle(.plain)
+            .macHoverLift(scale: 1.03)
         }
-        .scrollIndicators(.hidden)
-        .scrollClipDisabled()
     }
 }
 
@@ -166,12 +206,14 @@ struct ErasePanel: View {
                 .buttonStyle(.icon)
                 .disabled(!hasStrokes)
                 .accessibilityLabel("Undo stroke")
+                .macHelp("Undo stroke")
                 Button(action: onClear) {
                     Image(systemName: "trash")
                 }
                 .buttonStyle(.icon)
                 .disabled(!hasStrokes)
                 .accessibilityLabel("Clear brush")
+                .macHelp("Clear brush")
             }
             Button(action: onErase) {
                 CostLabel(title: hasStrokes ? "Erase selection" : "Brush over an object", cost: hasStrokes ? cost : 0)
@@ -244,8 +286,7 @@ struct AdjustPanel: View {
 
     var body: some View {
         VStack(spacing: 12) {
-            ScrollView(.horizontal) {
-                HStack(spacing: 8) {
+            ChipRow {
                     Button(action: onAuto) {
                         Label("Auto", systemImage: "wand.and.sparkles")
                             .font(.subheadline.weight(.bold))
@@ -262,9 +303,7 @@ struct AdjustPanel: View {
                             Haptics.selection()
                         }
                     }
-                }
             }
-            .scrollIndicators(.hidden)
 
             Slider(
                 value: Binding(
@@ -304,33 +343,18 @@ struct EffectsPanel: View {
     let onReset: () -> Void
     let onApply: () -> Void
 
+    @Environment(\.editorPanelPlacement) private var placement
+
     var body: some View {
         VStack(spacing: 12) {
-            ScrollViewReader { proxy in
-                ScrollView(.horizontal) {
-                    HStack(spacing: 10) {
-                        ForEach(RetroEffect.allCases) { effect in
-                            Button {
-                                onSelect(effect)
-                            } label: {
-                                EffectTile(effect: effect, thumbnail: thumbnails[effect], isSelected: selected == effect)
-                            }
-                            .buttonStyle(.pressable)
-                            .id(effect)
-                        }
+            if placement == .inspector {
+                LazyVGrid(columns: [GridItem(.adaptive(minimum: 80), spacing: 8, alignment: .top)], spacing: 12) {
+                    ForEach(RetroEffect.allCases) { effect in
+                        effectButton(effect)
                     }
-                    .padding(.vertical, 4)
                 }
-                .scrollIndicators(.hidden)
-                .scrollClipDisabled()
-                // An effect picked elsewhere (an idea, a deep link) may sit past the edge.
-                .onAppear {
-                    if let selected { proxy.scrollTo(selected, anchor: .center) }
-                }
-                .onChange(of: selected) { _, effect in
-                    guard let effect else { return }
-                    withAnimation(.snappy) { proxy.scrollTo(effect, anchor: .center) }
-                }
+            } else {
+                effectsRow
             }
 
             if let option = selected?.option {
@@ -366,6 +390,40 @@ struct EffectsPanel: View {
                 .font(.caption2)
                 .foregroundStyle(Palette.textTertiary)
         }
+    }
+
+    private var effectsRow: some View {
+        ScrollViewReader { proxy in
+            ScrollView(.horizontal) {
+                HStack(spacing: 10) {
+                    ForEach(RetroEffect.allCases) { effect in
+                        effectButton(effect)
+                    }
+                }
+                .padding(.vertical, 4)
+            }
+            .scrollIndicators(.hidden)
+            .scrollClipDisabled()
+            // An effect picked elsewhere (an idea, a deep link) may sit past the edge.
+            .onAppear {
+                if let selected { proxy.scrollTo(selected, anchor: .center) }
+            }
+            .onChange(of: selected) { _, effect in
+                guard let effect else { return }
+                withAnimation(.snappy) { proxy.scrollTo(effect, anchor: .center) }
+            }
+        }
+    }
+
+    private func effectButton(_ effect: RetroEffect) -> some View {
+        Button {
+            onSelect(effect)
+        } label: {
+            EffectTile(effect: effect, thumbnail: thumbnails[effect], isSelected: selected == effect)
+        }
+        .buttonStyle(.pressable)
+        .macHoverLift(scale: 1.04)
+        .id(effect)
     }
 }
 
@@ -429,24 +487,23 @@ struct CropPanel: View {
 
     var body: some View {
         VStack(spacing: 12) {
-            ScrollView(.horizontal) {
-                HStack(spacing: 8) {
-                    ForEach(CropAspect.allCases) { option in
-                        SelectableChip(title: title(of: option), symbolName: symbol(of: option), isSelected: aspect == option) {
-                            onAspect(option)
-                        }
+            ChipRow {
+                ForEach(CropAspect.allCases) { option in
+                    SelectableChip(title: title(of: option), symbolName: symbol(of: option), isSelected: aspect == option) {
+                        onAspect(option)
                     }
                 }
             }
-            .scrollIndicators(.hidden)
 
             HStack(spacing: 10) {
                 Button(action: onRotate) { Image(systemName: "rotate.left") }
                     .buttonStyle(.icon)
                     .accessibilityLabel("Rotate left")
+                    .macHelp("Rotate left")
                 Button(action: onFlip) { Image(systemName: "arrow.left.and.right.righttriangle.left.righttriangle.right") }
                     .buttonStyle(.icon)
                     .accessibilityLabel("Flip horizontally")
+                    .macHelp("Flip horizontally")
                 Slider(
                     value: Binding(
                         get: { angle },

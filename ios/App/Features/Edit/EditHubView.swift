@@ -24,162 +24,195 @@ struct EditHubView: View {
                     }
                     .tipSlot(.editHub)
 
-                    Button {
-                        Haptics.tap()
-                        app.startEditing()
-                    } label: {
-                        HStack(spacing: 14) {
-                            Image(systemName: "photo.on.rectangle.angled")
-                                .font(.title2.weight(.semibold))
-                                .foregroundStyle(Palette.blush)
-                                .frame(width: 54, height: 54)
-                                .background(Palette.ink, in: .control)
-                            VStack(alignment: .leading, spacing: 3) {
-                                Text("Open a photo")
-                                    .font(.cardTitle)
-                                    .foregroundStyle(Palette.ink)
-                                Text("All tools in one editor")
-                                    .font(.footnote)
-                                    .foregroundStyle(Palette.ink.opacity(0.7))
-                            }
-                            Spacer()
-                            Image(systemName: "chevron.right")
-                                .foregroundStyle(Palette.ink.opacity(0.6))
+                    if Platform.isMac {
+                        // Wide Mac pages: the ways in side by side, then the tools.
+                        BalancedGrid(minimumWidth: 330, spacing: 14) {
+                            featureCards
                         }
-                        .padding(14)
-                        .cardStyle(fill: Palette.blush)
-                        .glowSweep()
-                    }
-                    .buttonStyle(PressableButtonStyle(scale: 0.97))
-                    .reveal(1)
-
-                    // Cloud AI, so not under 13 (like Magic Edit).
-                    if app.allowsCloudAI {
-                        makeupStudioCard
-                            .reveal(2)
-                    }
-
-                    if RetroCam.isAvailable {
-                        RetroCamHubCard()
-                            .reveal(2)
-                    }
-
-                    Button {
-                        Haptics.tap()
-                        app.isBestShotPresented = true
-                    } label: {
-                        HStack(spacing: 14) {
-                            Image(systemName: "photo.stack")
-                                .font(.title3.weight(.semibold))
-                                .foregroundStyle(Palette.ink)
-                                .frame(width: 54, height: 54)
-                                .background(Palette.petal, in: .control)
-                            VStack(alignment: .leading, spacing: 3) {
-                                TitleWithNewBadge(title: "Find your best shot")
-                                Text("Finds the best light & focus · free, on-device")
-                                    .font(.footnote)
-                                    .foregroundStyle(Palette.textSecondary)
-                            }
-                            Spacer()
-                            Image(systemName: "chevron.right")
-                                .foregroundStyle(Palette.textTertiary)
+                        BalancedGrid(minimumWidth: 176, spacing: 12) {
+                            toolCards
                         }
-                        .padding(14)
-                        .cardStyle()
-                    }
-                    .buttonStyle(PressableButtonStyle(scale: 0.97))
-                    .reveal(2)
-
-                    CollageHubCard()
-                        .reveal(2)
-
-                    Button {
-                        Haptics.tap()
-                        app.isVideoPickerPresented = true
-                    } label: {
-                        HStack(spacing: 14) {
-                            Image(systemName: "video.fill")
-                                .font(.title3.weight(.semibold))
-                                .foregroundStyle(Palette.blush)
-                                .frame(width: 54, height: 54)
-                                .background(Palette.ink, in: .control)
-                            VStack(alignment: .leading, spacing: 3) {
-                                TitleWithNewBadge(title: "Edit a video")
-                                Text("Cut silences, 80s & 90s effects · free")
-                                    .font(.footnote)
-                                    .foregroundStyle(Palette.textSecondary)
-                                    .fixedSize(horizontal: false, vertical: true)
-                            }
-                            Spacer()
-                            Image(systemName: "chevron.right")
-                                .foregroundStyle(Palette.textTertiary)
-                        }
-                        .padding(14)
-                        .cardStyle()
-                    }
-                    .buttonStyle(PressableButtonStyle(scale: 0.97))
-                    .tourAnchor(.edit)
-                    .reveal(2)
-
-                    LazyVGrid(columns: columns, spacing: 12) {
-                        // Makeup Studio has its own card above.
-                        ForEach(Array(EditorTool.available(cloudAI: app.allowsCloudAI).filter { $0 != .makeup }.enumerated()), id: \.element) { index, tool in
-                            Button {
-                                Haptics.tap()
-                                app.startEditing(tool: tool)
-                            } label: {
-                                VStack(alignment: .leading, spacing: 12) {
-                                    Image(systemName: tool.symbolName)
-                                        .font(.title3.weight(.semibold))
-                                        .foregroundStyle(Palette.ink)
-                                        .frame(width: 40, height: 40)
-                                        .background(
-                                            AuraFill(palette: Self.toolPalettes[index % Self.toolPalettes.count])
-                                                .clipShape(.chip)
-                                        )
-                                    VStack(alignment: .leading, spacing: 3) {
-                                        Text(tool.title)
-                                            .font(.cardTitle)
-                                            .foregroundStyle(Palette.textPrimary)
-                                        Text(tool.caption)
-                                            .font(.caption)
-                                            .foregroundStyle(Palette.textSecondary)
-                                    }
-                                }
-                                .frame(maxWidth: .infinity, minHeight: 110, alignment: .topLeading)
-                                .padding(16)
-                                .cardStyle()
-                            }
-                            .buttonStyle(.pressable)
-                            .reveal(2 + index)
+                    } else {
+                        featureCards
+                        LazyVGrid(columns: columns, spacing: 12) {
+                            // Makeup Studio has its own card above.
+                            toolCards
                         }
                     }
 
-                    HStack(alignment: .top, spacing: 10) {
-                        Image(systemName: "lock.shield")
-                            .foregroundStyle(Palette.success)
-                            .accessibilityHidden(true)
-                        // Under 13 there are no cloud edits to mention.
-                        Group {
-                            if app.allowsCloudAI {
-                                Text("Background removal and adjustments run on your device. Cloud edits are never used to train AI and are deleted from our servers within \(app.config.retentionPhrase).")
-                            } else {
-                                Text("Every tool here runs on your device. Your photos are never uploaded.")
-                            }
-                        }
-                            .font(.footnote)
-                            .foregroundStyle(Palette.textSecondary)
-                    }
-                    .padding(.top, 4)
+                    privacyNote
                 }
-                .padding(.horizontal, Metrics.gutter)
+                .padding(.horizontal, Metrics.pageGutter)
                 .padding(.vertical, 12)
-                .readableWidth()
+                .readableWidth(Metrics.pageWidth)
             }
             .scrollIndicators(.hidden)
             .background(AuroraBackground(intensity: 0.3))
             .toolbar(.hidden, for: .navigationBar)
         }
+    }
+
+    /// Open a photo, Makeup Studio, Retro Cam, Best shot, Collage and Video.
+    @ViewBuilder
+    private var featureCards: some View {
+        Button {
+            Haptics.tap()
+            app.startEditing()
+        } label: {
+            HStack(spacing: 14) {
+                Image(systemName: "photo.on.rectangle.angled")
+                    .font(.title2.weight(.semibold))
+                    .foregroundStyle(Palette.blush)
+                    .frame(width: 54, height: 54)
+                    .background(Palette.ink, in: .control)
+                VStack(alignment: .leading, spacing: 3) {
+                    Text("Open a photo")
+                        .font(.cardTitle)
+                        .foregroundStyle(Palette.ink)
+                    Text("All tools in one editor")
+                        .font(.footnote)
+                        .foregroundStyle(Palette.ink.opacity(0.7))
+                }
+                Spacer()
+                Image(systemName: "chevron.right")
+                    .foregroundStyle(Palette.ink.opacity(0.6))
+            }
+            .macFillsCell()
+            .padding(14)
+            .cardStyle(fill: Palette.blush)
+            .glowSweep()
+        }
+        .buttonStyle(PressableButtonStyle(scale: 0.97))
+        .macHoverLift()
+        .reveal(1)
+
+        // Cloud AI, so not under 13 (like Magic Edit).
+        if app.allowsCloudAI {
+            makeupStudioCard
+                .reveal(2)
+        }
+
+        if RetroCam.isAvailable {
+            RetroCamHubCard()
+                .reveal(2)
+        }
+
+        Button {
+            Haptics.tap()
+            app.isBestShotPresented = true
+        } label: {
+            HStack(spacing: 14) {
+                Image(systemName: "photo.stack")
+                    .font(.title3.weight(.semibold))
+                    .foregroundStyle(Palette.ink)
+                    .frame(width: 54, height: 54)
+                    .background(Palette.petal, in: .control)
+                VStack(alignment: .leading, spacing: 3) {
+                    TitleWithNewBadge(title: "Find your best shot")
+                    Text("Finds the best light & focus · free, on-device")
+                        .font(.footnote)
+                        .foregroundStyle(Palette.textSecondary)
+                }
+                Spacer()
+                Image(systemName: "chevron.right")
+                    .foregroundStyle(Palette.textTertiary)
+            }
+            .macFillsCell()
+            .padding(14)
+            .cardStyle()
+        }
+        .buttonStyle(PressableButtonStyle(scale: 0.97))
+        .macHoverLift()
+        .reveal(2)
+
+        CollageHubCard()
+            .reveal(2)
+
+        Button {
+            Haptics.tap()
+            app.isVideoPickerPresented = true
+        } label: {
+            HStack(spacing: 14) {
+                Image(systemName: "video.fill")
+                    .font(.title3.weight(.semibold))
+                    .foregroundStyle(Palette.blush)
+                    .frame(width: 54, height: 54)
+                    .background(Palette.ink, in: .control)
+                VStack(alignment: .leading, spacing: 3) {
+                    TitleWithNewBadge(title: "Edit a video")
+                    Text("Cut silences, 80s & 90s effects · free")
+                        .font(.footnote)
+                        .foregroundStyle(Palette.textSecondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                Spacer()
+                Image(systemName: "chevron.right")
+                    .foregroundStyle(Palette.textTertiary)
+            }
+            .macFillsCell()
+            .padding(14)
+            .cardStyle()
+        }
+        .buttonStyle(PressableButtonStyle(scale: 0.97))
+        .macHoverLift()
+        .tourAnchor(.edit)
+        .reveal(2)
+    }
+
+    /// Every editor tool (Makeup Studio has its own card).
+    private var toolCards: some View {
+        ForEach(Array(EditorTool.available(cloudAI: app.allowsCloudAI).filter { $0 != .makeup }.enumerated()), id: \.element) { index, tool in
+            Button {
+                Haptics.tap()
+                app.startEditing(tool: tool)
+            } label: {
+                VStack(alignment: .leading, spacing: 12) {
+                    Image(systemName: tool.symbolName)
+                        .font(.title3.weight(.semibold))
+                        .foregroundStyle(Palette.ink)
+                        .frame(width: 40, height: 40)
+                        .background(
+                            AuraFill(palette: Self.toolPalettes[index % Self.toolPalettes.count])
+                                .clipShape(.chip)
+                        )
+                    VStack(alignment: .leading, spacing: 3) {
+                        Text(tool.title)
+                            .font(.cardTitle)
+                            .foregroundStyle(Palette.textPrimary)
+                        Text(tool.caption)
+                            .font(.caption)
+                            .foregroundStyle(Palette.textSecondary)
+                    }
+                }
+                .frame(maxWidth: .infinity, minHeight: 110, alignment: .topLeading)
+                .macFillsCell(alignment: .topLeading)
+                .padding(16)
+                .cardStyle()
+            }
+            .buttonStyle(.pressable)
+            .macHoverLift()
+            .reveal(2 + index)
+        }
+    }
+
+    private var privacyNote: some View {
+        HStack(alignment: .top, spacing: 10) {
+            Image(systemName: "lock.shield")
+                .foregroundStyle(Palette.success)
+                .accessibilityHidden(true)
+            // Under 13 there are no cloud edits to mention.
+            Group {
+                if app.allowsCloudAI {
+                    Text("Background removal and adjustments run on your device. Cloud edits are never used to train AI and are deleted from our servers within \(app.config.retentionPhrase).")
+                } else {
+                    Text("Every tool here runs on your device. Your photos are never uploaded.")
+                }
+            }
+                .font(.footnote)
+                .foregroundStyle(Palette.textSecondary)
+        }
+        .padding(.top, 4)
+        .macTextWidth()
     }
 
     /// Makeup Studio: pick a photo, then try looks on it.
@@ -205,9 +238,11 @@ struct EditHubView: View {
                 Image(systemName: "chevron.right")
                     .foregroundStyle(Palette.textTertiary)
             }
+            .macFillsCell()
             .padding(14)
             .cardStyle()
         }
         .buttonStyle(PressableButtonStyle(scale: 0.97))
+        .macHoverLift()
     }
 }

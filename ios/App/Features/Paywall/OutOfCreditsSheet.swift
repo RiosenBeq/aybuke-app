@@ -64,6 +64,7 @@ struct OutOfCreditsSheet: View {
             .buttonStyle(.icon)
             .padding(Metrics.gutter)
             .accessibilityLabel("Close")
+            .macHelp("Close")
         }
     }
 

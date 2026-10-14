@@ -72,6 +72,7 @@ struct CreditsSheet: View {
             .buttonStyle(.icon)
             .padding(Metrics.gutter)
             .accessibilityLabel("Close")
+            .macHelp("Close")
         }
         .task {
             // The day may have turned since the pill last counted.
