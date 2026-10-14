@@ -92,3 +92,23 @@ Deno.test("fails closed: errors, timeouts, refusals and odd answers block", asyn
   const none = await classifyImages([], "result", options(fetcher(() => Response.json(answer({}))).fn));
   assert.ok(!none.ok && none.reason === "check_failed", "nothing to check isn't a pass");
 });
+
+Deno.test("an answer outside the schema fails closed, whatever flagged says", () => {
+  assert.deepEqual(parseVerdict(answer({ flagged: false, categories: ["bogus"] })), {
+    ok: false,
+    reason: "check_failed",
+    detail: "unexpected category",
+  });
+  assert.deepEqual(parseVerdict(answer({ flagged: true, categories: ["bogus"] })), {
+    ok: false,
+    reason: "check_failed",
+    detail: "unexpected category",
+  });
+  assert.deepEqual(parseVerdict(answer({ flagged: false, categories: [], note: "looks fine" })), {
+    ok: false,
+    reason: "check_failed",
+    detail: "unexpected field",
+  });
+  assert.deepEqual(parseVerdict(answer([])), { ok: false, reason: "check_failed", detail: "unexpected shape" });
+  assert.deepEqual(parseVerdict(answer("true")), { ok: false, reason: "check_failed", detail: "unexpected shape" });
+});

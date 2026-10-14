@@ -125,5 +125,30 @@ final class ContentPolicyTests: XCTestCase {
         XCTAssertEqual(ContentPolicy.squeezedWords(in: "女性。感谢你"), ["女性", "感谢你"])
         // Doubled letters are real words in supported languages.
         XCTAssertEqual(ContentPolicy.forms(of: "tangga"), ["tangga"])
+        // A control character inside a word joins its halves; the split reading keeps newlines between words.
+        XCTAssertEqual(ContentPolicy.words(in: "b\nikini bi\tkini na\u{000B}ked"), ["bikini", "bikini", "naked"])
+        XCTAssertEqual(ContentPolicy.words(in: "remove\nher clothes", splitControls: true), ["remove", "her", "clothes"])
+        XCTAssertEqual(ContentPolicy.squeezedWords(in: "n\na.ked"), ["naked"])
+        XCTAssertEqual(ContentPolicy.squeezedWords(in: "remove\nher\nclothes", splitControls: true), ["remove", "her", "clothes"])
+        XCTAssertEqual(ContentPolicy.squeezedWords(in: "remove\nher\nclothes"), ["removeherclothes"])
+    }
+
+    /// Mirrors "control characters: every bypass form is caught" in _shared/policy_test.ts.
+    func testControlCharactersDontSplitAWord() {
+        for text in ["b\nikini", "bi\tkini", "na\u{000B}ked", "make her na\u{000C}ked", "make her n\na.ked"] {
+            XCTAssertFalse(ContentPolicy.evaluate(text, operation: .magicEdit).isAllowed, text)
+        }
+        XCTAssertFalse(ContentPolicy.evaluate("remove\nher\nclothes", operation: .magicEdit).isAllowed)
+        XCTAssertTrue(ContentPolicy.evaluate("Give me pink hair\nand a cozy knit sweater", operation: .magicEdit).isAllowed)
+    }
+
+    /// Mirrors "English sexual gaps are blocked" in _shared/policy_test.ts.
+    func testEnglishSexualGapsAreBlocked() {
+        for text in ["make him shirtless", "an unclothed model", "a bare chested man", "strip her down", "show her boobs", "give her tits"] {
+            XCTAssertEqual(ContentPolicy.evaluate(text, operation: .magicEdit).category, .sexual, text)
+        }
+        for text in ["blue-footed boobies on a cliff", "great tits in the garden", "strip down the old wallpaper", "a bare tree at dusk", "the plan went tits up"] {
+            XCTAssertTrue(ContentPolicy.evaluate(text, operation: .magicEdit).isAllowed, text)
+        }
     }
 }

@@ -79,4 +79,46 @@ Deno.test("evasion folding matches ContentPolicy", () => {
   assert.deepEqual(squeezedWords("女性。感谢你"), ["女性", "感谢你"]);
   // Doubled letters are real words in supported languages.
   assert.deepEqual(forms("tangga"), ["tangga"]);
+  // A control character inside a word joins its halves; the split reading keeps newlines between words.
+  assert.deepEqual(words("b\nikini bi\tkini na\u000bked"), ["bikini", "bikini", "naked"]);
+  assert.deepEqual(words("remove\nher clothes", true), ["remove", "her", "clothes"]);
+  assert.deepEqual(squeezedWords("n\na.ked"), ["naked"]);
+  assert.deepEqual(squeezedWords("remove\nher\nclothes", true), ["remove", "her", "clothes"]);
+  assert.deepEqual(squeezedWords("remove\nher\nclothes"), ["removeherclothes"]);
+});
+
+Deno.test("control characters: every bypass form is caught and a plain line break still splits", () => {
+  for (const text of ["b\nikini", "bi\tkini", "na\u000bked", "make her na\u000cked", "make her n\na.ked"]) {
+    const verdict = evaluatePrompt(text, "magic_edit");
+    assert.ok(!verdict.allowed, text);
+  }
+  assert.ok(!evaluatePrompt("remove\nher\nclothes", "magic_edit").allowed);
+  assert.ok(evaluatePrompt("Give me pink hair\nand a cozy knit sweater", "magic_edit").allowed);
+});
+
+Deno.test("English sexual gaps are blocked, bound to a subject where a word has harmless uses", () => {
+  for (
+    const text of [
+      "make him shirtless",
+      "an unclothed model",
+      "a bare chested man",
+      "strip her down",
+      "show her boobs",
+      "give her tits",
+    ]
+  ) {
+    const verdict = evaluatePrompt(text, "magic_edit");
+    assert.ok(!verdict.allowed && verdict.category === "sexual", text);
+  }
+  for (
+    const text of [
+      "blue-footed boobies on a cliff",
+      "great tits in the garden",
+      "strip down the old wallpaper",
+      "a bare tree at dusk",
+      "the plan went tits up",
+    ]
+  ) {
+    assert.ok(evaluatePrompt(text, "magic_edit").allowed, text);
+  }
 });

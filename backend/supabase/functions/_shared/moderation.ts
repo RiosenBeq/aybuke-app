@@ -5,7 +5,7 @@
 // refunded. There is no setting that turns it off.
 //
 //   "fal"  fal.ai's NSFW classifier, independent of the image model. Used
-//          whenever FAL_KEY is set (and always with AI_PROVIDER=fal).
+//          whenever FAL_KEY is set; AI_PROVIDER=fal alone doesn't switch it on.
 //   "xai"  xAI's own moderation of each generated image (the default with
 //          xAI and no FAL_KEY): xAI withholds the image data of any image it
 //          filters, and xai.parseOutputs() blocks the whole job when it does.

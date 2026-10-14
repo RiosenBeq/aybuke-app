@@ -4,9 +4,12 @@
 // XAI_SAFETY_MODEL names a vision model (for example a grok-4 fast model);
 // when it's on it fails closed: an error, a timeout, a refusal or an answer
 // that isn't the expected JSON blocks the job, which is refunded. It runs on
-// top of the output check in moderation.ts, never instead of it. xAI is
-// already the image processor, so no new processor sees the images (Zero
-// Data Retention applies to the same team).
+// top of the output check in moderation.ts, never instead of it. The check
+// sends photos and results to xAI, which is already a processor in the consent
+// sheet (aiProcessors) while the image model is xAI (the default). With
+// AI_PROVIDER=fal, XAI_SAFETY_MODEL would make xAI a processor of the images,
+// so list it in aiProcessors and the privacy policies first (Zero Data
+// Retention applies to the same team).
 //
 // Not enabled by default: it can't be tested against the live API yet.
 // Unit tests (safety_test.ts) mock every answer.
@@ -95,13 +98,22 @@ export function parseVerdict(body: unknown): SafetyVerdict {
   } catch {
     return { ok: false, reason: "check_failed", detail: "not JSON" };
   }
-  const { flagged, categories } = (verdict ?? {}) as { flagged?: unknown; categories?: unknown };
+  if (typeof verdict !== "object" || verdict === null || Array.isArray(verdict)) {
+    return { ok: false, reason: "check_failed", detail: "unexpected shape" };
+  }
+  const { flagged, categories } = verdict as { flagged?: unknown; categories?: unknown };
   if (typeof flagged !== "boolean" || !Array.isArray(categories) || !categories.every((c) => typeof c === "string")) {
     return { ok: false, reason: "check_failed", detail: "unexpected shape" };
   }
-  const known = (categories as string[]).filter((c) => (CATEGORIES as readonly string[]).includes(c));
+  // The schema is strict; anything beyond it is not an answer we know how to read.
+  if (Object.keys(verdict).some((key) => key !== "flagged" && key !== "categories")) {
+    return { ok: false, reason: "check_failed", detail: "unexpected field" };
+  }
+  if (!categories.every((c) => (CATEGORIES as readonly string[]).includes(c))) {
+    return { ok: false, reason: "check_failed", detail: "unexpected category" };
+  }
   // A category alone flags the image too: never let a contradiction through.
-  if (flagged || known.length > 0) return { ok: false, reason: "flagged", categories: known };
+  if (flagged || categories.length > 0) return { ok: false, reason: "flagged", categories: categories as string[] };
   return { ok: true };
 }
 

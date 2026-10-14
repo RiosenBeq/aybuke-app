@@ -34,14 +34,25 @@ import { type EntitlementStatus, type InstallProof, resolveEntitlement, verifyIn
 import { requireUser, serviceClient } from "../_shared/auth.ts";
 import * as fal from "../_shared/fal.ts";
 import { corsHeaders, errorResponse, HttpError, json } from "../_shared/http.ts";
-import { checkImage, clientIp, MAX_PROMPT_CHARS, promptLength, sanitizePrompt } from "../_shared/input.ts";
+import {
+  checkImage,
+  clientIp,
+  MAX_IMAGE_BYTES,
+  MAX_PROMPT_CHARS,
+  promptLength,
+  sanitizePrompt,
+} from "../_shared/input.ts";
 import { checkOutputs, outputCheck } from "../_shared/moderation.ts";
 import { EDIT_GUARD, evaluatePrompt, type Verdict } from "../_shared/policy.ts";
 import { classifyImages, safetyModel, type SafetySubject, type SafetyVerdict } from "../_shared/safety.ts";
 import { PRO_STYLES, templateRecipe } from "../_shared/templates.ts";
 import * as xai from "../_shared/xai.ts";
 
-const MAX_BODY_BYTES = 8 * 1024 * 1024;
+// An erase sends a photo and a mask, each at MAX_IMAGE_BYTES (6 MiB), which is
+// 8 MiB as base64 (4/3). Plus about 256 KiB of JSON: the app's prompt is at most
+// 1,200 code points (under 7 KB even escaped) and the data-URI labels are 23
+// bytes each. A body over the cap is refused, so the cap bounds the memory read.
+const MAX_BODY_BYTES = 2 * ((MAX_IMAGE_BYTES / 3) * 4) + 256 * 1024;
 const MAX_OUTPUTS = 4;
 const JOB_TIMEOUT_MS = 10 * 60 * 1000;
 /** xAI requests are synchronous; a job still pending after this has stalled. */
@@ -340,7 +351,7 @@ async function photoPassesSafetyCheck(db: SupabaseClient, jobId: string, input: 
     // Not a strike: a photo can be someone's ordinary holiday snap.
     await failJob(db, jobId, "input_blocked", "This photo can't be edited. Try another one. Your credit was refunded.");
   } else {
-    await failJob(db, jobId, "safety_check_failed", SAFETY_CHECK_FAILED);
+    await failJob(db, jobId, "safety_check_failed", PHOTO_CHECK_FAILED);
   }
   return false;
 }
@@ -390,6 +401,7 @@ async function advance(db: SupabaseClient, job: JobRow): Promise<void> {
 
 const BLOCKED_RESULT = "This result was blocked by our safety filters. Your credit was refunded.";
 const SAFETY_CHECK_FAILED = "Our safety check couldn't run, so this result wasn't shown. Your credit was refunded.";
+const PHOTO_CHECK_FAILED = "We couldn't check this photo, so we didn't edit it. Your credit was refunded.";
 
 /** Stores a provider's outcome: results (after the output safety checks) or a refund. */
 async function finish(db: SupabaseClient, jobId: string, outcome: fal.ResultOutcome): Promise<void> {

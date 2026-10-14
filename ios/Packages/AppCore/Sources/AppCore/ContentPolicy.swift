@@ -23,7 +23,8 @@ public enum PolicyCategory: String, CaseIterable, Codable, Sendable {
 /// or Korean characters matches anywhere in the text. Both the terms and the
 /// prompt go through `words(in:)` first, so diacritics, case, leetspeak,
 /// stretched letters, lookalike letters from another script, invisible
-/// characters and "b i k i n i" spacing don't matter; the prompt is also
+/// characters, control characters inside a word and "b i k i n i" spacing
+/// don't matter (a line break between words still splits them); the prompt is also
 /// matched squeezed (`squeezedWords(in:)`: "na.ked", "n@ked", "5exy").
 public enum ContentPolicy {
     public enum Verdict: Equatable, Sendable {
@@ -85,6 +86,7 @@ public enum ContentPolicy {
         "genital", "genitals", "erotic", "hentai", "xxx", "onlyfans",
         "remove clothes", "remove her|his|their|my clothes", "take off clothes", "take off her|his|their|my clothes",
         "without clothes", "no clothes", "see through clothes", "x ray clothes",
+        "shirtless", "unclothed", "bare chested", "strip her|him|them|me down", "boobs", "her|his|my|their|your|me|big|bare tits",
         // tr
         "çıplak", "çırılçıplak", "seks", "seksi", "erotik", "üstsüz", "müstehcen", "soyunuk", "soyunmuş",
         "iç çamaşırı", "kıyafetsiz", "kıyafetlerini çıkar", "elbisesini çıkar", "soyundur*",
@@ -393,9 +395,18 @@ public enum ContentPolicy {
         let views: [View]
 
         init(_ text: String) {
-            let plain = View(ContentPolicy.words(in: text))
-            let squeezed = View(ContentPolicy.squeezedWords(in: text))
-            views = squeezed.joined == plain.joined ? [plain] : [plain, squeezed]
+            // Control characters dropped or split on, each read plain and squeezed. A term matches any reading.
+            let candidates = [
+                View(ContentPolicy.words(in: text)),
+                View(ContentPolicy.words(in: text, splitControls: true)),
+                View(ContentPolicy.squeezedWords(in: text)),
+                View(ContentPolicy.squeezedWords(in: text, splitControls: true)),
+            ]
+            var unique: [View] = []
+            for view in candidates where !unique.contains(where: { $0.joined == view.joined }) {
+                unique.append(view)
+            }
+            views = unique
         }
 
         func matches(_ term: Term) -> Bool {
@@ -440,20 +451,25 @@ public enum ContentPolicy {
     /// in the word's script ("n\u{0430}ked", with a Cyrillic а); leetspeak undone in
     /// words that start with a letter ("s3xy", but not "1990s" or "3d"); runs
     /// of three or more single letters joined ("b i k i n i", "s.e.x").
-    /// Invisible characters can't split a word ("bi\u{200B}kini").
-    static func words(in text: String) -> [String] {
-        joinSpelledOut(tokens(in: clean(text)).map(foldConfusables).map(undoLeet))
+    /// Invisible characters can't split a word ("bi\u{200B}kini"), and neither
+    /// can control characters: they are dropped first, or split on with
+    /// `splitControls` ("remove\nher" keeps its line break as a word break).
+    static func words(in text: String, splitControls: Bool = false) -> [String] {
+        let cleaned = splitControls ? clean(text) : dropControls(clean(text))
+        return joinSpelledOut(tokens(in: cleaned).map(foldConfusables).map(undoLeet))
     }
 
     /// The same text squeezed: punctuation inside a run of non-space
     /// characters joins the pieces ("na.ked", "se-xy"), @ $ ! read as a s i,
     /// and leetspeak is undone in any word with a letter ("5exy"). Chunks
     /// with Chinese, Japanese or Korean characters keep their usual words:
-    /// joining across 。 could form a term from two words.
-    static func squeezedWords(in text: String) -> [String] {
+    /// joining across 。 could form a term from two words. Control characters
+    /// are dropped, or split on with `splitControls`.
+    static func squeezedWords(in text: String, splitControls: Bool = false) -> [String] {
         var chunks: [String] = []
         var chunk = String.UnicodeScalarView()
         for scalar in clean(text).unicodeScalars {
+            if !splitControls && scalar.properties.generalCategory == .control { continue }
             if scalar.properties.isWhitespace || scalar.properties.generalCategory == .control {
                 if !chunk.isEmpty { chunks.append(String(chunk)) }
                 chunk = String.UnicodeScalarView()
@@ -497,6 +513,11 @@ public enum ContentPolicy {
         return String(scalars)
     }
 
+    /// Control characters removed before the split (`clean` keeps tabs and line breaks).
+    static func dropControls(_ text: String) -> String {
+        String(String.UnicodeScalarView(text.unicodeScalars.filter { $0.properties.generalCategory != .control }))
+    }
+
     static func tokens(in text: String) -> [String] {
         var words: [String] = []
         var current = String.UnicodeScalarView()
@@ -512,7 +533,7 @@ public enum ContentPolicy {
         return words
     }
 
-    /// Tabs, line breaks and the like separate words; other control characters vanish.
+    /// Tabs, line breaks and the like: kept by `clean`; `words` and `squeezedWords` drop them, or split on them with `splitControls`.
     static func isSpacingControl(_ scalar: Unicode.Scalar) -> Bool {
         switch scalar.value {
         case 0x09...0x0D, 0x1C...0x1F, 0x85: return true

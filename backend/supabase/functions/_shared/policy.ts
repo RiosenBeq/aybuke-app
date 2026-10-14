@@ -86,7 +86,7 @@ const isCyrillic = (cp: number) => cp >= 0x400 && cp <= 0x52f;
 const isGreek = (cp: number) => (cp >= 0x370 && cp <= 0x3ff) || (cp >= 0x1f00 && cp <= 0x1fff);
 /** Hangul fillers: letters that draw nothing. */
 const isFiller = (cp: number) => cp === 0x115f || cp === 0x1160 || cp === 0x3164 || cp === 0xffa0;
-/** Tabs, line breaks and the like separate words; other control characters vanish. */
+/** Tabs, line breaks and the like: kept by clean(); words() and squeezedWords() drop them, or split on them with splitControls. */
 const isSpacingControl = (cp: number) => (cp >= 0x09 && cp <= 0x0d) || (cp >= 0x1c && cp <= 0x1f) || cp === 0x85;
 
 function fold(text: string): string {
@@ -185,10 +185,18 @@ function joinSpelledOut(words: string[]): string[] {
  * digit, Latin diacritics, Turkish dotless i and ё folded, lookalike letters
  * read in the word's script, leetspeak undone in words that start with a
  * letter ("s3xy", but not "1990s" or "3d"), runs of three or more single
- * letters joined ("b i k i n i", "s.e.x").
+ * letters joined ("b i k i n i", "s.e.x"). Control characters are dropped
+ * before the split ("bi\tkini"), or split on with splitControls ("remove\nher").
  */
-export function words(text: string): string[] {
-  return joinSpelledOut(tokens(clean(text)).map(foldConfusables).map(undoLeet));
+export function words(text: string, splitControls = false): string[] {
+  const cleaned = splitControls ? clean(text) : dropControls(clean(text));
+  return joinSpelledOut(tokens(cleaned).map(foldConfusables).map(undoLeet));
+}
+
+function dropControls(text: string): string {
+  let out = "";
+  for (const ch of text) if (!CONTROL.test(ch)) out += ch;
+  return out;
 }
 
 /**
@@ -196,12 +204,14 @@ export function words(text: string): string[] {
  * joins the pieces ("na.ked", "se-xy"), @ $ ! read as a s i, and leetspeak is
  * undone in any word with a letter ("5exy"). Chunks with Chinese, Japanese or
  * Korean characters keep their usual words: joining across 。 could form a
- * term from two words. A term matches if it matches either view.
+ * term from two words. Control characters are dropped, or split on with
+ * splitControls.
  */
-export function squeezedWords(text: string): string[] {
+export function squeezedWords(text: string, splitControls = false): string[] {
   const chunks: string[] = [];
   let chunk = "";
   for (const ch of clean(text)) {
+    if (CONTROL.test(ch) && !splitControls) continue;
     if (BOUNDARY.test(ch)) {
       if (chunk) chunks.push(chunk);
       chunk = "";
@@ -327,9 +337,11 @@ class MatchText {
   readonly views: View[];
 
   constructor(text: string) {
-    const plain = new View(words(text));
-    const squeezed = new View(squeezedWords(text));
-    this.views = squeezed.joined === plain.joined ? [plain] : [plain, squeezed];
+    // Two readings of control characters (dropped or split on), each plain and squeezed. A term matches any reading.
+    const readings = [words(text), words(text, true), squeezedWords(text), squeezedWords(text, true)].map(
+      (list) => new View(list),
+    );
+    this.views = readings.filter((view, i) => readings.findIndex((other) => other.joined === view.joined) === i);
   }
 
   matchesAny(key: string): boolean {
