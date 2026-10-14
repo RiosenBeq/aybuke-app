@@ -43,6 +43,13 @@ public enum PromptBuilder {
         return sentence + editGuard
     }
 
+    /// "Only edit me" from the editor's kindness note: the edit leaves
+    /// everyone else in the photo as they are.
+    public static func onlyMainPerson(_ instruction: String) -> String {
+        let text = instruction.trimmingCharacters(in: .whitespacesAndNewlines)
+        return text + (text.hasSuffix(".") ? " " : ". ") + "Only change the main person in front; keep everyone else exactly as they are."
+    }
+
     /// Offline "magic prompt": enriches very short prompts with composition and
     /// quality cues. The server may further improve it with an LLM.
     public static func enhance(_ prompt: String) -> String {

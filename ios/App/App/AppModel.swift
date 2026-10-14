@@ -818,8 +818,8 @@ final class AppModel {
         if isCloud && isCloudOffline { throw AIServiceError.offline }
         let showsActivity = isCloud && liveActivity.start(
             // Catalog text only: her prompt would show on the Lock Screen.
-            title: L10n.core(job.template?.title ?? job.operation.displayName).shortened(to: 34),
-            symbolName: job.template?.symbolName ?? job.operation.symbolName,
+            title: job.activityTitle.shortened(to: 34),
+            symbolName: job.activitySymbol,
             expectedSeconds: GlowActivityController.expectedSeconds(for: job.operation, outputs: job.numOutputs)
         )
         let backgroundTask = UIApplication.shared.beginBackgroundTask(withName: "glowlit.job")

@@ -53,6 +53,12 @@ struct EditHubView: View {
                     .buttonStyle(PressableButtonStyle(scale: 0.97))
                     .reveal(1)
 
+                    // Cloud AI, so not under 13 (like Magic Edit).
+                    if app.allowsCloudAI {
+                        makeupStudioCard
+                            .reveal(2)
+                    }
+
                     if RetroCam.isAvailable {
                         RetroCamHubCard()
                             .reveal(2)
@@ -126,7 +132,8 @@ struct EditHubView: View {
                     .reveal(2)
 
                     LazyVGrid(columns: columns, spacing: 12) {
-                        ForEach(Array(EditorTool.available(cloudAI: app.allowsCloudAI).enumerated()), id: \.element) { index, tool in
+                        // Makeup Studio has its own card above.
+                        ForEach(Array(EditorTool.available(cloudAI: app.allowsCloudAI).filter { $0 != .makeup }.enumerated()), id: \.element) { index, tool in
                             Button {
                                 Haptics.tap()
                                 app.startEditing(tool: tool)
@@ -183,5 +190,39 @@ struct EditHubView: View {
             .background(AuroraBackground(intensity: 0.3))
             .toolbar(.hidden, for: .navigationBar)
         }
+    }
+
+    /// Makeup Studio: pick a photo, then try looks on it.
+    private var makeupStudioCard: some View {
+        Button {
+            Haptics.tap()
+            app.startEditing(tool: .makeup)
+        } label: {
+            HStack(spacing: 14) {
+                Image(systemName: EditorTool.makeup.symbolName)
+                    .font(.title3.weight(.semibold))
+                    .foregroundStyle(Palette.ink)
+                    .frame(width: 54, height: 54)
+                    .background(AuraFill(palette: .bubblegum).clipShape(.control))
+                VStack(alignment: .leading, spacing: 3) {
+                    HStack(spacing: 6) {
+                        Text("Makeup Studio")
+                            .font(.cardTitle)
+                            .foregroundStyle(Palette.textPrimary)
+                        NewBadge()
+                    }
+                    Text("Try lips, eyes, blush and sparkle on your photo")
+                        .font(.footnote)
+                        .foregroundStyle(Palette.textSecondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                Spacer()
+                Image(systemName: "chevron.right")
+                    .foregroundStyle(Palette.textTertiary)
+            }
+            .padding(14)
+            .cardStyle()
+        }
+        .buttonStyle(PressableButtonStyle(scale: 0.97))
     }
 }

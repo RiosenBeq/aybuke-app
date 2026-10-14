@@ -34,6 +34,11 @@ final class EditorViewModel {
 
     var activeTool: EditorTool?
     var magicPrompt = ""
+    /// Makeup Studio's look; a fresh editor starts on the first one.
+    var makeup = MakeupStudio.defaultPreset.recipe
+    /// The step a makeup look made and the photo it was made from: trying
+    /// another look on that step starts again from the photo.
+    @ObservationIgnored private var makeupBase: (version: Int, photo: UIImage)?
     var adjustments = AdjustmentSettings()
     private(set) var adjustPreview: UIImage?
     var strokes: [MaskStroke] = []
@@ -138,6 +143,11 @@ final class EditorViewModel {
             overlays.loadScreenshotFixture(mode: mode ?? .stickers)
         }
         if ScreenshotScene.current == .erase { strokes = ScreenshotFixtures.eraseStrokes }
+        // Screenshot QA: -GLMakeupPreset <id> picks a Makeup Studio look.
+        if ScreenshotScene.current != nil, let id = UserDefaults.standard.string(forKey: "GLMakeupPreset"),
+           let preset = MakeupStudio.preset(id: id) {
+            makeup = preset.recipe
+        }
         #endif
         // Holds self weakly, so it ends at the first warning after the editor closes.
         memoryWatcher = Task { [weak self] in
@@ -332,6 +342,8 @@ final class EditorViewModel {
     func run(_ tool: EditorTool, template: PhotoTemplate? = nil, app: AppModel) {
         guard let operation = tool.operation, !isProcessing else { return }
         var job = AIJob(operation: operation, sourceImage: current)
+        // The history step a new makeup look replaces, if any.
+        var replacedStep: Int?
 
         switch tool {
         case .magicEdit:
@@ -347,9 +359,28 @@ final class EditorViewModel {
                 Haptics.error()
                 return
             }
-            job.prompt = editsOnlyMainPerson
-                ? prompt + ". Only change the main person in front; keep everyone else exactly as they are."
-                : prompt
+            job.prompt = editsOnlyMainPerson ? PromptBuilder.onlyMainPerson(prompt) : prompt
+        case .makeup:
+            // A Magic Edit whose words the app writes from her picks, through
+            // the same gates, guard, credits, Likeness Lock and retry.
+            guard !makeup.isEmpty else {
+                app.showToast("Pick a look first.")
+                return
+            }
+            let instruction = MakeupStudio.instruction(for: makeup)
+            if case .blocked(let reason, _) = ContentPolicy.evaluate(instruction, operation: .magicEdit) {
+                app.showToast(verbatim: L10n.core(reason), style: .error)
+                Haptics.error()
+                return
+            }
+            job.prompt = editsOnlyMainPerson ? PromptBuilder.onlyMainPerson(instruction) : instruction
+            job.makeup = makeup
+            // Another look straight after one starts again from her photo and
+            // takes its place, so looks never pile up on an AI result.
+            if let base = makeupBase, base.version == historyVersion {
+                job.sourceImage = base.photo
+                replacedStep = historyVersion
+            }
         case .styles:
             guard let template else { return }
             job.template = template
@@ -366,11 +397,13 @@ final class EditorViewModel {
 
         app.requestAccess(for: operation, requiresPro: template?.isPro ?? false,
                           proSource: template.map { "template_\($0.id)" } ?? "pro_content") { [weak self] in
-            self?.execute(job, app: app)
+            self?.execute(job, app: app, replacing: replacedStep)
         }
     }
 
-    private func execute(_ job: AIJob, app: AppModel) {
+    /// `replacing`: the history step (a makeup look) this result takes the
+    /// place of, when it's still the one on the canvas.
+    private func execute(_ job: AIJob, app: AppModel, replacing replacedStep: Int? = nil) {
         processingTitle = Self.progressTitle(for: job)
         isProcessingInCloud = !job.operation.runsOnDevice
         isProcessing = true
@@ -380,12 +413,20 @@ final class EditorViewModel {
                 let result = try await app.run(job, saveToLibrary: false)
                 guard let image = result.images.first else { return }
                 let edited = ImageUtilities.normalized(image)
+                // One Undo still goes back to her photo, not through every look.
+                if let replacedStep, replacedStep == historyVersion, let previous = undoStack.popLast() {
+                    restore(previous)
+                }
                 commit(edited, operation: job.operation)
+                if job.makeup != nil, let photo = job.sourceImage {
+                    makeupBase = (historyVersion, photo)
+                }
                 checkLikeness(of: job, edited: edited)
                 lastRequestID = result.requestID
                 lastStepTitle = job.title
                 celebration += 1
-                if job.operation == .magicEdit { magicPrompt = "" }
+                // Her typed request is done; a makeup look stays picked for another photo or tweak.
+                if job.operation == .magicEdit, job.makeup == nil { magicPrompt = "" }
                 isComparing = job.operation != .removeBackground
                 announceResult(comparing: isComparing)
                 // Likeness Lock: one free re-roll for edits that involve people.
@@ -464,8 +505,11 @@ final class EditorViewModel {
         default: keepsPerson = false
         }
         guard keepsPerson, let source = job.sourceImage else { return }
+        // Blush and lip color sit where skin tone is usually read, so a
+        // makeup look is read on the chin instead.
+        let skinSample: FaceAnalysis.SkinSample = job.makeup == nil ? .cheeks : .chin
         likenessTask = Task {
-            let result = await FaceAnalysis.likeness(original: source, edited: edited)
+            let result = await FaceAnalysis.likeness(original: source, edited: edited, skinSample: skinSample)
             guard !Task.isCancelled else { return }
             withAnimation(.snappy) { likeness = result }
         }
@@ -483,6 +527,7 @@ final class EditorViewModel {
 
     private static func progressTitle(for job: AIJob) -> String {
         switch job.operation {
+        case .magicEdit where job.makeup != nil: return String(localized: "Applying your makeup…")
         case .magicEdit: return String(localized: "Applying your edit…")
         case .restyle:
             guard let title = job.template?.title else { return String(localized: "Styling your photo…") }

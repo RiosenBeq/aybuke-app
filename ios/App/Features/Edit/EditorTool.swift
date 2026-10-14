@@ -3,6 +3,7 @@ import AppCore
 
 enum EditorTool: String, CaseIterable, Identifiable {
     case magicEdit
+    case makeup
     case styles
     case effects
     case textStickers
@@ -18,6 +19,7 @@ enum EditorTool: String, CaseIterable, Identifiable {
     var title: String {
         switch self {
         case .magicEdit: return String(localized: "Magic Edit")
+        case .makeup: return String(localized: "Makeup Studio")
         case .styles: return String(localized: "Styles")
         case .effects: return String(localized: "Effects")
         case .textStickers: return String(localized: "Text & Stickers")
@@ -34,6 +36,7 @@ enum EditorTool: String, CaseIterable, Identifiable {
     var shortTitle: String {
         switch self {
         case .magicEdit: return String(localized: "Magic")
+        case .makeup: return String(localized: "Makeup", comment: "Bottom bar name of the Makeup Studio tool")
         case .styles: return String(localized: "Styles")
         case .effects: return String(localized: "Effects")
         case .textStickers: return String(localized: "Stickers", comment: "Bottom bar name of the Text & Stickers tool")
@@ -49,6 +52,7 @@ enum EditorTool: String, CaseIterable, Identifiable {
     var caption: String {
         switch self {
         case .magicEdit: return String(localized: "Describe a change")
+        case .makeup: return String(localized: "Lips, eyes & blush")
         case .styles: return String(localized: "One-tap looks")
         case .effects: return String(localized: "80s · Y2K · 2010s")
         case .textStickers: return String(localized: "Text, stickers, doodles")
@@ -63,6 +67,7 @@ enum EditorTool: String, CaseIterable, Identifiable {
 
     var symbolName: String {
         switch self {
+        case .makeup: return "paintbrush.pointed"
         case .adjust: return "slider.horizontal.3"
         case .effects: return "camera.filters"
         case .textStickers: return "face.smiling"
@@ -72,9 +77,10 @@ enum EditorTool: String, CaseIterable, Identifiable {
         }
     }
 
+    /// Makeup Studio runs as a Magic Edit: same gates, guard, credits and retry.
     var operation: AIOperation? {
         switch self {
-        case .magicEdit: return .magicEdit
+        case .magicEdit, .makeup: return .magicEdit
         case .styles: return .restyle
         case .enhance: return .enhance
         case .removeBackground: return .removeBackground
@@ -92,5 +98,5 @@ enum EditorTool: String, CaseIterable, Identifiable {
     }
 
     /// Tools surfaced on the home screen (Magic Edit has its own hero card).
-    static let quickTools: [EditorTool] = [.effects, .enhance, .removeBackground, .erase, .styles, .adjust]
+    static let quickTools: [EditorTool] = [.makeup, .effects, .enhance, .removeBackground, .erase, .styles, .adjust]
 }

@@ -39,6 +39,13 @@ final class PromptBuilderTests: XCTestCase {
         XCTAssertEqual(PromptBuilder.editInstruction(once), once)
     }
 
+    func testOnlyMainPersonAddsOneSentence() {
+        let sentence = "Only change the main person in front; keep everyone else exactly as they are."
+        XCTAssertEqual(PromptBuilder.onlyMainPerson("Give me pink hair"), "Give me pink hair. " + sentence)
+        // A request that already ends a sentence (Makeup Studio's) gets no second period.
+        XCTAssertEqual(PromptBuilder.onlyMainPerson("Add a rosy blush. "), "Add a rosy blush. " + sentence)
+    }
+
     func testGuardedInstructionFitsTheServerLimit() {
         let longest = PromptBuilder.editInstruction(String(repeating: "a", count: 2000))
         XCTAssertLessThanOrEqual(longest.count, 1000) // MAX_PROMPT_LENGTH in ai-image/index.ts
