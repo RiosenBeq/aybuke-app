@@ -5,6 +5,8 @@ import AppCore
 struct MagicEditPanel: View {
     @Binding var prompt: String
     let cost: Int
+    /// Off while "Ideas for this photo" shows its own chips above.
+    var showsExamples = true
     let onSubmit: () -> Void
 
     @FocusState private var isFocused: Bool
@@ -26,17 +28,20 @@ struct MagicEditPanel: View {
 
     var body: some View {
         VStack(spacing: 12) {
-            ScrollView(.horizontal) {
-                HStack(spacing: 8) {
-                    ForEach(suggestions, id: \.self) { suggestion in
-                        SelectableChip(title: LocalizedStringKey(suggestion), isSelected: prompt == suggestion) {
-                            prompt = suggestion
-                            Haptics.selection()
+            if showsExamples {
+                ScrollView(.horizontal) {
+                    HStack(spacing: 8) {
+                        ForEach(suggestions, id: \.self) { suggestion in
+                            SelectableChip(title: LocalizedStringKey(suggestion), isSelected: prompt == suggestion) {
+                                prompt = suggestion
+                                Haptics.selection()
+                            }
                         }
                     }
                 }
+                .scrollIndicators(.hidden)
+                .transition(.opacity)
             }
-            .scrollIndicators(.hidden)
 
             HStack(alignment: .bottom, spacing: 10) {
                 TextField("Describe your edit…", text: $prompt, axis: .vertical)

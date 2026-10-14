@@ -16,6 +16,7 @@ struct EditorView: View {
     @State private var zoom = CanvasZoom()
     @State private var isZoomed = false
     @State private var ideasDismissed = false
+    @State private var ideasShown = false
 
     init(launch: EditorLaunch) {
         self.launch = launch
@@ -41,7 +42,7 @@ struct EditorView: View {
                         resultActions
                     }
                     if showsIdeas {
-                        EditorIdeasRow(model: model) {
+                        EditorIdeasRow(model: model, onShown: { ideasShown = true }) {
                             withAnimation(.snappy) { ideasDismissed = true }
                         }
                         .padding(.horizontal, Metrics.gutter)
@@ -393,7 +394,9 @@ struct EditorView: View {
     private var toolPanel: some View {
         switch model.activeTool {
         case .magicEdit?:
-            MagicEditPanel(prompt: $model.magicPrompt, cost: app.credits.cost(of: .magicEdit)) {
+            // One row of chips at a time: the photo's own ideas replace the examples.
+            MagicEditPanel(prompt: $model.magicPrompt, cost: app.credits.cost(of: .magicEdit),
+                           showsExamples: !(showsIdeas && ideasShown)) {
                 model.run(.magicEdit, app: app)
             }
         case .styles?:

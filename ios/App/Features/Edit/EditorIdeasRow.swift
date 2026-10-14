@@ -7,6 +7,8 @@ import AppCore
 /// then goes through the usual gates; a Magic Edit idea fills the prompt.
 struct EditorIdeasRow: View {
     let model: EditorViewModel
+    /// Called once the row has something to show (it starts empty).
+    var onShown: () -> Void = {}
     let onDismiss: () -> Void
 
     @Environment(AppModel.self) private var app
@@ -30,6 +32,9 @@ struct EditorIdeasRow: View {
             }
         }
         .task { await load() }
+        .onChange(of: insight != nil) { _, shown in
+            if shown { onShown() }
+        }
         .confirmationDialog(
             confirmTemplate.map { Text("Try \(L10n.core($0.title))?") } ?? Text(verbatim: ""),
             isPresented: Binding(get: { confirmTemplate != nil }, set: { if !$0 { confirmTemplate = nil } }),
