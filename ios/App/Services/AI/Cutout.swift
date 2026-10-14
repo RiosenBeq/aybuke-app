@@ -231,16 +231,58 @@ enum CutoutGradient: String, CaseIterable, Identifiable, Sendable {
     }
 }
 
+/// One stroke of Cut out's refine brush: paints the photo back in
+/// (`keeps`) or takes it away.
+struct CutoutRefineStroke: Sendable, Equatable {
+    let stroke: MaskStroke
+    let keeps: Bool
+}
+
 /// Puts the cut-out on its new background, and makes stickers. Every
 /// function is pure and safe off the main thread, and works at any scale, so
 /// the preview matches the final image.
 enum CutoutRenderer {
     private static let context = CIContext(options: [.cacheIntermediates: false])
 
-    /// The kept subjects (`mask`) over `backdrop`, at `source`'s extent.
-    static func composite(source: CIImage, mask: CIImage, backdrop: CutoutBackdrop, color: UIColor?, photo: UIImage?) -> CIImage {
+    /// `mask` with her refine strokes painted over it in order (white keeps,
+    /// black removes), with an edge as soft as Vision's own.
+    static func refined(_ mask: CIImage, with strokes: [CutoutRefineStroke]) -> CIImage {
+        let extent = mask.extent
+        guard !strokes.isEmpty, extent.width >= 1, extent.height >= 1 else { return mask }
+        // Strokes are soft anyway, so a smaller layer scaled up is enough.
+        let scale = min(1, 1024 / max(extent.width, extent.height))
+        let size = CGSize(width: (extent.width * scale).rounded(), height: (extent.height * scale).rounded())
+        let format = UIGraphicsImageRendererFormat()
+        format.scale = 1
+        format.opaque = false
+        let layer = UIGraphicsImageRenderer(size: size, format: format).image { context in
+            let cg = context.cgContext
+            cg.setLineCap(.round)
+            cg.setLineJoin(.round)
+            for refine in strokes {
+                cg.setStrokeColor((refine.keeps ? UIColor.white : UIColor.black).cgColor)
+                cg.setLineWidth(refine.stroke.width * size.width)
+                cg.addPath(refine.stroke.path(in: size).cgPath)
+                cg.strokePath()
+            }
+        }
+        guard let cgLayer = layer.cgImage else { return mask }
+        let painted = CIImage(cgImage: cgLayer)
+            .transformed(by: CGAffineTransform(scaleX: extent.width / size.width, y: extent.height / size.height))
+            .transformed(by: CGAffineTransform(translationX: extent.minX, y: extent.minY))
+            .clampedToExtent()
+            .applyingGaussianBlur(sigma: Double(max(1, max(extent.width, extent.height) * 0.0015)))
+            .cropped(to: extent)
+        return painted.composited(over: mask).cropped(to: extent)
+    }
+
+    /// The kept subjects (`mask`) over `backdrop`, at `source`'s extent, with
+    /// a soft shadow under the subjects inside `shadowUnder` (normalized,
+    /// top-left origin) when it's given.
+    static func composite(source: CIImage, mask: CIImage, backdrop: CutoutBackdrop, color: UIColor?, photo: UIImage?,
+                          shadowUnder subject: CGRect? = nil) -> CIImage {
         let extent = source.extent
-        let background: CIImage
+        var background: CIImage
         switch backdrop {
         case .transparent:
             background = CIImage(color: .clear).cropped(to: extent)
@@ -257,6 +299,9 @@ enum CutoutRenderer {
                 guard let photo else { return }
                 photo.draw(in: ShareRenderer.fillRect(for: photo.size, in: CGRect(origin: .zero, size: size), face: nil))
             }
+        }
+        if let subject, !subject.isNull, !subject.isEmpty {
+            background = shadow(of: mask, under: subject, extent: extent).composited(over: background).cropped(to: extent)
         }
         let blend = CIFilter.blendWithMask()
         blend.inputImage = source
@@ -283,6 +328,36 @@ enum CutoutRenderer {
             .applyingGaussianBlur(sigma: Double(longEdge * 0.013))
             .cropped(to: extent)
         return background.unpremultiplyingAlpha().settingAlphaOne(in: extent)
+    }
+
+    /// So the subject sits on the new background instead of floating: a
+    /// close, soft drop shadow of her shape, and a contact shadow where she
+    /// meets the ground (her shape pressed flat at the bottom of `subject`).
+    /// Black on transparency, to go between the background and the subject.
+    static func shadow(of mask: CIImage, under subject: CGRect, extent: CGRect) -> CIImage {
+        let longEdge = max(extent.width, extent.height)
+        func layer(_ shape: CIImage, opacity: CGFloat) -> CIImage {
+            let tint = CIFilter.blendWithMask()
+            tint.inputImage = CIImage(color: CIColor(red: 0, green: 0, blue: 0, alpha: opacity)).cropped(to: extent)
+            tint.backgroundImage = CIImage(color: .clear).cropped(to: extent)
+            tint.maskImage = shape
+            return tint.outputImage ?? CIImage(color: .clear).cropped(to: extent)
+        }
+        let drop = mask
+            .clampedToExtent()
+            .applyingGaussianBlur(sigma: Double(longEdge * 0.012))
+            .transformed(by: CGAffineTransform(translationX: 0, y: -longEdge * 0.008))
+            .cropped(to: extent)
+        // Core Image's y runs up, so the subject's bottom edge is at minY.
+        let ground = extent.minY + (1 - subject.maxY) * extent.height
+        let contact = mask
+            .transformed(by: CGAffineTransform(translationX: 0, y: -ground)
+                .concatenating(CGAffineTransform(scaleX: 1, y: 0.1))
+                .concatenating(CGAffineTransform(translationX: 0, y: ground)))
+            .clampedToExtent()
+            .applyingGaussianBlur(sigma: Double(longEdge * 0.018))
+            .cropped(to: extent)
+        return layer(contact, opacity: 0.4).composited(over: layer(drop, opacity: 0.22)).cropped(to: extent)
     }
 
     /// Renders a composite; opaque when the background is, so it saves as

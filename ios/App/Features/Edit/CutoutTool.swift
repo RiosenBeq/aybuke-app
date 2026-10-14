@@ -2,11 +2,17 @@ import SwiftUI
 import PhotosUI
 import Observation
 
-/// Cut out after Vision has run: which subjects to keep and what goes behind
-/// them, previewed on a small copy and rendered at full size on Apply.
+/// Cut out after Vision has run: which subjects to keep, brushed fixes to
+/// the edge, and what goes behind them, previewed on a small copy and
+/// rendered at full size on Apply.
 @MainActor
 @Observable
 final class CutoutSession {
+    /// The refine brush: paint more of the photo back in, or paint some away.
+    enum RefineMode {
+        case keepMore, keepLess
+    }
+
     private(set) var analysis: CutoutAnalysis?
     private(set) var selection = IndexSet()
     private(set) var backdrop: CutoutBackdrop = .transparent
@@ -16,6 +22,14 @@ final class CutoutSession {
     private(set) var outlines: UIImage?
     /// The photo was already a cut-out: there's nothing behind it to blur.
     private(set) var sourceHasAlpha = false
+    /// While set, the canvas is a brush instead of tap-to-pick.
+    private(set) var refineMode: RefineMode?
+    private(set) var refineStrokes: [CutoutRefineStroke] = []
+    /// A soft shadow under the subject on its new background.
+    private(set) var showsShadow = false
+
+    /// Refine brush diameter at fit, as a share of the photo's width.
+    static let refineBrushSize: CGFloat = 0.05
 
     /// The first tap keeps only that subject; later taps add or remove.
     @ObservationIgnored private var hasPicked = false
@@ -26,6 +40,15 @@ final class CutoutSession {
     var keepsEverything: Bool { analysis.map { selection == $0.allIDs } ?? true }
     /// A cut-out on another photo is a composite (IPTC), not just an edit.
     var isComposite: Bool { backdrop == .photo && backdropPhoto != nil }
+    /// A shadow needs something to fall on: not transparency, and not the
+    /// blurred original, where she still stands in her own scene.
+    var offersShadow: Bool {
+        switch backdrop {
+        case .transparent, .blurOriginal: return false
+        case .photo: return backdropPhoto != nil
+        case .color, .custom, .gradient: return true
+        }
+    }
 
     func begin(_ analysis: CutoutAnalysis, keeping subject: Int?) {
         reset()
@@ -49,6 +72,9 @@ final class CutoutSession {
         preview = nil
         outlines = nil
         hasPicked = false
+        refineMode = nil
+        refineStrokes = []
+        showsShadow = false
     }
 
     /// WWDC23's lift-subject behaviour: the first tap keeps only what she
@@ -107,14 +133,42 @@ final class CutoutSession {
         refresh()
     }
 
+    // MARK: Refine and shadow
+
+    /// Picks a brush, or puts it down when she taps the same one again.
+    func setRefineMode(_ mode: RefineMode) {
+        refineMode = refineMode == mode ? nil : mode
+        Haptics.selection()
+    }
+
+    func addRefineStroke(_ stroke: MaskStroke) {
+        guard let refineMode else { return }
+        refineStrokes.append(CutoutRefineStroke(stroke: stroke, keeps: refineMode == .keepMore))
+        refresh()
+    }
+
+    func undoRefineStroke() {
+        guard !refineStrokes.isEmpty else { return }
+        refineStrokes.removeLast()
+        Haptics.selection()
+        refresh()
+    }
+
+    func toggleShadow() {
+        showsShadow.toggle()
+        Haptics.selection()
+        refresh()
+    }
+
     /// The final image at the analysed photo's full size.
     func renderFinal() async -> UIImage? {
         guard let analysis else { return nil }
         let job = renderJob(analysis)
         return await Task.detached(priority: .userInitiated) {
-            guard let mask = try? analysis.mask(for: job.selection) else { return nil }
+            guard let mask = job.mask(from: analysis) else { return nil }
             let source = CIImage(cgImage: analysis.source)
-            let output = CutoutRenderer.composite(source: source, mask: mask, backdrop: job.backdrop, color: job.color, photo: job.photo)
+            let output = CutoutRenderer.composite(source: source, mask: mask, backdrop: job.backdrop, color: job.color, photo: job.photo,
+                                                  shadowUnder: job.shadowBounds)
             return CutoutRenderer.render(output, opaque: job.backdrop != .transparent)
         }.value
     }
@@ -122,25 +176,42 @@ final class CutoutSession {
     /// The kept subjects as an outlined sticker on transparency.
     func renderSticker() async -> UIImage? {
         guard let analysis else { return nil }
-        let selection = selection
+        let job = renderJob(analysis)
         return await Task.detached(priority: .userInitiated) {
-            guard let mask = try? analysis.mask(for: selection) else { return nil }
-            return CutoutRenderer.sticker(source: CIImage(cgImage: analysis.source), mask: mask, bounds: analysis.bounds(of: selection))
+            guard let mask = job.mask(from: analysis) else { return nil }
+            return CutoutRenderer.sticker(source: CIImage(cgImage: analysis.source), mask: mask, bounds: job.bounds)
         }.value
     }
 
     private struct RenderJob: Sendable {
         let selection: IndexSet
+        let refine: [CutoutRefineStroke]
         let backdrop: CutoutBackdrop
         let color: UIColor
         let photo: UIImage?
+        /// Normalized bounds of what she keeps, brushed-in parts included.
+        let bounds: CGRect
+        let showsShadow: Bool
+
+        var shadowBounds: CGRect? { showsShadow ? bounds : nil }
+
+        /// The kept subjects' mask with her brush strokes on top, at the
+        /// analysed photo's size.
+        func mask(from analysis: CutoutAnalysis) -> CIImage? {
+            guard let mask = try? analysis.mask(for: selection) else { return nil }
+            return CutoutRenderer.refined(mask, with: refine)
+        }
     }
 
     private func renderJob(_ analysis: CutoutAnalysis) -> RenderJob {
         var backdrop = backdrop
         if backdrop == .blurOriginal && sourceHasAlpha { backdrop = .transparent }
         if backdrop == .photo && backdropPhoto == nil { backdrop = .transparent }
-        return RenderJob(selection: selection, backdrop: backdrop, color: UIColor(customColor), photo: backdropPhoto)
+        let brushedIn = refineStrokes.filter { $0.keeps }.map { $0.stroke.bounds }
+        let bounds = brushedIn.reduce(analysis.bounds(of: selection)) { $0.union($1) }
+            .intersection(CGRect(x: 0, y: 0, width: 1, height: 1))
+        return RenderJob(selection: selection, refine: refineStrokes, backdrop: backdrop, color: UIColor(customColor), photo: backdropPhoto,
+                         bounds: bounds, showsShadow: showsShadow && offersShadow)
     }
 
     /// Re-renders the preview on a ≤ 1200 px copy. Subjects she isn't keeping
@@ -156,17 +227,19 @@ final class CutoutSession {
             try? await Task.sleep(for: .milliseconds(60))
             guard !Task.isCancelled else { return }
             let rendered = await Task.detached(priority: .userInitiated) { () -> (UIImage?, UIImage?) in
-                guard let mask = try? analysis.mask(for: job.selection) else { return (nil, nil) }
+                guard let mask = job.mask(from: analysis) else { return (nil, nil) }
                 let full = CIImage(cgImage: analysis.source)
                 let scale = min(1, 1200 / max(full.extent.width, full.extent.height))
                 let transform = CGAffineTransform(scaleX: scale, y: scale)
                 let extent = CGRect(x: 0, y: 0, width: (full.extent.width * scale).rounded(), height: (full.extent.height * scale).rounded())
                 let source = full.transformed(by: transform).cropped(to: extent)
                 var output = CutoutRenderer.composite(
-                    source: source, mask: mask.transformed(by: transform), backdrop: job.backdrop, color: job.color, photo: job.photo
+                    source: source, mask: mask.transformed(by: transform), backdrop: job.backdrop, color: job.color, photo: job.photo,
+                    shadowUnder: job.shadowBounds
                 )
-                if showsGhosts, let all = try? analysis.mask(for: analysis.allIDs) {
-                    output = Self.ghosts(source: source, all: all.transformed(by: transform), kept: mask.transformed(by: transform))
+                // Whole subjects she left out show faintly; what she brushed away doesn't.
+                if showsGhosts, let others = try? analysis.mask(for: analysis.allIDs.subtracting(job.selection)) {
+                    output = Self.ghosts(source: source, others: others.transformed(by: transform), kept: mask.transformed(by: transform))
                         .composited(over: output)
                         .cropped(to: extent)
                 }
@@ -180,12 +253,13 @@ final class CutoutSession {
         }
     }
 
-    /// The subjects that aren't kept, at 40%.
-    private nonisolated static func ghosts(source: CIImage, all: CIImage, kept: CIImage) -> CIImage {
+    /// The subjects that aren't kept (`left`, minus anything brushed back
+    /// in), at 40%.
+    private nonisolated static func ghosts(source: CIImage, others left: CIImage, kept: CIImage) -> CIImage {
         let extent = source.extent
         let others = CIFilter(name: "CIBlendWithMask", parameters: [
             kCIInputImageKey: CIImage(color: .black).cropped(to: extent),
-            kCIInputBackgroundImageKey: all,
+            kCIInputBackgroundImageKey: left,
             "inputMaskImage": kept,
         ])?.outputImage ?? CIImage(color: .black).cropped(to: extent)
         let faded = source.applyingFilter("CIColorMatrix", parameters: ["inputAVector": CIVector(x: 0, y: 0, z: 0, w: 0.4)])
@@ -198,14 +272,43 @@ final class CutoutSession {
 }
 
 /// The cut-out preview: tap a subject to keep it, tap the background to keep
-/// everyone again.
+/// everyone again. With a refine brush picked, one finger paints the edge
+/// and two fingers pan and zoom, as in Erase.
 struct CutoutCanvas: View {
     let session: CutoutSession
     let fallback: UIImage
 
     var body: some View {
+        if let mode = session.refineMode {
+            refineCanvas(mode)
+        } else {
+            pickCanvas
+        }
+    }
+
+    private func refineCanvas(_ mode: CutoutSession.RefineMode) -> some View {
         let image = session.preview ?? fallback
-        GeometryReader { proxy in
+        return ZStack {
+            if session.backdrop == .transparent || session.preview == nil {
+                CheckerboardBackground()
+            }
+            // Mint paints the photo back in, ink takes it away.
+            BrushCanvas(image: image, color: mode == .keepMore ? .auraMint : .brandInk, opacity: 0.55,
+                        brushSize: CutoutSession.refineBrushSize) { stroke in
+                session.addRefineStroke(stroke)
+            }
+        }
+        .aspectRatio(image.size.width / max(image.size.height, 1), contentMode: .fit)
+        .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+        .shadow(color: Palette.shadow, radius: 16, y: 8)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(mode == .keepMore ? Text("Brush over what to keep") : Text("Brush over what to remove"))
+        .accessibilityAddTraits(.allowsDirectInteraction)
+    }
+
+    private var pickCanvas: some View {
+        let image = session.preview ?? fallback
+        return GeometryReader { proxy in
             let size = proxy.size
             ZStack {
                 if session.backdrop == .transparent || session.preview == nil {
@@ -273,7 +376,17 @@ struct CutoutPanel: View {
     var body: some View {
         if session.isActive {
             VStack(alignment: .leading, spacing: 12) {
-                if session.subjects.count > 1 {
+                if let mode = session.refineMode {
+                    HStack(spacing: 8) {
+                        Image(systemName: "paintbrush.pointed")
+                            .foregroundStyle(Palette.accent)
+                        Text(mode == .keepMore ? "Brush over what to keep" : "Brush over what to remove")
+                            .font(.footnote.weight(.semibold))
+                            .foregroundStyle(Palette.textSecondary)
+                            .fixedSize(horizontal: false, vertical: true)
+                        Spacer(minLength: 0)
+                    }
+                } else if session.subjects.count > 1 {
                     HStack(spacing: 8) {
                         Image(systemName: "hand.tap")
                             .foregroundStyle(Palette.accent)
@@ -286,9 +399,20 @@ struct CutoutPanel: View {
                     }
                 }
 
-                Text("Background")
-                    .font(.footnote.weight(.semibold))
-                    .foregroundStyle(Palette.textSecondary)
+                refineRow
+
+                HStack(spacing: 8) {
+                    Text("Background")
+                        .font(.footnote.weight(.semibold))
+                        .foregroundStyle(Palette.textSecondary)
+                    Spacer(minLength: 0)
+                    if session.offersShadow {
+                        SelectableChip(title: "Shadow", symbolName: "shadow", isSelected: session.showsShadow) {
+                            session.toggleShadow()
+                        }
+                        .accessibilityHint("Adds a soft shadow under the subject")
+                    }
+                }
                 backdropRow
 
                 HStack(spacing: 12) {
@@ -321,6 +445,31 @@ struct CutoutPanel: View {
                 action: onStart
             )
         }
+    }
+
+    /// The refine brushes for the edge Vision drew, and Undo for their strokes.
+    private var refineRow: some View {
+        ScrollView(.horizontal) {
+            HStack(spacing: 8) {
+                SelectableChip(title: "Keep more", symbolName: "plus.circle", isSelected: session.refineMode == .keepMore) {
+                    session.setRefineMode(.keepMore)
+                }
+                SelectableChip(title: "Keep less", symbolName: "minus.circle", isSelected: session.refineMode == .keepLess) {
+                    session.setRefineMode(.keepLess)
+                }
+                if !session.refineStrokes.isEmpty {
+                    Button { session.undoRefineStroke() } label: {
+                        Image(systemName: "arrow.uturn.backward")
+                    }
+                    .buttonStyle(.icon)
+                    .accessibilityLabel("Undo stroke")
+                    .transition(.opacity)
+                }
+            }
+            .padding(.horizontal, 2)
+        }
+        .scrollIndicators(.hidden)
+        .animation(.snappy, value: session.refineStrokes.isEmpty)
     }
 
     private var backdropRow: some View {
