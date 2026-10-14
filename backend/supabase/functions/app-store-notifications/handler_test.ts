@@ -8,12 +8,15 @@ import { NotificationRejected, verifyNotification } from "../_shared/apple.ts";
 import { handleNotification, type NotificationDeps, type NotificationRecord, routeNotification } from "./handler.ts";
 
 const PERIOD_END = Date.UTC(2026, 10, 14, 12);
+const SIGNED = Date.UTC(2026, 9, 14, 9, 30);
 
 interface Fake {
   type?: string;
   uuid?: string;
   productId?: string;
   transaction?: boolean;
+  /** Apple's signedDate; null leaves it out. */
+  signedDate?: number | null;
 }
 
 /** A verifier that accepts one fake notification per payload name, as Apple's library would decode it. */
@@ -26,6 +29,7 @@ function stubVerifier(fakes: Record<string, Fake>): NotificationDeps["verify"] {
         notificationType: fake.type,
         notificationUUID: fake.uuid ?? crypto.randomUUID(),
         data: { environment: "Production", bundleId: "app.glowlit.ios" },
+        signedDate: fake.signedDate === null ? undefined : fake.signedDate ?? SIGNED,
       },
       transaction: fake.transaction === false ? undefined : {
         transactionId: "tx-latest",
@@ -103,7 +107,28 @@ Deno.test("a Pro refund revokes the subscription for the refunded period", async
     p_original_transaction_id: "otx-first",
     p_product_id: "app.glowlit.pro.monthly",
     p_period_end: new Date(PERIOD_END).toISOString(),
+    p_signed_at: new Date(SIGNED).toISOString(),
   }]);
+});
+
+Deno.test("Apple's signedDate goes to the database, which orders a refund and its reversal by it", async () => {
+  const reversed = await send({ type: "REFUND_REVERSED", signedDate: SIGNED + 1000 });
+  assert.equal(reversed.applied[0].p_signed_at, new Date(SIGNED + 1000).toISOString());
+  // Without one, or with one no date can hold, the order of arrival decides (null), never a 500.
+  for (const signedDate of [null, 8.64e15 + 1]) {
+    const { status, applied } = await send({ type: "REFUND", signedDate });
+    assert.equal(status, 200, String(signedDate));
+    assert.equal(applied[0].p_signed_at, null, String(signedDate));
+  }
+});
+
+Deno.test("a stale notification (out of order) is answered 200, so Apple stops sending it", async () => {
+  const response = await handleNotification(post({ signedPayload: "signed" }), {
+    verify: stubVerifier({ signed: { type: "REFUND" } }),
+    record: () => Promise.resolve("stale"),
+  });
+  assert.equal(response.status, 200);
+  assert.deepEqual(await response.json(), { ok: true, outcome: "stale" });
 });
 
 Deno.test("a Family Sharing revocation revokes, a reversed refund restores", async () => {

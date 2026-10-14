@@ -5,7 +5,10 @@
 insert into auth.users (id) values
   ('00000000-0000-0000-0000-0000000000e1'),
   ('00000000-0000-0000-0000-0000000000e2'),
-  ('00000000-0000-0000-0000-0000000000e3');
+  ('00000000-0000-0000-0000-0000000000e3'),
+  ('00000000-0000-0000-0000-0000000000e4'),
+  ('00000000-0000-0000-0000-0000000000e5'),
+  ('00000000-0000-0000-0000-0000000000e6');
 
 -- 1. A refunded or revoked Pro subscription stops Pro and its credits at once.
 do $$
@@ -135,6 +138,13 @@ begin
     'tx-2', 'otx-asn-refund', 'app.glowlit.pro.monthly', period_end + interval '1 month') = 'ignored';
   assert public.record_app_store_notification(n4, 'REFUND', null, 'Production', 'revoke',
     'tx-3', 'otx-asn-unknown', 'app.glowlit.pro.monthly', period_end) = 'no_match';
+  -- Matched or not, a refund is remembered (20261025000002), and a reversal marks it.
+  assert exists (select 1 from private.refunded_transactions r, public.entitlements e
+                  where r.kind = 'pro' and r.transaction_id = 'tx-3' and r.original_transaction_id = 'otx-asn-unknown'
+                    and e.original_transaction_id = 'otx-asn-refund' and r.period_end = e.expires_at
+                    and r.reversed_at is null);
+  assert exists (select 1 from private.refunded_transactions where kind = 'pro' and transaction_id = 'tx-1'
+                    and original_transaction_id = 'otx-asn-refund' and reversed_at is not null);
   assert (select count(*) from private.app_store_notifications where notification_uuid in (n1, n2, n3, n4)) = 4;
   assert (select outcome from private.app_store_notifications where notification_uuid = n3) = 'ignored';
   assert not exists (
@@ -167,6 +177,9 @@ begin
     'refund_pack', 'apple-pack-asn-c', 'apple-pack-asn-c', 'app.glowlit.credits.30', null) = 'no_match',
     'another notification for the same refund takes nothing more';
   assert (select purchased from public.credit_wallets where user_id = u) = 7;
+  assert exists (select 1 from private.refunded_transactions where kind = 'pack' and transaction_id = 'apple-pack-asn-c'
+                    and original_transaction_id is null and period_end is null and reversed_at is null),
+    'a refund that matched is remembered too';
   assert not exists (select 1 from private.app_store_notifications
                       where notification_uuid = '6f0a1c55-0000-4000-8000-0000000000ef'), 'old records are pruned';
 end $$;
@@ -243,13 +256,279 @@ begin
 end $$;
 reset role;
 
+-- 8. A pack Apple refunded before it was ever redeemed (20261025000002): the refund is
+-- remembered, grant_pack answers like a repeat (the balance, nothing granted) and the
+-- ledger stays as it was; once Apple reverses the refund, the pack can be redeemed.
+do $$
+declare
+  u uuid := '00000000-0000-0000-0000-0000000000e4';
+  r private.refunded_transactions;
+begin
+  assert public.record_app_store_notification('6f0a1c55-0000-4000-8000-000000000101', 'REFUND', null, 'Production',
+    'refund_pack', 'apple-pack-asn-early', 'apple-pack-asn-early', 'app.glowlit.credits.100', null,
+    now() - interval '2 days') = 'no_match', 'nothing to take back yet';
+  select * into r from private.refunded_transactions where kind = 'pack' and transaction_id = 'apple-pack-asn-early';
+  assert r.refunded_at is not null and r.reversed_at is null and r.refund_signed_at = now() - interval '2 days',
+    format('the refund is remembered: %s', row_to_json(r));
+
+  assert public.grant_pack(u, 100, 'apple-pack-asn-early') = 0, 'refused: the balance, as for a repeat';
+  assert public.grant_pack(u, 100, 'apple-pack-asn-early') = 0, 'and again';
+  assert (select purchased from public.credit_wallets where user_id = u) = 0, 'no credits';
+  assert not exists (select 1 from public.credit_ledger where source_ref = 'apple-pack-asn-early'), 'the ledger is unchanged';
+  assert not exists (select 1 from public.credit_ledger where user_id = u), 'nothing booked for her at all';
+
+  -- Apple reverses the refund: nothing to give back, but the pack is hers again.
+  assert public.record_app_store_notification('6f0a1c55-0000-4000-8000-000000000102', 'REFUND_REVERSED', null,
+    'Production', 'restore_pack', 'apple-pack-asn-early', 'apple-pack-asn-early', 'app.glowlit.credits.100', null,
+    now() - interval '1 day') = 'no_match';
+  assert (select reversed_at is not null from private.refunded_transactions
+           where kind = 'pack' and transaction_id = 'apple-pack-asn-early'), 'marked reversed';
+  assert public.grant_pack(u, 100, 'apple-pack-asn-early') = 100, 'granted after the reversal';
+  assert public.grant_pack(u, 100, 'apple-pack-asn-early') = 100, 'still once';
+  assert (select count(*) from public.credit_ledger where source_ref = 'apple-pack-asn-early' and kind = 'grant_pack') = 1;
+end $$;
+
+-- 9. Out of order, for a pack: a reversal that arrives first makes the late refund
+-- stale, and a reversal signed before the newest refund is stale too.
+do $$
+declare
+  u uuid := '00000000-0000-0000-0000-0000000000e4';
+begin
+  assert public.grant_pack(u, 30, 'apple-pack-asn-order') = 130;
+  assert public.record_app_store_notification('6f0a1c55-0000-4000-8000-000000000111', 'REFUND_REVERSED', null,
+    'Production', 'restore_pack', 'apple-pack-asn-order', 'apple-pack-asn-order', 'app.glowlit.credits.30', null,
+    now() - interval '1 day') = 'no_match', 'the reversal comes first: nothing refunded yet';
+  assert public.record_app_store_notification('6f0a1c55-0000-4000-8000-000000000112', 'REFUND', null,
+    'Production', 'refund_pack', 'apple-pack-asn-order', 'apple-pack-asn-order', 'app.glowlit.credits.30', null,
+    now() - interval '2 days') = 'stale', 'the refund it reversed arrives late';
+  assert (select purchased from public.credit_wallets where user_id = u) = 130, 'she keeps the pack';
+  assert not exists (select 1 from public.credit_ledger where kind = 'refund_pack' and source_ref = 'apple-pack-asn-order');
+  assert public.grant_pack(u, 30, 'apple-pack-asn-order') = 130, 'not refunded, and still granted once';
+  assert (select outcome from private.app_store_notifications
+           where notification_uuid = '6f0a1c55-0000-4000-8000-000000000112') = 'stale', 'recorded as stale';
+
+  -- A new refund, signed after that reversal, takes the pack back.
+  assert public.record_app_store_notification('6f0a1c55-0000-4000-8000-000000000113', 'REFUND', null,
+    'Production', 'refund_pack', 'apple-pack-asn-order', 'apple-pack-asn-order', 'app.glowlit.credits.30', null,
+    now() - interval '1 hour') = 'applied';
+  assert (select purchased from public.credit_wallets where user_id = u) = 100;
+  -- A reversal signed before it (another copy, delayed) gives nothing back.
+  assert public.record_app_store_notification('6f0a1c55-0000-4000-8000-000000000114', 'REFUND_REVERSED', null,
+    'Production', 'restore_pack', 'apple-pack-asn-order', 'apple-pack-asn-order', 'app.glowlit.credits.30', null,
+    now() - interval '2 hours') = 'stale';
+  assert (select purchased from public.credit_wallets where user_id = u) = 100;
+  assert not exists (select 1 from public.credit_ledger where kind = 'restore_pack' and source_ref = 'apple-pack-asn-order');
+  assert (select reversed_at is null from private.refunded_transactions
+           where kind = 'pack' and transaction_id = 'apple-pack-asn-order'), 'the refund stands';
+end $$;
+
+-- 10. A Pro refund before the first record_entitlement: the signed transaction from
+-- before the refund is stored revoked and grants nothing, the next period she paid
+-- for is Pro, and a stale copy of the refunded one can't replace it.
+do $$
+declare
+  u uuid := '00000000-0000-0000-0000-0000000000e5';
+  other uuid := '00000000-0000-0000-0000-0000000000e4';
+  refunded_end timestamptz := now() + interval '20 days';
+  e public.entitlements;
+  state jsonb;
+begin
+  assert public.record_app_store_notification('6f0a1c55-0000-4000-8000-000000000121', 'REFUND', null, 'Production',
+    'revoke', 'tx-asn-early-2', 'otx-asn-early', 'app.glowlit.pro.monthly', refunded_end,
+    now() - interval '1 hour') = 'no_match', 'no subscription stored yet';
+  assert not exists (select 1 from public.entitlements where original_transaction_id = 'otx-asn-early');
+
+  assert not public.record_entitlement(u, 'otx-asn-early', 'app.glowlit.pro.monthly', refunded_end, false, 'Production', false),
+    'the signed transaction from before the refund grants nothing';
+  select * into e from public.entitlements where original_transaction_id = 'otx-asn-early';
+  assert e.revoked and e.user_id = u and e.expires_at = refunded_end, format('stored revoked: %s', row_to_json(e));
+  state := public.wallet_state(u);
+  assert not (state->>'is_pro')::boolean and (state->>'credits_remaining')::int = 0, format('no Pro: %s', state);
+  assert not public.record_entitlement(u, 'otx-asn-early', 'app.glowlit.pro.monthly', refunded_end, false, 'Production', false),
+    'a repeat grants nothing';
+  assert (select revoked from public.entitlements where original_transaction_id = 'otx-asn-early'), 'still revoked';
+
+  -- The next period, which she paid for, is not refunded.
+  assert public.record_entitlement(u, 'otx-asn-early', 'app.glowlit.pro.monthly', refunded_end + interval '1 month',
+    false, 'Production', false), 'the renewal after the refunded period';
+  select * into e from public.entitlements where original_transaction_id = 'otx-asn-early';
+  assert not e.revoked and e.expires_at = refunded_end + interval '1 month', format('Pro again: %s', row_to_json(e));
+  state := public.wallet_state(u);
+  assert (state->>'is_pro')::boolean and (state->>'credits_remaining')::int = 80, format('Pro with its credits: %s', state);
+
+  -- The refunded period's copy, from another account, neither moves nor revokes it.
+  assert not public.record_entitlement(other, 'otx-asn-early', 'app.glowlit.pro.monthly', refunded_end, false, 'Production', false);
+  select * into e from public.entitlements where original_transaction_id = 'otx-asn-early';
+  assert e.user_id = u and not e.revoked and e.expires_at = refunded_end + interval '1 month',
+    format('the newer period stays hers: %s', row_to_json(e));
+  -- A signed transaction Apple marked revoked still always lands, as before.
+  assert public.record_entitlement(u, 'otx-asn-early', 'app.glowlit.pro.monthly', refunded_end + interval '1 month',
+    true, 'Production', false);
+  assert (select revoked from public.entitlements where original_transaction_id = 'otx-asn-early');
+end $$;
+
+-- 11. REFUND_REVERSED before the first redeem: the subscription is stored unrevoked.
+do $$
+declare
+  u uuid := '00000000-0000-0000-0000-0000000000e6';
+  period_end timestamptz := now() + interval '200 days';
+begin
+  assert public.record_app_store_notification('6f0a1c55-0000-4000-8000-000000000131', 'REFUND', null, 'Production',
+    'revoke', 'otx-asn-early-rev', 'otx-asn-early-rev', 'app.glowlit.pro.yearly', period_end,
+    now() - interval '2 hours') = 'no_match';
+  assert public.record_app_store_notification('6f0a1c55-0000-4000-8000-000000000132', 'REFUND_REVERSED', null,
+    'Production', 'restore', 'otx-asn-early-rev', 'otx-asn-early-rev', 'app.glowlit.pro.yearly', period_end,
+    now() - interval '1 hour') = 'no_match';
+  assert public.record_entitlement(u, 'otx-asn-early-rev', 'app.glowlit.pro.yearly', period_end, false, 'Production', false),
+    'the reversed refund no longer counts';
+  assert not (select revoked from public.entitlements where original_transaction_id = 'otx-asn-early-rev');
+  assert (public.wallet_state(u)->>'is_pro')::boolean, 'Pro';
+end $$;
+
+-- 12. Out of order, for Pro: a late refund signed before the reversal already applied
+-- is stale and leaves Pro alone; a reversal signed before the newest refund is stale
+-- and leaves it revoked. Without Apple's signedDate (the nine-argument call) the
+-- order of arrival decides, as before.
+do $$
+declare
+  u uuid := '00000000-0000-0000-0000-0000000000e6';
+  period_end timestamptz := now() + interval '10 days';
+begin
+  assert public.record_entitlement(u, 'otx-asn-order', 'app.glowlit.pro.monthly', period_end, false, 'Production', false);
+  assert public.record_app_store_notification('6f0a1c55-0000-4000-8000-000000000141', 'REFUND_REVERSED', null,
+    'Production', 'restore', 'tx-asn-order', 'otx-asn-order', 'app.glowlit.pro.monthly', period_end,
+    now() - interval '1 hour') = 'no_match', 'the reversal comes first: nothing revoked yet';
+  assert public.record_app_store_notification('6f0a1c55-0000-4000-8000-000000000142', 'REFUND', null,
+    'Production', 'revoke', 'tx-asn-order', 'otx-asn-order', 'app.glowlit.pro.monthly', period_end,
+    now() - interval '2 hours') = 'stale', 'the refund it reversed arrives late';
+  assert not (select revoked from public.entitlements where original_transaction_id = 'otx-asn-order'), 'still Pro';
+  assert not private.refund_stands('pro', 'otx-asn-order', period_end), 'and nothing to refuse later';
+
+  assert public.record_app_store_notification('6f0a1c55-0000-4000-8000-000000000143', 'REFUND', null,
+    'Production', 'revoke', 'tx-asn-order', 'otx-asn-order', 'app.glowlit.pro.monthly', period_end,
+    now() - interval '10 minutes') = 'applied', 'a new refund, signed after the reversal';
+  assert (select revoked from public.entitlements where original_transaction_id = 'otx-asn-order');
+  assert public.record_app_store_notification('6f0a1c55-0000-4000-8000-000000000144', 'REFUND_REVERSED', null,
+    'Production', 'restore', 'tx-asn-order', 'otx-asn-order', 'app.glowlit.pro.monthly', period_end,
+    now() - interval '30 minutes') = 'stale', 'a reversal signed before it';
+  assert (select revoked from public.entitlements where original_transaction_id = 'otx-asn-order'), 'still revoked';
+  assert private.refund_stands('pro', 'otx-asn-order', period_end);
+
+  assert public.record_app_store_notification('6f0a1c55-0000-4000-8000-000000000145', 'REFUND_REVERSED', null,
+    'Production', 'restore', 'tx-asn-order', 'otx-asn-order', 'app.glowlit.pro.monthly', period_end) = 'applied',
+    'no signedDate: arrival order';
+  assert not (select revoked from public.entitlements where original_transaction_id = 'otx-asn-order');
+  assert (select count(*) from private.app_store_notifications
+           where notification_uuid in ('6f0a1c55-0000-4000-8000-000000000142', '6f0a1c55-0000-4000-8000-000000000144')
+             and outcome = 'stale') = 2;
+end $$;
+
+-- 13. Retention: reversed rows and Pro periods that ended go after 30 days untouched;
+-- refunded packs stay, and so does a Pro refund with no known period end.
+do $$
+begin
+  insert into private.refunded_transactions
+    (kind, transaction_id, original_transaction_id, period_end, refunded_at, reversed_at) values
+    ('pack', 'apple-pack-asn-keep', null, null, now() - interval '400 days', null),
+    ('pack', 'apple-pack-asn-reversed-old', null, null, now() - interval '60 days', now() - interval '31 days'),
+    ('pack', 'apple-pack-asn-reversed-new', null, null, now() - interval '60 days', now() - interval '5 days'),
+    ('pro', 'tx-asn-ended', 'otx-asn-ended-r', now() - interval '31 days', now() - interval '31 days', null),
+    ('pro', 'tx-asn-ended-recent', 'otx-asn-ended-r', now() - interval '60 days', now() - interval '1 day', null),
+    ('pro', 'tx-asn-current', 'otx-asn-current-r', now() + interval '10 days', now() - interval '40 days', null),
+    ('pro', 'tx-asn-no-end', 'otx-asn-no-end-r', null, now() - interval '400 days', null);
+  assert public.record_app_store_notification('6f0a1c55-0000-4000-8000-000000000151', 'TEST', null, 'Sandbox', 'none',
+    null, null, null, null, now()) = 'ignored';
+  assert (select array_agg(transaction_id order by transaction_id) from private.refunded_transactions
+           where transaction_id in ('apple-pack-asn-keep', 'apple-pack-asn-reversed-old', 'apple-pack-asn-reversed-new',
+                                    'tx-asn-ended', 'tx-asn-ended-recent', 'tx-asn-current', 'tx-asn-no-end'))
+       = array['apple-pack-asn-keep', 'apple-pack-asn-reversed-new', 'tx-asn-current', 'tx-asn-ended-recent', 'tx-asn-no-end'],
+    'only the old reversal and the long-ended period are pruned';
+end $$;
+
+-- 14. The memory is closed like the record: RLS on, no policy, no client privileges;
+-- the ten-argument call and the helpers are the service role's only.
+do $$
+declare
+  priv text;
+begin
+  assert (select relrowsecurity from pg_class where oid = 'private.refunded_transactions'::regclass), 'RLS is on';
+  assert not exists (select 1 from pg_policies where schemaname = 'private' and tablename = 'refunded_transactions');
+  foreach priv in array array['select', 'insert', 'update', 'delete'] loop
+    assert not has_table_privilege('anon', 'private.refunded_transactions', priv), 'anon ' || priv;
+    assert not has_table_privilege('authenticated', 'private.refunded_transactions', priv), 'authenticated ' || priv;
+  end loop;
+  assert not has_function_privilege('anon',
+    'public.record_app_store_notification(uuid, text, text, text, text, text, text, text, timestamptz, timestamptz)', 'execute');
+  assert not has_function_privilege('authenticated',
+    'public.record_app_store_notification(uuid, text, text, text, text, text, text, text, timestamptz, timestamptz)', 'execute');
+  assert has_function_privilege('service_role',
+    'public.record_app_store_notification(uuid, text, text, text, text, text, text, text, timestamptz, timestamptz)', 'execute');
+  assert not has_function_privilege('authenticated', 'public.grant_pack(uuid, int, text, text, text, text)', 'execute');
+  assert not has_function_privilege('authenticated',
+    'public.record_entitlement(uuid, text, text, timestamptz, boolean, text, boolean)', 'execute');
+  assert has_function_privilege('service_role', 'public.grant_pack(uuid, int, text, text, text, text)', 'execute');
+  assert has_function_privilege('service_role',
+    'public.record_entitlement(uuid, text, text, timestamptz, boolean, text, boolean)', 'execute');
+  assert not has_function_privilege('authenticated', 'private.refund_stands(text, text, timestamptz)', 'execute');
+  assert not has_function_privilege('anon', 'private.lock_refund(text, text)', 'execute');
+end $$;
+
+set role authenticated;
+select set_config('request.jwt.claim.sub', '00000000-0000-0000-0000-0000000000e4', false);
+do $$
+declare
+  denied boolean := false;
+begin
+  begin
+    perform 1 from private.refunded_transactions;
+  exception when insufficient_privilege then
+    denied := true;
+  end;
+  assert denied, 'a client cannot read the refunds';
+  denied := false;
+  begin
+    delete from private.refunded_transactions where kind = 'pack';
+  exception when insufficient_privilege then
+    denied := true;
+  end;
+  assert denied, 'a client cannot forget a refund';
+  denied := false;
+  begin
+    perform public.record_app_store_notification(gen_random_uuid(), 'REFUND_REVERSED', null, 'Production',
+      'restore_pack', 'apple-pack-asn-early', 'apple-pack-asn-early', 'app.glowlit.credits.100', null, now());
+  exception when insufficient_privilege then
+    denied := true;
+  end;
+  assert denied, 'a client cannot reverse a refund';
+end $$;
+reset role;
+
+set role anon;
+do $$
+declare
+  denied boolean := false;
+begin
+  begin
+    insert into private.refunded_transactions (kind, transaction_id, reversed_at) values ('pack', 'x', now());
+  exception when insufficient_privilege then
+    denied := true;
+  end;
+  assert denied, 'anonymous callers cannot write a refund';
+end $$;
+reset role;
+
 -- Clean up the fixtures (the ledger and wallets cascade with the users).
 delete from public.entitlements where original_transaction_id like 'otx-asn-%';
 delete from private.app_store_notifications where notification_uuid::text like '6f0a1c55-%';
+delete from private.refunded_transactions
+ where transaction_id like 'apple-pack-asn-%' or transaction_id like 'tx-asn-%' or original_transaction_id like 'otx-asn-%';
 delete from auth.users where id in (
   '00000000-0000-0000-0000-0000000000e1',
   '00000000-0000-0000-0000-0000000000e2',
-  '00000000-0000-0000-0000-0000000000e3'
+  '00000000-0000-0000-0000-0000000000e3',
+  '00000000-0000-0000-0000-0000000000e4',
+  '00000000-0000-0000-0000-0000000000e5',
+  '00000000-0000-0000-0000-0000000000e6'
 );
 
 select 'all App Store notification tests passed' as result;

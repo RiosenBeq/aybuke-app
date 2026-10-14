@@ -5,7 +5,10 @@
 //   POST /app-store-notifications { "signedPayload": "<JWS>" }
 //     → 200 { ok, outcome } for every notification Apple signed for this app,
 //       whatever its type: Apple retries anything else for days.
-//       outcome: "applied", "no_match", "ignored" or "duplicate".
+//       outcome: "applied", "no_match", "ignored", "duplicate" or "stale"
+//       (signed before the refund or reversal of the same transaction that was
+//       already applied: Apple doesn't promise the order, see the 20261025000002
+//       migration).
 //     → 400 when the payload isn't Apple's, or isn't for this app.
 //     → 503 when it can't be checked right now, 500 when it couldn't be
 //       recorded: Apple sends it again later.
@@ -55,6 +58,8 @@ export interface NotificationRecord {
   p_product_id: string | null;
   /** The transaction's expiry: which subscription period a refund covers. */
   p_period_end: string | null;
+  /** When Apple signed the notification: orders a refund and its reversal. */
+  p_signed_at: string | null;
 }
 
 export interface NotificationDeps {
@@ -64,6 +69,12 @@ export interface NotificationDeps {
 }
 
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+/** Apple's milliseconds as an ISO date; null when absent or out of range (then the order of arrival decides). */
+function isoDate(ms: number | undefined): string | null {
+  const date = typeof ms === "number" ? new Date(ms) : undefined;
+  return date && !Number.isNaN(date.getTime()) ? date.toISOString() : null;
+}
 
 function failure(status: number, code: string, message: string): Response {
   return json({ error: { code, message } }, status);
@@ -112,6 +123,7 @@ export async function handleNotification(req: Request, deps: NotificationDeps): 
       p_original_transaction_id: transaction?.originalTransactionId ?? null,
       p_product_id: transaction?.productId ?? null,
       p_period_end: transaction?.expiresDate ? new Date(transaction.expiresDate).toISOString() : null,
+      p_signed_at: isoDate(notification.signedDate),
     });
   } catch (error) {
     console.error(
