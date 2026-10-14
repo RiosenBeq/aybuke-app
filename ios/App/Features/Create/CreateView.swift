@@ -300,6 +300,9 @@ struct CreateView: View {
         .readableWidth(Metrics.compactWidth, alignment: .center)
         .background(
             LinearGradient(colors: [Palette.background.opacity(0), Palette.background], startPoint: .top, endPoint: .center)
+                // Down to the tab bar too, so section titles don't peek
+                // through the gap between the button and the tabs.
+                .padding(.bottom, -32)
                 .ignoresSafeArea()
         )
     }

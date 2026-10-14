@@ -18,8 +18,11 @@ struct PrimaryButtonStyle: ButtonStyle {
                 .frame(maxWidth: .infinity, minHeight: Metrics.buttonHeight)
                 .padding(.horizontal, 20)
                 .background {
+                    // Disabled: the tint sits on the page color, so content
+                    // scrolling under a floating button doesn't show through.
                     Capsule()
                         .fill(isEnabled ? Palette.accent : Palette.strokeStrong)
+                        .background(isEnabled ? .clear : Palette.background, in: Capsule())
                 }
                 .shadow(color: Palette.ink.opacity(isEnabled ? 0.18 : 0), radius: 16, y: 8)
                 .scaleEffect(configuration.isPressed ? 0.97 : 1)
