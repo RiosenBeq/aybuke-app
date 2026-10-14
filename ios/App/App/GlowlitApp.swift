@@ -25,6 +25,9 @@ struct GlowlitApp: App {
                 .environment(app)
                 .preferredColorScheme(app.appearance.colorScheme)
                 .task { await app.start() }
+                #if DEBUG
+                .task { ScreenshotScene.applyOrientation() }
+                #endif
                 #if targetEnvironment(macCatalyst)
                 // One window on the Mac: links from widgets and notifications
                 // go to the open window instead of opening another one.

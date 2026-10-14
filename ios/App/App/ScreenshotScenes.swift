@@ -10,6 +10,7 @@ enum ScreenshotScene: String, CaseIterable {
     case create
     case results
     case edit
+    /// Magic Edit with a prompt; `-GLEditorTool <tool>` opens another panel.
     case editor
     case effects
     /// The editor's "Ideas for this photo" row on the demo landscape.
@@ -93,6 +94,17 @@ enum ScreenshotScene: String, CaseIterable {
 
     static var current: ScreenshotScene? {
         UserDefaults.standard.string(forKey: "GLScreenshotScene").flatMap(ScreenshotScene.init(rawValue:))
+    }
+
+    /// `-GLForceLandscape YES` turns the window to landscape, since the
+    /// simulator can't be rotated from the command line (iPad layout QA).
+    @MainActor
+    static func applyOrientation() {
+        #if !targetEnvironment(macCatalyst)
+        guard UserDefaults.standard.bool(forKey: "GLForceLandscape"),
+              let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene else { return }
+        scene.requestGeometryUpdate(.iOS(interfaceOrientations: .landscapeRight))
+        #endif
     }
 }
 
