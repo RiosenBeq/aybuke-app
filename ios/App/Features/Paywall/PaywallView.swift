@@ -16,6 +16,9 @@ struct PaywallView: View {
     @State private var errorMessage: String?
     @State private var errorTitle = String(localized: "Purchase failed")
     @State private var showPacks = false
+    /// Large text starts the packs sheet full height, so no row hides below it.
+    @State private var packsDetent: PresentationDetent = .medium
+    @Environment(\.dynamicTypeSize) private var typeSize
     @State private var legalDocument: LegalDocument?
     @State private var showSignIn = false
     @State private var isRestoring = false
@@ -104,8 +107,11 @@ struct PaywallView: View {
         .sheet(isPresented: $showPacks) {
             CreditPacksView()
                 .environment(app)
-                .presentationDetents([.medium, .large])
+                .presentationDetents([.medium, .large], selection: $packsDetent)
                 .presentationBackground(Palette.background)
+        }
+        .onChange(of: showPacks) { _, isShown in
+            if isShown { packsDetent = typeSize.isAccessibilitySize ? .large : .medium }
         }
         .legalSheet($legalDocument)
         .alert(errorTitle, isPresented: Binding(get: { errorMessage != nil }, set: { if !$0 { errorMessage = nil } })) {
@@ -629,9 +635,17 @@ struct CreditPackList: View {
     var onPurchased: () -> Void = {}
 
     @Environment(AppModel.self) private var app
+    @Environment(\.dynamicTypeSize) private var typeSize
     @State private var errorMessage: String?
 
     private var purchases: PurchaseManager { app.purchases }
+
+    /// Name and price side by side; stacked at accessibility sizes.
+    private var rowLayout: AnyLayout {
+        typeSize.isAccessibilitySize
+            ? AnyLayout(VStackLayout(alignment: .leading, spacing: 10))
+            : AnyLayout(HStackLayout())
+    }
 
     private var hasPendingPack: Bool {
         purchases.pendingProductIDs.contains { StoreProducts.creditPacks[$0] != nil }
@@ -661,7 +675,7 @@ struct CreditPackList: View {
         return Button {
             Task { await buy(product) }
         } label: {
-            HStack {
+            rowLayout {
                 VStack(alignment: .leading, spacing: 2) {
                     Text(product.displayName)
                         .font(.subheadline.weight(.semibold))
@@ -675,7 +689,7 @@ struct CreditPackList: View {
                             .foregroundStyle(Palette.textTertiary)
                     }
                 }
-                Spacer()
+                if !typeSize.isAccessibilitySize { Spacer() }
                 Group {
                     if isPending {
                         Text("Waiting for approval")

@@ -11,6 +11,12 @@
   "websiteURL": "",
   "instagramAppID": "",
   "revenueCatAPIKey": "appl_nMgLjPGSrACLwsGJMMoDmMXUvwS",
+  "consentVersion": 1,
+  "aiProcessors": [
+    { "name": "Supabase", "role": "servers" },
+    { "name": "xAI (Grok Imagine)", "role": "images" },
+    { "name": "fal.ai", "role": "safety" }
+  ],
   "shareHashtags": [
     "Glowlit",
     "GlowUp"

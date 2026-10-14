@@ -13,6 +13,26 @@ enum AIMode {
     case demo
 }
 
+/// A company that processes what she sends to cloud AI, as listed on the
+/// consent sheet and in Settings. Names stay as they are; roles are
+/// translated in the app.
+struct AIProcessor: Codable, Equatable, Hashable {
+    enum Role: String, Codable {
+        case servers, images, safety
+    }
+
+    let name: String
+    let role: Role
+
+    var roleText: String {
+        switch role {
+        case .servers: return String(localized: "Our servers: your AI jobs and credits")
+        case .images: return String(localized: "Creates and edits the images")
+        case .safety: return String(localized: "Checks results for safety")
+        }
+    }
+}
+
 /// Runtime configuration loaded from `AppConfig.json` in the bundle.
 /// Leave `backendBaseURL` empty to run in demo mode (no network, simulated AI).
 struct AppConfig: Decodable {
@@ -36,6 +56,18 @@ struct AppConfig: Decodable {
     var aiShareHashtags: [String] = ["AIphoto", "MadeWithAI"]
     /// RevenueCat public SDK key ("appl_…"; safe to ship). Empty: RevenueCat off.
     var revenueCatAPIKey: String
+    /// Bump to ask everyone for consent again (the processor list changing
+    /// asks again by itself).
+    var consentVersion = 1
+    /// Who processes cloud AI requests. Must match the backend: a new
+    /// provider or FAL_KEY needs an app update that lists it first.
+    var aiProcessors: [AIProcessor] = AppConfig.defaultProcessors
+
+    static let defaultProcessors = [
+        AIProcessor(name: "Supabase", role: .servers),
+        AIProcessor(name: "xAI (Grok Imagine)", role: .images),
+        AIProcessor(name: "fal.ai", role: .safety),
+    ]
 
     static let current: AppConfig = load()
 
@@ -69,7 +101,7 @@ struct AppConfig: Decodable {
     private enum CodingKeys: String, CodingKey {
         case backendBaseURL, supabaseAnonKey, forceDemoMode, aiProviderName, dataRetentionHours
         case privacyPolicyURL, termsURL, supportEmail, appStoreID, websiteURL, instagramAppID, shareHashtags
-        case aiShareHashtags, revenueCatAPIKey
+        case aiShareHashtags, revenueCatAPIKey, consentVersion, aiProcessors
     }
 
     init(
@@ -110,6 +142,8 @@ struct AppConfig: Decodable {
         shareHashtags = try container.decodeIfPresent([String].self, forKey: .shareHashtags) ?? fallback.shareHashtags
         aiShareHashtags = try container.decodeIfPresent([String].self, forKey: .aiShareHashtags) ?? fallback.aiShareHashtags
         revenueCatAPIKey = try container.decodeIfPresent(String.self, forKey: .revenueCatAPIKey) ?? ""
+        consentVersion = try container.decodeIfPresent(Int.self, forKey: .consentVersion) ?? fallback.consentVersion
+        aiProcessors = try container.decodeIfPresent([AIProcessor].self, forKey: .aiProcessors) ?? fallback.aiProcessors
     }
 
     var backend: BackendConfiguration? {
@@ -161,6 +195,13 @@ struct AppConfig: Decodable {
     var processorName: String {
         if case .direct(let direct) = aiMode { return direct.provider.processorName }
         return aiProviderName
+    }
+
+    /// The processors the consent sheet names; a developer key goes straight
+    /// to its provider.
+    var consentProcessors: [AIProcessor] {
+        if case .direct(let direct) = aiMode { return [AIProcessor(name: direct.provider.processorName, role: .images)] }
+        return aiProcessors
     }
 
     var supportURL: URL? { URL(string: "mailto:\(supportEmail)") }

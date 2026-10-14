@@ -58,6 +58,7 @@ struct SettingsView: View {
             .sheet(isPresented: $showConsent) {
                 AIConsentView(
                     providerName: app.config.processorName,
+                    processors: app.config.consentProcessors,
                     retention: app.config.retentionPhrase,
                     asksGuardian: app.ageDefaults.requiresGuardianStep,
                     onAccept: { guardianConfirmed in
@@ -67,6 +68,7 @@ struct SettingsView: View {
                     onDecline: { showConsent = false }
                 )
                 .presentationDetents([.large])
+                .presentationDragIndicator(.visible)
                 .presentationBackground(Palette.background)
             }
             .sheet(isPresented: $showAgeUpdate) {
@@ -328,13 +330,16 @@ struct SettingsView: View {
             if app.allowsCloudAI {
                 // On goes through the consent sheet (and its guardian step); off withdraws.
                 Toggle(isOn: Binding(get: { app.hasAIConsent }, set: { on in
-                    if on { showConsent = true } else { app.setAIConsent(false) }
+                    if on { showConsent = true } else { app.withdrawAIConsent() }
                 })) {
                     VStack(alignment: .leading, spacing: 2) {
                         Text("Cloud AI processing")
-                        Text("Selected photos are processed by \(app.config.processorName).")
-                            .font(.caption)
-                            .foregroundStyle(Palette.textSecondary)
+                        // The same list the consent sheet shows.
+                        ForEach(app.config.consentProcessors, id: \.self) { processor in
+                            Text("\(processor.name): \(processor.roleText)")
+                                .font(.caption)
+                                .foregroundStyle(Palette.textSecondary)
+                        }
                     }
                 }
                 .tint(Palette.accent)

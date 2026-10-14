@@ -48,6 +48,7 @@ struct AppPresentations: ViewModifier {
             )) { request in
                 AIConsentView(
                     providerName: app.config.processorName,
+                    processors: app.config.consentProcessors,
                     retention: app.config.retentionPhrase,
                     asksGuardian: app.ageDefaults.requiresGuardianStep,
                     onAccept: { guardianConfirmed in
@@ -59,6 +60,7 @@ struct AppPresentations: ViewModifier {
                 )
                 .environment(app)
                 .presentationDetents([.large])
+                .presentationDragIndicator(.visible)
                 .presentationBackground(Palette.background)
             }
             .sheet(item: Binding(
