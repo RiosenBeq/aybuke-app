@@ -24,6 +24,15 @@ enum NetworkFailure {
             return AIServiceError.network(String(localized: "Check your internet connection and try again."))
         }
     }
+
+    /// A dropped or slow connection rather than a refusal, so the message can
+    /// say she's offline instead of that something failed.
+    static func isTransient(_ error: Error) -> Bool {
+        switch map(error) as? AIServiceError {
+        case .offline, .timedOut, .network: return true
+        default: return false
+        }
+    }
 }
 
 extension URLSession {

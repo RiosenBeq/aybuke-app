@@ -44,6 +44,10 @@ struct CreditsSheet: View {
                         refillLine
                     }
                     rules
+                    // Free and out of credits: one more for a short ad, if she likes.
+                    if app.ads.offersRewardedAd {
+                        RewardedAdCard { dismiss() }
+                    }
                     // Never under 13 (no credits there either); teens and
                     // adults get one quiet way to more, never a pick made for them.
                     if app.allowsPurchases {

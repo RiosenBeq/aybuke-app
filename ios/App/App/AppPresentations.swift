@@ -67,7 +67,7 @@ struct AppPresentations: ViewModifier {
             .sheet(item: Binding(
                 get: { isActive ? app.shareRequest : nil },
                 set: { app.shareRequest = $0 }
-            )) { payload in
+            ), onDismiss: { app.ads.naturalBreak() }) { payload in
                 ShareComposerView(payload: payload)
                     .environment(app)
                     .presentationDetents([.large])

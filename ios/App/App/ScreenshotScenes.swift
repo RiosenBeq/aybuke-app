@@ -33,6 +33,11 @@ enum ScreenshotScene: String, CaseIterable {
     /// Create with an empty prompt and recent prompts to pick from;
     /// `-GLKeepPrompts YES` shows the stored prompts and draft instead.
     case recentPrompts
+    /// The paywall; `-GLPaywallSource out_of_credits` says why it opened.
+    /// `-GLAdRewardState available|loading|pending|capped` (also `offline`,
+    /// `nofill`, `closed`, `delayed`) adds the rewarded-ad card in that state,
+    /// here and in the credits sheet (`home -GLCreditsSheet YES`). With any
+    /// scene, `-GLAdPacing off` lets an interstitial follow every save (QA).
     case paywall
     case consent
     case settings

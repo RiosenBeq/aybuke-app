@@ -52,6 +52,7 @@
 - **Yazı tipi:** Bricolage Grotesque'in yerini **Poppins** (SIL OFL) aldı; web sitesiyle aynı yazı tipi.
 - **iOS 26 ve iPad:** Sekme çubuğu ve editörün araç çubuğu iOS 26'da Liquid Glass; iOS 17–18'de buzlu cam görünümüne geçiyor. Uygulama artık iPhone ve iPad için evrensel (uyumlu ızgaralar, okunabilir genişlikler).
 - **Yeni fiyatlar:** Pro Yıllık $39.99 (7 gün ücretsiz deneme, ayda ≈ $3.33), Pro Aylık $5.99 (uygun kullanıcılara ilk ay $1.99), kredi paketleri 30 kredi $2.99 ve 100 kredi $7.99. Paywall'daki söz: haftalık plan asla yok (kaynaksız fiyat karşılaştırması Ekim 2026'da kaldırıldı).
+- **Reklamlar (ücretsiz üyeler, 13+, iPhone ve iPad):** Krediler bitince isteğe bağlı "Kısa bir reklam izle · +1 kredi" (günde en fazla 3; kredi yalnızca AdMob'un sunucumuza gönderdiği imzalı onayla eklenir) ve bitmiş bir çalışmayı kaydettikten sonra ara sıra bir geçiş reklamı (ilk gün ve 3. kayıttan önce yok, 4 dakikada en fazla bir, günde en fazla 3). Reklamlar asla kişiselleştirilmez, takip izni istenmez; gençlere yalnızca genel izleyiciye uygun reklam gösterilir. 13 yaş altında, Pro'da ve Mac'te reklam yok; Pro avantajlarında "Reklam yok" satırı var.
 - **AI sağlayıcısı artık xAI Grok Imagine:**
   - Model `grok-imagine-image-2.0`, 1k çözünürlük: ücretsiz kullanıcılara düşük, Pro'ya orta kalite. Oluşturma başına yaklaşık $0.04, düzenleme başına $0.05–0.07; bulut işlemi başına ortalama ~$0.06.
   - fal.ai alternatif olarak duruyor (`AI_PROVIDER=fal`).

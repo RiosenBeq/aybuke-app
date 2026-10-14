@@ -33,6 +33,78 @@ struct AIProcessor: Codable, Equatable, Hashable {
     }
 }
 
+/// Ads for free members 13+ (Pro has none, and neither does the Mac app): an
+/// optional rewarded ad (+1 credit) when she's out of credits, and now and
+/// then an interstitial after a finished save. DEBUG builds always use
+/// Google's test units; Release builds use these, and a missing or malformed
+/// id turns that format off.
+struct AdsConfig: Decodable, Equatable {
+    var enabled = false
+    /// The AdMob app id. The SDK reads it from Info.plist (GADApplicationIdentifier,
+    /// set from GL_ADMOB_APP_ID in Release.xcconfig); a Release build whose
+    /// Info.plist says something else shows no ads.
+    var appID = ""
+    var rewardedUnitID = ""
+    /// Empty: no interstitials.
+    var interstitialUnitID = ""
+    /// Rewarded ads a day; the server's `ad_reward_policy()` has the final say.
+    var dailyCap = 3
+
+    #if DEBUG
+    static let testAppID = "ca-app-pub-3940256099942544~1458002511"
+    static let testRewardedUnitID = "ca-app-pub-3940256099942544/1712485313"
+    static let testInterstitialUnitID = "ca-app-pub-3940256099942544/4411468910"
+    #endif
+
+    private enum CodingKeys: String, CodingKey {
+        case enabled, appID, rewardedUnitID, interstitialUnitID, dailyCap
+    }
+
+    init() {}
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        enabled = try container.decodeIfPresent(Bool.self, forKey: .enabled) ?? false
+        appID = try container.decodeIfPresent(String.self, forKey: .appID) ?? ""
+        rewardedUnitID = try container.decodeIfPresent(String.self, forKey: .rewardedUnitID) ?? ""
+        interstitialUnitID = try container.decodeIfPresent(String.self, forKey: .interstitialUnitID) ?? ""
+        dailyCap = try container.decodeIfPresent(Int.self, forKey: .dailyCap) ?? 3
+    }
+
+    /// The app id this build's Info.plist hands the SDK, when it's the one
+    /// these units belong to (Google's sample app in DEBUG builds).
+    var bundleAppIDMatches: Bool {
+        let bundled = (Bundle.main.object(forInfoDictionaryKey: "GADApplicationIdentifier") as? String) ?? ""
+        #if DEBUG
+        return bundled == Self.testAppID
+        #else
+        return AdMobID.isAppID(bundled) && bundled == appID
+        #endif
+    }
+
+    /// The rewarded unit this build requests, or nil when rewarded ads are off.
+    var activeRewardedUnitID: String? {
+        guard enabled, bundleAppIDMatches else { return nil }
+        #if DEBUG
+        return Self.testRewardedUnitID
+        #else
+        return AdMobID.isUnitID(rewardedUnitID) && AdMobID.publisher(of: rewardedUnitID) == AdMobID.publisher(of: appID)
+            ? rewardedUnitID : nil
+        #endif
+    }
+
+    /// The interstitial unit this build requests, or nil when they're off.
+    var activeInterstitialUnitID: String? {
+        guard enabled, bundleAppIDMatches else { return nil }
+        #if DEBUG
+        return Self.testInterstitialUnitID
+        #else
+        return AdMobID.isUnitID(interstitialUnitID) && AdMobID.publisher(of: interstitialUnitID) == AdMobID.publisher(of: appID)
+            ? interstitialUnitID : nil
+        #endif
+    }
+}
+
 /// Runtime configuration loaded from `AppConfig.json` in the bundle.
 /// Leave `backendBaseURL` empty to run in demo mode (no network, simulated AI).
 struct AppConfig: Decodable {
@@ -69,6 +141,8 @@ struct AppConfig: Decodable {
     /// app update that lists it first. Without FAL_KEY, xAI's own moderation
     /// is the output check, so fal.ai sees nothing and isn't listed.
     var aiProcessors: [AIProcessor] = AppConfig.defaultProcessors
+    /// Ads for free members (not an AI processor, so not on the consent sheet).
+    var ads = AdsConfig()
 
     static let defaultProcessors = [
         AIProcessor(name: "Supabase", role: .servers),
@@ -107,7 +181,7 @@ struct AppConfig: Decodable {
     private enum CodingKeys: String, CodingKey {
         case backendBaseURL, supabaseAnonKey, forceDemoMode, aiProviderName, dataRetentionHours
         case privacyPolicyURL, termsURL, supportEmail, appStoreID, websiteURL, instagramAppID, shareHashtags
-        case aiShareHashtags, revenueCatAPIKey, consentVersion, aiProcessors, signInWithApple
+        case aiShareHashtags, revenueCatAPIKey, consentVersion, aiProcessors, signInWithApple, ads
     }
 
     init(
@@ -151,6 +225,8 @@ struct AppConfig: Decodable {
         consentVersion = try container.decodeIfPresent(Int.self, forKey: .consentVersion) ?? fallback.consentVersion
         aiProcessors = try container.decodeIfPresent([AIProcessor].self, forKey: .aiProcessors) ?? fallback.aiProcessors
         signInWithApple = try container.decodeIfPresent(Bool.self, forKey: .signInWithApple) ?? false
+        // A broken ads section turns ads off, never the rest of the config.
+        ads = (try? container.decodeIfPresent(AdsConfig.self, forKey: .ads)) ?? AdsConfig()
     }
 
     var backend: BackendConfiguration? {

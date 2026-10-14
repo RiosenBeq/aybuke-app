@@ -618,6 +618,8 @@ struct EditorView: View {
                 if app.registerHappyMoment() {
                     requestReview()
                 }
+                // Free members: an ad may follow once the editor closes, never inside it.
+                app.ads.noteFinishedExport()
             } catch {
                 app.handleSaveError(error, shareInstead: sharePayload)
             }

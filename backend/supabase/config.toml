@@ -25,3 +25,10 @@ verify_jwt = true
 
 [functions.report]
 verify_jwt = true
+
+# Rewarded ads. AdMob's server-side verification callback carries no JWT, so
+# the gateway can't check one: the function verifies Google's ECDSA signature
+# on the callback, and checks the user's session itself on the app's routes.
+# Deploy with: supabase functions deploy ad-reward --no-verify-jwt
+[functions.ad-reward]
+verify_jwt = false

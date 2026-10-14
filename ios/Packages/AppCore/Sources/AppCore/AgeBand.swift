@@ -133,15 +133,22 @@ public struct AgeDefaults: Equatable, Sendable {
         self.requiresGuardianStep = requiresGuardianStep
     }
 
+    /// The band the rules apply to: unknown until she answers, and where a
+    /// self-declared age isn't accepted (Brazil).
+    public static func effectiveBand(record: AgeRecord?, storefrontCountry: String?) -> AgeBand {
+        let band = record?.band ?? .unknown
+        if let record, let country = storefrontCountry?.uppercased(), selfDeclarationNotAccepted.contains(country),
+           record.source.isSelfDeclared, band != .under13 {
+            return .unknown
+        }
+        return band
+    }
+
     /// `record` nil means the question hasn't been answered yet: protective
     /// defaults until it is.
     public init(record: AgeRecord?, storefrontCountry: String?) {
         let country = storefrontCountry?.uppercased()
-        var band = record?.band ?? .unknown
-        if let record, let country, Self.selfDeclarationNotAccepted.contains(country),
-           record.source.isSelfDeclared, band != .under13 {
-            band = .unknown
-        }
+        let band = Self.effectiveBand(record: record, storefrontCountry: storefrontCountry)
         if record?.source == .declined {
             self.init(allowsCloudAI: false, allowsPurchases: false, autoPaywall: false, requiresGuardianStep: true)
             return

@@ -3,7 +3,8 @@
 Last updated: {{EFFECTIVE_DATE}}
 
 > **Privacy at a glance**
-> - {{APP_NAME}} is designed with teens in mind, so everyone gets high-privacy defaults: no ads, no tracking, no profiling and no public profiles or feeds.
+> - {{APP_NAME}} is designed with teens in mind, so everyone gets high-privacy defaults: no tracking, no profiling and no public profiles or feeds.
+> - Free members see a few ads from Google AdMob: a short ad you can choose to watch for 1 credit when you're out of credits (up to 3 a day), and now and then an ad after you save. Ads are never personalised and never use your photos. Pro has no ads, and there are none under 13.
 > - We don't ask for your name, email address or a password. Your account is an anonymous, random ID.
 > - Your library stays on your iPhone. Background removal and manual adjustments never leave your device.
 > - Photos and prompts go to the cloud only after you opt in, and only to create the result you asked for. We don't store them, and results are deleted from the cloud within 1 hour.
@@ -29,11 +30,11 @@ This policy covers the Service. It doesn't cover third-party services you use to
 
 {{APP_NAME}} is designed with teen users in mind. That's why we apply high-privacy defaults to everyone who uses it, whatever their age:
 
-- **No ads.** We don't show advertising, and we don't use advertising SDKs.
-- **No tracking.** We don't track you across other companies' apps or websites, the only third-party analytics SDK is RevenueCat's subscription analytics, which starts only once you make a purchase (see section 5), and we don't access your device's advertising identifier (IDFA).
+- **Few ads, never personalised.** Pro members and anyone under 13 see no ads, and neither does the Mac app. Free members see ads from Google AdMob in two places only: a short ad they can choose to watch for 1 credit when they're out of credits (at most 3 a day), and now and then an ad after they save or share a finished creation (never in the first day, at most 3 a day). Ads are never personalised and never use your photos, prompts or results, and teens and anyone whose age we don't know get only ads suitable for a general audience (section 5).
+- **No tracking.** We don't track you across other companies' apps or websites. The app never asks for permission to track you and doesn't access your device's advertising identifier (IDFA). The only third-party analytics SDK is RevenueCat's subscription analytics, which starts only once you make a purchase, and Google's ad SDK starts only when an ad may be shown to a free member (section 5).
 - **No profiling.** We don't build profiles about you, and we don't make decisions about you with legal or similarly significant effects based on automated processing.
 - **No public profiles or feeds.** Nothing about you is public in {{APP_NAME}}. Your creations are shared only if you choose to share them.
-- **No sharing for marketing.** We don't sell personal information or share it for advertising or marketing, and we don't work with data brokers. We don't send you marketing messages.
+- **No sharing for marketing.** We don't sell personal information or share it for personalised (cross-context behavioural) advertising or for marketing, and we don't work with data brokers. We don't send you marketing messages.
 - **Your library stays on your device.** The creations you keep are stored only on your iPhone.
 - **Cloud processing only after you opt in.** Nothing leaves your device for one of our cloud AI features until you agree. Apple's Image Playground has its own notice (section 6).
 - **No AI training.** We never use your photos, prompts or results to train AI models, and we use only AI provider plans whose terms don't allow training on customer content without our permission, which we never give.
@@ -51,6 +52,7 @@ This section is for you if you're under 18. The rest of this policy applies to y
 - **Your age range.** When you start, the app asks for your age range: from Apple, if your device offers it and you choose to share it, or with a month-and-year question. It keeps only the range (under 13, 13 to 15, 16 to 17, or 18 and over), where it came from and when it was set, on your device. Your birthday is never kept or sent to us. Under 18, the paywall never opens by itself. If you're under 13, you can use the free tools that run on your device, and the app sends nothing to us.
 - **A parent or guardian step.** If you're 13 to 15, or under the age of digital consent where you live, the cloud AI consent screen asks you to read it with a parent or guardian and to confirm that they said yes. We can't check this answer, so please be honest.
 - **Purchases.** Purchases are charged to the Apple Account on your device. If you have a child account in Family Sharing, your parent or guardian may need to approve purchases with "Ask to Buy".
+- **Ads.** If you don't have Pro, you may see a few ads from Google: a short ad you can choose to watch for 1 credit when you've run out (up to 3 a day), and sometimes one after you save. They're never personalised, they're limited to ads suitable for everyone, and Google doesn't get your photos, prompts or name. You never have to watch one. Under 13 there are no ads.
 - **Other people's photos.** Only upload photos of other people if they've said yes. For younger children, their parent or guardian has to say yes.
 - **You're in control.** You can switch off cloud AI processing in Settings at any time, and delete everything with **Settings → Delete my data & account**.
 - **Questions or worries?** Talk to a trusted adult. You, your parent or your guardian can email us at [{{PRIVACY_EMAIL}}](mailto:{{PRIVACY_EMAIL}}).
@@ -60,7 +62,7 @@ This section is for you if you're under 18. The rest of this policy applies to y
 Much of {{APP_NAME}} works without sending anything to us. The following data is stored only on your device, and we can't access it:
 
 - **Your library ("My Works")**: the images you keep, with their title, the type of edit, the text prompt you used (for Create from text and Magic Edit), whether you marked them as a favourite, and timestamps. The library is stored in the app's private storage and protected by iOS Data Protection. When you delete a creation, it stays in **Recently deleted** for 30 days, where you can restore it or delete it for good; after that, it's removed.
-- **App settings** (stored in iOS UserDefaults): whether you've completed onboarding; the interests you picked (for example "Selfie glow-ups" or "Shots for my shop"), which are used only to order the home screen on your device; your age range (under 13, 13 to 15, 16 to 17, or 18 and over), whether it came from Apple's Declared Age Range or the app's own question, and when it was set (never your birth date); your cloud AI consent choice, when you made it, which version of the consent screen and which processors it named (so we can ask again when they change) and, where asked, your answer to "A parent or guardian said yes"; your appearance preference; your notification choices; the last 10 prompts you made pictures with in Create and the text you're still writing there (you can clear the list in Create); a small count of happy moments (saving, sharing or hearting a creation) and when the app last asked, used only to time Apple's rating prompt; and, only in offline or demo mode, a local credit balance.
+- **App settings** (stored in iOS UserDefaults): whether you've completed onboarding; the interests you picked (for example "Selfie glow-ups" or "Shots for my shop"), which are used only to order the home screen on your device; your age range (under 13, 13 to 15, 16 to 17, or 18 and over), whether it came from Apple's Declared Age Range or the app's own question, and when it was set (never your birth date); your cloud AI consent choice, when you made it, which version of the consent screen and which processors it named (so we can ask again when they change) and, where asked, your answer to "A parent or guardian said yes"; your appearance preference; your notification choices; the last 10 prompts you made pictures with in Create and the text you're still writing there (you can clear the list in Create); a small count of happy moments (saving, sharing or hearting a creation) and when the app last asked, used only to time Apple's rating prompt; for ads, when you first opened the app, how many creations you've saved, when you last saw an ad and how many you saw today (used only to keep ads rare, section 5) and whether you've asked for an ad on this device; Google's record of your ad consent choices, if you made them (kept on your device by Google's consent tool); and, only in offline or demo mode, a local credit balance.
 - **Session tokens** for your anonymous account, stored in the iOS Keychain.
 - **Reminders**: notifications are off until you allow them and switch them on. The app then schedules them locally on your device: a reminder before the cancel-by time of a free trial (at least 26 hours before it ends, earlier if that would fall at night or in school hours); "your edit is ready" when a creation finishes while you're in another app (skipped at night and in school hours; it never quotes your prompt); "your free credits are back" (only after you run out); and, if you choose, a look of the week. Reminders are never sent between 9 pm and 9 am, or during school hours (8 am to 3 pm) on weekdays. No push server or device token is involved.
 - **Widgets and Live Activity**: to show your credits, your latest creation and its progress on the Home Screen, the Lock Screen and in the Dynamic Island, the app shares a small snapshot (credit balance, the title and a small thumbnail of your latest creation, and how many creations you have) with its widgets through a container on your device. It never leaves your iPhone.
@@ -101,7 +103,22 @@ For each cloud AI job, we keep a record with: a job ID, your anonymous user ID, 
 
 ### Credits
 
-Your credit wallet (daily, subscription and purchased balances, with the related period dates) and your credit ledger (holds and refunds for each job, and credit pack grants with the Apple transaction ID).
+Your credit wallet (daily, subscription and purchased balances, with the related period dates) and your credit ledger (holds and refunds for each job, credit pack grants with the Apple transaction ID, and credits earned by watching an ad, with the ad's transaction ID).
+
+### Ads for free members
+
+If you don't have Pro and you're {{MIN_AGE}} or over, {{APP_NAME}} shows ads from Google AdMob (Google LLC) on iPhone and iPad, in two places only:
+
+- **Rewarded ads, always optional.** When you're out of credits, you can choose to watch a short ad for 1 credit, up to 3 times a day. Before the ad, the app asks our server for a single-use reward code, linked to your anonymous user ID and valid for 30 minutes. The app passes only this code to Google, never your user ID. When the ad has played to the end, Google sends our server a signed confirmation with the code, the ad unit, the reward, a transaction ID and the time, and we add the credit to your account. We keep a record of each confirmed reward (transaction ID, user ID, ad unit, reward and date) to give each reward only once and to apply the daily limit.
+- **An occasional ad after you save.** Now and then, an ad may appear after you save or share a finished creation: never in your first day with the app or before your third save, never while you're editing, at most one every 4 minutes, 3 a day, and none within 4 minutes of a rewarded ad. The app keeps these counts on your device (section 4).
+
+**What Google receives.** When an ad is requested or shown, Google's ad software in the app sends Google information about your device and the app (such as the device model, operating system and app version, language and screen size), your IP address (from which Google estimates a general location, such as your country or city), identifiers that Google's software uses only within this app (not your device's advertising identifier, which the app never accesses), and how you interact with the ads (such as which ads were shown, taps, and how much of a video played), together with performance data. For rewarded ads it also receives the single-use reward code. Google never receives your photos, prompts, results, name, email address or user ID from us.
+
+**How we limit it.** Every ad request is non-personalised: no interest-based or remarketing ads, and Google's restricted data processing is switched on. If you're under 18, or we don't know your age, requests are tagged for users under the age of consent and only ads suitable for a general audience are shown; adults can see ads rated up to "parental guidance". Google's ad software starts only when an ad may be shown, never for Pro members or anyone under 13, and never on a Mac.
+
+**Consent in the EEA, the UK and Switzerland.** Before the first ad, adults there see Google's consent form, which explains Google's use of information stored on your device and lets you accept or decline. If you're under the age of consent, or we don't know your age, you aren't asked and get only limited, non-personalised ads. You can change your choice at any time in **Settings → Ad privacy choices**.
+
+Google processes this information to show and measure ads and to prevent fraud and abuse, partly as an independent controller under [Google's Privacy Policy](https://policies.google.com/privacy). [How Google uses information from apps that use its services](https://policies.google.com/technologies/partner-sites) explains more. Credits earned from ads have no cash value, can't be exchanged or transferred, and, like the free daily credits, are spent first and expire at the end of the day (00:00 UTC).
 
 ### Purchases and subscriptions
 
@@ -146,6 +163,8 @@ The GDPR and the UK GDPR require us to tell you the legal basis for each purpose
 - **Running your anonymous account** (creating your user ID and keeping you signed in). Data: anonymous user ID, session data. Legal basis: performance of our contract with you (Art. 6(1)(b) GDPR).
 - **Cloud AI features** (sending your photo, mask and prompt to our AI providers, and generating and delivering the result, including Likeness Lock retries). Data: photos, masks, prompts, results. Legal basis: your consent (Art. 6(1)(a) GDPR), given on the opt-in screen and withdrawable at any time. Where a photo reveals special category data, we rely on your explicit consent (Art. 9(2)(a) GDPR); see section 8. If you're under the age of digital consent in your EU or EEA country, this consent must be given or authorised by a parent or guardian (Art. 8 GDPR).
 - **Job records, credits, purchases and subscriptions** (tracking jobs, charging and refunding credits, verifying Apple purchases and providing Pro benefits and credit packs). Legal basis: performance of our contract with you (Art. 6(1)(b) GDPR).
+- **Rewarded ads** (giving you the credit you chose to watch an ad for, once, within the daily limit). Data: reward code, reward record, anonymous user ID. Legal basis: performance of our contract with you (Art. 6(1)(b) GDPR).
+- **Ads for free members** (showing a few non-personalised ads that keep the free tier free, and keeping them rare). Data: the device, app and ad-interaction data described in section 5, processed by Google, and the ad counts kept on your device. Legal basis: our legitimate interest in funding a free tier with a small number of non-personalised ads (Art. 6(1)(f) GDPR). Where the law requires consent for storing or reading information on your device, as in the EEA, the UK and Switzerland, Google's consent form asks for it (Art. 6(1)(a) GDPR and the ePrivacy rules); users under the age of consent aren't asked and get only limited ads.
 - **Safety and abuse prevention** (prompt filters, provider safety settings, automated checks of outputs, rate limits, preventing misuse of free credits, reviewing reports and enforcing our AUP). Legal basis: our legitimate interests in keeping {{APP_NAME}} safe and lawful and in protecting our users, especially young users, and the people shown in images (Art. 6(1)(f) GDPR); and compliance with legal obligations where the law requires us to act, for example to report child sexual abuse material (Art. 6(1)(c) GDPR).
 - **Security and reliability** (server logs and investigating errors and attacks). Legal basis: our legitimate interests in running a secure and reliable service (Art. 6(1)(f) GDPR).
 - **Images of other people shown in your photos.** Legal basis: our legitimate interest in performing the edit our user requested (Art. 6(1)(f) GDPR). The processing is short-lived, limited to the edit and never used to identify anyone, and users must have the consent of the people they photograph.
@@ -190,12 +209,13 @@ These filters are the only automated decisions we make about your requests. They
 We share personal data only as described below. We require every service provider that receives your data to protect it at least as well as described in this policy, under written contracts (data processing agreements) that allow them to use your data only to provide services to us.
 
 - **Service providers (processors)**: our backend and hosting provider and our AI inference providers, listed in section 12. They process data only on our instructions.
+- **Google (AdMob)**: if you're a free member aged {{MIN_AGE}} or over, Google receives the device, app and ad-interaction data described in section 5 to show and measure ads and to prevent fraud. Google processes some of it as an independent controller under [Google's Privacy Policy](https://policies.google.com/privacy). Google never receives your photos, prompts, results or user ID from us.
 - **Apple**: Apple processes your payments and subscriptions as the seller and as an independent controller, under [Apple's Privacy Policy](https://www.apple.com/legal/privacy/). We don't send your content to Apple, except your description when you choose **Create with Image Playground** (section 6). We receive Apple-signed transaction data to verify purchases. If you sign in with Apple, Apple verifies your sign-in, and we contact Apple to revoke that sign-in when you delete your account.
 - **Authorities**: we disclose data to courts, law enforcement or other authorities where the law requires it, for example in response to a valid legal order, or where necessary to protect someone's safety. We report child sexual abuse material to the competent authorities (such as NCMEC in the United States) where the law requires it.
 - **Business transfers**: if we're involved in a merger, acquisition or sale of all or part of our business, personal data may be transferred to the new owner, who must continue to protect it in line with this policy. We'll inform you where the law requires it.
 - **Services you choose to share with**: when you share a result through the share sheet, Instagram or another app, you send it to that service yourself, and its own terms and privacy policy apply.
 
-We don't sell your data, rent it, or share it with anyone for their own advertising or marketing.
+We don't sell your data or rent it. Apart from the non-personalised ads free members see (section 5), we don't share it with anyone for advertising or marketing.
 
 ## 12. Sub-processors
 
@@ -206,13 +226,14 @@ These companies process personal data on our behalf. We keep this list up to dat
 - **Features & Labels, Inc. (fal.ai)** (USA): the automated output safety check where we use it, and an alternative AI provider. Data: results (and, if we route jobs to fal.ai, photos, masks and prompts), for the duration of the request. Request history is disabled, and results are deleted within 1 hour.
 - **Developers of the models that fal.ai runs**, for example **Google LLC** (USA) for Gemini image models: where fal.ai uses the developer's own service to run a model, that developer processes the inputs and results of the request on fal.ai's behalf.
 - **RevenueCat, Inc.** (USA): subscription analytics. Data: anonymous user ID, purchase and subscription records (product, price, dates, status, transaction IDs) and basic device and app information. No photos, prompts or results.
+- **Google LLC (AdMob)** (USA): the ads free members see and the confirmation of rewarded ads. Data: device and app information, IP address (general location), identifiers used only within this app, ad interactions and the single-use reward code. No photos, prompts, results or user ID. Google also acts as an independent controller for part of this processing (section 11).
 - **Google LLC** (USA), Gemini API: alternative AI provider, used only if we route jobs directly to Google.
 - **OpenAI** (USA), Images API: alternative AI provider, used only if we route jobs directly to OpenAI.
 - **Our email service provider**: receives and stores the emails you send us.
 
 ## 13. International data transfers
 
-We're based in {{COMPANY_COUNTRY}}. Our backend is hosted in {{HOSTING_REGION}}. Our AI providers are based in the United States and may process data there or in other countries where they or their sub-processors operate. This means your data may be processed outside your country, including in countries that don't offer the same level of data protection.
+We're based in {{COMPANY_COUNTRY}}. Our backend is hosted in {{HOSTING_REGION}}. Our AI providers and Google, which provides the ads free members see, are based in the United States and may process data there or in other countries where they or their sub-processors operate. This means your data may be processed outside your country, including in countries that don't offer the same level of data protection.
 
 ### From the EEA, the UK and Switzerland
 
@@ -241,6 +262,7 @@ You can ask for a copy of the safeguards we use by emailing [{{PRIVACY_EMAIL}}](
 - **Account (Apple user identifier, email or relay address, Apple token)**: as long as your account exists. When you delete your account, the token is revoked with Apple and everything is deleted.
 - **Subscription analytics records at RevenueCat**: as long as your account exists. When you delete your account, we ask RevenueCat to delete them, including the records of anonymous user IDs merged into your account; RevenueCat completes the deletion shortly after. If RevenueCat can't take the request at that moment, we keep only the random user IDs concerned in a deletion queue and retry until RevenueCat confirms.
 - **Reports**: up to 12 months, for safety review and to improve our filters. Then deleted, or earlier if you delete your account.
+- **Rewarded ads**: single-use reward codes are valid for 30 minutes and deleted a day after they expire; records of confirmed rewards are kept for 30 days, then deleted, or earlier if you delete your account. Google keeps the ad data it receives under its own policies (section 11).
 - **Server and security logs**: a short period, typically no more than 90 days, for security and abuse prevention. They are deleted on this schedule even after you delete your account.
 - **Emails and privacy requests**: as long as needed to handle your request and to document how we handled it, unless we must keep them longer to establish, exercise or defend legal claims.
 - **Data on your device**: until you delete it, delete your account or delete the app.
@@ -264,7 +286,8 @@ No system is completely secure. If a personal data breach occurs, we'll notify t
 
 - **Cloud AI processing**: switch it off at any time in **Settings → Cloud AI processing** to withdraw your consent. Withdrawal doesn't affect processing that has already happened.
 - **Delete all creations**: removes your library from your device.
-- **Delete my data & account**: in Settings. Deletes your server account and all server-side records (credit wallet, credit ledger, job records, entitlement records and reports), asks RevenueCat to delete its subscription analytics records about you, and resets the app on your device: your library, settings, recent prompts, reminders and AI consent. Apple subscriptions must be cancelled separately in your Apple Account settings.
+- **Delete my data & account**: in Settings. Deletes your server account and all server-side records (credit wallet, credit ledger, job records, entitlement records, ad reward records and reports), asks RevenueCat to delete its subscription analytics records about you, and resets the app on your device: your library, settings, recent prompts, reminders, AI consent, ad counts and Google's record of your ad consent choices. Apple subscriptions must be cancelled separately in your Apple Account settings.
+- **Ads**: watching an ad for a credit is always optional, and Pro has no ads. In the EEA, the UK and Switzerland, once you've made a choice in Google's consent form, **Settings → Ad privacy choices** opens it again, so you can change or withdraw your consent at any time.
 - **Camera, photos, speech recognition and notifications**: manage these permissions in your device's Settings (System Settings on a Mac). Speech recognition is only asked for when you make video captions on iOS versions before 26.
 
 ### Your rights
@@ -308,15 +331,15 @@ The UK Age Appropriate Design Code (the "Children's Code") sets 15 standards for
 - **Data protection impact assessments.** We assess the risks our features pose to young users, including through data protection impact assessments, before we launch them.
 - **Age-appropriate application.** We ask for an age range, never a birth date: from Apple's Declared Age Range where it's available, otherwise with a neutral month-and-year question. The range stays on your device. Under 13, only the free on-device tools are available. Under 18, the paywall never opens by itself, and where the law asks for it the consent screen includes a parent or guardian step. Beyond what Apple shares, we don't verify ages, so we also give every user the protections described in this section, whatever their age.
 - **Transparency.** Each of our documents starts with a short summary, this policy has a plain-language section for under-18s (section 3), and the cloud AI consent screen explains in plain words what's sent and to whom before anything is sent.
-- **Detrimental use of data.** We don't use personal data for advertising, profiling or engagement-based recommendations. The only personalisation is the order of the home screen, based on interests you pick yourself, and it happens on your device.
+- **Detrimental use of data.** We don't use personal data for profiling, personalised advertising or engagement-based recommendations. Free members see a few ads, which are never personalised; teens and anyone whose age we don't know get Google's protections for users under the age of consent and only general-audience ads, and there are no ads at all under 13 or for Pro members (section 5). The only personalisation is the order of the home screen, based on interests you pick yourself, and it happens on your device.
 - **Policies and community standards.** We enforce our Terms of Use and AUP, using safety filters, reporting and human review of appeals.
-- **Default settings.** High privacy is the default: cloud AI processing is off until you opt in, your library stays on your device, nothing is public, and the app sends notifications only if you allow them.
+- **Default settings.** High privacy is the default: cloud AI processing is off until you opt in, your library stays on your device, nothing is public, ads are non-personalised, and the app sends notifications only if you allow them.
 - **Data minimisation.** We collect only what each feature you use needs. We don't ask for your name, email address, phone number, contacts or location.
-- **Data sharing.** We disclose personal data only to the service providers that run the features you request and where the law requires it (section 11).
-- **Geolocation.** We don't collect or use your location.
+- **Data sharing.** We disclose personal data only to the service providers that run the features you request, to Google for the non-personalised ads free members see, and where the law requires it (section 11).
+- **Geolocation.** We don't collect or use your location. For free members, Google's ad software estimates a general location (such as the country or city) from the IP address to serve ads (section 5); it never uses your device's location services.
 - **Parental controls.** {{APP_NAME}} has no tools that let parents or anyone else monitor your activity or location. Parents can use Apple's Family Sharing and Screen Time, which are provided by Apple.
-- **Profiling.** We don't profile users.
-- **Nudge techniques.** We don't use design tricks to get you to share more data or to switch off privacy protections. You can choose "Not now" on the cloud AI consent screen and keep using on-device features.
+- **Profiling.** We don't profile users, and ads are never personalised.
+- **Nudge techniques.** We don't use design tricks to get you to share more data or to switch off privacy protections. You can choose "Not now" on the cloud AI consent screen and keep using on-device features. Watching an ad for a credit is always your choice, offered only when you're out of credits and at most 3 times a day, and ads after saving are kept rare.
 - **Connected toys and devices.** Not applicable: {{APP_NAME}} isn't a connected toy or device.
 - **Online tools.** You can delete your data in the app at any time and make any other request by email (section 16).
 
@@ -326,9 +349,9 @@ We process personal data in accordance with the Law on the Protection of Persona
 
 **Processing conditions.** Under KVKK, we rely on:
 
-- the establishment or performance of a contract with you (Article 5(2)(c)) for your account, credits, purchases and support;
+- the establishment or performance of a contract with you (Article 5(2)(c)) for your account, credits (including credits from rewarded ads), purchases and support;
 - your explicit consent (*açık rıza*, Article 5(1)), given on the cloud AI opt-in screen, for cloud AI processing, and Article 6(3)(a) where a photo reveals special category data;
-- our legitimate interests (Article 5(2)(f)) for safety, abuse prevention, security logs and processing the images of other people shown in your photos; and
+- our legitimate interests (Article 5(2)(f)) for safety, abuse prevention, security logs, processing the images of other people shown in your photos and the few non-personalised ads free members see; and
 - compliance with legal obligations (Article 5(2)(ç)) and the establishment, exercise or protection of a right (Article 5(2)(e)).
 
 **Users under 18.** Under the Turkish Civil Code, people under 18 have limited legal capacity. Where explicit consent is required, for example for cloud AI processing, the consent of a user under 18 must be given or approved by their parent or guardian (*veli* or *vasi*) where the law requires it. Parents and guardians can also apply to us on behalf of their child.
@@ -368,13 +391,13 @@ This section applies to California residents and supplements the rest of this po
 
 **Categories of personal information we have collected in the last 12 months:**
 
-- **Identifiers**: collected. Anonymous user ID, Apple transaction IDs and app account token, AI provider request IDs and IP address.
+- **Identifiers**: collected. Anonymous user ID, Apple transaction IDs and app account token, AI provider request IDs, ad reward transaction IDs and IP address; for free members, Google's ad software also uses identifiers that work only within this app (never the device's advertising identifier).
 - **Personal information described in Cal. Civ. Code § 1798.80(e)**: collected only to a limited extent: the physical characteristics visible in photos you submit (processed briefly, not stored) and your name, if you include it in an email to us.
 - **Characteristics of protected classifications**: not collected intentionally. Photos may incidentally show characteristics such as apparent age or sex, but we don't infer, record or use them.
-- **Commercial information**: collected. Records of your in-app purchases and subscriptions (product, dates and status), credit balances and credit usage.
+- **Commercial information**: collected. Records of your in-app purchases and subscriptions (product, dates and status), credit balances, credit usage and credits earned by watching ads.
 - **Biometric information**: not collected. We don't extract face geometry or identify anyone.
-- **Internet or other electronic network activity**: collected. Server logs (IP address, request metadata and timestamps) and job records (feature used, status and timestamps). We don't collect browsing history.
-- **Geolocation data**: not collected. Server logs contain IP addresses, but we don't use them to determine your location.
+- **Internet or other electronic network activity**: collected. Server logs (IP address, request metadata and timestamps), job records (feature used, status and timestamps) and, for free members, interactions with ads (which ads were shown, taps and completed rewarded ads). We don't collect browsing history.
+- **Geolocation data**: not collected by us. Server logs contain IP addresses, but we don't use them to determine your location. For free members, Google's ad software estimates a general location (such as the country or city) from the IP address to serve ads; no precise geolocation is collected.
 - **Audio, electronic, visual or similar information**: collected. Photos, masks and generated images you process with cloud AI features. We don't store them, and results are held for at most 1 hour.
 - **Professional, employment or education information**: not collected.
 - **Inferences used to create a profile**: not collected. We don't build profiles.
@@ -382,13 +405,13 @@ This section applies to California residents and supplements the rest of this po
 
 **Sensitive personal information.** This covers the security tokens that keep your anonymous account signed in and any sensitive information a photo may reveal. We use sensitive personal information only for purposes permitted under the CCPA regulations, namely to provide the Service you request and to keep it secure, and never to infer characteristics about you. So we don't need to offer a "Limit the use of my sensitive personal information" option.
 
-**Sources**: you (directly and through your device), Apple (purchase data) and our own systems (IDs and logs).
+**Sources**: you (directly and through your device), Apple (purchase data), Google (confirmations of rewarded ads) and our own systems (IDs and logs).
 
-**Purposes**: providing and maintaining the Service, carrying out your requests, verifying purchases, security and integrity, preventing abuse, debugging and complying with the law, as described in section 7.
+**Purposes**: providing and maintaining the Service, carrying out your requests, verifying purchases, giving rewards for ads and showing a few non-personalised ads to free members, security and integrity, preventing abuse, debugging and complying with the law, as described in section 7.
 
-**Disclosures for a business purpose**: identifiers, commercial information, network activity, visual information and other personal information to the service providers and contractors listed in section 12; purchase-related data exchanged with Apple; and information to authorities where the law requires it.
+**Disclosures for a business purpose**: identifiers, commercial information, network activity, visual information and other personal information to the service providers and contractors listed in section 12; for free members, device, network and ad-interaction information to Google to show and measure non-personalised ads, with Google's restricted data processing switched on; purchase-related data exchanged with Apple; and information to authorities where the law requires it.
 
-**Sale and sharing**: we don't sell personal information or share it for cross-context behavioural advertising, and we haven't done so in the last 12 months.
+**Sale and sharing**: we don't sell personal information or share it for cross-context behavioural advertising: the ads free members see are never personalised. We haven't done so in the last 12 months.
 
 **Retention**: see section 14.
 
@@ -410,11 +433,11 @@ Residents of states with comprehensive privacy laws, such as Virginia, Colorado,
 
 Because we don't sell or share anyone's personal information, we never sell or share the personal information of consumers under 16, which the CCPA would allow only with opt-in consent.
 
-A growing number of US states, for example California, Connecticut, Colorado, Maryland and New York, give extra protection to minors' personal data. These protections include limits on targeted advertising, the sale of personal data, profiling and the collection of precise geolocation, and requirements to process minors' data only where it's needed. We don't use anyone's data for targeted advertising, sale or profiling, we don't collect precise geolocation, and we process teens' personal data only as needed to provide the features they ask for.
+A growing number of US states, for example California, Connecticut, Colorado, Maryland and New York, give extra protection to minors' personal data. These protections include limits on targeted advertising, the sale of personal data, profiling and the collection of precise geolocation, and requirements to process minors' data only where it's needed. We don't use anyone's data for targeted advertising, sale or profiling, we don't collect precise geolocation, and we process teens' personal data only as needed to provide the features they ask for and to show them a few non-personalised, general-audience ads if they don't have Pro.
 
 ## 21. Children under 13
 
-{{APP_NAME}} is designed for teens and adults aged {{MIN_AGE}} and over. Its cloud AI features, accounts and purchases are only for people aged {{MIN_AGE}} and over. If the age step shows that someone is under 13, the app offers only the free tools that run on the device (effects, Adjust, Cut out, Crop, Best shot and the video editor). In that mode it sends nothing to us or to our providers: it creates no account and makes no cloud AI, purchase or analytics requests. We don't knowingly collect personal information from children under 13, including under the US Children's Online Privacy Protection Act (COPPA).
+{{APP_NAME}} is designed for teens and adults aged {{MIN_AGE}} and over. Its cloud AI features, accounts and purchases are only for people aged {{MIN_AGE}} and over. If the age step shows that someone is under 13, the app offers only the free tools that run on the device (effects, Adjust, Cut out, Crop, Best shot and the video editor). In that mode it sends nothing to us or to our providers: it creates no account and makes no cloud AI, purchase, analytics or ad requests, and Google's ad software never starts. We don't knowingly collect personal information from children under 13, including under the US Children's Online Privacy Protection Act (COPPA).
 
 If we learn that we have collected personal information from a child under 13 without verifiable parental consent, we'll delete it. If you believe a child under 13 has used {{APP_NAME}}, please contact us at [{{PRIVACY_EMAIL}}](mailto:{{PRIVACY_EMAIL}}). A parent or guardian can also delete the data immediately with **Settings → Delete my data & account** on the child's device.
 

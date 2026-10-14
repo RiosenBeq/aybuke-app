@@ -36,7 +36,7 @@ jobs:
         run: |
           deno fmt --check
           deno lint
-          deno check ai-image/index.ts credits-redeem/index.ts account/index.ts report/index.ts
+          deno check ai-image/index.ts credits-redeem/index.ts account/index.ts report/index.ts ad-reward/index.ts
       - name: Prompt policy tests (shared vectors with the app)
         working-directory: backend/supabase/functions
         run: deno test _shared/

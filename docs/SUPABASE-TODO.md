@@ -25,10 +25,13 @@ Bu dosya, Glowlit'in arka ucunu (Supabase) canlıya almak için kalan adımları
   6. `20261016000000_explicit_grants.sql`
   7. `20261017000000_unclaimed_results.sql` (uygulamaya hiç ulaşmayan sonuçların iadesi; `ai-image` yeniden yayımlanmadan önce)
   8. `20261018000000_revenuecat_deletion_queue.sql` (RevenueCat silme kuyruğu; `account` yeniden yayımlanmadan önce)
-- [ ] Zamanlanmış temizlik (takılan işleri ve uygulamaya ulaşmayan sonuçları iade eder, sonuçları 1 saat sonra siler):
+  9. `20261019000000_ad_rewards.sql` (ödüllü reklam kredileri)
+  10. `20261019500000_keepalive.sql` (ücretsiz planda projeyi uyanık tutan günlük nabız; `.github/workflows/keepalive.yml` çağırır)
+- [ ] Zamanlanmış temizlik (takılan işleri ve uygulamaya ulaşmayan sonuçları iade eder, sonuçları 1 saat sonra siler; reklam ödül kayıtlarını 30 gün sonra siler):
   ```sql
   create extension if not exists pg_cron;
   select cron.schedule('sweep-jobs', '*/5 * * * *', 'select public.sweep_jobs()');
+  select cron.schedule('sweep-ad-rewards', '17 * * * *', 'select public.sweep_ad_rewards()');
   ```
 - [ ] RevenueCat silme kuyruğu için saatlik çağrı (`pg_net` uzantısını aç; anahtar yokken istekler kuyrukta bekler, anahtar eklenince bu çağrı onları gönderir). Proje URL'sini ve service role anahtarını bir kez Vault'a koy, sonra zamanla:
   ```sql
@@ -61,7 +64,11 @@ cd backend
 supabase login
 supabase link --project-ref <proje-ref>
 supabase functions deploy ai-image credits-redeem account report
+# AdMob'un doğrulama çağrısında JWT yok; fonksiyon Google'ın imzasını kendisi doğrular.
+supabase functions deploy ad-reward --no-verify-jwt
 ```
+
+- [ ] AdMob → Glowlit → ödüllü reklam birimi (`ca-app-pub-2292230772061554/1406702504`, ödül miktarı 1, öğe `credit`) → **Server-side verification** → geri çağırma adresi `https://<proje-ref>.supabase.co/functions/v1/ad-reward` (sorgu dizesi olmadan) → **Verify URL**. Ayrıntılar: [`backend/README.md`](../backend/README.md), "Rewarded ads".
 
 ## 6. Gizli anahtarlar (Edge Functions → Secrets)
 
@@ -74,6 +81,7 @@ Bu değerleri hesap sahibi yapıştırmalı (anahtarları ben giremem). Şablon:
 - [ ] `APPLE_SIGNIN_KEY_ID` ve `APPLE_SIGNIN_PRIVATE_KEY` — Sign in with Apple anahtarı
 - [ ] `REVENUECAT_SECRET_KEY` ve `REVENUECAT_PROJECT_ID` — hesap silinince RevenueCat müşterisini de silmek için. RevenueCat → Project settings → API keys'te yalnızca `customer_information:customers:read_write` izinli bir **v2** gizli anahtar oluştur; proje kimliği aynı sayfada. Boş kalırsa hesap silme yine çalışır; RevenueCat silme istekleri `pending_revenuecat_deletions` tablosunda bekler ve anahtar eklenince (her hesap silmede ve saatlik zamanlanmış çağrıda, bkz. `backend/README.md` 6. adım) gönderilir.
 - [ ] (İsteğe bağlı) `FAL_KEY` — bağımsız çıktı güvenlik kontrolü (fal.ai) ve yedek sağlayıcı. Her sonuç tek bir çıktı kontrolünden geçer ve kontrol çalışamazsa sonuç engellenip kredi iade edilir (kapatma ayarı yok; eski `OUTPUT_MODERATION` artık okunmuyor). `FAL_KEY` yokken kontrol xAI'nin kendi denetim kararıdır. `FAL_KEY` eklenince sonuçlar fal.ai'ye gider; bu yüzden önce fal.ai'yi onay ekranına (`aiProcessors`) geri ekleyen bir uygulama sürümü yayımlanmalı.
+- [ ] `ADMOB_REWARDED_AD_UNIT` = `ca-app-pub-2292230772061554/1406702504` — yalnızca bu reklam biriminin imzalı çağrıları kredi verir; boş kalırsa hiçbir ödül verilmez
 
 > **Onay ekranı:** Uygulamanın yapay zekâ onay ekranı, işleyicileri `ios/App/Resources/AppConfig.json` içindeki `aiProcessors` listesinden gösterir (şu an Supabase ve xAI). `AI_PROVIDER`'ı değiştirmek veya listede olmayan bir işleyici eklemek, önce o işleyiciyi listeleyen bir uygulama güncellemesi gerektirir; liste değişince uygulama onayı yeniden ister. Backend sağlayıcıyı uygulama sürümü olmadan değiştirebilir, bu yüzden sırayı koru.
 

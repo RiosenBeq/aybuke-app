@@ -49,7 +49,7 @@ Son güncelleme: 14 Ekim 2026. Çalışma durduruldu; aşağıdaki "Açık işle
 3. **iOS derlemesini yükle:** `ASC_KEY_ID=… ASC_ISSUER_ID=… scripts/upload-app-store.sh`. Yaklaşık 2 GB boş alan gerekir. Build numarası saat/dakikaya göre otomatik.
 4. **Mac derlemesini yükle:** aynı script, `PLATFORM=mac` ile.
 5. **Derlemeleri sürümlere bağla:** İşlenme 10–30 dk sürer. App Store Connect → iOS 1.0 ve macOS 1.0 → Build bölümünden seç.
-6. **Ekran görüntüleri:** iPhone 6.9" (1290×2796) `docs/marketing/app-store/en/` ve `tr/` ve diğer dillerde; iPad 13" (2064×2752) `…/ipad/`; Mac (2880×1800) `…/mac/`. Yeni `09-library` gibi yanlış/boş dosyaların olmadığını kontrol et.
+6. **Ekran görüntüleri:** iPhone 6.9" (1290×2796) `docs/marketing/app-store/<dil>/` altında 12 dilde; iPad 13" (2064×2752) `…/ipad/`; Mac (2880×1800) `…/mac/`. Her dilde 10 iPhone, 10 iPad ve 8 Mac görüntüsü olduğunu, boş ya da eski bir dosya kalmadığını kontrol et.
 7. **Abonelik ve kredi paketlerini sürüme ekle:** App Store Connect'te ilk abonelik, uygulama sürümüyle birlikte incelemeye gönderilmek zorundadır. Her paketi "Add for Review" ile sürüme bağla.
 8. **Paid Apps Agreement:** Business → "View and Agree to Terms" (sahibin işi). Bu olmadan ücretli ürün satılamaz.
 9. **Sandbox testi (gerçek iPhone):** satın alma, geri yükleme, deneme, kredi paketi, hesap silme. Bu adım gerçek cihaz gerektirir. Adım adım liste: [`RELEASE-CHECKLIST.md`](RELEASE-CHECKLIST.md) (§1, §4–§10).
