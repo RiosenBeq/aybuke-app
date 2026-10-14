@@ -1,0 +1,66 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "Edit a photo with ${applicationName}" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringSet" : {
+            "state" : "new",
+            "values" : [
+              "Edit a photo with ${applicationName}",
+              "Edit a photo in ${applicationName}",
+              "Edit my photo in ${applicationName}"
+            ]
+          }
+        }
+      }
+    },
+    "Make a collage in ${applicationName}" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringSet" : {
+            "state" : "new",
+            "values" : [
+              "Make a collage in ${applicationName}",
+              "Make a collage with ${applicationName}",
+              "Make a photo dump in ${applicationName}"
+            ]
+          }
+        }
+      }
+    },
+    "Open Retro Cam in ${applicationName}" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringSet" : {
+            "state" : "new",
+            "values" : [
+              "Open Retro Cam in ${applicationName}",
+              "Take a retro photo with ${applicationName}",
+              "Open the ${applicationName} camera"
+            ]
+          }
+        }
+      }
+    },
+    "Start a photo booth in ${applicationName}" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringSet" : {
+            "state" : "new",
+            "values" : [
+              "Start a photo booth in ${applicationName}",
+              "Start the ${applicationName} photo booth",
+              "Take photo booth pictures with ${applicationName}"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}

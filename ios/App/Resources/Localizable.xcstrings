@@ -646,6 +646,19 @@
         }
       }
     },
+    "%@, %lld days left" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@, %2$lld days left"
+          }
+        }
+      }
+    },
+    "%@, 1 day left" : {
+
+    },
     "%@, favorite" : {
       "localizations" : {
         "de" : {
@@ -1387,6 +1400,28 @@
         }
       }
     },
+    "%lld captions" : {
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld caption"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld captions"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "%lld credit per edit · failed edits are refunded" : {
       "localizations" : {
         "de" : {
@@ -1935,6 +1970,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "剩余 %lld 点数"
+          }
+        }
+      }
+    },
+    "%lld days" : {
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld day"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld days"
+                }
+              }
+            }
           }
         }
       }
@@ -2687,6 +2744,7 @@
       }
     },
     "%lld of %lld" : {
+      "comment" : "Photo booth progress: which of the four shots is next",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -3016,6 +3074,72 @@
         }
       }
     },
+    "%lld seconds" : {
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld second"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld seconds"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "%lld selected" : {
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld selected"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld selected"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "%lld slides" : {
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld slide"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld slides"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "%lld-day free trial" : {
       "localizations" : {
         "de" : {
@@ -3085,6 +3209,9 @@
           }
         }
       }
+    },
+    "%llds" : {
+      "comment" : "Self-timer length on the camera button, in seconds"
     },
     "≈ %@ per credit" : {
       "localizations" : {
@@ -3575,6 +3702,9 @@
           }
         }
       }
+    },
+    "1 day" : {
+
     },
     "1 photo without a clear face was left out." : {
       "localizations" : {
@@ -4209,6 +4339,9 @@
         }
       }
     },
+    "80s" : {
+      "shouldTranslate" : false
+    },
     "80s · 90s · Y2K" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -4632,6 +4765,9 @@
         }
       }
     },
+    "90s" : {
+      "shouldTranslate" : false
+    },
     "90s instant film" : {
       "comment" : "One-tap look description, shown under its name",
       "localizations" : {
@@ -4844,6 +4980,9 @@
           }
         }
       }
+    },
+    "2010s" : {
+      "shouldTranslate" : false
     },
     "A bakery window full of pink macarons and heart-shaped cupcakes" : {
       "comment" : "Example idea for creating an image, put in the prompt field",
@@ -7610,6 +7749,9 @@
         }
       }
     },
+    "A typewriter line under your photos" : {
+
+    },
     "A unicorn made of cotton-candy clouds above a glittering lake" : {
       "comment" : "Example idea for creating an image, put in the prompt field",
       "localizations" : {
@@ -8457,6 +8599,15 @@
         }
       }
     },
+    "Add a caption" : {
+
+    },
+    "Add a caption (optional)" : {
+      "comment" : "Placeholder of the one-line caption printed under photo booth shots"
+    },
+    "Add a caption where the video is now, or make them from what's said." : {
+
+    },
     "Add a little bow tie and party balloons" : {
       "comment" : "Example request for editing a photo of a pet\nSuggested Magic Edit request for her photo, shown on a chip in the editor",
       "localizations" : {
@@ -8739,6 +8890,9 @@
           }
         }
       }
+    },
+    "Add captions" : {
+
     },
     "Add cherry blossoms" : {
       "localizations" : {
@@ -9165,6 +9319,9 @@
         }
       }
     },
+    "Add or remove photos" : {
+
+    },
     "Add pink and blue neon reflections on the street" : {
       "comment" : "Suggested Magic Edit request for her photo, shown on a chip in the editor",
       "localizations" : {
@@ -9589,6 +9746,12 @@
         }
       }
     },
+    "Add text" : {
+
+    },
+    "Add text, stickers and doodles with Text & Stickers. Free, on your device." : {
+
+    },
     "Add the %@ effect" : {
       "localizations" : {
         "de" : {
@@ -9800,6 +9963,9 @@
         }
       }
     },
+    "Added a copy to My Works" : {
+
+    },
     "Adding %@…" : {
       "localizations" : {
         "de" : {
@@ -9869,6 +10035,9 @@
           }
         }
       }
+    },
+    "Adding text and stickers…" : {
+
     },
     "Adding the glow…" : {
       "extractionState" : "stale",
@@ -9941,6 +10110,12 @@
         }
       }
     },
+    "Adds a soft shadow under the subject" : {
+
+    },
+    "Adds it to the photo" : {
+
+    },
     "Adjust" : {
       "localizations" : {
         "de" : {
@@ -10010,6 +10185,9 @@
           }
         }
       }
+    },
+    "Adjust to change the size" : {
+
     },
     "Adjusted" : {
       "localizations" : {
@@ -10643,6 +10821,9 @@
         }
       }
     },
+    "Alignment" : {
+
+    },
     "All" : {
       "localizations" : {
         "de" : {
@@ -10993,6 +11174,12 @@
           }
         }
       }
+    },
+    "Allow camera access for Glowlit in System Settings › Privacy & Security › Camera." : {
+
+    },
+    "Allow camera access in Settings to use Retro Cam and Photo Booth." : {
+
     },
     "Allow notifications in iOS Settings" : {
       "extractionState" : "stale",
@@ -11558,6 +11745,9 @@
         }
       }
     },
+    "Another app is using the camera." : {
+
+    },
     "Appearance" : {
       "localizations" : {
         "de" : {
@@ -11977,6 +12167,12 @@
           }
         }
       }
+    },
+    "Apply ${effect} to ${photo}" : {
+
+    },
+    "Apply a Retro Effect" : {
+
     },
     "Apply edit" : {
       "localizations" : {
@@ -12610,6 +12806,9 @@
         }
       }
     },
+    "Automatic captions aren't available for this language on this device. You can add them yourself." : {
+
+    },
     "Available in English and Turkish. The KVKK notice applies to people in Türkiye." : {
       "localizations" : {
         "de" : {
@@ -12679,6 +12878,9 @@
           }
         }
       }
+    },
+    "Back in My Works" : {
+
     },
     "Background" : {
       "localizations" : {
@@ -14161,6 +14363,9 @@
         }
       }
     },
+    "bestie" : {
+      "comment" : "Speech-bubble sticker in the photo editor: best friend"
+    },
     "Bestie booth strip" : {
       "comment" : "One-tap look description, shown under its name",
       "localizations" : {
@@ -14725,6 +14930,9 @@
         }
       }
     },
+    "Blurred photo" : {
+
+    },
     "Blush" : {
       "localizations" : {
         "de" : {
@@ -14794,6 +15002,18 @@
           }
         }
       }
+    },
+    "Bold" : {
+      "comment" : "Text font in the photo editor (Poppins Bold)"
+    },
+    "Booth" : {
+      "comment" : "Retro Cam mode: four shots printed like a photo booth strip"
+    },
+    "Booth grid" : {
+
+    },
+    "Booth strip" : {
+
     },
     "Border" : {
       "comment" : "Effect switch: a white square border around the photo",
@@ -14866,6 +15086,9 @@
         }
       }
     },
+    "Bottom" : {
+      "comment" : "Where captions sit on the video"
+    },
     "Bouncy Curls" : {
       "comment" : "One-tap look (trend) name. Keep trend names people use in English, such as Y2K or Clean Girl.",
       "localizations" : {
@@ -14936,6 +15159,9 @@
           }
         }
       }
+    },
+    "Bow" : {
+      "comment" : "A ribbon bow sticker"
     },
     "Brightness" : {
       "localizations" : {
@@ -15077,6 +15303,9 @@
           }
         }
       }
+    },
+    "Bring to front" : {
+
     },
     "Brings back what you wrote before" : {
       "localizations" : {
@@ -15359,6 +15588,12 @@
         }
       }
     },
+    "Brush over what to keep" : {
+
+    },
+    "Brush over what to remove" : {
+
+    },
     "Brush over what you want to remove." : {
       "localizations" : {
         "de" : {
@@ -15569,6 +15804,12 @@
         }
       }
     },
+    "Bubble" : {
+      "comment" : "Caption style: text on a rounded pastel pill"
+    },
+    "Bubblegum" : {
+
+    },
     "Butter" : {
       "localizations" : {
         "de" : {
@@ -15638,6 +15879,9 @@
           }
         }
       }
+    },
+    "Butterfly" : {
+
     },
     "Buy a credit pack" : {
       "localizations" : {
@@ -15933,6 +16177,12 @@
         }
       }
     },
+    "Camcorder '06" : {
+      "shouldTranslate" : false
+    },
+    "Camera access is *off*" : {
+
+    },
     "Camera info" : {
       "comment" : "Effect switch: the camcorder's REC, battery and time display",
       "localizations" : {
@@ -16003,6 +16253,9 @@
           }
         }
       }
+    },
+    "Camera preview" : {
+
     },
     "Cancel" : {
       "localizations" : {
@@ -16285,6 +16538,9 @@
         }
       }
     },
+    "Caption (optional)" : {
+
+    },
     "Caption copied" : {
       "localizations" : {
         "de" : {
@@ -16424,6 +16680,24 @@
           }
         }
       }
+    },
+    "Captions" : {
+
+    },
+    "Captions are made on your device with Apple's speech recognition. The sound and words of your video are never uploaded." : {
+
+    },
+    "Captions in one tap" : {
+
+    },
+    "Carousel" : {
+
+    },
+    "Centered" : {
+      "comment" : "Text alignment"
+    },
+    "Change timing" : {
+
     },
     "Check every face. Tap to hide any we missed." : {
       "localizations" : {
@@ -16635,6 +16909,9 @@
         }
       }
     },
+    "Cherries" : {
+
+    },
     "Cherry Blossom" : {
       "comment" : "One-tap look (trend) name. Keep trend names people use in English, such as Y2K or Clean Girl.",
       "localizations" : {
@@ -16702,6 +16979,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "樱花"
+          }
+        }
+      }
+    },
+    "Choose %lld–%lld photos" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Choose %1$lld–%2$lld photos"
           }
         }
       }
@@ -17057,6 +17344,9 @@
         }
       }
     },
+    "Chrome heart" : {
+      "comment" : "A shiny metallic Y2K-style heart sticker"
+    },
     "Cinematic" : {
       "comment" : "Art style name on the Create screen",
       "localizations" : {
@@ -17270,6 +17560,9 @@
         }
       }
     },
+    "Clear" : {
+
+    },
     "Clear brush" : {
       "localizations" : {
         "de" : {
@@ -17340,6 +17633,9 @@
         }
       }
     },
+    "Clear drawing" : {
+
+    },
     "Clear prompt" : {
       "localizations" : {
         "de" : {
@@ -17409,6 +17705,9 @@
           }
         }
       }
+    },
+    "Clear recent prompts" : {
+
     },
     "Clip length %@" : {
       "localizations" : {
@@ -17689,6 +17988,9 @@
           }
         }
       }
+    },
+    "Collage" : {
+
     },
     "Collectible desk toy" : {
       "comment" : "One-tap look description, shown under its name",
@@ -18717,6 +19019,9 @@
         }
       }
     },
+    "Copied" : {
+
+    },
     "Copied, paste it in a chat" : {
       "localizations" : {
         "de" : {
@@ -18997,6 +19302,9 @@
         }
       }
     },
+    "Copy captions (SRT)" : {
+
+    },
     "Copy image" : {
       "localizations" : {
         "de" : {
@@ -19137,6 +19445,9 @@
         }
       }
     },
+    "Corners" : {
+
+    },
     "Cotton candy" : {
       "localizations" : {
         "de" : {
@@ -19207,6 +19518,15 @@
         }
       }
     },
+    "Couldn't download the language. Connect to the internet and try again." : {
+
+    },
+    "Couldn't duplicate that image." : {
+
+    },
+    "Couldn't make captions. Try again, or add them yourself." : {
+
+    },
     "Couldn't open Instagram." : {
       "localizations" : {
         "de" : {
@@ -19276,6 +19596,9 @@
           }
         }
       }
+    },
+    "Couldn't open that image." : {
+
     },
     "Couldn't open that image. Please try again." : {
       "localizations" : {
@@ -19976,6 +20299,9 @@
           }
         }
       }
+    },
+    "Couldn't take the photo. Please try again." : {
+
     },
     "Cover star" : {
       "localizations" : {
@@ -21005,6 +21331,9 @@
         }
       }
     },
+    "Creations stay here for 30 days, then they're deleted for good." : {
+
+    },
     "Credit packs" : {
       "localizations" : {
         "de" : {
@@ -21776,6 +22105,9 @@
         }
       }
     },
+    "Cut from the video" : {
+
+    },
     "Cut out" : {
       "localizations" : {
         "de" : {
@@ -22337,6 +22669,12 @@
         }
       }
     },
+    "Date" : {
+
+    },
+    "Date & caption" : {
+
+    },
     "Date stamp" : {
       "localizations" : {
         "de" : {
@@ -22543,6 +22881,50 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "删除"
+          }
+        }
+      }
+    },
+    "Delete %lld creations for good?" : {
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Delete %lld creation for good?"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Delete %lld creations for good?"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Delete %lld creations?" : {
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Delete %lld creation?"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Delete %lld creations?"
+                }
+              }
+            }
           }
         }
       }
@@ -22757,6 +23139,9 @@
         }
       }
     },
+    "Delete caption" : {
+
+    },
     "Delete my data" : {
       "localizations" : {
         "de" : {
@@ -22967,6 +23352,12 @@
         }
       }
     },
+    "Delete now" : {
+
+    },
+    "Delete this creation for good?" : {
+
+    },
     "Delete this creation?" : {
       "localizations" : {
         "de" : {
@@ -23036,6 +23427,9 @@
           }
         }
       }
+    },
+    "Deleted creations stay in Recently deleted for 30 days." : {
+
     },
     "Deleted from our servers within %@" : {
       "localizations" : {
@@ -23387,6 +23781,9 @@
           }
         }
       }
+    },
+    "Deleting it now can't be undone." : {
+
     },
     "Describe a change" : {
       "localizations" : {
@@ -23809,6 +24206,15 @@
         }
       }
     },
+    "Deselect all" : {
+
+    },
+    "Developing…" : {
+
+    },
+    "Digicam '04" : {
+      "shouldTranslate" : false
+    },
     "Discard" : {
       "localizations" : {
         "de" : {
@@ -23878,6 +24284,12 @@
           }
         }
       }
+    },
+    "Discard this shot?" : {
+
+    },
+    "Discard your collage?" : {
+
     },
     "Discard your edits?" : {
       "localizations" : {
@@ -24019,6 +24431,9 @@
           }
         }
       }
+    },
+    "Disposable '98" : {
+      "shouldTranslate" : false
     },
     "Doesn't look like you? Retry free" : {
       "localizations" : {
@@ -24443,6 +24858,27 @@
         }
       }
     },
+    "Doodle" : {
+
+    },
+    "Downloading %@ for captions (one time)…" : {
+
+    },
+    "Downloading the language for captions (one time)…" : {
+
+    },
+    "Drag to move · pinch to zoom · hold to swap" : {
+
+    },
+    "Drag to move · pinch to zoom · hold to swap · drop a file on a photo to replace it" : {
+
+    },
+    "Draw on the photo" : {
+
+    },
+    "Drawing" : {
+
+    },
     "Dream it.\n*See it.*" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -24725,6 +25161,12 @@
         }
       }
     },
+    "Duplicate" : {
+
+    },
+    "Each word lights up as it's said. Captions you write or rewrite yourself show like Pop." : {
+
+    },
     "Edit" : {
       "localizations" : {
         "de" : {
@@ -24865,6 +25307,12 @@
         }
       }
     },
+    "Edit ${photo}" : {
+
+    },
+    "Edit a Photo" : {
+
+    },
     "Edit a video" : {
       "localizations" : {
         "de" : {
@@ -24934,6 +25382,9 @@
           }
         }
       }
+    },
+    "Edit text" : {
+
     },
     "Edit this image" : {
       "localizations" : {
@@ -25216,6 +25667,9 @@
         }
       }
     },
+    "Effect" : {
+
+    },
     "Effects" : {
       "localizations" : {
         "de" : {
@@ -25355,6 +25809,9 @@
           }
         }
       }
+    },
+    "Elegant" : {
+      "comment" : "Text font in the photo editor (New York italic)"
     },
     "Email hidden" : {
       "localizations" : {
@@ -25566,6 +26023,9 @@
           }
         }
       }
+    },
+    "Ends at %@" : {
+
     },
     "Enhance" : {
       "comment" : "Name of an editing tool",
@@ -25918,6 +26378,9 @@
           }
         }
       }
+    },
+    "Eraser" : {
+
     },
     "Erasing…" : {
       "localizations" : {
@@ -26833,6 +27296,9 @@
         }
       }
     },
+    "Favorite" : {
+
+    },
     "Favorites" : {
       "localizations" : {
         "de" : {
@@ -27043,6 +27509,12 @@
         }
       }
     },
+    "Fill" : {
+
+    },
+    "Fill the frame" : {
+
+    },
     "Fills in a new idea for your picture" : {
       "localizations" : {
         "de" : {
@@ -27183,6 +27655,12 @@
           }
         }
       }
+    },
+    "Film Still" : {
+      "shouldTranslate" : false
+    },
+    "Film strip" : {
+
     },
     "Find “Glowlit” on the App Store" : {
       "localizations" : {
@@ -28398,6 +28876,9 @@
         }
       }
     },
+    "Fit" : {
+
+    },
     "Fit & straighten" : {
       "localizations" : {
         "de" : {
@@ -28467,6 +28948,9 @@
           }
         }
       }
+    },
+    "Flash" : {
+
     },
     "Flip horizontally" : {
       "localizations" : {
@@ -28538,6 +29022,9 @@
         }
       }
     },
+    "Flower" : {
+
+    },
     "For your shop & career" : {
       "comment" : "Template collection heading",
       "localizations" : {
@@ -28608,6 +29095,9 @@
           }
         }
       }
+    },
+    "Free · made on your device" : {
+
     },
     "Free · on your device" : {
       "localizations" : {
@@ -30303,6 +30793,12 @@
         }
       }
     },
+    "Getting ready…" : {
+
+    },
+    "Getting your photos…" : {
+
+    },
     "Give me a cute witch hat and glowing pumpkins" : {
       "comment" : "Suggested Magic Edit request for her photo, shown on a chip in the editor",
       "localizations" : {
@@ -31012,6 +31508,9 @@
         }
       }
     },
+    "Gives a photo an 80s, 90s or Y2K look and returns the new image. Free and made on your device: the photo isn't uploaded." : {
+
+    },
     "Glam Studio" : {
       "comment" : "One-tap look (trend) name. Keep trend names people use in English, such as Y2K or Clean Girl.",
       "localizations" : {
@@ -31082,6 +31581,9 @@
           }
         }
       }
+    },
+    "Glamour '92" : {
+      "shouldTranslate" : false
     },
     "GLOW" : {
       "comment" : "Magazine cover masthead",
@@ -31929,6 +32431,9 @@
         }
       }
     },
+    "Glowlit listens to your video again and replaces these captions, including your changes." : {
+
+    },
     "Golden Hour Glow" : {
       "comment" : "One-tap look (trend) name. Keep trend names people use in English, such as Y2K or Clean Girl.",
       "localizations" : {
@@ -32212,6 +32717,12 @@
         }
       }
     },
+    "Grid" : {
+
+    },
+    "Grids, instant prints, film strips and seamless carousels. Your photos never leave your device." : {
+
+    },
     "Hair, makeup and glam, and still 100% you." : {
       "localizations" : {
         "de" : {
@@ -32352,6 +32863,9 @@
           }
         }
       }
+    },
+    "Handwritten" : {
+      "comment" : "Text font in the photo editor (Noteworthy)"
     },
     "Heart" : {
       "localizations" : {
@@ -32846,6 +33360,9 @@
         }
       }
     },
+    "Hide other faces" : {
+
+    },
     "Hide their faces" : {
       "localizations" : {
         "de" : {
@@ -33055,6 +33572,9 @@
           }
         }
       }
+    },
+    "Highlighter" : {
+
     },
     "Hold to see original" : {
       "localizations" : {
@@ -33476,6 +33996,9 @@
         }
       }
     },
+    "Image missing" : {
+
+    },
     "Image Playground is Apple's" : {
       "localizations" : {
         "de" : {
@@ -33686,6 +34209,9 @@
         }
       }
     },
+    "Ink" : {
+
+    },
     "Ink & halftone" : {
       "comment" : "One-tap look description, shown under its name",
       "localizations" : {
@@ -33826,6 +34352,12 @@
           }
         }
       }
+    },
+    "Instant" : {
+
+    },
+    "Instant '82" : {
+      "shouldTranslate" : false
     },
     "Instant sunset" : {
       "comment" : "One-tap look description, shown under its name",
@@ -34179,6 +34711,9 @@
         }
       }
     },
+    "Karaoke" : {
+      "comment" : "Caption style: each word lights up as it's said"
+    },
     "Kawaii" : {
       "comment" : "Art style name on the Create screen",
       "localizations" : {
@@ -34249,6 +34784,9 @@
           }
         }
       }
+    },
+    "Keep" : {
+
     },
     "Keep editing" : {
       "localizations" : {
@@ -34389,6 +34927,12 @@
           }
         }
       }
+    },
+    "Keep less" : {
+
+    },
+    "Keep more" : {
+
     },
     "Keep only subject %lld from the left" : {
       "localizations" : {
@@ -35028,6 +35572,9 @@
         }
       }
     },
+    "Keeps the biggest face and blurs the others, right on your device." : {
+
+    },
     "Kept only on this device, and used only to choose what %@ offers." : {
       "localizations" : {
         "de" : {
@@ -35097,6 +35644,9 @@
           }
         }
       }
+    },
+    "Kira Kira" : {
+      "shouldTranslate" : false
     },
     "Landscape" : {
       "comment" : "Image shape (aspect ratio) name",
@@ -35309,6 +35859,9 @@
         }
       }
     },
+    "Large" : {
+      "comment" : "Caption text size"
+    },
     "Laser Yearbook '86" : {
       "comment" : "One-tap look (trend) name. Keep trend names people use in English, such as Y2K or Clean Girl.",
       "localizations" : {
@@ -35379,6 +35932,12 @@
           }
         }
       }
+    },
+    "Layout" : {
+
+    },
+    "Left" : {
+      "comment" : "Text alignment"
     },
     "Legal" : {
       "localizations" : {
@@ -36434,6 +36993,15 @@
           }
         }
       }
+    },
+    "Listening to your video…" : {
+
+    },
+    "Live effects · booth" : {
+
+    },
+    "Live retro effects & photo booth · free" : {
+
     },
     "Look of the week" : {
       "localizations" : {
@@ -37570,6 +38138,18 @@
         }
       }
     },
+    "Make a *photo dump*" : {
+
+    },
+    "Make a collage" : {
+
+    },
+    "Make a Collage" : {
+
+    },
+    "Make captions" : {
+
+    },
     "Make it *yours*" : {
       "localizations" : {
         "de" : {
@@ -38275,6 +38855,9 @@
         }
       }
     },
+    "Making your collage…" : {
+
+    },
     "Mall photo-studio glam" : {
       "comment" : "One-tap look description, shown under its name",
       "localizations" : {
@@ -38416,6 +38999,15 @@
         }
       }
     },
+    "Marker" : {
+
+    },
+    "Medium" : {
+      "comment" : "Caption text size"
+    },
+    "Meet Retro Cam" : {
+
+    },
     "Membership" : {
       "localizations" : {
         "de" : {
@@ -38485,6 +39077,9 @@
           }
         }
       }
+    },
+    "Middle" : {
+      "comment" : "Where captions sit on the video"
     },
     "Midnight flash & confetti" : {
       "comment" : "One-tap look description, shown under its name",
@@ -38556,6 +39151,9 @@
           }
         }
       }
+    },
+    "Mini" : {
+      "comment" : "Tag of the Tiny World effect: a tilt-shift photo that looks like a miniature model"
     },
     "Mint" : {
       "localizations" : {
@@ -38908,6 +39506,9 @@
         }
       }
     },
+    "Moodboard" : {
+
+    },
     "Moods, places and colours for your feed." : {
       "localizations" : {
         "de" : {
@@ -39117,6 +39718,18 @@
           }
         }
       }
+    },
+    "Mosaic" : {
+
+    },
+    "Move earlier" : {
+
+    },
+    "Move later" : {
+
+    },
+    "Moved to Recently deleted" : {
+
     },
     "Museum masterpiece" : {
       "comment" : "One-tap look description, shown under its name",
@@ -39328,6 +39941,12 @@
           }
         }
       }
+    },
+    "Neon" : {
+      "comment" : "Text style: glowing letters"
+    },
+    "Neon '84" : {
+      "shouldTranslate" : false
     },
     "Neon City" : {
       "comment" : "One-tap look (trend) name. Keep trend names people use in English, such as Y2K or Clean Girl.",
@@ -40174,6 +40793,9 @@
         }
       }
     },
+    "Night" : {
+
+    },
     "No active subscription found for this Apple Account." : {
       "localizations" : {
         "de" : {
@@ -40313,6 +40935,9 @@
           }
         }
       }
+    },
+    "No camera *found*" : {
+
     },
     "No credit was used. Tap to try again." : {
       "localizations" : {
@@ -40944,6 +41569,9 @@
         }
       }
     },
+    "Nothing in Recently deleted" : {
+
+    },
     "Nothing to restore" : {
       "localizations" : {
         "de" : {
@@ -41154,6 +41782,9 @@
           }
         }
       }
+    },
+    "Off" : {
+
     },
     "Offensive or harmful" : {
       "comment" : "Reason for reporting an AI result, a button in the Report dialog",
@@ -41509,6 +42140,9 @@
         }
       }
     },
+    "OMG" : {
+      "comment" : "Speech-bubble sticker in the photo editor"
+    },
     "One new look a week" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -41720,6 +42354,9 @@
           }
         }
       }
+    },
+    "One wide picture, cut into 4:5 slides that swipe as one." : {
+
     },
     "One-tap looks" : {
       "localizations" : {
@@ -42001,6 +42638,9 @@
         }
       }
     },
+    "Open in the editor" : {
+
+    },
     "Open Photo…" : {
       "localizations" : {
         "de" : {
@@ -42070,6 +42710,9 @@
           }
         }
       }
+    },
+    "Open Retro Cam" : {
+
     },
     "Open Settings" : {
       "localizations" : {
@@ -42141,6 +42784,21 @@
         }
       }
     },
+    "Open System Settings" : {
+
+    },
+    "Opens a photo in Glowlit's editor, or lets you pick one." : {
+
+    },
+    "Opens Retro Cam's photo booth: four shots with a 3-2-1 countdown, printed as a strip or a grid. Free, on your device." : {
+
+    },
+    "Opens the camera with live 80s, 90s and Y2K effects. Free, on your device." : {
+
+    },
+    "Opens the collage maker for photo dumps, moodboards and carousels. Free, on your device." : {
+
+    },
     "Optional — you can skip this" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -42211,6 +42869,9 @@
           }
         }
       }
+    },
+    "Or drop photo files here" : {
+
     },
     "Or wait for your free daily credits. **Remind me when they're back**" : {
       "localizations" : {
@@ -42702,6 +43363,9 @@
         }
       }
     },
+    "Outline" : {
+      "comment" : "Text style: letters with an outline"
+    },
     "Page %lld of %lld" : {
       "localizations" : {
         "de" : {
@@ -42849,6 +43513,9 @@
         }
       }
     },
+    "Paper" : {
+
+    },
     "Paris Trip" : {
       "comment" : "One-tap look (trend) name. Keep trend names people use in English, such as Y2K or Clean Girl.",
       "localizations" : {
@@ -42919,6 +43586,9 @@
           }
         }
       }
+    },
+    "Pasted sticker" : {
+
     },
     "Pastel" : {
       "localizations" : {
@@ -43271,6 +43941,12 @@
         }
       }
     },
+    "Peach" : {
+
+    },
+    "Pen" : {
+
+    },
     "Pet Astronaut" : {
       "comment" : "One-tap look (trend) name. Keep trend names people use in English, such as Y2K or Clean Girl.",
       "localizations" : {
@@ -43555,6 +44231,7 @@
       }
     },
     "Photo" : {
+      "comment" : "Retro Cam mode: one photo",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -43623,6 +44300,25 @@
           }
         }
       }
+    },
+    "Photo %lld of %lld" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Photo %1$lld of %2$lld"
+          }
+        }
+      }
+    },
+    "Photo Booth" : {
+
+    },
+    "Photo dump · carousel" : {
+
+    },
+    "Photo dumps & carousels · free, on-device" : {
+
     },
     "Photo ranked %lld" : {
       "extractionState" : "stale",
@@ -44399,6 +45095,9 @@
         }
       }
     },
+    "Pick at least 2 photos for a collage." : {
+
+    },
     "Pick other photos" : {
       "localizations" : {
         "de" : {
@@ -44538,6 +45237,9 @@
           }
         }
       }
+    },
+    "Pill" : {
+      "comment" : "Text style: letters on a rounded colour background"
     },
     "Ping me when it's ready" : {
       "localizations" : {
@@ -45102,6 +45804,9 @@
         }
       }
     },
+    "Plain" : {
+      "comment" : "Text style: just the letters"
+    },
     "Play" : {
       "localizations" : {
         "de" : {
@@ -45242,6 +45947,9 @@
           }
         }
       }
+    },
+    "Plum" : {
+
     },
     "Plus a free retry if it doesn't look like you" : {
       "localizations" : {
@@ -45454,6 +46162,9 @@
         }
       }
     },
+    "Pop" : {
+      "comment" : "Caption style: bold white text with a dark outline"
+    },
     "Poppins" : {
       "localizations" : {
         "de" : {
@@ -45665,6 +46376,9 @@
         }
       }
     },
+    "Position" : {
+
+    },
     "Posting publicly? Switch on the app's AI label (for example Instagram's “AI info”). Your file already carries an invisible “made with AI” tag." : {
       "localizations" : {
         "de" : {
@@ -45734,6 +46448,9 @@
           }
         }
       }
+    },
+    "Preparing…" : {
+
     },
     "Pretty, natural makeup" : {
       "comment" : "One-tap look description, shown under its name",
@@ -45945,6 +46662,9 @@
           }
         }
       }
+    },
+    "Printing your strip…" : {
+
     },
     "Privacy" : {
       "localizations" : {
@@ -47675,6 +48395,9 @@
         }
       }
     },
+    "Puts this prompt back in the box" : {
+
+    },
     "Quick tools" : {
       "localizations" : {
         "de" : {
@@ -48097,6 +48820,12 @@
         }
       }
     },
+    "Recent" : {
+
+    },
+    "Recently deleted" : {
+
+    },
     "Redo" : {
       "localizations" : {
         "de" : {
@@ -48166,6 +48895,21 @@
           }
         }
       }
+    },
+    "Redo captions" : {
+
+    },
+    "Redo captions?" : {
+
+    },
+    "Regenerate" : {
+
+    },
+    "Regenerate?" : {
+
+    },
+    "Remove" : {
+
     },
     "Remove background" : {
       "localizations" : {
@@ -48378,6 +49122,9 @@
         }
       }
     },
+    "Remove from recent" : {
+
+    },
     "Remove it with Pro" : {
       "localizations" : {
         "de" : {
@@ -48447,6 +49194,9 @@
           }
         }
       }
+    },
+    "Remove photo" : {
+
     },
     "Remove the people behind me" : {
       "localizations" : {
@@ -49359,6 +50109,9 @@
         }
       }
     },
+    "Restore this creation?" : {
+
+    },
     "Restored" : {
       "localizations" : {
         "de" : {
@@ -49428,6 +50181,21 @@
           }
         }
       }
+    },
+    "Retake" : {
+
+    },
+    "Retro Cam" : {
+
+    },
+    "Retro Cam needs a camera. Connect one and try again." : {
+
+    },
+    "Retro Cam shows 80s, 90s and Y2K effects live, right in the camera. Your photos stay on your device until you share them." : {
+
+    },
+    "Retro Effect" : {
+
     },
     "Retro school-photo lasers" : {
       "comment" : "One-tap look description, shown under its name",
@@ -49640,6 +50408,9 @@
         }
       }
     },
+    "Right" : {
+      "comment" : "Text alignment"
+    },
     "Rotate left" : {
       "localizations" : {
         "de" : {
@@ -49709,6 +50480,9 @@
           }
         }
       }
+    },
+    "Round" : {
+      "comment" : "Text font in the photo editor (rounded system font)"
     },
     "Royal Pet Portrait" : {
       "comment" : "One-tap look (trend) name. Keep trend names people use in English, such as Y2K or Clean Girl.",
@@ -49993,6 +50767,34 @@
         }
       }
     },
+    "Same prompt and style, new pictures." : {
+
+    },
+    "Same prompt and style, new pictures. Uses %lld credits; any that fail are refunded." : {
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Same prompt and style, new pictures. Uses %lld credit; any that fail are refunded."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Same prompt and style, new pictures. Uses %lld credits; any that fail are refunded."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Same prompt and style, new pictures. Uses 1 credit, refunded if it fails." : {
+
+    },
     "Satin bows & tulle" : {
       "comment" : "One-tap look description, shown under its name",
       "localizations" : {
@@ -50203,6 +51005,12 @@
           }
         }
       }
+    },
+    "Save all" : {
+
+    },
+    "Save it first if you want to keep it." : {
+
     },
     "Save sticker" : {
       "localizations" : {
@@ -50484,6 +51292,31 @@
         }
       }
     },
+    "Saved" : {
+
+    },
+    "Saved %lld slides to Photos" : {
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Saved %lld slide to Photos"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Saved %lld slides to Photos"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "Saved to My Works" : {
       "localizations" : {
         "de" : {
@@ -50694,6 +51527,9 @@
         }
       }
     },
+    "Saves every image here to Photos" : {
+
+    },
     "Saving this one for the memories" : {
       "comment" : "Caption idea for sharing a picture",
       "localizations" : {
@@ -50834,6 +51670,9 @@
           }
         }
       }
+    },
+    "Saving…" : {
+
     },
     "Say something about it…" : {
       "localizations" : {
@@ -51115,6 +51954,12 @@
         }
       }
     },
+    "Scrapbook" : {
+
+    },
+    "Script" : {
+      "comment" : "Text font in the photo editor (Snell Roundhand)"
+    },
     "Secure connection failed." : {
       "comment" : "Error message",
       "localizations" : {
@@ -51327,6 +52172,15 @@
         }
       }
     },
+    "Select" : {
+
+    },
+    "Select all" : {
+
+    },
+    "Select items" : {
+
+    },
     "Selected photos are processed by %@." : {
       "extractionState" : "stale",
       "localizations" : {
@@ -51397,6 +52251,9 @@
           }
         }
       }
+    },
+    "Self-timer" : {
+
     },
     "Selfie glow-ups" : {
       "localizations" : {
@@ -51748,6 +52605,9 @@
           }
         }
       }
+    },
+    "Shadow" : {
+
     },
     "Share" : {
       "localizations" : {
@@ -52449,6 +53309,9 @@
         }
       }
     },
+    "Shoot with live 80s, 90s and Y2K effects, or start a four-shot photo booth. Free, on your device." : {
+
+    },
     "Shop-ready product shots" : {
       "comment" : "One-tap look description, shown under its name",
       "localizations" : {
@@ -52590,6 +53453,9 @@
         }
       }
     },
+    "Show captions" : {
+
+    },
     "Show me around" : {
       "localizations" : {
         "de" : {
@@ -52729,6 +53595,12 @@
           }
         }
       }
+    },
+    "Show the whole photo" : {
+
+    },
+    "Shows this caption on the video" : {
+
     },
     "Sign in" : {
       "localizations" : {
@@ -53501,6 +54373,12 @@
           }
         }
       }
+    },
+    "slay" : {
+      "comment" : "Speech-bubble sticker in the photo editor: praise, as in 'you look amazing'"
+    },
+    "Small" : {
+      "comment" : "Caption text size"
     },
     "Small moments, big glow" : {
       "comment" : "Caption idea for sharing a picture",
@@ -54350,6 +55228,9 @@
         }
       }
     },
+    "Spacing" : {
+
+    },
     "Sparkle" : {
       "localizations" : {
         "de" : {
@@ -54419,6 +55300,18 @@
           }
         }
       }
+    },
+    "Sparkles" : {
+
+    },
+    "Speech bubble: %@" : {
+      "comment" : "A speech-bubble sticker and its words"
+    },
+    "Speech recognition is off for Glowlit. Turn it on in Settings, or add captions yourself." : {
+
+    },
+    "Speech recognition is off for Glowlit. Turn it on in System Settings, or add captions yourself." : {
+
     },
     "Spooky Portrait" : {
       "comment" : "One-tap look (trend) name. Keep trend names people use in English, such as Y2K or Clean Girl.",
@@ -55198,6 +56091,12 @@
         }
       }
     },
+    "Start photo booth" : {
+
+    },
+    "Start Photo Booth" : {
+
+    },
     "Start with your photo" : {
       "comment" : "Onboarding button that opens the photo picker to try a free effect on her own photo",
       "localizations" : {
@@ -55269,6 +56168,9 @@
         }
       }
     },
+    "Starts at %@" : {
+
+    },
     "Sticker" : {
       "localizations" : {
         "de" : {
@@ -55339,6 +56241,9 @@
         }
       }
     },
+    "Stickers" : {
+      "comment" : "Bottom bar name of the Text & Stickers tool"
+    },
     "Still you" : {
       "localizations" : {
         "de" : {
@@ -55408,6 +56313,9 @@
           }
         }
       }
+    },
+    "Stop" : {
+
     },
     "Stop-motion charm" : {
       "comment" : "One-tap look description, shown under its name",
@@ -55760,6 +56668,15 @@
           }
         }
       }
+    },
+    "Strike a *pose*" : {
+
+    },
+    "Strip" : {
+
+    },
+    "Stuck for ideas?" : {
+
     },
     "Style" : {
       "localizations" : {
@@ -56254,6 +57171,9 @@
         }
       }
     },
+    "Sunset" : {
+
+    },
     "Surprise me" : {
       "localizations" : {
         "de" : {
@@ -56323,6 +57243,24 @@
           }
         }
       }
+    },
+    "Swap" : {
+
+    },
+    "Swipe up or down to change the effect." : {
+
+    },
+    "Switch camera" : {
+
+    },
+    "Switches between plain, outline, pill and neon" : {
+
+    },
+    "Take photo" : {
+
+    },
+    "Takes the missing image out of My Works" : {
+
     },
     "Talk to someone you trust" : {
       "localizations" : {
@@ -56464,6 +57402,21 @@
         }
       }
     },
+    "Tap a face to blur or show it. Tap anywhere else to cover a face we missed." : {
+
+    },
+    "Tap a time to see that caption on the video." : {
+
+    },
+    "Tap Add captions and the words you say appear on your video. Then fix a word or pick a style in Edit." : {
+
+    },
+    "Tap again for another arrangement" : {
+
+    },
+    "Tap another photo to swap" : {
+
+    },
     "Tap Instagram, then Stories ✨" : {
       "localizations" : {
         "de" : {
@@ -56603,6 +57556,9 @@
           }
         }
       }
+    },
+    "Tap Surprise me for a free effect that suits this photo. Tap again for another one." : {
+
     },
     "Tap the photo to hide a spot" : {
       "localizations" : {
@@ -57165,6 +58121,18 @@
         }
       }
     },
+    "Text" : {
+
+    },
+    "Text & Stickers" : {
+
+    },
+    "Text style" : {
+
+    },
+    "Text, stickers, doodles" : {
+
+    },
     "Thank you for supporting us ✦" : {
       "localizations" : {
         "de" : {
@@ -57375,6 +58343,9 @@
           }
         }
       }
+    },
+    "That can't be pasted as a sticker." : {
+
     },
     "That file doesn't have a video track." : {
       "localizations" : {
@@ -58006,6 +58977,15 @@
         }
       }
     },
+    "The camera paused to cool down. It will be back in a moment." : {
+
+    },
+    "The camera paused. It will be back in a moment." : {
+
+    },
+    "The camera pauses while another app is open next to Glowlit." : {
+
+    },
     "THE GLOW ISSUE" : {
       "localizations" : {
         "de" : {
@@ -58152,6 +59132,9 @@
         }
       }
     },
+    "They appear in the order you pick them" : {
+
+    },
     "They're OK with it" : {
       "localizations" : {
         "de" : {
@@ -58221,6 +59204,9 @@
           }
         }
       }
+    },
+    "This can't be undone." : {
+
     },
     "This creation failed. Your credit was refunded." : {
       "localizations" : {
@@ -58361,6 +59347,9 @@
           }
         }
       }
+    },
+    "This image is missing" : {
+
     },
     "This is part of Pro." : {
       "localizations" : {
@@ -59492,6 +60481,9 @@
         }
       }
     },
+    "This video has no sound. You can add captions yourself." : {
+
+    },
     "This video is longer than 5 minutes, so we'll use the first 5:00." : {
       "localizations" : {
         "de" : {
@@ -59701,6 +60693,12 @@
           }
         }
       }
+    },
+    "Throwback '16" : {
+      "shouldTranslate" : false
+    },
+    "Tiny World" : {
+      "shouldTranslate" : false
     },
     "Tip: be specific — lighting, mood and style words help a lot." : {
       "localizations" : {
@@ -60902,6 +61900,9 @@
         }
       }
     },
+    "Try it" : {
+
+    },
     "TRY IT" : {
       "localizations" : {
         "de" : {
@@ -61819,6 +62820,9 @@
         }
       }
     },
+    "Turn left" : {
+
+    },
     "Turn on notifications for %@ in iOS Settings to get reminders." : {
       "extractionState" : "stale",
       "localizations" : {
@@ -62029,6 +63033,12 @@
           }
         }
       }
+    },
+    "Turn on the camera" : {
+
+    },
+    "Turn right" : {
+
     },
     "Turn the background into a sunset beach" : {
       "comment" : "Example request for editing a photo of several people\nSuggested Magic Edit request for her photo, shown on a chip in the editor",
@@ -62243,6 +63253,9 @@
         }
       }
     },
+    "Turn your photos into a photo dump, a moodboard or a carousel. Free, on your device." : {
+
+    },
     "Type an idea, pick a style and get art in seconds. No prompt skills needed." : {
       "localizations" : {
         "de" : {
@@ -62383,6 +63396,12 @@
           }
         }
       }
+    },
+    "Type something" : {
+
+    },
+    "Typewriter" : {
+      "comment" : "Caption style: retro monospaced text that types itself\nText font in the photo editor (monospaced)"
     },
     "Unblur, sharpen details and restore faces in one tap." : {
       "localizations" : {
@@ -62734,6 +63753,9 @@
           }
         }
       }
+    },
+    "Unfavorite" : {
+
     },
     "Unlock everything. No charge today." : {
       "localizations" : {
@@ -63294,6 +64316,9 @@
           }
         }
       }
+    },
+    "VHS '86" : {
+      "shouldTranslate" : false
     },
     "Video" : {
       "localizations" : {
@@ -64348,6 +65373,12 @@
           }
         }
       }
+    },
+    "We didn't hear any words. Add your own at any moment of the video." : {
+
+    },
+    "We didn't hear any words. You can add your own." : {
+
     },
     "We only keep your age range on this device, never your birthday." : {
       "localizations" : {
@@ -65899,6 +66930,15 @@
         }
       }
     },
+    "Words appear as you talk. Free, made on your device." : {
+
+    },
+    "Write a caption" : {
+
+    },
+    "Write on your photos" : {
+
+    },
     "Writing new ideas on your device…" : {
       "localizations" : {
         "de" : {
@@ -66178,6 +67218,9 @@
           }
         }
       }
+    },
+    "Y2K" : {
+      "shouldTranslate" : false
     },
     "Y2K Digicam" : {
       "comment" : "One-tap look (trend) name. Keep trend names people use in English, such as Y2K or Clean Girl.",
@@ -69388,6 +70431,12 @@
           }
         }
       }
+    },
+    "Your photo booth print" : {
+
+    },
+    "Your photo with %@" : {
+
     },
     "Your photos are never included." : {
       "localizations" : {

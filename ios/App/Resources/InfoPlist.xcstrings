@@ -157,6 +157,18 @@
         }
       }
     },
+    "NSCameraUsageDescription" : {
+      "comment" : "Privacy - Camera Usage Description",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Glowlit uses the camera for Retro Cam and Photo Booth. Photos stay on your device until you share them."
+          }
+        }
+      }
+    },
     "NSPhotoLibraryAddUsageDescription" : {
       "comment" : "Privacy - Photo Library Additions Usage Description",
       "extractionState" : "extracted_with_value",
@@ -231,6 +243,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Glowlit 会将你的作品保存到相册。"
+          }
+        }
+      }
+    },
+    "NSSpeechRecognitionUsageDescription" : {
+      "comment" : "Privacy - Speech Recognition Usage Description",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Glowlit turns what's said in your video into captions on your device. Nothing is uploaded."
           }
         }
       }

@@ -3978,6 +3978,9 @@
         }
       }
     },
+    "Four shots with a 3-2-1 countdown. Free." : {
+
+    },
     "Free, on your device" : {
       "localizations" : {
         "de" : {
@@ -6735,6 +6738,9 @@
         }
       }
     },
+    "Photo Booth" : {
+
+    },
     "Pick a photo and say what to change." : {
       "localizations" : {
         "de" : {
@@ -7444,6 +7450,9 @@
         }
       }
     },
+    "Retro Cam" : {
+
+    },
     "Retro effects" : {
       "localizations" : {
         "de" : {
@@ -7797,6 +7806,9 @@
           }
         }
       }
+    },
+    "Shoot with live 80s, 90s and Y2K effects. Free." : {
+
     },
     "Shop-ready product shots" : {
       "comment" : "One-tap look description, shown under its name",
