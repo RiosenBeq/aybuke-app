@@ -4,6 +4,7 @@ import SwiftUI
 /// Plays once each time `trigger` changes; skipped with Reduce Motion.
 struct SparkleBurst: View {
     let trigger: Int
+    var colors: [Color] = [Palette.blush, Palette.white, Palette.ink, Palette.blush]
 
     @State private var particles: [Particle] = []
     @State private var progress: CGFloat = 0
@@ -43,7 +44,6 @@ struct SparkleBurst: View {
     private func fire() {
         guard !reduceMotion else { return }
         let symbols = ["heart.fill", "sparkle", "star.fill", "sparkles", "heart.fill"]
-        let colors = [Palette.blush, Palette.white, Palette.ink, Palette.blush]
         particles = (0..<18).map { index in
             Particle(
                 symbol: symbols[index % symbols.count],

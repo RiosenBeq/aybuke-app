@@ -13,7 +13,8 @@ struct ResultsView: View {
     @Environment(\.requestReview) private var requestReview
     @State private var selection = 0
     @State private var showReport = false
-    @State private var celebrate = 0
+    /// Keys the develop reveal, so each image of this batch plays it once.
+    @State private var batch = UUID()
 
     private var current: UIImage? {
         images.indices.contains(selection) ? images[selection] : images.first
@@ -23,18 +24,10 @@ struct ResultsView: View {
         VStack(spacing: 16) {
             TabView(selection: $selection) {
                 ForEach(images.indices, id: \.self) { index in
-                    Image(uiImage: images[index])
-                        .resizable()
-                        .scaledToFit()
-                        .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
-                        .shadow(color: Palette.shadow, radius: 16, y: 8)
-                        .padding(.horizontal, Metrics.gutter)
-                        .tag(index)
-                        .accessibilityLabel("Generated image \(index + 1) of \(images.count)")
+                    page(index)
                 }
             }
             .tabViewStyle(.page(indexDisplayMode: images.count > 1 ? .always : .never))
-            .overlay { SparkleBurst(trigger: celebrate) }
 
             if let prompt, !prompt.isEmpty {
                 Text(prompt)
@@ -92,10 +85,19 @@ struct ResultsView: View {
             }
         }
         .reportDialog(isPresented: $showReport, requestID: requestID)
-        .task {
-            try? await Task.sleep(for: .milliseconds(250))
-            celebrate += 1
-        }
+    }
+
+    private func page(_ index: Int) -> some View {
+        let key = batch.uuidString + "-" + String(index)
+        return Image(uiImage: images[index])
+            .resizable()
+            .scaledToFit()
+            .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+            .developReveal(id: key, haptic: index == 0)
+            .shadow(color: Palette.shadow, radius: 16, y: 8)
+            .padding(.horizontal, Metrics.gutter)
+            .tag(index)
+            .accessibilityLabel("Generated image \(index + 1) of \(images.count)")
     }
 
     private func save() {
