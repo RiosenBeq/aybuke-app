@@ -23,7 +23,15 @@ enum ImageUtilities {
             kCGImageSourceShouldCacheImmediately: true,
         ]
         guard let cgImage = CGImageSourceCreateThumbnailAtIndex(source, 0, options as CFDictionary) else { return nil }
-        return UIImage(cgImage: cgImage, scale: 1, orientation: .up)
+        // ImageIO's bitmap is converted again every time it's read (for a
+        // HEIC photo that takes about as long as decoding it), and the
+        // canvas, previews, Vision, effects and saving all read it. One copy
+        // into a plain 8-bit bitmap makes each of those reads cheap.
+        let decoded = UIImage(cgImage: cgImage, scale: 1, orientation: .up)
+        let size = CGSize(width: cgImage.width, height: cgImage.height)
+        return draw(size: size, opaque: !hasAlpha(decoded), colorSpace: cgImage.colorSpace) { _ in
+            decoded.draw(in: CGRect(origin: .zero, size: size))
+        }
     }
 
     /// Bakes in EXIF orientation and downsizes to `maxLongEdge` pixels at scale 1.
