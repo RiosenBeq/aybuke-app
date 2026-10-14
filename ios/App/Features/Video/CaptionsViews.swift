@@ -286,13 +286,14 @@ struct CaptionsEditor: View {
     private var styleSection: some View {
         @Bindable var captions = model.captions
         return Section {
-            HStack(spacing: 8) {
-                ForEach(CaptionStyle.allCases) { style in
-                    CaptionStyleButton(style: style, image: samples[style], isSelected: captions.style == style) {
-                        Haptics.selection()
-                        captions.style = style
-                    }
+            // The tiles keep their size: side by side where they fit, a
+            // scrolling row on a narrow iPhone.
+            ViewThatFits(in: .horizontal) {
+                styleTiles(captions)
+                ScrollView(.horizontal) {
+                    styleTiles(captions)
                 }
+                .scrollIndicators(.hidden)
             }
             .padding(.vertical, 4)
             HStack {
@@ -323,6 +324,17 @@ struct CaptionsEditor: View {
             }
         }
         .listRowBackground(Palette.surface)
+    }
+
+    private func styleTiles(_ captions: VideoCaptions) -> some View {
+        HStack(spacing: 8) {
+            ForEach(CaptionStyle.allCases) { style in
+                CaptionStyleButton(style: style, image: samples[style], isSelected: captions.style == style) {
+                    Haptics.selection()
+                    captions.style = style
+                }
+            }
+        }
     }
 
     @ViewBuilder

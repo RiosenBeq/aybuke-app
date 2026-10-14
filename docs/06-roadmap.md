@@ -176,6 +176,9 @@ Seven audits (code, UX and accessibility, platform, competitors, trends, wellbei
 - ✅ VoiceOver, keyboard, Reduce Motion, 44 pt targets, plurals (`a11y-core`)
 - ⏳ Translate the ~360 new strings (catalogs synced, other App Store locales follow the en-US text)
 
+**More to play with**
+- ✅ Twelve stickers drawn in code (sparkle burst, moon and stars, ribbon bow, crown, daisy, rainbow, cloud, music notes, camera, film strip and the "main character" and "yay" bubbles); the Toy Cam '09 and Rainbow '17 effects, live in Retro Cam, on video, in Shortcuts and in Ideas for this photo; the Candy caption style; all translated into the 11 other app languages
+
 ## Later backlog from the October 2026 audit
 
 🔭 Ranked "later" items from the audit. Backend = needs the live Supabase backend.
@@ -197,7 +200,7 @@ Seven audits (code, UX and accessibility, platform, competitors, trends, wellbei
 | `on-device-upscale-and-eraser` | On-device HD upscale (Real-ESRGAN) and LaMa eraser with tap-to-select | Free and private Enhance and Erase; large models need on-demand download | No |
 | `widgets-interactive-accented` | Interactive and configurable widgets; iOS 26 accented and clear rendering | Widgets are static; the photo vanishes in accented mode | No |
 | `spotlight-focus-album` | Spotlight indexing, a Focus filter, an optional Glowlit album | System integration for discovery and privacy | No |
-| `live-photo-and-video-captions` | Live Photo effects, 9:16 reframe, speed, mute, Hide faces for video (✅ on-device automatic captions shipped: Pop, Bubble, Karaoke and Typewriter, burned into the export) | Video gaps against Edits, Wink and Meitu; captions were already planned | No |
+| `live-photo-and-video-captions` | Live Photo effects, 9:16 reframe, speed, mute, Hide faces for video (✅ on-device automatic captions shipped: Pop, Bubble, Candy, Karaoke and Typewriter, burned into the export) | Video gaps against Edits, Wink and Meitu; captions were already planned | No |
 | `universal-links-try-this-look` | Universal links, a "Try this look" card with QR, in-app events | "Add Yours" chains spread the 80s trend; needs a live domain | No |
 | `store-retention-pricing-ops` | Win-back offers, Retention Messaging, regional prices, billing-issue banner | Mostly App Store Connect setup once the app record exists | No |
 | `trial-credit-cap-family-sharing` | Cap credits during the trial; Family Sharing with a smaller allowance | A trial grants 100 credits in the category with the highest refund rate | Yes |

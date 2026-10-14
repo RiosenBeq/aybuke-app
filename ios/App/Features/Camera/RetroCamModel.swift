@@ -42,7 +42,7 @@ final class RetroCamModel {
     /// Colour, grain and light only: no beauty filters, nothing reshapes a
     /// face or body. Glamour's soft focus is left out for that reason, and
     /// Kira Kira because its sparkles are placed per photo, not live.
-    static let effects: [RetroEffect] = [.disposable, .vhs, .digicam, .instant, .throwback16, .filmStill, .camcorder06, .neon]
+    static let effects: [RetroEffect] = [.disposable, .vhs, .digicam, .toyCam, .instant, .throwback16, .rainbow, .filmStill, .camcorder06, .neon]
 
     private(set) var phase: Phase = .starting
     var mode: Mode = .photo {

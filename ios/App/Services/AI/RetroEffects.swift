@@ -5,10 +5,10 @@ import AppCore
 
 /// On-device "special effects" with an era: VHS tapes, disposable cameras,
 /// Y2K digicams, instant film, 90s glamour shots, glitter, 2016 phone
-/// photos, a 2006 camcorder and film stills, plus a tilt-shift "tiny
-/// world". Pure Core Image plus a little
-/// UIKit drawing (date stamps, frames, sparkles, camera chrome), so they're
-/// instant, free for everyone and never leave the device.
+/// photos, a 2006 camcorder, a 2009 toy camera, 2017's rainbow prism light
+/// and film stills, plus a tilt-shift "tiny world". Pure Core Image plus a
+/// little UIKit drawing (date stamps, frames, sparkles, camera chrome), so
+/// they're instant, free for everyone and never leave the device.
 enum RetroEffect: String, CaseIterable, Identifiable {
     case vhs
     case disposable
@@ -19,6 +19,8 @@ enum RetroEffect: String, CaseIterable, Identifiable {
     case neon
     case throwback16
     case camcorder06
+    case toyCam
+    case rainbow
     case filmStill
     case tinyWorld
 
@@ -36,6 +38,8 @@ enum RetroEffect: String, CaseIterable, Identifiable {
         case .neon: return "Neon '84"
         case .throwback16: return "Throwback '16"
         case .camcorder06: return "Camcorder '06"
+        case .toyCam: return "Toy Cam '09"
+        case .rainbow: return "Rainbow '17"
         case .filmStill: return "Film Still"
         case .tinyWorld: return "Tiny World"
         }
@@ -45,8 +49,8 @@ enum RetroEffect: String, CaseIterable, Identifiable {
         switch self {
         case .vhs, .instant, .neon: return "80s"
         case .disposable, .glamour: return "90s"
-        case .digicam, .camcorder06: return "Y2K"
-        case .throwback16: return "2010s"
+        case .digicam, .camcorder06, .toyCam: return "Y2K"
+        case .throwback16, .rainbow: return "2010s"
         case .kira: return String(localized: "Sparkle")
         case .filmStill: return String(localized: "Film", comment: "Era tag of the Film Still effect: the look of a movie frame")
         case .tinyWorld: return String(localized: "Mini", comment: "Tag of the Tiny World effect: a tilt-shift photo that looks like a miniature model")
@@ -154,7 +158,8 @@ enum RetroEffect: String, CaseIterable, Identifiable {
     }
 
     /// Effects that also work on video frames (no frames or per-frame sparkles).
-    static let videoEffects: [RetroEffect] = [.vhs, .disposable, .digicam, .glamour, .neon, .throwback16, .camcorder06, .filmStill, .tinyWorld]
+    static let videoEffects: [RetroEffect] = [.vhs, .disposable, .digicam, .glamour, .neon, .throwback16, .camcorder06, .toyCam, .rainbow,
+                                              .filmStill, .tinyWorld]
 
     /// The colour, grain and light of the effect, for photos and video frames.
     func grade(_ input: CIImage) -> CIImage {
@@ -255,6 +260,39 @@ enum RetroEffect: String, CaseIterable, Identifiable {
             image = RetroEffect.chromaticShift(image, offset: 0.8 * unit)
             image = RetroEffect.scanlines(over: image, spacing: max(2, 2 * unit), strength: 0.06)
             return RetroEffect.grain(over: image, amount: 0.05, scale: unit)
+        case .toyCam:
+            // A plastic toy camera with cross-processed film, the look 2009's
+            // camera apps copied: punchy colour, teal shadows, warm yellow
+            // highlights and dark corners. Colour and light only. The shift
+            // is made on gamma-encoded values (the working space is linear),
+            // so it tints the shadows without turning dark skin purple.
+            var image = input
+                .applyingFilter("CILinearToSRGBToneCurve")
+                .applyingFilter("CIColorMatrix", parameters: [
+                    "inputRVector": CIVector(x: 1.05, y: 0, z: 0, w: 0),
+                    "inputGVector": CIVector(x: 0, y: 1.02, z: 0, w: 0),
+                    "inputBVector": CIVector(x: 0, y: 0, z: 0.84, w: 0),
+                    "inputBiasVector": CIVector(x: -0.02, y: 0.025, z: 0.07, w: 0),
+                ])
+                .applyingFilter("CISRGBToneCurveToLinear")
+                .applyingFilter("CIToneCurve", parameters: [
+                    "inputPoint0": CIVector(x: 0, y: 0.02),
+                    "inputPoint1": CIVector(x: 0.25, y: 0.21),
+                    "inputPoint2": CIVector(x: 0.5, y: 0.53),
+                    "inputPoint3": CIVector(x: 0.75, y: 0.83),
+                    "inputPoint4": CIVector(x: 1, y: 1),
+                ])
+                .applyingFilter("CIColorControls", parameters: [kCIInputSaturationKey: 1.22])
+            image = RetroEffect.grain(over: image, amount: 0.08, scale: unit * 1.2)
+            return image.applyingFilter("CIVignette", parameters: [kCIInputIntensityKey: 1, kCIInputRadiusKey: 1.25])
+        case .rainbow:
+            // A prism held at the lens, the 2017 trend: a band of rainbow
+            // light across one corner and a slightly brighter photo. Light
+            // only, so faces keep their shape and their own colours.
+            let lifted = input.applyingFilter("CIColorControls", parameters: [
+                kCIInputBrightnessKey: 0.02, kCIInputContrastKey: 1.03, kCIInputSaturationKey: 1.08,
+            ])
+            return RetroEffect.prismLight(over: lifted)
         case .filmStill:
             // A warm movie frame. Halation blooms only from the brightest
             // lights (a high threshold), so skin is never softened.
@@ -505,6 +543,68 @@ enum RetroEffect: String, CaseIterable, Identifiable {
             .applyingGaussianBlur(sigma: 12 * unit)
             .cropped(to: extent)
         return glow.applyingFilter("CIScreenBlendMode", parameters: [kCIInputBackgroundImageKey: image]).cropped(to: extent)
+    }
+
+    /// One row of rainbow light, see-through at both ends: made once, then
+    /// stretched over every photo, preview and video frame.
+    private static let spectrum: CIImage? = {
+        let width = 256
+        guard let space = CGColorSpace(name: CGColorSpace.sRGB),
+              let context = CGContext(data: nil, width: width, height: 1, bitsPerComponent: 8, bytesPerRow: 0, space: space,
+                                      bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue) else { return nil }
+        let colors = [
+            CGColor(srgbRed: 1, green: 0.3, blue: 0.45, alpha: 0),
+            CGColor(srgbRed: 1, green: 0.3, blue: 0.45, alpha: 0.55),
+            CGColor(srgbRed: 1, green: 0.62, blue: 0.25, alpha: 0.62),
+            CGColor(srgbRed: 1, green: 0.92, blue: 0.35, alpha: 0.66),
+            CGColor(srgbRed: 0.4, green: 0.92, blue: 0.55, alpha: 0.62),
+            CGColor(srgbRed: 0.35, green: 0.7, blue: 1, alpha: 0.56),
+            CGColor(srgbRed: 0.68, green: 0.45, blue: 1, alpha: 0.45),
+            CGColor(srgbRed: 0.68, green: 0.45, blue: 1, alpha: 0),
+        ]
+        guard let gradient = CGGradient(colorsSpace: space, colors: colors as CFArray,
+                                        locations: [0, 0.14, 0.28, 0.42, 0.56, 0.7, 0.84, 1]) else { return nil }
+        context.drawLinearGradient(gradient, start: .zero, end: CGPoint(x: width, y: 0), options: [])
+        return context.makeImage().map { CIImage(cgImage: $0) }
+    }()
+
+    /// Rainbow light from a prism held at the lens: a band across the top
+    /// left corner with a soft white glow, fading toward the middle and
+    /// screened over the photo. The band is `spectrum` stretched and turned,
+    /// so it costs no pixels to build.
+    private static func prismLight(over image: CIImage) -> CIImage {
+        guard let spectrum else { return image }
+        let extent = image.extent
+        let long = max(extent.width, extent.height)
+        // Core Image's y runs up: this is near the top left corner.
+        let corner = CGPoint(x: extent.minX + extent.width * 0.16, y: extent.maxY - extent.height * 0.1)
+        let bandWidth = long * 0.34
+        let band = spectrum
+            .clampedToExtent()
+            .transformed(by: CGAffineTransform(scaleX: bandWidth / spectrum.extent.width, y: 1))
+            .transformed(by: CGAffineTransform(translationX: -bandWidth / 2, y: 0))
+            .transformed(by: CGAffineTransform(rotationAngle: -0.49))
+            .transformed(by: CGAffineTransform(translationX: corner.x, y: corner.y))
+        let fade = CIFilter.radialGradient()
+        fade.center = corner
+        fade.radius0 = Float(long * 0.05)
+        fade.radius1 = Float(long * 0.8)
+        fade.color0 = CIColor(red: 1, green: 1, blue: 1, alpha: 1)
+        fade.color1 = CIColor(red: 1, green: 1, blue: 1, alpha: 0)
+        let glow = CIFilter.radialGradient()
+        glow.center = corner
+        glow.radius0 = 0
+        glow.radius1 = Float(long * 0.4)
+        glow.color0 = CIColor(red: 1, green: 0.97, blue: 0.9, alpha: 0.25)
+        glow.color1 = CIColor(red: 1, green: 0.97, blue: 0.9, alpha: 0)
+        guard let mask = fade.outputImage, let haze = glow.outputImage else { return image }
+        let light = band
+            .applyingFilter("CISourceInCompositing", parameters: [kCIInputBackgroundImageKey: mask])
+            .applyingFilter("CIScreenBlendMode", parameters: [kCIInputBackgroundImageKey: haze])
+            // Only over the picture: a cut-out keeps its see-through parts.
+            .applyingFilter("CISourceInCompositing", parameters: [kCIInputBackgroundImageKey: image])
+            .cropped(to: extent)
+        return light.applyingFilter("CIScreenBlendMode", parameters: [kCIInputBackgroundImageKey: image]).cropped(to: extent)
     }
 
     // MARK: UIKit overlays

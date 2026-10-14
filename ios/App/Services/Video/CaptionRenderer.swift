@@ -9,6 +9,8 @@ enum CaptionStyle: String, CaseIterable, Identifiable, Sendable {
     case pop
     /// Ink text on a blush pill.
     case bubble
+    /// Pink letters with a thick white outline, like a sticker.
+    case candy
     /// Pop, with the word being said lit up in pink.
     case karaoke
     /// Monospaced type on a dark box that types itself, for VHS and Camcorder '06.
@@ -20,6 +22,7 @@ enum CaptionStyle: String, CaseIterable, Identifiable, Sendable {
         switch self {
         case .pop: return LocalizedStringResource("Pop", comment: "Caption style: bold white text with a dark outline")
         case .bubble: return LocalizedStringResource("Bubble", comment: "Caption style: text on a rounded pastel pill")
+        case .candy: return LocalizedStringResource("Candy", comment: "Caption style: pink letters with a thick white outline, like a sticker")
         case .karaoke: return LocalizedStringResource("Karaoke", comment: "Caption style: each word lights up as it's said")
         case .typewriter: return LocalizedStringResource("Typewriter", comment: "Caption style: retro monospaced text that types itself")
         }
@@ -27,7 +30,7 @@ enum CaptionStyle: String, CaseIterable, Identifiable, Sendable {
 
     func font(size: CGFloat) -> UIFont {
         switch self {
-        case .pop, .karaoke: return Self.rounded(size, .heavy)
+        case .pop, .karaoke, .candy: return Self.rounded(size, .heavy)
         case .bubble: return Self.rounded(size, .bold)
         case .typewriter: return UIFont.monospacedSystemFont(ofSize: size, weight: .bold)
         }
@@ -306,6 +309,8 @@ private struct CaptionDrawing {
         let step: CGFloat
         switch look.style {
         case .pop, .karaoke: step = size * 1.16
+        // A little more room for the thick outline.
+        case .candy: step = size * 1.22
         // Pills overlap a little so two lines read as one bubble.
         case .bubble: step = slotHeight - size * 0.12
         // Separate boxes, like TV captions.
@@ -339,7 +344,7 @@ private struct CaptionDrawing {
     /// Room around the text inside a pill or box, in ems.
     private static func padding(_ style: CaptionStyle) -> (x: CGFloat, y: CGFloat) {
         switch style {
-        case .pop, .karaoke: return (0, 0)
+        case .pop, .karaoke, .candy: return (0, 0)
         case .bubble: return (0.42, 0.16)
         case .typewriter: return (0.32, 0.1)
         }
@@ -381,6 +386,7 @@ private struct CaptionDrawing {
             switch look.style {
             case .pop, .karaoke: drawPop(cg)
             case .bubble: drawBubble(cg)
+            case .candy: drawCandy(cg)
             case .typewriter: drawTypewriter(cg)
             }
         }
@@ -475,6 +481,25 @@ private struct CaptionDrawing {
         cg.restoreGState()
         cg.setTextDrawingMode(.fill)
         cg.setFillColor(UIColor.brandInk.cgColor)
+        drawLines(cg)
+    }
+
+    private func drawCandy(_ cg: CGContext) {
+        // The white outline in one shadowed layer, so overlapping strokes
+        // make one clean edge; pink letters go on top.
+        cg.saveGState()
+        cg.setShadow(offset: CGSize(width: 0, height: em * 0.05), blur: em * 0.18, color: UIColor.black.withAlphaComponent(0.3).cgColor)
+        cg.beginTransparencyLayer(auxiliaryInfo: nil)
+        cg.setLineJoin(.round)
+        cg.setLineWidth(em * 0.2)
+        cg.setStrokeColor(UIColor.white.cgColor)
+        cg.setFillColor(UIColor.white.cgColor)
+        cg.setTextDrawingMode(.fillStroke)
+        drawLines(cg)
+        cg.endTransparencyLayer()
+        cg.restoreGState()
+        cg.setTextDrawingMode(.fill)
+        cg.setFillColor(UIColor.auraPink.cgColor)
         drawLines(cg)
     }
 
