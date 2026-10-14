@@ -8,14 +8,18 @@ struct SelectableChip: View {
     var isLocked = false
     let action: () -> Void
 
+    @Environment(\.accessibilityDifferentiateWithoutColor) private var differentiateWithoutColor
+
     var body: some View {
         Button(action: action) {
             HStack(spacing: 6) {
-                if let symbolName {
+                if isSelected && differentiateWithoutColor {
+                    Image(systemName: "checkmark").font(.footnote.weight(.bold))
+                } else if let symbolName {
                     Image(systemName: symbolName).font(.footnote.weight(.semibold))
                 }
                 Text(title)
-                    .font(.subheadline.weight(.semibold))
+                    .font(.subheadline.weight(isSelected ? .bold : .semibold))
                     .lineLimit(1)
                     .fixedSize(horizontal: true, vertical: false)
                 if isLocked {
@@ -23,10 +27,12 @@ struct SelectableChip: View {
                 }
             }
             .padding(.horizontal, 14)
-            .padding(.vertical, 9)
+            .frame(minHeight: 44)
             .foregroundStyle(isSelected ? Palette.onPrimary : Palette.textPrimary)
             .background(isSelected ? Palette.primary : Palette.surface, in: Capsule())
-            .overlay(Capsule().strokeBorder(isSelected ? Palette.ink.opacity(0.12) : Palette.stroke, lineWidth: 1))
+            // Blush on white is too faint to show selection alone, so the
+            // selected chip always gets an ink edge as well.
+            .overlay(Capsule().strokeBorder(isSelected ? Palette.ink : Palette.stroke, lineWidth: isSelected ? 1.5 : 1))
             .animation(Motion.press, value: isSelected)
         }
         .buttonStyle(.pressable)

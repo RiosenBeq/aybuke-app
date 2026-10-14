@@ -10,6 +10,7 @@ struct PaywallView: View {
 
     @Environment(AppModel.self) private var app
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var selectedID = StoreProducts.yearly
     @State private var trialEligible = false
     @State private var monthlyIntroEligible = false
@@ -86,7 +87,10 @@ struct PaywallView: View {
             .buttonStyle(.icon)
             .padding(Metrics.gutter)
             .accessibilityLabel("Close")
+            // VoiceOver reaches Close first, not after every plan.
+            .accessibilitySortPriority(1)
         }
+        .accessibilityElement(children: .contain)
         .task { await purchases.loadProducts() }
         // Products can arrive late (after "Try again"), so check eligibility then.
         .task(id: purchases.products.count) {
@@ -126,7 +130,7 @@ struct PaywallView: View {
                 .background(Palette.blush, in: Circle())
                 .overlay(Circle().strokeBorder(Palette.white.opacity(0.7), lineWidth: 3))
                 .shadow(color: Palette.blush.opacity(0.8), radius: 18, y: 8)
-                .symbolEffect(.pulse)
+                .symbolEffect(.pulse, isActive: !reduceMotion)
                 .overlay(alignment: .topTrailing) {
                     Image(systemName: "sparkle")
                         .font(.system(size: 18, weight: .bold))
@@ -135,6 +139,7 @@ struct PaywallView: View {
                         .offset(x: 12, y: -6)
                 }
                 .floating(distance: 4)
+                .accessibilityHidden(true)
             Text(styled: "Your photos,\nin their *best light*", size: 34)
                 .multilineTextAlignment(.center)
                 .foregroundStyle(Palette.textPrimary)
@@ -335,8 +340,9 @@ struct PaywallView: View {
 
             Text("Payment is charged to your Apple Account. Subscriptions renew automatically at the price shown unless cancelled at least 24 hours before the end of the current period. Manage or cancel anytime in Settings › Apple Account › Subscriptions.")
                 .font(.caption2)
-                .foregroundStyle(Palette.textTertiary)
+                .foregroundStyle(Palette.textSecondary)
                 .multilineTextAlignment(.center)
+                .finePrintBacking()
         }
     }
 
@@ -469,6 +475,7 @@ private struct Benefit: View {
                 .foregroundStyle(Palette.ink)
                 .frame(width: 30, height: 30)
                 .background(Palette.blush, in: Circle())
+                .accessibilityHidden(true)
             VStack(alignment: .leading, spacing: 2) {
                 Text(title)
                     .font(.subheadline.weight(.semibold))
@@ -577,6 +584,7 @@ private struct TrialTimeline: View {
                         .foregroundStyle(Palette.onPrimary)
                         .frame(width: 28, height: 28)
                         .background(Palette.primary, in: Circle())
+                        .accessibilityHidden(true)
                     if !isLast {
                         Rectangle()
                             .fill(Palette.primary)

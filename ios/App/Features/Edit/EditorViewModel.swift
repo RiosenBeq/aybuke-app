@@ -357,6 +357,7 @@ final class EditorViewModel {
                 celebration += 1
                 if job.operation == .magicEdit { magicPrompt = "" }
                 isComparing = job.operation != .removeBackground
+                announceResult(comparing: isComparing)
                 // Likeness Lock: one free re-roll for edits that involve people.
                 if job.retryOf == nil, job.operation == .restyle || job.operation == .magicEdit {
                     lastJob = job
@@ -368,6 +369,17 @@ final class EditorViewModel {
                 app.handle(error)
             }
         }
+    }
+
+    /// VoiceOver hears the result instead of silence when the overlay goes.
+    /// High priority, so the overlay's removal doesn't cut it off. (Errors
+    /// are already spoken by their toast.)
+    private func announceResult(comparing: Bool) {
+        var text = AttributedString(comparing
+            ? String(localized: "Your edit is ready. Showing before and after.")
+            : String(localized: "Your edit is ready."))
+        text.accessibilitySpeechAnnouncementPriority = .high
+        AccessibilityNotification.Announcement(text).post()
     }
 
     /// A failed retry keeps the paid result and its Retry button, except when

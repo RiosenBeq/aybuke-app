@@ -110,6 +110,16 @@ extension View {
         #endif
     }
 
+    /// A shortcut for iPad hardware keyboards only. On the Mac, keys such as
+    /// ⌘Z already belong to the system's Edit menu.
+    func padKeyboardShortcut(_ key: KeyEquivalent, modifiers: EventModifiers = .command) -> some View {
+        #if targetEnvironment(macCatalyst)
+        self
+        #else
+        keyboardShortcut(key, modifiers: modifiers)
+        #endif
+    }
+
     /// Mac: the tabs sit in the title bar, which stays above full-window
     /// covers such as the editor, so they hide while one is up. (On iPhone and
     /// iPad the cover already hides the tab bar.)

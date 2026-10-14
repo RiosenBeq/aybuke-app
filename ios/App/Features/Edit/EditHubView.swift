@@ -152,6 +152,7 @@ struct EditHubView: View {
                     HStack(alignment: .top, spacing: 10) {
                         Image(systemName: "lock.shield")
                             .foregroundStyle(Palette.success)
+                            .accessibilityHidden(true)
                         Text("Background removal and adjustments run on your device. Cloud edits are never used to train AI and are deleted from our servers within \(app.config.retentionPhrase).")
                             .font(.footnote)
                             .foregroundStyle(Palette.textSecondary)

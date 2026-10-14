@@ -26,6 +26,12 @@ struct MagicEditPanel: View {
         !prompt.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
 
+    private func submit() {
+        guard canSubmit else { return }
+        isFocused = false
+        onSubmit()
+    }
+
     var body: some View {
         VStack(spacing: 12) {
             if showsExamples {
@@ -48,6 +54,15 @@ struct MagicEditPanel: View {
                     .lineLimit(1...3)
                     .focused($isFocused)
                     .submitLabel(.go)
+                    // A multi-line field turns Go (Return) into a newline
+                    // instead of submitting, so a trailing one sends.
+                    .onChange(of: prompt) { _, text in
+                        guard text.contains("\n") else { return }
+                        let pressedGo = text.hasSuffix("\n")
+                        prompt = text.replacingOccurrences(of: "\n", with: " ").trimmingCharacters(in: .whitespaces)
+                        if pressedGo { submit() }
+                    }
+                    .onSubmit(submit)
                     .padding(.horizontal, 14)
                     .padding(.vertical, 12)
                     .background(Palette.surface, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
@@ -55,10 +70,7 @@ struct MagicEditPanel: View {
                         RoundedRectangle(cornerRadius: 18, style: .continuous)
                             .strokeBorder(isFocused ? Palette.accent : Palette.strokeStrong, lineWidth: isFocused ? 1.5 : 1)
                     )
-                Button {
-                    isFocused = false
-                    onSubmit()
-                } label: {
+                Button(action: submit) {
                     Image(systemName: "arrow.up")
                         .font(.headline.weight(.bold))
                         .foregroundStyle(canSubmit ? Palette.onAccent : Palette.textTertiary)
@@ -235,7 +247,7 @@ struct AdjustPanel: View {
                             .font(.subheadline.weight(.bold))
                             .foregroundStyle(Palette.onAccent)
                             .padding(.horizontal, 14)
-                            .padding(.vertical, 9)
+                            .frame(minHeight: 44)
                             .background(Palette.accent, in: Capsule())
                     }
                     .buttonStyle(.pressable)

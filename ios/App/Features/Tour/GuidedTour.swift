@@ -146,6 +146,7 @@ struct TourOverlay: View {
     @Environment(AppModel.self) private var app
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var pulse = false
+    @AccessibilityFocusState private var titleFocused: Bool
 
     var body: some View {
         let tour = app.tour
@@ -173,11 +174,12 @@ struct TourOverlay: View {
 
                         placed(card(for: step), around: hole, in: proxy.size)
                             .id(step)
-                            .transition(.opacity.combined(with: .scale(scale: 0.96)))
+                            .transition(reduceMotion ? .opacity : .opacity.combined(with: .scale(scale: 0.96)))
                     }
                 }
-                .animation(.snappy(duration: 0.35), value: hole)
-                .animation(.snappy(duration: 0.3), value: step)
+                // Reduce Motion: the spotlight moves without sliding across the screen.
+                .animation(reduceMotion ? nil : .snappy(duration: 0.35), value: hole)
+                .animation(reduceMotion ? .easeInOut(duration: 0.2) : .snappy(duration: 0.3), value: step)
             }
         }
         .ignoresSafeArea()
@@ -187,8 +189,18 @@ struct TourOverlay: View {
         }
         .onChange(of: app.tour.current) { _, step in
             if let step, app.selectedTab != step.tab { app.selectedTab = step.tab }
+            focusTitle()
         }
+        .onAppear(perform: focusTitle)
         .accessibilityAddTraits(.isModal)
+    }
+
+    /// VoiceOver starts each step at its title, after the new card is in place.
+    private func focusTitle() {
+        Task {
+            try? await Task.sleep(for: .milliseconds(400))
+            titleFocused = true
+        }
     }
 
     private func card(for step: TourStep) -> some View {
@@ -198,6 +210,7 @@ struct TourOverlay: View {
             Text(styled: step.title(isPro: app.purchases.isPro), size: 24)
                 .foregroundStyle(Palette.textPrimary)
                 .accessibilityAddTraits(.isHeader)
+                .accessibilityFocused($titleFocused)
             Text(step.message(isPro: app.purchases.isPro, policy: app.credits.policy))
                 .font(.subheadline)
                 .foregroundStyle(Palette.textSecondary)

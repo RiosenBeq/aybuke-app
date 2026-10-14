@@ -162,6 +162,8 @@ struct HomeView: View {
         }
         .buttonStyle(PressableButtonStyle(scale: 0.97))
         .accessibilityLabel("Magic Edit. Describe any change to your photo.")
+        // Voice Control: the words shown on the button work too.
+        .accessibilityInputLabels(["Magic Edit", "Try it on your photo"])
     }
 
     private var quickTools: some View {

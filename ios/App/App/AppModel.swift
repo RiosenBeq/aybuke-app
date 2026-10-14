@@ -41,6 +41,18 @@ struct ConsentRequest: Identifiable {
     let onAccept: () -> Void
 }
 
+struct PhotosAccessRequest: Identifiable {
+    let id = UUID()
+    let shareInstead: SharePayload?
+
+    /// Photos privacy settings: the app's own page on iPhone and iPad,
+    /// Privacy & Security › Photos on the Mac.
+    static var settingsURL: URL? {
+        URL(string: Platform.isMac ? "x-apple.systempreferences:com.apple.preference.security?Privacy_Photos"
+                                   : UIApplication.openSettingsURLString)
+    }
+}
+
 /// Consent to cloud AI processing, kept on this device. `guardianConfirmed`
 /// is her own answer to "A parent or guardian said yes"; nobody verifies it.
 struct AIConsentRecord: Codable, Equatable {
@@ -110,6 +122,8 @@ final class AppModel {
     var isVideoPickerPresented = false
     var videoSource: VideoSource?
     var toast: ToastMessage?
+    /// "Photos access is off" with Open Settings (and Share instead).
+    var photosAccessRequest: PhotosAccessRequest?
     @ObservationIgnored private var pendingEditorRequest: EditorRequest?
     /// How My Works opened at launch; a repair is reported once in `start()`.
     @ObservationIgnored var libraryOutcome: LibraryStore.Outcome = .opened
@@ -1069,8 +1083,23 @@ final class AppModel {
         return error is CancellationError || (error as? URLError)?.code == .cancelled
     }
 
+    /// Saving to Photos without access: an alert that can open Settings, and
+    /// share the image instead when the caller has it at hand.
+    func handleSaveError(_ error: Error, shareInstead: SharePayload?) {
+        if case PhotoLibrarySaver.SaveError.denied = error {
+            Haptics.error()
+            photosAccessRequest = PhotosAccessRequest(shareInstead: shareInstead)
+            return
+        }
+        handle(error)
+    }
+
     func handle(_ error: Error) {
         if Self.isCancellation(error) { return }
+        if case PhotoLibrarySaver.SaveError.denied = error {
+            handleSaveError(error, shareInstead: nil)
+            return
+        }
         Haptics.error()
         registerSetback()
         if case AIServiceError.insufficientCredits(let remaining) = error {

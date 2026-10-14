@@ -126,7 +126,7 @@ struct ResultsView: View {
                     requestReview()
                 }
             } catch {
-                app.handle(error)
+                app.handleSaveError(error, shareInstead: sharePayload(for: current))
             }
         }
     }
@@ -134,10 +134,14 @@ struct ResultsView: View {
     private func share() {
         guard let current else { return }
         Haptics.tap()
+        app.share(sharePayload(for: current))
+    }
+
+    private func sharePayload(for current: UIImage) -> SharePayload {
         let others = images.indices.filter { $0 != selection }.map { images[$0] }
         let provenance = provenance
-        app.share(SharePayload(image: current, operation: provenance.operation, prompt: prompt, alternatives: others,
-                               inheritedSourceType: provenance.inheritedSourceType))
+        return SharePayload(image: current, operation: provenance.operation, prompt: prompt, alternatives: others,
+                            inheritedSourceType: provenance.inheritedSourceType)
     }
 }
 
@@ -159,7 +163,7 @@ private struct ReportDialog: ViewModifier {
             set: { isPresented = $0 }
         ), titleVisibility: .visible) {
             ForEach(ReportReason.allCases) { reason in
-                Button(reason.title) {
+                Button(L10n.core(reason.title)) {
                     Task { await app.report(reason, requestID: requestID) }
                 }
             }

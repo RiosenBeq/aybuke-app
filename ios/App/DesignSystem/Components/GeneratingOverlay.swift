@@ -43,6 +43,7 @@ struct GeneratingOverlay: View {
     @State private var tipIndex = 0
     @State private var spin = false
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.accessibilityVoiceOverEnabled) private var voiceOverEnabled
 
     private var tips: [String] {
         var tips = [
@@ -78,7 +79,7 @@ struct GeneratingOverlay: View {
                     Image(systemName: "sparkles")
                         .font(.system(size: 38, weight: .semibold))
                         .foregroundStyle(Palette.accent)
-                        .symbolEffect(.pulse, options: .repeating)
+                        .symbolEffect(.pulse, options: .repeating, isActive: !reduceMotion)
                     OrbitingCharms(radius: 96)
                 }
                 .frame(width: 230, height: 230)
@@ -103,15 +104,24 @@ struct GeneratingOverlay: View {
                 }
 
                 if let onCancel {
-                    Button("Cancel", action: onCancel)
-                        .font(.subheadline.weight(.semibold))
-                        .foregroundStyle(Palette.textSecondary)
+                    Button(action: onCancel) {
+                        Text("Cancel")
+                            .font(.subheadline.weight(.semibold))
+                            .foregroundStyle(Palette.textSecondary)
+                            .padding(.horizontal, 16)
+                            .frame(minHeight: 44)
+                            .contentShape(Rectangle())
+                    }
+                    .buttonStyle(.plain)
                 }
             }
             .padding(32)
         }
         .accessibilityElement(children: .contain)
         .accessibilityLabel("\(title). Please wait.")
+        // VoiceOver stays inside while the job runs; the two-finger scrub cancels.
+        .accessibilityAddTraits(.isModal)
+        .accessibilityAction(.escape) { onCancel?() }
         .onAppear {
             guard pingAnswer == nil else { return }
             if app.notifier.preferences.glowReady, app.notifier.isAllowedBySystem {
@@ -127,8 +137,16 @@ struct GeneratingOverlay: View {
             }
         }
         .task {
-            while !Task.isCancelled {
-                try? await Task.sleep(for: .seconds(3.2))
+            // Quick on-device steps flash the overlay for a moment; moving
+            // VoiceOver focus for those would only make it jump.
+            try? await Task.sleep(for: .milliseconds(500))
+            guard !Task.isCancelled else { return }
+            AccessibilityNotification.ScreenChanged().post()
+            // A tip that changes under VoiceOver or Reduce Motion would cut
+            // off reading or move the text, so it stays put then.
+            while !Task.isCancelled, !voiceOverEnabled, !reduceMotion {
+                try? await Task.sleep(for: .seconds(8))
+                guard !Task.isCancelled else { return }
                 withAnimation(.easeInOut(duration: 0.35)) {
                     tipIndex += 1
                 }
@@ -154,6 +172,7 @@ struct GeneratingOverlay: View {
                     .foregroundStyle(Palette.textPrimary)
                     .padding(.horizontal, 16)
                     .padding(.vertical, 10)
+                    .frame(minHeight: 44)
                     .background(Palette.surface, in: Capsule())
                     .overlay(Capsule().strokeBorder(Palette.stroke, lineWidth: 1))
                     .shadow(color: Palette.shadow, radius: 8, y: 3)

@@ -7,6 +7,7 @@ import SwiftUI
 struct AppPresentations: ViewModifier {
     let isActive: Bool
     @Environment(AppModel.self) private var app
+    @Environment(\.openURL) private var openURL
 
     func body(content: Content) -> some View {
         content
@@ -70,6 +71,24 @@ struct AppPresentations: ViewModifier {
                     .presentationDetents([.large])
                     .presentationBackground(Palette.background)
                     .pageSheetSizing()
+            }
+            .alert(
+                "Photos access is off",
+                isPresented: Binding(
+                    get: { isActive && app.photosAccessRequest != nil },
+                    set: { if !$0 { app.photosAccessRequest = nil } }
+                ),
+                presenting: app.photosAccessRequest
+            ) { request in
+                Button("Open Settings") {
+                    if let url = PhotosAccessRequest.settingsURL { openURL(url) }
+                }
+                if let payload = request.shareInstead {
+                    Button("Share instead") { app.share(payload) }
+                }
+                Button("Cancel", role: .cancel) {}
+            } message: { _ in
+                Text("Allow photo access in Settings to save your creations.")
             }
             .toast(Binding(
                 get: { isActive ? app.toast : nil },

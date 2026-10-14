@@ -91,9 +91,10 @@ struct OnboardingView: View {
 
                 Text(consentText)
                     .font(.caption2)
-                    .foregroundStyle(Palette.textTertiary)
+                    .foregroundStyle(Palette.textSecondary)
                     .multilineTextAlignment(.center)
-                    .padding(.horizontal, 32)
+                    .finePrintBacking()
+                    .padding(.horizontal, 24)
                     .padding(.top, 12)
                     .padding(.bottom, 8)
                     .opacity(isLastPage ? 1 : 0)
@@ -144,6 +145,7 @@ private struct OnboardingPage {
 private struct OnboardingPageView: View {
     let page: OnboardingPage
     @State private var appeared = false
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
         VStack(spacing: 28) {
@@ -172,7 +174,7 @@ private struct OnboardingPageView: View {
                                 .symbolEffect(.bounce, value: appeared)
                         }
                     )
-                    .rotationEffect(.degrees(appeared ? 4 : 0))
+                    .rotationEffect(.degrees(appeared && !reduceMotion ? 4 : 0))
                     .shadow(color: Palette.ink.opacity(0.10), radius: 24, y: 12)
                 Image(systemName: "sparkle")
                     .font(.system(size: 30, weight: .bold))

@@ -276,7 +276,9 @@ struct CreationDetailView: View {
                 app.showToast("Saved to Photos", style: .success)
                 Haptics.success()
             } catch {
-                app.handle(error)
+                let provenance = creation.provenance
+                app.handleSaveError(error, shareInstead: SharePayload(image: image, operation: provenance.operation, prompt: creation.prompt,
+                                                                      inheritedSourceType: provenance.inheritedSourceType))
             }
         }
     }

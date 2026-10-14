@@ -70,6 +70,8 @@ struct TemplateCard: View {
         }
         .accessibilityElement(children: .ignore)
         .accessibilityLabel("\(L10n.core(template.title)). \(L10n.core(template.subtitle))\(template.isPro ? ". Pro" : "")")
+        // The badge shows Pro first, so "New" is only spoken when it's visible.
+        .accessibilityValue(!template.isPro && template.isNew ? Text("NEW") : Text(verbatim: ""))
         .accessibilityAddTraits(.isButton)
     }
 

@@ -17,6 +17,7 @@ struct EditorView: View {
     @State private var isZoomed = false
     @State private var ideasDismissed = false
     @State private var ideasShown = false
+    @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
 
     init(launch: EditorLaunch) {
         self.launch = launch
@@ -29,6 +30,8 @@ struct EditorView: View {
 
             VStack(spacing: 0) {
                 topBar
+                    .disabled(model.isProcessing)
+                    .background { applyShortcut }
                 canvas
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .padding(.horizontal, 12)
@@ -51,9 +54,11 @@ struct EditorView: View {
                     toolPanel
                         .padding(.horizontal, Metrics.gutter)
                         .padding(.bottom, 8)
+                        .disabled(model.isProcessing)
                 }
                 .readableWidth(Metrics.compactWidth, alignment: .center)
                 toolBar
+                    .disabled(model.isProcessing)
             }
 
             if model.isProcessing {
@@ -102,17 +107,18 @@ struct EditorView: View {
     // MARK: Top bar
 
     private var topBar: some View {
-        HStack(spacing: 10) {
+        // 6 pt spacing keeps five 44 pt targets plus Save within today's width.
+        HStack(spacing: 6) {
             if isCropPending {
                 closeButton.background {
-                    // Mac: Esc drops the crop first, then closes the editor.
+                    // Esc drops the crop first, then closes the editor.
                     Button("Reset") { model.resetCrop() }
-                        .macKeyboardShortcut(.cancelAction)
+                        .keyboardShortcut(.cancelAction)
                         .opacity(0)
                         .accessibilityHidden(true)
                 }
             } else {
-                closeButton.macKeyboardShortcut(.cancelAction)
+                closeButton.keyboardShortcut(.cancelAction)
             }
 
             Button { model.undo() } label: { Image(systemName: "arrow.uturn.backward") }
@@ -120,11 +126,13 @@ struct EditorView: View {
                 .disabled(!model.canUndo)
                 .opacity(model.canUndo ? 1 : 0.4)
                 .accessibilityLabel("Undo")
+                .padKeyboardShortcut("z")
             Button { model.redo() } label: { Image(systemName: "arrow.uturn.forward") }
                 .buttonStyle(.icon)
                 .disabled(!model.canRedo)
                 .opacity(model.canRedo ? 1 : 0.4)
                 .accessibilityLabel("Redo")
+                .padKeyboardShortcut("z", modifiers: [.command, .shift])
             Button { model.isComparing.toggle() } label: {
                 Image(systemName: model.isComparing ? "square.split.2x1.fill" : "square.split.2x1")
             }
@@ -138,32 +146,70 @@ struct EditorView: View {
             Button { share() } label: { Image(systemName: "paperplane.fill") }
                 .buttonStyle(.icon)
                 .accessibilityLabel("Share")
+                .padKeyboardShortcut("e")
 
             Button { save() } label: {
-                HStack(spacing: 6) {
-                    if isSaving { ProgressView().tint(Palette.onAccent) }
-                    Text("Save")
-                        .lineLimit(1)
-                        .fixedSize()
+                // A long "Save" (French, Russian) falls back to the icon
+                // rather than pushing the bar off narrow screens.
+                ViewThatFits(in: .horizontal) {
+                    saveLabel(showsText: true)
+                    saveLabel(showsText: false)
                 }
-                .font(.subheadline.weight(.bold))
-                .foregroundStyle(Palette.onAccent)
-                .padding(.horizontal, 16)
-                .frame(height: 40)
-                .background(Palette.accent, in: Capsule())
             }
             .buttonStyle(.plain)
+            .layoutPriority(1)
             .disabled(isSaving)
             .accessibilityLabel("Save to Photos")
-            .macKeyboardShortcut(KeyboardShortcut("s"))
+            .accessibilityInputLabels(["Save", "Save to Photos"])
+            .keyboardShortcut("s")
         }
         .padding(.horizontal, Metrics.gutter)
         .padding(.top, 6)
     }
 
+    private func saveLabel(showsText: Bool) -> some View {
+        HStack(spacing: 6) {
+            if isSaving {
+                ProgressView().tint(Palette.onAccent)
+            } else if !showsText {
+                Image(systemName: "square.and.arrow.down")
+            }
+            if showsText {
+                Text("Save")
+                    .lineLimit(1)
+                    .fixedSize()
+            }
+        }
+        .font(.subheadline.weight(.bold))
+        .foregroundStyle(Palette.onAccent)
+        .padding(.horizontal, showsText ? 16 : 0)
+        .frame(minWidth: 44, minHeight: 44)
+        .background(Palette.accent, in: Capsule())
+        .fixedSize()
+    }
+
+    /// ⌘Return: sends the Magic Edit prompt, or applies the previewed
+    /// effect, adjustment or crop. Hidden; the visible buttons do the same.
+    private var applyShortcut: some View {
+        Button("Apply") {
+            if model.activeTool == .magicEdit {
+                guard !model.magicPrompt.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
+                model.run(.magicEdit, app: app)
+            } else if model.pendingPreview != nil {
+                Task { await model.commitPending() }
+            }
+        }
+        .keyboardShortcut(.return, modifiers: .command)
+        .disabled(model.isProcessing)
+        .opacity(0)
+        .accessibilityHidden(true)
+    }
+
     private var closeButton: some View {
         Button {
-            if model.hasUnsavedWork { showDiscardAlert = true } else { dismiss() }
+            // A typed but unsent prompt counts too, so Esc can't lose it.
+            let hasTypedPrompt = model.activeTool == .magicEdit && !model.magicPrompt.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+            if model.hasUnsavedWork || hasTypedPrompt { showDiscardAlert = true } else { dismiss() }
         } label: {
             Image(systemName: "xmark")
         }
@@ -225,7 +271,7 @@ struct EditorView: View {
                         .foregroundStyle(.white.opacity(0.95))
                         .padding(.horizontal, 10)
                         .padding(.vertical, 5)
-                        .background(Palette.ink.opacity(0.45), in: Capsule())
+                        .background(Palette.ink.opacity(reduceTransparency ? 0.9 : 0.65), in: Capsule())
                         .padding(10)
                 }
             }
@@ -292,7 +338,7 @@ struct EditorView: View {
             .font(.footnote.weight(.semibold))
             .foregroundStyle(emphasised ? Palette.onAccent : Palette.textPrimary)
             .padding(.horizontal, 14)
-            .padding(.vertical, 8)
+            .frame(minHeight: 44)
             .background(emphasised ? Palette.accent : Palette.surface, in: Capsule())
             .overlay(Capsule().strokeBorder(emphasised ? Color.clear : Palette.stroke, lineWidth: 1))
         }
@@ -340,37 +386,33 @@ struct EditorView: View {
     }
 
     private var onlyMeButton: some View {
-        Button("Only edit me") { model.editOnlyMe() }
-            .buttonStyle(.pressable)
-            .font(.footnote.weight(.bold))
-            .foregroundStyle(Palette.onAccent)
-            .padding(.horizontal, 14)
-            .padding(.vertical, 8)
-            .background(Palette.accent, in: Capsule())
-            .fixedSize()
+        kindnessButton("Only edit me", foreground: Palette.onAccent, background: Palette.accent) { model.editOnlyMe() }
     }
 
     private var hideFacesButton: some View {
-        Button("Hide their faces") { model.hideTheirFaces() }
-            .buttonStyle(.pressable)
-            .font(.footnote.weight(.bold))
-            .foregroundStyle(Palette.textPrimary)
-            .padding(.horizontal, 14)
-            .padding(.vertical, 8)
-            .background(Palette.blush, in: Capsule())
-            .fixedSize()
+        kindnessButton("Hide their faces", foreground: Palette.textPrimary, background: Palette.blush) { model.hideTheirFaces() }
     }
 
     private var okButton: some View {
-        Button("They're OK with it") { model.dismissKindnessNote() }
-            .buttonStyle(.pressable)
-            .font(.footnote.weight(.bold))
-            .foregroundStyle(Palette.textPrimary)
-            .padding(.horizontal, 14)
-            .padding(.vertical, 8)
-            .background(Palette.surface, in: Capsule())
-            .overlay(Capsule().strokeBorder(Palette.stroke, lineWidth: 1))
-            .fixedSize()
+        kindnessButton("They're OK with it", foreground: Palette.textPrimary, background: Palette.surface, outlined: true) {
+            model.dismissKindnessNote()
+        }
+    }
+
+    /// The whole 44 pt capsule is the button, not just its text.
+    private func kindnessButton(_ title: LocalizedStringKey, foreground: Color, background: Color, outlined: Bool = false,
+                                action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            Text(title)
+                .font(.footnote.weight(.bold))
+                .foregroundStyle(foreground)
+                .padding(.horizontal, 14)
+                .frame(minHeight: 44)
+                .background(background, in: Capsule())
+                .overlay(Capsule().strokeBorder(outlined ? Palette.stroke : Color.clear, lineWidth: 1))
+        }
+        .buttonStyle(.pressable)
+        .fixedSize()
     }
 
     private var reportButton: some View {
@@ -383,6 +425,8 @@ struct EditorView: View {
                 .frame(width: 34, height: 34)
                 .background(Palette.surface, in: Circle())
                 .overlay(Circle().strokeBorder(Palette.stroke, lineWidth: 1))
+                .frame(width: 44, height: 44)
+                .contentShape(Circle())
         }
         .buttonStyle(.plain)
         .accessibilityLabel("Report this result")
@@ -507,10 +551,13 @@ struct EditorView: View {
                     .frame(maxWidth: .infinity)
                     .frame(height: 54)
                     .background(isActive ? Palette.primary : Color.clear, in: Capsule())
+                    // Blush alone is too faint on the glass to mark the tool.
+                    .overlay(Capsule().strokeBorder(isActive ? Palette.ink : Color.clear, lineWidth: 1.5))
                     .contentShape(Capsule())
                 }
                 .buttonStyle(.plain)
-                .accessibilityLabel(tool.title)
+                // The short "Remove BG" fits the tile; VoiceOver reads it in full.
+                .accessibilityLabel(tool == .removeBackground ? String(localized: "Remove background") : tool.title)
                 .accessibilityAddTraits(isActive ? .isSelected : [])
             }
         }
@@ -546,7 +593,7 @@ struct EditorView: View {
                     requestReview()
                 }
             } catch {
-                app.handle(error)
+                app.handleSaveError(error, shareInstead: sharePayload)
             }
         }
     }
@@ -556,15 +603,19 @@ struct EditorView: View {
         Haptics.tap()
         Task {
             await model.commitPending()
-            app.share(SharePayload(
-                image: model.current,
-                original: model.hasChanges ? model.before : nil,
-                operation: model.appliedOperation,
-                prompt: nil,
-                isComposite: model.isComposite,
-                inheritedSourceType: model.inheritedSourceType
-            ))
+            app.share(sharePayload)
         }
+    }
+
+    private var sharePayload: SharePayload {
+        SharePayload(
+            image: model.current,
+            original: model.hasChanges ? model.before : nil,
+            operation: model.appliedOperation,
+            prompt: nil,
+            isComposite: model.isComposite,
+            inheritedSourceType: model.inheritedSourceType
+        )
     }
 
     // MARK: Stickers

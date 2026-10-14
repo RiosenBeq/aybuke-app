@@ -54,6 +54,9 @@ struct IconButtonStyle: ButtonStyle {
             .frame(width: size, height: size)
             .liquidGlass(in: Circle(), tint: Palette.white.opacity(0.35))
             .shadow(color: Palette.shadow, radius: 8, y: 3)
+            // The circle can stay 40 pt; the touch target is never under 44.
+            .frame(width: max(size, 44), height: max(size, 44))
+            .contentShape(Circle())
             .scaleEffect(configuration.isPressed ? 0.92 : 1)
             .animation(.spring(response: 0.25, dampingFraction: 0.7), value: configuration.isPressed)
     }
