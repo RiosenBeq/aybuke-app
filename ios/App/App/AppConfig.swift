@@ -90,7 +90,7 @@ struct AppConfig: Decodable {
         dataRetentionHours: 1,
         privacyPolicyURL: URL(string: "https://github.com/RiosenBeq/furkan/blob/main/docs/legal/en/privacy-policy.md")!,
         termsURL: URL(string: "https://github.com/RiosenBeq/furkan/blob/main/docs/legal/en/terms-of-use.md")!,
-        supportEmail: "support@glowlit.app",
+        supportEmail: "hello@buaze.com",
         appStoreID: "",
         websiteURL: "",
         instagramAppID: "",

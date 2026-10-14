@@ -100,7 +100,7 @@ You must not:
 - overload, disrupt or attack our systems, or deliberately exceed rate limits; or
 - use the Service or its outputs to build or train a competing AI model or dataset.
 
-If you find a security vulnerability, please report it to [support@glowlit.app](mailto:support@glowlit.app) instead of exploiting it.
+If you find a security vulnerability, please report it to [hello@buaze.com](mailto:hello@buaze.com) instead of exploiting it.
 
 ## 6. How we moderate content
 
@@ -139,7 +139,7 @@ On a result, open the menu and choose **Report this image**. Select a reason and
 
 ### Report by email
 
-To report illegal content, misuse of Glowlit that affects you (for example a fake or humiliating image of you), or an infringement of your rights, email [support@glowlit.app](mailto:support@glowlit.app) with:
+To report illegal content, misuse of Glowlit that affects you (for example a fake or humiliating image of you), or an infringement of your rights, email [hello@buaze.com](mailto:hello@buaze.com) with:
 
 - a description of the content and why you believe it's illegal or breaks this policy;
 - any information that helps us identify it, such as screenshots, the date and time, the template used or where it was published;
@@ -162,7 +162,7 @@ Glowlit has no public profiles or feeds, and we don't host your creations. If an
 
 ## 9. Appeals
 
-If you think we've blocked a request, restricted your account or rejected your report by mistake, email [support@glowlit.app](mailto:support@glowlit.app) with "Appeal" in the subject line. Please include:
+If you think we've blocked a request, restricted your account or rejected your report by mistake, email [hello@buaze.com](mailto:hello@buaze.com) with "Appeal" in the subject line. Please include:
 
 - what happened and when;
 - the message you saw in the app, if any; and
@@ -178,8 +178,8 @@ We may update this policy to respond to new risks, changes to the Service or cha
 
 ## 11. Contact
 
-- **Reports, appeals and questions:** [support@glowlit.app](mailto:support@glowlit.app)
-- **Privacy questions and parents' requests:** [privacy@glowlit.app](mailto:privacy@glowlit.app)
+- **Reports, appeals and questions:** [hello@buaze.com](mailto:hello@buaze.com)
+- **Privacy questions and parents' requests:** [hello@buaze.com](mailto:hello@buaze.com)
 - **Company:** [Company legal name], [Registered address], Türkiye
 
-Authorities of EU Member States, the European Commission, the European Board for Digital Services and users can reach our single point of contact under Articles 11 and 12 of the EU Digital Services Act at [support@glowlit.app](mailto:support@glowlit.app), in English or Turkish. Our representative in the EU: [EU representative: name and address].
+Authorities of EU Member States, the European Commission, the European Board for Digital Services and users can reach our single point of contact under Articles 11 and 12 of the EU Digital Services Act at [hello@buaze.com](mailto:hello@buaze.com), in English or Turkish. Our representative in the EU: [EU representative: name and address].

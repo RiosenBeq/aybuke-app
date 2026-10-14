@@ -18,12 +18,12 @@ Last updated: 14 October 2026
 
 - **Address:** [Registered address], Türkiye
 - **Trade registry / MERSİS number:** [Trade registry and MERSİS number]
-- **Privacy contact:** [privacy@glowlit.app](mailto:privacy@glowlit.app)
+- **Privacy contact:** [hello@buaze.com](mailto:hello@buaze.com)
 - **Registered email (KEP):** [KEP address]
 - **Representative in the EU (Art. 27 GDPR):** [EU representative: name and address]
 - **Representative in the UK (Art. 27 UK GDPR):** [UK representative: name and address]
 
-For any privacy question, including anything you would raise with a data protection officer, email us at [privacy@glowlit.app](mailto:privacy@glowlit.app).
+For any privacy question, including anything you would raise with a data protection officer, email us at [hello@buaze.com](mailto:hello@buaze.com).
 
 This policy covers the Service. It doesn't cover third-party services you use together with Glowlit, such as Apple's App Store or the apps you share to (for example Instagram), which have their own privacy policies. If you're in Türkiye, please also read our [KVKK Information Notice](../tr/kvkk-aydinlatma-metni.md). Our [Terms of Use](terms-of-use.md) and [Acceptable Use & AI Content Policy](acceptable-use-policy.md) explain the rules for using Glowlit.
 
@@ -55,7 +55,7 @@ This section is for you if you're under 18. The rest of this policy applies to y
 - **Purchases.** Purchases are charged to the Apple Account on your device. If you have a child account in Family Sharing, your parent or guardian may need to approve purchases with "Ask to Buy".
 - **Other people's photos.** Only upload photos of other people if they've said yes. For younger children, their parent or guardian has to say yes.
 - **You're in control.** You can switch off cloud AI processing in Settings at any time, and delete everything with **Settings → Delete my data & account**.
-- **Questions or worries?** Talk to a trusted adult. You, your parent or your guardian can email us at [privacy@glowlit.app](mailto:privacy@glowlit.app).
+- **Questions or worries?** Talk to a trusted adult. You, your parent or your guardian can email us at [hello@buaze.com](mailto:hello@buaze.com).
 
 ## 4. Data that stays on your iPhone
 
@@ -167,7 +167,7 @@ We don't create biometric data: we don't perform face recognition or create face
 
 Please don't upload photos or prompts containing sensitive information you don't want processed.
 
-**Other people in your photos.** Your photos may show other people. We process their images in the same way as yours: only to perform the edit, briefly, and never to identify them. Only upload photos of other people with their consent, and photos of children only if you're their parent or guardian or have their parent's or guardian's permission. If you appear in a photo someone else edited with Glowlit, you can contact us at [privacy@glowlit.app](mailto:privacy@glowlit.app).
+**Other people in your photos.** Your photos may show other people. We process their images in the same way as yours: only to perform the edit, briefly, and never to identify them. Only upload photos of other people with their consent, and photos of children only if you're their parent or guardian or have their parent's or guardian's permission. If you appear in a photo someone else edited with Glowlit, you can contact us at [hello@buaze.com](mailto:hello@buaze.com).
 
 ## 9. Safety filters and automated decisions
 
@@ -179,7 +179,7 @@ To keep Glowlit safe, we use automated safety measures:
 
 If a filter blocks a request or a result, you aren't charged, and any credits are refunded.
 
-These filters are the only automated decisions we make about your requests. They don't have legal or similarly significant effects on you within the meaning of Article 22 GDPR, and we don't profile you. If you think a filter blocked something by mistake, contact us at [support@glowlit.app](mailto:support@glowlit.app) and a human will review it.
+These filters are the only automated decisions we make about your requests. They don't have legal or similarly significant effects on you within the meaning of Article 22 GDPR, and we don't profile you. If you think a filter blocked something by mistake, contact us at [hello@buaze.com](mailto:hello@buaze.com) and a human will review it.
 
 ## 10. AI transparency
 
@@ -230,7 +230,7 @@ Under Article 9 of KVKK, as amended by Law No. 7499, we transfer personal data a
 
 Our regular transfers don't rely on your explicit consent. Only in exceptional, incidental (*arızi*) cases where no adequacy decision or appropriate safeguard is available may we rely on one of the conditions in Article 9(6) KVKK, such as your explicit consent after you've been informed of the possible risks.
 
-You can ask for a copy of the safeguards we use by emailing [privacy@glowlit.app](mailto:privacy@glowlit.app).
+You can ask for a copy of the safeguards we use by emailing [hello@buaze.com](mailto:hello@buaze.com).
 
 ## 14. How long we keep data
 
@@ -276,7 +276,7 @@ Depending on where you live, you may have the right to access your data, correct
 ### How to make a request
 
 - For immediate deletion, use **Settings → Delete my data & account**.
-- For anything else, email [privacy@glowlit.app](mailto:privacy@glowlit.app). Users in Türkiye can also use the methods in section 19.
+- For anything else, email [hello@buaze.com](mailto:hello@buaze.com). Users in Türkiye can also use the methods in section 19.
 - Parents and guardians can make requests on behalf of their child. We may ask for reasonable confirmation that you're the child's parent or guardian.
 
 Because your account is anonymous, we may need information that lets us find your data before we can act on a request, for example the Order ID shown on your Apple receipt for a Glowlit purchase. If we can't link a request to any data we hold, we'll tell you. We may ask for information to verify your request, and we'll use it only for that purpose.
@@ -351,8 +351,8 @@ We process personal data in accordance with the Law on the Protection of Persona
 
 - in writing, to [Registered address], Türkiye;
 - by registered email (KEP), to [KEP address];
-- by email signed with a secure electronic signature or mobile signature, to [privacy@glowlit.app](mailto:privacy@glowlit.app); or
-- by email to [privacy@glowlit.app](mailto:privacy@glowlit.app) from an email address you have previously notified to us and that is registered in our systems.
+- by email signed with a secure electronic signature or mobile signature, to [hello@buaze.com](mailto:hello@buaze.com); or
+- by email to [hello@buaze.com](mailto:hello@buaze.com) from an email address you have previously notified to us and that is registered in our systems.
 
 Your application must include your name and surname (and your signature for a written application), your Turkish ID number (or, if you're not a Turkish citizen, your nationality and passport or ID number), the address for notifications, your email address, telephone or fax number if any, and the subject of your request. For erasure, you can also use **Settings → Delete my data & account** in the app.
 
@@ -396,7 +396,7 @@ This section applies to California residents and supplements the rest of this po
 
 **Your rights**: the right to know (the categories and the specific pieces of personal information we have collected), the right to delete, the right to correct, the right to opt out of sale or sharing (we don't sell or share), the right to limit the use of sensitive personal information (we use it only for permitted purposes) and the right not to be discriminated against for exercising your rights.
 
-**How to exercise them**: use in-app deletion or email [privacy@glowlit.app](mailto:privacy@glowlit.app). We'll confirm receipt within 10 business days and respond within 45 days, which we may extend once by 45 days with notice. We verify requests by matching the information you give us with the information we hold (section 16). You can use an authorised agent; we may ask for proof of the agent's authority and ask you to verify your request directly with us.
+**How to exercise them**: use in-app deletion or email [hello@buaze.com](mailto:hello@buaze.com). We'll confirm receipt within 10 business days and respond within 45 days, which we may extend once by 45 days with notice. We verify requests by matching the information you give us with the information we hold (section 16). You can use an authorised agent; we may ask for proof of the agent's authority and ask you to verify your request directly with us.
 
 **Shine the Light**: we don't disclose personal information to third parties for their own direct marketing purposes.
 
@@ -404,7 +404,7 @@ This section applies to California residents and supplements the rest of this po
 
 Residents of states with comprehensive privacy laws, such as Virginia, Colorado, Connecticut, Utah, Texas and Oregon, may have the right to confirm whether we process their personal data; to access, correct and delete it; to get a portable copy; and to opt out of targeted advertising, the sale of personal data and profiling that has legal or similarly significant effects. We don't engage in targeted advertising, sales of personal data or such profiling. Where these laws treat information revealed in photos as sensitive data, we process it only with the consent given on the cloud AI opt-in screen.
 
-**Appeals.** If we decline to act on your request, you can appeal by replying to our decision or by emailing [privacy@glowlit.app](mailto:privacy@glowlit.app) with "Privacy appeal" in the subject line. We'll respond within the period your state's law requires, generally 45 to 60 days. If we deny your appeal, you can contact your state's Attorney General.
+**Appeals.** If we decline to act on your request, you can appeal by replying to our decision or by emailing [hello@buaze.com](mailto:hello@buaze.com) with "Privacy appeal" in the subject line. We'll respond within the period your state's law requires, generally 45 to 60 days. If we deny your appeal, you can contact your state's Attorney General.
 
 **Nevada.** We don't sell covered information as defined by Nevada law.
 
@@ -418,7 +418,7 @@ A growing number of US states, for example California, Connecticut, Colorado, Ma
 
 Glowlit is designed for teens and adults aged 13 and over. Its cloud AI features, accounts and purchases are only for people aged 13 and over. If the age step shows that someone is under 13, the app offers only the free tools that run on the device (effects, Adjust, Cut out, Crop, Best shot and the video editor). In that mode it sends nothing to us or to our providers: it creates no account and makes no cloud AI, purchase or analytics requests. We don't knowingly collect personal information from children under 13, including under the US Children's Online Privacy Protection Act (COPPA).
 
-If we learn that we have collected personal information from a child under 13 without verifiable parental consent, we'll delete it. If you believe a child under 13 has used Glowlit, please contact us at [privacy@glowlit.app](mailto:privacy@glowlit.app). A parent or guardian can also delete the data immediately with **Settings → Delete my data & account** on the child's device.
+If we learn that we have collected personal information from a child under 13 without verifiable parental consent, we'll delete it. If you believe a child under 13 has used Glowlit, please contact us at [hello@buaze.com](mailto:hello@buaze.com). A parent or guardian can also delete the data immediately with **Settings → Delete my data & account** on the child's device.
 
 ## 22. Do Not Track and Global Privacy Control
 
@@ -431,8 +431,8 @@ We'll update this policy when our practices or the law change. If a change is ma
 ## 24. Contact us
 
 - **Controller:** [Company legal name], [Registered address], Türkiye
-- **Privacy requests (including from parents and guardians):** [privacy@glowlit.app](mailto:privacy@glowlit.app)
-- **General contact:** [support@glowlit.app](mailto:support@glowlit.app)
+- **Privacy requests (including from parents and guardians):** [hello@buaze.com](mailto:hello@buaze.com)
+- **General contact:** [hello@buaze.com](mailto:hello@buaze.com)
 - **Registered email (KEP):** [KEP address]
 - **EU representative:** [EU representative: name and address]
 - **UK representative:** [UK representative: name and address]

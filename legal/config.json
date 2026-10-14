@@ -2,8 +2,8 @@
   "_comment": "Values for the {{TOKENS}} in legal/en and legal/tr. Replace every [bracketed] value before publishing, then run: python3 scripts/build-legal.py",
   "shared": {
     "APP_NAME": "Glowlit",
-    "CONTACT_EMAIL": "support@glowlit.app",
-    "PRIVACY_EMAIL": "privacy@glowlit.app",
+    "CONTACT_EMAIL": "hello@buaze.com",
+    "PRIVACY_EMAIL": "hello@buaze.com",
     "MIN_AGE": "13"
   },
   "en": {

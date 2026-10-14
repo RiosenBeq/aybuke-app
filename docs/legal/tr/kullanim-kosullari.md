@@ -58,7 +58,7 @@ Bu bölüm, genç kullanıcılar için hazırlanmış sade bir özettir. Koşull
 - **Satın alımlar Apple üzerinden yapılır.** Satın alımlar, cihazınızdaki Apple Hesabından tahsil edilir. Aile Paylaşımı'nda bir çocuk hesabınız varsa, her satın alımın veliniz veya vasiniz tarafından "Satın Alma İzni İste" (Ask to Buy) özelliğiyle onaylanması gerekebilir. İzin almadan hiçbir şey satın almayın.
 - **Yalnızca "evet" diyen kişileri düzenleyin.** Başkalarının, özellikle de diğer gençlerin fotoğraflarını izinleri olmadan yüklemeyin veya düzenlemeyin. Hiç kimse hakkında cinsel, aşağılayıcı veya kırıcı bir şey oluşturmayın.
 - **Paylaşmadan önce düşünün.** Oluşturduklarınız, siz paylaşmadıkça telefonunuzda kalır. İnternete bir kez çıkan bir şeyi geri almak zor olabilir.
-- **Yardım her zaman var.** Bir şeyler ters giderse veya biri Glowlit uygulamasını size zarar vermek için kullanırsa, güvendiğiniz bir yetişkine anlatın ve durumu bize bildirin (bkz. [Politika](kabul-edilebilir-kullanim-politikasi.md)). Veliler ve vasiler, çocuklarının verilerini sildirmek dahil her konuda [privacy@glowlit.app](mailto:privacy@glowlit.app) adresinden bize ulaşabilir.
+- **Yardım her zaman var.** Bir şeyler ters giderse veya biri Glowlit uygulamasını size zarar vermek için kullanırsa, güvendiğiniz bir yetişkine anlatın ve durumu bize bildirin (bkz. [Politika](kabul-edilebilir-kullanim-politikasi.md)). Veliler ve vasiler, çocuklarının verilerini sildirmek dahil her konuda [hello@buaze.com](mailto:hello@buaze.com) adresinden bize ulaşabilir.
 
 ## 5. Hesabınız
 
@@ -326,7 +326,7 @@ Bize fikir veya geri bildirim gönderirseniz, bunları size karşı herhangi bir
 
 ## 16. Telif hakkı ve diğer hak ihlali bildirimleri
 
-Glowlit aracılığıyla üretilen veya erişime sunulan bir içeriğin telif hakkınızı veya diğer haklarınızı ihlal ettiğini düşünüyorsanız, aşağıdaki bilgilerle [support@glowlit.app](mailto:support@glowlit.app) adresine e-posta gönderin:
+Glowlit aracılığıyla üretilen veya erişime sunulan bir içeriğin telif hakkınızı veya diğer haklarınızı ihlal ettiğini düşünüyorsanız, aşağıdaki bilgilerle [hello@buaze.com](mailto:hello@buaze.com) adresine e-posta gönderin:
 
 1. adınız ve iletişim bilgileriniz (posta adresi, telefon numarası ve e-posta adresi);
 2. ihlal edildiğini düşündüğünüz eserin veya diğer hakkın açıklaması;
@@ -437,7 +437,7 @@ Tüketiciyseniz bu hukuk seçimi, mutad meskeninizin bulunduğu ülke hukukunun 
 - **AB ve AEA'daki tüketiciler**, ikamet ettikleri ülkenin emredici tüketici hukukunun sağladığı korumadan yararlanmaya devam eder ve ikamet ettikleri ülkenin mahkemelerinde dava açabilir.
 - **Birleşik Krallık'taki tüketiciler**, ikamet ettikleri yere göre İngiltere ve Galler, İskoçya veya Kuzey İrlanda mahkemelerinde dava açabilir ve Birleşik Krallık'ın emredici tüketici hukukunun sağladığı korumadan yararlanmaya devam eder.
 
-Resmi bir yola başvurmadan önce, sorunu birlikte çözmeye çalışabilmemiz için lütfen [support@glowlit.app](mailto:support@glowlit.app) adresinden bize ulaşın.
+Resmi bir yola başvurmadan önce, sorunu birlikte çözmeye çalışabilmemiz için lütfen [hello@buaze.com](mailto:hello@buaze.com) adresinden bize ulaşın.
 
 ## 24. Apple App Store'a ilişkin ek koşullar
 
@@ -450,7 +450,7 @@ Bu koşullar, Glowlit uygulamasını Apple App Store'dan edindiğiniz için geç
 5. **Ürüne ilişkin talepler.** Sizin veya üçüncü kişilerin uygulamaya ya da uygulamaya sahip olmanıza ve onu kullanmanıza ilişkin taleplerini karşılamaktan Apple değil, [Şirket unvanı] sorumludur. Bu talepler şunları kapsar: (i) ürün sorumluluğu talepleri; (ii) uygulamanın geçerli herhangi bir yasal veya düzenleyici gerekliliğe uymadığına ilişkin talepler; ve (iii) tüketicinin korunması, gizlilik veya benzeri mevzuattan doğan talepler. Bu Koşullar, [Şirket unvanı] sorumluluğunu uygulanacak hukukun izin verdiğinin ötesinde sınırlandırmaz.
 6. **Fikri mülkiyet.** Üçüncü bir kişinin, uygulamanın veya uygulamaya sahip olmanızın ve onu kullanmanızın kendi fikri mülkiyet haklarını ihlal ettiğini iddia etmesi halinde, bu iddianın araştırılmasından, savunulmasından, sulh yoluyla çözülmesinden ve sonuçlandırılmasından Apple değil, yalnızca [Şirket unvanı] sorumludur.
 7. **Mevzuata uyum.** (i) ABD Hükümeti tarafından ambargo uygulanan veya ABD Hükümeti tarafından "teröre destek veren" ülke olarak belirlenmiş bir ülkede bulunmadığınızı ve (ii) ABD Hükümeti'nin yasaklı veya kısıtlı taraf listelerinden herhangi birinde yer almadığınızı beyan ve taahhüt edersiniz.
-8. **Geliştiricinin adı ve adresi.** Uygulamaya ilişkin her türlü soru, şikâyet veya talebinizi [Şirket unvanı], [Kayıtlı adres], Türkiye adresine veya [support@glowlit.app](mailto:support@glowlit.app) e-posta adresine iletebilirsiniz.
+8. **Geliştiricinin adı ve adresi.** Uygulamaya ilişkin her türlü soru, şikâyet veya talebinizi [Şirket unvanı], [Kayıtlı adres], Türkiye adresine veya [hello@buaze.com](mailto:hello@buaze.com) e-posta adresine iletebilirsiniz.
 9. **Üçüncü taraf koşulları.** Uygulamayı kullanırken, örneğin kablosuz veri hizmeti sözleşmeniz gibi geçerli üçüncü taraf sözleşme koşullarına uymanız gerekir.
 10. **Lehine hak tanınan üçüncü kişi.** Apple ve Apple'ın bağlı şirketleri, bu Koşullar bakımından lehine hak tanınan üçüncü kişilerdir (üçüncü kişi yararına sözleşme). Bu Koşulları kabul etmenizle birlikte Apple, bu Koşulları lehine hak tanınan üçüncü kişi sıfatıyla size karşı uygulama hakkına sahip olur ve bu hakkı kabul etmiş sayılır.
 
@@ -469,12 +469,12 @@ Bu koşullar, Glowlit uygulamasını Apple App Store'dan edindiğiniz için geç
 - **Unvan:** [Şirket unvanı]
 - **Adres:** [Kayıtlı adres], Türkiye
 - **Ticaret sicil / MERSİS numarası:** [Ticaret sicil ve MERSİS numarası]
-- **E-posta:** [support@glowlit.app](mailto:support@glowlit.app)
+- **E-posta:** [hello@buaze.com](mailto:hello@buaze.com)
 - **KEP adresi:** [KEP adresi]
-- **Gizlilik soruları ve veli talepleri:** [privacy@glowlit.app](mailto:privacy@glowlit.app)
+- **Gizlilik soruları ve veli talepleri:** [hello@buaze.com](mailto:hello@buaze.com)
 
 ### AB Dijital Hizmetler Yasası kapsamında iletişim noktası
 
-AB üye devletlerinin yetkili makamları, Avrupa Komisyonu, Avrupa Dijital Hizmetler Kurulu ve Hizmetin kullanıcıları bize doğrudan [support@glowlit.app](mailto:support@glowlit.app) adresinden ulaşabilir. Bu adres, Dijital Hizmetler Yasası'nın (Tüzük (AB) 2022/2065) 11. ve 12. maddeleri kapsamındaki tek iletişim noktamızdır. Bize İngilizce veya Türkçe yazabilirsiniz.
+AB üye devletlerinin yetkili makamları, Avrupa Komisyonu, Avrupa Dijital Hizmetler Kurulu ve Hizmetin kullanıcıları bize doğrudan [hello@buaze.com](mailto:hello@buaze.com) adresinden ulaşabilir. Bu adres, Dijital Hizmetler Yasası'nın (Tüzük (AB) 2022/2065) 11. ve 12. maddeleri kapsamındaki tek iletişim noktamızdır. Bize İngilizce veya Türkçe yazabilirsiniz.
 
 AB temsilcimiz: [AB temsilcisi: unvan ve adres].

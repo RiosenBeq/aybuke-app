@@ -17,7 +17,7 @@ Bu Aydınlatma Metni, 6698 sayılı Kişisel Verilerin Korunması Kanunu ("**KVK
 - **Adres:** [Kayıtlı adres], Türkiye
 - **Ticaret sicili / MERSİS numarası:** [Ticaret sicil ve MERSİS numarası]
 - **Kayıtlı elektronik posta (KEP):** [KEP adresi]
-- **E-posta:** [privacy@glowlit.app](mailto:privacy@glowlit.app)
+- **E-posta:** [hello@buaze.com](mailto:hello@buaze.com)
 
 ## 2. İşlenen kişisel veri kategorileri
 
@@ -105,8 +105,8 @@ Haklarınızı kullanmak için, Veri Sorumlusuna Başvuru Usul ve Esasları Hakk
 
 - **Yazılı olarak:** [Kayıtlı adres], Türkiye adresine ıslak imzalı dilekçeyle;
 - **KEP ile:** [KEP adresi] adresine;
-- **Güvenli elektronik imza veya mobil imza ile:** [privacy@glowlit.app](mailto:privacy@glowlit.app) adresine;
-- **E-posta ile:** daha önce bize bildirdiğiniz ve sistemimizde kayıtlı olan e-posta adresinizden [privacy@glowlit.app](mailto:privacy@glowlit.app) adresine.
+- **Güvenli elektronik imza veya mobil imza ile:** [hello@buaze.com](mailto:hello@buaze.com) adresine;
+- **E-posta ile:** daha önce bize bildirdiğiniz ve sistemimizde kayıtlı olan e-posta adresinizden [hello@buaze.com](mailto:hello@buaze.com) adresine.
 
 Başvurunuzda; adınız, soyadınız ve yazılı başvurularda imzanız, Türkiye Cumhuriyeti vatandaşları için T.C. kimlik numaranız, yabancılar için uyruğunuz ile pasaport veya varsa kimlik numaranız, tebligata esas yerleşim yeri veya iş yeri adresiniz, varsa bildirime esas e-posta adresiniz, telefon veya faks numaranız ve talep konunuz bulunmalıdır. Hesabınız anonim olduğundan, verilerinizi bulabilmemiz için bir Glowlit satın alımına ait Apple Sipariş Kimliği (Order ID) gibi ek bilgiler isteyebiliriz.
 

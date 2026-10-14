@@ -58,7 +58,7 @@ This section is a plain-language summary for younger users. The rest of these Te
 - **Purchases go through Apple.** Purchases are charged to the Apple Account on your device. If you have a child account in Family Sharing, your parent or guardian may need to approve each purchase with "Ask to Buy". Never buy anything without permission.
 - **Only edit people who say yes.** Don't upload or edit photos of other people, especially other young people, without their permission. Never create anything sexual, humiliating or mean about anyone.
 - **Think before you share.** Your creations stay on your phone unless you share them. Once something is online, it can be hard to take back.
-- **Help is here.** If something goes wrong, or someone uses Glowlit to hurt you, tell a trusted adult and report it to us (see the [AUP](acceptable-use-policy.md)). Parents and guardians can contact us at [privacy@glowlit.app](mailto:privacy@glowlit.app), including to delete their child's data.
+- **Help is here.** If something goes wrong, or someone uses Glowlit to hurt you, tell a trusted adult and report it to us (see the [AUP](acceptable-use-policy.md)). Parents and guardians can contact us at [hello@buaze.com](mailto:hello@buaze.com), including to delete their child's data.
 
 ## 5. Your account
 
@@ -326,7 +326,7 @@ If you send us ideas or feedback, we may use them without any obligation to you.
 
 ## 16. Copyright and other rights complaints
 
-If you believe that content generated or made available through Glowlit infringes your copyright or other rights, email us at [support@glowlit.app](mailto:support@glowlit.app) and include:
+If you believe that content generated or made available through Glowlit infringes your copyright or other rights, email us at [hello@buaze.com](mailto:hello@buaze.com) and include:
 
 1. your name and contact details (postal address, telephone number and email address);
 2. a description of the copyrighted work or other right you believe has been infringed;
@@ -437,7 +437,7 @@ If you're a consumer, this choice of law doesn't deprive you of the protection o
 - **Consumers in the EU and EEA** keep the protection of the mandatory consumer laws of their country of residence and may bring proceedings in the courts of the country where they live.
 - **Consumers in the UK** may bring proceedings in the courts of England and Wales, Scotland or Northern Ireland, depending on where they live, and keep the protection of mandatory UK consumer law.
 
-Before starting formal proceedings, please contact us at [support@glowlit.app](mailto:support@glowlit.app) so that we can try to resolve the issue together.
+Before starting formal proceedings, please contact us at [hello@buaze.com](mailto:hello@buaze.com) so that we can try to resolve the issue together.
 
 ## 24. Apple App Store additional terms
 
@@ -450,7 +450,7 @@ These terms apply because you got Glowlit from Apple's App Store. If they confli
 5. **Product claims.** [Company legal name], not Apple, is responsible for addressing any claims by you or any third party relating to the app or your possession and use of it, including: (i) product liability claims; (ii) any claim that the app fails to conform to any applicable legal or regulatory requirement; and (iii) claims arising under consumer protection, privacy or similar legislation. These Terms don't limit the liability of [Company legal name] to you beyond what is permitted by applicable law.
 6. **Intellectual property.** If a third party claims that the app or your possession and use of it infringes that third party's intellectual property rights, [Company legal name], not Apple, is solely responsible for the investigation, defence, settlement and discharge of that claim.
 7. **Legal compliance.** You represent and warrant that (i) you are not located in a country that is subject to a U.S. Government embargo or that has been designated by the U.S. Government as a "terrorist supporting" country; and (ii) you are not listed on any U.S. Government list of prohibited or restricted parties.
-8. **Developer name and address.** Please direct any questions, complaints or claims about the app to [Company legal name], [Registered address], Türkiye, email [support@glowlit.app](mailto:support@glowlit.app).
+8. **Developer name and address.** Please direct any questions, complaints or claims about the app to [Company legal name], [Registered address], Türkiye, email [hello@buaze.com](mailto:hello@buaze.com).
 9. **Third-party terms.** You must comply with applicable third-party terms of agreement when using the app, for example your wireless data service agreement.
 10. **Third-party beneficiary.** Apple and Apple's subsidiaries are third-party beneficiaries of these Terms. Upon your acceptance of these Terms, Apple will have the right (and will be deemed to have accepted the right) to enforce these Terms against you as a third-party beneficiary.
 
@@ -469,12 +469,12 @@ These terms apply because you got Glowlit from Apple's App Store. If they confli
 - **Company:** [Company legal name]
 - **Address:** [Registered address], Türkiye
 - **Trade registry / MERSİS number:** [Trade registry and MERSİS number]
-- **Email:** [support@glowlit.app](mailto:support@glowlit.app)
+- **Email:** [hello@buaze.com](mailto:hello@buaze.com)
 - **Registered email (KEP):** [KEP address]
-- **Privacy questions and parents' requests:** [privacy@glowlit.app](mailto:privacy@glowlit.app)
+- **Privacy questions and parents' requests:** [hello@buaze.com](mailto:hello@buaze.com)
 
 ### Contact point under the EU Digital Services Act
 
-Authorities of EU Member States, the European Commission, the European Board for Digital Services and users of the Service can contact us directly at [support@glowlit.app](mailto:support@glowlit.app). This is our single point of contact under Articles 11 and 12 of the Digital Services Act (Regulation (EU) 2022/2065). You can write to us in English or Turkish.
+Authorities of EU Member States, the European Commission, the European Board for Digital Services and users of the Service can contact us directly at [hello@buaze.com](mailto:hello@buaze.com). This is our single point of contact under Articles 11 and 12 of the Digital Services Act (Regulation (EU) 2022/2065). You can write to us in English or Turkish.
 
 Our representative in the EU: [EU representative: name and address].

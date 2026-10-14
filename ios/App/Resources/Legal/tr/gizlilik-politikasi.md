@@ -16,12 +16,12 @@ Glowlit iOS uygulamasını ve buna bağlı çevrim içi hizmetleri ("**Hizmet**"
 
 - **Adres:** [Kayıtlı adres], Türkiye
 - **Ticaret sicili / MERSİS numarası:** [Ticaret sicil ve MERSİS numarası]
-- **Gizlilik iletişim adresi:** [privacy@glowlit.app](mailto:privacy@glowlit.app)
+- **Gizlilik iletişim adresi:** [hello@buaze.com](mailto:hello@buaze.com)
 - **Kayıtlı elektronik posta (KEP):** [KEP adresi]
 - **AB temsilcisi (GDPR md. 27):** [AB temsilcisi: unvan ve adres]
 - **Birleşik Krallık temsilcisi (UK GDPR md. 27):** [Birleşik Krallık temsilcisi: unvan ve adres]
 
-Bir veri koruma görevlisine iletebileceğiniz sorular dahil, gizlilikle ilgili her konuda bize [privacy@glowlit.app](mailto:privacy@glowlit.app) adresinden yazabilirsiniz.
+Bir veri koruma görevlisine iletebileceğiniz sorular dahil, gizlilikle ilgili her konuda bize [hello@buaze.com](mailto:hello@buaze.com) adresinden yazabilirsiniz.
 
 Bu politika Hizmeti kapsar. Glowlit ile birlikte kullandığınız üçüncü taraf hizmetleri (örneğin Apple App Store veya paylaşım yaptığınız Instagram gibi uygulamalar) kapsamaz; bunların kendi gizlilik politikaları vardır. Türkiye'deyseniz lütfen [KVKK Aydınlatma Metni](glowlit-legal://kvkk) metnimizi de okuyun. Glowlit kullanım kuralları [Kullanım Koşulları](glowlit-legal://terms) ve [Kabul Edilebilir Kullanım ve Yapay Zekâ İçerik Politikası](glowlit-legal://acceptableUse) metinlerinde yer alır.
 
@@ -53,7 +53,7 @@ Bu bölüm 18 yaşından küçükseniz sizin için. Politikanın geri kalanı da
 - **Satın alımlar.** Satın alımlar cihazınızdaki Apple Hesabından tahsil edilir. Aile Paylaşımı'nda çocuk hesabınız varsa, veliniz veya vasinizin satın alımları "Satın Alma İzni İste" (Ask to Buy) ile onaylaması gerekebilir.
 - **Başkalarının fotoğrafları.** Başkalarının fotoğraflarını yalnızca "evet" dedilerse yükleyin. Küçük çocuklar için izni velisi veya vasisi vermelidir.
 - **Kontrol sizde.** Bulut yapay zekâ işlemeyi Ayarlar'dan istediğiniz zaman kapatabilir, **Ayarlar → Verilerimi ve hesabımı sil** ile her şeyi silebilirsiniz.
-- **Sorunuz veya endişeniz mi var?** Güvendiğiniz bir yetişkinle konuşun. Siz, veliniz veya vasiniz bize [privacy@glowlit.app](mailto:privacy@glowlit.app) adresinden yazabilirsiniz.
+- **Sorunuz veya endişeniz mi var?** Güvendiğiniz bir yetişkinle konuşun. Siz, veliniz veya vasiniz bize [hello@buaze.com](mailto:hello@buaze.com) adresinden yazabilirsiniz.
 
 ## 4. iPhone'unuzda kalan veriler
 
@@ -165,7 +165,7 @@ Biyometrik veri oluşturmayız: yüz tanıma yapmayız, yüz şablonu veya yüz 
 
 İşlenmesini istemediğiniz hassas bilgiler içeren fotoğrafları veya istemleri lütfen yüklemeyin.
 
-**Fotoğraflarınızdaki diğer kişiler.** Fotoğraflarınızda başka kişiler görünebilir. Onların görüntülerini de sizinkiyle aynı şekilde işleriz: yalnızca düzenleme için, kısa süreyle ve hiçbir zaman kimliklerini belirlemeden. Başkalarının fotoğraflarını yalnızca onların rızasıyla, çocukların fotoğraflarını ise yalnızca velisi veya vasisiyseniz ya da velisinin veya vasisinin izniyle yükleyin. Başka birinin Glowlit ile düzenlediği bir fotoğrafta yer alıyorsanız bize [privacy@glowlit.app](mailto:privacy@glowlit.app) adresinden ulaşabilirsiniz.
+**Fotoğraflarınızdaki diğer kişiler.** Fotoğraflarınızda başka kişiler görünebilir. Onların görüntülerini de sizinkiyle aynı şekilde işleriz: yalnızca düzenleme için, kısa süreyle ve hiçbir zaman kimliklerini belirlemeden. Başkalarının fotoğraflarını yalnızca onların rızasıyla, çocukların fotoğraflarını ise yalnızca velisi veya vasisiyseniz ya da velisinin veya vasisinin izniyle yükleyin. Başka birinin Glowlit ile düzenlediği bir fotoğrafta yer alıyorsanız bize [hello@buaze.com](mailto:hello@buaze.com) adresinden ulaşabilirsiniz.
 
 ## 9. Güvenlik filtreleri ve otomatik kararlar
 
@@ -177,7 +177,7 @@ Glowlit uygulamasını güvenli tutmak için otomatik güvenlik önlemleri kulla
 
 Bir filtre bir isteği veya sonucu engellerse sizden ücret alınmaz ve kredileriniz iade edilir.
 
-Bu filtreler, istekleriniz hakkında verdiğimiz tek otomatik kararlardır. GDPR md. 22 anlamında sizin üzerinizde hukuki veya benzer şekilde önemli etkiler doğurmaz ve sizi profillemeyiz. Bir filtrenin bir şeyi yanlışlıkla engellediğini düşünüyorsanız [support@glowlit.app](mailto:support@glowlit.app) adresinden bize yazın; bir insan inceleyecektir. KVKK md. 11/1-(g) kapsamındaki itiraz hakkınız saklıdır.
+Bu filtreler, istekleriniz hakkında verdiğimiz tek otomatik kararlardır. GDPR md. 22 anlamında sizin üzerinizde hukuki veya benzer şekilde önemli etkiler doğurmaz ve sizi profillemeyiz. Bir filtrenin bir şeyi yanlışlıkla engellediğini düşünüyorsanız [hello@buaze.com](mailto:hello@buaze.com) adresinden bize yazın; bir insan inceleyecektir. KVKK md. 11/1-(g) kapsamındaki itiraz hakkınız saklıdır.
 
 ## 10. Yapay zekâ şeffaflığı
 
@@ -228,7 +228,7 @@ Glowlit uygulamasını kullandığınızda verilerinizi doğrudan bize sağlars�
 
 Düzenli aktarımlarımız açık rızanıza dayanmaz. Yalnızca yeterlilik kararı veya uygun güvence bulunmayan istisnai ve arızi hâllerde, olası riskler hakkında bilgilendirilmeniz kaydıyla açık rızanız gibi KVKK md. 9(6)'daki şartlardan birine dayanabiliriz.
 
-Kullandığımız güvencelerin bir örneğini [privacy@glowlit.app](mailto:privacy@glowlit.app) adresinden isteyebilirsiniz.
+Kullandığımız güvencelerin bir örneğini [hello@buaze.com](mailto:hello@buaze.com) adresinden isteyebilirsiniz.
 
 ## 14. Verileri ne kadar süre saklıyoruz?
 
@@ -274,7 +274,7 @@ Yaşadığınız yere bağlı olarak verilerinize erişme, bunları düzelttirme
 ### Nasıl talepte bulunursunuz?
 
 - Hemen silme için **Ayarlar → Verilerimi ve hesabımı sil** seçeneğini kullanın.
-- Diğer tüm talepler için [privacy@glowlit.app](mailto:privacy@glowlit.app) adresine yazın. Türkiye'deki kullanıcılar 19. bölümdeki yöntemleri de kullanabilir.
+- Diğer tüm talepler için [hello@buaze.com](mailto:hello@buaze.com) adresine yazın. Türkiye'deki kullanıcılar 19. bölümdeki yöntemleri de kullanabilir.
 - Veliler ve vasiler çocukları adına talepte bulunabilir. Çocuğun velisi veya vasisi olduğunuza dair makul bir teyit isteyebiliriz.
 
 Hesabınız anonim olduğundan, bir talep üzerine işlem yapabilmemiz için verilerinizi bulmamızı sağlayacak bilgilere ihtiyaç duyabiliriz; örneğin bir Glowlit satın alımına ait Apple faturanızda görünen Sipariş Kimliği (Order ID). Bir talebi elimizdeki hiçbir veriyle eşleştiremezsek sizi bilgilendiririz. Talebinizi doğrulamak için bilgi isteyebiliriz ve bu bilgileri yalnızca bu amaçla kullanırız.
@@ -349,8 +349,8 @@ Kişisel verileri 6698 sayılı Kişisel Verilerin Korunması Kanunu'na ("**KVKK
 
 - yazılı olarak [Kayıtlı adres], Türkiye adresine;
 - kayıtlı elektronik posta (KEP) ile [KEP adresi] adresine;
-- güvenli elektronik imza veya mobil imza ile imzalanmış e-postayla [privacy@glowlit.app](mailto:privacy@glowlit.app) adresine veya
-- daha önce bize bildirdiğiniz ve sistemimizde kayıtlı olan e-posta adresinizden [privacy@glowlit.app](mailto:privacy@glowlit.app) adresine.
+- güvenli elektronik imza veya mobil imza ile imzalanmış e-postayla [hello@buaze.com](mailto:hello@buaze.com) adresine veya
+- daha önce bize bildirdiğiniz ve sistemimizde kayıtlı olan e-posta adresinizden [hello@buaze.com](mailto:hello@buaze.com) adresine.
 
 Başvurunuzda adınız ve soyadınız (yazılı başvuruda imzanız), T.C. kimlik numaranız (yabancıysanız uyruğunuz ile pasaport veya kimlik numaranız), tebligata esas adresiniz, varsa e-posta adresiniz, telefon veya faks numaranız ve talebinizin konusu yer almalıdır. Silme için uygulamadaki **Ayarlar → Verilerimi ve hesabımı sil** seçeneğini de kullanabilirsiniz.
 
@@ -394,7 +394,7 @@ Bu bölüm Kaliforniya sakinleri için geçerlidir ve politikanın geri kalanın
 
 **Haklarınız**: bilme hakkı (topladığımız kişisel bilgilerin kategorileri ve belirli parçaları), silme hakkı, düzeltme hakkı, satış veya paylaşımı reddetme hakkı (satmıyor ve paylaşmıyoruz), hassas kişisel bilgilerin kullanımını sınırlama hakkı (yalnızca izin verilen amaçlarla kullanıyoruz) ve haklarınızı kullandığınız için ayrımcılığa uğramama hakkı.
 
-**Nasıl kullanılır?** Uygulama içi silmeyi kullanın veya [privacy@glowlit.app](mailto:privacy@glowlit.app) adresine yazın. Talebinizin alındığını 10 iş günü içinde teyit eder ve 45 gün içinde yanıt veririz; bu süreyi bildirimde bulunarak bir kez 45 gün uzatabiliriz. Talepleri, bize verdiğiniz bilgileri elimizdeki bilgilerle eşleştirerek doğrularız (16. bölüm). Yetkili bir temsilci kullanabilirsiniz; temsilcinin yetkisine dair kanıt isteyebilir ve talebinizi doğrudan bizimle doğrulamanızı isteyebiliriz.
+**Nasıl kullanılır?** Uygulama içi silmeyi kullanın veya [hello@buaze.com](mailto:hello@buaze.com) adresine yazın. Talebinizin alındığını 10 iş günü içinde teyit eder ve 45 gün içinde yanıt veririz; bu süreyi bildirimde bulunarak bir kez 45 gün uzatabiliriz. Talepleri, bize verdiğiniz bilgileri elimizdeki bilgilerle eşleştirerek doğrularız (16. bölüm). Yetkili bir temsilci kullanabilirsiniz; temsilcinin yetkisine dair kanıt isteyebilir ve talebinizi doğrudan bizimle doğrulamanızı isteyebiliriz.
 
 **Shine the Light**: Kişisel bilgileri üçüncü kişilere onların doğrudan pazarlama amaçları için açıklamayız.
 
@@ -402,7 +402,7 @@ Bu bölüm Kaliforniya sakinleri için geçerlidir ve politikanın geri kalanın
 
 Virginia, Colorado, Connecticut, Utah, Teksas ve Oregon gibi kapsamlı gizlilik yasalarına sahip eyaletlerin sakinleri; kişisel verilerinin işlenip işlenmediğini teyit etme, bunlara erişme, düzeltme ve silme, taşınabilir bir kopyasını alma ve hedefli reklamcılığı, kişisel verilerin satışını ve hukuki veya benzer şekilde önemli etkiler doğuran profillemeyi reddetme haklarına sahip olabilir. Hedefli reklamcılık, kişisel veri satışı veya bu tür profilleme yapmayız. Bu yasaların fotoğraflarda ortaya çıkan bilgileri hassas veri saydığı hâllerde, bunları yalnızca bulut yapay zekâ onay ekranında verilen rızayla işleriz.
 
-**İtirazlar.** Talebiniz üzerine işlem yapmayı reddedersek, kararımızı yanıtlayarak veya konu satırına "Privacy appeal" yazarak [privacy@glowlit.app](mailto:privacy@glowlit.app) adresine e-posta göndererek itiraz edebilirsiniz. Eyaletinizin yasasının öngördüğü süre içinde, genellikle 45 ila 60 gün içinde yanıt veririz. İtirazınızı reddedersek eyaletinizin Başsavcılığına başvurabilirsiniz.
+**İtirazlar.** Talebiniz üzerine işlem yapmayı reddedersek, kararımızı yanıtlayarak veya konu satırına "Privacy appeal" yazarak [hello@buaze.com](mailto:hello@buaze.com) adresine e-posta göndererek itiraz edebilirsiniz. Eyaletinizin yasasının öngördüğü süre içinde, genellikle 45 ila 60 gün içinde yanıt veririz. İtirazınızı reddedersek eyaletinizin Başsavcılığına başvurabilirsiniz.
 
 **Nevada.** Nevada yasası anlamında kapsanan bilgileri satmayız.
 
@@ -416,7 +416,7 @@ Kaliforniya, Connecticut, Colorado, Maryland ve New York gibi giderek artan say�
 
 Glowlit, 13 yaş ve üzeri gençler ve yetişkinler için tasarlanmıştır. Bulut yapay zekâ özellikleri, hesaplar ve satın alımlar yalnızca 13 yaş ve üzeri içindir. Yaş adımı birinin 13 yaşından küçük olduğunu gösterirse uygulama yalnızca cihazda çalışan ücretsiz araçları (efektler, Adjust, Cut out, Crop, Best shot ve video düzenleyici) sunar. Bu modda bize veya hizmet sağlayıcılarımıza hiçbir şey göndermez: hesap oluşturmaz, bulut yapay zekâ, satın alma veya analiz isteği yapmaz. 13 yaşından küçük çocuklara yönelik değildir ve ABD Çocukların Çevrim İçi Gizliliğini Koruma Yasası (COPPA) kapsamı dahil, 13 yaşından küçük çocuklardan bilerek kişisel bilgi toplamayız.
 
-Doğrulanabilir ebeveyn onayı olmadan 13 yaşından küçük bir çocuktan kişisel bilgi topladığımızı öğrenirsek bu bilgileri sileriz. 13 yaşından küçük bir çocuğun Glowlit kullandığını düşünüyorsanız lütfen [privacy@glowlit.app](mailto:privacy@glowlit.app) adresinden bize ulaşın. Veli veya vasi, çocuğun cihazında **Ayarlar → Verilerimi ve hesabımı sil** seçeneğiyle verileri hemen silebilir.
+Doğrulanabilir ebeveyn onayı olmadan 13 yaşından küçük bir çocuktan kişisel bilgi topladığımızı öğrenirsek bu bilgileri sileriz. 13 yaşından küçük bir çocuğun Glowlit kullandığını düşünüyorsanız lütfen [hello@buaze.com](mailto:hello@buaze.com) adresinden bize ulaşın. Veli veya vasi, çocuğun cihazında **Ayarlar → Verilerimi ve hesabımı sil** seçeneğiyle verileri hemen silebilir.
 
 ## 22. Do Not Track ve Global Privacy Control
 
@@ -429,8 +429,8 @@ Uygulamalarımız veya kanun değiştiğinde bu politikayı güncelleriz. Öneml
 ## 24. Bize ulaşın
 
 - **Veri sorumlusu:** [Şirket unvanı], [Kayıtlı adres], Türkiye
-- **Gizlilik talepleri (veli ve vasi talepleri dahil):** [privacy@glowlit.app](mailto:privacy@glowlit.app)
-- **Genel iletişim:** [support@glowlit.app](mailto:support@glowlit.app)
+- **Gizlilik talepleri (veli ve vasi talepleri dahil):** [hello@buaze.com](mailto:hello@buaze.com)
+- **Genel iletişim:** [hello@buaze.com](mailto:hello@buaze.com)
 - **Kayıtlı elektronik posta (KEP):** [KEP adresi]
 - **AB temsilcisi:** [AB temsilcisi: unvan ve adres]
 - **Birleşik Krallık temsilcisi:** [Birleşik Krallık temsilcisi: unvan ve adres]

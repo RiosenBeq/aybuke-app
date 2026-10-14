@@ -98,7 +98,7 @@ Glowlit vücut şeklini değiştiren veya cildi açan özellikler sunmaz. Magic 
 - sistemlerimizi aşırı yüklemek, aksatmak ya da onlara saldırmak veya kullanım sınırlarını kasıtlı olarak aşmak ya da
 - Hizmeti veya çıktılarını rakip bir yapay zekâ modeli ya da veri seti oluşturmak veya eğitmek için kullanmak.
 
-Bir güvenlik açığı bulursanız, bundan yararlanmak yerine lütfen [support@glowlit.app](mailto:support@glowlit.app) adresine bildirin.
+Bir güvenlik açığı bulursanız, bundan yararlanmak yerine lütfen [hello@buaze.com](mailto:hello@buaze.com) adresine bildirin.
 
 ## 6. İçeriği nasıl denetliyoruz?
 
@@ -137,7 +137,7 @@ Bir sonuçta menüyü açıp **Report this image** seçeneğini seçin (editörd
 
 ### E-postayla bildirme
 
-Yasa dışı içeriği, sizi etkileyen bir Glowlit kötüye kullanımını (örneğin sizin sahte veya aşağılayıcı bir görseliniz) veya haklarınızın ihlalini bildirmek için [support@glowlit.app](mailto:support@glowlit.app) adresine şunları içeren bir e-posta gönderin:
+Yasa dışı içeriği, sizi etkileyen bir Glowlit kötüye kullanımını (örneğin sizin sahte veya aşağılayıcı bir görseliniz) veya haklarınızın ihlalini bildirmek için [hello@buaze.com](mailto:hello@buaze.com) adresine şunları içeren bir e-posta gönderin:
 
 - içeriğin açıklaması ve neden yasa dışı olduğunu ya da bu politikayı ihlal ettiğini düşündüğünüz;
 - içeriği tespit etmemize yardımcı olacak bilgiler (ekran görüntüleri, tarih ve saat, kullanılan şablon veya yayımlandığı yer gibi);
@@ -160,7 +160,7 @@ Glowlit içinde herkese açık profil veya akış yoktur ve oluşturduklarınız
 
 ## 9. İtirazlar
 
-Bir talebi engellediğimizi, hesabınızı kısıtladığımızı veya bildiriminizi reddettiğimizi düşünüyor ve bunun hatalı olduğuna inanıyorsanız, konu satırına "İtiraz" yazarak [support@glowlit.app](mailto:support@glowlit.app) adresine e-posta gönderin. Lütfen şunları ekleyin:
+Bir talebi engellediğimizi, hesabınızı kısıtladığımızı veya bildiriminizi reddettiğimizi düşünüyor ve bunun hatalı olduğuna inanıyorsanız, konu satırına "İtiraz" yazarak [hello@buaze.com](mailto:hello@buaze.com) adresine e-posta gönderin. Lütfen şunları ekleyin:
 
 - ne olduğu ve ne zaman olduğu;
 - varsa uygulamada gördüğünüz mesaj ve
@@ -176,8 +176,8 @@ Yeni risklere, Hizmetteki değişikliklere veya kanundaki değişikliklere yanı
 
 ## 11. İletişim
 
-- **Bildirimler, itirazlar ve sorular:** [support@glowlit.app](mailto:support@glowlit.app)
-- **Gizlilik soruları ve veli talepleri:** [privacy@glowlit.app](mailto:privacy@glowlit.app)
+- **Bildirimler, itirazlar ve sorular:** [hello@buaze.com](mailto:hello@buaze.com)
+- **Gizlilik soruları ve veli talepleri:** [hello@buaze.com](mailto:hello@buaze.com)
 - **Şirket:** [Şirket unvanı], [Kayıtlı adres], Türkiye
 
-AB Üye Devletlerinin yetkili makamları, Avrupa Komisyonu, Avrupa Dijital Hizmetler Kurulu ve kullanıcılar, AB Dijital Hizmetler Tüzüğü md. 11 ve 12 kapsamındaki tek irtibat noktamıza İngilizce veya Türkçe olarak [support@glowlit.app](mailto:support@glowlit.app) adresinden ulaşabilir. AB temsilcimiz: [AB temsilcisi: unvan ve adres].
+AB Üye Devletlerinin yetkili makamları, Avrupa Komisyonu, Avrupa Dijital Hizmetler Kurulu ve kullanıcılar, AB Dijital Hizmetler Tüzüğü md. 11 ve 12 kapsamındaki tek irtibat noktamıza İngilizce veya Türkçe olarak [hello@buaze.com](mailto:hello@buaze.com) adresinden ulaşabilir. AB temsilcimiz: [AB temsilcisi: unvan ve adres].
