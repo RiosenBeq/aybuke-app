@@ -40,7 +40,7 @@ Every value needed to create Aybuke in App Store Connect, in the order the forms
 | `app.glowlit.pro.yearly` | Pro Yearly | 1 year | $39.99 | Free trial, 1 week, new subscribers |
 | `app.glowlit.pro.monthly` | Pro Monthly | 1 month | $5.99 | Pay as you go, 1 month at $1.99 |
 
-Localized description for both: "Monthly credits, every look, best-quality AI" (44 characters; Apple allows 45, so translate per locale within that). It names no number on purpose: the server can retune the allowance (80 a month, 20 in the yearly plan's trial week) without touching App Store Connect, and the paywall shows the current numbers. Review screenshot: the paywall (`docs/marketing/app-store/en/10-paywall.jpg`).
+Localized description for both: "Monthly credits, every look, best-quality AI" (44 characters; Apple allows 45, so translate per locale within that). It names no number on purpose: the server can retune the allowance (80 a month, 20 in the yearly plan's trial week) without touching App Store Connect, and the paywall shows the current numbers. Review screenshot: the paywall (`docs/marketing/app-store/en/09-paywall.jpg`).
 
 **Consumables**
 
