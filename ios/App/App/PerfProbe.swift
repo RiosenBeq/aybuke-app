@@ -1,6 +1,7 @@
 import UIKit
 import Darwin
 import ImageIO
+import AVFoundation
 import AppCore
 
 /// A launch step for `PerfProbe`; does nothing in shipping builds.
@@ -72,6 +73,13 @@ enum PerfProbe {
             let frame = (now - started) * 1000
             log(String(format: "open-editor appear=%.0fms frame=%.0fms footprint=%.0fMB peak=%.0fMB",
                        appear, frame, footprint().current, footprint().peak))
+            // What stays in memory once she closes the editor again.
+            DispatchQueue.main.asyncAfter(deadline: .now() + 4) {
+                GlowIntents.app?.editorLaunch = nil
+                DispatchQueue.main.asyncAfter(deadline: .now() + 4) {
+                    log(String(format: "closed-editor footprint=%.0fMB", footprint().current))
+                }
+            }
         }
     }
 
@@ -257,6 +265,19 @@ enum PerfBench {
             let sync = timed { app.syncWidgets() }
             let latest = timed { GlowWidgetBridge.updateLatestImage(photo) }
             PerfProbe.log("main syncWidgets=\(fmt(sync)) widgetImage=\(fmt(latest))")
+        }
+
+        // `-GLPerfVideo <clip>`: export as is and with an effect.
+        if let clip = UserDefaults.standard.string(forKey: "GLPerfVideo") {
+            let asset = AVURLAsset(url: URL(fileURLWithPath: clip))
+            let seconds = (try? await VideoEngine.duration(of: asset)) ?? 0
+            for effect in [nil, RetroEffect.vhs] as [RetroEffect?] {
+                let composition = try? await VideoEngine.videoComposition(for: asset, effect: effect, showsExtra: true)
+                let start = PerfProbe.now
+                let url = try? await VideoEngine.export(asset, videoComposition: composition)
+                PerfProbe.log("video effect=\(effect?.rawValue ?? "none") clip=\(fmt(seconds))s export=\(fmt(ms(since: start)))ms ok=\(url != nil)")
+                if let url { try? FileManager.default.removeItem(at: url) }
+            }
         }
 
         PerfProbe.log("bench done \(memory())")
