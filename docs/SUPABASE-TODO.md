@@ -22,10 +22,13 @@ Bu dosya, Glowlit'in arka ucunu (Supabase) canlıya almak için kalan adımları
   3. `20261013000000_accounts.sql`
   4. `20261014000000_retry_reopen.sql`
   5. `20261015000000_merged_users.sql`
-- [ ] Zamanlanmış temizlik (takılan işleri iade eder, sonuçları 1 saat sonra siler):
+  6. `20261016000000_explicit_grants.sql`
+  7. `20261018000000_ad_rewards.sql` (ödüllü reklam kredileri)
+- [ ] Zamanlanmış temizlik (takılan işleri iade eder, sonuçları 1 saat sonra siler; reklam ödül kayıtlarını 30 gün sonra siler):
   ```sql
   create extension if not exists pg_cron;
   select cron.schedule('sweep-jobs', '*/5 * * * *', 'select public.sweep_jobs()');
+  select cron.schedule('sweep-ad-rewards', '17 * * * *', 'select public.sweep_ad_rewards()');
   ```
 
 ## 4. Kimlik doğrulama (Authentication)
@@ -44,7 +47,11 @@ cd backend
 supabase login
 supabase link --project-ref <proje-ref>
 supabase functions deploy ai-image credits-redeem account report
+# AdMob'un doğrulama çağrısında JWT yok; fonksiyon Google'ın imzasını kendisi doğrular.
+supabase functions deploy ad-reward --no-verify-jwt
 ```
+
+- [ ] AdMob → Glowlit → ödüllü reklam birimi (`ca-app-pub-2292230772061554/1406702504`, ödül miktarı 1, öğe `credit`) → **Server-side verification** → geri çağırma adresi `https://<proje-ref>.supabase.co/functions/v1/ad-reward` (sorgu dizesi olmadan) → **Verify URL**. Ayrıntılar: [`backend/README.md`](../backend/README.md), "Rewarded ads".
 
 ## 6. Gizli anahtarlar (Edge Functions → Secrets)
 
@@ -58,6 +65,7 @@ Bu değerleri hesap sahibi yapıştırmalı (anahtarları ben giremem). Şablon:
 - [ ] `OUTPUT_MODERATION` = `on`
 - [ ] `REVENUECAT_SECRET_KEY` ve `REVENUECAT_PROJECT_ID` — hesap silinince RevenueCat müşterisini de silmek için. RevenueCat → Project settings → API keys'te yalnızca `customer_information:customers:read_write` izinli bir **v2** gizli anahtar oluştur; proje kimliği aynı sayfada. Boş kalırsa silme yine çalışır ama RevenueCat kaydı kalır (günlüğe uyarı düşer).
 - [ ] (İsteğe bağlı) `FAL_KEY` — ek çıktı güvenlik kontrolü ve yedek sağlayıcı
+- [ ] `ADMOB_REWARDED_AD_UNIT` = `ca-app-pub-2292230772061554/1406702504` — yalnızca bu reklam biriminin imzalı çağrıları kredi verir; boş kalırsa hiçbir ödül verilmez
 
 > **Onay ekranı:** Uygulamanın yapay zekâ onay ekranı, işleyicileri `ios/App/Resources/AppConfig.json` içindeki `aiProcessors` listesinden gösterir (şu an Supabase, xAI ve fal.ai). `AI_PROVIDER`'ı değiştirmek veya listede olmayan bir işleyici eklemek, önce o işleyiciyi listeleyen bir uygulama güncellemesi gerektirir; liste değişince uygulama onayı yeniden ister. Backend sağlayıcıyı uygulama sürümü olmadan değiştirebilir, bu yüzden sırayı koru.
 

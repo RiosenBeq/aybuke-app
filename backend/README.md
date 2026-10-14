@@ -16,11 +16,17 @@ iOS app ──► Supabase Auth (anonymous JWT; optional Sign in with Apple ID t
    ├─► POST   /functions/v1/credits-redeem      credit pack  ──► Apple JWS verification → grant once
    ├─► POST   /functions/v1/report              "Report this image" (reason, job id) → public.reports
    ├─► POST   /functions/v1/account/link        after Sign in with Apple: merge the anonymous user in
-   └─► DELETE /functions/v1/account             revoke the Apple token, delete user and all data (cascades)
+   ├─► DELETE /functions/v1/account             revoke the Apple token, delete user and all data (cascades)
+   ├─► POST   /functions/v1/ad-reward           single-use token before a rewarded ad (free, out of credits)
+   ├─► GET    /functions/v1/ad-reward?token=…   has AdMob confirmed it? (+ "N left today")
+   └─► DELETE /functions/v1/ad-reward?token=…   the ad closed early: the token's place comes back
+
+AdMob ──► GET /functions/v1/ad-reward?…&signature=…&key_id=…   signed reward callback (SSV) → 1 credit, once
 ```
 
 The wire contract is defined (and unit-tested) in
-`ios/Packages/AppCore/Sources/AppCore/BackendAPI.swift`.
+`ios/Packages/AppCore/Sources/AppCore/BackendAPI.swift`, and for ads in
+`ios/Packages/AppCore/Sources/AppCore/Ads.swift`.
 
 ## Why it's shaped like this
 
@@ -32,6 +38,7 @@ The wire contract is defined (and unit-tested) in
 | **Apple-verified entitlements** | Pro status comes from a StoreKit 2 signed transaction verified with Apple's App Store Server Library, then bound to one user at a time. |
 | **No input storage** | Photos are passed to the provider as data URIs and never written to our database or storage. xAI results come back as base64, are held on the job only until the app confirms the download (then cleared; `sweep_jobs()` clears any left after an hour). With xAI Zero Data Retention on, xAI deletes requests within an hour and never trains on them. fal outputs expire after 1 hour (`X-Fal-Object-Lifecycle-Preference`) and request I/O history is disabled (`X-Fal-Store-IO: 0`). |
 | **Layered safety** | Prompt policy (client + server) → provider moderation (xAI filters outputs; fal's strict `safety_tolerance`) → output NSFW check (when `FAL_KEY` is set) → in-app reporting. Documented for EU AI Act Art. 5(1)(ba) (from 2 Dec 2026). |
+| **Ad credits only from Google's signature** | The app never grants an ad credit. It gets a random single-use token, AdMob sends it back in an ECDSA-signed callback, and `redeem_ad_reward` grants one credit per AdMob transaction id, at most 3 a day in SQL. The token, not the user id, is all AdMob sees of the account. |
 
 ## Models (late 2026 picks)
 
@@ -68,10 +75,13 @@ Prices, latency and alternatives: [`docs/research/tech-and-compliance.md`](../do
 5. **Deploy functions**
    ```bash
    supabase functions deploy ai-image credits-redeem account report
+   # AdMob's callback has no JWT: the function checks Google's signature (and the app's session) itself.
+   supabase functions deploy ad-reward --no-verify-jwt
    ```
-6. **Schedule the sweeper** (fails and refunds stuck jobs, clears job outputs after 1 hour, deletes job rows after 30 days and reports after 12 months): enable the `pg_cron` extension, then run
+6. **Schedule the sweepers** (`sweep_jobs` fails and refunds stuck jobs, clears job outputs after 1 hour, deletes job rows after 30 days and reports after 12 months; `sweep_ad_rewards` deletes reward tokens a day after they expire and reward records after 30 days): enable the `pg_cron` extension, then run
    ```sql
    select cron.schedule('sweep-jobs', '*/5 * * * *', 'select public.sweep_jobs()');
+   select cron.schedule('sweep-ad-rewards', '17 * * * *', 'select public.sweep_ad_rewards()');
    ```
 7. **Point the app at it** — in `ios/App/Resources/AppConfig.json` set `backendBaseURL` to `https://<project-ref>.supabase.co` and `supabaseAnonKey` to the project's publishable (anon) key. Both are public by design; access is enforced by JWTs, RLS and the functions themselves.
 
@@ -92,6 +102,19 @@ Photos are not synced: the library stays on each iPhone.
 
 `POST /report` stores a user's "Report this image" in `public.reports` (reason, optional details, the user's own job id) with a limit of 20 reports a day. Review open reports in the Supabase dashboard (`status = 'open'`) and set `status` to `reviewed`, `actioned` or `dismissed`. Reports are deleted after 12 months by `sweep_jobs()`, or with the account.
 
+## Rewarded ads (AdMob server-side verification)
+
+Free members 13+ who are out of credits can watch a rewarded ad for 1 credit, at most 3 a day (UTC). Pro never sees ads. The credit comes only from AdMob's signed callback, never from the app:
+
+1. The app loads the ad, then calls `POST /ad-reward` (with her session and, like the balance call, `X-Entitlement-JWS`). `issue_ad_reward_token()` refuses Pro members (`not_eligible`), anyone with credits left (`has_credits`) and a fourth ad today (`daily_cap`; tokens still waiting for AdMob count), and otherwise returns a random token valid for 30 minutes.
+2. The app sets the token as the ad's server-side verification **custom data** (never the user id) and shows the ad.
+3. AdMob calls `GET /ad-reward?ad_network=…&ad_unit=…&custom_data=<token>&reward_amount=1&reward_item=credit&timestamp=…&transaction_id=…&signature=…&key_id=…`. `_shared/admob.ts` verifies the ECDSA (P-256, SHA-256, DER) signature over the query string up to `&signature=` with Google's keys from `https://www.gstatic.com/admob/reward/verifier-keys.json` (cached for at most 12 hours, fetched again for an unknown `key_id`), and the function checks `ad_unit` against `ADMOB_REWARDED_AD_UNIT`. `redeem_ad_reward()` then maps the token to the user and grants the credit through the ledger (kind `ad_reward`, `source_ref` `admob:<transaction_id>`), once per transaction and once per token, re-checking the daily cap under the wallet lock. Verified callbacks answer 200 (also duplicates, so AdMob stops retrying); a bad signature or another ad unit answers 403, and missing keys 503 (AdMob retries a few times).
+4. The app polls `GET /ad-reward?token=…` until the status is `granted`, or calls `DELETE /ad-reward?token=…` when the ad closed before its reward.
+
+Ad credits go into the daily bucket: spent first, refunded like any credit, gone at 00:00 UTC like the free daily credits. The cap and the credit per ad are in `ad_reward_policy()`.
+
+**AdMob console** (Apps › Glowlit › Ad units): a **Rewarded** ad unit (`ca-app-pub-2292230772061554/1406702504`) with reward amount **1** and reward item **credit**; under *Server-side verification*, the callback URL `https://<project-ref>.supabase.co/functions/v1/ad-reward` (no query string; for this project `https://efapupjvidyqhqdevmcu.supabase.co/functions/v1/ad-reward`), then **Verify URL** (the test callback carries no token, so it answers 200 and grants nothing). Set `ADMOB_REWARDED_AD_UNIT` to the same unit id; empty refuses every reward.
+
 ## Which AI key goes where
 
 - **Production (this backend):** the provider key lives only in Edge Function secrets (`XAI_API_KEY`, or `FAL_KEY`, in `.env`, then `supabase secrets set --env-file .env`; or paste it under Edge Functions → Secrets in the dashboard). It never ships in the app.
@@ -105,6 +128,7 @@ Defined once in SQL (`public.credit_policy()`) and mirrored in the app (`CreditP
 - Free: **3 credits per day**, refilled at 00:00 UTC, never accumulating.
 - Pro: **100 credits per month**, unused credits roll over one month (cap 200).
 - Credit packs: never expire (App Review Guideline 3.1.1).
+- Rewarded ads (free members out of credits): **1 credit per ad, at most 3 a day** (`ad_reward_policy()`), added to the daily bucket.
 - Spending order: daily → subscription → purchased (expiring credits first).
 - Any failure, cancellation, safety block or timeout is refunded exactly once.
 
@@ -114,7 +138,7 @@ Change the numbers in `credit_policy()` (new migration) to retune pricing withou
 
 ```bash
 # Type-check, lint and format-check the Edge Functions (Deno 2)
-cd backend/supabase/functions && deno check ai-image/index.ts credits-redeem/index.ts account/index.ts report/index.ts && deno lint && deno fmt --check
+cd backend/supabase/functions && deno check ai-image/index.ts credits-redeem/index.ts account/index.ts report/index.ts ad-reward/index.ts && deno lint && deno fmt --check && deno test _shared/
 
 # Run the migration + ledger tests on a throwaway PostgreSQL 14+
 backend/scripts/test-db.sh
