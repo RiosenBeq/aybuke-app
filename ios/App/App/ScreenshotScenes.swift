@@ -11,6 +11,8 @@ enum ScreenshotScene: String, CaseIterable {
     case results
     case edit
     /// Magic Edit with a prompt; `-GLEditorTool <tool>` opens another panel.
+    /// Makeup Studio (`-GLEditorTool makeup`) takes `-GLMakeupPreset <id>`
+    /// (a `MakeupStudio.presets` id) and `-GLMakeupCustomize lips|eyes|cheeks|extras|hair`.
     case editor
     case effects
     /// The editor's "Ideas for this photo" row on the demo landscape.

@@ -117,12 +117,13 @@ struct EditorView: View {
 
     /// Ideas stay out of the way: hidden under a fresh cloud result or the
     /// kindness note, and in the hands-on Crop, Erase, Hide faces and Cut out
-    /// (an effect from the row would commit their preview mid-task). Kept,
-    /// disabled, while a job runs, so "Surprise me" remembers where it was.
+    /// (an effect from the row would commit their preview mid-task). Makeup
+    /// Studio brings its own looks. Kept, disabled, while a job runs, so
+    /// "Surprise me" remembers where it was.
     private var showsIdeas: Bool {
         guard !ideasDismissed, model.lastRequestID == nil, !model.showsKindnessNote else { return false }
         switch model.activeTool {
-        case .crop?, .erase?, .hideFaces?, .removeBackground?, .textStickers?: return false
+        case .crop?, .erase?, .hideFaces?, .removeBackground?, .textStickers?, .makeup?: return false
         default: return true
         }
     }
@@ -223,13 +224,16 @@ struct EditorView: View {
         .fixedSize()
     }
 
-    /// ⌘Return: sends the Magic Edit prompt, or applies the previewed
-    /// effect, adjustment or crop. Hidden; the visible buttons do the same.
+    /// ⌘Return: sends the Magic Edit prompt or the makeup look, or applies the
+    /// previewed effect, adjustment or crop. Hidden; the visible buttons do the same.
     private var applyShortcut: some View {
         Button("Apply") {
             if model.activeTool == .magicEdit {
                 guard !model.magicPrompt.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
                 model.run(.magicEdit, app: app)
+            } else if model.activeTool == .makeup {
+                guard !model.makeup.isEmpty else { return }
+                model.run(.makeup, app: app)
             } else if model.pendingPreview != nil {
                 Task { await model.commitPending() }
             }
@@ -481,6 +485,11 @@ struct EditorView: View {
                            showsExamples: !(showsIdeas && ideasShown)) {
                 model.run(.magicEdit, app: app)
             }
+        case .makeup?:
+            // A Magic Edit underneath, so it costs what one does.
+            MakeupPanel(recipe: $model.makeup, cost: app.credits.cost(of: .magicEdit)) {
+                model.run(.makeup, app: app)
+            }
         case .styles?:
             StylesPanel(isPro: app.purchases.isPro) { template in
                 model.run(.styles, template: template, app: app)
@@ -576,7 +585,7 @@ struct EditorView: View {
         EditorToolBar(tools: EditorTool.available(cloudAI: app.allowsCloudAI), activeTool: model.activeTool) { tool in
             model.select(tool)
         }
-        // Room for all ten tools in one row on iPad and the Mac in most languages.
+        // Room for all eleven tools in one row on iPad and the Mac in most languages.
         .frame(maxWidth: Metrics.readableWidth)
         .padding(.horizontal, 10)
         .padding(.bottom, 4)

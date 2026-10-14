@@ -34,6 +34,8 @@ final class EditorViewModel {
 
     var activeTool: EditorTool?
     var magicPrompt = ""
+    /// Makeup Studio's look; a fresh editor starts on the first one.
+    var makeup = MakeupStudio.defaultPreset.recipe
     var adjustments = AdjustmentSettings()
     private(set) var adjustPreview: UIImage?
     var strokes: [MaskStroke] = []
@@ -138,6 +140,11 @@ final class EditorViewModel {
             overlays.loadScreenshotFixture(mode: mode ?? .stickers)
         }
         if ScreenshotScene.current == .erase { strokes = ScreenshotFixtures.eraseStrokes }
+        // Screenshot QA: -GLMakeupPreset <id> picks a Makeup Studio look.
+        if ScreenshotScene.current != nil, let id = UserDefaults.standard.string(forKey: "GLMakeupPreset"),
+           let preset = MakeupStudio.preset(id: id) {
+            makeup = preset.recipe
+        }
         #endif
         // Holds self weakly, so it ends at the first warning after the editor closes.
         memoryWatcher = Task { [weak self] in
@@ -347,9 +354,22 @@ final class EditorViewModel {
                 Haptics.error()
                 return
             }
-            job.prompt = editsOnlyMainPerson
-                ? prompt + ". Only change the main person in front; keep everyone else exactly as they are."
-                : prompt
+            job.prompt = editsOnlyMainPerson ? PromptBuilder.onlyMainPerson(prompt) : prompt
+        case .makeup:
+            // A Magic Edit whose words the app writes from her picks, through
+            // the same gates, guard, credits, Likeness Lock and retry.
+            guard !makeup.isEmpty else {
+                app.showToast("Pick a look first.")
+                return
+            }
+            let instruction = MakeupStudio.instruction(for: makeup)
+            if case .blocked(let reason, _) = ContentPolicy.evaluate(instruction, operation: .magicEdit) {
+                app.showToast(verbatim: L10n.core(reason), style: .error)
+                Haptics.error()
+                return
+            }
+            job.prompt = editsOnlyMainPerson ? PromptBuilder.onlyMainPerson(instruction) : instruction
+            job.makeup = makeup
         case .styles:
             guard let template else { return }
             job.template = template
@@ -384,7 +404,8 @@ final class EditorViewModel {
                 lastRequestID = result.requestID
                 lastStepTitle = job.title
                 celebration += 1
-                if job.operation == .magicEdit { magicPrompt = "" }
+                // Her typed request is done; a makeup look stays picked for another photo or tweak.
+                if job.operation == .magicEdit, job.makeup == nil { magicPrompt = "" }
                 isComparing = job.operation != .removeBackground
                 announceResult(comparing: isComparing)
                 // Likeness Lock: one free re-roll for edits that involve people.
@@ -463,8 +484,11 @@ final class EditorViewModel {
         default: keepsPerson = false
         }
         guard keepsPerson, let source = job.sourceImage else { return }
+        // Blush and lip color sit where skin tone is usually read, so a
+        // makeup look is read on the chin instead.
+        let skinSample: FaceAnalysis.SkinSample = job.makeup == nil ? .cheeks : .chin
         likenessTask = Task {
-            let result = await FaceAnalysis.likeness(original: source, edited: edited)
+            let result = await FaceAnalysis.likeness(original: source, edited: edited, skinSample: skinSample)
             guard !Task.isCancelled else { return }
             withAnimation(.snappy) { likeness = result }
         }
@@ -482,6 +506,7 @@ final class EditorViewModel {
 
     private static func progressTitle(for job: AIJob) -> String {
         switch job.operation {
+        case .magicEdit where job.makeup != nil: return String(localized: "Applying your makeup…")
         case .magicEdit: return String(localized: "Applying your edit…")
         case .restyle:
             guard let title = job.template?.title else { return String(localized: "Styling your photo…") }

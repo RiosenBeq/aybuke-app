@@ -76,11 +76,18 @@ enum FaceAnalysis {
 
     // MARK: Likeness check
 
+    /// Where skin tone is read: the cheeks, or the chin for a makeup look,
+    /// whose blush, freckles and lip color would read as a skin change.
+    enum SkinSample: Sendable {
+        case cheeks, chin
+    }
+
     /// Compares the main face before and after an AI edit. Nil when it can't
     /// tell (no face, or a different number of people).
-    static func likeness(original: UIImage, edited: UIImage) async -> LikenessResult? {
+    static func likeness(original: UIImage, edited: UIImage, skinSample: SkinSample = .cheeks) async -> LikenessResult? {
         await Task.detached(priority: .utility) {
-            guard let before = faceSignature(original), let after = faceSignature(edited),
+            guard let before = faceSignature(original, skinSample: skinSample),
+                  let after = faceSignature(edited, skinSample: skinSample),
                   before.faces == after.faces else { return nil }
 
             // Skin lightness relative to the whole photo, so a lighting change
@@ -101,11 +108,11 @@ enum FaceAnalysis {
         /// Eye-line-to-mouth distance and face width, both in eye distances.
         let eyesToMouth: CGFloat
         let faceWidth: CGFloat
-        /// Cheek L* (CIELAB) minus the photo's average L*.
+        /// Skin L* (CIELAB) minus the photo's average L*.
         let relativeSkinLightness: CGFloat
     }
 
-    private static func faceSignature(_ image: UIImage) -> FaceSignature? {
+    private static func faceSignature(_ image: UIImage, skinSample: SkinSample) -> FaceSignature? {
         guard let cgImage = prepared(image, maxLongEdge: 1024) else { return nil }
         let request = VNDetectFaceLandmarksRequest()
         try? VNImageRequestHandler(cgImage: cgImage).perform([request])
@@ -131,9 +138,21 @@ enum FaceAnalysis {
             width: abs(right.x - left.x),
             height: abs(eyeLine.y - mouth.y)
         )
+        var skinArea = cheeks
+        if skinSample == .chin {
+            // Under the lower lip, as wide as the mouth, leaving out the rows
+            // nearest the lip so lip color never counts. Too small (a photo cut
+            // off at the chin): the cheeks after all.
+            let lipPoints = lips.pointsInImage(imageSize: size)
+            if let lipsBottom = lipPoints.map(\.y).min(), let lipsLeft = lipPoints.map(\.x).min(),
+               let lipsRight = lipPoints.map(\.x).max() {
+                let chin = CGRect(x: lipsLeft, y: faceBox.minY, width: lipsRight - lipsLeft, height: (lipsBottom - faceBox.minY) * 0.8)
+                if chin.width > 2, chin.height > 2 { skinArea = chin }
+            }
+        }
         let ciImage = CIImage(cgImage: cgImage)
-        guard cheeks.width > 2, cheeks.height > 2,
-              let skin = averageLightness(of: ciImage, in: cheeks),
+        guard skinArea.width > 2, skinArea.height > 2,
+              let skin = averageLightness(of: ciImage, in: skinArea),
               let scene = averageLightness(of: ciImage, in: ciImage.extent) else { return nil }
 
         return FaceSignature(

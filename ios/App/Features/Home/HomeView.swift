@@ -197,17 +197,17 @@ struct HomeView: View {
                 .padding(.horizontal, Metrics.gutter)
             ScrollView(.horizontal) {
                 HStack(spacing: 12) {
+                    if makeupLeads {
+                        toolTile(.makeup, palette: .bubblegum)
+                    }
                     if RetroCam.isAvailable {
                         QuickToolTile(title: "Retro Cam", caption: "Live effects · booth", symbolName: "camera.fill", palette: .mint) {
                             Haptics.tap()
                             app.isRetroCamPresented = true
                         }
                     }
-                    ForEach(Array(EditorTool.quickTools.filter { app.allowsCloudAI || !$0.usesCloudAI }.enumerated()), id: \.element) { index, tool in
-                        QuickToolTile(title: LocalizedStringKey(tool.title), caption: LocalizedStringKey(tool.caption), symbolName: tool.symbolName, palette: Self.toolPalettes[index % Self.toolPalettes.count]) {
-                            Haptics.tap()
-                            app.startEditing(tool: tool)
-                        }
+                    ForEach(Array(editorQuickTools.enumerated()), id: \.element) { index, tool in
+                        toolTile(tool, palette: Self.toolPalettes[index % Self.toolPalettes.count])
                     }
                     QuickToolTile(title: "Collage", caption: "Photo dump · carousel", symbolName: "rectangle.3.offgrid.fill", palette: .mint) {
                         Haptics.tap()
@@ -231,6 +231,22 @@ struct HomeView: View {
 
     /// Light aura palettes only: tool icons stay ink on colour.
     private static let toolPalettes: [AuraPalette] = [.bubblegum, .lilac, .mint, .sunset, .butter]
+
+    /// She picked "Makeup & hair looks" in onboarding: Makeup Studio leads the row.
+    private var makeupLeads: Bool { app.allowsCloudAI && app.interests.contains("looks") }
+
+    /// The editor's tools in the row: free ones only under 13, and Makeup
+    /// Studio in its own place when it leads.
+    private var editorQuickTools: [EditorTool] {
+        EditorTool.quickTools.filter { (app.allowsCloudAI || !$0.usesCloudAI) && !(makeupLeads && $0 == .makeup) }
+    }
+
+    private func toolTile(_ tool: EditorTool, palette: AuraPalette) -> some View {
+        QuickToolTile(title: LocalizedStringKey(tool.title), caption: LocalizedStringKey(tool.caption), symbolName: tool.symbolName, palette: palette) {
+            Haptics.tap()
+            app.startEditing(tool: tool)
+        }
+    }
 
     private func templateRow(_ category: TemplateCategory) -> some View {
         VStack(alignment: .leading, spacing: 14) {
