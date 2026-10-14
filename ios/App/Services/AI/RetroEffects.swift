@@ -137,6 +137,22 @@ enum RetroEffect: String, CaseIterable, Identifiable {
         return output
     }
 
+    /// Every effect, each with its switch at its default, on a small copy of
+    /// `image` for the Effects strip. At this size each one is mostly fixed
+    /// overhead, so they render side by side. Call it off the main actor.
+    static func thumbnails(of image: UIImage, maxLongEdge: Int = 240) -> [RetroEffect: UIImage] {
+        let source = ImageUtilities.normalized(image, maxLongEdge: maxLongEdge)
+        let effects = allCases
+        var rendered = [UIImage?](repeating: nil, count: effects.count)
+        rendered.withUnsafeMutableBufferPointer { slots in
+            DispatchQueue.concurrentPerform(iterations: effects.count) { index in
+                let effect = effects[index]
+                slots[index] = effect.apply(to: source, options: Options(extra: effect.option?.isOnByDefault ?? true))
+            }
+        }
+        return Dictionary(uniqueKeysWithValues: zip(effects, rendered).compactMap { effect, image in image.map { (effect, $0) } })
+    }
+
     /// Effects that also work on video frames (no frames or per-frame sparkles).
     static let videoEffects: [RetroEffect] = [.vhs, .disposable, .digicam, .glamour, .neon, .throwback16, .camcorder06, .filmStill, .tinyWorld]
 

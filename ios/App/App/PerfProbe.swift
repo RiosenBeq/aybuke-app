@@ -173,6 +173,9 @@ enum PerfBench {
             }
         }
         PerfProbe.log("strip ms=\(fmt(strip))")
+        // The strip as the editor makes it now (side by side).
+        let stripApp = timed { _ = RetroEffect.thumbnails(of: photo) }
+        PerfProbe.log("strip-app ms=\(fmt(stripApp))")
 
         // What each producer hands to the encoders and the files they make,
         // one at a time. `-GLPerfReference save` keeps the pixels and
