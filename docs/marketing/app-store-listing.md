@@ -45,7 +45,7 @@ DREAM IT. CREATE IT.
 • With Pro, up to 4 images at once
 
 80s, 90s & Y2K, FREE
-• Retro effects: VHS '86, Disposable '98, Kira Kira, Digicam '04, Instant '82, Glamour '92, Neon '84, Throwback '16, Camcorder '06 and Film Still
+• Retro effects: VHS '86, Disposable '98, Kira Kira, Digicam '04, Instant '82, Glamour '92, Neon '84, Throwback '16, Camcorder '06, Toy Cam '09, Rainbow '17 and Film Still
 • Add a date stamp, just like the real cameras did
 • Edit videos up to 5 minutes: cut out the silences like a jump cut, add a retro effect and trim
 • Save or share your videos with no watermark and no ending clip

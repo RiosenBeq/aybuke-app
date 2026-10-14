@@ -2,6 +2,13 @@
 
 > Bu belge, araştırmayla alınan tüm kararların Türkçe özetidir. Ayrıntılar ve kaynaklar İngilizce belgelerdedir ([docs/README.md](README.md)).
 
+## Ekim 2026 güncellemesi (4): daha fazla eğlence (14 Ekim)
+
+**Ne değişti?** Cihaz içi, ücretsiz içerik çoğaldı:
+- **12 yeni çıkartma (Text & Stickers):** parıltı patlaması, ay ve yıldızlar, uzun kurdeleli fiyonk, taç, papatya, gökkuşağı, gülen bulut, notalar, fotoğraf makinesi, film şeridi ve iki konuşma balonu ("main character", "yay"). Hepsi kodla çiziliyor; emoji veya SF Symbol yok. Adları ve balon yazıları 11 dile çevrildi.
+- **2 yeni retro efekt:** **Toy Cam '09** (çapraz banyo renkleri: camgöbeği gölgeler, sıcak ışıklar ve koyu köşeler) ve **Rainbow '17** (prizmadan geçen gökkuşağı ışığı sol üst köşeden giriyor). Toplam 12 retro efekt, ayrıca Tiny World. İkisi de yalnızca renk ve ışıkla oynuyor; Retro Cam'de canlı, videoda, Kestirmeler'deki "Apply a Retro Effect" eyleminde ve "Ideas for this photo" önerilerinde var.
+- **Yeni altyazı stili:** **Candy**, kalın beyaz kenarlı pembe harfler (çıkartma gibi). Videoda artık 5 altyazı stili var.
+
 ## Ekim 2026 güncellemesi (3): özellik denetimi ve üç geliştirme dalgası (14 Ekim)
 
 **Nasıl yapıldı?** Uygulama yedi açıdan denetlendi: kodun eksikleri, kullanılabilirlik ve erişilebilirlik, Apple platform özellikleri, yaklaşık 25 rakip uygulama, 2025–2026 viral trendleri, gençlerin iyi oluşu / elde tutma / gelir araştırmaları ve hukuki uyum. Yaklaşık 205 bulgu 66 maddelik tek bir listeye indirildi: 26'sı "hemen yap", 32'si "sonra", 8'i "asla". "Hemen yap" maddelerinin hepsi aynı gün üç dalgada yapıldı. Ayrıntılar ve kaynaklar: [research/2026-10-feature-audit.md](research/2026-10-feature-audit.md); kalan işler: [06-roadmap.md](06-roadmap.md).
@@ -14,7 +21,7 @@
   - **Crop:** paylaşım oranları (1:1, 4:5, 9:16, 16:9), döndürme, aynalama, ±15° düzeltme; tuvalde 4 kata kadar yakınlaştırma.
   - **Hide faces:** fotoğraftaki diğer kişilerin yüzlerini bulanıklaştırma, pikselleştirme veya kalp / yıldız / gülen yüzle kapatma; "Önce" görselinde de gizleniyor. Nezaket hatırlatmasında "Hide their faces" düğmesi var.
   - **Cut out:** dokunarak özne seçme; renk, degrade, bulanık orijinal veya kendi fotoğrafı arka plan; kenarlıklı çıkartma (sticker) olarak kopyalama veya kaydetme.
-  - **Yeni efektler:** Throwback '16 (2016 filtreleri), Camcorder '06 (REC göstergesi, videoda işleyen zaman kodu) ve Film Still (sinema bantları ve içerik politikasından geçen tek satır altyazı). Toplam 10 efekt.
+  - **Yeni efektler:** Throwback '16 (2016 filtreleri), Camcorder '06 (REC göstergesi, videoda işleyen zaman kodu) ve Film Still (sinema bantları ve içerik politikasından geçen tek satır altyazı).
 - **Cihaz içi yapay zekâ:**
   - **Ideas for this photo:** Editör fotoğrafa cihazda bakıp ona uyan bir efekt, bir görünüm ve bir Magic Edit fikri öneriyor (güzellik görünümleri asla). **Surprise me** ücretsiz efektleri deniyor.
   - **Inspire me / Make it magic:** iOS 26+'da Apple'ın cihaz içi dil modeli Create için fikir ve daha iyi istem yazıyor; metin cihazdan çıkmıyor.
