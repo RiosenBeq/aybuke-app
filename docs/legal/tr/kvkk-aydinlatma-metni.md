@@ -32,7 +32,7 @@ Bu Aydınlatma Metni, 6698 sayılı Kişisel Verilerin Korunması Kanunu ("**KVK
 - **İletişim:** bize yazdığınızda e-posta adresiniz.
 - **Özel nitelikli kişisel veriler:** Bu tür verileri işleme amacımız yoktur. Bir fotoğraf tesadüfen sağlık, din veya etnik köken gibi bilgiler ortaya koyabilir; bu durumda veriler yalnızca istediğiniz düzenleme için ve açık rızanıza dayanılarak işlenir. Biyometrik veri oluşturmayız; yüz tanıma yapmayız. Best shot, nezaket hatırlatması ve benzerlik kontrolü yüzleri yalnızca cihazınızda, kimseyi tanımadan ve hiçbir şey saklamadan inceler.
 
-Kütüphaneniz ("My Works"), uygulama ayarlarınız ve seçtiğiniz ilgi alanları yalnızca cihazınızda saklanır; bunlara erişimimiz yoktur. Arka plan kaldırma ve elle ayarlama gibi cihaz üzerindeki özellikler fotoğraflarınızı tamamen iPhone'unuzda işler. Apple Intelligence destekli cihazlarda Create bölümündeki fikir ve istem önerileri Apple'ın cihaz üzerindeki dil modeli tarafından yazılabilir; yazdıklarınız ve öneriler cihazınızda kalır, bize veya Apple'a gönderilmez.
+Kütüphaneniz ("My Works"), uygulama ayarlarınız ve seçtiğiniz ilgi alanları yalnızca cihazınızda saklanır; bunlara erişimimiz yoktur. Uygulama ayarlarına yaş aralığınız (doğum tarihiniz değil), nereden geldiği ve ne zaman belirlendiği ile bulut yapay zekâ onayınız ve sorulduysa veli veya vasi cevabınız da dahildir; bunlar bize gönderilmez. 13 yaşından küçükler yalnızca cihaz üzerindeki ücretsiz araçları kullanabilir ve bu modda bize veri gönderilmez. Arka plan kaldırma ve elle ayarlama gibi cihaz üzerindeki özellikler fotoğraflarınızı tamamen iPhone'unuzda işler. Apple Intelligence destekli cihazlarda Create bölümündeki fikir ve istem önerileri Apple'ın cihaz üzerindeki dil modeli tarafından yazılabilir; yazdıklarınız ve öneriler cihazınızda kalır, bize veya Apple'a gönderilmez.
 
 ## 3. İşleme amaçları
 
@@ -78,6 +78,7 @@ Kişisel verilerinizi satmayız ve üçüncü kişilerin kendi reklam veya pazar
 - Bulutta üretilen sonuçlar: en fazla 1 saat.
 - İş kayıtları: 30 gün.
 - Hesap, kredi ve hak kayıtları (Apple ile giriş bilgileri dahil): hesabınız var olduğu sürece; hesabınızı sildiğinizde silinir ve Apple anahtarı iptal edilir.
+- RevenueCat'teki abonelik analizi kayıtları (yalnızca satın alma yaptıysanız): hesabınız var olduğu sürece; hesabınızı sildiğinizde, hesabınızla birleştirilmiş anonim kimliklere ait kayıtlar dahil, RevenueCat'ten silinmesini isteriz ve RevenueCat silmeyi kısa süre içinde tamamlar.
 - Bildirimler: en fazla 12 ay.
 - Sunucu ve güvenlik kayıtları: genellikle en fazla 90 gün.
 - E-postalar ve başvurular: talebin sonuçlandırılması ve belgelenmesi için gereken süre boyunca.

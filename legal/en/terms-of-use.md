@@ -40,7 +40,7 @@ Your purchases are also subject to Apple's terms, such as the Apple Media Servic
 
 ## 3. Who can use {{APP_NAME}}
 
-- You must be at least {{MIN_AGE}} years old. {{APP_NAME}} is not intended for children under 13.
+- You must be at least {{MIN_AGE}} years old to use cloud AI features, create an account or make purchases. Children under 13 can use only the free tools that run on their device, which send nothing to us.
 - If you're under 18, or under the age of majority where you live, you may use {{APP_NAME}} only with the permission of a parent or legal guardian. Your parent or guardian must agree to these Terms on your behalf and is responsible for your use of the Service, including any purchases. Section 4 explains what this means in practice.
 - You may not use the Service if the law where you live prohibits it, or if we have previously banned you for breaking these Terms.
 - If you use {{APP_NAME}} on behalf of a business, you confirm that you're authorised to accept these Terms for that business.

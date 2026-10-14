@@ -14,6 +14,9 @@ enum TourStep: Int, CaseIterable, Identifiable {
 
     var id: Int { rawValue }
 
+    /// Steps that show cloud AI features or credits.
+    var isAboutCloudAI: Bool { self == .hero || self == .credits || self == .create }
+
     var tab: AppTab {
         switch self {
         case .hero, .credits, .quickTools, .settings: return .home
@@ -82,18 +85,22 @@ final class TourGuide {
 
     var isRunning: Bool { current != nil }
 
-    var stepNumber: Int { (current?.rawValue ?? 0) + 1 }
-    var stepCount: Int { TourStep.allCases.count }
-    var isLastStep: Bool { current == TourStep.allCases.last }
+    /// The steps of this run (the AI ones are left out under 13).
+    private(set) var steps: [TourStep] = TourStep.allCases
 
-    func start() {
-        current = TourStep.allCases.first
+    var stepNumber: Int { (current.flatMap { steps.firstIndex(of: $0) } ?? 0) + 1 }
+    var stepCount: Int { steps.count }
+    var isLastStep: Bool { current == steps.last }
+
+    func start(steps: [TourStep] = TourStep.allCases) {
+        self.steps = steps
+        current = steps.first
     }
 
     func next() {
-        guard let current else { return }
-        if let following = TourStep(rawValue: current.rawValue + 1) {
-            self.current = following
+        guard let current, let index = steps.firstIndex(of: current) else { return }
+        if index + 1 < steps.count {
+            self.current = steps[index + 1]
         } else {
             finish()
         }
@@ -103,6 +110,13 @@ final class TourGuide {
         current = nil
         hasSeen = true
         defaults.set(true, forKey: Self.seenKey)
+    }
+
+    /// "Delete my data": the tour shows again after onboarding.
+    func reset() {
+        current = nil
+        hasSeen = false
+        defaults.removeObject(forKey: Self.seenKey)
     }
 }
 

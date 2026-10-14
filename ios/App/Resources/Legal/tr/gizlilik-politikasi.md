@@ -30,7 +30,7 @@ Bu politika Hizmeti kapsar. Glowlit ile birlikte kullandığınız üçüncü ta
 Glowlit genç kullanıcılar düşünülerek tasarlanmıştır. Bu nedenle yaşı ne olursa olsun herkese yüksek gizlilik sağlayan varsayılan ayarlar uygularız:
 
 - **Reklam yok.** Reklam göstermeyiz, reklam yazılım geliştirme kitleri (SDK) kullanmayız.
-- **Takip yok.** Sizi başka şirketlerin uygulamaları veya web siteleri arasında takip etmeyiz, üçüncü taraf analiz SDK'ları kullanmayız ve cihazınızın reklam kimliğine (IDFA) erişmeyiz.
+- **Takip yok.** Sizi başka şirketlerin uygulamaları veya web siteleri arasında takip etmeyiz, tek üçüncü taraf analiz SDK'sı olarak yalnızca bir satın alma yaptığınızda başlayan RevenueCat abonelik analizini kullanırız (bkz. bölüm 5) ve cihazınızın reklam kimliğine (IDFA) erişmeyiz.
 - **Profilleme yok.** Hakkınızda profil oluşturmayız ve otomatik işlemeye dayanarak sizi hukuken veya benzer şekilde önemli ölçüde etkileyen kararlar almayız.
 - **Herkese açık profil veya akış yok.** Glowlit içinde hakkınızdaki hiçbir şey herkese açık değildir. Oluşturduklarınız yalnızca siz paylaşmayı seçerseniz paylaşılır.
 - **Pazarlama için paylaşım yok.** Kişisel verileri satmayız, reklam veya pazarlama amacıyla paylaşmayız ve veri simsarlarıyla çalışmayız. Size pazarlama mesajı göndermeyiz.
@@ -48,6 +48,8 @@ Bu bölüm 18 yaşından küçükseniz sizin için. Politikanın geri kalanı da
 - **Hakkınızda ne biliyoruz?** Çok az şey. Adınız, e-posta adresiniz, telefon numaranız, şifreniz veya konumunuz bizde yok. Hesabınız yalnızca rastgele bir kimlikten oluşur.
 - **Fotoğraflarınız.** Oluşturduklarınız telefonunuzda kalır. Bir bulut yapay zekâ özelliğini kullanırsanız, seçtiğiniz fotoğraf ve yazdığınız metin yalnızca görselinizi üretmek için sunucularımıza ve yapay zekâ iş ortaklarımıza gönderilir. Bunları saklamayız; sonuç en geç bir saat içinde buluttan silinir. Fotoğraflarınızı asla yapay zekâ eğitmek için kullanmayız, satmayız veya reklam için kullanmayız.
 - **Önce sorun.** Bulut yapay zekâ işlemeyi açmadan veya bir şey satın almadan önce velinizle veya vasinizle konuşun. Bazı yerlerde bulut yapay zekâ işleme için rızayı onların vermesi veya onaylaması gerekir: AB ve AEA'da ülkenizdeki dijital rıza yaşının (ülkeye göre 13 ile 16 arası) altındaysanız ve Türkiye'de 18 yaşından küçükseniz.
+- **Yaş aralığınız.** Başlarken uygulama yaş aralığınızı sorar: cihazınız sunuyorsa ve paylaşmayı seçerseniz Apple'dan, aksi hâlde ay ve yıl sorusuyla. Cihazınızda yalnızca aralığı (13 yaş altı, 13–15, 16–17 veya 18 ve üzeri), nereden geldiğini ve ne zaman belirlendiğini saklar. Doğum tarihiniz asla saklanmaz ve bize gönderilmez. 18 yaşından küçükseniz ödeme ekranı kendiliğinden açılmaz. 13 yaşından küçükseniz cihazınızda çalışan ücretsiz araçları kullanabilirsiniz ve uygulama bize hiçbir şey göndermez.
+- **Veli veya vasi adımı.** 13–15 yaşındaysanız veya yaşadığınız yerdeki dijital rıza yaşının altındaysanız, bulut yapay zekâ onay ekranı bu ekranı bir veli veya vasiyle birlikte okumanızı ve onların "evet" dediğini onaylamanızı ister. Bu cevabı doğrulayamayız; lütfen dürüst olun.
 - **Satın alımlar.** Satın alımlar cihazınızdaki Apple Hesabından tahsil edilir. Aile Paylaşımı'nda çocuk hesabınız varsa, veliniz veya vasinizin satın alımları "Satın Alma İzni İste" (Ask to Buy) ile onaylaması gerekebilir.
 - **Başkalarının fotoğrafları.** Başkalarının fotoğraflarını yalnızca "evet" dedilerse yükleyin. Küçük çocuklar için izni velisi veya vasisi vermelidir.
 - **Kontrol sizde.** Bulut yapay zekâ işlemeyi Ayarlar'dan istediğiniz zaman kapatabilir, **Ayarlar → Verilerimi ve hesabımı sil** ile her şeyi silebilirsiniz.
@@ -58,7 +60,7 @@ Bu bölüm 18 yaşından küçükseniz sizin için. Politikanın geri kalanı da
 Glowlit uygulamasının büyük bölümü bize hiçbir şey göndermeden çalışır. Aşağıdaki veriler yalnızca cihazınızda saklanır ve bizim bunlara erişimimiz yoktur:
 
 - **Kütüphaneniz ("My Works")**: Sakladığınız görseller ile başlıkları, düzenleme türü, kullandığınız metin istemi (Create from text ve Magic Edit için), favori işareti ve zaman bilgileri. Kütüphane, uygulamanın özel depolama alanında tutulur ve iOS Veri Koruma (Data Protection) ile korunur.
-- **Uygulama ayarları** (iOS UserDefaults içinde): tanıtım adımlarını tamamlayıp tamamlamadığınız; seçtiğiniz ilgi alanları (örneğin "Selfie glow-ups" veya "Shots for my shop"; yalnızca cihazınızda ana ekranın sıralamasında kullanılır); bulut yapay zekâ onay tercihiniz; görünüm tercihiniz; bildirim tercihleriniz; yalnızca Apple'ın değerlendirme isteminin zamanlamasında kullanılan küçük bir mutlu an sayacı (bir görseli kaydetmek, paylaşmak veya kalplemek) ve uygulamanın en son ne zaman sorduğu; yalnızca çevrim dışı veya demo modunda yerel kredi bakiyesi.
+- **Uygulama ayarları** (iOS UserDefaults içinde): tanıtım adımlarını tamamlayıp tamamlamadığınız; seçtiğiniz ilgi alanları (örneğin "Selfie glow-ups" veya "Shots for my shop"; yalnızca cihazınızda ana ekranın sıralamasında kullanılır); yaş aralığınız (13 yaş altı, 13–15, 16–17 veya 18 ve üzeri), Apple'ın Declared Age Range özelliğinden mi yoksa uygulamanın kendi sorusundan mı geldiği ve ne zaman belirlendiği (doğum tarihiniz asla); bulut yapay zekâ onay tercihiniz, ne zaman verdiğiniz ve sorulduysa "Bir veli veya vasi evet dedi" cevabınız; görünüm tercihiniz; bildirim tercihleriniz; yalnızca Apple'ın değerlendirme isteminin zamanlamasında kullanılan küçük bir mutlu an sayacı (bir görseli kaydetmek, paylaşmak veya kalplemek) ve uygulamanın en son ne zaman sorduğu; yalnızca çevrim dışı veya demo modunda yerel kredi bakiyesi.
 - Anonim hesabınızın **oturum anahtarları**, iOS Anahtar Zinciri'nde (Keychain).
 - **Hatırlatmalar**: Bildirimler, siz izin verip açana kadar kapalıdır. Açtığınızda uygulama bunları cihazınızda yerel olarak planlar: ücretsiz deneme bitmeden bir gün önce bir hatırlatma; siz başka bir uygulamadayken bir görsel tamamlandığında "glow-up'ın hazır"; ücretsiz kredileriniz yenilendiğinde "ücretsiz kredilerin geri geldi" (yalnızca krediniz bittikten sonra) ve isterseniz haftanın görünümü. Hatırlatmalar saat 21:00 ile 09:00 arasında ve hafta içi okul saatlerinde (08:00–15:00) asla gönderilmez. Bunun için herhangi bir bildirim (push) sunucusu veya cihaz anahtarı kullanılmaz.
 - **Widget'lar ve Live Activity**: Kredilerinizi, son görselinizi ve hazırlanma durumunu ana ekranda, kilit ekranında ve Dynamic Island'da göstermek için uygulama, cihazınızdaki bir kapsayıcı aracılığıyla widget'larıyla küçük bir özet paylaşır: kredi bakiyesi, son görselinizin başlığı ve küçük bir önizlemesi ve kaç görseliniz olduğu. Bu veriler iPhone'unuzdan hiç çıkmaz.
@@ -79,7 +81,7 @@ Kütüphanenizi **Ayarlar → Tüm oluşturduklarımı sil** ile silebilirsiniz.
 
 ### Anonim hesap
 
-Bir bulut yapay zekâ özelliğini veya sunucularımızdaki kredi bakiyenizi ilk kez kullandığınızda uygulama, arka uç (backend) hizmet sağlayıcımız Supabase nezdinde anonim bir hesap oluşturur. Hesap rastgele bir kullanıcı kimliğiyle tanımlanır. Adınızı, e-posta adresinizi, telefon numaranızı veya bir şifre toplamayız.
+Bir bulut yapay zekâ özelliğini ilk kez kullandığınızda veya bir satın alma yaptığınızda uygulama, arka uç (backend) hizmet sağlayıcımız Supabase nezdinde anonim bir hesap oluşturur. Hesap rastgele bir kullanıcı kimliğiyle tanımlanır. Adınızı, e-posta adresinizi, telefon numaranızı veya bir şifre toplamayız.
 
 ### İsteğe bağlı hesap (Apple ile giriş)
 
@@ -105,7 +107,7 @@ Satın alımları doğrulamak için Apple tarafından imzalanmış işlem verile
 
 Abonelikler için bir hak kaydı tutarız: Apple orijinal işlem kimliği, ürün kimliği, bitiş tarihi, iptal/iade işareti ve ortam; bunlar anonim kullanıcı kimliğinize bağlıdır.
 
-Aboneliklerimizin nasıl gittiğini (deneme süreleri, yenilemeler, iptaller, iadeler) anlamak için uygulama aynı satın alma kayıtlarını, anonim kullanıcı kimliğiniz ve temel cihaz ve uygulama bilgileriyle (uygulama sürümü, iOS sürümü, ülke ve dil) birlikte abonelik analizi sağlayıcımız RevenueCat ile de paylaşır. RevenueCat fotoğraflarınızı, istemlerinizi veya sonuçlarınızı asla almaz.
+Aboneliklerimizin nasıl gittiğini (deneme süreleri, yenilemeler, iptaller, iadeler) anlamak için, bir satın alma yaptığınızda (veya Apple Hesabınızda bizden önceki satın almalar varsa) uygulama aynı satın alma kayıtlarını, anonim kullanıcı kimliğiniz ve temel cihaz ve uygulama bilgileriyle (uygulama sürümü, iOS sürümü, ülke ve dil) birlikte abonelik analizi sağlayıcımız RevenueCat ile de paylaşır. RevenueCat fotoğraflarınızı, istemlerinizi veya sonuçlarınızı asla almaz.
 
 ### Bildirimler (raporlar)
 
@@ -233,6 +235,7 @@ Kullandığımız güvencelerin bir örneğini [privacy@glowlit.app](mailto:priv
 - **Hak kayıtları**: hesabınız var olduğu sürece; hesabınızı sildiğinizde silinir.
 - **Anonim hesap (kullanıcı kimliği)**: hesabınız var olduğu sürece; hesabınızı sildiğinizde veya Apple ile giriş sonrasında hesabınızla birleştirildiğinde silinir.
 - **Hesap (Apple kullanıcı tanımlayıcısı, e-posta veya aktarma adresi, Apple anahtarı)**: hesabınız var olduğu sürece; hesabınızı sildiğinizde anahtar Apple nezdinde iptal edilir ve tümü silinir.
+- **RevenueCat'teki abonelik analizi kayıtları**: hesabınız var olduğu sürece. Hesabınızı sildiğinizde, hesabınızla birleştirilmiş anonim kullanıcı kimliklerine ait kayıtlar dahil, RevenueCat'ten bunları silmesini isteriz; RevenueCat silmeyi kısa süre içinde tamamlar.
 - **Bildirimler**: güvenlik incelemesi ve filtrelerimizi geliştirmek için en fazla 12 ay; ardından veya hesabınızı daha önce silerseniz o zaman silinir.
 - **Sunucu ve güvenlik kayıtları**: güvenlik ve kötüye kullanımın önlenmesi için kısa bir süre, genellikle en fazla 90 gün. Bu kayıtlar hesabınızı sildikten sonra da bu takvime göre silinir.
 - **E-postalar ve gizlilik talepleri**: talebinizi karşılamak ve nasıl karşıladığımızı belgelemek için gereken süre boyunca; bir hakkın tesisi, kullanılması veya savunulması için daha uzun saklamamız gerekmedikçe.
@@ -257,7 +260,7 @@ Hiçbir sistem tamamen güvenli değildir. Bir kişisel veri ihlali yaşanırsa,
 
 - **Cloud AI processing**: Rızanızı geri almak için bu seçeneği **Ayarlar** içinden istediğiniz zaman kapatabilirsiniz. Geri alma, daha önce gerçekleşmiş işlemeyi etkilemez.
 - **Tüm oluşturduklarımı sil**: kütüphanenizi cihazınızdan kaldırır.
-- **Verilerimi ve hesabımı sil**: Ayarlar'da yer alır. Sunucudaki hesabınızı ve sunucu tarafındaki tüm kayıtları (kredi cüzdanı, kredi defteri, iş kayıtları, hak kayıtları ve bildirimler) ile cihazınızdaki kütüphaneyi siler. Apple abonelikleri Apple Hesabı ayarlarınızdan ayrıca iptal edilmelidir.
+- **Verilerimi ve hesabımı sil**: Ayarlar'da yer alır. Sunucudaki hesabınızı ve sunucu tarafındaki tüm kayıtları (kredi cüzdanı, kredi defteri, iş kayıtları, hak kayıtları ve bildirimler) siler, RevenueCat'ten sizinle ilgili abonelik analizi kayıtlarını silmesini ister ve cihazınızdaki uygulamayı sıfırlar: kütüphaneniz, ayarlarınız, hatırlatıcılarınız ve yapay zekâ onayınız. Apple abonelikleri Apple Hesabı ayarlarınızdan ayrıca iptal edilmelidir.
 - **Fotoğraf ve bildirim izinleri**: iOS Ayarları'ndan yönetilir.
 
 ### Haklarınız
@@ -299,7 +302,7 @@ Birleşik Krallık Yaşa Uygun Tasarım Kuralları ("Children's Code"), 18 yaş�
 
 - **Çocuğun üstün yararı.** Özellikleri tasarlarken genç kullanıcıların yararını önde tutarız. Örneğin cinsel içeriği herkes için engelleriz, vücut şeklini değiştiren veya cildi açan özellikler sunmayız ve herkese açık profil ya da akış yoktur.
 - **Veri koruma etki değerlendirmeleri.** Özelliklerimizin genç kullanıcılar için oluşturduğu riskleri, yayına almadan önce veri koruma etki değerlendirmeleri dahil yöntemlerle değerlendiririz.
-- **Yaşa uygun uygulama.** Yaş doğrulaması yapmayız; bunun yerine bu bölümde açıklanan korumaları yaşı ne olursa olsun her kullanıcıya sağlarız.
+- **Yaşa uygun uygulama.** Doğum tarihi değil, yaş aralığı sorarız: mümkünse Apple'ın Declared Age Range özelliğinden, aksi hâlde tarafsız bir ay ve yıl sorusuyla. Aralık cihazınızda kalır. 13 yaşından küçükler yalnızca cihaz üzerindeki ücretsiz araçları kullanabilir. 18 yaşından küçüklerde ödeme ekranı kendiliğinden açılmaz ve yasanın gerektirdiği yerlerde onay ekranında bir veli veya vasi adımı bulunur. Apple'ın paylaştığı dışında yaş doğrulaması yapmayız; bu nedenle bu bölümde açıklanan korumaları yaşı ne olursa olsun her kullanıcıya da sağlarız.
 - **Şeffaflık.** Her belgemiz kısa bir özetle başlar; bu politikada 18 yaşından küçükler için sade dilli bir bölüm (3. bölüm) vardır ve bulut yapay zekâ onay ekranı, bir şey gönderilmeden önce neyin kime gönderildiğini sade bir dille açıklar.
 - **Verilerin zararlı kullanımı.** Kişisel verileri reklam, profilleme veya etkileşime dayalı öneriler için kullanmayız. Tek kişiselleştirme, kendi seçtiğiniz ilgi alanlarına göre ana ekranın sıralanmasıdır ve bu cihazınızda gerçekleşir.
 - **Politikalar ve topluluk standartları.** Kullanım Koşullarımızı ve Politikamızı güvenlik filtreleri, bildirimler ve itirazların insan tarafından incelenmesiyle uygularız.
@@ -407,7 +410,7 @@ Kaliforniya, Connecticut, Colorado, Maryland ve New York gibi giderek artan say�
 
 ## 21. 13 yaşından küçük çocuklar
 
-Glowlit, 13 yaş ve üzeri gençler ve yetişkinler için tasarlanmıştır. 13 yaşından küçük çocuklara yönelik değildir ve ABD Çocukların Çevrim İçi Gizliliğini Koruma Yasası (COPPA) kapsamı dahil, 13 yaşından küçük çocuklardan bilerek kişisel bilgi toplamayız.
+Glowlit, 13 yaş ve üzeri gençler ve yetişkinler için tasarlanmıştır. Bulut yapay zekâ özellikleri, hesaplar ve satın alımlar yalnızca 13 yaş ve üzeri içindir. Yaş adımı birinin 13 yaşından küçük olduğunu gösterirse uygulama yalnızca cihazda çalışan ücretsiz araçları (efektler, Adjust, Cut out, Crop, Best shot ve video düzenleyici) sunar. Bu modda bize veya hizmet sağlayıcılarımıza hiçbir şey göndermez: hesap oluşturmaz, bulut yapay zekâ, satın alma veya analiz isteği yapmaz. 13 yaşından küçük çocuklara yönelik değildir ve ABD Çocukların Çevrim İçi Gizliliğini Koruma Yasası (COPPA) kapsamı dahil, 13 yaşından küçük çocuklardan bilerek kişisel bilgi toplamayız.
 
 Doğrulanabilir ebeveyn onayı olmadan 13 yaşından küçük bir çocuktan kişisel bilgi topladığımızı öğrenirsek bu bilgileri sileriz. 13 yaşından küçük bir çocuğun Glowlit kullandığını düşünüyorsanız lütfen [privacy@glowlit.app](mailto:privacy@glowlit.app) adresinden bize ulaşın. Veli veya vasi, çocuğun cihazında **Ayarlar → Verilerimi ve hesabımı sil** seçeneğiyle verileri hemen silebilir.
 

@@ -40,7 +40,7 @@ Satın alımlarınıza ayrıca sizinle Apple arasında geçerli olan Apple koşu
 
 ## 3. Kimler kullanabilir?
 
-- En az 13 yaşında olmalısınız. Glowlit uygulaması 13 yaşından küçük çocuklara yönelik değildir.
+- Bulut yapay zekâ özelliklerini kullanmak, hesap oluşturmak veya satın alma yapmak için en az 13 yaşında olmalısınız. 13 yaşından küçük çocuklar yalnızca cihazlarında çalışan ve bize hiçbir şey göndermeyen ücretsiz araçları kullanabilir.
 - 18 yaşından küçükseniz veya bulunduğunuz yerin hukukuna göre ergin değilseniz, Glowlit uygulamasını yalnızca velinizin veya vasinizin izniyle kullanabilirsiniz. Veliniz veya vasiniz bu Koşulları sizin adınıza kabul etmeli ve satın alımlar dahil Hizmeti kullanımınızdan sorumludur. Bunun pratikte ne anlama geldiğini 4. bölüm açıklar.
 - Bulunduğunuz yerin hukuku yasaklıyorsa veya bu Koşulları ihlal ettiğiniz için daha önce Hizmetten men edildiyseniz Hizmeti kullanamazsınız.
 - Glowlit uygulamasını bir işletme adına kullanıyorsanız, bu Koşulları o işletme adına kabul etmeye yetkili olduğunuzu beyan edersiniz.

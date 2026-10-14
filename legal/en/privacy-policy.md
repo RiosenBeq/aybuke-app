@@ -30,7 +30,7 @@ This policy covers the Service. It doesn't cover third-party services you use to
 {{APP_NAME}} is designed with teen users in mind. That's why we apply high-privacy defaults to everyone who uses it, whatever their age:
 
 - **No ads.** We don't show advertising, and we don't use advertising SDKs.
-- **No tracking.** We don't track you across other companies' apps or websites, we don't use third-party analytics SDKs, and we don't access your device's advertising identifier (IDFA).
+- **No tracking.** We don't track you across other companies' apps or websites, the only third-party analytics SDK is RevenueCat's subscription analytics, which starts only once you make a purchase (see section 5), and we don't access your device's advertising identifier (IDFA).
 - **No profiling.** We don't build profiles about you, and we don't make decisions about you with legal or similarly significant effects based on automated processing.
 - **No public profiles or feeds.** Nothing about you is public in {{APP_NAME}}. Your creations are shared only if you choose to share them.
 - **No sharing for marketing.** We don't sell personal information or share it for advertising or marketing, and we don't work with data brokers. We don't send you marketing messages.
@@ -48,6 +48,8 @@ This section is for you if you're under 18. The rest of this policy applies to y
 - **What we know about you.** Very little. We don't have your name, email address, phone number, password or location. Your account is just a random ID.
 - **Your photos.** Your creations stay on your phone. If you use a cloud AI feature, the photo and text you choose are sent to our servers and AI partners only to make your image. We don't keep them, and the result is deleted from the cloud within an hour at the latest. We never use your photos to train AI, sell them or use them for ads.
 - **Ask first.** Talk to your parent or guardian before you switch on cloud AI processing or buy anything. In some places they must give or approve consent for cloud AI processing: in the EU and EEA if you're under the age of digital consent in your country (between 13 and 16, depending on the country), and in Türkiye if you're under 18.
+- **Your age range.** When you start, the app asks for your age range: from Apple, if your device offers it and you choose to share it, or with a month-and-year question. It keeps only the range (under 13, 13 to 15, 16 to 17, or 18 and over), where it came from and when it was set, on your device. Your birthday is never kept or sent to us. Under 18, the paywall never opens by itself. If you're under 13, you can use the free tools that run on your device, and the app sends nothing to us.
+- **A parent or guardian step.** If you're 13 to 15, or under the age of digital consent where you live, the cloud AI consent screen asks you to read it with a parent or guardian and to confirm that they said yes. We can't check this answer, so please be honest.
 - **Purchases.** Purchases are charged to the Apple Account on your device. If you have a child account in Family Sharing, your parent or guardian may need to approve purchases with "Ask to Buy".
 - **Other people's photos.** Only upload photos of other people if they've said yes. For younger children, their parent or guardian has to say yes.
 - **You're in control.** You can switch off cloud AI processing in Settings at any time, and delete everything with **Settings → Delete my data & account**.
@@ -58,7 +60,7 @@ This section is for you if you're under 18. The rest of this policy applies to y
 Much of {{APP_NAME}} works without sending anything to us. The following data is stored only on your device, and we can't access it:
 
 - **Your library ("My Works")**: the images you keep, with their title, the type of edit, the text prompt you used (for Create from text and Magic Edit), whether you marked them as a favourite, and timestamps. The library is stored in the app's private storage and protected by iOS Data Protection.
-- **App settings** (stored in iOS UserDefaults): whether you've completed onboarding; the interests you picked (for example "Selfie glow-ups" or "Shots for my shop"), which are used only to order the home screen on your device; your cloud AI consent choice; your appearance preference; your notification choices; a small count of happy moments (saving, sharing or hearting a creation) and when the app last asked, used only to time Apple's rating prompt; and, only in offline or demo mode, a local credit balance.
+- **App settings** (stored in iOS UserDefaults): whether you've completed onboarding; the interests you picked (for example "Selfie glow-ups" or "Shots for my shop"), which are used only to order the home screen on your device; your age range (under 13, 13 to 15, 16 to 17, or 18 and over), whether it came from Apple's Declared Age Range or the app's own question, and when it was set (never your birth date); your cloud AI consent choice, when you made it and, where asked, your answer to "A parent or guardian said yes"; your appearance preference; your notification choices; a small count of happy moments (saving, sharing or hearting a creation) and when the app last asked, used only to time Apple's rating prompt; and, only in offline or demo mode, a local credit balance.
 - **Session tokens** for your anonymous account, stored in the iOS Keychain.
 - **Reminders**: notifications are off until you allow them and switch them on. The app then schedules them locally on your device: a reminder one day before a free trial ends; "your glow-up is ready" when a creation finishes while you're in another app; "your free credits are back" (only after you run out); and, if you choose, a look of the week. Reminders are never sent between 9 pm and 9 am, or during school hours (8 am to 3 pm) on weekdays. No push server or device token is involved.
 - **Widgets and Live Activity**: to show your credits, your latest creation and its progress on the Home Screen, the Lock Screen and in the Dynamic Island, the app shares a small snapshot (credit balance, the title and a small thumbnail of your latest creation, and how many creations you have) with its widgets through a container on your device. It never leaves your iPhone.
@@ -79,7 +81,7 @@ You can delete your library in **Settings → Delete all creations**. It's also 
 
 ### Anonymous account
 
-When you first use a cloud AI feature or your credit balance on our servers, the app creates an anonymous account with our backend provider (Supabase). The account is identified by a random user ID. We don't collect your name, email address, phone number or password.
+When you first use a cloud AI feature or make a purchase, the app creates an anonymous account with our backend provider (Supabase). The account is identified by a random user ID. We don't collect your name, email address, phone number or password.
 
 ### Optional account (Sign in with Apple)
 
@@ -105,7 +107,7 @@ To verify purchases, we receive Apple-signed transaction data, including transac
 
 For subscriptions, we keep an entitlement record: the Apple original transaction ID, the product ID, the expiry date, a revoked flag and the environment, linked to your anonymous user ID.
 
-To understand how our subscriptions perform (trials, renewals, cancellations, refunds), the app also shares the same purchase records with our subscription analytics provider, RevenueCat, together with your anonymous user ID and basic device and app information (app version, iOS version, country and language). RevenueCat never receives your photos, prompts or results.
+To understand how our subscriptions perform (trials, renewals, cancellations, refunds), once you make a purchase (or if your Apple Account already has purchases with us) the app also shares the same purchase records with our subscription analytics provider, RevenueCat, together with your anonymous user ID and basic device and app information (app version, iOS version, country and language). RevenueCat never receives your photos, prompts or results.
 
 ### Reports
 
@@ -233,6 +235,7 @@ You can ask for a copy of the safeguards we use by emailing [{{PRIVACY_EMAIL}}](
 - **Entitlement records**: as long as your account exists. Deleted when you delete your account.
 - **Anonymous account (user ID)**: as long as your account exists. Deleted when you delete your account, or when it's merged into your account after Sign in with Apple.
 - **Account (Apple user identifier, email or relay address, Apple token)**: as long as your account exists. When you delete your account, the token is revoked with Apple and everything is deleted.
+- **Subscription analytics records at RevenueCat**: as long as your account exists. When you delete your account, we ask RevenueCat to delete them, including the records of anonymous user IDs merged into your account; RevenueCat completes the deletion shortly after.
 - **Reports**: up to 12 months, for safety review and to improve our filters. Then deleted, or earlier if you delete your account.
 - **Server and security logs**: a short period, typically no more than 90 days, for security and abuse prevention. They are deleted on this schedule even after you delete your account.
 - **Emails and privacy requests**: as long as needed to handle your request and to document how we handled it, unless we must keep them longer to establish, exercise or defend legal claims.
@@ -257,7 +260,7 @@ No system is completely secure. If a personal data breach occurs, we'll notify t
 
 - **Cloud AI processing**: switch it off at any time in **Settings → Cloud AI processing** to withdraw your consent. Withdrawal doesn't affect processing that has already happened.
 - **Delete all creations**: removes your library from your device.
-- **Delete my data & account**: in Settings. Deletes your server account and all server-side records (credit wallet, credit ledger, job records, entitlement records and reports) and your on-device library. Apple subscriptions must be cancelled separately in your Apple Account settings.
+- **Delete my data & account**: in Settings. Deletes your server account and all server-side records (credit wallet, credit ledger, job records, entitlement records and reports), asks RevenueCat to delete its subscription analytics records about you, and resets the app on your device: your library, settings, reminders and AI consent. Apple subscriptions must be cancelled separately in your Apple Account settings.
 - **Photos and notifications**: manage photo and notification permissions in iOS Settings.
 
 ### Your rights
@@ -299,7 +302,7 @@ The UK Age Appropriate Design Code (the "Children's Code") sets 15 standards for
 
 - **Best interests of the child.** We put the best interests of young users first when we design features. For example, we block sexual content for everyone, we don't offer body-reshaping or skin-lightening features, and we have no public profiles or feeds.
 - **Data protection impact assessments.** We assess the risks our features pose to young users, including through data protection impact assessments, before we launch them.
-- **Age-appropriate application.** We don't verify ages. Instead, we give every user the protections described in this section, whatever their age.
+- **Age-appropriate application.** We ask for an age range, never a birth date: from Apple's Declared Age Range where it's available, otherwise with a neutral month-and-year question. The range stays on your device. Under 13, only the free on-device tools are available. Under 18, the paywall never opens by itself, and where the law asks for it the consent screen includes a parent or guardian step. Beyond what Apple shares, we don't verify ages, so we also give every user the protections described in this section, whatever their age.
 - **Transparency.** Each of our documents starts with a short summary, this policy has a plain-language section for under-18s (section 3), and the cloud AI consent screen explains in plain words what's sent and to whom before anything is sent.
 - **Detrimental use of data.** We don't use personal data for advertising, profiling or engagement-based recommendations. The only personalisation is the order of the home screen, based on interests you pick yourself, and it happens on your device.
 - **Policies and community standards.** We enforce our Terms of Use and AUP, using safety filters, reporting and human review of appeals.
@@ -407,7 +410,7 @@ A growing number of US states, for example California, Connecticut, Colorado, Ma
 
 ## 21. Children under 13
 
-{{APP_NAME}} is designed for teens and adults aged {{MIN_AGE}} and over. It isn't directed to children under 13, and we don't knowingly collect personal information from children under 13, including under the US Children's Online Privacy Protection Act (COPPA).
+{{APP_NAME}} is designed for teens and adults aged {{MIN_AGE}} and over. Its cloud AI features, accounts and purchases are only for people aged {{MIN_AGE}} and over. If the age step shows that someone is under 13, the app offers only the free tools that run on the device (effects, Adjust, Cut out, Crop, Best shot and the video editor). In that mode it sends nothing to us or to our providers: it creates no account and makes no cloud AI, purchase or analytics requests. We don't knowingly collect personal information from children under 13, including under the US Children's Online Privacy Protection Act (COPPA).
 
 If we learn that we have collected personal information from a child under 13 without verifiable parental consent, we'll delete it. If you believe a child under 13 has used {{APP_NAME}}, please contact us at [{{PRIVACY_EMAIL}}](mailto:{{PRIVACY_EMAIL}}). A parent or guardian can also delete the data immediately with **Settings → Delete my data & account** on the child's device.
 

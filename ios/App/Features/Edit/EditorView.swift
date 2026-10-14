@@ -418,7 +418,7 @@ struct EditorView: View {
     /// floating Liquid Glass bar.
     private var toolBar: some View {
         HStack(spacing: 2) {
-            ForEach(EditorTool.allCases) { tool in
+            ForEach(EditorTool.available(cloudAI: app.allowsCloudAI)) { tool in
                 let isActive = model.activeTool == tool
                 Button {
                     model.select(tool)

@@ -91,6 +91,19 @@ actor AuthSessionManager {
         return newSession.accessToken
     }
 
+    /// A valid token for the stored session, refreshed if needed, or nil when
+    /// there is no session. Never signs up: deleting an account must not
+    /// create a new one first. Throws `unauthorized` when the refresh token
+    /// was rejected (the user was deleted, or the session revoked).
+    func existingAccessToken() async throws -> String? {
+        guard let current else { return nil }
+        if !current.isExpired() { return current.accessToken }
+        let refreshed = try await Self.refresh(current.refreshToken, config: config, session: session)
+        self.current = refreshed
+        Keychain.save(refreshed, key: Self.keychainKey)
+        return refreshed.accessToken
+    }
+
     /// Forces a refresh on the next call (e.g. after a 401).
     func invalidate() {
         current = current.map {

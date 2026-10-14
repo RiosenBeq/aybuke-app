@@ -82,7 +82,8 @@ Legend: ✅ done in this repository · ⏳ next · 🔭 later
 - ⏳ Upload the App Store Connect in-app purchase key (.p8) in RevenueCat (owner)
 - ⏳ App Store Server Notifications V2 endpoint for refunds and revocations
 - ⏳ Turn on Sign in with Apple for the app id, enable the Apple provider in Supabase, set `APPLE_TEAM_ID` / `APPLE_SIGNIN_KEY_ID` / `APPLE_SIGNIN_PRIVATE_KEY`, and test sign-in and the merge on two devices
-- ⏳ Age rating questionnaire (target 13+/16+) and the Declared Age Range API
+- ✅ Age step with the Declared Age Range API and teen defaults (on-device only under 13, no automatic paywall under 18, guardian step in the consent sheet)
+- ⏳ Age rating questionnaire (target 13+ with the override; "Age Assurance" once shipped)
 - ✅ "Glow Print" app icon, colorful Aura edition, with dark and tinted variants (`scripts/render-brand-assets.py`)
 - ⏳ Build with the latest SDK (iOS 26/27); Icon Composer `.icon` with clear variants
 - ✅ App Store copy (EN/TR), 8 generated screenshots per language, social images → [marketing](marketing/README.md)

@@ -31,6 +31,8 @@ enum ScreenshotScene: String, CaseIterable {
     case bestShot
     /// Settings › Feel good.
     case feelGood
+    /// The age step shown once to people who finished onboarding before it.
+    case age
 
     static var current: ScreenshotScene? {
         UserDefaults.standard.string(forKey: "GLScreenshotScene").flatMap(ScreenshotScene.init(rawValue:))

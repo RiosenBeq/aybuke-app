@@ -11,7 +11,14 @@ struct RootView: View {
         @Bindable var app = app
 
         Group {
-            if app.hasCompletedOnboarding {
+            if app.hasCompletedOnboarding && app.needsAgeStep {
+                // Once, for people who finished onboarding before the age step.
+                ZStack {
+                    AuroraBackground(intensity: 0.9)
+                    AgeStepView(mode: .returning) { app.recordAge($0) }
+                        .readableWidth(Metrics.compactWidth, alignment: .center)
+                }
+            } else if app.hasCompletedOnboarding {
                 MainTabView()
             } else {
                 OnboardingView()
@@ -68,10 +75,12 @@ struct MainTabView: View {
                 .hidesMacTabs(isCovered)
                 .tabItem { Label("Explore", systemImage: "sparkles") }
                 .tag(AppTab.home)
-            CreateView()
-                .hidesMacTabs(isCovered)
-                .tabItem { Label("Create", systemImage: "wand.and.stars") }
-                .tag(AppTab.create)
+            if app.allowsCloudAI {
+                CreateView()
+                    .hidesMacTabs(isCovered)
+                    .tabItem { Label("Create", systemImage: "wand.and.stars") }
+                    .tag(AppTab.create)
+            }
             EditHubView()
                 .hidesMacTabs(isCovered)
                 .tabItem { Label("Edit", systemImage: "photo.badge.plus") }

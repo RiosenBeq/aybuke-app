@@ -129,6 +129,11 @@ final class BackendAPITests: XCTestCase {
         let delete = try RequestFactory.deleteAccount(config: config, accessToken: "t")
         XCTAssertEqual(delete.httpMethod, "DELETE")
         XCTAssertEqual(delete.url?.path, "/functions/v1/account")
+        XCTAssertNil(delete.httpBody)
+
+        let deleteBoth = try RequestFactory.deleteAccount(config: config, accessToken: "t", anonymousToken: "anon")
+        let deleteBody = try XCTUnwrap(deleteBoth.httpBody.flatMap { try JSONSerialization.jsonObject(with: $0) as? [String: String] })
+        XCTAssertEqual(deleteBody["anonymous_token"], "anon")
     }
 
     func testPollingScheduleBacksOff() {

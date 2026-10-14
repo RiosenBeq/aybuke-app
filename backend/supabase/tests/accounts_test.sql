@@ -66,4 +66,15 @@ begin
   assert not has_table_privilege('authenticated', 'public.apple_accounts', 'insert'), 'clients cannot write Apple tokens';
 end $$;
 
+-- 4. Merged anonymous ids (for RevenueCat deletion) are private and go with the account.
+do $$
+declare
+  account uuid := '00000000-0000-0000-0000-0000000000a2';
+begin
+  insert into public.merged_users (account_id, anonymous_id) values (account, '00000000-0000-0000-0000-0000000000a1');
+  assert not has_table_privilege('authenticated', 'public.merged_users', 'insert'), 'clients cannot record merges';
+  delete from auth.users where id = account;
+  assert (select count(*) from public.merged_users where account_id = account) = 0, 'merged ids are deleted with the account';
+end $$;
+
 \echo 'accounts tests passed'

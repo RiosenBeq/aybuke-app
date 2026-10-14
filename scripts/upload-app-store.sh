@@ -5,6 +5,9 @@
 #   ASC_KEY_ID=<key id> ASC_ISSUER_ID=<issuer id> scripts/upload-app-store.sh
 #   PLATFORM=mac ASC_KEY_ID=<key id> ASC_ISSUER_ID=<issuer id> scripts/upload-app-store.sh
 #
+# Capabilities the app id needs (automatic signing registers them): App
+# Groups, Sign in with Apple and Declared Age Range.
+#
 # PLATFORM=mac uploads the Mac app (Mac Catalyst) to the same app record; the
 # record needs the macOS platform added first (see
 # docs/marketing/app-store-connect-setup.md).

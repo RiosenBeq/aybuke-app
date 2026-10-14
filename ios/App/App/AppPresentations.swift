@@ -49,8 +49,10 @@ struct AppPresentations: ViewModifier {
                 AIConsentView(
                     providerName: app.config.processorName,
                     retention: app.config.retentionPhrase,
-                    onAccept: {
+                    asksGuardian: app.ageDefaults.requiresGuardianStep,
+                    onAccept: { guardianConfirmed in
                         app.consentRequest = nil
+                        app.grantAIConsent(guardianConfirmed: guardianConfirmed)
                         request.onAccept()
                     },
                     onDecline: { app.consentRequest = nil }

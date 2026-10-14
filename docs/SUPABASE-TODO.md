@@ -20,6 +20,8 @@ Bu dosya, Glowlit'in arka ucunu (Supabase) canlıya almak için kalan adımları
   1. `20261011000000_init.sql`
   2. `20261012000000_reports_and_retention.sql`
   3. `20261013000000_accounts.sql`
+  4. `20261014000000_retry_reopen.sql`
+  5. `20261015000000_merged_users.sql`
 - [ ] Zamanlanmış temizlik (takılan işleri iade eder, sonuçları 1 saat sonra siler):
   ```sql
   create extension if not exists pg_cron;
@@ -54,6 +56,7 @@ Bu değerleri hesap sahibi yapıştırmalı (anahtarları ben giremem). Şablon:
 - [ ] `APPLE_TEAM_ID` = `CBTKNY3LFC`
 - [ ] `APPLE_SIGNIN_KEY_ID` ve `APPLE_SIGNIN_PRIVATE_KEY` — Sign in with Apple anahtarı
 - [ ] `OUTPUT_MODERATION` = `on`
+- [ ] `REVENUECAT_SECRET_KEY` ve `REVENUECAT_PROJECT_ID` — hesap silinince RevenueCat müşterisini de silmek için. RevenueCat → Project settings → API keys'te yalnızca `customer_information:customers:read_write` izinli bir **v2** gizli anahtar oluştur; proje kimliği aynı sayfada. Boş kalırsa silme yine çalışır ama RevenueCat kaydı kalır (günlüğe uyarı düşer).
 - [ ] (İsteğe bağlı) `FAL_KEY` — ek çıktı güvenlik kontrolü ve yedek sağlayıcı
 
 ## 7. xAI konsolu
