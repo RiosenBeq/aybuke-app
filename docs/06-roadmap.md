@@ -189,8 +189,8 @@ Seven audits (code, UX and accessibility, platform, competitors, trends, wellbei
 | `full-res-export-heic-hdr` | Full-resolution re-render on Save; HEIC; HDR-preserving Adjust | Photos open at 2048 px, so a 48 MP RAW exports at about 3 MP | No |
 | `cloud-erase-enhance-compositing` | Composite cloud Erase inside the mask; blend Enhance detail into the original | xAI returns a regenerated 1k frame, so areas outside the brush can change | Yes |
 | `cloud-job-resume-and-push` | Resume cloud jobs after suspend or kill; push-updated Live Activity with tap and Cancel | Jobs the server finishes and charges are lost on suspend | Yes |
-| `library-bulk-trash` | My Works multi-select, 30-day Recently deleted, stored originals for Before/After, editor drafts | Deletes are permanent and paid results aren't auto-saved | No |
-| `create-results-polish` | Save all, Regenerate, recent prompts and drafts; localized prompt enhancement | Four Pro variations take four saves; Enhance prompt adds English cues | No |
+| `library-bulk-trash` | Stored originals for Before/After, editor drafts (multi-select and the 30-day Recently deleted shipped in October 2026) | Paid results aren't auto-saved, and Before/After needs the original | No |
+| `create-results-polish` | Localized prompt enhancement (Save all, Regenerate, recent prompts and drafts shipped in October 2026) | Enhance prompt adds English cues | No |
 | `collage-carousel-scrapbook` | Photo dump and seamless carousel, scrapbook, photocard, Fit Check and movie poster formats | SCRL is #11 in Photo & Video; every rival has collages | No |
 | `text-stickers-doodles` | Text, bundled stickers and PencilKit doodles | Every mass-market rival has an overlay layer | No |
 | `batch-and-recipes` | Batch effects, Auto and cut-out; shareable recipes | VSCO, EPIK, Hypic and Photoroom batch-edit | No |

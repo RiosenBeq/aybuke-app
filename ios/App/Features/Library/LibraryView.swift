@@ -382,6 +382,8 @@ struct LibraryView: View {
             }
         }
         .disabled(items.isEmpty)
+        // The labels have their own colors, so "nothing selected" needs a dim.
+        .opacity(items.isEmpty ? 0.4 : 1)
         .padding(.horizontal, 12)
         .padding(.vertical, 6)
         .readableWidth(Metrics.compactWidth, alignment: .center)
@@ -434,19 +436,20 @@ struct LibraryView: View {
 
     // MARK: Actions
 
-    /// Full-size pixels for an action, decoded off the main thread.
-    private func loadImage(_ creation: Creation) async -> UIImage? {
-        let name = creation.imageFileName
-        return await Task.detached(priority: .userInitiated) {
+    /// Full-size pixels for an action, decoded off the main thread. Actions
+    /// read a creation's fields before they await: it could be deleted meanwhile.
+    private func loadImage(named name: String) async -> UIImage? {
+        await Task.detached(priority: .userInitiated) {
             ImageStore.load(name).map { $0.preparingForDisplay() ?? $0 }
         }.value
     }
 
     private func shareOne(_ creation: Creation) {
+        let name = creation.imageFileName
         let provenance = creation.provenance
         let prompt = creation.prompt
         Task {
-            guard let image = await loadImage(creation) else { return couldNotOpen() }
+            guard let image = await loadImage(named: name) else { return couldNotOpen() }
             Haptics.tap()
             app.share(SharePayload(image: image, operation: provenance.operation, prompt: prompt,
                                    inheritedSourceType: provenance.inheritedSourceType))
@@ -500,23 +503,24 @@ struct LibraryView: View {
     }
 
     private func saveToPhotos(_ items: [Creation]) {
-        let items = items.filter { !missingFiles.contains($0.imageFileName) }
-        guard !items.isEmpty, !isWorking else { return }
+        let entries = items.filter { !missingFiles.contains($0.imageFileName) }
+            .map { (name: $0.imageFileName, provenance: $0.provenance, prompt: $0.prompt) }
+        guard !entries.isEmpty, !isWorking else { return }
         let isPro = app.purchases.isPro
         isWorking = true
         Task {
             defer { isWorking = false }
             var saved = 0
-            for creation in items {
-                let provenance = creation.provenance
-                guard let image = await loadImage(creation) else { continue }
+            for entry in entries {
+                guard let image = await loadImage(named: entry.name) else { continue }
                 do {
-                    try await PhotoLibrarySaver.save(image, sourceType: provenance.sourceType, watermark: provenance.showsMark(isPro: isPro))
+                    try await PhotoLibrarySaver.save(image, sourceType: entry.provenance.sourceType,
+                                                     watermark: entry.provenance.showsMark(isPro: isPro))
                     saved += 1
                 } catch {
-                    let shareInstead = items.count == 1
-                        ? SharePayload(image: image, operation: provenance.operation, prompt: creation.prompt,
-                                       inheritedSourceType: provenance.inheritedSourceType)
+                    let shareInstead = entries.count == 1
+                        ? SharePayload(image: image, operation: entry.provenance.operation, prompt: entry.prompt,
+                                       inheritedSourceType: entry.provenance.inheritedSourceType)
                         : nil
                     app.handleSaveError(error, shareInstead: shareInstead)
                     return
@@ -552,24 +556,25 @@ struct LibraryView: View {
     private func duplicate(_ creation: Creation) {
         let name = creation.imageFileName
         let newestBefore = app.newestCreationFile()
+        let copy = Creation(
+            operation: creation.operation,
+            title: creation.title,
+            prompt: creation.prompt,
+            imageFileName: name,
+            pixelWidth: creation.pixelWidth,
+            pixelHeight: creation.pixelHeight,
+            source: creation.source
+        )
+        // Exactly the original's marking, even values this build doesn't know.
+        copy.operationRaw = creation.operationRaw
+        copy.sourceTypeRaw = creation.sourceTypeRaw
         Task {
             let copyName = await Task.detached(priority: .userInitiated) { try? ImageStore.duplicate(name) }.value
             guard let copyName else {
                 app.showToast("Couldn't duplicate that image.", style: .error)
                 return
             }
-            let copy = Creation(
-                operation: creation.operation,
-                title: creation.title,
-                prompt: creation.prompt,
-                imageFileName: copyName,
-                pixelWidth: creation.pixelWidth,
-                pixelHeight: creation.pixelHeight,
-                source: creation.source
-            )
-            // Exactly the original's marking, even values this build doesn't know.
-            copy.operationRaw = creation.operationRaw
-            copy.sourceTypeRaw = creation.sourceTypeRaw
+            copy.imageFileName = copyName
             modelContext.insert(copy)
             try? modelContext.save()
             Haptics.success()
