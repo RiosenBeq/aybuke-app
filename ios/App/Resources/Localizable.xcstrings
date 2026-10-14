@@ -290,6 +290,9 @@
         }
       }
     },
+    "%@ asks Apple for your age range, never your birthday. It stays on this device." : {
+
+    },
     "%@ needs the cloud." : {
       "localizations" : {
         "de" : {
@@ -722,6 +725,19 @@
         }
       }
     },
+    "%@: %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@: %2$@"
+          }
+        }
+      }
+    },
+    "%@." : {
+
+    },
     "%@. %@%@" : {
       "localizations" : {
         "de" : {
@@ -869,6 +885,7 @@
       }
     },
     "%@. Try it on your photo." : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1084,12 +1101,50 @@
         }
       }
     },
+    "%lld by %lld pixels" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld by %2$lld pixels"
+          }
+        }
+      }
+    },
+    "%lld by %lld, %lld by %lld pixels" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld by %2$lld, %3$lld by %4$lld pixels"
+          }
+        }
+      }
+    },
     "%lld credit per edit · failed edits are refunded" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld Credit pro Bearbeitung · Fehlversuche werden erstattet"
+          }
+        },
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld credit per edit · failed edits are refunded"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld credits per edit · failed edits are refunded"
+                }
+              }
+            }
           }
         },
         "es" : {
@@ -1162,6 +1217,24 @@
             "value" : "%lld Credits jeden Monat"
           }
         },
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld credit every month"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld credits every month"
+                }
+              }
+            }
+          }
+        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1230,6 +1303,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Noch %lld Credits"
+          }
+        },
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld credit left"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld credits left"
+                }
+              }
+            }
           }
         },
         "es" : {
@@ -1370,7 +1461,52 @@
         }
       }
     },
+    "%lld degrees" : {
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld degree"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld degrees"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "%lld fresh credits for today." : {
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld fresh credit for today."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld fresh credits for today."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "%lld fresh credits for today. What are we glowing up?" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1446,6 +1582,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld Stunden"
+          }
+        },
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld hour"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld hours"
+                }
+              }
+            }
           }
         },
         "es" : {
@@ -1664,6 +1818,24 @@
             "value" : "%lld Fotos ohne klar erkennbares Gesicht wurden ausgelassen."
           }
         },
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld photo without a clear face was left out."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld photos without a clear face were left out."
+                }
+              }
+            }
+          }
+        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1795,6 +1967,9 @@
           }
         }
       }
+    },
+    "≈ %@ per credit" : {
+
     },
     "✨ AI glow-ups" : {
       "localizations" : {
@@ -2639,7 +2814,17 @@
         }
       }
     },
+    "13 to 15" : {
+
+    },
+    "16 to 17" : {
+
+    },
+    "18 or older" : {
+
+    },
     "80s · 90s · Y2K" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -2709,7 +2894,17 @@
         }
       }
     },
+    "80s · Y2K · 2010s" : {
+
+    },
+    "80s & 90s effects, Cut out and Adjust are free and run right on your device." : {
+
+    },
+    "80s & 90s effects, Cut out and Adjust are free and run right on your device. Enhance and Erase add AI magic." : {
+
+    },
     "80s & 90s effects, Cut out and Adjust are free and run right on your phone. Enhance and Erase add AI magic." : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -2778,6 +2973,9 @@
           }
         }
       }
+    },
+    "80s Studio Portrait" : {
+      "comment" : "One-tap look (trend) name. Keep trend names people use in English, such as Y2K or Clean Girl."
     },
     "90s instant film" : {
       "comment" : "One-tap look description, shown under its name",
@@ -3063,6 +3261,12 @@
         }
       }
     },
+    "A bicycle with a basket of tulips on a canal bridge in spring" : {
+      "comment" : "Spring idea for creating an image"
+    },
+    "A camper van under the stars beside a calm lake" : {
+      "comment" : "Summer idea for creating an image"
+    },
     "A cat wearing a tiny strawberry hat in a field of pink tulips" : {
       "comment" : "Example idea for creating an image, put in the prompt field",
       "localizations" : {
@@ -3347,6 +3551,15 @@
         }
       }
     },
+    "A cozy pumpkin patch at golden hour with fairy lights and a plaid blanket" : {
+      "comment" : "Autumn idea for creating an image"
+    },
+    "A cozy reading nook with a knitted blanket, fairy lights and falling snow outside" : {
+      "comment" : "Winter idea for creating an image"
+    },
+    "A cute ghost reading a book in a candle-lit library" : {
+      "comment" : "Autumn idea for creating an image"
+    },
     "A dreamy pastel bedroom with a canopy bed, fairy lights and a window seat at sunset" : {
       "comment" : "Example idea for creating an image, put in the prompt field",
       "localizations" : {
@@ -3489,6 +3702,7 @@
       }
     },
     "A free enhance that runs on your iPhone — nothing is uploaded." : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -3557,6 +3771,30 @@
           }
         }
       }
+    },
+    "A free Y2K camera look, made right on your device. Nothing is uploaded." : {
+
+    },
+    "A garden tea party for bunnies under blooming cherry trees" : {
+      "comment" : "Spring idea for creating an image"
+    },
+    "A gingerbread house village with tiny glowing windows" : {
+      "comment" : "Winter idea for creating an image"
+    },
+    "A greenhouse full of butterflies and pastel flowers in morning light" : {
+      "comment" : "Spring idea for creating an image"
+    },
+    "A Halloween costume party for woodland animals, soft watercolor" : {
+      "comment" : "Autumn idea for creating an image"
+    },
+    "A lemon grove by the sea with a striped parasol and a sketchbook" : {
+      "comment" : "Summer idea for creating an image"
+    },
+    "A little magic for your feed" : {
+      "comment" : "Caption idea for sharing a picture"
+    },
+    "A meadow picnic with strawberries, daisies and a striped blanket" : {
+      "comment" : "Spring idea for creating an image"
     },
     "A minimalist poster of a hot-air balloon over lavender fields" : {
       "comment" : "Example idea for creating an image, put in the prompt field",
@@ -3629,6 +3867,18 @@
         }
       }
     },
+    "A mug of hot chocolate on a windowsill while leaves fall outside" : {
+      "comment" : "Autumn idea for creating an image"
+    },
+    "A parent or guardian said yes" : {
+
+    },
+    "A parent, a friend, a teacher or a school counselor can help." : {
+
+    },
+    "A pastel ice-cream truck on a beach boardwalk at sunset" : {
+      "comment" : "Summer idea for creating an image"
+    },
     "A pastel macaron tower on a marble table, product shot" : {
       "comment" : "Example idea for creating an image, put in the prompt field",
       "localizations" : {
@@ -3699,6 +3949,15 @@
           }
         }
       }
+    },
+    "A polar bear cub ice-skating on a frozen pond under the northern lights" : {
+      "comment" : "Winter idea for creating an image"
+    },
+    "A rainy autumn street with orange leaves and a glowing café window" : {
+      "comment" : "Autumn idea for creating an image"
+    },
+    "A rainy spring day seen through a window with raindrops and a rainbow" : {
+      "comment" : "Spring idea for creating an image"
     },
     "A reading nook full of plants and pastel books, cozy afternoon light" : {
       "comment" : "Example idea for creating an image, put in the prompt field",
@@ -3771,6 +4030,15 @@
         }
       }
     },
+    "A rooftop garden at night with string lights and fireflies" : {
+      "comment" : "Summer idea for creating an image"
+    },
+    "A snow globe holding a tiny pastel city" : {
+      "comment" : "Winter idea for creating an image"
+    },
+    "A snowy cabin with warm windows and a pink sky at dusk" : {
+      "comment" : "Winter idea for creating an image"
+    },
     "A tiny fairy house inside a teacup with glowing mushrooms" : {
       "comment" : "Example idea for creating an image, put in the prompt field",
       "localizations" : {
@@ -3841,6 +4109,18 @@
           }
         }
       }
+    },
+    "A tiny hedgehog carrying a flower umbrella" : {
+      "comment" : "Spring idea for creating an image"
+    },
+    "A tiny vinyl you" : {
+      "comment" : "One-tap look description, shown under its name"
+    },
+    "A tiny winter figurine" : {
+      "comment" : "One-tap look description, shown under its name"
+    },
+    "A turtle surfing a sparkly wave under a cotton-candy sky" : {
+      "comment" : "Summer idea for creating an image"
     },
     "A unicorn made of cotton-candy clouds above a glittering lake" : {
       "comment" : "Example idea for creating an image, put in the prompt field",
@@ -3984,6 +4264,15 @@
         }
       }
     },
+    "A watermelon-themed pool party for ducks, bright and playful" : {
+      "comment" : "Summer idea for creating an image"
+    },
+    "A winter market at night with lanterns, ribbons and steaming cocoa" : {
+      "comment" : "Winter idea for creating an image"
+    },
+    "A witch's kitchen full of pastel potions and sleepy black cats" : {
+      "comment" : "Autumn idea for creating an image"
+    },
     "About" : {
       "localizations" : {
         "de" : {
@@ -4055,6 +4344,7 @@
       }
     },
     "About half what most AI photo apps charge. No weekly plans, ever." : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -4404,6 +4694,18 @@
         }
       }
     },
+    "Add a big harvest moon and glowing jack-o'-lanterns" : {
+      "comment" : "Suggested Magic Edit request for her photo, shown on a chip in the editor"
+    },
+    "Add a little bow tie and party balloons" : {
+      "comment" : "Example request for editing a photo of a pet\nSuggested Magic Edit request for her photo, shown on a chip in the editor"
+    },
+    "Add a rainbow and a few butterflies" : {
+      "comment" : "Example request for editing a photo without people\nSuggested Magic Edit request for her photo, shown on a chip in the editor"
+    },
+    "Add a subtitle (optional)" : {
+      "comment" : "Placeholder of the Film Still effect's one-line subtitle field"
+    },
     "Add a visible “AI-edited” label" : {
       "localizations" : {
         "de" : {
@@ -4544,6 +4846,30 @@
         }
       }
     },
+    "Add confetti and party lights around us" : {
+      "comment" : "Example request for editing a photo of several people\nSuggested Magic Edit request for her photo, shown on a chip in the editor"
+    },
+    "Add floating pink hearts and a pastel sky" : {
+      "comment" : "Suggested Magic Edit request for her photo, shown on a chip in the editor"
+    },
+    "Add floating pink hearts and soft pastel light" : {
+      "comment" : "Suggested Magic Edit request for her photo, shown on a chip in the editor"
+    },
+    "Add fresh flowers and soft morning light" : {
+      "comment" : "Suggested Magic Edit request for her photo, shown on a chip in the editor"
+    },
+    "Add glowing pumpkins and candlelight" : {
+      "comment" : "Suggested Magic Edit request for her photo, shown on a chip in the editor"
+    },
+    "Add pink and blue neon reflections on the street" : {
+      "comment" : "Suggested Magic Edit request for her photo, shown on a chip in the editor"
+    },
+    "Add soft fairy lights behind me" : {
+      "comment" : "Example request for editing a photo of one person\nSuggested Magic Edit request for her photo, shown on a chip in the editor"
+    },
+    "Add soft falling snow under the street lights" : {
+      "comment" : "Suggested Magic Edit request for her photo, shown on a chip in the editor"
+    },
     "Add soft glam makeup" : {
       "localizations" : {
         "de" : {
@@ -4613,6 +4939,9 @@
           }
         }
       }
+    },
+    "Add sparkles and soft pastel light" : {
+      "comment" : "Suggested Magic Edit request for her photo, shown on a chip in the editor"
     },
     "Add sparkles everywhere" : {
       "localizations" : {
@@ -4684,6 +5013,9 @@
         }
       }
     },
+    "Add the %@ effect" : {
+
+    },
     "Add to favorites" : {
       "localizations" : {
         "de" : {
@@ -4753,6 +5085,9 @@
           }
         }
       }
+    },
+    "Add warm fairy lights around the room" : {
+      "comment" : "Suggested Magic Edit request for her photo, shown on a chip in the editor"
     },
     "Adding %@…" : {
       "localizations" : {
@@ -4825,6 +5160,7 @@
       }
     },
     "Adding the glow…" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -5244,6 +5580,12 @@
           }
         }
       }
+    },
+    "Age" : {
+
+    },
+    "Age range" : {
+
     },
     "AI Enhance" : {
       "localizations" : {
@@ -5808,6 +6150,7 @@
       }
     },
     "Allow notifications in iOS Settings" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -5876,6 +6219,12 @@
           }
         }
       }
+    },
+    "Allow notifications in Settings" : {
+
+    },
+    "Allow notifications in System Settings" : {
+
     },
     "Allow photo access in Settings to save your creations." : {
       "localizations" : {
@@ -6300,6 +6649,9 @@
         }
       }
     },
+    "Apple creates the image on its Private Cloud Compute servers, under Apple's terms and daily limits. Glowlit only gets the finished picture." : {
+
+    },
     "Apple didn't send a sign-in token. Please try again." : {
       "localizations" : {
         "de" : {
@@ -6369,6 +6721,12 @@
           }
         }
       }
+    },
+    "Apple's image maker · no Glowlit credits. Style, size and count here don't apply." : {
+
+    },
+    "Applies a free effect that suits this photo. Tap again for another." : {
+
     },
     "Apply" : {
       "localizations" : {
@@ -6721,6 +7079,12 @@
         }
       }
     },
+    "Ask a parent or guardian to read this with you" : {
+
+    },
+    "Aura glow" : {
+
+    },
     "Auto" : {
       "comment" : "Art style name on the Create screen",
       "localizations" : {
@@ -7002,7 +7366,11 @@
         }
       }
     },
+    "Background" : {
+
+    },
     "Background removal always stays on your iPhone" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -7072,7 +7440,11 @@
         }
       }
     },
+    "Background removal and adjustments run on your device. Cloud edits are never used to train AI and are deleted from our servers within %@." : {
+
+    },
     "Background removal and adjustments run on your iPhone. Cloud edits are never used to train AI and are deleted from our servers within %@." : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -7212,8 +7584,15 @@
         }
       }
     },
+    "Background removal runs on your device and is always free." : {
+
+    },
+    "Background removal runs on your device." : {
+      "comment" : "Error message"
+    },
     "Background removal runs on your iPhone." : {
       "comment" : "Error message",
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -7284,6 +7663,7 @@
       }
     },
     "Background removal runs on your phone and is always free." : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -7352,6 +7732,9 @@
           }
         }
       }
+    },
+    "Bag Charm Mini" : {
+      "comment" : "One-tap look (trend) name. Keep trend names people use in English, such as Y2K or Clean Girl."
     },
     "Ballet Core" : {
       "comment" : "One-tap look (trend) name. Keep trend names people use in English, such as Y2K or Clean Girl.",
@@ -7847,6 +8230,7 @@
       }
     },
     "Best" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -7915,6 +8299,9 @@
           }
         }
       }
+    },
+    "Best light & focus" : {
+
     },
     "Best shot" : {
       "localizations" : {
@@ -8055,6 +8442,9 @@
           }
         }
       }
+    },
+    "Bestie booth strip" : {
+      "comment" : "One-tap look description, shown under its name"
     },
     "Bestie pics" : {
       "localizations" : {
@@ -8197,6 +8587,9 @@
         }
       }
     },
+    "Besties at a pink café" : {
+      "comment" : "One-tap look description, shown under its name"
+    },
     "Birthday Glam" : {
       "comment" : "One-tap look (trend) name. Keep trend names people use in English, such as Y2K or Clean Girl.",
       "localizations" : {
@@ -8267,6 +8660,21 @@
           }
         }
       }
+    },
+    "Black" : {
+
+    },
+    "Blur" : {
+
+    },
+    "Blur original" : {
+
+    },
+    "Blush" : {
+
+    },
+    "Border" : {
+      "comment" : "Effect switch: a white square border around the photo"
     },
     "Bouncy Curls" : {
       "comment" : "One-tap look (trend) name. Keep trend names people use in English, such as Y2K or Clean Girl.",
@@ -8479,6 +8887,9 @@
           }
         }
       }
+    },
+    "Brings back what you wrote before" : {
+
     },
     "Brush over an object" : {
       "localizations" : {
@@ -8901,6 +9312,9 @@
         }
       }
     },
+    "Butter" : {
+
+    },
     "Buy a credit pack" : {
       "localizations" : {
         "de" : {
@@ -8971,7 +9385,18 @@
         }
       }
     },
+    "By continuing you agree to our [Terms of Use](%@://terms) and [Privacy Policy](%@://privacy)." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "By continuing you agree to our [Terms of Use](%1$@://terms) and [Privacy Policy](%2$@://privacy)."
+          }
+        }
+      }
+    },
     "By continuing you confirm you're at least 13 and agree to our [Terms of Use](%@://terms) and [Privacy Policy](%@://privacy)." : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -9117,6 +9542,9 @@
           }
         }
       }
+    },
+    "Camera info" : {
+      "comment" : "Effect switch: the camcorder's REC, battery and time display"
     },
     "Cancel" : {
       "localizations" : {
@@ -9469,6 +9897,12 @@
         }
       }
     },
+    "Caption ideas" : {
+
+    },
+    "Check every face. Tap to hide any we missed." : {
+
+    },
     "Check your internet connection and try again." : {
       "localizations" : {
         "de" : {
@@ -9538,6 +9972,9 @@
           }
         }
       }
+    },
+    "Checks results for safety" : {
+
     },
     "Cherry Blossom" : {
       "comment" : "One-tap look (trend) name. Keep trend names people use in English, such as Y2K or Clean Girl.",
@@ -9820,6 +10257,9 @@
           }
         }
       }
+    },
+    "Choose another video" : {
+
     },
     "Choose selfies" : {
       "localizations" : {
@@ -10244,6 +10684,9 @@
         }
       }
     },
+    "Clip length %@" : {
+
+    },
     "Close" : {
       "localizations" : {
         "de" : {
@@ -10533,6 +10976,24 @@
             "value" : "Kollektion · %lld Looks"
           }
         },
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Collection · %lld look"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Collection · %lld looks"
+                }
+              }
+            }
+          }
+        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10594,6 +11055,9 @@
           }
         }
       }
+    },
+    "Colour me happy" : {
+      "comment" : "Caption idea for sharing a picture"
     },
     "Comic Book" : {
       "comment" : "One-tap look (trend) name. Keep trend names people use in English, such as Y2K or Clean Girl.",
@@ -11156,6 +11620,9 @@
         }
       }
     },
+    "Continue with free tools" : {
+
+    },
     "Contrast" : {
       "localizations" : {
         "de" : {
@@ -11226,6 +11693,9 @@
         }
       }
     },
+    "Copied, paste it in a chat" : {
+
+    },
     "Copy" : {
       "localizations" : {
         "de" : {
@@ -11295,6 +11765,12 @@
           }
         }
       }
+    },
+    "Copy as sticker" : {
+
+    },
+    "Copy caption: %@" : {
+
     },
     "Copy image" : {
       "localizations" : {
@@ -11436,6 +11912,9 @@
         }
       }
     },
+    "Cotton candy" : {
+
+    },
     "Couldn't open Instagram." : {
       "localizations" : {
         "de" : {
@@ -11505,6 +11984,9 @@
           }
         }
       }
+    },
+    "Couldn't open that image. Please try again." : {
+
     },
     "Couldn't open that photo." : {
       "localizations" : {
@@ -11996,6 +12478,9 @@
         }
       }
     },
+    "Couldn't save to My Works" : {
+
+    },
     "Couldn't sign in with Apple. Please try again." : {
       "localizations" : {
         "de" : {
@@ -12206,6 +12691,12 @@
           }
         }
       }
+    },
+    "Cozy Sweater Digicam" : {
+      "comment" : "One-tap look (trend) name. Keep trend names people use in English, such as Y2K or Clean Girl."
+    },
+    "Cozy winter" : {
+      "comment" : "Template collection heading"
     },
     "Create" : {
       "comment" : "Name of an editing tool",
@@ -12488,12 +12979,36 @@
         }
       }
     },
+    "Create with Image Playground" : {
+
+    },
+    "Creates and edits the images" : {
+
+    },
     "Creating %lld images…" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld Bilder entstehen…"
+          }
+        },
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Creating %lld image…"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Creating %lld images…"
+                }
+              }
+            }
           }
         },
         "es" : {
@@ -12768,6 +13283,9 @@
         }
       }
     },
+    "Credit packs are unavailable right now." : {
+
+    },
     "Credits" : {
       "localizations" : {
         "de" : {
@@ -12978,7 +13496,11 @@
         }
       }
     },
+    "Credits never get stuck on an old device" : {
+
+    },
     "Credits never get stuck on an old phone" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -13047,6 +13569,18 @@
           }
         }
       }
+    },
+    "Crop" : {
+
+    },
+    "Crop area" : {
+
+    },
+    "Cropping…" : {
+
+    },
+    "Custom color" : {
+
     },
     "Cut out" : {
       "localizations" : {
@@ -13258,6 +13792,9 @@
         }
       }
     },
+    "Cut-out preview" : {
+
+    },
     "Cute & a little spooky" : {
       "comment" : "One-tap look description, shown under its name",
       "localizations" : {
@@ -13328,6 +13865,9 @@
           }
         }
       }
+    },
+    "Cute and a little spooky." : {
+
     },
     "Cutting out the subject…" : {
       "localizations" : {
@@ -14239,7 +14779,17 @@
         }
       }
     },
+    "Deletes your creations and resets every setting on this device, including your AI consent. Subscriptions are managed by Apple and must be cancelled separately." : {
+
+    },
+    "Deletes your creations and resets every setting on this device." : {
+
+    },
+    "Deletes your creations and your account with its credits from our servers, and resets every setting on this device. Subscriptions are managed by Apple and must be cancelled separately." : {
+
+    },
     "Deletes your creations, your anonymous account and its credits from our servers. Subscriptions are managed by Apple and must be cancelled separately." : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -14870,6 +15420,9 @@
         }
       }
     },
+    "Disco '79" : {
+      "comment" : "One-tap look (trend) name. Keep trend names people use in English, such as Y2K or Clean Girl."
+    },
     "Doesn't look like you? Retry free" : {
       "localizations" : {
         "de" : {
@@ -14939,6 +15492,9 @@
           }
         }
       }
+    },
+    "Doesn't match my request" : {
+      "comment" : "Reason for reporting an AI result, a button in the Report dialog"
     },
     "Doll Box" : {
       "comment" : "One-tap look (trend) name. Keep trend names people use in English, such as Y2K or Clean Girl.",
@@ -15012,6 +15568,7 @@
       }
     },
     "Doll box, Y2K, ballet core, fairy princess — and fresh trends every week." : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -15080,6 +15637,9 @@
           }
         }
       }
+    },
+    "Doll box, Y2K, ballet core, fairy princess and more — one tap each." : {
+
     },
     "Done" : {
       "localizations" : {
@@ -15152,6 +15712,7 @@
       }
     },
     "Dream it.\n*See it.*" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -15361,6 +15922,9 @@
           }
         }
       }
+    },
+    "Drop a photo to edit it" : {
+
     },
     "Edit" : {
       "localizations" : {
@@ -15642,6 +16206,9 @@
         }
       }
     },
+    "Edit this one" : {
+
+    },
     "Edited photo" : {
       "localizations" : {
         "de" : {
@@ -15712,6 +16279,9 @@
         }
       }
     },
+    "Edits that make fun of someone aren't something we do. Try a fun scene instead." : {
+      "comment" : "Shown when a request is blocked by the content policy"
+    },
     "Effects" : {
       "localizations" : {
         "de" : {
@@ -15781,6 +16351,9 @@
           }
         }
       }
+    },
+    "Effects, Adjust, Cut out and video editing always stay on this device" : {
+
     },
     "Email hidden" : {
       "localizations" : {
@@ -16415,7 +16988,17 @@
         }
       }
     },
+    "Every look & style" : {
+
+    },
+    "Every tool here runs on your device. Your photos are never uploaded." : {
+
+    },
+    "Every tool runs on your device. Your photos are never uploaded." : {
+
+    },
     "Every trend & style, first" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -16485,7 +17068,11 @@
         }
       }
     },
+    "Everything you make stays on your device. Heart your favorites and share in one tap." : {
+
+    },
     "Everything you make stays on your iPhone. Heart your favorites and share in one tap." : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -16554,6 +17141,9 @@
           }
         }
       }
+    },
+    "Everything you make stays on your Mac. Heart your favorites and share in one click." : {
+
     },
     "Explore" : {
       "localizations" : {
@@ -16624,6 +17214,9 @@
           }
         }
       }
+    },
+    "Face %lld" : {
+
     },
     "Failed edits are always refunded" : {
       "localizations" : {
@@ -16907,6 +17500,18 @@
         }
       }
     },
+    "Feel *good*" : {
+
+    },
+    "Feel good" : {
+
+    },
+    "Fills in a new idea for your picture" : {
+
+    },
+    "Film" : {
+      "comment" : "Era tag of the Film Still effect: the look of a movie frame"
+    },
     "Find “Glowlit” on the App Store" : {
       "localizations" : {
         "de" : {
@@ -17046,6 +17651,9 @@
           }
         }
       }
+    },
+    "Find a helpline near you" : {
+
     },
     "Find your *best shot*" : {
       "localizations" : {
@@ -17256,6 +17864,12 @@
           }
         }
       }
+    },
+    "findahelpline.com lists free helplines in many countries. It opens in your browser." : {
+
+    },
+    "Finds the best light & focus · free, on-device" : {
+
     },
     "First %lld days %@ each" : {
       "localizations" : {
@@ -17911,6 +18525,12 @@
         }
       }
     },
+    "Fit & straighten" : {
+
+    },
+    "Flip horizontally" : {
+
+    },
     "For your shop & career" : {
       "comment" : "Template collection heading",
       "localizations" : {
@@ -17982,7 +18602,11 @@
         }
       }
     },
+    "Free · on your device" : {
+
+    },
     "Free · on your iPhone" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -18123,6 +18747,7 @@
       }
     },
     "Free · ranks selfies" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -18191,6 +18816,9 @@
           }
         }
       }
+    },
+    "Free · sorts by light" : {
+
     },
     "Free exports carry a small %@ mark." : {
       "localizations" : {
@@ -18262,7 +18890,11 @@
         }
       }
     },
+    "Free for everyone · on your device · no credits" : {
+
+    },
     "Free for everyone · on your iPhone · no credits" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -18402,7 +19034,11 @@
         }
       }
     },
+    "Free on your *device*" : {
+
+    },
     "Free on your *iPhone*" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -18472,7 +19108,20 @@
         }
       }
     },
+    "Free tools still work: 80s & 90s effects, Cut out, Adjust and the video editor." : {
+
+    },
+    "Free trial until %@" : {
+
+    },
+    "Free, on your device. Undo takes it back." : {
+
+    },
+    "Freeform" : {
+
+    },
     "Fresh looks added regularly" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -18753,6 +19402,12 @@
         }
       }
     },
+    "Galentine's" : {
+      "comment" : "Template collection heading"
+    },
+    "Galentine's Brunch" : {
+      "comment" : "One-tap look (trend) name. Keep trend names people use in English, such as Y2K or Clean Girl."
+    },
     "Generate" : {
       "localizations" : {
         "de" : {
@@ -18969,6 +19624,12 @@
         }
       }
     },
+    "Give me a cute witch hat and glowing pumpkins" : {
+      "comment" : "Suggested Magic Edit request for her photo, shown on a chip in the editor"
+    },
+    "Give me pastel pink hair" : {
+      "comment" : "Example request for editing a photo of one person\nSuggested Magic Edit request for her photo, shown on a chip in the editor"
+    },
     "Give me pink hair" : {
       "localizations" : {
         "de" : {
@@ -19038,6 +19699,27 @@
           }
         }
       }
+    },
+    "Give my pet a tiny heart-shaped balloon" : {
+      "comment" : "Suggested Magic Edit request for her photo, shown on a chip in the editor"
+    },
+    "Give my pet a tiny knitted scarf" : {
+      "comment" : "Suggested Magic Edit request for her photo, shown on a chip in the editor"
+    },
+    "Give my pet a tiny party hat" : {
+      "comment" : "Suggested Magic Edit request for her photo, shown on a chip in the editor"
+    },
+    "Give my pet a tiny pumpkin costume" : {
+      "comment" : "Suggested Magic Edit request for her photo, shown on a chip in the editor"
+    },
+    "Give my pet a tiny strawberry hat" : {
+      "comment" : "Example request for editing a photo of a pet"
+    },
+    "Give us cute witch hats and glowing pumpkins" : {
+      "comment" : "Suggested Magic Edit request for her photo, shown on a chip in the editor"
+    },
+    "Give us matching cozy sweaters" : {
+      "comment" : "Example request for editing a photo of several people\nSuggested Magic Edit request for her photo, shown on a chip in the editor"
     },
     "Glam Studio" : {
       "comment" : "One-tap look (trend) name. Keep trend names people use in English, such as Y2K or Clean Girl.",
@@ -19322,6 +20004,7 @@
       }
     },
     "Glow up my best shot" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -19392,6 +20075,7 @@
       }
     },
     "Glow up this one" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -19602,7 +20286,11 @@
         }
       }
     },
+    "Glowlit follows your device's language. To pick another one, tap Language, then choose it in Settings." : {
+
+    },
     "Glowlit follows your iPhone's language. To pick another one, tap Language, then choose it in iOS Settings." : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -19671,6 +20359,9 @@
           }
         }
       }
+    },
+    "Glowlit follows your Mac's language. To pick another one, click Language, then add Glowlit under Applications." : {
+
     },
     "Glowlit invite card with a QR code" : {
       "localizations" : {
@@ -19741,6 +20432,9 @@
           }
         }
       }
+    },
+    "Glowlit keeps you, you. Try hair color, makeup colors, outfits, light or backgrounds." : {
+      "comment" : "Shown when a request is blocked by the content policy"
     },
     "Golden Hour Glow" : {
       "comment" : "One-tap look (trend) name. Keep trend names people use in English, such as Y2K or Clean Girl.",
@@ -19882,6 +20576,9 @@
           }
         }
       }
+    },
+    "Golden hour, every hour" : {
+      "comment" : "Caption idea for sharing a picture"
     },
     "Golden Sky" : {
       "comment" : "One-tap look (trend) name. Keep trend names people use in English, such as Y2K or Clean Girl.",
@@ -20095,7 +20792,14 @@
         }
       }
     },
+    "Heart" : {
+
+    },
+    "Heart Photo Booth" : {
+      "comment" : "One-tap look (trend) name. Keep trend names people use in English, such as Y2K or Clean Girl."
+    },
     "Help me pick" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -20164,6 +20868,21 @@
           }
         }
       }
+    },
+    "Hidden" : {
+
+    },
+    "Hide" : {
+      "comment" : "Bottom bar name of the Hide faces tool"
+    },
+    "Hide faces" : {
+
+    },
+    "Hide ideas" : {
+
+    },
+    "Hide their faces" : {
+
     },
     "Hide your email if you like" : {
       "localizations" : {
@@ -20234,6 +20953,9 @@
           }
         }
       }
+    },
+    "Hiding faces…" : {
+
     },
     "Hold to see original" : {
       "localizations" : {
@@ -20445,6 +21167,9 @@
         }
       }
     },
+    "Ideas for this photo" : {
+
+    },
     "If I leave the app while it's working." : {
       "localizations" : {
         "de" : {
@@ -20585,6 +21310,9 @@
         }
       }
     },
+    "Image Playground is Apple's" : {
+
+    },
     "Images" : {
       "localizations" : {
         "de" : {
@@ -20654,6 +21382,9 @@
           }
         }
       }
+    },
+    "Including the Pro-only looks and styles" : {
+
     },
     "Ink & halftone" : {
       "comment" : "One-tap look description, shown under its name",
@@ -21077,6 +21808,9 @@
         }
       }
     },
+    "Just a little daydream" : {
+      "comment" : "Caption idea for sharing a picture"
+    },
     "Kawaii" : {
       "comment" : "Art style name on the Create screen",
       "localizations" : {
@@ -21218,7 +21952,26 @@
         }
       }
     },
+    "Keep every subject" : {
+
+    },
+    "Keep only subject %lld from the left" : {
+
+    },
+    "Keep only the subject in the middle" : {
+
+    },
+    "Keep only the subject on the left" : {
+
+    },
+    "Keep only the subject on the right" : {
+
+    },
+    "Keep Pro and your credits when you switch or add a device. Signing in is optional." : {
+
+    },
     "Keep Pro and your credits when you switch or add an iPhone. Signing in is optional." : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -21288,7 +22041,11 @@
         }
       }
     },
+    "Keep your glow on *every device*" : {
+
+    },
     "Keep your glow on *every iPhone*" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -21357,6 +22114,19 @@
           }
         }
       }
+    },
+    "Keeping %lld of %lld" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Keeping %1$lld of %2$lld"
+          }
+        }
+      }
+    },
+    "Kept only on this device, and used only to choose what %@ offers." : {
+
     },
     "Landscape" : {
       "comment" : "Image shape (aspect ratio) name",
@@ -21569,6 +22339,9 @@
         }
       }
     },
+    "Laser Yearbook '86" : {
+      "comment" : "One-tap look (trend) name. Keep trend names people use in English, such as Y2K or Clean Girl."
+    },
     "Legal" : {
       "localizations" : {
         "de" : {
@@ -21708,6 +22481,12 @@
           }
         }
       }
+    },
+    "Let's keep outfits cozy and everyday. Try a cozy knit, a party dress or a costume." : {
+      "comment" : "Shown when a request is blocked by the content policy"
+    },
+    "Letterbox" : {
+      "comment" : "Effect switch: black cinema bars at the top and bottom"
     },
     "Light" : {
       "localizations" : {
@@ -21849,7 +22628,11 @@
         }
       }
     },
+    "Light is our signature pink look. Automatic follows your device." : {
+
+    },
     "Light is our signature pink look. Automatic follows your iPhone." : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -21989,7 +22772,14 @@
         }
       }
     },
+    "Lilac" : {
+
+    },
+    "Lilac haze" : {
+
+    },
     "Limited looks for this season." : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -22270,6 +23060,9 @@
         }
       }
     },
+    "Look of the week" : {
+
+    },
     "Looking at light and focus…" : {
       "localizations" : {
         "de" : {
@@ -22339,6 +23132,18 @@
           }
         }
       }
+    },
+    "Looking for faces…" : {
+
+    },
+    "Looks for this time of year." : {
+
+    },
+    "Looks inspired by what's trending." : {
+
+    },
+    "Made this one with a little help from AI" : {
+      "comment" : "Caption idea for sharing a picture made with AI"
     },
     "Made with %@ ✦" : {
       "localizations" : {
@@ -22632,6 +23437,9 @@
         }
       }
     },
+    "Made with Image Playground" : {
+
+    },
     "Magic" : {
       "localizations" : {
         "de" : {
@@ -22772,6 +23580,9 @@
           }
         }
       }
+    },
+    "Magic Edit idea: %@" : {
+
     },
     "Magic Edit. Describe any change to your photo." : {
       "localizations" : {
@@ -22984,6 +23795,12 @@
         }
       }
     },
+    "Make it a cozy café table by the window" : {
+      "comment" : "Suggested Magic Edit request for her photo, shown on a chip in the editor"
+    },
+    "Make it a snowy evening with warm lights" : {
+      "comment" : "Example request for editing a photo without people\nSuggested Magic Edit request for her photo, shown on a chip in the editor"
+    },
     "Make it a watercolor" : {
       "localizations" : {
         "de" : {
@@ -23053,6 +23870,9 @@
           }
         }
       }
+    },
+    "Make it an aurora night with soft green lights" : {
+      "comment" : "Suggested Magic Edit request for her photo, shown on a chip in the editor"
     },
     "Make it glow." : {
       "localizations" : {
@@ -23124,6 +23944,15 @@
         }
       }
     },
+    "Make it golden hour through the window" : {
+      "comment" : "Suggested Magic Edit request for her photo, shown on a chip in the editor"
+    },
+    "Make it look like a retro film photo" : {
+      "comment" : "Example request for editing a photo of several people\nSuggested Magic Edit request for her photo, shown on a chip in the editor"
+    },
+    "Make it magic" : {
+
+    },
     "Makeup & hair looks" : {
       "localizations" : {
         "de" : {
@@ -23193,6 +24022,9 @@
           }
         }
       }
+    },
+    "Mall photo-studio glam" : {
+      "comment" : "One-tap look description, shown under its name"
     },
     "Manage subscription" : {
       "localizations" : {
@@ -23333,6 +24165,21 @@
           }
         }
       }
+    },
+    "Midnight flash & confetti" : {
+      "comment" : "One-tap look description, shown under its name"
+    },
+    "Mint" : {
+
+    },
+    "Mint breeze" : {
+
+    },
+    "Mirror-ball sparkle" : {
+      "comment" : "One-tap look description, shown under its name"
+    },
+    "Month" : {
+
     },
     "Monthly" : {
       "localizations" : {
@@ -23755,6 +24602,9 @@
         }
       }
     },
+    "My Works couldn't open, so new creations won't be kept this time. Free up some space and restart Glowlit." : {
+
+    },
     "Neon City" : {
       "comment" : "One-tap look (trend) name. Keep trend names people use in English, such as Y2K or Clean Girl.",
       "localizations" : {
@@ -24107,6 +24957,15 @@
         }
       }
     },
+    "New caption ideas" : {
+
+    },
+    "New Creation" : {
+
+    },
+    "New favourite, no notes" : {
+      "comment" : "Caption idea for sharing a picture"
+    },
     "New templates within 48 hours of a trend" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -24178,6 +25037,9 @@
         }
       }
     },
+    "New Year Confetti" : {
+      "comment" : "One-tap look (trend) name. Keep trend names people use in English, such as Y2K or Clean Girl."
+    },
     "Next" : {
       "localizations" : {
         "de" : {
@@ -24247,6 +25109,9 @@
           }
         }
       }
+    },
+    "Next refill: %@" : {
+
     },
     "No active subscription found for this Apple Account." : {
       "localizations" : {
@@ -24528,6 +25393,9 @@
         }
       }
     },
+    "No weekly plans, ever." : {
+
+    },
     "None" : {
       "localizations" : {
         "de" : {
@@ -24668,6 +25536,9 @@
         }
       }
     },
+    "Not quite *enough*" : {
+
+    },
     "Not ready to subscribe? **Get a credit pack**" : {
       "localizations" : {
         "de" : {
@@ -24737,6 +25608,9 @@
           }
         }
       }
+    },
+    "Not shared" : {
+
     },
     "Nothing here yet" : {
       "localizations" : {
@@ -25018,6 +25892,9 @@
           }
         }
       }
+    },
+    "Offensive or harmful" : {
+      "comment" : "Reason for reporting an AI result, a button in the Report dialog"
     },
     "Oil Paint" : {
       "comment" : "Art style name on the Create screen",
@@ -25303,6 +26180,7 @@
       }
     },
     "One new look a week" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -25371,6 +26249,9 @@
           }
         }
       }
+    },
+    "One small step for paws" : {
+      "comment" : "One-tap look description, shown under its name"
     },
     "One tap.\nA whole new *aesthetic*" : {
       "localizations" : {
@@ -25722,7 +26603,14 @@
         }
       }
     },
+    "Open Photo…" : {
+
+    },
+    "Open Settings" : {
+
+    },
     "Optional — you can skip this" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -25861,6 +26749,9 @@
           }
         }
       }
+    },
+    "Original" : {
+
     },
     "Original photo" : {
       "localizations" : {
@@ -26072,6 +26963,12 @@
         }
       }
     },
+    "Our looks are made to keep your face, skin tone and body as they are." : {
+
+    },
+    "Our servers: your AI jobs and credits" : {
+
+    },
     "Page %lld of %lld" : {
       "localizations" : {
         "de" : {
@@ -26148,6 +27045,9 @@
         }
       }
     },
+    "Painted like royalty" : {
+      "comment" : "One-tap look description, shown under its name"
+    },
     "Paris Trip" : {
       "comment" : "One-tap look (trend) name. Keep trend names people use in English, such as Y2K or Clean Girl.",
       "localizations" : {
@@ -26219,6 +27119,9 @@
         }
       }
     },
+    "Pastel" : {
+
+    },
     "Pastel Dream" : {
       "comment" : "Art style name on the Create screen",
       "localizations" : {
@@ -26289,6 +27192,9 @@
           }
         }
       }
+    },
+    "Pause" : {
+
     },
     "Pay once. Credits never expire. 1 credit = 1 creation or edit." : {
       "localizations" : {
@@ -26430,6 +27336,18 @@
         }
       }
     },
+    "Pet Astronaut" : {
+      "comment" : "One-tap look (trend) name. Keep trend names people use in English, such as Y2K or Clean Girl."
+    },
+    "Pet Figurine" : {
+      "comment" : "One-tap look (trend) name. Keep trend names people use in English, such as Y2K or Clean Girl."
+    },
+    "Pet portraits" : {
+      "comment" : "Template collection heading"
+    },
+    "Petal" : {
+
+    },
     "Photo" : {
       "localizations" : {
         "de" : {
@@ -26501,6 +27419,7 @@
       }
     },
     "Photo ranked %lld" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -26639,6 +27558,9 @@
           }
         }
       }
+    },
+    "Photo with the best light and focus" : {
+
     },
     "Photoreal" : {
       "comment" : "Art style name on the Create screen",
@@ -26781,7 +27703,14 @@
         }
       }
     },
+    "Photos access is off" : {
+
+    },
+    "Photos never leave your device" : {
+
+    },
     "Photos never leave your iPhone" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -26922,7 +27851,11 @@
         }
       }
     },
+    "Pick as many as you like — we'll put them near the top of Explore." : {
+
+    },
     "Pick as many as you like — we'll tailor your feed." : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -27202,6 +28135,12 @@
         }
       }
     },
+    "Pink" : {
+
+    },
+    "Pink brunches and photo booths with your besties." : {
+
+    },
     "Pink Hair" : {
       "comment" : "One-tap look (trend) name. Keep trend names people use in English, such as Y2K or Clean Girl.",
       "localizations" : {
@@ -27344,6 +28283,9 @@
         }
       }
     },
+    "Pink sunset" : {
+
+    },
     "Pixel Art" : {
       "comment" : "Art style name on the Create screen",
       "localizations" : {
@@ -27415,6 +28357,15 @@
         }
       }
     },
+    "Pixelate" : {
+
+    },
+    "Play" : {
+
+    },
+    "Plot twist: it's art now" : {
+      "comment" : "Caption idea for sharing a picture"
+    },
     "Plus a free retry if it doesn't look like you" : {
       "localizations" : {
         "de" : {
@@ -27484,6 +28435,9 @@
           }
         }
       }
+    },
+    "Plushie Me" : {
+      "comment" : "One-tap look (trend) name. Keep trend names people use in English, such as Y2K or Clean Girl."
     },
     "Polished photos for work and your shop." : {
       "localizations" : {
@@ -27907,6 +28861,9 @@
         }
       }
     },
+    "Preview build: AI results are samples" : {
+
+    },
     "Preview of the %@ you're sharing" : {
       "localizations" : {
         "de" : {
@@ -28257,6 +29214,28 @@
         }
       }
     },
+    "Pro gives you %lld credits every month. Free tools never use credits, and failed edits are always refunded." : {
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Pro gives you %lld credit every month. Free tools never use credits, and failed edits are always refunded."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Pro gives you %lld credits every month. Free tools never use credits, and failed edits are always refunded."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "Pro Headshot" : {
       "comment" : "One-tap look (trend) name. Keep trend names people use in English, such as Y2K or Clean Girl.",
       "localizations" : {
@@ -28336,6 +29315,24 @@
             "value" : "Pro enthält jeden Monat %lld Credits; ungenutzte Credits bleiben einen Monat länger gültig. Fehlgeschlagene Kreationen werden automatisch erstattet."
           }
         },
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Pro includes %lld credit every month; unused credits roll over one month. Failed creations are refunded automatically."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Pro includes %lld credits every month; unused credits roll over one month. Failed creations are refunded automatically."
+                }
+              }
+            }
+          }
+        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
@@ -28399,6 +29396,7 @@
       }
     },
     "Pro member" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -28468,7 +29466,11 @@
         }
       }
     },
+    "Pro on all your devices" : {
+
+    },
     "Pro on all your iPhones" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -28609,6 +29611,9 @@
         }
       }
     },
+    "Protect friends" : {
+
+    },
     "Purchase failed" : {
       "localizations" : {
         "de" : {
@@ -28678,6 +29683,12 @@
           }
         }
       }
+    },
+    "Purchases are turned off on this device." : {
+
+    },
+    "Purchases open when %@ launches. This is a preview build." : {
+
     },
     "Purchases restored ✦" : {
       "localizations" : {
@@ -28749,6 +29760,12 @@
         }
       }
     },
+    "Put me in a cherry blossom street" : {
+      "comment" : "Example request for editing a photo of one person\nSuggested Magic Edit request for her photo, shown on a chip in the editor"
+    },
+    "Put me in a cozy knitted scarf with falling snow" : {
+      "comment" : "Suggested Magic Edit request for her photo, shown on a chip in the editor"
+    },
     "Put me in a pink dress" : {
       "localizations" : {
         "de" : {
@@ -28818,6 +29835,12 @@
           }
         }
       }
+    },
+    "Put my pet on a cloud in a pink sky" : {
+      "comment" : "Example request for editing a photo of a pet\nSuggested Magic Edit request for her photo, shown on a chip in the editor"
+    },
+    "Puts this idea in the Magic Edit box." : {
+
     },
     "Quick tools" : {
       "localizations" : {
@@ -28961,6 +29984,7 @@
       }
     },
     "Ranks your selfies · free, on-device" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -29941,6 +30965,9 @@
         }
       }
     },
+    "Reporting turns on when %@ launches. Thanks for looking out." : {
+
+    },
     "Reports help us review results and improve our safety filters." : {
       "localizations" : {
         "de" : {
@@ -30150,6 +31177,9 @@
           }
         }
       }
+    },
+    "Restore failed" : {
+
     },
     "Restore family photos" : {
       "localizations" : {
@@ -30362,6 +31392,12 @@
         }
       }
     },
+    "Restored" : {
+
+    },
+    "Retro school-photo lasers" : {
+      "comment" : "One-tap look description, shown under its name"
+    },
     "Retry free" : {
       "localizations" : {
         "de" : {
@@ -30432,7 +31468,20 @@
         }
       }
     },
+    "Rewrites your idea with more detail. You can undo it." : {
+
+    },
+    "Rotate left" : {
+
+    },
+    "Royal Pet Portrait" : {
+      "comment" : "One-tap look (trend) name. Keep trend names people use in English, such as Y2K or Clean Girl."
+    },
+    "Runs privately on your device. Always free." : {
+
+    },
     "Runs privately on your iPhone. Always free." : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -30784,6 +31833,12 @@
         }
       }
     },
+    "Save sticker" : {
+
+    },
+    "Save to My Works" : {
+
+    },
     "Save to Photos" : {
       "localizations" : {
         "de" : {
@@ -30924,6 +31979,12 @@
         }
       }
     },
+    "Saved to My Works" : {
+
+    },
+    "Saved to My Works ✨" : {
+
+    },
     "Saved to Photos" : {
       "localizations" : {
         "de" : {
@@ -30993,6 +32054,9 @@
           }
         }
       }
+    },
+    "Saving this one for the memories" : {
+      "comment" : "Caption idea for sharing a picture"
     },
     "Saving your video…" : {
       "localizations" : {
@@ -31344,6 +32408,9 @@
         }
       }
     },
+    "Secure connection failed." : {
+      "comment" : "Error message"
+    },
     "See all" : {
       "localizations" : {
         "de" : {
@@ -31415,6 +32482,7 @@
       }
     },
     "See the *glow*\non your own photo" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -31485,6 +32553,7 @@
       }
     },
     "Selected photos are processed by %@." : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -31764,6 +32833,12 @@
         }
       }
     },
+    "Settings…" : {
+
+    },
+    "Sexual content" : {
+      "comment" : "Reason for reporting an AI result, a button in the Report dialog"
+    },
     "Share" : {
       "localizations" : {
         "de" : {
@@ -31904,6 +32979,9 @@
         }
       }
     },
+    "Share age range" : {
+
+    },
     "Share Glowlit with your besties: a story card with a QR code, or a message with the link." : {
       "localizations" : {
         "de" : {
@@ -31973,6 +33051,9 @@
           }
         }
       }
+    },
+    "Share instead" : {
+
     },
     "Share straight to Instagram Stories or as a before/after collage." : {
       "localizations" : {
@@ -32675,7 +33756,11 @@
         }
       }
     },
+    "Sign in with Apple and Pro and your credits come with you when you switch or add a device." : {
+
+    },
     "Sign in with Apple and Pro and your credits come with you when you switch or add a phone." : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -33236,6 +34321,24 @@
         }
       }
     },
+    "Skip for now" : {
+
+    },
+    "Small moments, big glow" : {
+      "comment" : "Caption idea for sharing a picture"
+    },
+    "Smiley" : {
+
+    },
+    "Snow Globe Me" : {
+      "comment" : "One-tap look (trend) name. Keep trend names people use in English, such as Y2K or Clean Girl."
+    },
+    "Snow, sweaters and New Year sparkle." : {
+
+    },
+    "Snowy-night flash photo" : {
+      "comment" : "One-tap look description, shown under its name"
+    },
     "Soft & dreamy" : {
       "comment" : "One-tap look description, shown under its name",
       "localizations" : {
@@ -33306,6 +34409,9 @@
           }
         }
       }
+    },
+    "Soft colours, happy heart" : {
+      "comment" : "Caption idea for sharing a picture"
     },
     "Soft Glam" : {
       "comment" : "One-tap look (trend) name. Keep trend names people use in English, such as Y2K or Clean Girl.",
@@ -33447,6 +34553,12 @@
           }
         }
       }
+    },
+    "Some days, scrolling can feel heavy. That's normal, and you don't have to carry it alone." : {
+
+    },
+    "Something else" : {
+      "comment" : "Reason for reporting an AI result, a button in the Report dialog"
     },
     "Something went wrong. Please try again." : {
       "comment" : "Error message",
@@ -33943,6 +35055,9 @@
         }
       }
     },
+    "Star" : {
+
+    },
     "Start" : {
       "localizations" : {
         "de" : {
@@ -34014,6 +35129,7 @@
       }
     },
     "Start creating" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -34084,6 +35200,7 @@
       }
     },
     "Start for %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -34154,6 +35271,7 @@
       }
     },
     "Start my %lld-day free trial" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -34224,6 +35342,7 @@
       }
     },
     "Start my 7-day free trial" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -34292,6 +35411,9 @@
           }
         }
       }
+    },
+    "Sticker" : {
+
     },
     "Still you" : {
       "localizations" : {
@@ -34645,6 +35767,9 @@
         }
       }
     },
+    "Straighten" : {
+
+    },
     "Style" : {
       "localizations" : {
         "de" : {
@@ -34996,6 +36121,9 @@
         }
       }
     },
+    "Subtitle" : {
+      "comment" : "Accessibility label of the Film Still effect's subtitle field"
+    },
     "Sunny city getaway" : {
       "comment" : "One-tap look description, shown under its name",
       "localizations" : {
@@ -35066,6 +36194,12 @@
           }
         }
       }
+    },
+    "Surprise me" : {
+
+    },
+    "Talk to someone you trust" : {
+
     },
     "Tap ♡ on a creation to keep it here." : {
       "localizations" : {
@@ -35207,7 +36341,17 @@
         }
       }
     },
+    "Tap one to copy it with the hashtags." : {
+
+    },
+    "Tap the photo to hide a spot" : {
+
+    },
+    "Tap to hide a spot" : {
+
+    },
     "Tap to see “%@”." : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -35276,6 +36420,12 @@
           }
         }
       }
+    },
+    "Tap to see it." : {
+
+    },
+    "Tap who or what to keep" : {
+
     },
     "Terms" : {
       "localizations" : {
@@ -35628,6 +36778,7 @@
       }
     },
     "Thanks — your report was noted." : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -35907,6 +37058,9 @@
         }
       }
     },
+    "That one isn't available. The free tools in Edit are all yours." : {
+
+    },
     "That photo is too large. Try a smaller one." : {
       "localizations" : {
         "de" : {
@@ -35976,6 +37130,9 @@
           }
         }
       }
+    },
+    "That's older than the age range you entered before. You can change it once a year." : {
+
     },
     "The AI returned no image. Your credit was refunded." : {
       "localizations" : {
@@ -36753,6 +37910,22 @@
         }
       }
     },
+    "This is taking too long. Check your connection and try again." : {
+      "comment" : "Error message"
+    },
+    "This look is part of Pro." : {
+
+    },
+    "This needs %lld credits. You have %lld. Choose fewer images, or add a credit pack." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "This needs %1$lld credits. You have %2$lld. Choose fewer images, or add a credit pack."
+          }
+        }
+      }
+    },
     "This photo couldn't be read." : {
       "localizations" : {
         "de" : {
@@ -36823,7 +37996,17 @@
         }
       }
     },
+    "This purchase isn't available in your country or region." : {
+
+    },
+    "This purchase isn't available right now." : {
+
+    },
+    "This removes every image saved in %@ on this device. Photos you saved to your library stay there." : {
+
+    },
     "This removes every image saved in %@ on this iPhone. Photos you saved to your library stay there." : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -37245,6 +38428,9 @@
         }
       }
     },
+    "This video is longer than 5 minutes, so we'll use the first 5:00." : {
+
+    },
     "This was blocked by our safety filters. Your credit was refunded." : {
       "localizations" : {
         "de" : {
@@ -37595,6 +38781,19 @@
         }
       }
     },
+    "To avoid being charged, cancel before %@ in Settings › Apple Account › Subscriptions." : {
+
+    },
+    "To avoid the %@ charge, cancel before %@ in Settings › Apple Account › Subscriptions." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "To avoid the %1$@ charge, cancel before %2$@ in Settings › Apple Account › Subscriptions."
+          }
+        }
+      }
+    },
     "To create and edit images with AI, we send the photo and text you choose to our servers and to %@, who process them on our behalf." : {
       "localizations" : {
         "de" : {
@@ -37735,6 +38934,9 @@
         }
       }
     },
+    "Today's mood: pastel ✨" : {
+      "comment" : "Caption idea for sharing a picture"
+    },
     "Too many requests. Please wait a moment." : {
       "comment" : "Error message",
       "localizations" : {
@@ -37807,6 +39009,7 @@
       }
     },
     "Took 20 selfies? Pick up to %lld. We rank them by light, focus and how clearly your face shows. Never by looks." : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -37875,6 +39078,12 @@
           }
         }
       }
+    },
+    "Took a bunch of selfies? Pick up to %lld. We find the one with the best light and focus. Never by looks." : {
+
+    },
+    "Transparent" : {
+
     },
     "Trending now" : {
       "comment" : "Template collection heading",
@@ -38016,6 +39225,15 @@
           }
         }
       }
+    },
+    "Try *Digicam '04*\non your photo" : {
+
+    },
+    "Try %@?" : {
+
+    },
+    "Try again" : {
+
     },
     "TRY IT" : {
       "localizations" : {
@@ -38228,6 +39446,12 @@
         }
       }
     },
+    "Try the %@ look" : {
+
+    },
+    "Try this look" : {
+
+    },
     "Turn any idea into an image" : {
       "localizations" : {
         "de" : {
@@ -38368,7 +39592,26 @@
         }
       }
     },
+    "Turn it into a cozy storybook illustration" : {
+      "comment" : "Suggested Magic Edit request for her photo, shown on a chip in the editor"
+    },
+    "Turn it into a cute cartoon" : {
+      "comment" : "Example request for editing a photo of a pet"
+    },
+    "Turn it into a dreamy watercolor painting" : {
+      "comment" : "Example request for editing a photo of one person\nSuggested Magic Edit request for her photo, shown on a chip in the editor"
+    },
+    "Turn it into a storybook illustration" : {
+      "comment" : "Example request for editing a photo without people"
+    },
+    "Turn it into a sunny picnic with a checked blanket" : {
+      "comment" : "Suggested Magic Edit request for her photo, shown on a chip in the editor"
+    },
+    "Turn it into an anime city at night" : {
+      "comment" : "Suggested Magic Edit request for her photo, shown on a chip in the editor"
+    },
     "Turn on notifications for %@ in iOS Settings to get reminders." : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -38437,6 +39680,21 @@
           }
         }
       }
+    },
+    "Turn on notifications for %@ in Settings to get reminders." : {
+
+    },
+    "Turn on notifications for %@ in System Settings to get reminders." : {
+
+    },
+    "Turn the background into a sunset beach" : {
+      "comment" : "Example request for editing a photo of several people\nSuggested Magic Edit request for her photo, shown on a chip in the editor"
+    },
+    "Turn the sky into a golden-hour glow" : {
+      "comment" : "Suggested Magic Edit request for her photo, shown on a chip in the editor"
+    },
+    "Turn the sky into a pink sunset" : {
+      "comment" : "Example request for editing a photo without people"
     },
     "Type an idea, pick a style and get art in seconds. No prompt skills needed." : {
       "localizations" : {
@@ -38509,6 +39767,7 @@
       }
     },
     "Type an idea, pick a style and get gorgeous images in seconds — no prompt skills needed." : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -38648,7 +39907,11 @@
         }
       }
     },
+    "Under 13" : {
+
+    },
     "Under 16? Check with a parent or guardian first. You can change this anytime in Settings." : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -39067,6 +40330,12 @@
           }
         }
       }
+    },
+    "Update age range" : {
+
+    },
+    "Update your *age*" : {
+
     },
     "Upgrade to %@ Pro" : {
       "localizations" : {
@@ -39559,6 +40828,18 @@
         }
       }
     },
+    "Visible" : {
+
+    },
+    "Waiting for approval" : {
+
+    },
+    "Waiting for approval. If it's approved, Pro turns on automatically." : {
+
+    },
+    "Waiting for approval. If it's approved, your credits are added automatically." : {
+
+    },
     "Warm sunset light" : {
       "comment" : "One-tap look description, shown under its name",
       "localizations" : {
@@ -39841,6 +41122,9 @@
         }
       }
     },
+    "We couldn't confirm your account, so nothing was deleted. Please contact support and we'll delete it for you." : {
+
+    },
     "We couldn't find a clear face in those photos." : {
       "localizations" : {
         "de" : {
@@ -39981,6 +41265,12 @@
           }
         }
       }
+    },
+    "We only keep your age range on this device, never your birthday." : {
+
+    },
+    "We rebuilt My Works. Your images are back; titles and hearts couldn't be restored." : {
+
     },
     "We'll ping you when it's ready" : {
       "localizations" : {
@@ -40262,6 +41552,9 @@
         }
       }
     },
+    "Weekend energy 🌸" : {
+      "comment" : "Caption idea for sharing a picture"
+    },
     "Welcome to %@ Pro ✦" : {
       "localizations" : {
         "de" : {
@@ -40328,6 +41621,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "欢迎加入 %@ Pro ✦"
+          }
+        }
+      }
+    },
+    "Welcome to %@ Pro ✦ Your free trial ends %@." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Welcome to %1$@ Pro ✦ Your free trial ends %2$@."
           }
         }
       }
@@ -40473,6 +41776,7 @@
       }
     },
     "What everyone's posting right now." : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -40682,6 +41986,12 @@
         }
       }
     },
+    "When were you *born?*" : {
+
+    },
+    "Where you live, %@ needs your age range from Apple for anything beyond the free tools on your device. You can share it anytime." : {
+
+    },
     "which one should I post?" : {
       "localizations" : {
         "de" : {
@@ -40751,6 +42061,15 @@
           }
         }
       }
+    },
+    "Which vibe?" : {
+
+    },
+    "White" : {
+
+    },
+    "Who processes what you send" : {
+
     },
     "Wide" : {
       "comment" : "Image shape (aspect ratio) name",
@@ -40894,6 +42213,18 @@
         }
       }
     },
+    "Writing new ideas on your device…" : {
+
+    },
+    "Writing…" : {
+
+    },
+    "Written on your device by Apple Intelligence" : {
+
+    },
+    "Written on your device. Tap one to copy it with the hashtags." : {
+
+    },
     "Y2K Digicam" : {
       "comment" : "One-tap look (trend) name. Keep trend names people use in English, such as Y2K or Clean Girl.",
       "localizations" : {
@@ -40965,6 +42296,12 @@
         }
       }
     },
+    "Y2K grid" : {
+
+    },
+    "Year" : {
+
+    },
     "Yearly" : {
       "localizations" : {
         "de" : {
@@ -41035,12 +42372,36 @@
         }
       }
     },
+    "You can change this anytime in Settings." : {
+
+    },
+    "You can enter a younger age anytime. An older one can be entered once a year." : {
+
+    },
     "You get %lld free credits every day. Background removal and adjustments are always free." : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Du bekommst jeden Tag %lld Gratis-Credits. Hintergrundentfernung und Anpassungen sind immer gratis."
+          }
+        },
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "You get %lld free credit every day. Background removal and adjustments are always free."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "You get %lld free credits every day. Background removal and adjustments are always free."
+                }
+              }
+            }
           }
         },
         "es" : {
@@ -41105,7 +42466,30 @@
         }
       }
     },
+    "You get %lld free credits every day. Free tools never use credits, and failed edits are always refunded." : {
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "You get %lld free credit every day. Free tools never use credits, and failed edits are always refunded."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "You get %lld free credits every day. Free tools never use credits, and failed edits are always refunded."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "You get 3 free credits every day. Free tools never use credits, and failed edits are always refunded." : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -41246,6 +42630,9 @@
         }
       }
     },
+    "You, as a soft toy" : {
+      "comment" : "One-tap look description, shown under its name"
+    },
     "You'll be charged %@ on %@ unless you cancel before." : {
       "localizations" : {
         "de" : {
@@ -41323,6 +42710,7 @@
       }
     },
     "You'll be charged %@ unless you cancel. Manage it anytime in Settings › Apple Account › Subscriptions." : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -41391,6 +42779,9 @@
           }
         }
       }
+    },
+    "You're offline. Effects, Adjust, Cut out and Video still work." : {
+      "comment" : "Error message"
     },
     "You're out of credits for today." : {
       "comment" : "Error message",
@@ -41534,6 +42925,7 @@
       }
     },
     "You've reached today's fair-use limit." : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -41604,6 +42996,7 @@
       }
     },
     "You've reached today's fair-use limit. Credits refill at midnight." : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -41672,6 +43065,12 @@
           }
         }
       }
+    },
+    "You've used this month's *credits*" : {
+
+    },
+    "Your *age range*" : {
+
     },
     "Your *gallery*" : {
       "localizations" : {
@@ -41813,7 +43212,11 @@
         }
       }
     },
+    "Your creations are saved here — privately, on this device." : {
+
+    },
     "Your creations are saved here — privately, on this iPhone." : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -42093,6 +43496,15 @@
         }
       }
     },
+    "Your edit is ready ✨" : {
+
+    },
+    "Your edit is ready." : {
+
+    },
+    "Your edit is ready. Showing before and after." : {
+
+    },
     "Your face shape looks different from your photo." : {
       "localizations" : {
         "de" : {
@@ -42233,7 +43645,11 @@
         }
       }
     },
+    "Your free trial ends %@" : {
+
+    },
     "Your free trial ends tomorrow" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -42304,6 +43720,7 @@
       }
     },
     "Your glow-up is ready ✨" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -42443,6 +43860,9 @@
         }
       }
     },
+    "Your images are ready ✨" : {
+
+    },
     "Your library is empty now." : {
       "localizations" : {
         "de" : {
@@ -42512,6 +43932,18 @@
           }
         }
       }
+    },
+    "Your monthly *glow*" : {
+
+    },
+    "Your monthly credits come back within a month." : {
+
+    },
+    "Your pet, starring in their own photoshoot." : {
+
+    },
+    "Your photo" : {
+
     },
     "Your photos are never included." : {
       "localizations" : {
@@ -42653,7 +44085,11 @@
         }
       }
     },
+    "Your photos stay on each device and are never uploaded to sync. We only learn your Apple ID email if you share it, and you can hide it." : {
+
+    },
     "Your photos stay on each iPhone and are never uploaded to sync. We only learn your Apple ID email if you share it, and you can hide it." : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -42723,7 +44159,11 @@
         }
       }
     },
+    "Your photos stay on this device" : {
+
+    },
     "Your photos stay on this iPhone" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {

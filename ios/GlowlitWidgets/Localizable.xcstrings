@@ -71,12 +71,52 @@
         }
       }
     },
+    "%lld credits left" : {
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld credit left"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld credits left"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "%lld free credits today" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Heute %lld Gratis-Credits"
+          }
+        },
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld free credit today"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld free credits today"
+                }
+              }
+            }
           }
         },
         "es" : {
@@ -149,6 +189,24 @@
             "value" : "%lld Pro-Credits"
           }
         },
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld Pro credit"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld Pro credits"
+                }
+              }
+            }
+          }
+        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
@@ -212,6 +270,7 @@
       }
     },
     "∞" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -423,6 +482,9 @@
         }
       }
     },
+    "80s Studio Portrait" : {
+      "comment" : "One-tap look (trend) name. Keep trend names people use in English, such as Y2K or Clean Girl."
+    },
     "90s instant film" : {
       "comment" : "One-tap look description, shown under its name",
       "localizations" : {
@@ -565,7 +627,11 @@
         }
       }
     },
+    "A different one-tap look every day." : {
+
+    },
     "A new one-tap look every day." : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -634,6 +700,12 @@
           }
         }
       }
+    },
+    "A tiny vinyl you" : {
+      "comment" : "One-tap look description, shown under its name"
+    },
+    "A tiny winter figurine" : {
+      "comment" : "One-tap look description, shown under its name"
     },
     "Aesthetic edits" : {
       "comment" : "Template collection heading",
@@ -919,6 +991,9 @@
         }
       }
     },
+    "Bag Charm Mini" : {
+      "comment" : "One-tap look (trend) name. Keep trend names people use in English, such as Y2K or Clean Girl."
+    },
     "Ballet Core" : {
       "comment" : "One-tap look (trend) name. Keep trend names people use in English, such as Y2K or Clean Girl.",
       "localizations" : {
@@ -1132,6 +1207,9 @@
         }
       }
     },
+    "Bestie booth strip" : {
+      "comment" : "One-tap look description, shown under its name"
+    },
     "Bestie Polaroid" : {
       "comment" : "One-tap look (trend) name. Keep trend names people use in English, such as Y2K or Clean Girl.",
       "localizations" : {
@@ -1202,6 +1280,9 @@
           }
         }
       }
+    },
+    "Besties at a pink café" : {
+      "comment" : "One-tap look description, shown under its name"
     },
     "Birthday Glam" : {
       "comment" : "One-tap look (trend) name. Keep trend names people use in English, such as Y2K or Clean Girl.",
@@ -1984,6 +2065,12 @@
         }
       }
     },
+    "Cozy Sweater Digicam" : {
+      "comment" : "One-tap look (trend) name. Keep trend names people use in English, such as Y2K or Clean Girl."
+    },
+    "Cozy winter" : {
+      "comment" : "Template collection heading"
+    },
     "Create" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -2126,7 +2213,6 @@
       }
     },
     "Cut out" : {
-      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -2336,6 +2422,9 @@
           }
         }
       }
+    },
+    "Disco '79" : {
+      "comment" : "One-tap look (trend) name. Keep trend names people use in English, such as Y2K or Clean Girl."
     },
     "Doll Box" : {
       "comment" : "One-tap look (trend) name. Keep trend names people use in English, such as Y2K or Clean Girl.",
@@ -2832,6 +2921,9 @@
         }
       }
     },
+    "Free, on your device" : {
+
+    },
     "Fresh, dewy & effortless" : {
       "comment" : "One-tap look description, shown under its name",
       "localizations" : {
@@ -2902,6 +2994,12 @@
           }
         }
       }
+    },
+    "Galentine's" : {
+      "comment" : "Template collection heading"
+    },
+    "Galentine's Brunch" : {
+      "comment" : "One-tap look (trend) name. Keep trend names people use in English, such as Y2K or Clean Girl."
     },
     "Give a photo an 80s or 90s look. Free." : {
       "localizations" : {
@@ -3538,6 +3636,9 @@
         }
       }
     },
+    "Heart Photo Booth" : {
+      "comment" : "One-tap look (trend) name. Keep trend names people use in English, such as Y2K or Clean Girl."
+    },
     "Ink & halftone" : {
       "comment" : "One-tap look description, shown under its name",
       "localizations" : {
@@ -3679,6 +3780,9 @@
           }
         }
       }
+    },
+    "Laser Yearbook '86" : {
+      "comment" : "One-tap look (trend) name. Keep trend names people use in English, such as Y2K or Clean Girl."
     },
     "LinkedIn-ready in seconds" : {
       "comment" : "One-tap look description, shown under its name",
@@ -4030,6 +4134,15 @@
           }
         }
       }
+    },
+    "Mall photo-studio glam" : {
+      "comment" : "One-tap look description, shown under its name"
+    },
+    "Midnight flash & confetti" : {
+      "comment" : "One-tap look description, shown under its name"
+    },
+    "Mirror-ball sparkle" : {
+      "comment" : "One-tap look description, shown under its name"
     },
     "Museum masterpiece" : {
       "comment" : "One-tap look description, shown under its name",
@@ -4383,6 +4496,9 @@
         }
       }
     },
+    "New Year Confetti" : {
+      "comment" : "One-tap look (trend) name. Keep trend names people use in English, such as Y2K or Clean Girl."
+    },
     "Oil Painting" : {
       "comment" : "One-tap look (trend) name. Keep trend names people use in English, such as Y2K or Clean Girl.",
       "localizations" : {
@@ -4525,6 +4641,12 @@
         }
       }
     },
+    "One small step for paws" : {
+      "comment" : "One-tap look description, shown under its name"
+    },
+    "Painted like royalty" : {
+      "comment" : "One-tap look description, shown under its name"
+    },
     "Paris Trip" : {
       "comment" : "One-tap look (trend) name. Keep trend names people use in English, such as Y2K or Clean Girl.",
       "localizations" : {
@@ -4595,6 +4717,15 @@
           }
         }
       }
+    },
+    "Pet Astronaut" : {
+      "comment" : "One-tap look (trend) name. Keep trend names people use in English, such as Y2K or Clean Girl."
+    },
+    "Pet Figurine" : {
+      "comment" : "One-tap look (trend) name. Keep trend names people use in English, such as Y2K or Clean Girl."
+    },
+    "Pet portraits" : {
+      "comment" : "Template collection heading"
     },
     "Pick a photo and say what to change." : {
       "localizations" : {
@@ -4808,6 +4939,9 @@
         }
       }
     },
+    "Plushie Me" : {
+      "comment" : "One-tap look (trend) name. Keep trend names people use in English, such as Y2K or Clean Girl."
+    },
     "Pretty, natural makeup" : {
       "comment" : "One-tap look description, shown under its name",
       "localizations" : {
@@ -4880,6 +5014,7 @@
       }
     },
     "PRO" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -5303,6 +5438,12 @@
         }
       }
     },
+    "Retro school-photo lasers" : {
+      "comment" : "One-tap look description, shown under its name"
+    },
+    "Royal Pet Portrait" : {
+      "comment" : "One-tap look (trend) name. Keep trend names people use in English, such as Y2K or Clean Girl."
+    },
     "Salon-fresh volume" : {
       "comment" : "One-tap look description, shown under its name",
       "localizations" : {
@@ -5515,6 +5656,12 @@
           }
         }
       }
+    },
+    "Snow Globe Me" : {
+      "comment" : "One-tap look (trend) name. Keep trend names people use in English, such as Y2K or Clean Girl."
+    },
+    "Snowy-night flash photo" : {
+      "comment" : "One-tap look description, shown under its name"
     },
     "Soft & dreamy" : {
       "comment" : "One-tap look description, shown under its name",
@@ -6929,6 +7076,9 @@
           }
         }
       }
+    },
+    "You, as a soft toy" : {
+      "comment" : "One-tap look description, shown under its name"
     },
     "Your latest" : {
       "localizations" : {
