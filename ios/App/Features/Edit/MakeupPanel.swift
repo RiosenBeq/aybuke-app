@@ -233,12 +233,15 @@ private struct MakeupChip: View {
     var body: some View {
         Button(action: action) {
             HStack(spacing: 6) {
+                // VoiceOver hears the selected trait instead.
                 if isToggle {
                     Image(systemName: isSelected ? "checkmark" : "plus")
                         .font(.footnote.weight(.bold))
+                        .accessibilityHidden(true)
                 } else if isSelected && differentiateWithoutColor {
                     Image(systemName: "checkmark")
                         .font(.footnote.weight(.bold))
+                        .accessibilityHidden(true)
                 }
                 SwatchDots(hexes: swatches, ring: isSelected ? Palette.primary : Palette.surface)
                 Text(title)
