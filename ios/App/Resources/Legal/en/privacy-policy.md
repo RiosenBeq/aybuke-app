@@ -18,7 +18,6 @@ Okan Berk Manavoğlu (individual developer) ("**we**", "**us**" or "**our**") de
 - **Address:** Istanbul, Türkiye, Türkiye
 - **Trade registry / MERSİS number:** None (individual developer)
 - **Privacy contact:** [hello@buaze.com](mailto:hello@buaze.com)
-- **Registered email (KEP):** None
 - **Representative in the EU (Art. 27 GDPR):** None appointed. Contact hello@buaze.com for any request.
 - **Representative in the UK (Art. 27 UK GDPR):** None appointed. Contact hello@buaze.com for any request.
 
@@ -371,7 +370,6 @@ We process personal data in accordance with the Law on the Protection of Persona
 **How to apply.** Under the Communiqué on the Procedures and Principles of Application to the Data Controller, you can apply:
 
 - in writing, to Istanbul, Türkiye, Türkiye;
-- by registered email (KEP), to None;
 - by email signed with a secure electronic signature or mobile signature, to [hello@buaze.com](mailto:hello@buaze.com); or
 - by email to [hello@buaze.com](mailto:hello@buaze.com) from an email address you have previously notified to us and that is registered in our systems.
 
@@ -454,6 +452,5 @@ We'll update this policy when our practices or the law change. If a change is ma
 - **Controller:** Okan Berk Manavoğlu (individual developer), Istanbul, Türkiye, Türkiye
 - **Privacy requests (including from parents and guardians):** [hello@buaze.com](mailto:hello@buaze.com)
 - **General contact:** [hello@buaze.com](mailto:hello@buaze.com)
-- **Registered email (KEP):** None
 - **EU representative:** None appointed. Contact hello@buaze.com for any request.
 - **UK representative:** None appointed. Contact hello@buaze.com for any request.

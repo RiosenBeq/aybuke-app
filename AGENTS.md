@@ -6,7 +6,7 @@ Read this first, then the doc for your area (links below). Keep it current: when
 
 ## 1. The product
 
-**Glowlit — "Make it glow."** An iPhone and iPad app for girls and young women (13+), also built for the Mac with Mac Catalyst: AI photo editing and image creation, plus free on-device tools.
+**Glowlit — "Make it glow"** An iPhone and iPad app for girls and young women (13+), also built for the Mac with Mac Catalyst: AI photo editing and image creation, plus free on-device tools.
 
 | Area | What it does |
 |---|---|

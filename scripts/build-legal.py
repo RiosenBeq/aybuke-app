@@ -148,7 +148,11 @@ def render(text: str, values: dict[str, str], links: dict[str, str]) -> str:
             return values[token]
         raise SystemExit(f"Unknown token {{{{{token}}}}}")
 
-    return re.sub(r"\{\{([A-Z_]+)\}\}", replace, text)
+    # A line that uses an empty value is left out (no "KEP: " with nothing
+    # after it, and nothing invented to fill the gap).
+    kept = [line for line in text.split("\n")
+            if not any(values.get(token) == "" for token in re.findall(r"\{\{([A-Z_]+)\}\}", line))]
+    return re.sub(r"\{\{([A-Z_]+)\}\}", replace, "\n".join(kept))
 
 
 def outputs() -> dict[Path, str]:

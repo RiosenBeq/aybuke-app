@@ -387,7 +387,7 @@ enum InviteCard {
 
             ShareRenderer.drawText(Brand.name, font: ShareRenderer.brandFont(112, weight: .heavy), color: .brandInk,
                                    centeredIn: CGRect(x: 0, y: 506, width: canvas.width, height: 140))
-            ShareRenderer.drawText(String(localized: "Make it glow."), font: ShareRenderer.accentFont(62), color: .brandInk,
+            ShareRenderer.drawText(String(localized: "Make it glow"), font: ShareRenderer.accentFont(62), color: .brandInk,
                                    centeredIn: CGRect(x: 0, y: 638, width: canvas.width, height: 84))
 
             let features = [

@@ -65,7 +65,7 @@ Check that the handles are free on every platform before you commit: **@glowlit*
 
 ### TikTok (limit 80)
 
-- **EN** (45): Say it. See it. Glow ✨ AI glow-ups & trends 💗
+- **EN** (45): Say it, see it, glow ✨ AI glow-ups & trends 💗
 - **TR** (45): Söyle, gör, ışılda ✨ AI glow-up ve trendler 💗
 
 ### X (limit 160)
