@@ -32,3 +32,9 @@ verify_jwt = true
 # Deploy with: supabase functions deploy ad-reward --no-verify-jwt
 [functions.ad-reward]
 verify_jwt = false
+
+# App Store Server Notifications V2 (refunds and revocations). Apple's servers
+# send no JWT: the function verifies Apple's signature on the payload instead.
+# Deploy with: supabase functions deploy app-store-notifications --no-verify-jwt
+[functions.app-store-notifications]
+verify_jwt = false

@@ -45,7 +45,7 @@ commit;
 ```
 
 - Sıra zaman damgasına göre. Bir dosya hata verirse **dur**: hata metnini kaydet, sonraki dosyaya geçme ve dosyayı değiştirme. Uygulanmış migrasyon düzenlenmez; düzeltme yeni bir dosyada yapılır.
-- Hangi dosyaların atlanacağı §0 sonucuna göre belirlenir. Dokuz dosyanın tamamı, her biri kendi `begin; … commit;` bloğunda, yerel PostgreSQL 16 kopyasında hatasız uygulandı.
+- Hangi dosyaların atlanacağı §0 sonucuna göre belirlenir. On bir dosyanın tamamı, her biri kendi `begin; … commit;` bloğunda, yerel PostgreSQL 16 kopyasında hatasız uygulandı.
 
 - [ ] **1.1 `20261019000000_ad_rewards.sql`:** ödüllü reklam kredileri; tablolar `public.ad_reward_tokens` ve `public.ad_rewards`, `sweep_ad_rewards`. 1.6 bazı işlevleri değiştirir.
 - [ ] **1.2 `20261019500000_keepalive.sql`:** `public.ops_heartbeat` ve `public.keepalive()`, GitHub keep-alive iş akışının çağırdığı işlev. Eski notlara göre uygulanmış olabilir; §0 sonucuna göre atla.
@@ -56,6 +56,8 @@ commit;
 - [ ] **1.7 `20261024000000_private_rls.sql`:** `private` şemasının tablolarında satır güvenliği (RLS) açılır; politika eklenmez.
 - [ ] **1.8 `20261024000001_abuse_fixes.sql`:** 1.5'teki `admit_job`, `add_strike` ve `ops_unblock` işlevlerini yerinde değiştirir.
 - [ ] **1.9 `20261024000002_entitlement_order.sql`:** `public.record_entitlement()`; abonelik kaydı yalnızca ileri gider.
+- [ ] **1.10 `20261025000000_app_store_notifications.sql`:** App Store Server Notifications V2 için işlenen bildirim kimlikleri (`private` tablo, RLS açık, yetki yok), `public.revoke_entitlement()` (iade ya da iptalde Pro hemen kapanır, iade geri alınırsa süre dolmadıysa geri açılır) ve kredi paketi iadesinde kredilerin geri alınması (bir kez, sıfırın altına inmez). Yalnızca service role çalıştırır.
+- [ ] **1.11 `20261025000001_sql_gaps.sql`:** `admit_job` günlük ücretsiz tekrar sayısında iade edilen tekrarları saymaz; `flag_job` kullanıcının iptal ettiği işe uyarı (strike) eklemez; `wallet_state` isteğe bağlı istemci adresini alır, böylece adrese bağlı bekleme ve engel bakiyede görünür (eski çağrı aynen çalışır).
 
 ## §2 Güvenlik kontrolleri
 
@@ -137,12 +139,15 @@ supabase functions deploy account --project-ref efapupjvidyqhqdevmcu --use-api
 supabase functions deploy report --project-ref efapupjvidyqhqdevmcu --use-api
 # AdMob'un geri çağrısında JWT yok; ad-reward Google'ın imzasını kendisi denetler.
 supabase functions deploy ad-reward --project-ref efapupjvidyqhqdevmcu --use-api --no-verify-jwt
+# Apple'ın bildiriminde de JWT yok; fonksiyon Apple'ın imzasını (Apple Root CA G3) kendisi denetler.
+supabase functions deploy app-store-notifications --project-ref efapupjvidyqhqdevmcu --use-api --no-verify-jwt
 ```
 
 - [ ] Her komut hatasız bitti. (Doğrulanamadı: `--use-api` bayrağı bu ortamda denenmedi, Supabase CLI kurulu değil; `supabase functions deploy --help` ile bak.)
-- [ ] `ad-reward` `--no-verify-jwt` ile yayımlandı. Bu bayrak olmazsa AdMob'un geri çağrısı reddedilir.
+- [ ] `ad-reward` ve `app-store-notifications` `--no-verify-jwt` ile yayımlandı. Bu bayrak olmazsa AdMob'un ve Apple'ın çağrıları reddedilir.
 - [ ] Edge Functions › Logs'ta her fonksiyonun ilk istekten sonra başlatma hatası yok.
 - [ ] Yayımlanacak commit'te CI yeşil: `.github/workflows/ci.yml` `deno check` ve `deno test` çalıştırır.
+- [ ] **App Store Server Notifications V2 adresi (sahip).** App Store Connect › Aybuke › App Information › App Store Server Notifications: Version 2; Production Server URL ve Sandbox Server URL `https://efapupjvidyqhqdevmcu.supabase.co/functions/v1/app-store-notifications`. Ardından App Store Connect'in test bildirimi gönderme düğmesi (varsa) ya da bir Sandbox satın alması; Edge Functions › Logs'ta `app-store-notifications` 200 döner. Fonksiyon üretim bildirimlerini yalnızca `APPLE_APP_ID` ayarlıyken kabul eder. SAHIP 2.14.
 - [ ] **AdMob doğrulama adresi.** Server-side verification: `https://efapupjvidyqhqdevmcu.supabase.co/functions/v1/ad-reward` (sorgu dizesi yok), ardından **Verify URL**. Test geri çağrısı 200 döner ve kredi vermez. Ayrıntı: `backend/README.md` "Rewarded ads"; SAHIP 3.2.
 
 ## §6 Gizli değerler (secrets)
@@ -193,6 +198,6 @@ TestFlight derlemesi Sandbox ile çalışır; sunucu Sandbox işlemlerini her za
 Bu bölümdeki işleri ajan yapmaz; karar sahibindedir.
 
 - [ ] **Eski "envanter" Supabase projesi.** Bu depoya ait değildir. Silme kalıcıdır; yalnızca sahip yapar. Ajan silmez ve silme komutu yazmaz.
-- [ ] **İade ve iptal bildirimleri (App Store Server Notifications V2).** Lansmandan önce uç nokta kurulacak mı? Kurulmazsa iade edilen Pro abonelik `expires_at` tarihine kadar Pro kalır. Karar: SAHIP 5.2.
+- [x] **İade ve iptal bildirimleri (App Store Server Notifications V2).** Uç nokta yazıldı (`functions/app-store-notifications`, migrasyon 1.10). Kalan: yayımlama (§5) ve adresin App Store Connect'e girilmesi (SAHIP 2.14).
 - [ ] **Paylaşılan adres eşiği.** Doğrulanmamış bir adresten üç uyarı, o adresteki herkesi bekletir. Adres anahtarları için eşik yükseltilecek mi? Karar: SAHIP 5.3.
 - [ ] **Deneme kredilerinin devri (trial roll-in).** Yıllık planın 7 günlük denemesinde kullanılmayan 20 kredi ilk ücretli aya eklensin mi? Karar: SAHIP 5.1.

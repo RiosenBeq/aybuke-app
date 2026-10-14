@@ -11,6 +11,8 @@
 //     free credits off for everyone. The Xcode environment is signed by a local
 //     certificate, so it's accepted only with GLOWLIT_ALLOW_XCODE_APP_TRANSACTIONS
 //     set on a local backend, never on a hosted project.
+//   * App Store Server Notifications V2 (refunds, revocations): verified like
+//     transactions, by the same verifiers.
 import { Buffer } from "node:buffer";
 import {
   type AppTransaction,
@@ -18,7 +20,10 @@ import {
   type JWSTransactionDecodedPayload,
   OfferDiscountType,
   OfferType,
+  type ResponseBodyV2DecodedPayload,
   SignedDataVerifier,
+  VerificationException,
+  VerificationStatus,
 } from "npm:@apple/app-store-server-library@3.1.0";
 import type { SupabaseClient } from "npm:@supabase/supabase-js@2.117.3";
 
@@ -64,18 +69,20 @@ function appAppleId(env: Env): number | undefined {
 
 let verifiersPromise: Promise<SignedDataVerifier[]> | undefined;
 
+async function makeVerifiers(env: Env, loadRoots: () => Promise<Buffer[]>): Promise<SignedDataVerifier[]> {
+  const roots = await loadRoots();
+  const list: SignedDataVerifier[] = [];
+  const appId = appAppleId(env);
+  // Production verification needs the numeric App Store app id (set APPLE_APP_ID).
+  if (appId) list.push(new SignedDataVerifier(roots, true, Environment.PRODUCTION, bundleId(env), appId));
+  // Sandbox covers TestFlight and sandbox testers. Xcode-signed (local
+  // StoreKit testing) transactions are deliberately NOT accepted.
+  list.push(new SignedDataVerifier(roots, true, Environment.SANDBOX, bundleId(env)));
+  return list;
+}
+
 function verifiers(): Promise<SignedDataVerifier[]> {
-  verifiersPromise ??= (async () => {
-    const roots = await appleRoots();
-    const list: SignedDataVerifier[] = [];
-    const appId = appAppleId(Deno.env);
-    // Production verification needs the numeric App Store app id (set APPLE_APP_ID).
-    if (appId) list.push(new SignedDataVerifier(roots, true, Environment.PRODUCTION, bundleId(Deno.env), appId));
-    // Sandbox covers TestFlight and sandbox testers. Xcode-signed (local
-    // StoreKit testing) transactions are deliberately NOT accepted.
-    list.push(new SignedDataVerifier(roots, true, Environment.SANDBOX, bundleId(Deno.env)));
-    return list;
-  })().catch((error) => {
+  verifiersPromise ??= makeVerifiers(Deno.env, appleRoots).catch((error) => {
     verifiersPromise = undefined;
     throw error;
   });
@@ -231,16 +238,20 @@ function installVerifiers(options: InstallVerifierOptions): Promise<SignedDataVe
   return installVerifiersPromise;
 }
 
-/** The environment a JWS claims, unverified: only to explain a rejection in the logs. */
-function claimedEnvironment(jws: string): string | undefined {
+/** A JWS's payload, unverified: only to explain a rejection. */
+function unverifiedPayload(jws: string): Record<string, unknown> | undefined {
   try {
-    const payload = JSON.parse(atob(jws.split(".")[1].replace(/-/g, "+").replace(/_/g, "/"))) as {
-      receiptType?: unknown;
-    };
-    return typeof payload.receiptType === "string" ? payload.receiptType : undefined;
+    const payload: unknown = JSON.parse(atob(jws.split(".")[1].replace(/-/g, "+").replace(/_/g, "/")));
+    return payload && typeof payload === "object" ? payload as Record<string, unknown> : undefined;
   } catch {
     return undefined;
   }
+}
+
+/** The environment a JWS claims, unverified: only to explain a rejection in the logs. */
+function claimedEnvironment(jws: string): string | undefined {
+  const receiptType = unverifiedPayload(jws)?.receiptType;
+  return typeof receiptType === "string" ? receiptType : undefined;
 }
 
 /**
@@ -282,4 +293,98 @@ export async function verifyInstall(jws: string | null, options: InstallVerifier
     console.warn("AppTransaction rejected", claimed ?? "unknown environment", lastError);
   }
   return { status: "invalid", reason: claimed === Environment.XCODE ? "xcode" : "unverified" };
+}
+
+// MARK: - App Store Server Notifications V2
+
+/** A notification Apple signed for this app, with the transaction it's about when it names one. */
+export interface VerifiedNotification {
+  notification: ResponseBodyV2DecodedPayload;
+  transaction?: JWSTransactionDecodedPayload;
+}
+
+/**
+ * A notification that wasn't accepted. `retryable` when the fault is ours
+ * (Apple's roots or revocation check unreachable, APPLE_APP_ID missing), so
+ * Apple should send it again; otherwise it isn't Apple's, or not for this app.
+ */
+export class NotificationRejected extends Error {
+  constructor(message: string, readonly retryable: boolean) {
+    super(message);
+  }
+}
+
+export interface NotificationVerifierOptions {
+  env?: Env;
+  /** Apple's root certificates (DER). Defaults to downloading them once. */
+  roots?: () => Promise<Buffer[]>;
+  /** Tests only: the verifiers to try, in place of Production and Sandbox. */
+  verifiers?: SignedDataVerifier[];
+}
+
+// A notification carries a signed transaction and renewal, each with its certificate chain.
+const MAX_NOTIFICATION_LENGTH = 262_144;
+
+function describe(error: unknown): string {
+  if (error instanceof VerificationException) return VerificationStatus[error.status] ?? String(error.status);
+  return error instanceof Error ? error.message : String(error);
+}
+
+function isRetryable(error: unknown): boolean {
+  return error instanceof VerificationException && error.status === VerificationStatus.RETRYABLE_VERIFICATION_FAILURE;
+}
+
+/**
+ * Verifies an App Store Server Notification V2 `signedPayload` the way
+ * transactions are verified: Apple Root CA G3 only, online revocation checks,
+ * this bundle id, Production (with APPLE_APP_ID) or Sandbox. The transaction
+ * inside is verified by the verifier that accepted the notification, so both
+ * are Apple's and from the same environment.
+ */
+export async function verifyNotification(
+  signedPayload: unknown,
+  options: NotificationVerifierOptions = {},
+): Promise<VerifiedNotification> {
+  if (
+    typeof signedPayload !== "string" || signedPayload.length > MAX_NOTIFICATION_LENGTH ||
+    !JWS_PATTERN.test(signedPayload)
+  ) {
+    throw new NotificationRejected("malformed", false);
+  }
+  const env = options.env ?? Deno.env;
+  let list: SignedDataVerifier[];
+  try {
+    list = options.verifiers ??
+      (options.env || options.roots ? await makeVerifiers(env, options.roots ?? appleRoots) : await verifiers());
+  } catch (error) {
+    console.error("notification verifiers unavailable", describe(error));
+    throw new NotificationRejected("verifier_unavailable", true);
+  }
+
+  let retryable = false;
+  let lastError = "no verifier";
+  for (const verifier of list) {
+    let notification: ResponseBodyV2DecodedPayload;
+    try {
+      notification = await verifier.verifyAndDecodeNotification(signedPayload);
+    } catch (error) {
+      retryable ||= isRetryable(error);
+      lastError = describe(error);
+      continue;
+    }
+    const signedTransaction = notification.data?.signedTransactionInfo;
+    if (!signedTransaction) return { notification };
+    try {
+      return { notification, transaction: await verifier.verifyAndDecodeTransaction(signedTransaction) };
+    } catch (error) {
+      throw new NotificationRejected(`transaction ${describe(error)}`, isRetryable(error));
+    }
+  }
+
+  const data = unverifiedPayload(signedPayload)?.data as { environment?: unknown } | undefined;
+  if (data?.environment === Environment.PRODUCTION && !appAppleId(env)) {
+    console.error("an App Store notification arrived, but APPLE_APP_ID isn't set: it waits for Apple's retry");
+    throw new NotificationRejected("app_id_missing", true);
+  }
+  throw new NotificationRejected(lastError, retryable);
 }

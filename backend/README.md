@@ -22,6 +22,7 @@ iOS app ──► Supabase Auth (anonymous JWT; optional Sign in with Apple ID t
    └─► DELETE /functions/v1/ad-reward?token=…   the ad closed early: the token's place comes back
 
 AdMob ──► GET /functions/v1/ad-reward?…&signature=…&key_id=…   signed reward callback (SSV) → 1 credit, once
+Apple ──► POST /functions/v1/app-store-notifications             signed V2 notification → refund/revoke Pro, take back a refunded pack
 ```
 
 The wire contract is defined (and unit-tested) in
@@ -79,7 +80,10 @@ Prices, latency and alternatives: [`docs/research/tech-and-compliance.md`](../do
    supabase functions deploy ai-image credits-redeem account report
    # AdMob's callback has no JWT: the function checks Google's signature (and the app's session) itself.
    supabase functions deploy ad-reward --no-verify-jwt
+   # Apple's notifications have no JWT either: the function checks Apple's signature itself.
+   supabase functions deploy app-store-notifications --no-verify-jwt
    ```
+   Then in App Store Connect › App Information › App Store Server Notifications choose Version 2 and set the Production and Sandbox URLs to `https://<project-ref>.supabase.co/functions/v1/app-store-notifications`.
 6. **Schedule the sweepers** (`sweep_jobs` fails and refunds stuck jobs, refunds results the app never received, clears job outputs after 1 hour, deletes job rows after 30 days and reports after 12 months, App Store download hashes 30 days after last use (unless blocked), strikes and cool-downs after 30 days, IP counters after a day and usage counters after 90 days; `sweep_ad_rewards` deletes reward tokens a day after they expire and reward records after 30 days): enable the `pg_cron` extension, then run
    ```sql
    select cron.schedule('sweep-jobs', '*/5 * * * *', 'select public.sweep_jobs()');
@@ -179,7 +183,7 @@ Owner tools run in the SQL editor (the service role). Clients have no access to 
 
 ```bash
 # Type-check, lint and format-check the Edge Functions (Deno 2)
-cd backend/supabase/functions && deno check ai-image/index.ts credits-redeem/index.ts account/index.ts report/index.ts ad-reward/index.ts && deno lint && deno fmt --check && deno test _shared/
+cd backend/supabase/functions && deno check ai-image/index.ts credits-redeem/index.ts account/index.ts report/index.ts ad-reward/index.ts app-store-notifications/index.ts && deno lint && deno fmt --check && deno test _shared/ ad-reward/ app-store-notifications/
 
 # Run the migration + ledger tests on a throwaway PostgreSQL 14+
 backend/scripts/test-db.sh
@@ -190,7 +194,7 @@ Both run in CI (`.github/workflows/ci.yml`).
 ## Before launch
 
 - [ ] Set `APPLE_APP_ID` so production purchases verify (sandbox works without it).
-- [ ] Add an App Store Server Notifications V2 endpoint to mark refunds/revocations (`entitlements.revoked`) immediately.
+- [x] Add an App Store Server Notifications V2 endpoint to mark refunds/revocations (`entitlements.revoked`) immediately: `functions/app-store-notifications` (migration `20261025000000`). Left for the owner: deploy it and set its URL in App Store Connect.
 - [ ] Add App Attest + DeviceCheck to stop free-credit farming across reinstalls (see research doc §3.4).
 - [ ] Confirm fal accepts data-URI inputs for every endpoint above; otherwise upload to a private bucket and pass 10-minute signed URLs.
 - [ ] Move polling to fal webhooks (Ed25519-signed) when traffic grows.
