@@ -43,6 +43,17 @@ struct CreditsSheet: View {
                             .animation(Motion.bouncy, value: balance)
                         refillLine
                     }
+                    if let pause = app.cloudPause, pause.isActive() {
+                        // Why AI says no right now, though credits are left.
+                        Label {
+                            Text(verbatim: app.message(for: pause))
+                        } icon: {
+                            Image(systemName: "moon.zzz.fill")
+                        }
+                        .font(.subheadline)
+                        .foregroundStyle(Palette.textPrimary)
+                        .fixedSize(horizontal: false, vertical: true)
+                    }
                     rules
                     // Free and out of credits: one more for a short ad, if she likes.
                     if app.ads.offersRewardedAd {
@@ -76,7 +87,7 @@ struct CreditsSheet: View {
         }
         .task {
             // The day may have turned since the pill last counted.
-            app.credits.refresh(isPro: isPro)
+            app.credits.refresh(isPro: isPro, isTrial: app.purchases.trial != nil)
             await app.refreshServerBalance()
         }
         .sheet(isPresented: $showsPacks) {
@@ -112,7 +123,10 @@ struct CreditsSheet: View {
     private var rules: some View {
         VStack(alignment: .leading, spacing: 14) {
             Group {
-                if isPro {
+                if isPro, app.purchases.trial != nil {
+                    Text("Your free trial includes \(policy.trialCredits) credits.") + Text(verbatim: " ")
+                        + Text("Pro gives you \(policy.proMonthlyAllowance) credits every month. Free tools never use credits, and failed edits are always refunded.")
+                } else if isPro {
                     Text("Pro gives you \(policy.proMonthlyAllowance) credits every month. Free tools never use credits, and failed edits are always refunded.")
                 } else {
                     Text("You get \(policy.freeDailyAllowance) free credits every day. Free tools never use credits, and failed edits are always refunded.")

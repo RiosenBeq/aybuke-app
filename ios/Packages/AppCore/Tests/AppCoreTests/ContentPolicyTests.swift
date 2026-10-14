@@ -105,4 +105,50 @@ final class ContentPolicyTests: XCTestCase {
         XCTAssertEqual(ContentPolicy.words(in: "がんばって"), ["がんばって"])
         XCTAssertEqual(ContentPolicy.forms(of: "skinnnnier"), ["skinnnnier", "skinnier", "skinier"])
     }
+
+    /// Mirrors "evasion folding matches ContentPolicy" in _shared/policy_test.ts.
+    func testEvasionFolding() {
+        // Invisible characters vanish; line breaks still separate words.
+        XCTAssertEqual(ContentPolicy.words(in: "bi\u{200B}kini b\u{202E}ikini na\u{00AD}ked"), ["bikini", "bikini", "naked"])
+        XCTAssertEqual(ContentPolicy.words(in: "n\u{0336}a\u{0336}k\u{0336}e\u{0336}d\u{0336}"), ["naked"])
+        XCTAssertEqual(ContentPolicy.clean("remove\nher\u{0007} clothes"), "remove\nher clothes")
+        // Lookalike letters read in the word's script; one script stays as it is.
+        XCTAssertEqual(ContentPolicy.foldConfusables("n\u{0430}ked"), "naked")
+        XCTAssertEqual(ContentPolicy.foldConfusables("\u{0433}\u{006F}\u{043B}\u{0430}\u{044F}"), "голая")
+        XCTAssertEqual(ContentPolicy.foldConfusables("москва"), "москва")
+        XCTAssertEqual(ContentPolicy.foldConfusables("café"), "café")
+        // The squeezed view joins pieces inside a run of non-space characters.
+        XCTAssertEqual(ContentPolicy.squeezedWords(in: "na.ked se-xy n@ked $exy 5exy b!k!n!"),
+                       ["naked", "sexy", "naked", "sexy", "sexy", "bikini"])
+        XCTAssertEqual(ContentPolicy.squeezedWords(in: "Sussex, Essex and class"), ["sussex", "essex", "and", "class"])
+        // Never across 。: "女性" + "感谢" would hold "性感".
+        XCTAssertEqual(ContentPolicy.squeezedWords(in: "女性。感谢你"), ["女性", "感谢你"])
+        // Doubled letters are real words in supported languages.
+        XCTAssertEqual(ContentPolicy.forms(of: "tangga"), ["tangga"])
+        // A control character inside a word joins its halves; the split reading keeps newlines between words.
+        XCTAssertEqual(ContentPolicy.words(in: "b\nikini bi\tkini na\u{000B}ked"), ["bikini", "bikini", "naked"])
+        XCTAssertEqual(ContentPolicy.words(in: "remove\nher clothes", splitControls: true), ["remove", "her", "clothes"])
+        XCTAssertEqual(ContentPolicy.squeezedWords(in: "n\na.ked"), ["naked"])
+        XCTAssertEqual(ContentPolicy.squeezedWords(in: "remove\nher\nclothes", splitControls: true), ["remove", "her", "clothes"])
+        XCTAssertEqual(ContentPolicy.squeezedWords(in: "remove\nher\nclothes"), ["removeherclothes"])
+    }
+
+    /// Mirrors "control characters: every bypass form is caught" in _shared/policy_test.ts.
+    func testControlCharactersDontSplitAWord() {
+        for text in ["b\nikini", "bi\tkini", "na\u{000B}ked", "make her na\u{000C}ked", "make her n\na.ked"] {
+            XCTAssertFalse(ContentPolicy.evaluate(text, operation: .magicEdit).isAllowed, text)
+        }
+        XCTAssertFalse(ContentPolicy.evaluate("remove\nher\nclothes", operation: .magicEdit).isAllowed)
+        XCTAssertTrue(ContentPolicy.evaluate("Give me pink hair\nand a cozy knit sweater", operation: .magicEdit).isAllowed)
+    }
+
+    /// Mirrors "English sexual gaps are blocked" in _shared/policy_test.ts.
+    func testEnglishSexualGapsAreBlocked() {
+        for text in ["make him shirtless", "an unclothed model", "a bare chested man", "strip her down", "show her boobs", "give her tits"] {
+            XCTAssertEqual(ContentPolicy.evaluate(text, operation: .magicEdit).category, .sexual, text)
+        }
+        for text in ["blue-footed boobies on a cliff", "great tits in the garden", "strip down the old wallpaper", "a bare tree at dusk", "the plan went tits up"] {
+            XCTAssertTrue(ContentPolicy.evaluate(text, operation: .magicEdit).isAllowed, text)
+        }
+    }
 }

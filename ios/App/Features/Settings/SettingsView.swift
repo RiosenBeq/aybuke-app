@@ -160,7 +160,7 @@ struct SettingsView: View {
                         }
                         return
                     }
-                    app.credits.refresh(isPro: app.purchases.isPro)
+                    app.credits.refresh(isPro: app.purchases.isPro, isTrial: app.purchases.trial != nil)
                     app.showToast(app.purchases.isPro ? "Purchases restored ✦" : "No active subscription found.", style: app.purchases.isPro ? .success : .info)
                 }
             } label: {
@@ -234,12 +234,21 @@ struct SettingsView: View {
         } header: {
             Text("Credits")
         } footer: {
-            // Every free tool, not just two of them (the same words as the tour).
-            Text(app.purchases.isPro
-                 ? "Pro includes \(app.credits.policy.proMonthlyAllowance) credits every month; unused credits roll over one month. Failed creations are refunded automatically."
-                 : "You get \(app.credits.policy.freeDailyAllowance) free credits every day. Free tools never use credits, and failed edits are always refunded.")
+            creditsFooter
         }
         .listRowBackground(Palette.surface)
+    }
+
+    /// Every free tool, not just two of them (the same words as the tour). A
+    /// free trial brings its own credits first, not a month's.
+    private var creditsFooter: Text {
+        let policy = app.credits.policy
+        guard app.purchases.isPro else {
+            return Text("You get \(policy.freeDailyAllowance) free credits every day. Free tools never use credits, and failed edits are always refunded.")
+        }
+        let pro = Text("Pro includes \(policy.proMonthlyAllowance) credits every month; unused credits roll over one month. Failed creations are refunded automatically.")
+        guard app.purchases.trial != nil else { return pro }
+        return Text("Your free trial includes \(policy.trialCredits) credits.") + Text(verbatim: " ") + pro
     }
 
     private var notificationsSection: some View {

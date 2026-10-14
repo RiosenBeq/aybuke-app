@@ -8,12 +8,16 @@ import AppCore
 /// Jobs are asynchronous: submit → poll until finished → download results →
 /// confirm. Every balance the server reports on the way (the charge in the
 /// 202, a finished job, a cancel's refund) goes to `balanceObserver`.
+///
+/// Free credits belong to the verified App Store install, so jobs and
+/// balance reads carry StoreKit's AppTransaction (`appTransactions`).
 final class RemoteAIImageService: AIImageService {
     private let config: BackendConfiguration
     private let auth: AuthSessionManager
     private let session: URLSession
     private let schedule: PollingSchedule
     private let entitlementProvider: () async -> String?
+    private let appTransactions: AppTransactionProvider
     /// The server's balance and when the request that reported it was sent,
     /// so an older answer never overwrites a newer one.
     private let balanceObserver: @MainActor (Int, Date) -> Void
@@ -27,6 +31,7 @@ final class RemoteAIImageService: AIImageService {
         session: URLSession = .shared,
         schedule: PollingSchedule = .standard,
         entitlementProvider: @escaping () async -> String?,
+        appTransactions: AppTransactionProvider,
         balanceObserver: @escaping @MainActor (Int, Date) -> Void = { _, _ in }
     ) {
         self.config = config
@@ -34,6 +39,7 @@ final class RemoteAIImageService: AIImageService {
         self.session = session
         self.schedule = schedule
         self.entitlementProvider = entitlementProvider
+        self.appTransactions = appTransactions
         self.balanceObserver = balanceObserver
     }
 
@@ -43,13 +49,25 @@ final class RemoteAIImageService: AIImageService {
         let body = try Self.makeRequestBody(for: job)
         try body.validate()
 
+        var appTransaction = await appTransactions.jws()
         let submitted: GenerationResponse
         do {
-            submitted = try await submit(body)
+            submitted = try await submit(body, appTransaction: appTransaction)
         } catch AIServiceError.unauthorized {
             // Token may have been revoked server-side; retry once with a fresh session.
             await auth.invalidate()
-            submitted = try await submit(body)
+            submitted = try await submit(body, appTransaction: appTransaction)
+        } catch AIServiceError.appStoreCheckFailed {
+            // The server couldn't verify this install: one more try with a
+            // better AppTransaction. One StoreKit was still fetching first
+            // (no prompt), else a fresh one from the App Store (she just
+            // tapped, so Apple may ask her to sign in). Still nothing: the
+            // error's own message, never a cryptic one.
+            let before = appTransaction
+            if before == nil { appTransaction = await appTransactions.jws(waitingAtMost: .seconds(15)) }
+            if appTransaction == nil || appTransaction == before { appTransaction = await appTransactions.refresh() }
+            guard let appTransaction, appTransaction != before else { throw AIServiceError.appStoreCheckFailed }
+            submitted = try await submit(body, appTransaction: appTransaction)
         }
         let finished = try await waitUntilFinished(submitted)
 
@@ -66,10 +84,11 @@ final class RemoteAIImageService: AIImageService {
         return AIJobResult(images: images, creditsRemaining: finished.creditsRemaining, requestID: finished.jobID)
     }
 
-    private func submit(_ body: GenerationRequest) async throws -> GenerationResponse {
+    private func submit(_ body: GenerationRequest, appTransaction: String?) async throws -> GenerationResponse {
         let token = try await auth.validAccessToken()
         let jws = await entitlementProvider()
-        let request = try RequestFactory.generation(body, config: config, accessToken: token, entitlementJWS: jws)
+        let request = try RequestFactory.generation(body, config: config, accessToken: token, entitlementJWS: jws,
+                                                    appTransactionJWS: appTransaction)
         return try await decodeJob(request)
     }
 
@@ -198,19 +217,24 @@ final class RemoteAIImageService: AIImageService {
 
     // MARK: Account & credits
 
-    /// Current server-side balance, or nil without a session. Never signs
-    /// up: reading a balance must not create an account.
-    func fetchBalance() async throws -> Int? {
+    /// The server-side balance with its policy numbers and status, or nil
+    /// without a session. Never signs up: reading a balance must not create
+    /// an account. Never asks the App Store for anything either.
+    func fetchBalance() async throws -> BalanceState? {
         guard let token = try await auth.existingAccessToken() else { return nil }
         let jws = await entitlementProvider()
-        let (data, response) = try await load(RequestFactory.balance(config: config, accessToken: token, entitlementJWS: jws))
-        return try ResponseDecoder.decodeBalance(data: data, statusCode: (response as? HTTPURLResponse)?.statusCode ?? 0)
+        let appTransaction = await appTransactions.jws()
+        let request = try RequestFactory.balance(config: config, accessToken: token, entitlementJWS: jws,
+                                                 appTransactionJWS: appTransaction)
+        let (data, response) = try await load(request)
+        return try ResponseDecoder.decodeBalanceState(data: data, statusCode: (response as? HTTPURLResponse)?.statusCode ?? 0)
     }
 
     /// Sends a consumable's signed transaction; returns the new balance.
     func redeemCreditPack(signedTransaction: String) async throws -> Int {
         let token = try await auth.validAccessToken()
-        let request = try RequestFactory.redeemCreditPack(signedTransaction: signedTransaction, config: config, accessToken: token)
+        let request = try RequestFactory.redeemCreditPack(signedTransaction: signedTransaction, config: config, accessToken: token,
+                                                          appTransactionJWS: await appTransactions.jws())
         let (data, response) = try await load(request)
         return try ResponseDecoder.decodeBalance(data: data, statusCode: (response as? HTTPURLResponse)?.statusCode ?? 0)
     }

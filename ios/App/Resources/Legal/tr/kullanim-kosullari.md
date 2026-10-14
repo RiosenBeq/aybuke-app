@@ -6,7 +6,7 @@ Son güncelleme: 14 Ekim 2026
 > - Bu Koşullar, sizinle Glowlit uygulamasının geliştiricisi Okan Berk Manavoğlu (bireysel geliştirici) arasında yapılan bir sözleşmedir. Apple bu sözleşmenin tarafı değildir.
 > - En az 13 yaşında olmalısınız. 18 yaşından küçükseniz velinizin veya vasinizin izni gerekir. 4. bölüm sizin için yazıldı.
 > - Glowlit uygulamasını gençleri düşünerek tasarlıyoruz: takip yok, herkese açık akış yok, kişiselleştirilmiş reklam yok; bulut yapay zekâ ancak siz onay verdikten sonra çalışır.
-> - Cihaz üzerindeki araçlar her zaman ücretsizdir. Ücretsiz kullanıcılar her gün 3 kredi alır, günde en fazla 3 kez isteğe bağlı bir reklam izleyerek 1 kredi daha kazanabilir ve kaydettikten sonra ara sıra bir reklam görür. Pro'da reklam yoktur. Pro abonelikleri, siz Apple Hesabı ayarlarınızdan iptal edene kadar otomatik olarak yenilenir. Satın aldığınız kredi paketlerinin süresi hiçbir zaman dolmaz.
+> - Cihaz üzerindeki araçlar her zaman ücretsizdir. Ücretsiz kullanıcılar her gün ücretsiz kredi alır, günde birkaç kez isteğe bağlı bir reklam izleyerek 1 kredi daha kazanabilir ve kaydettikten sonra ara sıra bir reklam görür; güncel sayıları uygulama gösterir. Pro'da reklam yoktur. Pro abonelikleri, siz Apple Hesabı ayarlarınızdan iptal edene kadar otomatik olarak yenilenir. Satın aldığınız kredi paketlerinin süresi hiçbir zaman dolmaz.
 > - Fotoğraflarınız üzerindeki haklarınız sizde kalır; sonuçlar ise kanunun izin verdiği ölçüde size aittir. Yalnızca kullanma hakkınız olan fotoğrafları yükleyin ve yalnızca buna onay veren kişileri düzenleyin.
 > - Cinsel içerik, 18 yaşından küçükleri içeren her türlü cinsel içerik, zorbalık veya bedenle alay eden düzenlemeler ve aldatmaya yönelik deepfake yasaktır. Ayrıntılar için [Kabul Edilebilir Kullanım ve Yapay Zekâ İçerik Politikası](glowlit-legal://acceptableUse) metnine bakın.
 > - Yapay zekâ hata yapabilir. Tüketici olarak sahip olduğunuz emredici haklar hiçbir şekilde etkilenmez.
@@ -54,7 +54,7 @@ Bu bölüm, genç kullanıcılar için hazırlanmış sade bir özettir. Koşull
 - **Önce velinizle veya vasinizle konuşun.** Glowlit uygulamasını kullanmak için onların izni gerekir. Bir şey satın almadan veya bulut yapay zekâ işlemeyi açmadan önce onlarla konuşun.
 - **Bulut yapay zekâ için onların onayı da gerekebilir.** AB ve AEA'da, ülkenizdeki dijital rıza yaşının (ülkeye göre 13 ile 16 arası) altındaysanız, bulut yapay zekâ işlemeye ilişkin rızanın veliniz veya vasiniz tarafından verilmesi ya da onaylanması gerekir. Türkiye'de 18 yaşından küçükseniz bu açık rızanın veliniz veya vasiniz tarafından verilmesi ya da onaylanması gerekir. Onay ekranını birlikte okuyun.
 - **Satın alımlar Apple üzerinden yapılır.** Satın alımlar, cihazınızdaki Apple Hesabından tahsil edilir. Aile Paylaşımı'nda bir çocuk hesabınız varsa, her satın alımın veliniz veya vasiniz tarafından "Satın Alma İzni İste" (Ask to Buy) özelliğiyle onaylanması gerekebilir. İzin almadan hiçbir şey satın almayın.
-- **Reklamlar isteğe bağlıdır ve asla kişiselleştirilmez.** Pro'nuz yoksa herkese uygun birkaç reklam görebilirsiniz: krediniz bittiğinde 1 kredi için izlemeyi seçebileceğiniz bir reklam (günde en fazla 3) ve bazen kaydettikten sonra bir reklam. Hiçbir reklamı izlemek zorunda değilsiniz ve reklamlar asla diğer uygulamalarda yaptıklarınıza dayanmaz.
+- **Reklamlar isteğe bağlıdır ve asla kişiselleştirilmez.** Pro'nuz yoksa herkese uygun birkaç reklam görebilirsiniz: krediniz bittiğinde 1 kredi için izlemeyi seçebileceğiniz bir reklam (uygulamanın gösterdiği gibi günde birkaç kez) ve bazen kaydettikten sonra bir reklam. Hiçbir reklamı izlemek zorunda değilsiniz ve reklamlar asla diğer uygulamalarda yaptıklarınıza dayanmaz.
 - **Yalnızca "evet" diyen kişileri düzenleyin.** Başkalarının, özellikle de diğer gençlerin fotoğraflarını izinleri olmadan yüklemeyin veya düzenlemeyin. Hiç kimse hakkında cinsel, aşağılayıcı veya kırıcı bir şey oluşturmayın.
 - **Paylaşmadan önce düşünün.** Oluşturduklarınız, siz paylaşmadıkça telefonunuzda kalır. İnternete bir kez çıkan bir şeyi geri almak zor olabilir.
 - **Yardım her zaman var.** Bir şeyler ters giderse veya biri Glowlit uygulamasını size zarar vermek için kullanırsa, güvendiğiniz bir yetişkine anlatın ve durumu bize bildirin (bkz. [Politika](glowlit-legal://acceptableUse)). Veliler ve vasiler, çocuklarının verilerini sildirmek dahil her konuda [hello@buaze.com](mailto:hello@buaze.com) adresinden bize ulaşabilir.
@@ -79,7 +79,7 @@ Apple ile giriş yapmadıysanız hesabınıza erişim cihazınıza bağlıdır. 
 
 ### Hesabınızı silme
 
-Hesabınızı istediğiniz zaman **Settings → Delete my data & account** (Ayarlar → Verilerimi ve hesabımı sil) yoluyla silebilirsiniz. Bu işlem, sunucudaki hesabınızı ve ona bağlı tüm sunucu kayıtlarını (kredi cüzdanı, kredi hareketleri, iş kayıtları, abonelik hakkı kayıtları, reklam ödül kayıtları ve raporlar) ve cihazınızdaki görsel kütüphanesini kalıcı olarak siler. Apple ile giriş yaptıysanız Glowlit uygulamasının Apple Kimliğinize erişimini de iptal ederiz.
+Hesabınızı istediğiniz zaman **Settings → Delete my data & account** (Ayarlar → Verilerimi ve hesabımı sil) yoluyla silebilirsiniz. Bu işlem, sunucudaki hesabınızı ve ona bağlı tüm sunucu kayıtlarını (kredi cüzdanı, kredi hareketleri, iş kayıtları, abonelik hakkı kayıtları, reklam ödül kayıtları ve raporlar) ve cihazınızdaki görsel kütüphanesini kalıcı olarak siler. Apple ile giriş yaptıysanız Glowlit uygulamasının Apple Kimliğinize erişimini de iptal ederiz. App Store indirmenizin tek yönlü bir özeti (hash), o günün ücretsiz kredileri ve varsa bir güvenlik molasıyla (8. bölüm) birlikte, silme işleminden sonra hesabınıza bağlı kalmaz ve yalnızca kötüye kullanımı önlemek için [Gizlilik Politikası](glowlit-legal://privacy) metninde açıklanan sınırlı süre boyunca saklanır; bu nedenle hesabınızı silmek ücretsiz kredileri veya bir molayı sıfırlamaz.
 
 Hesabınızı sildiğinizde, satın aldığınız krediler dahil kalan tüm kredileriniz kaybolur; bunlar geri yüklenemez ve iade edilemez. Daha sonra bir bulut yapay zekâ özelliğini yeniden kullanırsanız yeni bir anonim hesap oluşturulur.
 
@@ -103,7 +103,7 @@ Remove background (Apple'ın Vision çerçevesiyle arka plan kaldırma), Adjust 
 
 ### Likeness Lock
 
-Bir kişinin fotoğrafını düzenlediğinizde sonuç size (veya fotoğraftaki kişiye) benzemiyorsa, aynı düzenlemeyi 15 dakika içinde bir kez ücretsiz olarak yeniden çalıştırabilirsiniz.
+Bir kişinin fotoğrafını düzenlediğinizde sonuç size (veya fotoğraftaki kişiye) benzemiyorsa, aynı düzenlemeyi 15 dakika içinde bir kez ücretsiz olarak yeniden çalıştırabilirsiniz; ücretsiz yeniden denemeler, uygulamanın gösterdiği günlük sayıyla sınırlıdır.
 
 ### Kütüphaneniz ("My Works")
 
@@ -143,11 +143,13 @@ Girdilerinizi yalnızca talep ettiğiniz özelliği sunmak ve Hizmeti güvenli t
 
 ### Ücretsiz günlük krediler
 
-Etkin bir Pro aboneliğiniz yoksa her gün 3 ücretsiz kredi alırsınız. Bu krediler her gün 00:00 UTC'de yenilenir. Kullanılmayan günlük krediler ertesi güne devretmez.
+Etkin bir Pro aboneliğiniz yoksa her gün uygulamanın gösterdiği sayıda ücretsiz kredi alırsınız. Bu krediler her gün 00:00 UTC'de yenilenir. Kullanılmayan günlük krediler ertesi güne devretmez.
+
+Ücretsiz günlük krediler bir hesaba değil, Glowlit uygulamasını App Store'dan indirmenize aittir: aynı Apple Hesabıyla kullanılan tüm cihazlar ve anonim hesaplar tek bir günlük hakkı paylaşır. Bu krediler için App Store'un indirmenizi doğrulaması gerekir (uygulama, Apple'ın imzaladığı onayı sunucumuza gönderir). Bu onay olmadan ücretsiz krediler kullanılamaz; satın alınan krediler ve abonelik kredileri yine kullanılabilir.
 
 ### Pro kredileri
 
-Etkin bir Pro aboneliğiniz varsa günlük krediler yerine her ay 100 kredi alırsınız. Kullanılmayan abonelik kredileri sonraki aya devreder; ancak abonelik kredisi bakiyeniz 200 krediyi aşamaz. Abonelik kredileri, aboneliğiniz sona erdiğinde sona erer.
+Etkin bir Pro aboneliğiniz varsa günlük krediler yerine her ay uygulamanın gösterdiği sayıda kredi alırsınız. Yıllık planın ücretsiz deneme süresi, başlamadan önce gösterilen daha az sayıda kredi içerir; aylık kredilerin tamamı ilk ücretli dönemle başlar. Kullanılmayan abonelik kredileri sonraki aya devreder; ancak en fazla iki aylık miktar birikebilir. Abonelik kredileri aboneliğe aittir: abonelik başka bir hesaba geçerse onunla birlikte geçer ve abonelik sona erdiğinde sona erer.
 
 ### Kredi paketleri
 
@@ -161,7 +163,7 @@ Kredi paketlerini tüketilebilir (consumable) uygulama içi satın alım olarak 
 
 ### Reklamlardan krediler
 
-Aktif bir Pro aboneliğiniz yoksa, krediniz bittiğinde Google AdMob'dan kısa bir reklam izleyerek günde (UTC) en fazla 3 kez 1 kredi kazanmayı seçebilirsiniz. Reklam izlemek her zaman isteğe bağlıdır. Kredi, Google reklamın sonuna kadar oynatıldığını sunucumuza onayladığında eklenir; reklam erken kapanırsa veya Google onaylamazsa kredi eklenmez. Reklamlardan kazanılan krediler:
+Aktif bir Pro aboneliğiniz yoksa, krediniz bittiğinde Google AdMob'dan kısa bir reklam izleyerek uygulamanın gösterdiği günlük sayıya (UTC) kadar 1 kredi kazanmayı seçebilirsiniz; bu sınır hem hesabınız hem de App Store indirmeniz için geçerlidir. Reklam izlemek her zaman isteğe bağlıdır. Kredi, Google reklamın sonuna kadar oynatıldığını sunucumuza onayladığında eklenir; reklam erken kapanırsa veya Google onaylamazsa kredi eklenmez. Reklamlardan kazanılan krediler:
 
 - ücretsiz günlük kredilerinize eklenir, önce harcanır ve ertesi güne devretmez;
 - nakit değeri taşımaz ve paraya çevrilemez;
@@ -172,7 +174,9 @@ Aktif bir Pro aboneliğiniz yoksa, krediniz bittiğinde Google AdMob'dan kısa b
 
 ### Adil kullanım ve sınırlar
 
-Hizmeti korumak için bir hesabın başlatabileceği bulut yapay zekâ işi sayısını sınırlandırıyoruz: hâlihazırda ücretsiz kullanımda dakikada 6, Pro ile dakikada 20.
+Hizmeti korumak için bir hesabın, bir App Store indirmesinin ve bir ağ adresinin dakikada, saatte ve günde başlatabileceği bulut yapay zekâ işi sayısını ve tüm kullanıcıların bir günde başlatabileceği toplam iş sayısını sınırlandırıyoruz. Bir sınıra ulaşıldığında uygulama sizi bilgilendirir ve bulut yapay zekâ bir süre ara verir; hiçbir ücret alınmaz.
+
+Güvenlik filtrelerimiz 24 saat içinde isteklerinizden veya sonuçlarınızdan 3'ünü engellerse bulut yapay zekâ, hesabınız ve App Store indirmeniz (doğrulanmış bir indirme yoksa ağ adresiniz) için 24 saat ara verir. 30 gün içinde 3 mola olursa, inceleyene kadar o indirme için bulut yapay zekâyı kapatırız. Cihaz üzerindeki özellikler çalışmaya devam eder ve bir insanın incelemesini isteyebilirsiniz ([Kabul Edilebilir Kullanım ve Yapay Zekâ İçerik Politikası](glowlit-legal://acceptableUse), 9. bölüm).
 
 Krediler, Glowlit uygulamasındaki bulut yapay zekâ özelliklerini kullanmanıza yönelik bir lisanstır. Krediler para, mülkiyet konusu bir değer veya ödeme aracı değildir ve yalnızca uygulamada kullanılabilir.
 
@@ -198,7 +202,7 @@ Bunlar ABD doları cinsinden referans fiyatlardır. Uygulama, satın almadan ön
 
 ### Pro'ya neler dahildir?
 
-- Ayda 100 kredi; kullanılmayan krediler 200 abonelik kredisi üst sınırına kadar devreder (8. bölüm);
+- uygulamanın gösterdiği sayıda aylık kredi; kullanılmayan krediler iki aylık miktara kadar devreder (8. bölüm);
 - üretim başına 4 görsele kadar;
 - tüm şablon ve stiller;
 - Glowlit filigranı olmadan dışa aktarım;
@@ -207,7 +211,7 @@ Bunlar ABD doları cinsinden referans fiyatlardır. Uygulama, satın almadan ön
 
 ### Ücretsiz deneme süresi
 
-Uygunsanız yıllık plan 7 günlük ücretsiz deneme süresiyle başlar. Uygunluk, Apple'ın tanıtım teklifleri (introductory offers) kurallarına göre belirlenir.
+Uygunsanız yıllık plan 7 günlük ücretsiz deneme süresiyle başlar. Uygunluk, Apple'ın tanıtım teklifleri (introductory offers) kurallarına göre belirlenir. Deneme süresi, başlamadan önce ödeme ekranında gösterilen sayıda kredi içerir; aylık kredilerin tamamı ilk ücretli dönemle başlar.
 
 Deneme süresinin bitiminden en az 24 saat önce iptal etmezseniz aboneliğiniz otomatik olarak başlar ve deneme süresi sona erdiğinde yıllık ücret tahsil edilir. Bildirimlere izin verdiyseniz uygulama, bu son iptal zamanından önce size hatırlatma gönderir: deneme sürenizin bitmesinden en az 26 saat önce; bu zaman geceye veya okul saatlerine denk gelirse daha erken.
 

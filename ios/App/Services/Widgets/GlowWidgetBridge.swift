@@ -120,7 +120,7 @@ enum GlowWidgetBridge {
 
     static func update(
         credits: Int, isPro: Bool, nextRefill: Date?, latest: Creation?, creationsCount: Int,
-        breakdown: CreditBreakdown? = nil, nextGrant: Date? = nil, cloudAIAllowed: Bool = true
+        breakdown: CreditBreakdown? = nil, nextGrant: Date? = nil, cloudAIAllowed: Bool = true, allowance: Int? = nil
     ) {
         let snapshot = GlowWidgetSnapshot(
             credits: credits,
@@ -133,7 +133,8 @@ enum GlowWidgetBridge {
             monthly: breakdown?.monthly,
             packs: breakdown?.packs,
             nextGrant: isPro ? nextGrant : nil,
-            cloudAIAllowed: cloudAIAllowed
+            cloudAIAllowed: cloudAIAllowed,
+            allowance: allowance
         )
         queue.async {
             let previous = GlowSharedStore.load()

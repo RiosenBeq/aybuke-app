@@ -82,8 +82,8 @@ PRIVATE BY DEFAULT
 • Every AI image carries an invisible "made with AI" label
 
 FAIR PRICING
-• 3 free credits every day, and on-device tools are always free
-• Glowlit Pro: 100 credits a month with rollover, every trend and style, our best-quality AI, no watermark and up to 4 images at once
+• 2 free credits every day, and on-device tools are always free
+• Glowlit Pro: 80 credits a month with rollover, every trend and style, our best-quality AI, no watermark and up to 4 images at once
 • Yearly plan with a 7-day free trial for eligible new subscribers, or monthly with an intro price for the first month. No weekly plan, ever
 • Credit packs that never expire
 • Failed edits are always refunded, and we remind you the day before your trial ends
@@ -194,8 +194,8 @@ VARSAYILAN OLARAK GİZLİ
 • Her yapay zekâ görseli görünmez bir "yapay zekâ ile yapıldı" etiketi taşır
 
 ADİL FİYAT
-• Her gün 3 ücretsiz kredi; cihaz üzerindeki araçlar her zaman ücretsiz
-• Glowlit Pro: ayda 100 kredi (kullanılmayanlar devreder), tüm trendler ve stiller, en iyi kalitede yapay zekâ, filigran yok ve tek seferde 4 görsele kadar
+• Her gün 2 ücretsiz kredi; cihaz üzerindeki araçlar her zaman ücretsiz
+• Glowlit Pro: ayda 80 kredi (kullanılmayanlar devreder), tüm trendler ve stiller, en iyi kalitede yapay zekâ, filigran yok ve tek seferde 4 görsele kadar
 • Uygun yeni aboneler için 7 gün ücretsiz denemeli yıllık plan veya ilk ayı indirimli aylık plan. Haftalık plan asla yok
 • Süresi hiç dolmayan kredi paketleri
 • Başarısız düzenlemeler her zaman iade edilir; denemen bitmeden bir gün önce hatırlatırız

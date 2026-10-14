@@ -102,6 +102,9 @@ public struct GlowWidgetSnapshot: Codable, Equatable, Sendable {
     /// False under 13 (her age band): widgets and controls offer only the
     /// free on-device tools. Nil in older snapshots, read as allowed.
     public var cloudAIAllowed: Bool?
+    /// The gauge's top: a day's free credits, or a month's on Pro, as the
+    /// server last said (`credit_policy()`). Nil in older snapshots.
+    public var allowance: Int?
 
     /// Widgets and controls show cloud AI entry points (and credits).
     public var showsCloudAI: Bool { cloudAIAllowed ?? true }
@@ -110,7 +113,7 @@ public struct GlowWidgetSnapshot: Codable, Equatable, Sendable {
         credits: Int, isPro: Bool, nextRefill: Date?, latestTitle: String?,
         latestIsFavorite: Bool = false, creationsCount: Int, updatedAt: Date = Date(),
         daily: Int? = nil, monthly: Int? = nil, packs: Int? = nil, nextGrant: Date? = nil,
-        cloudAIAllowed: Bool? = nil
+        cloudAIAllowed: Bool? = nil, allowance: Int? = nil
     ) {
         self.credits = credits
         self.isPro = isPro
@@ -124,6 +127,7 @@ public struct GlowWidgetSnapshot: Codable, Equatable, Sendable {
         self.packs = packs
         self.nextGrant = nextGrant
         self.cloudAIAllowed = cloudAIAllowed
+        self.allowance = allowance
     }
 
     public enum BalanceKind: Sendable {
@@ -145,7 +149,7 @@ public struct GlowWidgetSnapshot: Codable, Equatable, Sendable {
     /// The gauge's range: one day's or one month's allowance (never "∞").
     /// Rollover and packs can exceed it, so clamp the value with `gaugeValue`.
     public func gaugeRange(policy: CreditPolicy = .standard) -> ClosedRange<Int> {
-        0...max(1, isPro ? policy.proMonthlyAllowance : policy.freeDailyAllowance)
+        0...max(1, allowance ?? (isPro ? policy.proMonthlyAllowance : policy.freeDailyAllowance))
     }
 
     public func gaugeValue(policy: CreditPolicy = .standard) -> Int {
@@ -153,7 +157,7 @@ public struct GlowWidgetSnapshot: Codable, Equatable, Sendable {
     }
 
     public static let placeholder = GlowWidgetSnapshot(
-        credits: 3, isPro: false, nextRefill: nil, latestTitle: nil, creationsCount: 0
+        credits: CreditPolicy.standard.freeDailyAllowance, isPro: false, nextRefill: nil, latestTitle: nil, creationsCount: 0
     )
 }
 

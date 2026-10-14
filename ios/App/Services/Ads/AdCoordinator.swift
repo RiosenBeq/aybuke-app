@@ -6,7 +6,8 @@ import AppCore
 /// 13, on the Mac or in preview builds.
 ///
 /// - **Rewarded** ("Watch a short ad · +1 credit"): offered only when she's out
-///   of credits, at most three a day. The credit comes from the server once
+///   of credits, at most two a day (per user and per App Store install, on
+///   the server). The credit comes from the server once
 ///   AdMob confirms the ad (`functions/v1/ad-reward`); the app only shows the
 ///   ad with a single-use token, and polls until the credit lands.
 /// - **Interstitial**: may follow a finished save or share at a natural break
@@ -47,7 +48,8 @@ final class AdCoordinator {
     private let backend: AdRewardBackend?
     private let provider: AdProvider
     private let defaults: UserDefaults
-    private let rewardPolicy: AdRewardPolicy
+    /// Its cap follows the server's last `daily_cap` (see `noteServerCap`).
+    private var rewardPolicy: AdRewardPolicy
     @ObservationIgnored private var pacing: InterstitialPacing
     @ObservationIgnored private var pacingRules = InterstitialPacing.Rules.standard
     /// The last finished save or share, until the next natural break decides.
@@ -130,7 +132,15 @@ final class AdCoordinator {
         return rewardPolicy.offersAd(isPro: app.purchases.isPro, audience: audience, balance: app.credits.balance)
     }
 
+    /// The server's cap, as it last said so; the bundled one until it has.
     var dailyCap: Int { rewardPolicy.dailyCap }
+
+    /// The server sends `daily_cap` with its answers (null when its policy call
+    /// failed, then the last value stays). The copy must match what it enforces.
+    private func noteServerCap(_ cap: Int?) {
+        guard let cap, (0...10_000).contains(cap) else { return }
+        rewardPolicy.dailyCap = cap
+    }
 
     /// Free members here can see ads, so "No ads" is a real Pro benefit (it
     /// isn't on the Mac, where nobody sees any).
@@ -163,6 +173,7 @@ final class AdCoordinator {
         }
         do {
             let overview = try await backend.overview()
+            noteServerCap(overview.dailyCap)
             lastOverview = Date()
             if let balance = overview.creditsRemaining, balance > 0 {
                 // She has credits after all (a new day, say): the card goes.
@@ -208,6 +219,7 @@ final class AdCoordinator {
         let token: AdRewardToken
         do {
             token = try await backend.issueToken()
+            noteServerCap(token.dailyCap)
         } catch let error as AdRewardError {
             refused(error)
             return
@@ -254,6 +266,7 @@ final class AdCoordinator {
             try? await Task.sleep(for: .seconds(delay))
             delay = min(delay + 0.5, 4)
             guard let status = try? await backend.status(token: token) else { continue }
+            noteServerCap(status.dailyCap)
             switch status.status {
             case .granted:
                 if let balance = status.creditsRemaining { app?.credits.sync(serverBalance: balance) }

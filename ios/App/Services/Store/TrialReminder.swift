@@ -4,7 +4,7 @@ import AppCore
 
 /// "We'll remind you before your trial ends" — a promise made on the paywall
 /// timeline, kept with a local notification before the cancel-by time
-/// (24 hours before the trial ends), never at night or in school hours.
+/// (26 hours before the trial ends), never at night or in school hours.
 enum TrialReminder {
     static let identifier = "glowlit.trial-reminder"
 

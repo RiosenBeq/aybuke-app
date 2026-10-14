@@ -81,6 +81,7 @@ Bu değerleri hesap sahibi yapıştırmalı (anahtarları ben giremem). Şablon:
 - [ ] `APPLE_SIGNIN_KEY_ID` ve `APPLE_SIGNIN_PRIVATE_KEY` — Sign in with Apple anahtarı
 - [ ] `REVENUECAT_SECRET_KEY` ve `REVENUECAT_PROJECT_ID` — hesap silinince RevenueCat müşterisini de silmek için. RevenueCat → Project settings → API keys'te yalnızca `customer_information:customers:read_write` izinli bir **v2** gizli anahtar oluştur; proje kimliği aynı sayfada. Boş kalırsa hesap silme yine çalışır; RevenueCat silme istekleri `pending_revenuecat_deletions` tablosunda bekler ve anahtar eklenince (her hesap silmede ve saatlik zamanlanmış çağrıda, bkz. `backend/README.md` 6. adım) gönderilir.
 - [ ] (İsteğe bağlı) `FAL_KEY` — bağımsız çıktı güvenlik kontrolü (fal.ai) ve yedek sağlayıcı. Her sonuç tek bir çıktı kontrolünden geçer ve kontrol çalışamazsa sonuç engellenip kredi iade edilir (kapatma ayarı yok; eski `OUTPUT_MODERATION` artık okunmuyor). `FAL_KEY` yokken kontrol xAI'nin kendi denetim kararıdır. `FAL_KEY` eklenince sonuçlar fal.ai'ye gider; bu yüzden önce fal.ai'yi onay ekranına (`aiProcessors`) geri ekleyen bir uygulama sürümü yayımlanmalı.
+- [ ] (İsteğe bağlı) `XAI_SAFETY_MODEL` — bir xAI görme modeli (ör. bir grok-4 fast modeli) ile her sonuca ve düzenlenecek fotoğrafa ek güvenlik denetimi. Boşsa kapalıdır; ayarlanırsa denetim hata verdiğinde, zaman aşımına uğradığında, reddettiğinde ya da beklenmeyen bir yanıt döndüğünde iş engellenir ve kredi iade edilir.
 - [ ] `ADMOB_REWARDED_AD_UNIT` = `ca-app-pub-2292230772061554/1406702504` — yalnızca bu reklam biriminin imzalı çağrıları kredi verir; boş kalırsa hiçbir ödül verilmez
 
 > **Onay ekranı:** Uygulamanın yapay zekâ onay ekranı, işleyicileri `ios/App/Resources/AppConfig.json` içindeki `aiProcessors` listesinden gösterir (şu an Supabase ve xAI). `AI_PROVIDER`'ı değiştirmek veya listede olmayan bir işleyici eklemek, önce o işleyiciyi listeleyen bir uygulama güncellemesi gerektirir; liste değişince uygulama onayı yeniden ister. Backend sağlayıcıyı uygulama sürümü olmadan değiştirebilir, bu yüzden sırayı koru.
@@ -88,6 +89,7 @@ Bu değerleri hesap sahibi yapıştırmalı (anahtarları ben giremem). Şablon:
 ## 7. xAI konsolu
 
 - [ ] [console.x.ai](https://console.x.ai) → ekip ayarlarında **Zero Data Retention**'ı aç. Selfie'ler kişisel veri; gizlilik politikamız ve xAI şartları bunu bekliyor.
+- [ ] `XAI_API_KEY` anahtarı için Zero Data Retention'ın gerçekten açık olduğunu konsolda doğrula; gizlilik politikası bunu söylüyor ve depo bunu kanıtlayamaz.
 - [ ] Faturalandırma ve harcama limiti tanımla.
 
 ## 8. Uygulamayı arka uca bağla

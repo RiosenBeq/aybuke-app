@@ -7,7 +7,8 @@ insert into auth.users (id) values
   ('00000000-0000-0000-0000-0000000000a2'),
   ('00000000-0000-0000-0000-0000000000a3');
 
--- 1. Paid credits, the subscription, jobs and reports move; daily credits don't.
+-- 1. Paid credits, the subscription, jobs and reports move; free daily credits
+--    belong to the App Store install, not to either account.
 do $$
 declare
   anon uuid := '00000000-0000-0000-0000-0000000000a1';
@@ -15,16 +16,17 @@ declare
   w public.credit_wallets;
   j uuid := gen_random_uuid();
 begin
-  perform public.refresh_wallet(anon, false);
+  perform public.wallet_state(anon, 'atid-merge', 'verified', 'Sandbox');
   perform public.grant_pack(anon, 30, 'tx-merge-1');
   insert into public.entitlements (original_transaction_id, user_id, product_id) values ('otx-merge-1', anon, 'app.glowlit.pro.yearly');
   insert into public.jobs (id, user_id, operation, endpoint, cost) values (j, anon, 'magic_edit', 'test', 1);
   insert into public.reports (user_id, job_id, reason) values (anon, j, 'mismatch');
-  perform public.refresh_wallet(account, false);
+  perform public.wallet_state(account, 'atid-merge', 'verified', 'Sandbox');
 
   w := public.merge_accounts(anon, account);
   assert w.purchased = 30, 'purchased packs move to the account';
-  assert w.daily = 3, 'the account keeps only its own daily credits';
+  assert (public.wallet_state(account, 'atid-merge', 'verified', 'Sandbox')->>'credits_remaining')::int = 32,
+    'the pack plus the install''s own free credits, never doubled';
   assert (select user_id from public.entitlements where original_transaction_id = 'otx-merge-1') = account, 'subscription moves';
   assert (select user_id from public.jobs where id = j) = account, 'jobs move';
   assert (select count(*) from public.reports where user_id = account) = 1, 'reports move';
@@ -36,18 +38,18 @@ begin
   assert w.purchased = 30, 'merging twice does not double credits';
 end $$;
 
--- 2. Subscription credits never double, and the rollover cap holds.
+-- 2. Subscription credits live on the subscription, so they move with it and never double.
 do $$
 declare
   first_phone uuid := '00000000-0000-0000-0000-0000000000a3';
   account uuid := '00000000-0000-0000-0000-0000000000a2';
-  w public.credit_wallets;
 begin
-  perform public.refresh_wallet(first_phone, true);
-  update public.credit_wallets set subscription = 150 where user_id = first_phone;
-  update public.credit_wallets set subscription = 120 where user_id = account;
-  w := public.merge_accounts(first_phone, account);
-  assert w.subscription = 150, 'keeps the larger subscription balance';
+  insert into public.entitlements (original_transaction_id, user_id, product_id, expires_at, credits, credits_period_start)
+    values ('otx-merge-2', first_phone, 'app.glowlit.pro.monthly', now() + interval '1 month', 150, now());
+  perform public.merge_accounts(first_phone, account);
+  assert (select user_id from public.entitlements where original_transaction_id = 'otx-merge-2') = account;
+  assert (select credits from public.entitlements where original_transaction_id = 'otx-merge-2') = 150, 'the same 150, not more';
+  assert (public.wallet_state(account)->>'credits_remaining')::int = 180, 'subscription credits plus the pack';
 end $$;
 
 -- 3. An account can't be merged into itself, and clients can't call it.

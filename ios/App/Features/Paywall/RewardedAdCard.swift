@@ -2,7 +2,7 @@ import SwiftUI
 import AppCore
 
 /// "Watch a short ad · +1 credit": the optional way to one more credit when a
-/// free member is out of credits, at most three a day. In the paywall that
+/// free member is out of credits, at most two a day. In the paywall that
 /// opened because she ran out, and in the credits sheet; never for Pro, under
 /// 13 or on the Mac (`AdCoordinator.offersRewardedAd` decides).
 struct RewardedAdCard: View {

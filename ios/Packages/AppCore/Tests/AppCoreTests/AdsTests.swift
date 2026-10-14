@@ -33,7 +33,7 @@ final class AdsTests: XCTestCase {
 
     func testRewardedAdsOnlyForFreeMembersWhoAreOut() {
         let policy = AdRewardPolicy.standard
-        XCTAssertEqual(policy.dailyCap, 3)
+        XCTAssertEqual(policy.dailyCap, 2)
         XCTAssertEqual(policy.creditsPerAd, 1)
         XCTAssertTrue(policy.offersAd(isPro: false, audience: .teen, balance: 0))
         XCTAssertFalse(policy.offersAd(isPro: false, audience: .adult, balance: 1), "not while she has credits")
@@ -135,27 +135,31 @@ final class AdsTests: XCTestCase {
         XCTAssertEqual(release.httpMethod, "DELETE")
         XCTAssertEqual(release.url?.query, "token=t1")
 
-        let overview = try RequestFactory.adRewardOverview(config: config, accessToken: "user-jwt")
+        let overview = try RequestFactory.adRewardOverview(config: config, accessToken: "user-jwt", appTransactionJWS: "app.jws")
         XCTAssertEqual(overview.httpMethod, "GET")
         XCTAssertNil(overview.url?.query)
+        XCTAssertEqual(overview.value(forHTTPHeaderField: "X-App-Transaction"), "app.jws",
+                       "ad credits belong to the App Store install, like the free ones")
+        let tokenRequest = try RequestFactory.adRewardToken(config: config, accessToken: "user-jwt", appTransactionJWS: "app.jws")
+        XCTAssertEqual(tokenRequest.value(forHTTPHeaderField: "X-App-Transaction"), "app.jws")
     }
 
     func testDecodesTokensAndStatuses() throws {
         let token = try ResponseDecoder.decodeAdRewardToken(data: Data("""
-        {"token":"3f9a1c2e-5b7d-4e8f-9a0b-1c2d3e4f5a6b","expires_at":"2026-10-14T12:30:00Z","remaining_today":2,"daily_cap":3}
+        {"token":"3f9a1c2e-5b7d-4e8f-9a0b-1c2d3e4f5a6b","expires_at":"2026-10-14T12:30:00Z","remaining_today":1,"daily_cap":2}
         """.utf8), statusCode: 201)
         XCTAssertEqual(token, AdRewardToken(token: "3f9a1c2e-5b7d-4e8f-9a0b-1c2d3e4f5a6b", expiresAt: "2026-10-14T12:30:00Z",
-                                            remainingToday: 2, dailyCap: 3))
+                                            remainingToday: 1, dailyCap: 2))
 
         let granted = try ResponseDecoder.decodeAdRewardStatus(data: Data("""
-        {"token":"t","status":"granted","remaining_today":1,"daily_cap":3,"credits_remaining":1}
+        {"token":"t","status":"granted","remaining_today":1,"daily_cap":2,"credits_remaining":1}
         """.utf8), statusCode: 200)
         XCTAssertEqual(granted.status, .granted)
         XCTAssertEqual(granted.creditsRemaining, 1)
         XCTAssertEqual(granted.remainingToday, 1)
 
         let overview = try ResponseDecoder.decodeAdRewardStatus(data: Data("""
-        {"remaining_today":3,"daily_cap":3,"credits_remaining":0,"eligible":true}
+        {"remaining_today":2,"daily_cap":2,"credits_remaining":0,"eligible":true}
         """.utf8), statusCode: 200)
         XCTAssertNil(overview.status)
         XCTAssertEqual(overview.eligible, true)
@@ -164,6 +168,21 @@ final class AdsTests: XCTestCase {
         XCTAssertNil(future.status, "a status this version doesn't know reads as unconfirmed")
 
         XCTAssertThrowsError(try ResponseDecoder.decodeAdRewardToken(data: Data("{}".utf8), statusCode: 201))
+    }
+
+    func testDailyCapDecodesWhenNullOrNumber() throws {
+        // The server sends null when its policy call failed: the app keeps its last cap.
+        let nullToken = try ResponseDecoder.decodeAdRewardToken(data: Data(#"{"token":"t","remaining_today":1,"daily_cap":null}"#.utf8),
+                                                                statusCode: 201)
+        XCTAssertNil(nullToken.dailyCap)
+        let nullStatus = try ResponseDecoder.decodeAdRewardStatus(data: Data(#"{"remaining_today":1,"daily_cap":null}"#.utf8),
+                                                                  statusCode: 200)
+        XCTAssertNil(nullStatus.dailyCap)
+        let numberStatus = try ResponseDecoder.decodeAdRewardStatus(data: Data(#"{"remaining_today":1,"daily_cap":3}"#.utf8),
+                                                                    statusCode: 200)
+        XCTAssertEqual(numberStatus.dailyCap, 3)
+        let missing = try ResponseDecoder.decodeAdRewardToken(data: Data(#"{"token":"t","remaining_today":1}"#.utf8), statusCode: 201)
+        XCTAssertNil(missing.dailyCap)
     }
 
     func testMapsAdRewardErrors() {

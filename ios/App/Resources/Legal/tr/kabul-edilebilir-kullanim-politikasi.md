@@ -92,7 +92,7 @@ Glowlit vücut şeklini değiştiren veya cildi açan özellikler sunmaz. Magic 
 Şunları yapamazsınız:
 
 - güvenlik filtrelerimizi aşmaya çalışmak; örneğin "jailbreak" istemleri, şifreli dil, kasıtlı yazım hataları veya yasak bir talebi birkaç parçaya bölmek;
-- ücretsiz kredileri kötüye kullanmak; örneğin birden çok hesap açmak, fazladan ücretsiz kredi almak için uygulamayı veya cihazı sıfırlamak ya da otomasyon kullanmak;
+- ücretsiz kredileri kötüye kullanmak; örneğin birden çok hesap açmak, fazladan ücretsiz kredi almak için uygulamayı veya cihazı sıfırlamak ya da otomasyon kullanmak (ücretsiz krediler App Store indirmesi başına sayıldığından bunlar kredi kazandırmaz);
 - Hizmete otomatik yollarla (botlar, betikler veya kazıyıcılar gibi) ya da uygulama dışındaki yollarla erişmek veya kanunun açıkça izin verdiği hâller dışında uygulamaya ya da sunucularımıza tersine mühendislik uygulamak;
 - Hizmete veya kredilere erişimi yeniden satmak, alt lisanslamak ya da paylaşmak;
 - sistemlerimizi aşırı yüklemek, aksatmak ya da onlara saldırmak veya kullanım sınırlarını kasıtlı olarak aşmak ya da
@@ -111,6 +111,8 @@ Birden çok katmanlı güvenlik önlemi kullanırız:
 5. Kullanıcılardan gelen **bildirimler** bir insan tarafından incelenir.
 
 Otomatik filtreler kusursuz değildir: zararsız talepleri engelleyebilir, zararlı olanları kaçırabilir. Engellenen veya başarısız olan üretimlerden asla ücret alınmaz.
+
+Sunucularımızdaki filtreler 24 saat içinde isteklerinizden veya sonuçlarınızdan 3'ünü engellerse bulut yapay zekâ, hesabınız ve App Store indirmeniz (doğrulanmış bir indirme yoksa ağ adresiniz) için 24 saat ara verir. 30 gün içinde 3 mola olursa, inceleyene kadar o indirme için bulut yapay zekâyı kapatırız. Cihaz üzerindeki özellikler çalışmaya devam eder. Bir molaya veya kapatmaya itiraz edebilirsiniz (9. bölüm).
 
 Girdilerinizi saklamadığımız ve sonuçları bir saat içinde buluttan sildiğimiz için oluşturduklarınıza rutin olarak bakmayız. İnsan incelemesi, içerik bize bildirildiğinde veya bir karara itiraz ettiğinizde yapılır.
 

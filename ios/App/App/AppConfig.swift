@@ -47,8 +47,9 @@ struct AdsConfig: Decodable, Equatable {
     var rewardedUnitID = ""
     /// Empty: no interstitials.
     var interstitialUnitID = ""
-    /// Rewarded ads a day; the server's `ad_reward_policy()` has the final say.
-    var dailyCap = 3
+    /// Rewarded ads a day; the server's `ad_reward_policy()` has the final say
+    /// (per user and per App Store install).
+    var dailyCap = 2
 
     #if DEBUG
     static let testAppID = "ca-app-pub-3940256099942544~1458002511"
@@ -68,7 +69,7 @@ struct AdsConfig: Decodable, Equatable {
         appID = try container.decodeIfPresent(String.self, forKey: .appID) ?? ""
         rewardedUnitID = try container.decodeIfPresent(String.self, forKey: .rewardedUnitID) ?? ""
         interstitialUnitID = try container.decodeIfPresent(String.self, forKey: .interstitialUnitID) ?? ""
-        dailyCap = try container.decodeIfPresent(Int.self, forKey: .dailyCap) ?? 3
+        dailyCap = try container.decodeIfPresent(Int.self, forKey: .dailyCap) ?? 2
     }
 
     /// The app id this build's Info.plist hands the SDK, when it's the one
@@ -143,6 +144,9 @@ struct AppConfig: Decodable {
     var aiProcessors: [AIProcessor] = AppConfig.defaultProcessors
     /// Ads for free members (not an AI processor, so not on the consent sheet).
     var ads = AdsConfig()
+    /// The credit numbers the copy shows until the server reports its own
+    /// (`credit_policy()`; the app keeps the last ones it saw).
+    var creditPolicy = CreditPolicy.standard
 
     static let defaultProcessors = [
         AIProcessor(name: "Supabase", role: .servers),
@@ -181,7 +185,7 @@ struct AppConfig: Decodable {
     private enum CodingKeys: String, CodingKey {
         case backendBaseURL, supabaseAnonKey, forceDemoMode, aiProviderName, dataRetentionHours
         case privacyPolicyURL, termsURL, supportEmail, appStoreID, websiteURL, instagramAppID, shareHashtags
-        case aiShareHashtags, revenueCatAPIKey, consentVersion, aiProcessors, signInWithApple, ads
+        case aiShareHashtags, revenueCatAPIKey, consentVersion, aiProcessors, signInWithApple, ads, creditPolicy
     }
 
     init(
@@ -227,6 +231,7 @@ struct AppConfig: Decodable {
         signInWithApple = try container.decodeIfPresent(Bool.self, forKey: .signInWithApple) ?? false
         // A broken ads section turns ads off, never the rest of the config.
         ads = (try? container.decodeIfPresent(AdsConfig.self, forKey: .ads)) ?? AdsConfig()
+        creditPolicy = (try? container.decodeIfPresent(CreditPolicy.self, forKey: .creditPolicy)) ?? .standard
     }
 
     var backend: BackendConfiguration? {
