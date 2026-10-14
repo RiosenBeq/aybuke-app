@@ -221,6 +221,7 @@ struct ResultsView: View {
                 if app.registerHappyMoment() {
                     requestReview()
                 }
+                app.ads.noteFinishedExport()
             } catch {
                 app.handleSaveError(error, shareInstead: sharePayload(for: current))
             }
@@ -245,6 +246,7 @@ struct ResultsView: View {
                 if app.registerHappyMoment() {
                     requestReview()
                 }
+                app.ads.noteFinishedExport()
             } catch {
                 app.handleSaveError(error, shareInstead: current.map(sharePayload(for:)))
             }

@@ -366,6 +366,7 @@ struct ShareComposerView: View {
             let opened = await InstagramStories.share(rendered, asBackground: format.isStory, sourceType: payload.provenance.sourceType, appID: appID)
             if opened {
                 app.countHappyMoment()
+                app.ads.noteFinishedExport()
             } else {
                 app.showToast("Couldn't open Instagram.", style: .error)
             }
@@ -394,6 +395,8 @@ struct ShareComposerView: View {
             Haptics.success()
             app.countHappyMoment()
             app.showToast("Saved to Photos", style: .success)
+            // Free members: an ad may follow once the composer closes.
+            app.ads.noteFinishedExport()
         } catch {
             app.handle(error)
         }

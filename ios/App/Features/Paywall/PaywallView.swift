@@ -53,6 +53,10 @@ struct PaywallView: View {
                 VStack(spacing: 22) {
                     if let reason {
                         ReasonCard(reason: reason, refill: app.credits.nextFreeRefill)
+                        // Out of free credits: one more for a short ad, if she likes.
+                        if reason == .outOfFreeCredits, app.ads.offersRewardedAd {
+                            RewardedAdCard { dismiss() }
+                        }
                     }
                     header
                     benefits
@@ -173,6 +177,10 @@ struct PaywallView: View {
             Benefit(symbol: "sparkles", title: "Every look & style", detail: "Including the Pro-only looks and styles")
             Benefit(symbol: "photo.badge.checkmark", title: "Our best-quality AI, no watermark", detail: "Up to 4 images at once")
             Benefit(symbol: "arrow.uturn.backward.circle", title: "Failed edits are always refunded", detail: "Plus a free retry if it doesn't look like you")
+            // Only where free members see ads (not on the Mac).
+            if app.ads.freeMembersSeeAds {
+                Benefit(symbol: "nosign", title: "No ads", detail: "Ad-free for as long as you're Pro")
+            }
         }
         .padding(18)
         .cardStyle()

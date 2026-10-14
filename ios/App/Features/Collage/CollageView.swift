@@ -619,6 +619,8 @@ struct CollageView: View {
                 if app.registerHappyMoment() {
                     requestReview()
                 }
+                // Free members: an ad may follow once the collage maker closes.
+                app.ads.noteFinishedExport()
             } catch {
                 app.handleSaveError(error, onShareInstead: { share() })
             }
@@ -639,6 +641,7 @@ struct CollageView: View {
                 sharedFiles = files
                 shareItems = ActivityItems(items: files)
                 app.countHappyMoment()
+                app.ads.noteFinishedExport()
             } else if let image = await model.exportImage() {
                 app.share(SharePayload(image: image, operation: nil, inheritedSourceType: model.provenance.inheritedSourceType))
             }

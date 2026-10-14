@@ -353,6 +353,14 @@ struct SettingsView: View {
                 }
                 .tint(Palette.accent)
             }
+            // Google's privacy options for ads (EEA, UK and Switzerland), once she has asked for an ad.
+            if app.ads.showsPrivacyChoices {
+                Button {
+                    Task { await app.ads.presentPrivacyChoices() }
+                } label: {
+                    Label("Ad privacy choices", systemImage: "hand.raised")
+                }
+            }
             Button("Delete all creations", role: .destructive) { confirmDeleteCreations = true }
             Button(role: .destructive) {
                 confirmDeleteAccount = true
@@ -376,6 +384,7 @@ struct SettingsView: View {
             }
         }
         .listRowBackground(Palette.surface)
+        .task { await app.ads.refreshPrivacyChoices() }
     }
 
     private var ageSection: some View {
@@ -468,8 +477,9 @@ struct SettingsView: View {
     }
 }
 
-/// Third-party notices: the Poppins font (SIL Open Font License) and the
-/// RevenueCat SDK (MIT), the app's only third-party code. Licence texts stay in English.
+/// Third-party notices: the Poppins font (SIL Open Font License), the
+/// RevenueCat SDK (MIT) and, on iPhone and iPad, Google's Mobile Ads and User
+/// Messaging Platform SDKs. Licence texts stay in English.
 struct AcknowledgementsView: View {
     private var fontLicense: String {
         Self.bundledText("Poppins-OFL") ?? String(localized: "Poppins is licensed under the SIL Open Font License 1.1.")
@@ -498,6 +508,14 @@ struct AcknowledgementsView: View {
                 Text(revenueCatLicense)
                     .font(.caption.monospaced())
                     .foregroundStyle(Palette.textSecondary)
+                if !Platform.isMac {
+                    Text(verbatim: "Google Mobile Ads SDK, Google User Messaging Platform SDK")
+                        .font(.headline)
+                        .padding(.top, 12)
+                    Text(verbatim: "Copyright Google LLC. The SDKs are used under Google's terms for them; their Swift Package Manager distributions are licensed under the Apache License, Version 2.0.")
+                        .font(.caption.monospaced())
+                        .foregroundStyle(Palette.textSecondary)
+                }
             }
             .padding(Metrics.gutter)
         }
