@@ -573,8 +573,8 @@ struct EditorView: View {
         EditorToolBar(tools: EditorTool.available(cloudAI: app.allowsCloudAI), activeTool: model.activeTool) { tool in
             model.select(tool)
         }
-        // Wide enough for all ten tools in English on iPad and the Mac.
-        .frame(maxWidth: 740)
+        // Room for all ten tools in one row on iPad and the Mac in most languages.
+        .frame(maxWidth: Metrics.readableWidth)
         .padding(.horizontal, 10)
         .padding(.bottom, 4)
         .shadow(color: Palette.shadow, radius: 14, y: 6)

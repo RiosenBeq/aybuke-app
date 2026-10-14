@@ -22,7 +22,8 @@ struct EditorToolBar: View {
             scrollingRow
         }
         .padding(5)
-        .liquidGlass(in: Capsule(), tint: Palette.white.opacity(0.4))
+        // A capsule at the usual size, like the items inside it.
+        .liquidGlass(in: RoundedRectangle(cornerRadius: 32), tint: Palette.white.opacity(0.4))
         // Labels grow with Dynamic Type up to AX1; past that, a long press
         // shows the large content viewer, as Apple's own bars do.
         .dynamicTypeSize(...DynamicTypeSize.accessibility1)
@@ -59,10 +60,29 @@ struct EditorToolBar: View {
     }
 
     private func item(_ tool: EditorTool, fills: Bool) -> some View {
-        let isActive = activeTool == tool
-        return Button {
+        ToolItem(tool: tool, isActive: activeTool == tool, fills: fills) {
             onSelect(tool)
-        } label: {
+        }
+        .id(tool)
+    }
+}
+
+private struct ToolItem: View {
+    let tool: EditorTool
+    let isActive: Bool
+    let fills: Bool
+    let action: () -> Void
+
+    // The room around the label grows with it, so big text never meets the
+    // selection's edge (read inside the bar's Dynamic Type cap).
+    @ScaledMetric(relativeTo: .caption2) private var sidePadding: CGFloat = 10
+    @ScaledMetric(relativeTo: .caption2) private var bottomPadding: CGFloat = 6
+
+    var body: some View {
+        // A capsule at the usual size; when big text makes the item taller,
+        // the corners stop growing, so they never cut into the label.
+        let shape = RoundedRectangle(cornerRadius: 27)
+        Button(action: action) {
             VStack(spacing: 3) {
                 Image(systemName: tool.symbolName)
                     .font(.system(size: 18, weight: .semibold))
@@ -74,16 +94,16 @@ struct EditorToolBar: View {
                     .fixedSize()
             }
             .foregroundStyle(isActive ? Palette.onPrimary : Palette.textSecondary)
-            .padding(.horizontal, 10)
-            .padding(.vertical, 6)
+            .padding(.horizontal, sidePadding)
+            .padding(.top, 6)
+            .padding(.bottom, bottomPadding)
             .frame(minWidth: 64, maxWidth: fills ? .infinity : nil, minHeight: 54)
-            .background(isActive ? Palette.primary : Color.clear, in: Capsule())
+            .background(isActive ? Palette.primary : Color.clear, in: shape)
             // Blush alone is too faint on the glass to mark the tool.
-            .overlay(Capsule().strokeBorder(isActive ? Palette.ink : Color.clear, lineWidth: 1.5))
-            .contentShape(Capsule())
+            .overlay(shape.strokeBorder(isActive ? Palette.ink : Color.clear, lineWidth: 1.5))
+            .contentShape(shape)
         }
         .buttonStyle(.plain)
-        .id(tool)
         // The short "Cut out" fits the bar; VoiceOver reads it in full.
         .accessibilityLabel(tool == .removeBackground ? String(localized: "Remove background") : tool.title)
         .accessibilityAddTraits(isActive ? .isSelected : [])
