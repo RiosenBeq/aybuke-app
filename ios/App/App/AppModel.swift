@@ -116,6 +116,8 @@ final class AppModel {
     /// The simple video editor: picker, then the editor itself.
     var isVideoPickerPresented = false
     var videoSource: VideoSource?
+    /// Retro Cam and Photo Booth (full screen, on the device).
+    var isRetroCamPresented = false
     var toast: ToastMessage?
     /// "Photos access is off" with Open Settings (and Share instead).
     var photosAccessRequest: PhotosAccessRequest?
@@ -685,7 +687,7 @@ final class AppModel {
 
     private var isPresentingSomething: Bool {
         isPaywallPresented || outOfCredits != nil || editorLaunch != nil || videoSource != nil || consentRequest != nil
-            || shareRequest != nil || isAccountPromptPresented || isBestShotPresented
+            || shareRequest != nil || isAccountPromptPresented || isBestShotPresented || isRetroCamPresented
     }
 
     /// Mac menu commands and dropped photos only act on the main screens:
@@ -1344,6 +1346,9 @@ extension AppModel {
             }
         case .edit:
             selectedTab = .edit
+        case .camera:
+            selectedTab = .home
+            isRetroCamPresented = true
         case .library, .librarySelect, .libraryTrash:
             selectedTab = .library
             seedScreenshotLibrary(trash: scene == .libraryTrash)

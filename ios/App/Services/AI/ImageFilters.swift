@@ -1,4 +1,5 @@
 import UIKit
+import Metal
 import CoreImage
 import CoreImage.CIFilterBuiltins
 
@@ -19,7 +20,11 @@ struct AdjustmentSettings: Equatable {
 /// Core Image building blocks shared by the on-device tools and the offline
 /// demo engine. All functions are pure and safe to call off the main thread.
 enum ImageFilters {
-    static let context = CIContext(options: [.cacheIntermediates: false])
+    static let metalDevice = MTLCreateSystemDefaultDevice()
+    /// The app's shared context. Explicitly Metal-backed, so Retro Cam's live
+    /// preview can render into a Metal layer with it as well.
+    static let context: CIContext = metalDevice.map { CIContext(mtlDevice: $0, options: [.cacheIntermediates: false]) }
+        ?? CIContext(options: [.cacheIntermediates: false])
 
     static func render(_ image: CIImage, extent: CGRect? = nil) -> UIImage? {
         let rect = extent ?? image.extent

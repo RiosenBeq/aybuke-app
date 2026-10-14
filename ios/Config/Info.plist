@@ -28,6 +28,8 @@
 		<string>instagram-stories</string>
 		<string>instagram</string>
 	</array>
+	<key>NSCameraUsageDescription</key>
+	<string>Glowlit uses the camera for Retro Cam and Photo Booth. Photos stay on your device until you share them.</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
 	<string>Glowlit turns what's said in your video into captions on your device. Nothing is uploaded.</string>
 	<key>UIApplicationSceneManifest</key>

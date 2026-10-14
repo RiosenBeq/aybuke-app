@@ -58,6 +58,13 @@ enum ScreenshotScene: String, CaseIterable {
     /// `-GLCaptionsEditor YES`, `-GLVideoSeek <s>` (paused there), and
     /// `-GLVideoSpeech YES` for a clip that talks.
     case video
+    /// Retro Cam on the demo-art fixture (the simulator has no camera):
+    /// `-GLEffect <effect>`, `-GLCameraMode booth`, `-GLCameraTimer 3|10`,
+    /// `-GLCameraAction shoot|booth` to take a photo or run the booth,
+    /// `-GLBoothLayout grid`, `-GLBoothCaption "…"` for the print,
+    /// `-GLCameraReviewAction edit|share` to go on from the review, and
+    /// `-GLCameraPermission ask|denied` for the permission screens.
+    case camera
 
     static var current: ScreenshotScene? {
         UserDefaults.standard.string(forKey: "GLScreenshotScene").flatMap(ScreenshotScene.init(rawValue:))
