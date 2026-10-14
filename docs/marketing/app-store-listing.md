@@ -22,7 +22,7 @@ Rules followed: no prices in the name, subtitle or keywords; no other platforms,
 
     selfie,makeup,beauty,filter,aesthetic,headshot,anime,doll,restore,retouch,background,art,pink,y2k
 
-**Description** (3829/4000)
+**Description** (3865/4000)
 
 ```text
 Glowlit is the AI photo editor made for girls who glow. Type what you want to change, tap a trend, add an 80s or 90s effect or turn an idea into art, then share it to your Stories in one tap.
@@ -46,7 +46,7 @@ DREAM IT. CREATE IT.
 • With Pro, up to 4 images at once
 
 80s, 90s & Y2K, FREE
-• Seven retro effects: VHS '86, Disposable '98, Kira Kira, Digicam '04, Instant '82, Glamour '92 and Neon '84
+• Retro effects: VHS '86, Disposable '98, Kira Kira, Digicam '04, Instant '82, Glamour '92, Neon '84, Throwback '16, Camcorder '06 and Film Still
 • Add a date stamp, just like the real cameras did
 • Edit videos up to 5 minutes: cut out the silences like a jump cut, add a retro effect and trim
 • Save or share your videos with no watermark and no ending clip
@@ -100,7 +100,7 @@ Privacy Policy: {{PRIVACY_URL}}
 
 > Welcome to Glowlit ✨ Edit photos just by saying it, try 35+ one-tap looks, add free 80s & 90s effects, cut the silences out of your videos and create art from text. Share magazine covers, photo strips, before/after collages and story cards in one tap. Widgets, a Dynamic Island Live Activity, iPhone and iPad, 12 languages. Private by default, fair pricing, no weekly plan.
 
-**App Review notes** (2346/4000)
+**App Review notes** (2345/4000)
 
 ```text
 Glowlit is an AI photo editor and image generator for iPhone and iPad. No login is required: the app creates an anonymous account with our backend when a cloud feature is first used. Sign in with Apple is optional.
@@ -108,7 +108,7 @@ Glowlit is an AI photo editor and image generator for iPhone and iPad. No login 
 How to review:
 1. Onboarding ends on an optional on-device "quick glow" demo, then a soft paywall that can be closed with X. A short guided tour follows (Next or Skip); replay it from Settings > Show me around.
 2. Explore > tap "Try it on your photo" (Magic Edit) or any template. Seasonal looks (Halloween Oct 1-Nov 2, winter Dec 1-Jan 6, Galentine's Feb 1-14) get their own Explore row only in season; all of them are available all year in Edit > Styles. Before any photo or prompt is sent to the cloud, an explicit consent screen names the processor (xAI, which runs its Grok Imagine models). Tap "Allow AI processing". Choosing "Not now" keeps on-device features working.
-3. On-device features that never leave the device and need no consent or credits: Edit > Effects (80s, 90s, Y2K), Edit > Remove BG, Edit > Adjust (with Auto), Edit > Find your best shot, and Edit > Edit a video (auto-cut silences, effects, trim).
+3. On-device features that never leave the device and need no consent or credits: Edit > Effects (80s to 2010s), Edit > Remove BG, Edit > Adjust (with Auto), Edit > Find your best shot, and Edit > Edit a video (auto-cut silences, effects, trim).
 4. Purchases: subscriptions (yearly with a 7-day free trial; monthly with a first-month introductory price for eligible users) and consumable credit packs are standard StoreKit 2 in-app purchases; please use a sandbox account. Restore is on the paywall and in Settings. The RevenueCat SDK only records purchases for analytics.
 5. Safety: prompts are filtered on device and on the server in all 12 app languages, the AI provider applies its own moderation and outputs are screened automatically. Templates preserve identity and never reshape bodies. Users can report any result (results screen > "..." > Report this image, or the flag in the editor); reports go to our backend for review.
 6. AI labelling: exported AI images carry IPTC DigitalSourceType metadata (EU AI Act Art. 50), and the share screen offers an optional visible "AI-edited" label.
@@ -136,7 +136,7 @@ Contact: {{SUPPORT_EMAIL}}
 
     selfie,makyaj,güzellik,filtre,estetik,vesikalık,anime,bebek,onarım,rötuş,arka plan,yapay zeka
 
-**Description** (3959/4000)
+**Description** (3951/4000)
 
 ```text
 Glowlit, ışıldayan kızlar için tasarlanmış yapay zekâlı fotoğraf editörü. Ne değişsin istiyorsan yaz, bir trende dokun, 80'ler ya da 90'lar efekti ekle veya bir fikri sanata dönüştür; sonra tek dokunuşla Hikâyene paylaş.
@@ -160,7 +160,7 @@ HAYAL ET, OLUŞTUR.
 • Pro ile tek seferde 4 görsele kadar
 
 80'LER, 90'LAR VE Y2K, ÜCRETSİZ
-• Yedi retro efekt: VHS '86, Disposable '98, Kira Kira, Digicam '04, Instant '82, Glamour '92 ve Neon '84
+• Retro efektler: VHS '86, Disposable '98, Digicam '04, Camcorder '06, Film Still ve daha fazlası
 • Eski makinelerdeki gibi tarih damgası ekle
 • 5 dakikaya kadar videoları düzenle: sessiz kısımları jump cut gibi kes, retro efekt ekle, kırp
 • Videolarını filigransız ve kapanış klibi olmadan kaydet ya da paylaş

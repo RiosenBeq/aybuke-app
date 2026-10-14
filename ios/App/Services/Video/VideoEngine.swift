@@ -123,24 +123,39 @@ enum VideoEngine {
         return composition
     }
 
-    /// Colours every frame with the effect (and its date stamp). Nil = no effect.
-    static func videoComposition(for asset: AVAsset, effect: RetroEffect?, dateStamp: Bool) async throws -> AVVideoComposition? {
+    /// Colours every frame with the effect and, when `showsExtra` is on, its
+    /// overlay (date stamp, letterbox or camcorder display). Nil = no effect.
+    /// `fps` sets the camcorder timecode's frame count.
+    static func videoComposition(for asset: AVAsset, effect: RetroEffect?, showsExtra: Bool, fps: Double = 30) async throws -> AVVideoComposition? {
         guard let effect else { return nil }
-        let overlays = StampCache(effect: dateStamp ? effect : nil)
+        let overlays = OverlayCache(effect: showsExtra && effect.option?.worksOnVideo == true ? effect : nil)
+        let rate = CamcorderClock.frameRate(fps)
         return try await AVMutableVideoComposition.videoComposition(with: asset) { request in
             let source = request.sourceImage.clampedToExtent().cropped(to: request.sourceImage.extent)
             var frame = effect.grade(source).cropped(to: source.extent)
-            if let stamp = overlays.overlay(for: source.extent) {
-                frame = stamp.composited(over: frame)
+            if let overlay = overlays.overlay(for: source.extent) {
+                frame = overlay.composited(over: frame)
+            }
+            // The output timeline's time, so the preview and the export match.
+            if let camcorder = overlays.camcorder(for: source.extent) {
+                frame = camcorder.composite(over: frame, seconds: request.compositionTime.seconds, fps: rate)
             }
             request.finish(with: frame, context: nil)
         }
     }
 
-    /// Date stamps are drawn once per frame size, not every frame.
-    private final class StampCache: @unchecked Sendable {
+    /// Frame rate of the clip's video track, for the camcorder timecode.
+    static func frameRate(of asset: AVAsset) async -> Double {
+        guard let track = try? await asset.loadTracks(withMediaType: .video).first,
+              let rate = try? await track.load(.nominalFrameRate) else { return 30 }
+        return CamcorderClock.frameRate(Double(rate))
+    }
+
+    /// Overlays are drawn once per frame size, not every frame.
+    private final class OverlayCache: @unchecked Sendable {
         private let effect: RetroEffect?
-        private var cached: (CGRect, CIImage)?
+        private var cached: (CGRect, CIImage?)?
+        private var parts: (CGRect, CamcorderChrome.VideoParts)?
         private let lock = NSLock()
 
         init(effect: RetroEffect?) { self.effect = effect }
@@ -150,10 +165,20 @@ enum VideoEngine {
             lock.lock()
             defer { lock.unlock() }
             if let cached, cached.0 == extent { return cached.1 }
-            guard let layer = effect.videoStampOverlay(size: extent.size)?
-                .transformed(by: CGAffineTransform(translationX: extent.minX, y: extent.minY)) else { return nil }
+            let layer = effect.videoOverlay(size: extent.size)?
+                .transformed(by: CGAffineTransform(translationX: extent.minX, y: extent.minY))
             cached = (extent, layer)
             return layer
+        }
+
+        func camcorder(for extent: CGRect) -> CamcorderChrome.VideoParts? {
+            guard effect?.option == .cameraInfo else { return nil }
+            lock.lock()
+            defer { lock.unlock() }
+            if let parts, parts.0 == extent { return parts.1 }
+            let made = CamcorderChrome.VideoParts(size: extent.size)
+            parts = (extent, made)
+            return made
         }
     }
 

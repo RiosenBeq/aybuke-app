@@ -19,10 +19,19 @@ final class VideoEditorModel {
     private(set) var isAnalyzing = true
     private(set) var isExporting = false
     private(set) var resultDuration: Double = 0
+    @ObservationIgnored private var frameRate: Double = 30
 
     var cutSilences = false { didSet { scheduleRebuild() } }
-    var effect: RetroEffect? { didSet { scheduleRebuild() } }
-    var dateStamp = true { didSet { scheduleRebuild() } }
+    var effect: RetroEffect? {
+        didSet {
+            // Each effect starts with its own switch at its default, so turning
+            // off one effect's date stamp doesn't turn off another's letterbox.
+            if effect != oldValue { showsExtra = effect?.option?.isOnByDefault ?? true }
+            scheduleRebuild()
+        }
+    }
+    /// The effect's switch (date stamp, letterbox or camera info).
+    var showsExtra = true { didSet { if showsExtra != oldValue { scheduleRebuild() } } }
     var trim: ClosedRange<Double> = 0...1
 
     let player = AVPlayer()
@@ -42,10 +51,11 @@ final class VideoEditorModel {
         duration = min((try? await VideoEngine.duration(of: asset)) ?? 0, VideoEngine.maxDuration)
         trim = 0...max(duration, 0.1)
         thumbnail = await VideoEngine.thumbnail(of: asset)
+        frameRate = await VideoEngine.frameRate(of: asset)
         if let thumbnail {
             let small = ImageUtilities.normalized(thumbnail, maxLongEdge: 240)
             effectThumbnails = await Task.detached(priority: .userInitiated) {
-                Dictionary(uniqueKeysWithValues: RetroEffect.videoEffects.map { ($0, $0.apply(to: small, dateStamp: false)) })
+                Dictionary(uniqueKeysWithValues: RetroEffect.videoEffects.map { ($0, $0.apply(to: small, options: .plain)) })
             }.value
         }
         await rebuild()
@@ -81,7 +91,7 @@ final class VideoEditorModel {
     private func rebuild() async {
         let ranges = keptRanges
         guard !ranges.isEmpty, let composition = try? await VideoEngine.composition(of: asset, keeping: ranges) else { return }
-        let videoComposition = try? await VideoEngine.videoComposition(for: composition, effect: effect, dateStamp: dateStamp)
+        let videoComposition = try? await VideoEngine.videoComposition(for: composition, effect: effect, showsExtra: showsExtra, fps: frameRate)
         guard !Task.isCancelled else { return }
         resultDuration = ranges.reduce(0) { $0 + ($1.upperBound - $1.lowerBound) }
         let item = AVPlayerItem(asset: composition)
@@ -109,7 +119,7 @@ final class VideoEditorModel {
         isExporting = true
         defer { isExporting = false }
         let composition = try await VideoEngine.composition(of: asset, keeping: keptRanges)
-        let videoComposition = try await VideoEngine.videoComposition(for: composition, effect: effect, dateStamp: dateStamp)
+        let videoComposition = try await VideoEngine.videoComposition(for: composition, effect: effect, showsExtra: showsExtra, fps: frameRate)
         return try await VideoEngine.export(composition, videoComposition: videoComposition)
     }
 
@@ -248,9 +258,9 @@ struct VideoEditorView: View {
             .scrollClipDisabled()
             .fixedSize(horizontal: false, vertical: true)
 
-            if model.effect?.hasDateStamp == true {
-                Toggle(isOn: $model.dateStamp) {
-                    Label("Date stamp", systemImage: "calendar")
+            if let option = model.effect?.option, option.worksOnVideo {
+                Toggle(isOn: $model.showsExtra) {
+                    Label { Text(option.label) } icon: { Image(systemName: option.symbolName) }
                         .font(.subheadline.weight(.semibold))
                         .foregroundStyle(Palette.textPrimary)
                 }

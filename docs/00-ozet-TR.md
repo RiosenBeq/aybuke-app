@@ -6,7 +6,7 @@
 
 **Ne değişti?**
 - **Video düzenleme (ücretsiz, cihazda):** Sessiz kısımları otomatik kesme ("jump cut"), retro efektler, kırpma, ardından Fotoğraflar'a kaydetme veya paylaşma. Filigran ve kapanış klibi yok; 5 dakikaya kadar klipler.
-- **80'ler, 90'lar ve Y2K efektleri:** Yedi ücretsiz, cihaz içi efekt: VHS '86, Disposable '98, Kira Kira, Digicam '04, Instant '82, Glamour '92 ve Neon '84. Fotoğraflarda tarih damgası isteğe bağlı; efektlerin beşi videoda da çalışıyor.
+- **Retro efektler:** 80'lerden 2010'lara ücretsiz, cihaz içi efektler: VHS '86, Disposable '98, Kira Kira, Digicam '04, Instant '82, Glamour '92, Neon '84, Throwback '16, Camcorder '06 ve Film Still. Tarih damgası, çerçeve, sinema bantları ve kamera göstergesi isteğe bağlı; efektlerin sekizi videoda da çalışıyor (Camcorder '06 videoda işleyen zaman koduyla).
   - Adjust (ışık ve renk) aracında tek dokunuşla **Auto**: ışık ve renk otomatik ayarlanıyor.
   - RAW (ProRAW, DNG) fotoğraflar açılırken en iyi ayarlarla otomatik banyo ediliyor.
 - **Yazı tipi:** Bricolage Grotesque'in yerini **Poppins** (SIL OFL) aldı; web sitesiyle aynı yazı tipi.
