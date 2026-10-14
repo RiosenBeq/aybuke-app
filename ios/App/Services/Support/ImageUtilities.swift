@@ -45,12 +45,11 @@ enum ImageUtilities {
         return redraw(image, to: target)
     }
 
+    /// 8-bit in the picture's own colour space: half the memory of UIKit's
+    /// 16-bit wide-colour bitmaps and no colour conversion, so previews,
+    /// thumbnails and Vision's copies are quicker to make and to read.
     static func redraw(_ image: UIImage, to size: PixelSize) -> UIImage {
-        let format = UIGraphicsImageRendererFormat()
-        format.scale = 1
-        format.opaque = !hasAlpha(image)
-        let renderer = UIGraphicsImageRenderer(size: CGSize(width: size.width, height: size.height), format: format)
-        return renderer.image { _ in
+        draw(size: CGSize(width: size.width, height: size.height), opaque: !hasAlpha(image), colorSpace: image.cgImage?.colorSpace) { _ in
             image.draw(in: CGRect(x: 0, y: 0, width: size.width, height: size.height))
         }
     }
