@@ -12,6 +12,8 @@ enum ScreenshotScene: String, CaseIterable {
     case edit
     case editor
     case effects
+    /// The editor's "Ideas for this photo" row on the demo landscape.
+    case ideas
     case crop
     case result
     case library

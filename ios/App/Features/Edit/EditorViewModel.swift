@@ -552,6 +552,32 @@ final class EditorViewModel {
         Haptics.success()
     }
 
+    // MARK: Ideas for this photo (on-device, free)
+
+    /// The step the last "Surprise me" made, so the next tap swaps its effect
+    /// instead of stacking a second one on top.
+    @ObservationIgnored private var surpriseVersion: Int?
+    /// The canvas plays the develop reveal for this step.
+    private(set) var revealID: UUID?
+    private(set) var revealVersion: Int?
+
+    /// Applies a suggested free effect straight away, through the same path
+    /// as the Effects panel (one Undo takes it back).
+    func applySuggestedEffect(_ suggested: RetroEffect, surprise: Bool = false) async {
+        guard !isProcessing else { return }
+        await commitPending()
+        if surprise, surpriseVersion == historyVersion { undo() }
+        effectTask?.cancel()
+        effect = suggested
+        effectExtra = suggested.option?.isOnByDefault ?? true
+        await applyEffect()
+        surpriseVersion = surprise ? historyVersion : nil
+        if surprise {
+            revealID = UUID()
+            revealVersion = historyVersion
+        }
+    }
+
     func resetAdjustments() {
         previewTask?.cancel()
         adjustments = .neutral
