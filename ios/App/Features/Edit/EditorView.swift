@@ -14,6 +14,7 @@ struct EditorView: View {
     @State private var isSaving = false
     @State private var zoom = CanvasZoom()
     @State private var isZoomed = false
+    @State private var ideasDismissed = false
 
     init(launch: EditorLaunch) {
         self.launch = launch
@@ -37,6 +38,13 @@ struct EditorView: View {
                     }
                     if model.lastRequestID != nil && !model.isProcessing {
                         resultActions
+                    }
+                    if showsIdeas {
+                        EditorIdeasRow(model: model) {
+                            withAnimation(.snappy) { ideasDismissed = true }
+                        }
+                        .padding(.horizontal, Metrics.gutter)
+                        .padding(.bottom, 6)
                     }
                     toolPanel
                         .padding(.horizontal, Metrics.gutter)
@@ -72,6 +80,14 @@ struct EditorView: View {
         }
         .reportDialog(isPresented: $showReport, requestID: model.lastRequestID)
         .modifier(AppPresentations(isActive: true))
+    }
+
+    /// Ideas stay out of the way: hidden under a fresh cloud result or the
+    /// kindness note, and in the hands-on Crop and Erase. (Kept, disabled,
+    /// while a job runs, so "Surprise me" remembers where it was.)
+    private var showsIdeas: Bool {
+        !ideasDismissed && model.lastRequestID == nil && !model.showsKindnessNote
+            && model.activeTool != .crop && model.activeTool != .erase
     }
 
     // MARK: Top bar
@@ -183,6 +199,7 @@ struct EditorView: View {
                 )
                 // A fresh canvas (fit) for every tool and every step.
                 .id("\(model.activeTool?.rawValue ?? "")-\(model.historyVersion)")
+                .surpriseReveal(id: model.revealVersion == model.historyVersion ? model.revealID : nil)
                 .onDisappear { isZoomed = false }
             }
             .aspectRatio(model.displayImage.size.width / max(model.displayImage.size.height, 1), contentMode: .fit)

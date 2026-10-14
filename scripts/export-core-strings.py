@@ -86,6 +86,8 @@ def collect() -> tuple[list[tuple[str, str]], list[tuple[str, str]]]:
     ideas = prompts[prompts.index("[", prompts.index("=", start)):prompts.index("\n    ]", start)]
     for text in literals(LITERAL, ideas):
         app.append((text, "Example idea for creating an image, put in the prompt field"))
+    for text in literals(r"\bidea\(" + LITERAL, read("LookSuggester.swift")):
+        app.append((text, "Suggested Magic Edit request for her photo, shown on a chip in the editor"))
 
     def clean(pairs: list[tuple[str, str]]) -> list[tuple[str, str]]:
         seen: set[str] = set()
