@@ -1,0 +1,304 @@
+# Sahip yapılacaklar
+
+Bu liste yalnızca sahibin yapabileceği işleri içerir: Supabase, xAI, AdMob, AdSense, App Store Connect, Search Console, Vercel ve Mac'te Xcode. Ajan (bu depoda kod ve belge değiştiren asistan) bu hesaplara giremez, anahtar giremez ve gönderme kararı veremez. "Öneri" satırları yalnızca yardımcı görüştür; karar sahibindedir.
+
+**Durum.** 14 Ekim 2026. `pink-girls-redesign` dalının origin'deki son commit'i `31f8817`. Çalışma ağacında commit edilmemiş dört dosya var (`AGENTS.md`, `docs/NEXT-STEPS.md`, `docs/SUPABASE-TODO.md`, `docs/marketing/app-store-connect-setup.md`); aşağıdaki maddeler bu taslakları da dikkate alır. Bu ortamdan dış sitelere çıkılamadı (proxy 403, örneğin example.com dahil); aybuke.org ve github.io adresleri burada kontrol edilemedi. Tarayıcıdan bakılmalı.
+
+**Önerilen sıra.** 1.1 ve 1.3 (xAI), 1.4 (migrasyon), 1.5 (gizli değer), 1.6 (fonksiyon), 1.7 ve 1.8 (zamanlama, kimlik), 1.9 (kontrol), 3.1–3.4 (AdMob), 2.1 (URL), 2.2–2.12 (derleme ve testler), 4 (arama), 5 ve 6 (kararlar), en son 2.13 (gönderme kararı).
+
+## 1) Önce bunlar (acil)
+
+### 1.1 xAI kredisini yükle ya da aylık limiti artır
+- [ ] **Ne:** xAI ekip kredisi ya da aylık harcama limiti bitti. Bu yüzden her AI işi şu an başarısız oluyor ve kredi iade ediliyor.
+  - **Neden:** `docs/HANDOFF-PROMPT.md`, "xAI" bölümü. Faturalandırma ve harcama limiti: `docs/SUPABASE-TODO.md` §7.
+  - **Nerede:** console.x.ai, ekip faturalandırma ve harcama limiti. Menü adları konsolun güncel arayüzüne göre değişebilir.
+  - **Sıra:** 1) Kredi yükle. 2) Aylık harcama limiti belirle. 3) Uygulamada bir Magic Edit dene; sonuç gelmeli (`docs/RELEASE-CHECKLIST.md` §3.4).
+
+### 1.2 Sohbete yapıştırılmış xAI anahtarını döndür
+- [ ] **Ne:** Sohbete bir kez yapıştırılmış xAI anahtarı güvenli sayılmaz. Yeni anahtar üret, Supabase'e yaz, sonra eskisini iptal et.
+  - **Neden:** `docs/HANDOFF-PROMPT.md`, "Owner-only items". Secret adı `XAI_API_KEY` (`backend/.env.example`).
+  - **Nerede:** console.x.ai (API anahtarları); Supabase, proje `efapupjvidyqhqdevmcu`, Edge Functions > Secrets.
+  - **Sıra:** 1) xAI'de yeni anahtar oluştur. 2) Supabase'de `XAI_API_KEY` değerini yenisiyle değiştir. 3) Bir AI işi dene (1.1 adım 3). 4) Çalıştığını gördükten sonra eski anahtarı xAI'de iptal et. Anahtarı hiçbir dosyaya, commit'e ya da sohbete yazma.
+
+### 1.3 xAI Zero Data Retention'ı doğrula
+- [ ] **Ne:** xAI konsolunda ekip için Zero Data Retention açık mı, bu anahtar için de geçerli mi, kontrol et.
+  - **Neden:** Gizlilik metinleri, xAI'nin Zero Data Retention seçeneğini kullandıklarını yazıyor (`legal/en/privacy-policy.md` ve `legal/tr/gizlilik-politikasi.md`, girdilerin saklanmadığı bölüm). Depo bunu kanıtlayamaz (`docs/SUPABASE-TODO.md` §7).
+  - **Nerede:** console.x.ai, ekip ayarları.
+  - **Sıra:** 1) Açıksa not al. 2) Kapalıysa aç. 3) Açılamıyorsa metinler yanlış olur; avukatla birlikte karar ver (6.1).
+
+### 1.4 Supabase migrasyonlarını sırayla uygula
+- [ ] **Ne:** `backend/supabase/migrations/` içindeki dosyaları zaman damgası sırasıyla SQL Editor'da çalıştır. Her dosyayı `begin;` ile `commit;` arasına al. Dosyaların içinde kendi transaction ifadesi yok (kontrol edildi), bu yüzden sarmalamak güvenli.
+  - **Neden:** Dizinde 17 dosya var. Commit'li `docs/SUPABASE-TODO.md` §3 yalnızca 10 dosya listeliyordu; çalışma ağacındaki taslak §1'de 1.1–1.9 sırasını veriyor. Yedi dosya ilk listede yoktu: `20261020000000_credit_policy_v2.sql`, `20261021000000_install_and_subscription_credits.sql`, `20261022000000_abuse_controls.sql`, `20261023000000_ad_rewards_per_install.sql`, `20261024000000_private_rls.sql`, `20261024000001_abuse_fixes.sql`, `20261024000002_entitlement_order.sql`. `docs/HANDOFF-PROMPT.md`'ye göre `20261011000000`–`20261018000000` ile `20261019500000_keepalive.sql` uygulanmış; taslağın §0 sorgusu `20261017000000` ve `20261018000000` nesnelerini kontrol ediyor.
+  - **Nerede:** Supabase panosu > SQL Editor (proje `efapupjvidyqhqdevmcu`, Frankfurt).
+  - **Sıra:** 1) `docs/SUPABASE-TODO.md` §0'daki sorguyu çalıştır; eksik nesne varsa ilgili dosyayı önce uygula. 2) Uygulanmış dosyaları atla. 3) §1'deki sırayla, uygulanmamış olanları (1.1–1.9) çalıştır; her dosya kendi `begin;` ... `commit;` bloğunda. 4) Bir dosya hata verirse dur, hata metnini ajana ver; sonraki dosyaya geçme.
+
+### 1.5 Gizli değerleri kontrol et ve eksiği ekle
+- [ ] **Ne:** Adları kontrol et, `ADMOB_REWARDED_AD_UNIT` değerini ekle. Değerleri hiçbir yere yazma.
+  - **Neden:** `docs/HANDOFF-PROMPT.md`'ye göre ayarlı: `XAI_API_KEY`, `APPLE_APP_ID` (6822716008; yoksa ücretsiz krediler App Store kurulumları için kapalı kalır, taslak §6), `APPLE_BUNDLE_ID`, `APPLE_TEAM_ID`. Eksik: `ADMOB_REWARDED_AD_UNIT` (boşsa her ödül reddedilir; `backend/README.md`, "Rewarded ads"). `OUTPUT_MODERATION` artık okunmuyor (`docs/SUPABASE-TODO.md` §6); `docs/RELEASE-CHECKLIST.md` §1.1 bu adı bekliyor. Ekleme.
+  - **Nerede:** Supabase > Edge Functions > Secrets.
+  - **Sıra:** 1) `ADMOB_REWARDED_AD_UNIT` = `ca-app-pub-2292230772061554/1406702504`. 2) `FAL_KEY` ve `XAI_SAFETY_MODEL` şimdilik eklenmez (bkz. 5.8). 3) `GLOWLIT_ALLOW_XCODE_APP_TRANSACTIONS` üretimde olmamalı; varsa sil. 4) Apple ile giriş ve RevenueCat anahtarları isteğe bağlı (bkz. 5.6, 5.7).
+
+### 1.6 Edge Functions'ı yayımla
+- [ ] **Ne:** Migrasyon ve gizli değerlerden sonra beş fonksiyonu yayımla. `ad-reward` ilk kez yayımlanıyor ve JWT doğrulaması kapalı olmalı.
+  - **Neden:** Canlıdaki `ai-image`, `account`, `credits-redeem` ve `report` 47b5c6f sürümünden (`docs/HANDOFF-PROMPT.md`); depo daha yeni (`docs/RELEASE-CHECKLIST.md` §12: `ai-image` ve `account` yeniden yayımlanmalı). `ad-reward` hiç yayımlanmadı. AdMob geri çağrısında JWT yoktur (`backend/README.md`, "Setup" 5). Önkoşul: `ai-image` ve `account`, §1 migrasyonları ve §0 nesneleri olmadan yayımlanmamalı (`docs/SUPABASE-TODO.md` §5).
+  - **Nerede:** Mac'te Terminal, repo içinde `backend` klasörü, Supabase CLI.
+  - **Sıra:** 1) `supabase login` (kendi hesabınla). 2) `cd backend`. 3) Aşağıdaki komutları ayrı ayrı çalıştır (`--use-api`: CLI paketlemeyi Docker yerine Yönetim API'siyle yapar; `docs/HANDOFF-PROMPT.md`'deki yöntem). 4) Yayımdan sonra 1.9'daki kontrolleri yap.
+
+```
+supabase functions deploy ai-image --project-ref efapupjvidyqhqdevmcu --use-api
+supabase functions deploy credits-redeem --project-ref efapupjvidyqhqdevmcu --use-api
+supabase functions deploy account --project-ref efapupjvidyqhqdevmcu --use-api
+supabase functions deploy report --project-ref efapupjvidyqhqdevmcu --use-api
+supabase functions deploy ad-reward --project-ref efapupjvidyqhqdevmcu --use-api --no-verify-jwt
+```
+
+### 1.7 Zamanlanmış işleri kontrol et
+- [ ] **Ne:** Temizlik işleri ve RevenueCat silme kuyruğu çalışıyor olmalı. Keep-alive iş akışı main'de etkin olmalı.
+  - **Neden:** Takılan işlerin iadesi ve sonuçların silinmesi `sweep-jobs` ile yapılır; reklam kayıtları `sweep-ad-rewards` ile temizlenir (`backend/README.md`, "Setup" 6; `docs/SUPABASE-TODO.md` §3). Keep-alive, ücretsiz planda projenin duraklatılmasını önler (`.github/workflows/keepalive.yml`).
+  - **Nerede:** Supabase > SQL Editor; GitHub > repo > Actions.
+  - **Sıra:** 1) `select jobname, schedule from cron.job;` çalıştır. `sweep-jobs` (`*/5 * * * *`) ve `sweep-ad-rewards` (`17 * * * *`) yoksa `docs/SUPABASE-TODO.md` §3'teki komutlarla ekle; aynı adla eklemek mevcut işi değiştirir, o yüzden önce kontrol et. 2) `revenuecat-deletions` için `select name from vault.decrypted_secrets;` ile `project_url` ve `service_role_key` adlarına bak; varsa yeniden ekleme. Service role anahtarını hiçbir yere yapıştırma. 3) GitHub Actions'ta "Backend keep-alive" iş akışının çalıştığını kontrol et. Public depoda 60 gün commit yoksa GitHub zamanlamayı durdurur (`keepalive.yml` yorumu); durduysa Actions'tan yeniden etkinleştir.
+
+### 1.8 Kimlik doğrulama ayarları (CAPTCHA açılmaz)
+- [ ] **Ne:** Anonim giriş açık, e-posta sağlayıcısı kapalı, CAPTCHA kapalı, Apple sağlayıcısında Client IDs `app.glowlit.ios`.
+  - **Neden:** `backend/README.md`, "Setup" 2: uygulamanın CAPTCHA widget'ı yok; CAPTCHA açılırsa her anonim kayıt başarısız olur. Commit'li `docs/SUPABASE-TODO.md` §4 CAPTCHA (Turnstile) öneriyordu; çalışma ağacındaki taslakta bu öneri geri alınmış (kapalı kalsın).
+  - **Nerede:** Supabase > Authentication > Sign In / Providers ve Rate Limits.
+  - **Sıra:** 1) CAPTCHA'nın kapalı olduğunu doğrula. 2) Anonim girişte sınır 15 giriş/saat/IP olsun. 3) E-posta sağlayıcısı kapalı olsun. 4) Apple'da Client IDs `app.glowlit.ios` olsun.
+
+### 1.9 Kontroller: Security Advisor ve duman testi
+- [ ] **Ne:** Security Advisor uyarılarını oku; anonim bir kullanıcıyla duman testi yap; test kullanıcısının silindiğini doğrula.
+  - **Neden:** `docs/HANDOFF-PROMPT.md` adım 6. `20261020000000_credit_policy_v2.sql`, Security Advisor'ın "Function Search Path Mutable" uyarısını gidermeyi amaçlıyor.
+  - **Nerede:** Supabase panosu > Advisors > Security Advisor; SQL Editor; Terminal. Proje adresi ve anon anahtar `ios/App/Resources/AppConfig.json` içinde. Değerleri kopyalayıp bir dosyaya yazma.
+  - **Sıra:** 1) Security Advisor'da beklenen sonuç: "function search path mutable" bulgusu yok; `private` tablolarda RLS kapalı bulgusu yok. `docs/SUPABASE-TODO.md` §2 sorgusunda anonim kullanıcının çalıştırabildiği tek fonksiyon `public.keepalive()`. Başka bulgu varsa listele ve ajana ver. 2) Anonim oturum aç; `GET /functions/v1/ai-image` ile bakiyeyi al. 3) `DELETE /functions/v1/account` ile sil. 4) Authentication > Users'ta kullanıcının gittiğini gör. 5) İsteğe bağlı: `select public.ops_daily_summary();` ile günü oku.
+
+### 1.10 Eski "envanter" projesine dokunma
+- [ ] **Ne:** Commit'li `docs/SUPABASE-TODO.md` §1 "Eski envanter projesini sil" diyordu. Çalışma ağacındaki taslak aynı işi §11'de "eski inventory projesi" olarak sahibin kararına bırakıyor. Silme geri alınamaz.
+  - **Neden:** Taslak §11: "This is permanent and is the owner's call; it is not part of this repository." Bu depoyla ilgisi yoksa silinmemeli.
+  - **Nerede:** Supabase > proje listesi > proje ayarları (General).
+  - **Sıra:** 1) Proje adını ve içeriğini kontrol et. 2) Bu uygulamayla ilgisi kanıtlanmadıkça silme. 3) Silinecekse yalnızca sahip yapar. Ajan silmeye dokunmaz.
+
+## 2) Uygulama yayını (App Store Connect ve Mac)
+
+### 2.1 Bağlantı adreslerini tarayıcıdan doğrula
+- [ ] **Ne:** Uygulamanın `websiteURL`, `privacyPolicyURL` ve `termsURL` adresleri artık aybuke.org'u gösteriyor (`ios/App/Resources/AppConfig.json`; bu değişiklik commit'lenecek). Adreslerin tarayıcıda açıldığını doğrula.
+  - **Neden:** `AGENTS.md` §6 (4. madde). Bu adresler paylaşım yazılarında ve davet QR kodunda kullanılır. Bu ortamdan dış sitelere çıkılamadığı için `check-release-config.py --online` burada kanıt değil.
+  - **Nerede:** Tarayıcı; Vercel (`RiosenBeq/aybuke` dağıtımı, aybuke.org alan adı).
+  - **Sıra:** 1) Tarayıcıda aç: `https://aybuke.org`, `https://aybuke.org/legal/en/privacy-policy`, `https://aybuke.org/legal/tr/gizlilik-politikasi`, `https://aybuke.org/app-ads.txt` ve destek sayfası (2.4). 2) Hepsi açılıyorsa `python3 scripts/check-release-config.py --online` çalıştır. 3) Açılmıyorsa Vercel dağıtımını ve alan adını kontrol et; ajana bildir.
+
+### 2.2 Derlemeleri yükle (önce disk ve CI)
+- [ ] **Ne:** iOS ve macOS derlemelerini yükle. Arşiv için yaklaşık 2 GB boş alan gerekir.
+  - **Neden:** `AGENTS.md` §6 (2. madde) ve `docs/HANDOFF-PROMPT.md` adım 9 (disk neredeyse dolu). CI (`.github/workflows/ci.yml`) yalnızca `main`'e push'ta ve PR'larda çalışır. `6f2959d` için CI çalışıyor görüldü; `31f8817` için çalıştırma kaydı görünmedi.
+  - **Nerede:** Mac'te Terminal, repo kökü. App Store Connect API anahtarı `~/.appstoreconnect/private_keys/` içinde; commit'e girmez.
+  - **Sıra:** 1) Disk boşalt. 2) Son commit'in CI'ını GitHub Actions'ta kontrol et. Öneri: yeşil olmadan yükleme yapma. 3) `ASC_KEY_ID=<id> ASC_ISSUER_ID=<issuer> scripts/upload-app-store.sh`. 4) `PLATFORM=mac ASC_KEY_ID=<id> ASC_ISSUER_ID=<issuer> scripts/upload-app-store.sh`. 5) İşleme bitince (10–30 dk) derlemeleri 2.3'te sürüme bağla.
+
+### 2.3 Derlemeyi ve satın almaları 1.0 sürümüne bağla
+- [ ] **Ne:** iOS 1.0 ve macOS 1.0 sürümlerine derlemeyi, iki aboneliği ve iki kredi paketini ekle.
+  - **Neden:** `docs/HANDOFF-PROMPT.md` ("App Store Connect"): abonelikler MISSING_METADATA, paketler READY_TO_SUBMIT. İlk abonelik uygulama sürümüyle birlikte incelemeye gönderilmeli (`docs/RELEASE-CHECKLIST.md` §11).
+  - **Nerede:** App Store Connect > Aybuke > iOS 1.0 > In-App Purchases and Subscriptions; macOS 1.0'da da aynı bölüm.
+  - **Sıra:** 1) `app.glowlit.pro.yearly`, `app.glowlit.pro.monthly`, `app.glowlit.credits.30` ve `app.glowlit.credits.100` ekle. 2) İnceleme ekran görüntüsü ve notu olsun. Paywall görüntüsü `docs/marketing/app-store/en/09-paywall.jpg` (kurulum dokümanı `10-paywall.jpg` yazıyor; bkz. 2.9). 3) Durumlar "Ready to Submit" olsun.
+
+### 2.4 Destek ve gizlilik adresleri
+- [ ] **Ne:** App Store Connect'teki Support URL, Marketing URL ve gizlilik URL'lerini tek bir karara bağla.
+  - **Neden:** Çalışma ağacındaki taslak `docs/marketing/app-store-connect-setup.md` Support ve Marketing URL'sini `https://aybuke.org` yazıyor. `docs/HANDOFF-PROMPT.md` (adım 7) ise Support URL'sini `https://aybuke.org/support` diyor. İki belge çelişiyor.
+  - **Nerede:** App Store Connect > sürüm sayfası (Support URL, Marketing URL) ve App Information (Privacy Policy URL).
+  - **Sıra:** 1) `https://aybuke.org/support` açılıyorsa onu, açılmıyorsa `https://aybuke.org` yaz. 2) Gizlilik URL'leri: `https://aybuke.org/legal/en/privacy-policy` ve `https://aybuke.org/legal/tr/gizlilik-politikasi`. 3) Sayfaların 200 döndüğünü kontrol et (2.1).
+
+### 2.5 Telif satırı, yayın türü ve sürüm numarası
+- [ ] **Ne:** Üç ayarı karara bağla.
+  - **Telif:** `docs/HANDOFF-PROMPT.md` "2026 Okan Berk Manavoğlu" diyor; kurulum dokümanı §6 ve App Store Connect'in mevcut değeri "2026 Aybuke" (HANDOFF'a göre). Karar: birini seç.
+  - **Yayın türü:** HANDOFF'a göre sürüm "AFTER_APPROVAL" (onaydan hemen sonra otomatik yayın). Kurulum dokümanı §6 "Manual release after approval" diyor. Öneri: manuel yayın; backend ve reklam kurulumu bitmeden yayın olmasın.
+  - **Sürüm numarası:** `ios/Glowlit.xcodeproj/project.pbxproj` içinde `MARKETING_VERSION = 1.0` (dört yer). `docs/RELEASE-CHECKLIST.md` §11 ve §12-6 "1.0.0" diyor; bu uyarı artık geçerli değil. App Store Connect'te sürüm 1.0 olmalı.
+  - **Nerede:** App Store Connect > sürüm sayfası.
+  - **Sıra:** 1) Telif satırını yaz. 2) "Manually release this version" seç (öneri). 3) Sürümün 1.0 olduğunu kontrol et.
+
+### 2.6 Abonelik açıklamasındaki kredi sayısı
+- [ ] **Ne:** Abonelik açıklaması "80 kredi" yazıyor; kurulum dokümanı sayı yazılmamasını istiyor. Karar ver.
+  - **Neden:** `scripts/asc/iap_localize.py` en-US için "80 credits a month, every look, best AI" yazıyor; HANDOFF'a göre 13 dilde böyle. `docs/marketing/app-store-connect-setup.md` §4: "It names no number on purpose". Sunucudaki sayı (`credit_policy()`) değişebilir.
+  - **Nerede:** App Store Connect > abonelik grubu "Aybuke Pro" > yerelleştirmeler; ya da `scripts/asc/iap_localize.py`.
+  - **Sıra:** 1) Karar: sayıyı tut ya da kaldır. Öneri: kaldır; sayı değişirse App Store metni de değişmek zorunda kalır. 2) Kaldırılırsa ajan `iap_localize.py` dosyasını düzeltir; App Store Connect'e sen ya da ajan yazar.
+
+### 2.7 App Privacy yanıtları
+- [ ] **Ne:** İki konuyu karara bağla, sonra Xcode raporuyla karşılaştır.
+  - **Kurulum anahtarı (install-key hash):** Ücretsiz krediler App Store kurulumuna bağlı. Uygulama, StoreKit `AppTransaction`'dan türetilmiş tuzlu bir hash gönderiyor (`backend/README.md`, "Why it's shaped like this" tablosundaki "Free credits per App Store download" satırı). Saklama: son kullanımdan 30 gün (`docs/SUPABASE-TODO.md`, Notlar). `docs/HANDOFF-PROMPT.md` adım 10 "App Functionality / fraud prevention" diyor; ama kurulum dokümanı §5, `docs/RELEASE-CHECKLIST.md` §11 ve `ios/App/Resources/PrivacyInfo.xcprivacy` bu veriyi içermiyor. Karar: veri türü ve kullanıcıyla ilişkisi.
+  - **E-posta:** `docs/RELEASE-CHECKLIST.md` §11 "Email Address" işaretli diyor; kurulum dokümanı §5 girişe kapalıyken beyan edilmeyebileceğini yazıyor. `PrivacyInfo.xcprivacy` e-postayı listeliyor. Karar: tutarlı bir yanıt seç.
+  - **Nerede:** App Store Connect > App Privacy; Xcode > Organizer > Archive > Generate Privacy Report.
+  - **Sıra:** 1) Archive'dan Privacy Report al. 2) İki kararı yaz. Öneri: kurulum hash'inin beyanını avukatla (6.1) teyit et. 3) Ajan `PrivacyInfo.xcprivacy` dosyasını karara göre güncelleyecek.
+
+### 2.8 Yaş derecelendirmesi ve Age Assurance
+- [ ] **Ne:** HANDOFF'a göre 13+ (override), Advertising ve Age Assurance işaretli. Kurulum dokümanı §2 Age Assurance'ı, yaş adımı içeren derleme yayındayken işaretlemeyi söylüyor.
+  - **Neden:** `docs/marketing/app-store-connect-setup.md` §2; `docs/HANDOFF-PROMPT.md` ("App Store Connect").
+  - **Nerede:** App Store Connect > yaş derecelendirmesi.
+  - **Sıra:** 1) Karar: Age Assurance işareti kalsın mı. Öneri: dokümanla uyum için işareti yaş adımını içeren derleme yayına girene kadar kaldır. 2) Advertising işareti kalmalı.
+
+### 2.9 Ekran görüntüleri (12 dil)
+- [ ] **Ne:** Görüntüler eksik. `docs/marketing/app-store/` içinde yalnızca `en` ve `tr` var; ikisinde de iPhone 9, iPad 9, Mac 8 dosya var. Diğer on dil yok.
+  - **Neden:** `docs/RELEASE-CHECKLIST.md` §11 her dil için iPhone 10, iPad 10, Mac 8 diyor. Kurulum dokümanı §4 `10-paywall.jpg` yolunu veriyor, dosya `09-paywall.jpg`. `docs/HANDOFF-PROMPT.md` adım 8: Mac yakalamaları henüz yapılmadı.
+  - **Nerede:** Mac; `scripts/marketing-images.py` (başlıktaki sahne listesi); `docs/marketing/screenshot-captions.json`; çıktı `docs/marketing/app-store/<dil>/`.
+  - **Sıra:** 1) Mac'te iPhone 17 Pro Max ve iPad Pro 13 inç M5 simülatörlerinde ile Mac penceresinde (`-GLWindowSize 1600x1000`, `screencapture -x -o -l <CGWindowID>`) yakalamaları al. Dil için `-AppleLanguages "(tr)" -AppleLocale tr`; örnek fotoğraflar için `-GLSamplePhotos docs/marketing/samples`. 2) `python3 scripts/marketing-images.py <yakalamalar>` çalıştır. 3) Her görüntüye bak: kredi sayısı olmamalı. 4) `cd scripts/asc && python3 asc_screenshots.py ../..` ile yükle.
+
+### 2.10 Mac derleme ve pencere kontrolleri
+- [ ] **Ne:** Derlemeleri al ve Mac penceresini 900×640, 1600×1000 ve yaklaşık 2200×1400 UIKit noktasında yakala.
+  - **Neden:** `docs/HANDOFF-PROMPT.md` adım 5 ve "Unfinished branches" 2 (Mac yakalama); `AGENTS.md` §3. En küçük pencere 900×640 (`docs/RELEASE-CHECKLIST.md` §10).
+  - **Nerede:** Xcode, Mac.
+  - **Sıra:** 1) Debug simülatör derlemesi. 2) `xcodebuild build -project ios/Glowlit.xcodeproj -scheme Glowlit -configuration Release -destination 'generic/platform=iOS' CODE_SIGNING_ALLOWED=NO`. 3) `xcodebuild build -project ios/Glowlit.xcodeproj -scheme Glowlit -configuration Debug -destination 'generic/platform=macOS,variant=Mac Catalyst' CODE_SIGNING_ALLOWED=NO`. Hataları ve yeni uyarıları ajana bildir. 4) Üç pencere boyutunda yakalama al; sorun varsa `docs/RELEASE-CHECKLIST.md` §13 şablonunu kullan.
+
+### 2.11 Büyük metin taraması
+- [ ] **Ne:** iPhone 17e'de en büyük metin boyutunda İngilizce, Almanca ve Rusça ile ekranları gez.
+  - **Neden:** `docs/HANDOFF-PROMPT.md` adım 5 ("Large-text survey").
+  - **Nerede:** iPhone 17e; iOS'un metin boyutu ayarı (Erişilebilirlik > Görüntüleme ve Metin Boyutu).
+  - **Sıra:** 1) Cihaz dilini sırayla EN, DE, RU yap. 2) En büyük metin boyutunu seç. 3) Explore, Create, Edit, My Works, paywall ve Settings'te kesilen ya da taşan metni not et; ajana ver.
+
+### 2.12 Cihazda testler: sandbox, Ask to Buy, ödüllü reklam
+- [ ] **Ne:** Üç test yap: sandbox satın alma; Ask to Buy (simülatörde); AdMob test cihazında ödüllü reklam.
+  - **Neden:** `docs/RELEASE-CHECKLIST.md` §1.3–§4 (sandbox); §4.9 (Ask to Buy TestFlight'ta denenemez); `docs/HANDOFF-PROMPT.md` son madde.
+  - **Nerede:** App Store Connect > Users and Access > Sandbox > Test Accounts; AdMob (test cihazı); Mac'te Xcode (`ios/StoreKit/Products.storekit`).
+  - **Sıra:** 1) Türkiye ve ABD mağazası için iki sandbox hesabı oluştur. 2) `docs/RELEASE-CHECKLIST.md` §1.2–1.4 ve §4.1–4.6'yı uygula. 3) Ask to Buy: Xcode'da `Products.storekit` dosyasını aç, Editor > Enable Ask to Buy; testten sonra kapat ve dosyayı açık haliyle commit'leme. 4) AdMob'da cihazı test cihazı olarak kaydet. Ödüllü reklamı izle; kredi yalnızca AdMob'un geri çağrısından sonra gelir (Supabase > Edge Functions > Logs'ta `ad-reward` kaydına bak). 5) TestFlight derlemesinde yeni kurulumda 2 ücretsiz kredi görünmeli, Magic Edit gerçek sonuç vermeli ve "Preview build" bandı olmamalı (`docs/SUPABASE-TODO.md` §8).
+
+### 2.13 Gönderme kararı
+- [ ] **Ne:** Her şey hazır olduğunda sahibin açık onayı olmadan gönderme yapılmaz.
+  - **Neden:** `AGENTS.md` §6 (3. madde): "Submit for Review" için sahibin onayı gerekir. `docs/SUPABASE-TODO.md` başlığına göre Supabase adımları bitmeden uygulama incelemeye gönderilmez. `docs/RELEASE-CHECKLIST.md` §14.
+  - **Nerede:** App Store Connect > iOS 1.0 ve macOS 1.0 sürüm sayfaları.
+  - **Sıra:** 1) `docs/RELEASE-CHECKLIST.md` §1.1 ve §11 maddelerini işaretle. 2) Backend canlı ve derleme demo modunda değil (§1.1). 3) Ajan "Her şey hazır. Gönderelim mi?" diye kısa bir özetle sorar; açık "evet" gelirse gönderilir.
+
+## 3) Reklam (AdMob ve AdSense)
+
+### 3.1 Geçiş reklamı birimi
+- [ ] **Ne:** "After save interstitial" adında geçiş birimi oluştur; sıklık sınırı kullanıcı başına günde 3.
+  - **Neden:** `ios/App/Resources/AppConfig.json` içinde `ads.interstitialUnitID` boş; geçiş reklamı şu an kapalı (`docs/HANDOFF-PROMPT.md` adım 7). Uygulamada zaten en çok 3/gün sınırı var (`AGENTS.md`, "Ads"). AdMob sınırı ek güvence.
+  - **Nerede:** AdMob > Aybuke uygulaması > Ad units.
+  - **Sıra:** 1) Birimi oluştur; sıklık sınırını 3/gün yap. 2) Birim kimliğini ajana ver; ajan `ads.interstitialUnitID` alanına yazar ve yeni derleme hazırlar. 3) Boş bırakılırsa geçiş reklamı olmaz; bu da geçerli bir karardır.
+
+### 3.2 Ödüllü birimde sunucu doğrulaması
+- [ ] **Ne:** Ödüllü birimin sunucu doğrulamasını ayarla ve Verify URL'yi çalıştır.
+  - **Neden:** `backend/README.md`, "Rewarded ads" ve kurulum dokümanı §5. Önkoşullar: 1.5 (gizli değer) ve 1.6 (`ad-reward` yayında). Gizli değer yoksa doğrulama 503 döner.
+  - **Nerede:** AdMob > ödüllü birim (`ca-app-pub-2292230772061554/1406702504`, ödül miktarı 1, öğe `credit`) > Server-side verification.
+  - **Sıra:** 1) Adres: `https://efapupjvidyqhqdevmcu.supabase.co/functions/v1/ad-reward` (sorgu dizesi yok). 2) Verify URL. Test çağrısı token taşımadığı için 200 döner ve kredi vermez. 3) Hata alınırsa Supabase Logs'a bak; önce 1.5 ve 1.6'yı kontrol et.
+
+### 3.3 Hassas kategoriler ve GDPR mesajı
+- [ ] **Ne:** Hassas reklam kategorilerini engelle; AB, Birleşik Krallık ve İsviçre için GDPR mesajı oluştur.
+  - **Neden:** `docs/marketing/app-store-connect-setup.md`, "Ads (AdMob)" bölümü. Uygulama genç ve yaşı bilinmeyen kullanıcılar için G, yetişkinler için PG isteği gönderir (`AGENTS.md`).
+  - **Nerede:** AdMob > Blocking controls > Sensitive categories; AdMob > Privacy & messaging.
+  - **Sıra:** 1) Dating, gambling, alcohol, weight loss ve diğer hassas kategorileri engelle. 2) GDPR mesajını oluştur (EEA, UK, Switzerland). 3) ABD eyaletleri mesajı isteğe bağlı; kararını ver.
+
+### 3.4 AdMob uygulama adı
+- [ ] **Ne:** AdMob'daki uygulama adını "Aybuke" yap.
+  - **Neden:** `docs/HANDOFF-PROMPT.md` adım 4 ("AdMob's app name (owner's browser)"). Uygulama kimliği `ca-app-pub-2292230772061554~5236020895` değişmez.
+  - **Nerede:** AdMob > Apps > uygulama ayarları.
+  - **Sıra:** Mevcut adı kontrol et; eski kod adı (Glowlit) kalmışsa değiştir.
+
+### 3.5 app-ads.txt
+- [ ] **Ne:** `https://aybuke.org/app-ads.txt` adresinin AdMob satırını döndürdüğünü tarayıcıdan doğrula.
+  - **Neden:** AdMob, alan adının kökünde arar. Satır: `google.com, pub-2292230772061554, DIRECT, f08c47fec0942fa0` (`web/app-ads.txt`; web sitesi deposunda `public/app-ads.txt`). Bu ortamdan açılamadı.
+  - **Nerede:** Tarayıcı; gerekirse Vercel dağıtımı.
+  - **Sıra:** 1) Adresi aç ve satırı karşılaştır. 2) Açılmıyorsa ya da satır farklıysa Vercel dağıtımını kontrol et ve ajana bildir.
+
+### 3.6 AdSense ödeme hesabı
+- [ ] **Ne:** AdSense'te "işlem gerekli" durumunu kapat.
+  - **Neden:** `docs/HANDOFF-PROMPT.md` ("Other services" ve "Owner-only items"). Kimlik, adres ve vergi bilgileri gerekir; kodla yapılacak bir şey yok.
+  - **Nerede:** AdSense > ödeme ayarları.
+  - **Sıra:** 1) Ekranda istenen eksik adımı oku. 2) Kimlik, adres ve vergi bilgilerini gir. 3) Onay bekleniyorsa not al.
+
+## 4) Web ve arama
+
+### 4.1 Search Console site haritası
+- [ ] **Ne:** aybuke.org için site haritasını yeniden gönder.
+  - **Neden:** `docs/HANDOFF-PROMPT.md`, "Unfinished branches" 3 (site yayında; ardından Search Console ve IndexNow).
+  - **Nerede:** Google Search Console > aybuke.org mülkü > Sitemaps.
+  - **Sıra:** 1) Site haritası adresini web sitesi deposundan (`RiosenBeq/aybuke`) doğrula. 2) Yeniden gönder. 3) Durumun "Başarılı" olduğunu kontrol et.
+
+### 4.2 IndexNow
+- [ ] **Ne:** Sayfa adreslerini IndexNow'a bildir.
+  - **Neden:** `docs/HANDOFF-PROMPT.md`, "Unfinished branches" 3. Anahtar dosyası web sitesi deposunun `public/` klasöründe; bu depoda yok.
+  - **Nerede:** `RiosenBeq/aybuke` deposu `public/`; IndexNow.
+  - **Sıra:** 1) Anahtar dosyasının aybuke.org kökünden açıldığını kontrol et. 2) Bildirimi sen ya da ajan gönderir; yanıtı not et.
+
+## 5) Karar bekleyen konular (önerilerle)
+
+### 5.1 Deneme kredileri
+- [ ] **Karar:** Yıllık planın 7 günlük denemesindeki 20 kredi kullanılmadan kalırsa ilk ücretli aya eklensin mi (20 + 80, en çok 160), yoksa dönüşümde sıfırlansın mı?
+  - **Neden:** `backend/README.md`, "Credit rules" (`trial_credits` = 20); `AGENTS.md`, "Money". Mevcut tasarım ekleme yönünde.
+  - **Öneri:** Mevcut davranışı koru; paywall ve hukuki metinler bunu açıkça söylesin. Böylece kullanıcı kredisini kaybetmez.
+
+### 5.2 App Store Server Notifications V2
+- [ ] **Karar:** Lansmandan önce iade ve iptal bildirimleri için uç nokta kurulsun mu?
+  - **Neden:** `backend/README.md`, "Before launch". Uç nokta yokken iade edilen Pro abonelik `expires_at` tarihine kadar Pro kalır.
+  - **Öneri:** Lansmandan önce kur. Ajan uç noktayı yazar; sen App Store Connect'te URL'yi girersin.
+
+### 5.3 Paylaşılan IP adresleri
+- [ ] **Karar:** Doğrulanmamış bir adresten üç strike, o adresteki herkesi cool-down'a sokuyor. Adres anahtarları için daha yüksek bir eşik uygulansın mı?
+  - **Neden:** `backend/README.md`, "Abuse runbook": bir adres birçok kişiye hizmet edebilir (okul, mobil operatör). Eşik `credit_policy()` içinde.
+  - **Öneri:** Adres anahtarları için eşiği yükselt. Değişiklik yeni bir migrasyonla yapılır; ajan yazar.
+
+### 5.4 MERSİS satırı
+- [ ] **Karar:** Gizlilik ve kullanım metinlerindeki "Ticaret sicili / MERSİS numarası: Yok (bireysel geliştirici)" satırı kalsın mı?
+  - **Neden:** `legal/config.json` (`COMPANY_REGISTRY`). `docs/HANDOFF-PROMPT.md`, "Unfinished branches" 3: web sitesinde MERSİS bilgisi olmamalı diyor; senkron metinler ise satırı yazıyor.
+  - **Öneri:** "Yok" bilgisi doğruysa tut. Kaldırılacaksa `legal/config.json` içinde `COMPANY_REGISTRY` alanını boş bırak (boş değerli satır üretilmez), sonra `python3 scripts/build-legal.py` çalıştır.
+
+### 5.5 Destek ve iletişim e-postası
+- [ ] **Karar:** Uygulama, hukuk metinleri, App Review ve web sitesinde `hello@buaze.com` kullanılıyor. Bu adres kalsın mı, yoksa aybuke.org alan adında bir adres mi kullanılsın?
+  - **Neden:** `legal/config.json` (`CONTACT_EMAIL`, `PRIVACY_EMAIL`); `ios/App/Resources/AppConfig.json` ve `ios/App/App/AppConfig.swift` (`supportEmail`); `web/index.html`; `docs/RELEASE-CHECKLIST.md` §11.
+  - **Öneri:** Lansmandan önce karar ver. Değişirse hepsi tek seferde güncellenir; `check-release-config.py --online` yeni alan adının posta kaydını (MX) da kontrol eder.
+
+### 5.6 Apple ile giriş anahtarları (isteğe bağlı)
+- [ ] **Karar:** Apple ile girişi açmak için `APPLE_SIGNIN_KEY_ID` ve `APPLE_SIGNIN_PRIVATE_KEY` eklensin mi?
+  - **Neden:** `AGENTS.md`, "Accounts" (`signInWithApple` varsayılanı false); `backend/README.md`, "Accounts" (token iptali için gerekli).
+  - **Öneri:** Bu sürümde kapalı kalsın. Açılacaksa Apple Developer'da Sign in with Apple anahtarı (.p8) oluşturulur; içeriği yalnızca Supabase Secrets'a girilir. Açılmadan önce App Privacy'de e-posta beyanı yapılır ve giriş metinleri geri konur.
+
+### 5.7 RevenueCat v2 anahtarı (isteğe bağlı)
+- [ ] **Karar:** `REVENUECAT_SECRET_KEY` ve `REVENUECAT_PROJECT_ID=3e7e4f4a` eklensin mi?
+  - **Neden:** `backend/.env.example`; `backend/README.md`, "Accounts" 4. madde. Anahtar yoksa hesap silme, RevenueCat kaydını `pending_revenuecat_deletions` tablosunda bekletir.
+  - **Öneri:** Lansman için şart değil. Eklenirse hesap silme anında RevenueCat'e gider. Anahtar türü: RevenueCat > Project settings > API keys; yalnızca `customer_information:customers:read_write` izinli v2 gizli anahtar.
+
+### 5.8 FAL_KEY ve XAI_SAFETY_MODEL (isteğe bağlı)
+- [ ] **Karar:** Bağımsız çıktı denetimi için `FAL_KEY` eklensin mi?
+  - **Neden:** `docs/SUPABASE-TODO.md` §6; `backend/.env.example`. `FAL_KEY` eklenirse sonuçlar fal.ai'ye gider; bu, onay ekranında listelenmeden yapılmamalı (`AGENTS.md`, "Consent record").
+  - **Öneri:** Bu sürümde ekleme. Eklenecekse önce fal.ai'yi `aiProcessors` listesine ve gizlilik metinlerine ekleyen bir sürüm çıkmalı. `XAI_SAFETY_MODEL` de kapalı kalsın: taslak §6 onu canlı API'de test edilmemiş sayıyor; açılırsa hata, zaman aşımı veya belirsiz yanıt işi engelleyip krediyi iade ediyor.
+
+## 6) Hukuk
+
+### 6.1 Avukat incelemesi
+- [ ] **Ne:** `legal/` altındaki metinleri (İngilizce, Türkçe, KVKK) bir avukat incelesin.
+  - **Neden:** `docs/HANDOFF-PROMPT.md`, "Owner-only items" ("A lawyer's review"). Konular: xAI Zero Data Retention iddiası (1.3); kurulum anahtarı hash'i (2.7); "Atanmış temsilci yok" satırları (GDPR md. 27 ve UK GDPR); 13–15 yaş için vasi adımı; MERSİS satırı (5.4).
+  - **Nerede:** Kaynak `legal/en` ve `legal/tr`. Kopyalar `docs/legal`, `ios/App/Resources/Legal` ve `web/legal` içinde.
+  - **Sıra:** 1) Metinleri avukata gönder. 2) Değişiklik çıkarsa `legal/` içinde düzelt; `python3 scripts/build-legal.py` ile kopyaları yenile.
+
+### 6.2 KVKK başvuru adresi (isteğe bağlı)
+- [ ] **Karar:** KVKK'daki yazılı başvurular için posta ya da KEP adresi eklensin mi?
+  - **Neden:** `legal/config.json` içinde `KEP_ADDRESS` boş (boş değerli satır gizlenir). `docs/HANDOFF-PROMPT.md`: ev adresi DSA gereği AB mağazalarında zaten görünür; sahibin onayı olmadan yayımlanmaz.
+  - **Öneri:** Avukatın görüşüne göre karar ver. Ev adresi yerine ayrı bir adres kullanılabiliyorsa onu tercih et.
+
+### 6.3 Yurt dışı aktarım dayanağı
+- [ ] **Ne:** Google (reklam) ve diğer işleyiciler için KVKK yurt dışı aktarım dayanağını avukat belirlesin.
+  - **Neden:** `docs/HANDOFF-PROMPT.md`, "Owner-only items" ("The KVKK basis for transfers abroad").
+  - **Nerede:** `legal/tr/kvkk-aydinlatma-metni.md` (kaynak).
+  - **Sıra:** Avukat dayanağı yazdıktan sonra metni `legal/` içinde güncelle ve `python3 scripts/build-legal.py` çalıştır.
+
+## 7) Sahibin kendi hesaplarında yapacakları (özet)
+
+| Hesap | Madde |
+|---|---|
+| xAI | 1.1, 1.2, 1.3 |
+| Supabase (proje `efapupjvidyqhqdevmcu`) | 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 1.10 |
+| GitHub (Actions) | 1.7 |
+| AdMob | 2.12 (test cihazı), 3.1–3.4 |
+| AdSense | 3.6 |
+| App Store Connect | 2.2–2.8, 2.12 (sandbox), 2.13, 5.2 |
+| Search Console ve IndexNow | 4.1, 4.2 |
+| Vercel ve alan adı | 2.1, 3.5 |
+| Apple Developer | 5.6 (isteğe bağlı) |
+| RevenueCat | 5.7 (isteğe bağlı) |
+| Mac (Xcode, simülatör) | 2.9, 2.10, 2.11, 2.12 (Ask to Buy) |
+
+## Şu an tamamlananlar
+
+- PR #1 (`pink-girls-redesign`) `main`'de; merge commit `d007a8b`. CI `d2cbbf3`'te yeşil: iOS derlemesi (iPhone ve Mac Catalyst), backend (Deno ve PostgreSQL), AppCore testleri (Linux), hukuk metinlerinin senkronu ve metin kontrolü.
+- Kredi ve kötüye kullanım dalı birleşti. Doğrulama: yerelde Deno fmt, lint ve check ile 50 test geçti; `backend/scripts/test-db.sh` PostgreSQL 16'da geçti.
+- Mac dalı birleşti. Doğrulama: Mac Catalyst derlemesi CI'da; ekran yakalamaları henüz yapılmadı (2.10).
+- Web sitesi (`RiosenBeq/aybuke`, `main` `c750808`) birleşti; Vercel üretime yayınlıyor; hukuk metinleri uygulamadan senkron. Doğrulama: aybuke.org bu ortamdan açılamadı.
+- Yeniden adlandırma (`6f2959d`, Glowlit → Aybuke) ve `31f8817` (ad-reward Deno testleri CI'da). CI `6f2959d` için çalışıyor görüldü; `31f8817` için çalıştırma kaydı görünmedi. AppCore testleri yeniden adlandırmadan önce 315 geçti; sonrası henüz koşulmadı.
+- Bu oturumda yerelde geçen kontroller: `build-legal.py --check`, `export-core-strings.py --check`, `check-honest-copy.py`, `check-release-config.py --report`. `--online` iki github.io adresini doğrulayamadı (2.1).
+
+## Belgelerdeki eski bilgiler (ajan düzeltecek, sahip onayıyla)
+
+- `docs/SUPABASE-TODO.md`: çalışma ağacındaki taslakta 7 migrasyon, kapalı CAPTCHA ve kaldırılmış `OUTPUT_MODERATION` var; commit edilmeli (commit'li sürüm eski). §6'daki `APPLE_APP_ID` "uygulama kaydı oluşunca" ifadesi artık geçersiz; kayıt var.
+- `docs/RELEASE-CHECKLIST.md`: §1.1'deki `OUTPUT_MODERATION` beklentisi kaldırılacak; §11 ve §12-6 sürüm numarası (`MARKETING_VERSION = 1.0`); özet satırı yalnızca iki migrasyon anıyor; §11 ekran görüntüsü sayıları gerçek durumla eşleştirilecek; App Privacy listesi 2.7'ye göre düzeltilecek.
+- `docs/marketing/app-store-connect-setup.md`: §4 `10-paywall.jpg` yerine `09-paywall.jpg`; §5 kurulum anahtarı hash'i eksik; §2 Age Assurance koşulu netleştirilecek.

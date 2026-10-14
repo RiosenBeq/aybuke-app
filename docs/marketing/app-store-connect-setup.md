@@ -21,7 +21,7 @@ Every value needed to create Aybuke in App Store Connect, in the order the forms
 |---|---|
 | Category | Primary **Photo & Video**, secondary **Graphics & Design** |
 | Content rights | Doesn't contain, show or access third-party content |
-| Privacy Policy URL | `https://riosenbeq.github.io/aybuke-app/legal/en/privacy-policy.html` (needs GitHub Pages; until then the repository's `main` copy of `docs/legal/en/privacy-policy.md` works) |
+| Privacy Policy URL | English: `https://aybuke.org/legal/en/privacy-policy`; Turkish localization: `https://aybuke.org/legal/tr/gizlilik-politikasi`. The site is the `RiosenBeq/aybuke` repository on Vercel; confirm both pages answer before submitting |
 | Localizations | Add every locale in `app-store-metadata.json`: en-US, tr, es-ES, es-MX, pt-BR, fr-FR, de-DE, it, ru, ja, ko, zh-Hans, id |
 
 **Age rating:** answer honestly — no violence, sexual content, profanity, gambling, horror, drugs, medical content or unrestricted web access; no chat between users. Generated images are filtered (prompt policy in all languages, provider moderation, output check) and can be reported. Set the rating to **13+** to match the Terms (cloud AI, accounts and purchases from 13) with **Override to Higher Age Rating**, which is needed while the Terms keep a minimum age above the calculated rating. Under In-App Controls, tick **Age Assurance** only once a build with the age step is live. Under Capabilities, tick **Advertising**: free members see ads (section "Ads (AdMob)" below). The app uses the **Declared Age Range** capability (`com.apple.developer.declared-age-range`; no approval needed): turn it on for the app id `app.glowlit.ios` if automatic signing doesn't.
@@ -87,7 +87,7 @@ Two notes for the form: Apple asks "linked to the user" once per data type, so *
 | Interstitial unit | Create one, then put its id in `AppConfig.json` → `ads.interstitialUnitID`. Empty: no interstitials |
 | Content | Blocking controls › Sensitive categories: block dating, gambling, alcohol, weight loss and the other sensitive categories, so adults' PG ads stay teen-friendly too. The app already sets G for teens and PG for adults |
 | Privacy & messaging | Create a **GDPR** message (EEA, UK, Switzerland) and, optionally, a **US states** message. Teens are tagged as under the age of consent and never see them |
-| app-ads.txt | AdMob looks for `https://<developer website domain>/app-ads.txt`. `web/app-ads.txt` has the line, but GitHub Pages serves this project under `/aybuke-app/`, so publish the same line at the domain root (a `riosenbeq.github.io` user site or a custom domain), and use that domain as the Marketing URL |
+| app-ads.txt | AdMob reads `https://aybuke.org/app-ads.txt`. The line is in the website repository (`RiosenBeq/aybuke`) and in `web/app-ads.txt` here; the live file was not checked from the build sandbox, so confirm it answers at the domain root |
 | Age rating | Under Capabilities, tick **Advertising** (free members see ads; they're never personalised or targeted). It doesn't raise the 13+ rating |
 
 ## 6. Version 1.0
@@ -95,7 +95,7 @@ Two notes for the form: Apple asks "linked to the user" once per data type, so *
 | Field | Value |
 |---|---|
 | Promotional text, description, keywords, What's New | `app-store-metadata.json` |
-| Support URL | `https://riosenbeq.github.io/aybuke-app/` (landing page with the support email) |
+| Support URL | `https://aybuke.org` (landing page with the support email) |
 | Marketing URL | same as Support URL |
 | Copyright | `2026 Aybuke` |
 | App Review information | Contact name, phone and email of the owner; no demo account needed; notes from [`app-store-listing.md`](app-store-listing.md) ("App Review notes") |
