@@ -217,7 +217,7 @@ struct EditorView: View {
         } label: {
             HStack(spacing: 6) {
                 Image(systemName: "arrow.triangle.2.circlepath")
-                Text(emphasised ? "Retry free" : model.likeness == .stillYou ? "Retry free" : "Doesn't look like you? Retry free")
+                Text(emphasised || model.likeness == .stillYou || !model.retryIsAboutLikeness ? "Retry free" : "Doesn't look like you? Retry free")
             }
             .font(.footnote.weight(.semibold))
             .foregroundStyle(emphasised ? Palette.onAccent : Palette.textPrimary)

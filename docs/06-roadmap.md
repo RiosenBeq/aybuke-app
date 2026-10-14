@@ -113,7 +113,7 @@ Legend: ✅ done in this repository · ⏳ next · 🔭 later
 ## Phase 5 — Girls-first redesign and growth ✅ (October 2026)
 
 - ✅ Pink "Blush" palette (sampled from the owner's reference brand), light-first with Dark and Automatic appearances
-- ✅ Girls-first catalog: 30 looks in Trending, Glow-up looks, Aesthetic edits, Dreamy portraits, Spooky season, Art and For your shop; 14 styles incl. Pastel Dream and Kawaii; identity clause now protects body shape too
+- ✅ Girls-first catalog: 36 year-round looks in Trending, Glow-up looks, Aesthetic edits, Dreamy portraits, Art, Pet portraits and For your shop, plus seasonal looks (Halloween, winter, Galentine's) promoted on Home in season; 14 styles incl. Pastel Dream and Kawaii; identity clause now protects body shape too
 - ✅ Share composer: Instagram Stories, before/after collage, 9:16 story card, caption and hashtags, copy image, AI-label tip
 - ✅ Favorites in My Works, sparkle celebration, editorial serif accents, Settings › Appearance and "Spread the glow"
 - ✅ Developer AI key slot (`ios/Config/Secrets.xcconfig`, DEBUG only) with direct xAI, fal.ai, OpenAI and Gemini adapters

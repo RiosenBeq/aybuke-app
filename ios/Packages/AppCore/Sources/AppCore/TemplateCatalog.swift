@@ -7,6 +7,7 @@ public enum TemplateCategory: String, Codable, CaseIterable, Sendable, Identifia
     case dreamy
     case seasonal
     case art
+    case pets
     case business
 
     public var id: String { rawValue }
@@ -19,8 +20,76 @@ public enum TemplateCategory: String, Codable, CaseIterable, Sendable, Identifia
         case .dreamy: return "Dreamy portraits"
         case .seasonal: return "Spooky season"
         case .art: return "Art styles"
+        case .pets: return "Pet portraits"
         case .business: return "For your shop & career"
         }
+    }
+}
+
+extension TemplateCategory {
+    /// Row heading on a given day: the seasonal row is named after the season
+    /// that is on, so "Spooky season" never shows in spring.
+    public func title(on date: Date, calendar: Calendar = .current) -> String {
+        guard self == .seasonal, let theme = SeasonalTheme.current(on: date, calendar: calendar) else { return title }
+        return theme.rowTitle
+    }
+}
+
+/// A yearly date range, inclusive at both ends. A range whose end comes before
+/// its start (December to January) wraps the new year.
+public struct SeasonWindow: Hashable, Codable, Sendable {
+    public let startMonth: Int
+    public let startDay: Int
+    public let endMonth: Int
+    public let endDay: Int
+
+    public init(startMonth: Int, startDay: Int, endMonth: Int, endDay: Int) {
+        self.startMonth = startMonth
+        self.startDay = startDay
+        self.endMonth = endMonth
+        self.endDay = endDay
+    }
+
+    public func contains(_ date: Date, calendar: Calendar = .current) -> Bool {
+        let parts = calendar.dateComponents([.month, .day], from: date)
+        guard let month = parts.month, let day = parts.day else { return false }
+        let key = month * 100 + day
+        let start = startMonth * 100 + startDay
+        let end = endMonth * 100 + endDay
+        return start <= end ? (start...end).contains(key) : key >= start || key <= end
+    }
+}
+
+/// Seasonal looks are promoted on Home only while their season is on. They
+/// stay reachable from the editor all year, so nothing in the app is hidden.
+public enum SeasonalTheme: String, Hashable, Codable, Sendable, CaseIterable {
+    case halloween
+    case winter
+    case galentines
+
+    public var window: SeasonWindow {
+        switch self {
+        case .halloween: return SeasonWindow(startMonth: 10, startDay: 1, endMonth: 11, endDay: 2)
+        case .winter: return SeasonWindow(startMonth: 12, startDay: 1, endMonth: 1, endDay: 6)
+        case .galentines: return SeasonWindow(startMonth: 2, startDay: 1, endMonth: 2, endDay: 14)
+        }
+    }
+
+    /// Heading of the seasonal row while this season is on.
+    public var rowTitle: String {
+        switch self {
+        case .halloween: return "Spooky season"
+        case .winter: return "Cozy winter"
+        case .galentines: return "Galentine's"
+        }
+    }
+
+    public func isActive(on date: Date, calendar: Calendar = .current) -> Bool {
+        window.contains(date, calendar: calendar)
+    }
+
+    public static func current(on date: Date, calendar: Calendar = .current) -> SeasonalTheme? {
+        allCases.first { $0.isActive(on: date, calendar: calendar) }
     }
 }
 
@@ -38,11 +107,17 @@ public struct PhotoTemplate: Identifiable, Hashable, Codable, Sendable {
     public let isNew: Bool
     /// Optional remote thumbnail (from the remote catalog).
     public let thumbnailURL: URL?
+    /// Promoted on Home only during this season (nil: all year).
+    public let season: SeasonalTheme?
+    /// A realistic look of the same person, so the on-device likeness check
+    /// runs on the result. False for toys, figurines, art and pets.
+    public let keepsLikeness: Bool
 
     public init(
         id: String, title: String, subtitle: String, category: TemplateCategory,
         prompt: String, symbolName: String,
-        isPro: Bool = false, isNew: Bool = false, thumbnailURL: URL? = nil
+        isPro: Bool = false, isNew: Bool = false, thumbnailURL: URL? = nil,
+        season: SeasonalTheme? = nil, keepsLikeness: Bool? = nil
     ) {
         self.id = id
         self.title = title
@@ -53,6 +128,8 @@ public struct PhotoTemplate: Identifiable, Hashable, Codable, Sendable {
         self.isPro = isPro
         self.isNew = isNew
         self.thumbnailURL = thumbnailURL
+        self.season = season
+        self.keepsLikeness = keepsLikeness ?? [.glowUp, .aesthetic, .dreamy, .business].contains(category)
     }
 }
 
@@ -63,6 +140,12 @@ public enum TemplateCatalog {
     /// Appended to every people-centric template so the model preserves identity
     /// (the #1 complaint about AI photo apps is "it doesn't look like me").
     public static let identityClause = "Keep the person's face, identity, skin tone, body shape and expression exactly the same."
+    /// For group looks: friends often pose together.
+    public static let groupIdentityClause = "Keep every person's face, identity, skin tone, body shape and expression exactly the same."
+    /// For looks that change the outfit.
+    public static let modestyClause = "Keep the outfit modest and age-appropriate, with sleeves and a high neckline."
+    /// For pet looks: owners often hold their pet in the photo.
+    public static let petClause = "Keep the animal's breed, markings, colors and face exactly the same. If a person is in the photo, keep them exactly the same too."
 
     public static let all: [PhotoTemplate] = [
         // MARK: Trending
@@ -192,13 +275,13 @@ public enum TemplateCatalog {
             id: "spooky", title: "Spooky Portrait", subtitle: "Candle-lit Halloween",
             category: .seasonal,
             prompt: "Transform this photo into a cinematic Halloween portrait: a moody candle-lit atmosphere, carved glowing pumpkins, light fog, autumn leaves and a subtle gothic costume. \(identityClause)",
-            symbolName: "moon.stars", isPro: true, isNew: true
+            symbolName: "moon.stars", isPro: true, isNew: true, season: .halloween
         ),
         PhotoTemplate(
             id: "witchy", title: "Witchy Glam", subtitle: "Cute & a little spooky",
             category: .seasonal,
             prompt: "Restyle the person as a cute, glamorous witch: an elegant black witch hat, a cozy dark knit dress, a little black cat nearby, candles, pumpkins and a soft purple-and-pink glow. \(identityClause)",
-            symbolName: "wand.and.stars"
+            symbolName: "wand.and.stars", season: .halloween
         ),
 
         // MARK: Art styles
@@ -258,6 +341,93 @@ public enum TemplateCatalog {
             prompt: "Replace the sky with a dramatic golden-hour sunset and match the lighting, color temperature and reflections of the rest of the scene. Change nothing else.",
             symbolName: "sun.horizon"
         ),
+        // MARK: Trend pack (October 2026)
+        // Appended after the original looks so their card colours stay put
+        // (TemplateCard picks an Aura palette by position in `all`).
+        PhotoTemplate(
+            id: "80s-studio", title: "80s Studio Portrait", subtitle: "Mall photo-studio glam",
+            category: .trending,
+            prompt: "Make this a 1980s photo-studio portrait: a mottled blue studio backdrop, big soft curls in her real hair color, a puffy-sleeve blouse, warm studio lighting and a faded film print look. Keep natural skin texture, no skin smoothing. \(modestyClause) \(identityClause)",
+            symbolName: "camera.aperture", isNew: true, keepsLikeness: true
+        ),
+        PhotoTemplate(
+            id: "laser-yearbook", title: "Laser Yearbook '86", subtitle: "Retro school-photo lasers",
+            category: .trending,
+            prompt: "Make this a 1986 school yearbook portrait: a dark backdrop with bright pink and blue laser beams, a head-and-shoulders pose, a crew-neck sweater and a slightly faded print. Keep natural skin texture, no skin smoothing. \(modestyClause) \(identityClause)",
+            symbolName: "graduationcap", isPro: true, isNew: true, keepsLikeness: true
+        ),
+        PhotoTemplate(
+            id: "disco-79", title: "Disco '79", subtitle: "Mirror-ball sparkle",
+            category: .trending,
+            prompt: "Place the person at a 1970s roller-disco party: mirror-ball bokeh, warm colored lights, a sparkly sequin top with long sleeves, and the grain of 1979 film. No alcohol. Keep natural skin texture, no skin smoothing. \(modestyClause) \(identityClause)",
+            symbolName: "music.note", isNew: true, keepsLikeness: true
+        ),
+        PhotoTemplate(
+            id: "plushie", title: "Plushie Me", subtitle: "You, as a soft toy",
+            category: .trending,
+            prompt: "Turn the person into a cute handmade stitched plush toy sitting on a cozy bed: soft fabric with visible seams, yarn hair in her real hair color and hairstyle, fabric in a shade that matches her real skin tone, embroidered features and a little matching outfit. No logos, labels or brand names. \(identityClause)",
+            symbolName: "teddybear", isPro: true, isNew: true
+        ),
+        PhotoTemplate(
+            id: "bag-charm", title: "Bag Charm Mini", subtitle: "A tiny vinyl you",
+            category: .trending,
+            prompt: "Turn the person into a tiny glossy vinyl bag charm figure hanging from a keyring on a canvas tote bag strap, with her real hairstyle, hair color, skin tone and outfit in chibi proportions. Soft daylight product photo. No logos, labels or brand names. \(identityClause)",
+            symbolName: "handbag", isNew: true
+        ),
+
+        // MARK: Pet portraits
+        PhotoTemplate(
+            id: "royal-pet", title: "Royal Pet Portrait", subtitle: "Painted like royalty",
+            category: .pets,
+            prompt: "Repaint the pet in this photo as a regal classical oil portrait: a velvet cape with gold trim, a small jeweled crown, a carved gold frame and a rich dark background. \(petClause) \(identityClause)",
+            symbolName: "crown", isNew: true
+        ),
+        PhotoTemplate(
+            id: "pet-figurine", title: "Pet Figurine", subtitle: "Collectible desk toy",
+            category: .pets,
+            prompt: "Turn the pet in this photo into a cute collectible vinyl figurine on a round clear base on a tidy desk, with its matching toy box behind it. No logos or brand names. \(petClause) \(identityClause)",
+            symbolName: "cat", isNew: true
+        ),
+        PhotoTemplate(
+            id: "pet-astronaut", title: "Pet Astronaut", subtitle: "One small step for paws",
+            category: .pets,
+            prompt: "Show the pet in this photo as a brave astronaut in a little white space suit with a clear helmet, floating in front of a glowing planet and soft pink stars. \(petClause) \(identityClause)",
+            symbolName: "dog", isNew: true
+        ),
+
+        // MARK: Winter (Dec 1 – Jan 6)
+        PhotoTemplate(
+            id: "snow-globe", title: "Snow Globe Me", subtitle: "A tiny winter figurine",
+            category: .seasonal,
+            prompt: "Turn the person into a small hand-painted figurine standing inside a glass snow globe, with drifting snowflakes, a tiny snowy pine tree and a wooden base, on a windowsill with warm fairy lights. She wears a cozy winter coat and scarf. \(identityClause)",
+            symbolName: "snowflake", isPro: true, season: .winter
+        ),
+        PhotoTemplate(
+            id: "cozy-sweater", title: "Cozy Sweater Digicam", subtitle: "Snowy-night flash photo",
+            category: .seasonal,
+            prompt: "Make this a 2000s digital-camera photo on a snowy winter evening: a chunky knit sweater and a knit hat, falling snow caught in the direct flash, warm string lights behind and an orange date stamp. Keep natural skin texture, no skin smoothing. \(modestyClause) \(identityClause)",
+            symbolName: "mug", season: .winter, keepsLikeness: true
+        ),
+        PhotoTemplate(
+            id: "new-year", title: "New Year Confetti", subtitle: "Midnight flash & confetti",
+            category: .seasonal,
+            prompt: "Turn this into a New Year's Eve digital-camera photo: bright on-camera flash, gold and pink confetti in the air, a sparkly party hat, sparklers and a 00:00 time stamp in the corner. No alcohol. Keep natural skin texture, no skin smoothing. \(modestyClause) \(identityClause)",
+            symbolName: "party.popper", season: .winter, keepsLikeness: true
+        ),
+
+        // MARK: Galentine's (Feb 1 – 14)
+        PhotoTemplate(
+            id: "galentines-brunch", title: "Galentine's Brunch", subtitle: "Besties at a pink café",
+            category: .seasonal,
+            prompt: "Place the people in this photo at a daytime brunch in a pink café: heart-shaped pancakes, strawberries, pink lemonade, paper hearts and soft window light. No alcohol. Match the lighting naturally. \(modestyClause) \(groupIdentityClause)",
+            symbolName: "fork.knife", season: .galentines, keepsLikeness: true
+        ),
+        PhotoTemplate(
+            id: "heart-booth", title: "Heart Photo Booth", subtitle: "Bestie booth strip",
+            category: .seasonal,
+            prompt: "Turn this into a retro photo-booth picture: a pink curtain with paper hearts, heart-shaped sunglasses as props, bright even flash and a light film grain. \(modestyClause) \(groupIdentityClause)",
+            symbolName: "heart.square", season: .galentines, keepsLikeness: true
+        ),
     ]
 
     public static func templates(in category: TemplateCategory) -> [PhotoTemplate] {
@@ -271,5 +441,36 @@ public enum TemplateCatalog {
     /// Categories in display order, skipping empty ones.
     public static var categories: [TemplateCategory] {
         TemplateCategory.allCases.filter { category in all.contains { $0.category == category } }
+    }
+
+    // MARK: Seasons
+
+    /// Seasonal looks are available during their window; every other look all year.
+    public static func isAvailable(_ template: PhotoTemplate, on date: Date, calendar: Calendar = .current) -> Bool {
+        template.season?.isActive(on: date, calendar: calendar) ?? true
+    }
+
+    public static func available(on date: Date, calendar: Calendar = .current) -> [PhotoTemplate] {
+        all.filter { isAvailable($0, on: date, calendar: calendar) }
+    }
+
+    /// The looks a Home row shows on a given day.
+    public static func templates(in category: TemplateCategory, on date: Date, calendar: Calendar = .current) -> [PhotoTemplate] {
+        templates(in: category).filter { isAvailable($0, on: date, calendar: calendar) }
+    }
+
+    /// Home rows on a given day, skipping empty ones (the seasonal row is off
+    /// between seasons).
+    public static func categories(on date: Date, calendar: Calendar = .current) -> [TemplateCategory] {
+        TemplateCategory.allCases.filter { !templates(in: $0, on: date, calendar: calendar).isEmpty }
+    }
+
+    /// Every look for the editor: seasonal looks that are on come first and
+    /// those out of season last, but none is ever locked away.
+    public static func editorOrder(on date: Date, calendar: Calendar = .current) -> [PhotoTemplate] {
+        let inSeason = all.filter { $0.season != nil && isAvailable($0, on: date, calendar: calendar) }
+        let yearRound = all.filter { $0.season == nil }
+        let outOfSeason = all.filter { !isAvailable($0, on: date, calendar: calendar) }
+        return inSeason + yearRound + outOfSeason
     }
 }

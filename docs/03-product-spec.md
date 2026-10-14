@@ -50,7 +50,7 @@ This document turns that brief into a product definition grounded in the researc
 | Consent | Explicit **AI data-sharing consent**, asked in context before the first cloud job (App Review 5.1.2(i)); revocable in Settings | `AIConsentView` |
 | Explore (home) | Magic Edit hero, daily credits, quick tools (Effects first), template rows personalised by onboarding interests, "Create from text", "Glow together" invite | `Features/Home` |
 | Magic Edit | Prompt-based edit with suggestion chips ("Golden hour light", "Put me in a black suit"…) | `Features/Edit` |
-| Styles (templates) | 30 one-tap looks in 7 collections (Trending now, Glow-up looks, Aesthetic edits, Dreamy portraits, Spooky season, Art styles, For your shop & career); server-side recipes | `AppCore/TemplateCatalog` |
+| Styles (templates) | 36 year-round one-tap looks in 7 collections (Trending now, Glow-up looks, Aesthetic edits, Dreamy portraits, Art styles, Pet portraits, For your shop & career), plus seasonal looks in a row named after the season (Spooky season Oct 1–Nov 2, Cozy winter Dec 1–Jan 6, Galentine's Feb 1–14; hidden from Home between seasons, always in the editor); server-side recipes | `AppCore/TemplateCatalog` |
 | Effects | Seven 80s/90s/Y2K effects: VHS '86, Disposable '98, Kira Kira, Digicam '04, Instant '82, Glamour '92, Neon '84; optional date stamp; on-device (Core Image), free | `RetroEffects.swift` |
 | Enhance | Cloud generative upscale/restore | Edit |
 | Remove background | **On-device** (Vision), free and private | `OnDeviceImageService` |

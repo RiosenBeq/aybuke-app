@@ -98,16 +98,16 @@ Privacy Policy: {{PRIVACY_URL}}
 
 **What's New in 1.0** (372/4000)
 
-> Welcome to Glowlit ✨ Edit photos just by saying it, try 30 one-tap looks, add free 80s & 90s effects, cut the silences out of your videos and create art from text. Share magazine covers, photo strips, before/after collages and story cards in one tap. Widgets, a Dynamic Island Live Activity, iPhone and iPad, 12 languages. Private by default, fair pricing, no weekly plan.
+> Welcome to Glowlit ✨ Edit photos just by saying it, try 35+ one-tap looks, add free 80s & 90s effects, cut the silences out of your videos and create art from text. Share magazine covers, photo strips, before/after collages and story cards in one tap. Widgets, a Dynamic Island Live Activity, iPhone and iPad, 12 languages. Private by default, fair pricing, no weekly plan.
 
-**App Review notes** (2170/4000)
+**App Review notes** (2346/4000)
 
 ```text
 Glowlit is an AI photo editor and image generator for iPhone and iPad. No login is required: the app creates an anonymous account with our backend when a cloud feature is first used. Sign in with Apple is optional.
 
 How to review:
 1. Onboarding ends on an optional on-device "quick glow" demo, then a soft paywall that can be closed with X. A short guided tour follows (Next or Skip); replay it from Settings > Show me around.
-2. Explore > tap "Try it on your photo" (Magic Edit) or any template. Before any photo or prompt is sent to the cloud, an explicit consent screen names the processor (xAI, which runs its Grok Imagine models). Tap "Allow AI processing". Choosing "Not now" keeps on-device features working.
+2. Explore > tap "Try it on your photo" (Magic Edit) or any template. Seasonal looks (Halloween Oct 1-Nov 2, winter Dec 1-Jan 6, Galentine's Feb 1-14) get their own Explore row only in season; all of them are available all year in Edit > Styles. Before any photo or prompt is sent to the cloud, an explicit consent screen names the processor (xAI, which runs its Grok Imagine models). Tap "Allow AI processing". Choosing "Not now" keeps on-device features working.
 3. On-device features that never leave the device and need no consent or credits: Edit > Effects (80s, 90s, Y2K), Edit > Remove BG, Edit > Adjust (with Auto), Edit > Find your best shot, and Edit > Edit a video (auto-cut silences, effects, trim).
 4. Purchases: subscriptions (yearly with a 7-day free trial; monthly with a first-month introductory price for eligible users) and consumable credit packs are standard StoreKit 2 in-app purchases; please use a sandbox account. Restore is on the paywall and in Settings. The RevenueCat SDK only records purchases for analytics.
 5. Safety: prompts are filtered on device and on the server in all 12 app languages, the AI provider applies its own moderation and outputs are screened automatically. Templates preserve identity and never reshape bodies. Users can report any result (results screen > "..." > Report this image, or the flag in the editor); reports go to our backend for review.
@@ -212,7 +212,7 @@ Gizlilik Politikası: {{PRIVACY_URL}}
 
 **What's New in 1.0** (425/4000)
 
-> Glowlit'e hoş geldin ✨ Fotoğraflarını sadece söyleyerek düzenle, 30 tek dokunuşluk görünümü dene, ücretsiz 80'ler ve 90'lar efektleri ekle, videolarındaki sessiz kısımları kes ve metinden sanat oluştur. Dergi kapaklarını, fotoğraf şeritlerini, önce/sonra kolajlarını ve hikâye kartlarını tek dokunuşla paylaş. Widget'lar, Dynamic Island desteği, iPhone ve iPad, 12 dil. Varsayılan olarak gizli, adil fiyat, haftalık plan yok.
+> Glowlit'e hoş geldin ✨ Fotoğraflarını sadece söyleyerek düzenle, 35+ tek dokunuşluk görünümü dene, ücretsiz 80'ler ve 90'lar efektleri ekle, videolarındaki sessiz kısımları kes ve metinden sanat oluştur. Dergi kapaklarını, fotoğraf şeritlerini, önce/sonra kolajlarını ve hikâye kartlarını tek dokunuşla paylaş. Widget'lar, Dynamic Island desteği, iPhone ve iPad, 12 dil. Varsayılan olarak gizli, adil fiyat, haftalık plan yok.
 
 ## Product Page Optimization: alternatives to A/B test
 

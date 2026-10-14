@@ -11,7 +11,7 @@ Read this first, then the doc for your area (links below). Keep it current: when
 | Area | What it does |
 |---|---|
 | **Magic Edit** | "Say the change" ("give me pink hair"), then compare before/after; one free retry if the result doesn't look like you (Likeness Lock + an on-device likeness check) |
-| **One-tap looks** | 30 trend templates (Doll Box, Y2K Digicam, Ballet Core…) in collections |
+| **One-tap looks** | 36 year-round templates (Doll Box, Y2K Digicam, 80s Studio Portrait, Plushie Me, pet portraits…) in collections, plus seasonal looks (Halloween Oct 1–Nov 2, winter Dec 1–Jan 6, Galentine's Feb 1–14) that Home promotes only in season and the editor keeps all year (`SeasonalTheme`; DEBUG `-GLDate yyyy-MM-dd` fakes the day) |
 | **Create** | Text to image with 14 styles, 5 sizes, up to 4 images with Pro |
 | **Free on-device tools** | Seven 80s/90s/Y2K effects, Adjust with one-tap Auto, RAW auto-develop, background removal, Best shot (selfie ranking), simple **video editor** (auto-cut silences, retro effects, trim) |
 | **Sharing** | Photo, Before/After, 9:16 Story card, **Cover star** magazine cover, **Photo strip**, Help me pick; Instagram Stories via the share sheet (no Meta App ID needed); "Glow together" invite card with a QR code |

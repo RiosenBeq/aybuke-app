@@ -21,6 +21,8 @@ enum ScreenshotScene: String, CaseIterable {
     case invite
     case tour
     case legal
+    /// A collection page; `-GLCategory <id>` picks it (default: the seasonal row).
+    case collection
 
     static var current: ScreenshotScene? {
         UserDefaults.standard.string(forKey: "GLScreenshotScene").flatMap(ScreenshotScene.init(rawValue:))

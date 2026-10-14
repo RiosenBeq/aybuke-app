@@ -186,6 +186,84 @@
       "isPro" : false,
       "prompt" : "Replace the sky with a dramatic golden-hour sunset and match the lighting, color temperature and reflections of the rest of the scene. Change nothing else.",
       "title" : "Golden Sky"
+    },
+    {
+      "id" : "80s-studio",
+      "isPro" : false,
+      "prompt" : "Make this a 1980s photo-studio portrait: a mottled blue studio backdrop, big soft curls in her real hair color, a puffy-sleeve blouse, warm studio lighting and a faded film print look. Keep natural skin texture, no skin smoothing. Keep the outfit modest and age-appropriate, with sleeves and a high neckline. Keep the person's face, identity, skin tone, body shape and expression exactly the same.",
+      "title" : "80s Studio Portrait"
+    },
+    {
+      "id" : "laser-yearbook",
+      "isPro" : true,
+      "prompt" : "Make this a 1986 school yearbook portrait: a dark backdrop with bright pink and blue laser beams, a head-and-shoulders pose, a crew-neck sweater and a slightly faded print. Keep natural skin texture, no skin smoothing. Keep the outfit modest and age-appropriate, with sleeves and a high neckline. Keep the person's face, identity, skin tone, body shape and expression exactly the same.",
+      "title" : "Laser Yearbook '86"
+    },
+    {
+      "id" : "disco-79",
+      "isPro" : false,
+      "prompt" : "Place the person at a 1970s roller-disco party: mirror-ball bokeh, warm colored lights, a sparkly sequin top with long sleeves, and the grain of 1979 film. No alcohol. Keep natural skin texture, no skin smoothing. Keep the outfit modest and age-appropriate, with sleeves and a high neckline. Keep the person's face, identity, skin tone, body shape and expression exactly the same.",
+      "title" : "Disco '79"
+    },
+    {
+      "id" : "plushie",
+      "isPro" : true,
+      "prompt" : "Turn the person into a cute handmade stitched plush toy sitting on a cozy bed: soft fabric with visible seams, yarn hair in her real hair color and hairstyle, fabric in a shade that matches her real skin tone, embroidered features and a little matching outfit. No logos, labels or brand names. Keep the person's face, identity, skin tone, body shape and expression exactly the same.",
+      "title" : "Plushie Me"
+    },
+    {
+      "id" : "bag-charm",
+      "isPro" : false,
+      "prompt" : "Turn the person into a tiny glossy vinyl bag charm figure hanging from a keyring on a canvas tote bag strap, with her real hairstyle, hair color, skin tone and outfit in chibi proportions. Soft daylight product photo. No logos, labels or brand names. Keep the person's face, identity, skin tone, body shape and expression exactly the same.",
+      "title" : "Bag Charm Mini"
+    },
+    {
+      "id" : "royal-pet",
+      "isPro" : false,
+      "prompt" : "Repaint the pet in this photo as a regal classical oil portrait: a velvet cape with gold trim, a small jeweled crown, a carved gold frame and a rich dark background. Keep the animal's breed, markings, colors and face exactly the same. If a person is in the photo, keep them exactly the same too. Keep the person's face, identity, skin tone, body shape and expression exactly the same.",
+      "title" : "Royal Pet Portrait"
+    },
+    {
+      "id" : "pet-figurine",
+      "isPro" : false,
+      "prompt" : "Turn the pet in this photo into a cute collectible vinyl figurine on a round clear base on a tidy desk, with its matching toy box behind it. No logos or brand names. Keep the animal's breed, markings, colors and face exactly the same. If a person is in the photo, keep them exactly the same too. Keep the person's face, identity, skin tone, body shape and expression exactly the same.",
+      "title" : "Pet Figurine"
+    },
+    {
+      "id" : "pet-astronaut",
+      "isPro" : false,
+      "prompt" : "Show the pet in this photo as a brave astronaut in a little white space suit with a clear helmet, floating in front of a glowing planet and soft pink stars. Keep the animal's breed, markings, colors and face exactly the same. If a person is in the photo, keep them exactly the same too. Keep the person's face, identity, skin tone, body shape and expression exactly the same.",
+      "title" : "Pet Astronaut"
+    },
+    {
+      "id" : "snow-globe",
+      "isPro" : true,
+      "prompt" : "Turn the person into a small hand-painted figurine standing inside a glass snow globe, with drifting snowflakes, a tiny snowy pine tree and a wooden base, on a windowsill with warm fairy lights. She wears a cozy winter coat and scarf. Keep the person's face, identity, skin tone, body shape and expression exactly the same.",
+      "title" : "Snow Globe Me"
+    },
+    {
+      "id" : "cozy-sweater",
+      "isPro" : false,
+      "prompt" : "Make this a 2000s digital-camera photo on a snowy winter evening: a chunky knit sweater and a knit hat, falling snow caught in the direct flash, warm string lights behind and an orange date stamp. Keep natural skin texture, no skin smoothing. Keep the outfit modest and age-appropriate, with sleeves and a high neckline. Keep the person's face, identity, skin tone, body shape and expression exactly the same.",
+      "title" : "Cozy Sweater Digicam"
+    },
+    {
+      "id" : "new-year",
+      "isPro" : false,
+      "prompt" : "Turn this into a New Year's Eve digital-camera photo: bright on-camera flash, gold and pink confetti in the air, a sparkly party hat, sparklers and a 00:00 time stamp in the corner. No alcohol. Keep natural skin texture, no skin smoothing. Keep the outfit modest and age-appropriate, with sleeves and a high neckline. Keep the person's face, identity, skin tone, body shape and expression exactly the same.",
+      "title" : "New Year Confetti"
+    },
+    {
+      "id" : "galentines-brunch",
+      "isPro" : false,
+      "prompt" : "Place the people in this photo at a daytime brunch in a pink café: heart-shaped pancakes, strawberries, pink lemonade, paper hearts and soft window light. No alcohol. Match the lighting naturally. Keep the outfit modest and age-appropriate, with sleeves and a high neckline. Keep every person's face, identity, skin tone, body shape and expression exactly the same.",
+      "title" : "Galentine's Brunch"
+    },
+    {
+      "id" : "heart-booth",
+      "isPro" : false,
+      "prompt" : "Turn this into a retro photo-booth picture: a pink curtain with paper hearts, heart-shaped sunglasses as props, bright even flash and a light film grain. Keep the outfit modest and age-appropriate, with sleeves and a high neckline. Keep every person's face, identity, skin tone, body shape and expression exactly the same.",
+      "title" : "Heart Photo Booth"
     }
   ]
 }

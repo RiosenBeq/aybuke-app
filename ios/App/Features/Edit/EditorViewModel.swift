@@ -77,6 +77,8 @@ final class EditorViewModel {
     var hasChanges: Bool { canUndo }
     var hasTransparency: Bool { ImageUtilities.hasAlpha(current) }
     var canRetryFree: Bool { retryRequestID != nil && !isProcessing }
+    /// Pet looks restyle the animal, so "doesn't look like you" would be odd.
+    var retryIsAboutLikeness: Bool { lastJob?.template?.category != .pets }
 
     /// Library title: the latest AI step, or the tool that was used.
     var libraryTitle: String {
@@ -248,7 +250,7 @@ final class EditorViewModel {
         let keepsPerson: Bool
         switch job.operation {
         case .magicEdit: keepsPerson = true
-        case .restyle: keepsPerson = [.glowUp, .aesthetic, .dreamy, .business].contains(job.template?.category)
+        case .restyle: keepsPerson = job.template?.keepsLikeness == true
         default: keepsPerson = false
         }
         guard keepsPerson, let source = job.sourceImage else { return }

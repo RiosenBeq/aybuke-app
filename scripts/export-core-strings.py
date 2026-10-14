@@ -52,6 +52,7 @@ def collect() -> tuple[list[tuple[str, str]], list[tuple[str, str]]]:
 
     templates = read("TemplateCatalog.swift")
     categories = literals(r"return " + LITERAL, block(templates, "public var title: String"))
+    categories += literals(r"return " + LITERAL, block(templates, "public var rowTitle: String"))
     titles = literals(r"\btitle: " + LITERAL, templates)
     subtitles = literals(r"\bsubtitle: " + LITERAL, templates)
     for text in categories:

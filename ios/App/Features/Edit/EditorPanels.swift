@@ -78,7 +78,7 @@ struct StylesPanel: View {
     var body: some View {
         ScrollView(.horizontal) {
             HStack(spacing: 10) {
-                ForEach(TemplateCatalog.all) { template in
+                ForEach(TemplateCatalog.editorOrder(on: AppClock.now)) { template in
                     Button {
                         Haptics.tap()
                         onSelect(template)

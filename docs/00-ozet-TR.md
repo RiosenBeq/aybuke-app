@@ -43,7 +43,7 @@
 - **Hedef kitle:** Glowlit artık kızlar ve genç kadınlar için tasarlandı ("made for girls who glow").
 - **Renkler:** Talep üzerine tamamen pembe, açık tonlu "Blush" paleti kullanılıyor: blush `#F7C1D9`, petal `#F8E0EA`, ink `#121212`, antrasit `#24272A`, kırık beyaz `#F8F8F6` ve beyaz. Ana butonlar siyah üzerine pembe yazı. Ayarlar'dan Açık (varsayılan), Koyu veya Otomatik görünüm seçilebiliyor.
 - **Tasarım detayları:** Başlıklarda zarif italik serif vurgular ("Watch it *glow.*"), kalp ve parıltı motifleri, başarı anında parıltı animasyonu, gölgeli beyaz kartlar. Uygulama ikonunun (artık renkli "Aura" sürümü) koyu ve renklendirilmiş varyantları da var.
-- **Yeni şablonlar:** 30 görünüm. Örneğin Doll Box, Pembe Saç, Soft Glam, Bouncy Curls, Clean Girl, Ballet Core, Kiraz Çiçeği, Kafe Buluşması, Paris Gezisi, Peri Prensesi, Doğum Günü Glam ve Witchy Glam. 14 stil var (Pastel Dream ve Kawaii eklendi).
+- **Yeni şablonlar:** Yıl boyu 36 görünüm, ayrıca mevsimlik görünümler (Cadılar Bayramı, kış, Galentine's; Ana sayfada yalnızca mevsiminde öne çıkar, düzenleyicide her zaman vardır). Örneğin Doll Box, Pembe Saç, Soft Glam, Bouncy Curls, Clean Girl, Ballet Core, Kiraz Çiçeği, Kafe Buluşması, Paris Gezisi, Peri Prensesi, Doğum Günü Glam ve Witchy Glam. 14 stil var (Pastel Dream ve Kawaii eklendi).
   - Tüm şablonlar yüzü, ten rengini ve **vücut şeklini** korur.
   - Vücut inceltme veya cilt açma gibi özellikler bilinçli olarak yok.
 - **Paylaşım (tanıtım için):** Yeni Paylaş ekranından Instagram Hikâyeler, Önce/Sonra kolajı, 9:16 hikâye kartı, görsel kopyalama, hazır açıklama ve hashtag'ler kullanılabiliyor. Ücretsiz paylaşımlarda küçük "Made with Glowlit" işareti var (Pro'da yok). Her dosyada görünmez "yapay zekâ ile yapıldı" etiketi korunuyor.

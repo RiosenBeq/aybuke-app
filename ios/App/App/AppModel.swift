@@ -794,11 +794,12 @@ extension AppModel {
         hasCompletedOnboarding = scene != .onboarding
         hasAIConsent = scene != .consent
         switch scene {
-        case .onboarding, .home, .settings, .legal, .invite, .tour:
+        case .onboarding, .home, .settings, .legal, .invite, .tour, .collection:
             selectedTab = .home
         case .effects:
             selectedTab = .home
-            editorLaunch = EditorLaunch(image: ScreenshotFixtures.goldenLandscape, tool: .effects, previewEffect: .vhs)
+            editorLaunch = EditorLaunch(image: ScreenshotFixtures.goldenLandscape, tool: .effects,
+                                        previewEffect: UserDefaults.standard.string(forKey: "GLEffect").flatMap(RetroEffect.init(rawValue:)) ?? .vhs)
         case .create, .results:
             selectedTab = .create
         case .edit:
