@@ -63,7 +63,7 @@
   - *Özellik (rakiplerde yok):*
     - Benzerlik kontrolü ("Still you" / cilt tonu değiştiyse ücretsiz tekrar).
     - Best shot (selfie'leri ışık ve netliğe göre sıralar, asla görünüşe göre değil).
-    - Help me pick (A mı B mi kartı).
+    - Which vibe? (A mı B mi kartı; yalnızca aynı yaratımın iki versiyonu, asla orijinal fotoğraf ile düzenlenmiş hali değil).
     - Arkadaş yüzü varsa nezaket hatırlatması ("Only edit me").
     - İsteğe bağlı görünür "AI-edited" etiketi.
   - *Çıkarılanlar:*

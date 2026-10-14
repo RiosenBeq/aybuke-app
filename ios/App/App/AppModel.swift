@@ -884,8 +884,11 @@ extension AppModel {
         hasCompletedOnboarding = scene != .onboarding
         hasAIConsent = scene != .consent
         switch scene {
-        case .onboarding, .home, .settings, .legal, .invite, .tour, .collection:
+        case .onboarding, .home, .settings, .legal, .invite, .tour, .collection, .feelGood:
             selectedTab = .home
+        case .bestShot:
+            selectedTab = .home
+            isBestShotPresented = true
         case .effects:
             selectedTab = .home
             editorLaunch = EditorLaunch(image: ScreenshotFixtures.goldenLandscape, tool: .effects,
@@ -928,7 +931,10 @@ extension AppModel {
             shareRequest = SharePayload(
                 image: ScreenshotFixtures.goldenLandscape,
                 original: ScreenshotFixtures.overcastLandscape,
-                operation: .magicEdit
+                // `-GLShareOnDevice YES`: an effects-only photo (no mark, no AI tags).
+                operation: UserDefaults.standard.bool(forKey: "GLShareOnDevice") ? nil : .magicEdit,
+                // A second look, so `-GLShareFormat pick` can show "Which vibe?".
+                alternatives: ScreenshotFixtures.generatedArt(count: 1)
             )
         }
     }

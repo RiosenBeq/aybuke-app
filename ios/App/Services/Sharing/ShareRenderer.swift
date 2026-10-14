@@ -8,7 +8,7 @@ struct SharePayload: Identifiable {
     var original: UIImage?
     let operation: AIOperation?
     var prompt: String?
-    /// Other variations from the same creation, for "Help me pick".
+    /// Other variations from the same creation, for "Which vibe?".
     var alternatives: [UIImage] = []
     /// The AI marking the source file already carried (see `Provenance`).
     var inheritedSourceType: DigitalSourceType? = nil
@@ -23,11 +23,10 @@ struct SharePayload: Identifiable {
         Array(([original].compactMap { $0 } + [image] + alternatives).prefix(4))
     }
 
-    /// "Help me pick": two variations, or the original and the glow-up.
+    /// "Which vibe?": two variations of one creation. Never her original
+    /// photo against an edit: friends would be voting on her face.
     var pickPair: (a: UIImage, b: UIImage)? {
-        if let other = alternatives.first { return (image, other) }
-        if let original { return (original, image) }
-        return nil
+        alternatives.first.map { (image, $0) }
     }
 
     /// Prompts are only offered on the card for text-to-image creations;
@@ -55,7 +54,7 @@ enum ShareFormat: String, CaseIterable, Identifiable {
         case .story: return String(localized: "Story card")
         case .cover: return String(localized: "Cover star")
         case .strip: return String(localized: "Photo strip")
-        case .pick: return String(localized: "Help me pick")
+        case .pick: return String(localized: "Which vibe?")
         }
     }
 
@@ -141,10 +140,10 @@ enum ShareRenderer {
         }
     }
 
-    // MARK: Help me pick (9:16)
+    // MARK: Which vibe? (9:16)
 
-    /// "A or B?" story card: two prints side by side for friends to vote on,
-    /// in a Story (with a poll sticker) or a group chat.
+    /// "A or B?" story card: two variations of one creation side by side
+    /// for friends to vote on, in a Story (with a poll sticker) or a group chat.
     static func pickCard(a: UIImage, b: UIImage, branded: Bool) -> UIImage {
         let canvas = storySize
         return renderer(canvas, opaque: true).image { context in
@@ -155,7 +154,7 @@ enum ShareRenderer {
             radialGlow(cg, center: CGPoint(x: 940, y: 1650), radius: 760, color: .brandBlush, alpha: 0.9)
 
             // Instagram keeps ~250 px at the top and bottom for its own UI.
-            drawText(String(localized: "Help me pick"), font: brandFont(96, weight: .heavy), color: .brandInk,
+            drawText(String(localized: "Which vibe?"), font: brandFont(96, weight: .heavy), color: .brandInk,
                      centeredIn: CGRect(x: 0, y: 300, width: canvas.width, height: 120))
             drawText(String(localized: "which one should I post?"), font: accentFont(54), color: .brandInk,
                      centeredIn: CGRect(x: 0, y: 420, width: canvas.width, height: 80))

@@ -27,6 +27,10 @@ enum ScreenshotScene: String, CaseIterable {
     /// The Pro out-of-credits sheet: empty, and 2 credits for 4 images.
     case outOfCredits
     case outOfCreditsMulti
+    /// Best shot with sample pictures already sorted.
+    case bestShot
+    /// Settings › Feel good.
+    case feelGood
 
     static var current: ScreenshotScene? {
         UserDefaults.standard.string(forKey: "GLScreenshotScene").flatMap(ScreenshotScene.init(rawValue:))
