@@ -59,14 +59,20 @@ enum LibraryStore {
     private static let schema = Schema(versionedSchema: CreationSchemaV2.self)
     private static let corruptPrefix = "Corrupt-"
 
-    static var supportDirectory: URL {
-        FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
-    }
+    /// Where SwiftData keeps the default store. With the App Group
+    /// entitlement that's the group container, not the app's own
+    /// Application Support, so it's asked rather than assumed.
+    private static let storeURL = ModelConfiguration(schema: schema).url
+
+    /// The store's folder; moved-aside stores go next to it.
+    static var supportDirectory: URL { storeURL.deletingLastPathComponent() }
 
     /// SwiftData's default store, its SQLite sidecars and Core Data's
     /// external-storage folder.
     private static var storeFiles: [URL] {
-        ["default.store", "default.store-shm", "default.store-wal", ".default_SUPPORT"]
+        let name = storeURL.lastPathComponent
+        let base = storeURL.deletingPathExtension().lastPathComponent
+        return [name, name + "-shm", name + "-wal", "." + base + "_SUPPORT"]
             .map { supportDirectory.appendingPathComponent($0) }
     }
 
