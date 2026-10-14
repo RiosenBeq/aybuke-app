@@ -37,7 +37,7 @@ struct SharePayload: Identifiable {
     /// Prompts are only offered on the card for text-to-image creations;
     /// edit instructions can be personal.
     var shareablePrompt: String? {
-        guard operation == .textToImage, let prompt = prompt.map(PromptBuilder.sanitize), !prompt.isEmpty else { return nil }
+        guard operation == .textToImage, let prompt = prompt.map({ PromptBuilder.sanitize($0) }), !prompt.isEmpty else { return nil }
         return prompt
     }
 }
