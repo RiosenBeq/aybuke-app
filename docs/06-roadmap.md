@@ -182,7 +182,7 @@ Seven audits (code, UX and accessibility, platform, competitors, trends, wellbei
 
 | Id | Item | Why | Backend |
 |---|---|---|---|
-| `retro-camera-photo-booth` | Retro cam with live effects + Photo Booth (4-shot countdown, four-cut and strip layouts) | Strongest teen trend that needs no server (Dazz Cam, 1998 Cam, Huji, Korean four-cut booths); first after this round | No |
+| `retro-camera-photo-booth` | ✅ Shipped in October 2026: Retro Cam with live effects, self-timer and flash + Photo Booth (4-shot countdown, strip and 2×2 four-cut prints) | Strongest teen trend that needs no server (Dazz Cam, 1998 Cam, Huji, Korean four-cut booths); first after this round | No |
 | `app-intents-shortcuts` | App Intents and App Shortcuts for the free tools (Siri, Spotlight, Action button) | Surfaces the free tools system-wide; today only the controls use App Intents | No |
 | `share-and-photos-extensions` | "Edit in Glowlit" share extension and a Photos editing extension | Meets her where her photos are; needs new targets and a shared image package | No |
 | `tipkit-and-short-tour` | TipKit tips; a 3-step tour instead of 7 | Hold to compare, Retry free and the widget are hard to discover | No |
@@ -191,8 +191,8 @@ Seven audits (code, UX and accessibility, platform, competitors, trends, wellbei
 | `cloud-job-resume-and-push` | Resume cloud jobs after suspend or kill; push-updated Live Activity with tap and Cancel | Jobs the server finishes and charges are lost on suspend | Yes |
 | `library-bulk-trash` | Stored originals for Before/After, editor drafts (multi-select and the 30-day Recently deleted shipped in October 2026) | Paid results aren't auto-saved, and Before/After needs the original | No |
 | `create-results-polish` | Localized prompt enhancement (Save all, Regenerate, recent prompts and drafts shipped in October 2026) | Enhance prompt adds English cues | No |
-| `collage-carousel-scrapbook` | Photo dump and seamless carousel, scrapbook, photocard, Fit Check and movie poster formats | SCRL is #11 in Photo & Video; every rival has collages | No |
-| `text-stickers-doodles` | Text, bundled stickers and PencilKit doodles | Every mass-market rival has an overlay layer | No |
+| `collage-carousel-scrapbook` | Photocard, Fit Check and movie poster formats (the photo dump and seamless carousel maker with grid, mosaic, film strip, instant print, scrapbook and moodboard layouts shipped in October 2026) | SCRL is #11 in Photo & Video; every rival has collages | No |
+| `text-stickers-doodles` | ✅ Shipped in October 2026: Text & Stickers in the photo editor (text, bundled stickers, pasted cut-outs and PencilKit doodles) | Every mass-market rival has an overlay layer | No |
 | `batch-and-recipes` | Batch effects, Auto and cut-out; shareable recipes | VSCO, EPIK, Hypic and Photoroom batch-edit | No |
 | `on-device-upscale-and-eraser` | On-device HD upscale (Real-ESRGAN) and LaMa eraser with tap-to-select | Free and private Enhance and Erase; large models need on-demand download | No |
 | `widgets-interactive-accented` | Interactive and configurable widgets; iOS 26 accented and clear rendering | Widgets are static; the photo vanishes in accented mode | No |
