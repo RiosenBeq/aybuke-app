@@ -6,6 +6,8 @@
 - No "iPhone", "phone" or "iOS Settings" in app strings: the app runs on
   iPad and the Mac too ("on your device", "Settings").
 - The App Store description's Pro line names no resolution in any locale.
+- No "no ads" promises: free members see ads (only Pro, under-13s and the
+  Mac have none), so the old "no ads, no tracking" lines can't come back.
 
 String catalogs are skipped: they keep stale keys until the next
 translation pass. Run from anywhere: python3 scripts/check-honest-copy.py
@@ -18,7 +20,10 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 
 BANNED = re.compile(
-    r"every week|added regularly|higher.resolution|half what|new look a week|tailor your feed|fresh trends",
+    r"every week|added regularly|higher.resolution|half what|new look a week|tailor your feed|fresh trends"
+    # Free members see ads now: "no ads" is only true of Pro, under 13 and the Mac.
+    r"|no ads,? no tracking|reklam yok,? takip yok|don't show advertising|don't use advertising SDKs"
+    r"|reklam göstermeyiz|reklam yazılım geliştirme kitleri \(SDK\) kullanmayız|ad-free app",
     re.IGNORECASE,
 )
 BANNED_PLACES = [

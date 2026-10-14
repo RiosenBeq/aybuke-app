@@ -7,8 +7,8 @@ Last updated: 14 October 2026
 > **The short version.** This summary helps you find your way around. It doesn't replace the full Terms below.
 > - These Terms are a contract between you and Okan Berk Manavoğlu (individual developer), the developer of Glowlit. They are not a contract with Apple.
 > - You must be at least 13. If you're under 18 (or under the age of majority where you live), you need permission from a parent or legal guardian. Section 4 is written for you.
-> - We design Glowlit with teens in mind: no ads, no tracking, no public feeds, and cloud AI only after you opt in.
-> - On-device tools are always free. Free users get 3 credits a day. Pro subscriptions renew automatically until you cancel them in your Apple Account settings. Purchased credit packs never expire.
+> - We design Glowlit with teens in mind: no tracking, no public feeds, no personalised ads, and cloud AI only after you opt in.
+> - On-device tools are always free. Free users get 3 credits a day, can watch an optional ad for 1 more credit up to 3 times a day, and see an occasional ad after saving. Pro has no ads. Pro subscriptions renew automatically until you cancel them in your Apple Account settings. Purchased credit packs never expire.
 > - You keep the rights in your photos and, as far as the law allows, you own your results. Only upload photos you're allowed to use, and only edit people who agree to it.
 > - No sexual content, nothing sexual involving anyone under 18, no bullying or body-shaming edits, and no deep fakes meant to deceive. Our [Acceptable Use & AI Content Policy](acceptable-use-policy.md) has the details.
 > - AI can get things wrong. Your mandatory rights as a consumer are never affected.
@@ -47,7 +47,7 @@ Your purchases are also subject to Apple's terms, such as the Apple Media Servic
 - You may not use the Service if the law where you live prohibits it, or if we have previously banned you for breaking these Terms.
 - If you use Glowlit on behalf of a business, you confirm that you're authorised to accept these Terms for that business.
 
-We design Glowlit with teen users in mind, and we apply high-privacy defaults to everyone, whatever their age: no ads, no tracking, no profiling, no public profiles or feeds, no sharing of data for marketing, a creations library that stays on your device, and cloud processing only after you opt in. Our [Privacy Policy](privacy-policy.md) explains how.
+We design Glowlit with teen users in mind, and we apply high-privacy defaults to everyone, whatever their age: no tracking, no profiling, no personalised ads, no public profiles or feeds, no sharing of data for marketing, a creations library that stays on your device, and cloud processing only after you opt in. Free members aged 13 and over see a few ads (section 8); there are none under 13 or with Pro. Our [Privacy Policy](privacy-policy.md) explains how.
 
 ## 4. If you're under 18
 
@@ -56,6 +56,7 @@ This section is a plain-language summary for younger users. The rest of these Te
 - **Talk to a parent or guardian first.** You need their permission to use Glowlit. Talk to them before you buy anything or switch on cloud AI processing.
 - **Cloud AI may need their consent too.** In the EU and EEA, if you're under the age of digital consent in your country (between 13 and 16, depending on the country), a parent or guardian must give or approve consent for cloud AI processing. In Türkiye, if you're under 18, your parent or guardian should give or approve this consent. Read the consent screen together.
 - **Purchases go through Apple.** Purchases are charged to the Apple Account on your device. If you have a child account in Family Sharing, your parent or guardian may need to approve each purchase with "Ask to Buy". Never buy anything without permission.
+- **Ads are optional and never personalised.** Without Pro, you may see a few ads suitable for everyone: one you can choose to watch for 1 credit when you've run out (up to 3 a day), and sometimes one after you save. You never have to watch one, and they're never based on what you do in other apps.
 - **Only edit people who say yes.** Don't upload or edit photos of other people, especially other young people, without their permission. Never create anything sexual, humiliating or mean about anyone.
 - **Think before you share.** Your creations stay on your phone unless you share them. Once something is online, it can be hard to take back.
 - **Help is here.** If something goes wrong, or someone uses Glowlit to hurt you, tell a trusted adult and report it to us (see the [AUP](acceptable-use-policy.md)). Parents and guardians can contact us at [hello@buaze.com](mailto:hello@buaze.com), including to delete their child's data.
@@ -80,7 +81,7 @@ If you haven't signed in with Apple, access to your account depends on your devi
 
 ### Deleting your account
 
-You can delete your account at any time in **Settings → Delete my data & account**. This permanently deletes your server account and all server-side records linked to it (credit wallet, credit ledger, job records, entitlement records and reports), as well as the creations library on your device. If you signed in with Apple, we also revoke Glowlit's access to your Apple ID.
+You can delete your account at any time in **Settings → Delete my data & account**. This permanently deletes your server account and all server-side records linked to it (credit wallet, credit ledger, job records, entitlement records, ad reward records and reports), as well as the creations library on your device. If you signed in with Apple, we also revoke Glowlit's access to your Apple ID.
 
 Any remaining credits, including purchased credits, are lost when you delete your account and cannot be restored or refunded. If you use a cloud AI feature again later, a new anonymous account is created.
 
@@ -160,6 +161,17 @@ You can buy credit packs as consumable in-app purchases. Purchased credits:
 - can't be transferred to another person or account; and
 - are non-refundable, except through Apple's refund process or where mandatory law provides otherwise.
 
+### Credits from ads
+
+Without an active Pro subscription, when you're out of credits, you can choose to watch a short ad from Google AdMob for 1 credit, up to 3 times a day (UTC). Watching is always optional. The credit is added once Google confirms to our server that the ad played to the end; if it closes early, or Google doesn't confirm it, no credit is added. Credits from ads:
+
+- are added to your free daily credits, are spent first and don't carry over to the next day;
+- have no cash value and can't be exchanged for money;
+- can't be transferred to another person or account; and
+- may not be collected by automation, fake devices or anything else that isn't a real person watching the ad.
+
+Free members may also see an occasional ad after saving or sharing a finished creation, never while they're editing and at most 3 a day. Pro members see no ads. We may change how ads appear, or stop offering credits for ads, for future periods; this never reduces credits already in your balance.
+
 ### Fair use and limits
 
 To protect the Service, we limit how many cloud AI jobs an account can start: currently 6 per minute on the free tier and 20 per minute with Pro.
@@ -191,7 +203,8 @@ These are reference prices in US dollars. The app shows the price in your local 
 - 100 credits per month, with rollover up to a cap of 200 subscription credits (section 8);
 - up to 4 images per generation;
 - all templates and styles;
-- exports without the Glowlit watermark; and
+- exports without the Glowlit watermark;
+- no ads; and
 - higher-quality AI processing than the free plan.
 
 ### Free trial
@@ -341,7 +354,7 @@ Because we don't store your inputs or keep outputs after delivery, we usually ca
 
 ## 17. Third-party services
 
-Glowlit works with services operated by others, such as Apple (App Store, payments and iOS features), Instagram and other apps you share to, and the AI providers listed in our Privacy Policy. Their own terms apply to your use of their services.
+Glowlit works with services operated by others, such as Apple (App Store, payments and iOS features), Instagram and other apps you share to, the AI providers listed in our Privacy Policy, and Google AdMob, which provides the ads free members see. Their own terms apply to your use of their services. We don't control the content of ads, but we ask Google for non-personalised ads only, and for general-audience ads for anyone under 18 or whose age we don't know.
 
 When using the app, you must comply with any third-party terms that apply to you, for example your mobile data plan. We're not responsible for third-party services that we don't control.
 

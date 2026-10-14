@@ -24,7 +24,7 @@ Every value needed to create Glowlit in App Store Connect, in the order the form
 | Privacy Policy URL | `https://riosenbeq.github.io/aybuke-app/legal/en/privacy-policy.html` (needs GitHub Pages; until then the repository's `main` copy of `docs/legal/en/privacy-policy.md` works) |
 | Localizations | Add every locale in `app-store-metadata.json`: en-US, tr, es-ES, es-MX, pt-BR, fr-FR, de-DE, it, ru, ja, ko, zh-Hans, id |
 
-**Age rating:** answer honestly — no violence, sexual content, profanity, gambling, horror, drugs, medical content or unrestricted web access; no chat between users. Generated images are filtered (prompt policy in all languages, provider moderation, output check) and can be reported. Set the rating to **13+** to match the Terms (cloud AI, accounts and purchases from 13) with **Override to Higher Age Rating**, which is needed while the Terms keep a minimum age above the calculated rating. Under In-App Controls, tick **Age Assurance** only once a build with the age step is live. The app uses the **Declared Age Range** capability (`com.apple.developer.declared-age-range`; no approval needed): turn it on for the app id `app.glowlit.ios` if automatic signing doesn't.
+**Age rating:** answer honestly — no violence, sexual content, profanity, gambling, horror, drugs, medical content or unrestricted web access; no chat between users. Generated images are filtered (prompt policy in all languages, provider moderation, output check) and can be reported. Set the rating to **13+** to match the Terms (cloud AI, accounts and purchases from 13) with **Override to Higher Age Rating**, which is needed while the Terms keep a minimum age above the calculated rating. Under In-App Controls, tick **Age Assurance** only once a build with the age step is live. Under Capabilities, tick **Advertising**: free members see ads (section "Ads (AdMob)" below). The app uses the **Declared Age Range** capability (`com.apple.developer.declared-age-range`; no approval needed): turn it on for the app id `app.glowlit.ios` if automatic signing doesn't.
 
 ## 3. Pricing and availability
 
@@ -53,7 +53,9 @@ These IDs already exist in RevenueCat (project "Glowlit", entitlement `pro`, off
 
 ## 5. App Privacy
 
-No tracking. Matches `ios/App/Resources/PrivacyInfo.xcprivacy`.
+"Do you or your third-party partners use data for tracking?" **No.** The app never shows Apple's tracking prompt and never reads the advertising identifier, every ad request is non-personalised (`publisherPrivacyPersonalizationState = .disabled`, Google's restricted data processing on, first-party ad ID off), and teens get child treatment. Matches `ios/App/Resources/PrivacyInfo.xcprivacy` (our own collection; Google's SDKs ship their own manifests).
+
+**Our own collection** (all linked to the anonymous user ID, none used for tracking):
 
 | Data type | Linked to the user | Purposes |
 |---|---|---|
@@ -62,6 +64,31 @@ No tracking. Matches `ios/App/Resources/PrivacyInfo.xcprivacy`.
 | User ID (anonymous account ID) | Yes | App Functionality, Analytics (RevenueCat) |
 | Purchase History | Yes | App Functionality, Analytics (RevenueCat) |
 | Email Address (only with optional Sign in with Apple) | Yes | App Functionality |
+| Advertising Data (our record of each confirmed rewarded ad: AdMob transaction id, ad unit, reward, date; 30 days) | Yes | App Functionality |
+
+**New with ads: Google Mobile Ads SDK** (free members 13+ on iPhone and iPad; nothing for Pro, under 13 or the Mac). Declare these with **Third-Party Advertising** and **Analytics** as purposes, **not linked to the user** and **not used for tracking**:
+
+| Data type (App Store Connect) | What the SDK sends Google |
+|---|---|
+| Location › Coarse Location | Estimated from the IP address (country, city) |
+| Identifiers › Device ID | App-scoped identifiers the SDK uses for frequency capping and fraud checks (never the IDFA: no tracking prompt) |
+| Usage Data › Product Interaction | Ad views, taps, how much of a video played |
+| Usage Data › Advertising Data | Which ads were shown |
+| Diagnostics › Performance Data | Load times and other ad performance data |
+
+Two notes for the form: Apple asks "linked to the user" once per data type, so **Advertising Data** is answered **Yes, linked** (because of our own reward records above) with all three purposes (App Functionality, Third-Party Advertising, Analytics); every other new type is **not linked**. Crash Data isn't needed: the app turns the SDK's crash reporting off (`disableSDKCrashReporting()`). Re-check the answers against the privacy report Xcode builds from the SDK manifests (Organizer › Archive › Generate Privacy Report) before submitting.
+
+## Ads (AdMob)
+
+| Step | What to do |
+|---|---|
+| AdMob app | iOS app "Glowlit", app id `ca-app-pub-2292230772061554~5236020895` (in `Release.xcconfig` as `GL_ADMOB_APP_ID` and in `AppConfig.json` → `ads.appID`; a mismatch turns ads off) |
+| Rewarded unit | `ca-app-pub-2292230772061554/1406702504`, reward amount **1**, reward item **credit**. *Server-side verification*: callback URL `https://efapupjvidyqhqdevmcu.supabase.co/functions/v1/ad-reward` (no query string), then **Verify URL** (it answers 200 and grants nothing). Supabase secret `ADMOB_REWARDED_AD_UNIT` = the same unit id (`backend/README.md`, "Rewarded ads") |
+| Interstitial unit | Create one, then put its id in `AppConfig.json` → `ads.interstitialUnitID`. Empty: no interstitials |
+| Content | Blocking controls › Sensitive categories: block dating, gambling, alcohol, weight loss and the other sensitive categories, so adults' PG ads stay teen-friendly too. The app already sets G for teens and PG for adults |
+| Privacy & messaging | Create a **GDPR** message (EEA, UK, Switzerland) and, optionally, a **US states** message. Teens are tagged as under the age of consent and never see them |
+| app-ads.txt | AdMob looks for `https://<developer website domain>/app-ads.txt`. `web/app-ads.txt` has the line, but GitHub Pages serves this project under `/aybuke-app/`, so publish the same line at the domain root (a `riosenbeq.github.io` user site or a custom domain), and use that domain as the Marketing URL |
+| Age rating | Under Capabilities, tick **Advertising** (free members see ads; they're never personalised or targeted). It doesn't raise the 13+ rating |
 
 ## 6. Version 1.0
 

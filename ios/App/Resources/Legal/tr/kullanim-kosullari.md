@@ -5,8 +5,8 @@ Son güncelleme: 14 Ekim 2026
 > **Kısaca.** Bu özet, metinde yolunuzu bulmanıza yardımcı olur; aşağıdaki Koşulların yerine geçmez.
 > - Bu Koşullar, sizinle Glowlit uygulamasının geliştiricisi Okan Berk Manavoğlu (bireysel geliştirici) arasında yapılan bir sözleşmedir. Apple bu sözleşmenin tarafı değildir.
 > - En az 13 yaşında olmalısınız. 18 yaşından küçükseniz velinizin veya vasinizin izni gerekir. 4. bölüm sizin için yazıldı.
-> - Glowlit uygulamasını gençleri düşünerek tasarlıyoruz: reklam yok, takip yok, herkese açık akış yok; bulut yapay zekâ ancak siz onay verdikten sonra çalışır.
-> - Cihaz üzerindeki araçlar her zaman ücretsizdir. Ücretsiz kullanıcılar her gün 3 kredi alır. Pro abonelikleri, siz Apple Hesabı ayarlarınızdan iptal edene kadar otomatik olarak yenilenir. Satın aldığınız kredi paketlerinin süresi hiçbir zaman dolmaz.
+> - Glowlit uygulamasını gençleri düşünerek tasarlıyoruz: takip yok, herkese açık akış yok, kişiselleştirilmiş reklam yok; bulut yapay zekâ ancak siz onay verdikten sonra çalışır.
+> - Cihaz üzerindeki araçlar her zaman ücretsizdir. Ücretsiz kullanıcılar her gün 3 kredi alır, günde en fazla 3 kez isteğe bağlı bir reklam izleyerek 1 kredi daha kazanabilir ve kaydettikten sonra ara sıra bir reklam görür. Pro'da reklam yoktur. Pro abonelikleri, siz Apple Hesabı ayarlarınızdan iptal edene kadar otomatik olarak yenilenir. Satın aldığınız kredi paketlerinin süresi hiçbir zaman dolmaz.
 > - Fotoğraflarınız üzerindeki haklarınız sizde kalır; sonuçlar ise kanunun izin verdiği ölçüde size aittir. Yalnızca kullanma hakkınız olan fotoğrafları yükleyin ve yalnızca buna onay veren kişileri düzenleyin.
 > - Cinsel içerik, 18 yaşından küçükleri içeren her türlü cinsel içerik, zorbalık veya bedenle alay eden düzenlemeler ve aldatmaya yönelik deepfake yasaktır. Ayrıntılar için [Kabul Edilebilir Kullanım ve Yapay Zekâ İçerik Politikası](glowlit-legal://acceptableUse) metnine bakın.
 > - Yapay zekâ hata yapabilir. Tüketici olarak sahip olduğunuz emredici haklar hiçbir şekilde etkilenmez.
@@ -45,7 +45,7 @@ Satın alımlarınıza ayrıca sizinle Apple arasında geçerli olan Apple koşu
 - Bulunduğunuz yerin hukuku yasaklıyorsa veya bu Koşulları ihlal ettiğiniz için daha önce Hizmetten men edildiyseniz Hizmeti kullanamazsınız.
 - Glowlit uygulamasını bir işletme adına kullanıyorsanız, bu Koşulları o işletme adına kabul etmeye yetkili olduğunuzu beyan edersiniz.
 
-Glowlit uygulamasını genç kullanıcıları düşünerek tasarlıyor ve yaşı ne olursa olsun herkese yüksek gizlilik sağlayan varsayılan ayarlar uyguluyoruz: reklam yok, takip yok, profilleme yok, herkese açık profil veya akış yok, pazarlama amacıyla veri paylaşımı yok; oluşturduğunuz görsellerin kütüphanesi cihazınızda kalır ve bulut işleme yalnızca siz onay verdikten sonra başlar. Ayrıntılar [Gizlilik Politikası](glowlit-legal://privacy) metnindedir.
+Glowlit uygulamasını genç kullanıcıları düşünerek tasarlıyor ve yaşı ne olursa olsun herkese yüksek gizlilik sağlayan varsayılan ayarlar uyguluyoruz: takip yok, profilleme yok, kişiselleştirilmiş reklam yok, herkese açık profil veya akış yok, pazarlama amacıyla veri paylaşımı yok; oluşturduğunuz görsellerin kütüphanesi cihazınızda kalır ve bulut işleme yalnızca siz onay verdikten sonra başlar. 13 yaş ve üzerindeki ücretsiz üyeler birkaç reklam görür (8. bölüm); 13 yaşın altında ve Pro'da reklam yoktur. Ayrıntılar [Gizlilik Politikası](glowlit-legal://privacy) metnindedir.
 
 ## 4. 18 yaşından küçükseniz
 
@@ -54,6 +54,7 @@ Bu bölüm, genç kullanıcılar için hazırlanmış sade bir özettir. Koşull
 - **Önce velinizle veya vasinizle konuşun.** Glowlit uygulamasını kullanmak için onların izni gerekir. Bir şey satın almadan veya bulut yapay zekâ işlemeyi açmadan önce onlarla konuşun.
 - **Bulut yapay zekâ için onların onayı da gerekebilir.** AB ve AEA'da, ülkenizdeki dijital rıza yaşının (ülkeye göre 13 ile 16 arası) altındaysanız, bulut yapay zekâ işlemeye ilişkin rızanın veliniz veya vasiniz tarafından verilmesi ya da onaylanması gerekir. Türkiye'de 18 yaşından küçükseniz bu açık rızanın veliniz veya vasiniz tarafından verilmesi ya da onaylanması gerekir. Onay ekranını birlikte okuyun.
 - **Satın alımlar Apple üzerinden yapılır.** Satın alımlar, cihazınızdaki Apple Hesabından tahsil edilir. Aile Paylaşımı'nda bir çocuk hesabınız varsa, her satın alımın veliniz veya vasiniz tarafından "Satın Alma İzni İste" (Ask to Buy) özelliğiyle onaylanması gerekebilir. İzin almadan hiçbir şey satın almayın.
+- **Reklamlar isteğe bağlıdır ve asla kişiselleştirilmez.** Pro'nuz yoksa herkese uygun birkaç reklam görebilirsiniz: krediniz bittiğinde 1 kredi için izlemeyi seçebileceğiniz bir reklam (günde en fazla 3) ve bazen kaydettikten sonra bir reklam. Hiçbir reklamı izlemek zorunda değilsiniz ve reklamlar asla diğer uygulamalarda yaptıklarınıza dayanmaz.
 - **Yalnızca "evet" diyen kişileri düzenleyin.** Başkalarının, özellikle de diğer gençlerin fotoğraflarını izinleri olmadan yüklemeyin veya düzenlemeyin. Hiç kimse hakkında cinsel, aşağılayıcı veya kırıcı bir şey oluşturmayın.
 - **Paylaşmadan önce düşünün.** Oluşturduklarınız, siz paylaşmadıkça telefonunuzda kalır. İnternete bir kez çıkan bir şeyi geri almak zor olabilir.
 - **Yardım her zaman var.** Bir şeyler ters giderse veya biri Glowlit uygulamasını size zarar vermek için kullanırsa, güvendiğiniz bir yetişkine anlatın ve durumu bize bildirin (bkz. [Politika](glowlit-legal://acceptableUse)). Veliler ve vasiler, çocuklarının verilerini sildirmek dahil her konuda [hello@buaze.com](mailto:hello@buaze.com) adresinden bize ulaşabilir.
@@ -78,7 +79,7 @@ Apple ile giriş yapmadıysanız hesabınıza erişim cihazınıza bağlıdır. 
 
 ### Hesabınızı silme
 
-Hesabınızı istediğiniz zaman **Settings → Delete my data & account** (Ayarlar → Verilerimi ve hesabımı sil) yoluyla silebilirsiniz. Bu işlem, sunucudaki hesabınızı ve ona bağlı tüm sunucu kayıtlarını (kredi cüzdanı, kredi hareketleri, iş kayıtları, abonelik hakkı kayıtları ve raporlar) ve cihazınızdaki görsel kütüphanesini kalıcı olarak siler. Apple ile giriş yaptıysanız Glowlit uygulamasının Apple Kimliğinize erişimini de iptal ederiz.
+Hesabınızı istediğiniz zaman **Settings → Delete my data & account** (Ayarlar → Verilerimi ve hesabımı sil) yoluyla silebilirsiniz. Bu işlem, sunucudaki hesabınızı ve ona bağlı tüm sunucu kayıtlarını (kredi cüzdanı, kredi hareketleri, iş kayıtları, abonelik hakkı kayıtları, reklam ödül kayıtları ve raporlar) ve cihazınızdaki görsel kütüphanesini kalıcı olarak siler. Apple ile giriş yaptıysanız Glowlit uygulamasının Apple Kimliğinize erişimini de iptal ederiz.
 
 Hesabınızı sildiğinizde, satın aldığınız krediler dahil kalan tüm kredileriniz kaybolur; bunlar geri yüklenemez ve iade edilemez. Daha sonra bir bulut yapay zekâ özelliğini yeniden kullanırsanız yeni bir anonim hesap oluşturulur.
 
@@ -158,6 +159,17 @@ Kredi paketlerini tüketilebilir (consumable) uygulama içi satın alım olarak 
 - başka bir kişiye veya hesaba devredilemez; ve
 - Apple'ın iade süreci veya emredici mevzuatın aksini öngördüğü haller dışında iade edilmez.
 
+### Reklamlardan krediler
+
+Aktif bir Pro aboneliğiniz yoksa, krediniz bittiğinde Google AdMob'dan kısa bir reklam izleyerek günde (UTC) en fazla 3 kez 1 kredi kazanmayı seçebilirsiniz. Reklam izlemek her zaman isteğe bağlıdır. Kredi, Google reklamın sonuna kadar oynatıldığını sunucumuza onayladığında eklenir; reklam erken kapanırsa veya Google onaylamazsa kredi eklenmez. Reklamlardan kazanılan krediler:
+
+- ücretsiz günlük kredilerinize eklenir, önce harcanır ve ertesi güne devretmez;
+- nakit değeri taşımaz ve paraya çevrilemez;
+- başka bir kişiye veya hesaba devredilemez; ve
+- otomasyonla, sahte cihazlarla veya reklamı gerçekten izleyen bir kişi dışında herhangi bir yolla toplanamaz.
+
+Ücretsiz üyeler, bitmiş bir çalışmayı kaydettikten veya paylaştıktan sonra ara sıra bir reklam da görebilir; düzenleme yaparken asla ve günde en fazla 3 kez. Pro üyeler reklam görmez. Reklamların nasıl gösterileceğini gelecek dönemler için değiştirebilir veya reklam karşılığı kredi sunmayı bırakabiliriz; bu, bakiyenizdeki kredileri asla azaltmaz.
+
 ### Adil kullanım ve sınırlar
 
 Hizmeti korumak için bir hesabın başlatabileceği bulut yapay zekâ işi sayısını sınırlandırıyoruz: hâlihazırda ücretsiz kullanımda dakikada 6, Pro ile dakikada 20.
@@ -189,7 +201,8 @@ Bunlar ABD doları cinsinden referans fiyatlardır. Uygulama, satın almadan ön
 - Ayda 100 kredi; kullanılmayan krediler 200 abonelik kredisi üst sınırına kadar devreder (8. bölüm);
 - üretim başına 4 görsele kadar;
 - tüm şablon ve stiller;
-- Glowlit filigranı olmadan dışa aktarım; ve
+- Glowlit filigranı olmadan dışa aktarım;
+- reklamsız kullanım; ve
 - ücretsiz plandan daha yüksek kalitede yapay zekâ işleme.
 
 ### Ücretsiz deneme süresi
@@ -339,7 +352,7 @@ Girdilerinizi saklamadığımız ve çıktıları teslimden sonra tutmadığım�
 
 ## 17. Üçüncü taraf hizmetleri
 
-Glowlit; Apple (App Store, ödemeler ve iOS özellikleri), Instagram ve paylaşım yaptığınız diğer uygulamalar ile Gizlilik Politikası'nda listelenen yapay zekâ sağlayıcıları gibi başkaları tarafından işletilen hizmetlerle birlikte çalışır. Bu hizmetleri kullanımınıza onların kendi koşulları uygulanır.
+Glowlit; Apple (App Store, ödemeler ve iOS özellikleri), Instagram ve paylaşım yaptığınız diğer uygulamalar, Gizlilik Politikası'nda listelenen yapay zekâ sağlayıcıları ve ücretsiz üyelerin gördüğü reklamları sağlayan Google AdMob gibi başkaları tarafından işletilen hizmetlerle birlikte çalışır. Bu hizmetleri kullanımınıza onların kendi koşulları uygulanır. Reklamların içeriğini kontrol etmeyiz; ancak Google'dan yalnızca kişiselleştirilmemiş reklamlar, 18 yaşından küçükler ve yaşını bilmediğimiz kişiler için de yalnızca genel izleyiciye uygun reklamlar isteriz.
 
 Uygulamayı kullanırken size uygulanan üçüncü taraf koşullarına, örneğin mobil veri tarifenizin koşullarına uymanız gerekir. Kontrolümüzde olmayan üçüncü taraf hizmetlerinden sorumlu değiliz.
 
