@@ -59852,72 +59852,72 @@
         }
       }
     },
-    "Make it glow." : {
+    "Make it glow" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lass es strahlen."
+            "value" : "Lass es strahlen"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hazlo brillar."
+            "value" : "Hazlo brillar"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Fais-la briller."
+            "value" : "Fais-la briller"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bikin glowing."
+            "value" : "Bikin glowing"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Fallo brillare."
+            "value" : "Fallo brillare"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "キラッと輝こう。"
+            "value" : "キラッと輝こう"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "더 빛나게."
+            "value" : "더 빛나게"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Deixe brilhar."
+            "value" : "Deixe brilhar"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Добавь сияния."
+            "value" : "Добавь сияния"
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bırak ışıldasın."
+            "value" : "Bırak ışıldasın"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "美到发光。"
+            "value" : "美到发光"
           }
         }
       }
@@ -64571,72 +64571,72 @@
         }
       }
     },
-    "No weekly plans, ever." : {
+    "No weekly plans, ever" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Niemals Wochenabos."
+            "value" : "Niemals Wochenabos"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nunca hay planes semanales."
+            "value" : "Nunca hay planes semanales"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Jamais de formule hebdo."
+            "value" : "Jamais de formule hebdo"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tanpa paket mingguan, selamanya."
+            "value" : "Tanpa paket mingguan, selamanya"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mai piani settimanali."
+            "value" : "Mai piani settimanali"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "週額プランは一切なし。"
+            "value" : "週額プランは一切なし"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "주간 요금제는 절대 없어요."
+            "value" : "주간 요금제는 절대 없어요"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nunca teremos planos semanais."
+            "value" : "Nunca teremos planos semanais"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Никаких недельных планов. Никогда."
+            "value" : "Никаких недельных планов, никогда"
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Haftalık plan yok, asla."
+            "value" : "Haftalık plan yok, asla"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "绝无周订阅。"
+            "value" : "绝无周订阅"
           }
         }
       }
@@ -65979,36 +65979,36 @@
         }
       }
     },
-    "One tap.\nA whole new *aesthetic*" : {
+    "One tap,\na whole new *aesthetic*" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ein Tap.\nEine ganz neue *Ästhetik*"
+            "value" : "Ein Tap,\neine ganz neue *Ästhetik*"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Un toque.\nUna *estética* nueva"
+            "value" : "Un toque,\nuna *estética* nueva"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Une touche.\nUn tout nouveau *look*"
+            "value" : "Une touche,\nun tout nouveau *look*"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sekali ketuk.\nLangsung *estetik*"
+            "value" : "Sekali ketuk,\nlangsung *estetik*"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Un tocco.\nUn'*estetica* tutta nuova"
+            "value" : "Un tocco,\nun'*estetica* tutta nuova"
           }
         },
         "ja" : {
@@ -66026,7 +66026,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Um toque.\nUma *vibe* totalmente nova"
+            "value" : "Um toque,\numa *vibe* totalmente nova"
           }
         },
         "ru" : {
@@ -66038,7 +66038,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tek dokunuş.\nBambaşka bir *hava*"
+            "value" : "Tek dokunuş,\nbambaşka bir *hava*"
           }
         },
         "zh-Hans" : {
@@ -81559,72 +81559,72 @@
         }
       }
     },
-    "Say the change.\nWatch it *glow.*" : {
+    "Say the change,\nwatch it *glow*" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sag's einfach.\nSieh es *strahlen.*"
+            "value" : "Sag's einfach,\nsieh es *strahlen*"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pide el cambio.\nMira cómo *brilla.*"
+            "value" : "Pide el cambio,\nmira cómo *brilla*"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dis ce que tu veux.\nRegarde-la *briller.*"
+            "value" : "Dis ce que tu veux,\nregarde-la *briller*"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bilang maumu.\nLangsung *glowing.*"
+            "value" : "Bilang maumu,\nlangsung *glowing*"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Di' cosa cambiare.\nGuardala *brillare.*"
+            "value" : "Di' cosa cambiare,\nguardala *brillare*"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "変えたいことを伝えるだけ。\n*キラッと変身。*"
+            "value" : "変えたいことを伝えるだけ、\n*キラッと変身*"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "바꾸고 싶은 걸 말하면\n*반짝* 변신해요."
+            "value" : "바꾸고 싶은 걸 말하면\n*반짝* 변신해요"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Diga o que mudar.\nVeja *brilhar.*"
+            "value" : "Diga o que mudar,\nveja *brilhar*"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Скажи, что изменить.\nСмотри, как *засияет.*"
+            "value" : "Скажи, что изменить,\nи смотри, как *засияет*"
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Değişikliği söyle.\nFotoğrafın *ışıldasın.*"
+            "value" : "Değişikliği söyle,\nfotoğrafın *ışıldasın*"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "说出改变，\n看它*焕发光彩。*"
+            "value" : "说出改变，\n看它*焕发光彩*"
           }
         }
       }

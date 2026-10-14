@@ -467,7 +467,7 @@ def draw_glow_gem(c, variant: str) -> None:
     """C, "Glow Gem": a pink heart cut like a gem — straight facets, a sharp tip
     and notch — lit from the top left, with a white glint on its glowing table
     and two sparkles beside it. The heart and sparkles are the app's success
-    burst; the facets catch the light ("Make it glow.")."""
+    burst; the facets catch the light ("Make it glow")."""
     gray = variant == "tinted"
     if variant == "default":
         c.background(Gradient([(0, AURA_LILAC), (0.6, (205, 160, 245)), (1, (255, 170, 205))], (0.1, 0), (0.9, 1)))

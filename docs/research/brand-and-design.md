@@ -423,7 +423,7 @@ enum BrandFont {
         return UIFontMetrics(forTextStyle: style).scaledFont(for: UIFont(descriptor: desc, size: size))
     }
 }
-// SwiftUI: Text("Make it glow.").font(Font(BrandFont.display(34)))
+// SwiftUI: Text("Make it glow").font(Font(BrandFont.display(34)))
 ```
 
 ---

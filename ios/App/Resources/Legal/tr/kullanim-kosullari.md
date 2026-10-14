@@ -485,7 +485,6 @@ Bu koşullar, Glowlit uygulamasını Apple App Store'dan edindiğiniz için geç
 - **Adres:** İstanbul, Türkiye, Türkiye
 - **Ticaret sicil / MERSİS numarası:** Yok (bireysel geliştirici)
 - **E-posta:** [hello@buaze.com](mailto:hello@buaze.com)
-- **KEP adresi:** Yok
 - **Gizlilik soruları ve veli talepleri:** [hello@buaze.com](mailto:hello@buaze.com)
 
 ### AB Dijital Hizmetler Yasası kapsamında iletişim noktası

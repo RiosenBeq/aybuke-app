@@ -487,7 +487,6 @@ These terms apply because you got Glowlit from Apple's App Store. If they confli
 - **Address:** Istanbul, Türkiye, Türkiye
 - **Trade registry / MERSİS number:** None (individual developer)
 - **Email:** [hello@buaze.com](mailto:hello@buaze.com)
-- **Registered email (KEP):** None
 - **Privacy questions and parents' requests:** [hello@buaze.com](mailto:hello@buaze.com)
 
 ### Contact point under the EU Digital Services Act

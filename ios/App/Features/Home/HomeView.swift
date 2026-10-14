@@ -146,7 +146,7 @@ struct HomeView: View {
             VStack(alignment: .leading, spacing: 8) {
                 Text("Magic Edit")
                     .eyebrowStyle(Palette.ink.opacity(0.7))
-                Text(styled: "Say the change.\nWatch it *glow.*", size: 23)
+                Text(styled: "Say the change,\nwatch it *glow*", size: 23)
                     .foregroundStyle(Palette.ink)
                     .multilineTextAlignment(.leading)
                 HStack(spacing: 6) {

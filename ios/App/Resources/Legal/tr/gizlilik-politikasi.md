@@ -18,7 +18,6 @@ Glowlit iOS uygulamasını ve buna bağlı çevrim içi hizmetleri ("**Hizmet**"
 - **Adres:** İstanbul, Türkiye, Türkiye
 - **Ticaret sicili / MERSİS numarası:** Yok (bireysel geliştirici)
 - **Gizlilik iletişim adresi:** [hello@buaze.com](mailto:hello@buaze.com)
-- **Kayıtlı elektronik posta (KEP):** Yok
 - **AB temsilcisi (GDPR md. 27):** Atanmış temsilci yok. Her talep için hello@buaze.com adresine yazabilirsiniz.
 - **Birleşik Krallık temsilcisi (UK GDPR md. 27):** Atanmış temsilci yok. Her talep için hello@buaze.com adresine yazabilirsiniz.
 
@@ -386,7 +385,6 @@ Kişisel verileri 6698 sayılı Kişisel Verilerin Korunması Kanunu'na ("**KVKK
 **Nasıl başvurursunuz?** Veri Sorumlusuna Başvuru Usul ve Esasları Hakkında Tebliğ uyarınca başvurunuzu şu yollarla yapabilirsiniz:
 
 - yazılı olarak İstanbul, Türkiye, Türkiye adresine;
-- kayıtlı elektronik posta (KEP) ile Yok adresine;
 - güvenli elektronik imza veya mobil imza ile imzalanmış e-postayla [hello@buaze.com](mailto:hello@buaze.com) adresine veya
 - daha önce bize bildirdiğiniz ve sistemimizde kayıtlı olan e-posta adresinizden [hello@buaze.com](mailto:hello@buaze.com) adresine.
 
@@ -469,6 +467,5 @@ Uygulamalarımız veya kanun değiştiğinde bu politikayı güncelleriz. Öneml
 - **Veri sorumlusu:** Okan Berk Manavoğlu (bireysel geliştirici), İstanbul, Türkiye, Türkiye
 - **Gizlilik talepleri (veli ve vasi talepleri dahil):** [hello@buaze.com](mailto:hello@buaze.com)
 - **Genel iletişim:** [hello@buaze.com](mailto:hello@buaze.com)
-- **Kayıtlı elektronik posta (KEP):** Yok
 - **AB temsilcisi:** Atanmış temsilci yok. Her talep için hello@buaze.com adresine yazabilirsiniz.
 - **Birleşik Krallık temsilcisi:** Atanmış temsilci yok. Her talep için hello@buaze.com adresine yazabilirsiniz.
