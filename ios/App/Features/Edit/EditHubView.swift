@@ -117,7 +117,7 @@ struct EditHubView: View {
                     .reveal(2)
 
                     LazyVGrid(columns: columns, spacing: 12) {
-                        ForEach(Array(EditorTool.allCases.enumerated()), id: \.element) { index, tool in
+                        ForEach(Array(EditorTool.available(cloudAI: app.allowsCloudAI).enumerated()), id: \.element) { index, tool in
                             Button {
                                 Haptics.tap()
                                 app.startEditing(tool: tool)

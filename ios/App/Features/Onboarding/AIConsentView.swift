@@ -6,10 +6,14 @@ struct AIConsentView: View {
     let providerName: String
     /// "an hour", "24 hours"…
     let retention: String
-    let onAccept: () -> Void
+    /// Her age range asks for a parent or guardian to read this with her.
+    var asksGuardian = false
+    /// Called with her answer to "A parent or guardian said yes".
+    let onAccept: (_ guardianConfirmed: Bool) -> Void
     let onDecline: () -> Void
 
     @State private var legalDocument: LegalDocument?
+    @State private var guardianSaidYes = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 22) {
@@ -48,15 +52,20 @@ struct AIConsentView: View {
             .foregroundStyle(Palette.accent)
             .underline()
 
+            if asksGuardian {
+                guardianStep
+            }
+
             Spacer(minLength: 0)
 
-            Button("Allow AI processing", action: onAccept)
+            Button("Allow AI processing") { onAccept(asksGuardian && guardianSaidYes) }
                 .buttonStyle(.primary)
+                .disabled(asksGuardian && !guardianSaidYes)
             Button("Not now", action: onDecline)
                 .font(.subheadline.weight(.semibold))
                 .foregroundStyle(Palette.textSecondary)
                 .frame(maxWidth: .infinity)
-            Text("Under 16? Check with a parent or guardian first. You can change this anytime in Settings.")
+            Text("You can change this anytime in Settings.")
                 .font(.caption)
                 .foregroundStyle(Palette.textTertiary)
                 .frame(maxWidth: .infinity)
@@ -64,6 +73,26 @@ struct AIConsentView: View {
         .padding(.horizontal, 24)
         .padding(.bottom, 12)
         .legalSheet($legalDocument)
+    }
+}
+
+extension AIConsentView {
+    /// Not a verification: we can't check it, and the copy doesn't pretend to.
+    private var guardianStep: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Label("Ask a parent or guardian to read this with you", systemImage: "person.2.fill")
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(Palette.textPrimary)
+                .fixedSize(horizontal: false, vertical: true)
+            Toggle(isOn: $guardianSaidYes) {
+                Text("A parent or guardian said yes")
+                    .font(.subheadline)
+                    .foregroundStyle(Palette.textPrimary)
+            }
+            .tint(Palette.accent)
+        }
+        .padding(14)
+        .background(Palette.surface, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
     }
 }
 

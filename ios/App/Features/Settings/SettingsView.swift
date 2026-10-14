@@ -13,16 +13,24 @@ struct SettingsView: View {
     @State private var confirmSignOut = false
     @State private var showInvite = false
     @State private var showPacks = false
+    @State private var showConsent = false
+    @State private var showAgeUpdate = false
 
     var body: some View {
         NavigationStack {
             List {
-                membershipSection
-                if app.canUseAccounts {
-                    accountSection
+                // Under 13: no membership, account, credits or AI reminders.
+                if app.allowsPurchases {
+                    membershipSection
+                    if app.canUseAccounts {
+                        accountSection
+                    }
                 }
-                creditsSection
-                notificationsSection
+                if app.allowsCloudAI {
+                    creditsSection
+                    notificationsSection
+                }
+                ageSection
                 appearanceSection
                 languageSection
                 privacySection
@@ -40,6 +48,31 @@ struct SettingsView: View {
                 }
             }
             .manageSubscriptionsSheet(isPresented: $showManageSubscription)
+            // Its own sheets: the app-wide ones can't show over Settings.
+            .sheet(isPresented: $showConsent) {
+                AIConsentView(
+                    providerName: app.config.processorName,
+                    retention: app.config.retentionPhrase,
+                    asksGuardian: app.ageDefaults.requiresGuardianStep,
+                    onAccept: { guardianConfirmed in
+                        app.grantAIConsent(guardianConfirmed: guardianConfirmed)
+                        showConsent = false
+                    },
+                    onDecline: { showConsent = false }
+                )
+                .presentationDetents([.large])
+                .presentationBackground(Palette.background)
+            }
+            .sheet(isPresented: $showAgeUpdate) {
+                AgeStepView(mode: .update) { record in
+                    let accepted = app.recordAge(record)
+                    if accepted { showAgeUpdate = false }
+                    return accepted
+                }
+                .padding(.top, 24)
+                .presentationDetents([.medium, .large])
+                .presentationBackground(Palette.background)
+            }
             .confirmationDialog("Sign out?", isPresented: $confirmSignOut, titleVisibility: .visible) {
                 Button("Sign out", role: .destructive) {
                     Task { await app.signOut() }
@@ -286,15 +319,20 @@ struct SettingsView: View {
 
     private var privacySection: some View {
         Section {
-            Toggle(isOn: Binding(get: { app.hasAIConsent }, set: { app.setAIConsent($0) })) {
-                VStack(alignment: .leading, spacing: 2) {
-                    Text("Cloud AI processing")
-                    Text("Selected photos are processed by \(app.config.processorName).")
-                        .font(.caption)
-                        .foregroundStyle(Palette.textSecondary)
+            if app.allowsCloudAI {
+                // On goes through the consent sheet (and its guardian step); off withdraws.
+                Toggle(isOn: Binding(get: { app.hasAIConsent }, set: { on in
+                    if on { showConsent = true } else { app.setAIConsent(false) }
+                })) {
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("Cloud AI processing")
+                        Text("Selected photos are processed by \(app.config.processorName).")
+                            .font(.caption)
+                            .foregroundStyle(Palette.textSecondary)
+                    }
                 }
+                .tint(Palette.accent)
             }
-            .tint(Palette.accent)
             Button("Delete all creations", role: .destructive) { confirmDeleteCreations = true }
             Button(role: .destructive) {
                 confirmDeleteAccount = true
@@ -312,6 +350,18 @@ struct SettingsView: View {
             Text("Privacy")
         } footer: {
             Text("Uploaded photos are deleted from our servers within \(app.config.retentionPhrase) and are never used to train AI models. Exports include an invisible “made with AI” label (IPTC metadata) as required by the EU AI Act.")
+        }
+        .listRowBackground(Palette.surface)
+    }
+
+    private var ageSection: some View {
+        Section {
+            LabeledContent("Age range", value: (app.ageRecord?.band ?? .unknown).title)
+            Button("Update age range") { showAgeUpdate = true }
+        } header: {
+            Text("Age")
+        } footer: {
+            Text("Kept only on this device, and used only to choose what \(Brand.name) offers.")
         }
         .listRowBackground(Palette.surface)
     }

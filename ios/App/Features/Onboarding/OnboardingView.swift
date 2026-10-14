@@ -2,8 +2,9 @@ import SwiftUI
 import PhotosUI
 import AppCore
 
-/// Three value pages → personalization → "try it on your photo" (a free,
-/// on-device enhance: the "aha" before any paywall) → soft paywall.
+/// Three value pages → the neutral age step → personalization → "try it on
+/// your photo" (a free, on-device enhance: the "aha" before any paywall) →
+/// soft paywall, for adults only.
 /// Data-sharing consent is asked in context, the first time a cloud feature
 /// is used (App Store Review Guideline 5.1.2(i)).
 struct OnboardingView: View {
@@ -33,8 +34,10 @@ struct OnboardingView: View {
         ),
     ]
 
-    private var interestPage: Int { pages.count }
-    private var tryItPage: Int { pages.count + 1 }
+    /// Outside the swipeable pages, so it can't be swiped past.
+    private var agePage: Int { pages.count }
+    private var interestPage: Int { pages.count + 1 }
+    private var tryItPage: Int { pages.count + 2 }
     private var isLastPage: Bool { page == tryItPage }
 
     var body: some View {
@@ -44,8 +47,8 @@ struct OnboardingView: View {
             VStack(spacing: 0) {
                 HStack {
                     Spacer()
-                    if page < interestPage {
-                        Button("Skip") { withAnimation(.snappy) { page = interestPage } }
+                    if page < agePage {
+                        Button("Skip") { withAnimation(.snappy) { page = app.needsAgeStep ? agePage : interestPage } }
                             .font(.subheadline.weight(.semibold))
                             .foregroundStyle(Palette.textSecondary)
                     }
@@ -53,24 +56,38 @@ struct OnboardingView: View {
                 .frame(height: 44)
                 .padding(.horizontal, Metrics.gutter)
 
-                TabView(selection: $page) {
-                    ForEach(Array(pages.enumerated()), id: \.offset) { index, item in
-                        OnboardingPageView(page: item).tag(index)
+                if page == agePage {
+                    AgeStepView(mode: .onboarding) { record in
+                        let accepted = app.recordAge(record)
+                        if accepted { withAnimation(.snappy) { page = interestPage } }
+                        return accepted
                     }
-                    InterestPicker(selection: $interests).tag(interestPage)
-                    TryItPage().tag(tryItPage)
+                    .transition(.opacity)
+                } else {
+                    TabView(selection: $page) {
+                        ForEach(Array(pages.enumerated()), id: \.offset) { index, item in
+                            OnboardingPageView(page: item).tag(index)
+                        }
+                        // Reachable only once the age step is answered.
+                        if !app.needsAgeStep {
+                            InterestPicker(selection: $interests).tag(interestPage)
+                            TryItPage().tag(tryItPage)
+                        }
+                    }
+                    .tabViewStyle(.page(indexDisplayMode: .never))
+                    .animation(.snappy, value: page)
                 }
-                .tabViewStyle(.page(indexDisplayMode: .never))
-                .animation(.snappy, value: page)
 
-                PageDots(count: pages.count + 2, current: page)
+                PageDots(count: pages.count + 3, current: page)
                     .padding(.bottom, 20)
 
-                Button(action: advance) {
-                    Text(isLastPage ? "Start creating" : "Continue")
+                if page != agePage {
+                    Button(action: advance) {
+                        Text(isLastPage ? "Start creating" : "Continue")
+                    }
+                    .buttonStyle(.primary)
+                    .padding(.horizontal, Metrics.gutter)
                 }
-                .buttonStyle(.primary)
-                .padding(.horizontal, Metrics.gutter)
 
                 Text(consentText)
                     .font(.caption2)
@@ -91,7 +108,7 @@ struct OnboardingView: View {
     }
 
     private var consentText: AttributedString {
-        let markdown = String(localized: "By continuing you confirm you're at least 13 and agree to our [Terms of Use](\(LegalDocument.linkScheme)://terms) and [Privacy Policy](\(LegalDocument.linkScheme)://privacy).")
+        let markdown = String(localized: "By continuing you agree to our [Terms of Use](\(LegalDocument.linkScheme)://terms) and [Privacy Policy](\(LegalDocument.linkScheme)://privacy).")
         var text = (try? AttributedString(markdown: markdown)) ?? AttributedString(markdown)
         for run in text.runs where run.link != nil {
             text[run.range].foregroundColor = Palette.textPrimary
@@ -104,10 +121,13 @@ struct OnboardingView: View {
         Haptics.tap()
         if isLastPage {
             app.completeOnboarding(interests: interests)
-            // Soft paywall right after onboarding: the highest-converting placement.
-            if !app.purchases.isPro {
+            // Soft paywall right after onboarding, for adults only: teens
+            // open it themselves (presentPaywall checks the age range too).
+            if !app.purchases.isPro && app.ageDefaults.autoPaywall {
                 app.presentPaywall(source: "onboarding")
             }
+        } else if page + 1 == agePage && !app.needsAgeStep {
+            withAnimation(.snappy) { page = interestPage }
         } else {
             withAnimation(.snappy) { page += 1 }
         }

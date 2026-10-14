@@ -27,6 +27,8 @@ enum ScreenshotScene: String, CaseIterable {
     /// The Pro out-of-credits sheet: empty, and 2 credits for 4 images.
     case outOfCredits
     case outOfCreditsMulti
+    /// The age step shown once to people who finished onboarding before it.
+    case age
 
     static var current: ScreenshotScene? {
         UserDefaults.standard.string(forKey: "GLScreenshotScene").flatMap(ScreenshotScene.init(rawValue:))

@@ -73,6 +73,14 @@ enum EditorTool: String, CaseIterable, Identifiable {
         }
     }
 
+    /// Sends the photo to cloud AI (needs consent and credits).
+    var usesCloudAI: Bool { operation.map { !$0.runsOnDevice } ?? false }
+
+    /// The tools offered: the free on-device ones only, when cloud AI isn't.
+    static func available(cloudAI: Bool) -> [EditorTool] {
+        allCases.filter { cloudAI || !$0.usesCloudAI }
+    }
+
     /// Tools surfaced on the home screen (Magic Edit has its own hero card).
     static let quickTools: [EditorTool] = [.effects, .enhance, .removeBackground, .erase, .styles, .adjust]
 }

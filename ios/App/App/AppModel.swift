@@ -37,6 +37,14 @@ struct ConsentRequest: Identifiable {
     let onAccept: () -> Void
 }
 
+/// Consent to cloud AI processing, kept on this device. `guardianConfirmed`
+/// is her own answer to "A parent or guardian said yes"; nobody verifies it.
+struct AIConsentRecord: Codable, Equatable {
+    var granted = false
+    var date: Date?
+    var guardianConfirmed = false
+}
+
 /// Settings › Appearance. Light (the pink "Blush" look) is the default.
 enum AppearancePreference: String, CaseIterable, Identifiable {
     case light, dark, system
@@ -67,7 +75,12 @@ enum AppearancePreference: String, CaseIterable, Identifiable {
 final class AppModel {
     // MARK: Persistent flags
     private(set) var hasCompletedOnboarding: Bool
-    private(set) var hasAIConsent: Bool
+    private(set) var consentRecord: AIConsentRecord
+    /// Her age range (band, source, date), only on this device. Nil until
+    /// she has answered the age step.
+    private(set) var ageRecord: AgeRecord?
+    /// The App Store storefront (three-letter code), for consent-age rules.
+    private(set) var storefrontCountry: String?
     private(set) var interests: Set<String>
     var appearance: AppearancePreference {
         didSet { defaults.set(appearance.rawValue, forKey: Keys.appearance) }
@@ -126,7 +139,10 @@ final class AppModel {
 
     private enum Keys {
         static let onboarding = "onboarding.completed"
-        static let consent = "ai.consent.v1"
+        /// The old Bool consent, migrated to `consentRecord`.
+        static let legacyConsent = "ai.consent.v1"
+        static let consent = "ai.consent.v2"
+        static let ageRecord = "age.record.v1"
         static let interests = "onboarding.interests"
         static let successfulSaves = "stats.successfulSaves"
         static let reviewPolicy = "review.policy.v1"
@@ -137,7 +153,7 @@ final class AppModel {
         /// What "Delete my data" removes (other owners' keys spelled out here
         /// so the list is complete in one place).
         static let wiped = [
-            onboarding, consent, interests, successfulSaves, reviewPolicy, appearance, deletionRequested,
+            onboarding, legacyConsent, consent, ageRecord, interests, successfulSaves, reviewPolicy, appearance, deletionRequested,
             "credits.wallet.v2", "notifications.preferences.v1", "notifications.readyPingDeclined", "tour.seen.v1",
         ]
         static let wipedKeychain = [appleUserID, "auth.session", "auth.pendingMerge"]
@@ -148,7 +164,13 @@ final class AppModel {
         self.config = config
         self.defaults = defaults
         self.hasCompletedOnboarding = defaults.bool(forKey: Keys.onboarding)
-        self.hasAIConsent = defaults.bool(forKey: Keys.consent)
+        if let data = defaults.data(forKey: Keys.consent),
+           let saved = try? JSONDecoder().decode(AIConsentRecord.self, from: data) {
+            self.consentRecord = saved
+        } else {
+            self.consentRecord = AIConsentRecord(granted: defaults.bool(forKey: Keys.legacyConsent))
+        }
+        self.ageRecord = defaults.data(forKey: Keys.ageRecord).flatMap { try? JSONDecoder().decode(AgeRecord.self, from: $0) }
         self.interests = Set(defaults.stringArray(forKey: Keys.interests) ?? [])
         self.appearance = defaults.string(forKey: Keys.appearance).flatMap(AppearancePreference.init(rawValue:)) ?? .light
         if let data = defaults.data(forKey: Keys.reviewPolicy),
@@ -196,10 +218,51 @@ final class AppModel {
         notifier.onOpenLink = { [weak self] link in self?.handle(link) }
 
         #if DEBUG
+        // -GLAgeBand under13|teen13to15|teen16to17|adult|unknown (not saved).
+        if let band = UserDefaults.standard.string(forKey: "GLAgeBand").flatMap(AgeBand.init(rawValue:)) {
+            ageRecord = AgeRecord(band: band, source: .selfDeclared, setAt: Date())
+        }
         if let scene = ScreenshotScene.current {
             applyScreenshotScene(scene)
         }
         #endif
+    }
+
+    // MARK: Age
+
+    /// What her age range allows: on-device tools only under 13, no
+    /// automatic paywall and a guardian step for teens.
+    var ageDefaults: AgeDefaults { AgeDefaults(record: ageRecord, storefrontCountry: storefrontCountry) }
+    var allowsCloudAI: Bool { ageDefaults.allowsCloudAI }
+    /// Purchases, the paywall, accounts and RevenueCat.
+    var allowsPurchases: Bool { ageDefaults.allowsPurchases }
+    /// People who finished onboarding before the age step get it once.
+    var needsAgeStep: Bool { ageRecord == nil }
+
+    /// Stores a new answer when it may replace the current one (see
+    /// `AgeRecord.accepts`). Never sent anywhere.
+    @discardableResult
+    func recordAge(_ record: AgeRecord) -> Bool {
+        if let ageRecord, !ageRecord.accepts(record) { return false }
+        ageRecord = record
+        if let data = try? JSONEncoder().encode(record) { defaults.set(data, forKey: Keys.ageRecord) }
+        if !allowsPurchases { isPaywallPresented = false }
+        if !allowsCloudAI {
+            consentRequest = nil
+            if selectedTab == .create { selectedTab = .home }
+        }
+        return true
+    }
+
+    /// Under 13, every entry point to an AI tool opens a free on-device one.
+    private func permittedTool(_ tool: EditorTool?) -> EditorTool? {
+        guard !allowsCloudAI else { return tool }
+        if let tool, !tool.usesCloudAI { return tool }
+        return .effects
+    }
+
+    private func noteUnavailable() {
+        showToast("That one isn't available. The free tools in Edit are all yours.", style: .info)
     }
 
     var isDemoMode: Bool { config.isDemoMode }
@@ -223,6 +286,7 @@ final class AppModel {
     /// Called once from the root view's `.task`.
     func start() async {
         liveActivity.endLeftovers()
+        storefrontCountry = await Storefront.current?.countryCode
         // No account and no RevenueCat here: both wait until she buys or uses
         // a cloud feature (Privacy Policy §5).
         await configureRevenueCatForReturningBuyer()
@@ -281,6 +345,7 @@ final class AppModel {
     /// starts RevenueCat's observer for this buyer. Called on tap, so the
     /// paywall never waits for it; if sign-up fails the purchase goes ahead.
     func appAccountToken() async -> UUID? {
+        guard allowsPurchases else { return nil }
         let userID = await remote?.currentUserID()
         RevenueCatBridge.configure(apiKey: config.revenueCatAPIKey, appUserID: userID?.uuidString)
         if let userID { await RevenueCatBridge.identify(userID.uuidString) }
@@ -291,7 +356,8 @@ final class AppModel {
     /// Account that already has our purchases, so observer mode still
     /// records renewals and approved Ask to Buy requests.
     private func configureRevenueCatForReturningBuyer() async {
-        guard let remote, !config.revenueCatAPIKey.isEmpty else { return }
+        // Family Sharing can bring purchases to a child's Apple Account.
+        guard let remote, allowsPurchases, !config.revenueCatAPIKey.isEmpty else { return }
         for await _ in Transaction.all {
             RevenueCatBridge.configure(apiKey: config.revenueCatAPIKey, appUserID: await remote.existingUserID()?.uuidString)
             return
@@ -352,7 +418,8 @@ final class AppModel {
         for key in Keys.wiped { defaults.removeObject(forKey: key) }
         for key in Keys.wipedKeychain { Keychain.delete(key: key) }
         hasCompletedOnboarding = false
-        hasAIConsent = false
+        consentRecord = AIConsentRecord()
+        ageRecord = nil
         interests = []
         appearance = .light
         defaults.removeObject(forKey: Keys.appearance) // the didSet wrote it back
@@ -478,13 +545,15 @@ final class AppModel {
             return
         }
         #endif
-        guard hasCompletedOnboarding, !tour.hasSeen, !tour.isRunning, !isPresentingSomething else { return }
+        guard hasCompletedOnboarding, !needsAgeStep, !tour.hasSeen, !tour.isRunning, !isPresentingSomething else { return }
         startTour()
     }
 
     func startTour() {
-        selectedTab = TourStep.allCases.first?.tab ?? .home
-        tour.start()
+        // Under 13 the AI steps (and the Create tab) aren't there.
+        let steps = allowsCloudAI ? TourStep.allCases : TourStep.allCases.filter { !$0.isAboutCloudAI }
+        selectedTab = steps.first?.tab ?? .home
+        tour.start(steps: steps)
     }
 
     private var isPresentingSomething: Bool {
@@ -495,18 +564,43 @@ final class AppModel {
     /// Mac menu commands and dropped photos only act on the main screens:
     /// never during onboarding or the tour, or over a sheet, a picker or the editor.
     var acceptsCommands: Bool {
-        hasCompletedOnboarding && !tour.isRunning && !isPresentingSomething
+        hasCompletedOnboarding && !needsAgeStep && !tour.isRunning && !isPresentingSomething
             && !isSettingsPresented && !isPhotoPickerPresented && !isVideoPickerPresented
     }
 
+    /// Consent counts only where cloud AI is offered, and only with the
+    /// guardian answer when her age range asks for one.
+    var hasAIConsent: Bool {
+        allowsCloudAI && consentRecord.granted
+            && (!ageDefaults.requiresGuardianStep || consentRecord.guardianConfirmed)
+    }
+
+    /// Settings: switching it off withdraws consent. Switching it on goes
+    /// through the consent sheet (`grantAIConsent`).
     func setAIConsent(_ granted: Bool) {
-        hasAIConsent = granted
-        defaults.set(granted, forKey: Keys.consent)
+        if granted {
+            grantAIConsent(guardianConfirmed: consentRecord.guardianConfirmed)
+        } else {
+            saveConsent(AIConsentRecord())
+        }
+    }
+
+    /// "Allow AI processing" in the consent sheet.
+    func grantAIConsent(guardianConfirmed: Bool) {
+        saveConsent(AIConsentRecord(granted: true, date: Date(), guardianConfirmed: guardianConfirmed))
+    }
+
+    private func saveConsent(_ record: AIConsentRecord) {
+        consentRecord = record
+        if let data = try? JSONEncoder().encode(record) { defaults.set(data, forKey: Keys.consent) }
+        defaults.removeObject(forKey: Keys.legacyConsent)
     }
 
     // MARK: Paywall
 
     func presentPaywall(source: String) {
+        // Never under 13; for teens, never by itself after onboarding.
+        guard allowsPurchases, source != "onboarding" || ageDefaults.autoPaywall else { return }
         lastInterruption = Date() // never ask for a rating right after a paywall
         paywallSource = source
         isPaywallPresented = true
@@ -522,13 +616,17 @@ final class AppModel {
         requiresPro: Bool = false,
         then action: @escaping () -> Void
     ) {
+        if !operation.runsOnDevice && !allowsCloudAI {
+            noteUnavailable()
+            return
+        }
         if requiresPro && !purchases.isPro {
             presentPaywall(source: "pro_content")
             return
         }
         if !operation.runsOnDevice && !hasAIConsent {
+            // The sheet records consent (with the guardian answer) before this runs.
             consentRequest = ConsentRequest { [weak self] in
-                self?.setAIConsent(true)
                 self?.requestAccess(for: operation, outputs: outputs, requiresPro: requiresPro, then: action)
             }
             return
@@ -728,6 +826,8 @@ final class AppModel {
     // MARK: Editor routing
 
     func startEditing(tool: EditorTool? = nil, template: PhotoTemplate? = nil) {
+        let template = allowsCloudAI ? template : nil
+        let tool = permittedTool(tool)
         if let template, template.isPro, !purchases.isPro {
             presentPaywall(source: "template_\(template.id)")
             return
@@ -737,7 +837,7 @@ final class AppModel {
     }
 
     func openEditor(with image: UIImage, tool: EditorTool? = nil, template: PhotoTemplate? = nil) {
-        editorLaunch = EditorLaunch(image: ImageUtilities.normalized(image), tool: tool, template: template)
+        editorLaunch = EditorLaunch(image: ImageUtilities.normalized(image), tool: permittedTool(tool), template: allowsCloudAI ? template : nil)
     }
 
     /// Copies a picked video to a temporary file and opens the video editor.
@@ -790,7 +890,7 @@ final class AppModel {
             return ImageUtilities.normalized(image)
         }.value
         guard let image else { throw AIServiceError.invalidRequest(String(localized: "That file isn't a supported photo.")) }
-        editorLaunch = EditorLaunch(image: image, tool: request.tool, template: request.template)
+        editorLaunch = EditorLaunch(image: image, tool: permittedTool(request.tool), template: allowsCloudAI ? request.template : nil)
         if isRAW {
             showToast("RAW photo developed with the best settings ✨", style: .success)
         }
@@ -799,9 +899,22 @@ final class AppModel {
     // MARK: Deep links (widgets, Live Activities)
 
     func handle(_ link: GlowDeepLink) {
-        guard hasCompletedOnboarding, editorLaunch == nil else { return }
+        guard hasCompletedOnboarding, !needsAgeStep, editorLaunch == nil else { return }
         isPaywallPresented = false
         outOfCredits = nil
+        if !allowsCloudAI {
+            switch link {
+            case .magicEdit:
+                selectedTab = .edit
+                startEditing(tool: .effects)
+                return
+            case .template, .create:
+                selectedTab = .edit
+                return
+            default:
+                break
+            }
+        }
         switch link {
         case .magicEdit:
             selectedTab = .home
@@ -869,7 +982,7 @@ final class AppModel {
             return
         }
         if case AIServiceError.consentRequired = error {
-            consentRequest = ConsentRequest { [weak self] in self?.setAIConsent(true) }
+            if allowsCloudAI { consentRequest = ConsentRequest {} }
             return
         }
         showToast(verbatim: Self.localizedMessage(for: error), style: .error)
@@ -938,9 +1051,14 @@ extension AppModel {
     func applyScreenshotScene(_ scene: ScreenshotScene) {
         credits.resetForScreenshots()
         hasCompletedOnboarding = scene != .onboarding
-        hasAIConsent = scene != .consent
+        consentRecord = AIConsentRecord(granted: scene != .consent, date: nil, guardianConfirmed: true)
+        if scene == .age {
+            ageRecord = nil
+        } else if ageRecord == nil {
+            ageRecord = AgeRecord(band: .adult, source: .apple, setAt: Date())
+        }
         switch scene {
-        case .onboarding, .home, .settings, .legal, .invite, .tour, .collection:
+        case .onboarding, .home, .settings, .legal, .invite, .tour, .collection, .age:
             selectedTab = .home
         case .effects:
             selectedTab = .home

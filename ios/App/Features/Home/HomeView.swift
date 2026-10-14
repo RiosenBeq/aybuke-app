@@ -21,23 +21,28 @@ struct HomeView: View {
                             .reveal(1)
                     }
 
-                    heroCard
-                        .tourAnchor(.hero)
-                        .padding(.horizontal, Metrics.gutter)
-                        .reveal(1)
+                    // Under 13 Explore shows only the free on-device tools.
+                    if app.allowsCloudAI {
+                        heroCard
+                            .tourAnchor(.hero)
+                            .padding(.horizontal, Metrics.gutter)
+                            .reveal(1)
+                    }
 
                     quickTools
                         .tourAnchor(.quickTools)
                         .reveal(2)
 
-                    ForEach(Array(orderedCategories.enumerated()), id: \.element) { index, category in
-                        templateRow(category)
-                            .reveal(3 + index)
-                    }
+                    if app.allowsCloudAI {
+                        ForEach(Array(orderedCategories.enumerated()), id: \.element) { index, category in
+                            templateRow(category)
+                                .reveal(3 + index)
+                        }
 
-                    createBanner
-                        .padding(.horizontal, Metrics.gutter)
-                        .reveal(8)
+                        createBanner
+                            .padding(.horizontal, Metrics.gutter)
+                            .reveal(8)
+                    }
 
                     inviteBanner
                         .padding(.horizontal, Metrics.gutter)
@@ -86,15 +91,17 @@ struct HomeView: View {
                     .foregroundStyle(Palette.textSecondary)
             }
             Spacer()
-            CreditPill(balance: app.credits.balance, isPro: app.purchases.isPro) {
-                // Pro: Settings has the Membership and Credits sections.
-                if app.purchases.isPro {
-                    app.isSettingsPresented = true
-                } else {
-                    app.presentPaywall(source: "home_credits")
+            if app.allowsCloudAI {
+                CreditPill(balance: app.credits.balance, isPro: app.purchases.isPro) {
+                    // Pro: Settings has the Membership and Credits sections.
+                    if app.purchases.isPro {
+                        app.isSettingsPresented = true
+                    } else {
+                        app.presentPaywall(source: "home_credits")
+                    }
                 }
+                .tourAnchor(.credits)
             }
-            .tourAnchor(.credits)
             Button {
                 app.isSettingsPresented = true
             } label: {
@@ -157,7 +164,7 @@ struct HomeView: View {
                 .padding(.horizontal, Metrics.gutter)
             ScrollView(.horizontal) {
                 HStack(spacing: 12) {
-                    ForEach(Array(EditorTool.quickTools.enumerated()), id: \.element) { index, tool in
+                    ForEach(Array(EditorTool.quickTools.filter { app.allowsCloudAI || !$0.usesCloudAI }.enumerated()), id: \.element) { index, tool in
                         QuickToolTile(title: LocalizedStringKey(tool.title), caption: LocalizedStringKey(tool.caption), symbolName: tool.symbolName, palette: Self.toolPalettes[index % Self.toolPalettes.count]) {
                             Haptics.tap()
                             app.startEditing(tool: tool)

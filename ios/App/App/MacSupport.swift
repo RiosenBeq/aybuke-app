@@ -40,7 +40,9 @@ struct GlowlitCommands: Commands {
         // Customize Toolbar. (`before: .toolbar` would list them backwards.)
         CommandGroup(replacing: .toolbar) {
             tabButton("Explore", tab: .home, key: "1")
-            tabButton("Create", tab: .create, key: "2")
+            if app.allowsCloudAI {
+                tabButton("Create", tab: .create, key: "2")
+            }
             tabButton("Edit", tab: .edit, key: "3")
             tabButton("My Works", tab: .library, key: "4")
         }
