@@ -125,7 +125,7 @@ enum ShareRenderer {
     static func addAILabel(to image: UIImage, text: String, reservedBottom: CGFloat = 0) -> UIImage {
         let size = image.size
         let unit = min(size.width, size.height)
-        return renderer(size, opaque: false).image { _ in
+        return renderer(size, opaque: !ImageUtilities.hasAlpha(image)).image { _ in
             image.draw(at: .zero)
             let font = brandFont(max(unit * 0.03, 18), weight: .bold)
             let attributes: [NSAttributedString.Key: Any] = [.font: font, .foregroundColor: UIColor.brandInk]
@@ -288,11 +288,25 @@ enum ShareRenderer {
 
     // MARK: Drawing helpers
 
-    static func renderer(_ size: CGSize, opaque: Bool) -> UIGraphicsImageRenderer {
+    /// Draws a design with UIKit. UIGraphicsImageRenderer keeps an alpha
+    /// channel (and 16-bit floats for wide colour) even for an opaque
+    /// picture, which made opaque designs PNGs several times the size of a
+    /// JPEG, so opaque ones lose it once drawn.
+    struct Renderer {
+        let base: UIGraphicsImageRenderer
+        let opaque: Bool
+
+        func image(_ actions: (UIGraphicsImageRendererContext) -> Void) -> UIImage {
+            let image = base.image(actions: actions)
+            return opaque ? ImageUtilities.opaque(image) : image
+        }
+    }
+
+    static func renderer(_ size: CGSize, opaque: Bool) -> Renderer {
         let format = UIGraphicsImageRendererFormat()
         format.scale = 1
         format.opaque = opaque
-        return UIGraphicsImageRenderer(size: size, format: format)
+        return Renderer(base: UIGraphicsImageRenderer(size: size, format: format), opaque: opaque)
     }
 
     static func scaled(_ size: CGSize, toFit bounds: CGSize) -> CGSize {

@@ -75,11 +75,7 @@ enum DemoArt {
         let colors = swatch + accents
         let canvas = CGSize(width: size.width, height: size.height)
 
-        let format = UIGraphicsImageRendererFormat()
-        format.scale = 1
-        format.opaque = true
-        let image = UIGraphicsImageRenderer(size: canvas, format: format).image { context in
-            let cg = context.cgContext
+        let image = ImageUtilities.draw(size: canvas, opaque: true, colorSpace: CGColorSpace(name: CGColorSpace.sRGB)) { cg in
             let space = CGColorSpaceCreateDeviceRGB()
             let base = colors.first ?? .darkGray
             let baseEnd = colors.dropFirst().first ?? .black
@@ -104,10 +100,8 @@ enum DemoArt {
 
     /// Adds a small "DEMO" label so simulated results are never mistaken for real output.
     static func stamp(_ image: UIImage) -> UIImage {
-        let format = UIGraphicsImageRendererFormat()
-        format.scale = image.scale
-        format.opaque = !ImageUtilities.hasAlpha(image)
-        return UIGraphicsImageRenderer(size: image.size, format: format).image { _ in
+        ImageUtilities.draw(size: image.size, scale: image.scale, opaque: !ImageUtilities.hasAlpha(image),
+                            colorSpace: image.cgImage?.colorSpace) { _ in
             image.draw(at: .zero)
             let fontSize = max(14, image.size.width * 0.028)
             let attributes: [NSAttributedString.Key: Any] = [

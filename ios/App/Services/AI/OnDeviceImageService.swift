@@ -50,6 +50,9 @@ final class OnDeviceImageService: AIImageService {
 
     static func adjust(_ image: UIImage, with settings: AdjustmentSettings) -> UIImage {
         guard let input = ImageFilters.ciImage(image) else { return image }
-        return ImageFilters.render(ImageFilters.adjust(input, with: settings), extent: input.extent) ?? image
+        var adjusted = ImageFilters.adjust(input, with: settings)
+        // A photo stays opaque (a JPEG when saved); a cut-out keeps its transparency.
+        if !ImageUtilities.hasAlpha(image) { adjusted = adjusted.settingAlphaOne(in: input.extent) }
+        return ImageFilters.render(adjusted, extent: input.extent) ?? image
     }
 }

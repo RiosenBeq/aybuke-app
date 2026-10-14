@@ -115,7 +115,10 @@ enum RetroEffect: String, CaseIterable, Identifiable {
     func apply(to image: UIImage, options: Options = Options(), date: Date = Date()) -> UIImage {
         let source = ImageUtilities.normalized(image, maxLongEdge: 4096)
         guard let input = ImageFilters.ciImage(source) else { return image }
-        let graded = grade(input)
+        var graded = grade(input)
+        // A photo comes out opaque (a JPEG when saved); a cut-out keeps its
+        // transparency.
+        if !ImageUtilities.hasAlpha(source) { graded = graded.settingAlphaOne(in: input.extent) }
         guard var output = ImageFilters.render(graded, extent: input.extent) else { return image }
         switch self {
         case .kira:
@@ -287,11 +290,23 @@ enum RetroEffect: String, CaseIterable, Identifiable {
     }
 
     private static func draw(_ layer: UIImage, over image: UIImage) -> UIImage {
-        let format = UIGraphicsImageRendererFormat()
-        format.scale = 1
-        return UIGraphicsImageRenderer(size: image.size, format: format).image { _ in
-            image.draw(at: .zero)
-            layer.draw(at: .zero)
+        composite(image) { _ in layer.draw(at: .zero) }
+    }
+
+    /// `image` with more drawn on top, in its own colour space; opaque
+    /// when `image` is.
+    private static func composite(_ image: UIImage, opaque: Bool? = nil, size: CGSize? = nil, at origin: CGPoint = .zero,
+                                  background: UIColor? = nil, _ drawOnTop: (CGContext) -> Void) -> UIImage {
+        let canvas = size ?? image.size
+        return ImageUtilities.draw(size: canvas, opaque: opaque ?? !ImageUtilities.hasAlpha(image), colorSpace: image.cgImage?.colorSpace) { context in
+            if let background {
+                // Every pixel, including the last part-pixel row and column
+                // of a fractional canvas (they'd turn grey in a JPEG).
+                background.setFill()
+                context.fill(CGRect(x: 0, y: 0, width: canvas.width.rounded(.up), height: canvas.height.rounded(.up)))
+            }
+            image.draw(in: CGRect(origin: origin, size: image.size))
+            drawOnTop(context)
         }
     }
 
@@ -338,14 +353,8 @@ enum RetroEffect: String, CaseIterable, Identifiable {
     private static func squareBorder(around image: UIImage) -> UIImage {
         let size = image.size
         let side = max(size.width, size.height) * 1.08
-        let format = UIGraphicsImageRendererFormat()
-        format.scale = 1
-        format.opaque = true
-        return UIGraphicsImageRenderer(size: CGSize(width: side, height: side), format: format).image { context in
-            UIColor.white.setFill()
-            context.fill(CGRect(x: 0, y: 0, width: side, height: side))
-            image.draw(in: CGRect(x: (side - size.width) / 2, y: (side - size.height) / 2, width: size.width, height: size.height))
-        }
+        return composite(image, opaque: true, size: CGSize(width: side, height: side),
+                         at: CGPoint(x: (side - size.width) / 2, y: (side - size.height) / 2), background: .white) { _ in }
     }
 
     // MARK: Building blocks
@@ -535,14 +544,8 @@ enum RetroEffect: String, CaseIterable, Identifiable {
         let side = max(size.width, size.height) * 0.05
         let chin = max(size.width, size.height) * 0.17
         let canvas = CGSize(width: size.width + side * 2, height: size.height + side + chin)
-        let format = UIGraphicsImageRendererFormat()
-        format.scale = 1
-        format.opaque = true
-        return UIGraphicsImageRenderer(size: canvas, format: format).image { context in
-            UIColor(red: 0.985, green: 0.98, blue: 0.965, alpha: 1).setFill()
-            context.fill(CGRect(origin: .zero, size: canvas))
-            image.draw(in: CGRect(x: side, y: side, width: size.width, height: size.height))
-        }
+        return composite(image, opaque: true, size: canvas, at: CGPoint(x: side, y: side),
+                         background: UIColor(red: 0.985, green: 0.98, blue: 0.965, alpha: 1)) { _ in }
     }
 
     /// Glitter: four-point stars on the brightest spots, like Kira Kira
@@ -551,11 +554,7 @@ enum RetroEffect: String, CaseIterable, Identifiable {
         let points = highlights(in: image, count: 14)
         let size = image.size
         let unit = max(size.width, size.height) / 1000
-        let format = UIGraphicsImageRendererFormat()
-        format.scale = 1
-        return UIGraphicsImageRenderer(size: size, format: format).image { context in
-            image.draw(at: .zero)
-            let cg = context.cgContext
+        return composite(image) { cg in
             for (index, point) in points.enumerated() {
                 let radius = (index % 3 == 0 ? 34 : index % 3 == 1 ? 22 : 14) * unit * (0.6 + point.strength * 0.6)
                 let center = CGPoint(x: point.location.x * size.width, y: point.location.y * size.height)

@@ -47,6 +47,7 @@ enum ImageStore {
 
     /// PNG keeps transparency (cut-outs); everything else is stored as JPEG.
     static func save(_ image: UIImage, tag: Tag) throws -> String {
+        let image = ImageUtilities.droppingUnusedAlpha(image)
         let usePNG = ImageUtilities.hasAlpha(image)
         let name = UUID().uuidString + (usePNG ? ".png" : ".jpg")
         let data = try encode(image, png: usePNG, tag: tag)

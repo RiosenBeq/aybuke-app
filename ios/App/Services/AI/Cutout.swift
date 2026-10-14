@@ -372,15 +372,10 @@ enum CutoutRenderer {
     /// Renders a composite; opaque when the background is, so it saves as
     /// JPEG like any photo.
     static func render(_ image: CIImage, opaque: Bool) -> UIImage? {
-        guard let cgImage = context.createCGImage(image, from: image.extent) else { return nil }
-        guard opaque else { return UIImage(cgImage: cgImage) }
-        let format = UIGraphicsImageRendererFormat()
-        format.scale = 1
-        format.opaque = true
-        let size = CGSize(width: cgImage.width, height: cgImage.height)
-        return UIGraphicsImageRenderer(size: size, format: format).image { _ in
-            UIImage(cgImage: cgImage).draw(in: CGRect(origin: .zero, size: size))
-        }
+        // Known-opaque output renders without an alpha channel. (A UIKit
+        // "opaque" redraw kept one, so these saved as large PNGs.)
+        let output = opaque ? image.settingAlphaOne(in: image.extent) : image
+        return context.createCGImage(output, from: image.extent).map { UIImage(cgImage: $0) }
     }
 
     /// A sticker of the kept subjects: cropped to them, with a white outline

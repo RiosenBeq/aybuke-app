@@ -21,7 +21,7 @@ enum ImageExporter {
     /// `sourceType == nil` claims no AI. Only this one value is written, so
     /// a source's EXIF and location never reach the file.
     static func encode(_ image: UIImage, sourceType: DigitalSourceType?, watermark: Bool = false) -> (data: Data, fileExtension: String)? {
-        var normalized = ImageUtilities.normalized(image, maxLongEdge: 4096)
+        var normalized = ImageUtilities.droppingUnusedAlpha(ImageUtilities.normalized(image, maxLongEdge: 4096))
         if watermark {
             normalized = Watermark.apply(to: normalized)
         }
@@ -120,10 +120,8 @@ enum PhotoLibrarySaver {
 /// exports never carry it, and the in-app preview never shows it.
 enum Watermark {
     static func apply(to image: UIImage) -> UIImage {
-        let format = UIGraphicsImageRendererFormat()
-        format.scale = image.scale
-        format.opaque = !ImageUtilities.hasAlpha(image)
-        return UIGraphicsImageRenderer(size: image.size, format: format).image { _ in
+        ImageUtilities.draw(size: image.size, scale: image.scale, opaque: !ImageUtilities.hasAlpha(image),
+                            colorSpace: image.cgImage?.colorSpace) { _ in
             image.draw(at: .zero)
             let fontSize = max(12, image.size.width * 0.032)
             let font = UIFont(name: BrandFont.postScriptName(for: .bold), size: fontSize)

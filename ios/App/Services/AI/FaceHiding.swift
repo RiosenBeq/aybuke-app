@@ -54,10 +54,7 @@ enum FaceHiding {
         guard !faces.isEmpty, let cgImage = image.cgImage else { return image }
         let size = CGSize(width: cgImage.width, height: cgImage.height)
         let source = CIImage(cgImage: cgImage)
-        let format = UIGraphicsImageRendererFormat()
-        format.scale = 1
-        format.opaque = !ImageUtilities.hasAlpha(image)
-        return UIGraphicsImageRenderer(size: size, format: format).image { context in
+        return ImageUtilities.draw(size: size, opaque: !ImageUtilities.hasAlpha(image), colorSpace: cgImage.colorSpace) { cg in
             UIImage(cgImage: cgImage).draw(in: CGRect(origin: .zero, size: size))
             for face in faces {
                 let rect = pixelRect(coverRect(for: face), in: size)
@@ -68,9 +65,9 @@ enum FaceHiding {
                     if let patch = filteredPatch(source, cover: cover, rect: rect, feather: feather) {
                         UIImage(cgImage: patch).draw(in: feather)
                     }
-                case .heart: drawHeart(over: rect, in: context.cgContext)
-                case .star: drawStar(over: rect, in: context.cgContext)
-                case .smiley: drawSmiley(over: rect, in: context.cgContext)
+                case .heart: drawHeart(over: rect, in: cg)
+                case .star: drawStar(over: rect, in: cg)
+                case .smiley: drawSmiley(over: rect, in: cg)
                 }
             }
         }
