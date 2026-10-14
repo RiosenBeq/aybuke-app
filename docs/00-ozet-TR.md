@@ -235,4 +235,4 @@ Güven özellikleri:
 5. App Attest ile ücretsiz kredi suistimaline karşı koruma, bağımsız çıktı denetimi ve kötüye kullanım araçları (yaş adımı ve Declared Age Range Ekim 2026'da eklendi).
 6. Şablon kartlarına gerçek önce/sonra görsellerinin eklenmesi (farklı ten renkleri ve yüz tiplerinden oluşan geniş bir oyuncu kadrosuyla).
 7. 11 çevirinin anadili konuşanlarca kontrolü; App Store metinlerinin ve ekran görüntülerinin bu dillere uyarlanması.
-8. Denetimin "sonra" listesi: önce retro kamera ve fotoğraf kabini, sonra App Shortcuts ve paylaşım uzantıları; büyüme aşamasında selfie profilli Likeness Lock v2, şablonların video versiyonları, C2PA içerik kimlik bilgileri.
+8. Denetimin "sonra" listesi (retro kamera, fotoğraf kabini, Siri ve Kestirmeler Ekim 2026'da eklendi): önce paylaşım uzantıları; büyüme aşamasında selfie profilli Likeness Lock v2, şablonların video versiyonları, C2PA içerik kimlik bilgileri.

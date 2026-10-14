@@ -153,7 +153,7 @@ Seven audits (code, UX and accessibility, platform, competitors, trends, wellbei
 **Wave 1**
 - ✅ Teen-safety prompt policy: reshaping, skin lightening and smoothing, revealing clothing and humiliation blocked in all 12 languages (client and server, shared test vectors); every Magic Edit ends with the edit guard (`people-edit-safety-policy`)
 - ✅ Date-windowed seasonal looks (Halloween, winter, Galentine's), the 80s Throwback looks, Plushie Me, Bag Charm Mini and Pet portraits (`seasonal-windows-and-trend-pack`)
-- ✅ Throwback '16, Camcorder '06 (photo and video) and Film Still effects (`retro-effects-pack-2`; 🔭 Tiny World tilt-shift still to do)
+- ✅ Throwback '16, Camcorder '06 (photo and video) and Film Still effects (`retro-effects-pack-2`; the Tiny World tilt-shift followed later in October 2026)
 - ✅ Honest copy everywhere, checked in CI (`honest-copy-sweep`); truthful Pro credits and packs when Pro runs out (`pro-credits-truth`); release guard and honest demo mode (`release-readiness-guard`); Ask to Buy, load errors and billed terms at the CTA (`store-flows`)
 - ✅ On-device writer for Inspire me and Make it magic (`ai-on-device-writer`); Create with Image Playground (`image-playground-free-create`); the develop reveal (`ai-reveal-moment`)
 - ✅ Save what the editor shows; Retry free keeps the paid result (`editor-save-correctness`); Crop, rotate, straighten and canvas zoom (`editor-crop-rotate-zoom`)
@@ -183,9 +183,9 @@ Seven audits (code, UX and accessibility, platform, competitors, trends, wellbei
 | Id | Item | Why | Backend |
 |---|---|---|---|
 | `retro-camera-photo-booth` | ✅ Shipped in October 2026: Retro Cam with live effects, self-timer and flash + Photo Booth (4-shot countdown, strip and 2×2 four-cut prints) | Strongest teen trend that needs no server (Dazz Cam, 1998 Cam, Huji, Korean four-cut booths); first after this round | No |
-| `app-intents-shortcuts` | App Intents and App Shortcuts for the free tools (Siri, Spotlight, Action button) | Surfaces the free tools system-wide; today only the controls use App Intents | No |
+| `app-intents-shortcuts` | ✅ Shipped in October 2026: App Intents and App Shortcuts for the free tools (Apply a Retro Effect, Open Retro Cam, Start Photo Booth, Make a Collage, Edit a Photo) in Siri, Spotlight, Shortcuts and the Action button, plus Retro Cam and Photo Booth controls | Surfaces the free tools system-wide; today only the controls use App Intents | No |
 | `share-and-photos-extensions` | "Edit in Glowlit" share extension and a Photos editing extension | Meets her where her photos are; needs new targets and a shared image package | No |
-| `tipkit-and-short-tour` | TipKit tips; a 3-step tour instead of 7 | Hold to compare, Retry free and the widget are hard to discover | No |
+| `tipkit-and-short-tour` | Tips for Hold to compare, Retry free and the widget; a 3-step tour instead of 7 (TipKit tips for Retro Cam, collages, Text & Stickers, Surprise me and captions shipped in October 2026) | Hold to compare, Retry free and the widget are hard to discover | No |
 | `full-res-export-heic-hdr` | Full-resolution re-render on Save; HEIC; HDR-preserving Adjust | Photos open at 2048 px, so a 48 MP RAW exports at about 3 MP | No |
 | `cloud-erase-enhance-compositing` | Composite cloud Erase inside the mask; blend Enhance detail into the original | xAI returns a regenerated 1k frame, so areas outside the brush can change | Yes |
 | `cloud-job-resume-and-push` | Resume cloud jobs after suspend or kill; push-updated Live Activity with tap and Cancel | Jobs the server finishes and charges are lost on suspend | Yes |
