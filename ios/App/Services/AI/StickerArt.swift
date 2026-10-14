@@ -1,11 +1,60 @@
 import UIKit
+import SwiftUI
 
-enum StickerKind: String, CaseIterable, Identifiable, Sendable {
-    // Tray order: the tray fills two rows column by column.
-    case heart, chromeHeart, sparkles, sparkleBurst, star, moon, butterfly, bow, ribbonBow, crown, cherries, flower, daisy
-    case rainbow, cloud, smiley, musicNotes, camera, filmStrip, omg, slay, bestie, mainCharacter, yay, dateStamp
+/// The sticker tray's sections. Each sticker sits in one; All shows them all.
+enum StickerCategory: String, CaseIterable, Identifiable, Sendable {
+    case all, cute, y2k, glam, love, sky, words
 
     var id: String { rawValue }
+
+    var title: LocalizedStringKey {
+        switch self {
+        case .all: return "All"
+        case .cute: return "Cute"
+        // Like the effects' era tags, Y2K reads the same in every language.
+        case .y2k: return "Y2K"
+        case .glam: return "Glam"
+        case .love: return "Love"
+        case .sky: return "Sky"
+        case .words: return "Words"
+        }
+    }
+
+    /// The stickers in this section, in tray order.
+    var kinds: [StickerKind] {
+        self == .all ? StickerKind.allCases : StickerKind.allCases.filter { $0.category == self }
+    }
+}
+
+enum StickerKind: String, CaseIterable, Identifiable, Sendable {
+    // Tray order for All: favourites first, then the rest by section.
+    case heart, sparkles, bow, butterfly, star, cherries, flower, smiley, chromeHeart
+    case puffyHeart, strawberry, ribbonBow, crown, moon, rainbow, cloud, bunny, kitty, bear
+    case mushroom, heartCloud, boba, daisy, musicNotes
+    case pearls, ginghamBow, heartLocket, lipGloss, compactMirror, nailPolish, mascara, perfume
+    case chromeStar, holoHeart, butterflyClip, flipCell, cd, sparkleBurst, camera, filmStrip
+    case twinHearts, loveLetter, rose, sun, shootingStar, planet
+    case omg, slay, bestie, mainCharacter, yay, itGirl, vibes, coreMemory, dateStamp
+
+    var id: String { rawValue }
+
+    var category: StickerCategory {
+        switch self {
+        case .cherries, .flower, .smiley, .butterfly, .strawberry, .cloud, .bunny, .kitty, .bear, .mushroom, .heartCloud,
+             .boba, .daisy, .musicNotes:
+            return .cute
+        case .chromeHeart, .chromeStar, .holoHeart, .butterflyClip, .flipCell, .cd, .sparkleBurst, .camera, .filmStrip, .dateStamp:
+            return .y2k
+        case .bow, .ribbonBow, .crown, .pearls, .ginghamBow, .lipGloss, .compactMirror, .nailPolish, .mascara, .perfume:
+            return .glam
+        case .heart, .puffyHeart, .heartLocket, .twinHearts, .loveLetter, .rose:
+            return .love
+        case .sparkles, .star, .moon, .rainbow, .sun, .shootingStar, .planet:
+            return .sky
+        case .omg, .slay, .bestie, .mainCharacter, .yay, .itGirl, .vibes, .coreMemory:
+            return .words
+        }
+    }
 
     /// The sticker's name for VoiceOver and the sticker tray.
     var title: String {
@@ -29,7 +78,34 @@ enum StickerKind: String, CaseIterable, Identifiable, Sendable {
         case .musicNotes: return String(localized: "Music notes", comment: "A sticker of two joined music notes")
         case .camera: return String(localized: "Camera", comment: "A sticker of a cute retro photo camera")
         case .filmStrip: return String(localized: "Film strip")
-        case .omg, .slay, .bestie, .mainCharacter, .yay:
+        case .puffyHeart: return String(localized: "Puffy heart", comment: "A sticker of a glossy, puffy 3D heart")
+        case .twinHearts: return String(localized: "Two hearts", comment: "A sticker of two overlapping hearts")
+        case .loveLetter: return String(localized: "Love letter", comment: "A sticker of an envelope closed with a heart seal")
+        case .heartLocket: return String(localized: "Heart locket", comment: "A sticker of a golden heart-shaped locket on a chain")
+        case .rose: return String(localized: "Rose", comment: "A sticker of a pink rose flower")
+        case .strawberry: return String(localized: "Strawberry")
+        case .mushroom: return String(localized: "Mushroom", comment: "A sticker of a cute spotted mushroom with a little face")
+        case .bunny: return String(localized: "Bunny", comment: "A sticker of a cute bunny's face")
+        case .kitty: return String(localized: "Kitty", comment: "A sticker of a cute cat's face")
+        case .bear: return String(localized: "Teddy bear", comment: "A sticker of a cute teddy bear's face")
+        case .heartCloud: return String(localized: "Heart cloud", comment: "A sticker of a pink cloud raining little hearts")
+        case .boba: return String(localized: "Bubble tea", comment: "A sticker of a cup of bubble tea with a straw")
+        case .pearls: return String(localized: "Pearls", comment: "A sticker of a pearl necklace with a little bow")
+        case .ginghamBow: return String(localized: "Gingham bow", comment: "A sticker of a bow in pink and white checked fabric")
+        case .lipGloss: return String(localized: "Lip gloss", comment: "A sticker of a lip gloss tube (the object only)")
+        case .compactMirror: return String(localized: "Compact mirror", comment: "A sticker of an open makeup compact with a mirror")
+        case .nailPolish: return String(localized: "Nail polish", comment: "A sticker of a bottle of nail polish (the object only)")
+        case .mascara: return String(localized: "Mascara", comment: "A sticker of a mascara tube and wand (the object only)")
+        case .perfume: return String(localized: "Perfume", comment: "A sticker of a heart-shaped perfume bottle")
+        case .chromeStar: return String(localized: "Chrome star", comment: "A shiny metallic Y2K-style star sticker")
+        case .holoHeart: return String(localized: "Holo heart", comment: "A sticker of a holographic, rainbow-shimmer heart")
+        case .butterflyClip: return String(localized: "Butterfly clip", comment: "A sticker of a Y2K butterfly hair clip")
+        case .flipCell: return String(localized: "Flip cell", comment: "A sticker of a pink Y2K flip-open mobile with a heart on its screen")
+        case .cd: return String(localized: "CD", comment: "A sticker of a shiny compact disc")
+        case .sun: return String(localized: "Sun", comment: "A sticker of a smiling sun")
+        case .shootingStar: return String(localized: "Shooting star", comment: "A sticker of a star with a rainbow trail")
+        case .planet: return String(localized: "Planet", comment: "A sticker of a ringed planet")
+        case .omg, .slay, .bestie, .mainCharacter, .yay, .itGirl, .vibes, .coreMemory:
             return String(localized: "Speech bubble: \(words ?? "")", comment: "A speech-bubble sticker and its words")
         case .dateStamp: return String(localized: "Date stamp")
         }
@@ -44,6 +120,11 @@ enum StickerKind: String, CaseIterable, Identifiable, Sendable {
         case .mainCharacter:
             return String(localized: "main character", comment: "Speech-bubble sticker in the photo editor: feeling like the star of your own story. Keep it short.")
         case .yay: return String(localized: "yay", comment: "Speech-bubble sticker in the photo editor: a happy cheer")
+        case .itGirl:
+            return String(localized: "it girl", comment: "Speech-bubble sticker in the photo editor: the girl everyone wants to be like. Keep it short.")
+        case .vibes: return String(localized: "vibes", comment: "Speech-bubble sticker in the photo editor: good mood, good atmosphere")
+        case .coreMemory:
+            return String(localized: "core memory", comment: "Speech-bubble sticker in the photo editor: a moment you'll remember forever. Keep it short.")
         default: return nil
         }
     }
@@ -62,8 +143,11 @@ struct Sticker: Hashable, Sendable {
 }
 
 /// The built-in sticker pack, drawn in code with the brand's colours: no
-/// third-party art, and no emoji or SF Symbols baked into photos. Stickers
-/// get a white die-cut edge and a soft shadow, like real ones.
+/// third-party art, and no emoji or SF Symbols baked into photos. Like a
+/// printed sticker sheet, each one has layered shapes with soft gradients
+/// and a glossy shine, a thin deeper keyline, a white die-cut edge and a
+/// soft shadow. All vector, so the canvas and the full-size photo match at
+/// any scale. The shapes live in the StickerArt+… files, one per section.
 enum StickerArt {
     /// The white edge, in units.
     static let edge: CGFloat = 12
@@ -94,7 +178,34 @@ enum StickerArt {
         case .musicNotes: art = CGSize(width: 206, height: 220)
         case .camera: art = CGSize(width: 248, height: 196)
         case .filmStrip: art = CGSize(width: 256, height: 168)
-        case .omg, .slay, .bestie, .mainCharacter, .yay:
+        case .puffyHeart: art = CGSize(width: 216, height: 200)
+        case .twinHearts: art = CGSize(width: 250, height: 210)
+        case .loveLetter: art = CGSize(width: 250, height: 200)
+        case .heartLocket: art = CGSize(width: 190, height: 250)
+        case .rose: art = CGSize(width: 200, height: 240)
+        case .strawberry: art = CGSize(width: 196, height: 224)
+        case .mushroom: art = CGSize(width: 220, height: 220)
+        case .bunny: art = CGSize(width: 210, height: 250)
+        case .kitty: art = CGSize(width: 236, height: 206)
+        case .bear: art = CGSize(width: 230, height: 210)
+        case .heartCloud: art = CGSize(width: 240, height: 220)
+        case .boba: art = CGSize(width: 180, height: 250)
+        case .pearls: art = CGSize(width: 250, height: 200)
+        case .ginghamBow: art = CGSize(width: 256, height: 200)
+        case .lipGloss: art = CGSize(width: 150, height: 256)
+        case .compactMirror: art = CGSize(width: 200, height: 250)
+        case .nailPolish: art = CGSize(width: 170, height: 250)
+        case .mascara: art = CGSize(width: 226, height: 246)
+        case .perfume: art = CGSize(width: 210, height: 240)
+        case .chromeStar: art = CGSize(width: 220, height: 212)
+        case .holoHeart: art = CGSize(width: 216, height: 200)
+        case .butterflyClip: art = CGSize(width: 250, height: 210)
+        case .flipCell: art = CGSize(width: 170, height: 256)
+        case .cd: art = CGSize(width: 220, height: 220)
+        case .sun: art = CGSize(width: 230, height: 230)
+        case .shootingStar: art = CGSize(width: 256, height: 196)
+        case .planet: art = CGSize(width: 250, height: 200)
+        case .omg, .slay, .bestie, .mainCharacter, .yay, .itGirl, .vibes, .coreMemory:
             let text = bubbleText(sticker).size()
             art = CGSize(width: max(ceil(text.width) + 88, 170), height: ceil(text.height) + 40 + bubbleTail)
         case .dateStamp:
@@ -116,645 +227,62 @@ enum StickerArt {
         cg.beginTransparencyLayer(in: rect, auxiliaryInfo: nil)
         let art = rect.insetBy(dx: margin, dy: margin)
         switch sticker.kind {
-        case .heart: drawHeart(in: art)
+        case .heart: drawHeart(in: art, context: cg)
         case .chromeHeart: drawChromeHeart(in: art, context: cg)
-        case .sparkles: drawSparkles(in: art)
-        case .sparkleBurst: drawSparkleBurst(in: art)
-        case .star: drawStar(in: art)
+        case .sparkles: drawSparkles(in: art, context: cg)
+        case .sparkleBurst: drawSparkleBurst(in: art, context: cg)
+        case .star: drawStar(in: art, context: cg)
         case .moon: drawMoon(in: art, context: cg)
-        case .butterfly: drawButterfly(in: art)
-        case .bow: drawBow(in: art)
-        case .ribbonBow: drawRibbonBow(in: art)
+        case .butterfly: drawButterfly(in: art, context: cg)
+        case .bow: drawBow(in: art, context: cg)
+        case .ribbonBow: drawRibbonBow(in: art, context: cg)
         case .crown: drawCrown(in: art, context: cg)
         case .cherries: drawCherries(in: art, context: cg)
-        case .flower: drawFlower(in: art)
-        case .daisy: drawDaisy(in: art)
-        case .rainbow: drawRainbow(in: art)
+        case .flower: drawFlower(in: art, context: cg)
+        case .daisy: drawDaisy(in: art, context: cg)
+        case .rainbow: drawRainbow(in: art, context: cg)
         case .cloud: drawCloud(in: art, context: cg)
-        case .smiley: drawSmiley(in: art)
-        case .musicNotes: drawMusicNotes(in: art)
-        case .camera: drawCamera(in: art)
+        case .smiley: drawSmiley(in: art, context: cg)
+        case .musicNotes: drawMusicNotes(in: art, context: cg)
+        case .camera: drawCamera(in: art, context: cg)
         case .filmStrip: drawFilmStrip(in: art, context: cg)
-        case .omg, .slay, .bestie, .mainCharacter, .yay: drawBubble(sticker, in: art)
+        case .puffyHeart: drawPuffyHeart(in: art, context: cg)
+        case .twinHearts: drawTwinHearts(in: art, context: cg)
+        case .loveLetter: drawLoveLetter(in: art, context: cg)
+        case .heartLocket: drawHeartLocket(in: art, context: cg)
+        case .rose: drawRose(in: art, context: cg)
+        case .strawberry: drawStrawberry(in: art, context: cg)
+        case .mushroom: drawMushroom(in: art, context: cg)
+        case .bunny: drawBunny(in: art, context: cg)
+        case .kitty: drawKitty(in: art, context: cg)
+        case .bear: drawBear(in: art, context: cg)
+        case .heartCloud: drawHeartCloud(in: art, context: cg)
+        case .boba: drawBoba(in: art, context: cg)
+        case .pearls: drawPearls(in: art, context: cg)
+        case .ginghamBow: drawGinghamBow(in: art, context: cg)
+        case .lipGloss: drawLipGloss(in: art, context: cg)
+        case .compactMirror: drawCompactMirror(in: art, context: cg)
+        case .nailPolish: drawNailPolish(in: art, context: cg)
+        case .mascara: drawMascara(in: art, context: cg)
+        case .perfume: drawPerfume(in: art, context: cg)
+        case .chromeStar: drawChromeStar(in: art, context: cg)
+        case .holoHeart: drawHoloHeart(in: art, context: cg)
+        case .butterflyClip: drawButterflyClip(in: art, context: cg)
+        case .flipCell: drawFlipCell(in: art, context: cg)
+        case .cd: drawCD(in: art, context: cg)
+        case .sun: drawSun(in: art, context: cg)
+        case .shootingStar: drawShootingStar(in: art, context: cg)
+        case .planet: drawPlanet(in: art, context: cg)
+        case .omg, .slay, .bestie, .mainCharacter, .yay, .itGirl, .vibes, .coreMemory: drawBubble(sticker, in: art, context: cg)
         case .dateStamp: break
         }
         cg.endTransparencyLayer()
         cg.restoreGState()
     }
 
-    // MARK: Shapes
+    // MARK: Words
 
-    private static func drawHeart(in art: CGRect) {
-        let grid = Grid(rect: art)
-        let heart = heartPath(in: art)
-        dieCut([heart])
-        UIColor.auraPink.setFill()
-        heart.fill()
-        UIColor.white.withAlphaComponent(0.55).setFill()
-        grid.ellipse(0.25, 0.27, 0.17, 0.1, degrees: -38).fill()
-        grid.ellipse(0.37, 0.18, 0.05, 0.035, degrees: -38).fill()
-    }
-
-    /// Y2K chrome: bands of light, a dark horizon line and hard highlights.
-    private static func drawChromeHeart(in art: CGRect, context cg: CGContext) {
-        let grid = Grid(rect: art)
-        let heart = heartPath(in: art)
-        dieCut([heart])
-        cg.saveGState()
-        heart.addClip()
-        let colors = [UIColor.white, .brandPetal, UIColor(hex: 0xD9CCF5), .auraLilac, .plum, UIColor(hex: 0xB86AA8), .brandBlush, .white]
-        if let gradient = CGGradient(colorsSpace: CGColorSpaceCreateDeviceRGB(), colors: colors.map(\.cgColor) as CFArray,
-                                     locations: [0, 0.16, 0.36, 0.47, 0.5, 0.57, 0.8, 1]) {
-            cg.drawLinearGradient(gradient, start: CGPoint(x: art.midX, y: art.minY), end: CGPoint(x: art.midX, y: art.maxY), options: [])
-        }
-        cg.restoreGState()
-        UIColor.plum.withAlphaComponent(0.45).setStroke()
-        heart.lineWidth = 4
-        heart.stroke()
-        UIColor.white.setFill()
-        grid.ellipse(0.26, 0.26, 0.2, 0.08, degrees: -36).fill()
-        sparklePath(center: grid.p(0.74, 0.3), radius: art.width * 0.1).fill()
-    }
-
-    private static func drawSparkles(in art: CGRect) {
-        let grid = Grid(rect: art)
-        let big = sparklePath(center: grid.p(0.4, 0.58), radius: art.width * 0.4)
-        let medium = sparklePath(center: grid.p(0.79, 0.21), radius: art.width * 0.2)
-        let small = sparklePath(center: grid.p(0.82, 0.83), radius: art.width * 0.13)
-        dieCut([big, medium, small], width: edge * 0.75)
-        UIColor.white.setFill()
-        big.fill()
-        // A lilac rim, so the white sparkle shows on a bright sky too.
-        UIColor.auraLilac.setStroke()
-        big.lineWidth = 4
-        big.stroke()
-        UIColor.auraButter.setFill()
-        medium.fill()
-        UIColor.auraPink.setFill()
-        small.fill()
-    }
-
-    private static func drawStar(in art: CGRect) {
-        let center = CGPoint(x: art.midX, y: art.minY + art.height * 0.53)
-        let outer = art.width * 0.5
-        let star = starPath(center: center, outer: outer, inner: outer * 0.47)
-        dieCut([star])
-        UIColor.auraButter.setFill()
-        star.fill()
-        // Stroking in the same colour rounds the points.
-        UIColor.auraButter.setStroke()
-        star.lineWidth = 10
-        star.lineJoinStyle = .round
-        star.stroke()
-        UIColor.white.withAlphaComponent(0.35).setFill()
-        starPath(center: center, outer: outer * 0.5, inner: outer * 0.24).fill()
-    }
-
-    private static func drawButterfly(in art: CGRect) {
-        let grid = Grid(rect: art)
-        let upperLeft = grid.ellipse(0.28, 0.36, 0.46, 0.56, degrees: -24)
-        let upperRight = grid.ellipse(0.72, 0.36, 0.46, 0.56, degrees: 24)
-        let lowerLeft = grid.ellipse(0.33, 0.73, 0.32, 0.38, degrees: 28)
-        let lowerRight = grid.ellipse(0.67, 0.73, 0.32, 0.38, degrees: -28)
-        let body = UIBezierPath(roundedRect: grid.r(0.47, 0.2, 0.06, 0.7), cornerRadius: art.width * 0.03)
-        let antennae = UIBezierPath()
-        antennae.move(to: grid.p(0.49, 0.22))
-        antennae.addQuadCurve(to: grid.p(0.36, 0.03), controlPoint: grid.p(0.45, 0.06))
-        antennae.move(to: grid.p(0.51, 0.22))
-        antennae.addQuadCurve(to: grid.p(0.64, 0.03), controlPoint: grid.p(0.55, 0.06))
-        let antennaWidth = art.width * 0.022
-        dieCut([upperLeft, upperRight, lowerLeft, lowerRight, body])
-        dieCut([antennae], width: edge * 0.7 + antennaWidth / 2)
-
-        UIColor.auraPink.setFill()
-        lowerLeft.fill()
-        lowerRight.fill()
-        UIColor.auraLilac.setFill()
-        upperLeft.fill()
-        upperRight.fill()
-        UIColor.brandPetal.withAlphaComponent(0.9).setFill()
-        grid.ellipse(0.23, 0.33, 0.2, 0.24, degrees: -24).fill()
-        grid.ellipse(0.77, 0.33, 0.2, 0.24, degrees: 24).fill()
-        UIColor.auraButter.setFill()
-        grid.ellipse(0.31, 0.76, 0.11, 0.13).fill()
-        grid.ellipse(0.69, 0.76, 0.11, 0.13).fill()
-        UIColor.plum.setFill()
-        body.fill()
-        UIColor.plum.setStroke()
-        antennae.lineWidth = antennaWidth
-        antennae.lineCapStyle = .round
-        antennae.stroke()
-        for x in [0.36, 0.64] as [CGFloat] {
-            grid.ellipse(x, 0.03, 0.05, 0.06).fill()
-        }
-    }
-
-    private static func drawBow(in art: CGRect) {
-        let grid = Grid(rect: art)
-        let loop = UIBezierPath()
-        loop.move(to: grid.p(0.47, 0.36))
-        loop.addCurve(to: grid.p(0.06, 0.12), controlPoint1: grid.p(0.34, 0.12), controlPoint2: grid.p(0.14, -0.02))
-        loop.addCurve(to: grid.p(0.1, 0.66), controlPoint1: grid.p(-0.02, 0.3), controlPoint2: grid.p(-0.01, 0.6))
-        loop.addCurve(to: grid.p(0.47, 0.5), controlPoint1: grid.p(0.22, 0.72), controlPoint2: grid.p(0.36, 0.6))
-        loop.close()
-        let tail = UIBezierPath()
-        tail.move(to: grid.p(0.45, 0.48))
-        tail.addCurve(to: grid.p(0.22, 0.95), controlPoint1: grid.p(0.4, 0.66), controlPoint2: grid.p(0.3, 0.84))
-        tail.addLine(to: grid.p(0.32, 0.88))
-        tail.addLine(to: grid.p(0.38, 0.99))
-        tail.addCurve(to: grid.p(0.53, 0.5), controlPoint1: grid.p(0.44, 0.84), controlPoint2: grid.p(0.5, 0.66))
-        tail.close()
-        let loops = [loop, mirrored(loop, in: art)]
-        let tails = [tail, mirrored(tail, in: art)]
-        let knot = UIBezierPath(roundedRect: grid.r(0.41, 0.3, 0.18, 0.26), cornerRadius: art.width * 0.06)
-        dieCut(loops + tails + [knot])
-
-        UIColor.auraPink.mixed(with: .plum, amount: 0.15).setFill()
-        tails.forEach { $0.fill() }
-        UIColor.auraPink.setFill()
-        loops.forEach { $0.fill() }
-        // A fold inside each loop.
-        let fold = UIBezierPath()
-        fold.move(to: grid.p(0.42, 0.43))
-        fold.addQuadCurve(to: grid.p(0.15, 0.3), controlPoint: grid.p(0.26, 0.28))
-        UIColor.plum.withAlphaComponent(0.25).setStroke()
-        for path in [fold, mirrored(fold, in: art)] {
-            path.lineWidth = 5
-            path.lineCapStyle = .round
-            path.stroke()
-        }
-        UIColor.white.withAlphaComponent(0.4).setFill()
-        grid.ellipse(0.2, 0.2, 0.1, 0.06, degrees: -30).fill()
-        grid.ellipse(0.8, 0.2, 0.1, 0.06, degrees: 30).fill()
-        UIColor.auraPink.mixed(with: .plum, amount: 0.25).setFill()
-        knot.fill()
-    }
-
-    private static func drawCherries(in art: CGRect, context cg: CGContext) {
-        let grid = Grid(rect: art)
-        let radius = art.width * 0.22
-        let centers = [grid.p(0.3, 0.72), grid.p(0.7, 0.77)]
-        let cherries = centers.map { UIBezierPath(ovalIn: CGRect(x: $0.x - radius, y: $0.y - radius, width: radius * 2, height: radius * 2)) }
-        let stems = UIBezierPath()
-        stems.move(to: grid.p(0.32, 0.53))
-        stems.addCurve(to: grid.p(0.58, 0.1), controlPoint1: grid.p(0.36, 0.34), controlPoint2: grid.p(0.46, 0.18))
-        stems.move(to: grid.p(0.68, 0.58))
-        stems.addCurve(to: grid.p(0.58, 0.1), controlPoint1: grid.p(0.7, 0.36), controlPoint2: grid.p(0.62, 0.2))
-        let leaf = UIBezierPath()
-        leaf.move(to: grid.p(0.58, 0.1))
-        leaf.addCurve(to: grid.p(0.96, 0.12), controlPoint1: grid.p(0.68, -0.04), controlPoint2: grid.p(0.88, -0.02))
-        leaf.addCurve(to: grid.p(0.58, 0.1), controlPoint1: grid.p(0.86, 0.26), controlPoint2: grid.p(0.68, 0.24))
-        leaf.close()
-        let stemWidth = art.width * 0.045
-        dieCut(cherries + [leaf])
-        dieCut([stems], width: edge + stemWidth / 2)
-
-        let stemColor = UIColor.auraMint.mixed(with: .plum, amount: 0.45)
-        stemColor.setStroke()
-        stems.lineWidth = stemWidth
-        stems.lineCapStyle = .round
-        stems.stroke()
-        UIColor.auraMint.setFill()
-        leaf.fill()
-        let vein = UIBezierPath()
-        vein.move(to: grid.p(0.62, 0.1))
-        vein.addQuadCurve(to: grid.p(0.9, 0.12), controlPoint: grid.p(0.76, 0.07))
-        vein.lineWidth = 3
-        vein.stroke()
-
-        let deep = UIColor.auraPink.mixed(with: .plum, amount: 0.35)
-        let space = CGColorSpaceCreateDeviceRGB()
-        for (cherry, center) in zip(cherries, centers) {
-            cg.saveGState()
-            cherry.addClip()
-            if let shine = CGGradient(colorsSpace: space, colors: [UIColor.auraPink.cgColor, deep.cgColor] as CFArray, locations: [0.2, 1]) {
-                let light = CGPoint(x: center.x - radius * 0.35, y: center.y - radius * 0.35)
-                cg.drawRadialGradient(shine, startCenter: light, startRadius: 0, endCenter: center, endRadius: radius * 1.15, options: [])
-            }
-            cg.restoreGState()
-            UIColor.white.withAlphaComponent(0.7).setFill()
-            UIBezierPath(ovalIn: CGRect(x: center.x - radius * 0.55, y: center.y - radius * 0.6, width: radius * 0.4, height: radius * 0.26)).fill()
-        }
-    }
-
-    private static func drawFlower(in art: CGRect) {
-        let grid = Grid(rect: art)
-        let petals = (0..<5).map { index -> UIBezierPath in
-            let angle = CGFloat(index) * 72 - 90
-            let radians = angle * .pi / 180
-            return grid.ellipse(0.5 + cos(radians) * 0.25, 0.5 + sin(radians) * 0.25, 0.34, 0.44, degrees: angle + 90)
-        }
-        let heart = UIBezierPath(ovalIn: grid.r(0.36, 0.36, 0.28, 0.28))
-        dieCut(petals + [heart])
-        UIColor.brandBlush.setFill()
-        petals.forEach { $0.fill() }
-        UIColor.white.withAlphaComponent(0.55).setStroke()
-        for petal in petals {
-            petal.lineWidth = 3
-            petal.stroke()
-        }
-        UIColor.auraButter.setFill()
-        heart.fill()
-        UIColor.auraPeach.setFill()
-        for index in 0..<5 {
-            let radians = (CGFloat(index) * 72 - 54) * .pi / 180
-            grid.ellipse(0.5 + cos(radians) * 0.07, 0.5 + sin(radians) * 0.07, 0.04, 0.04).fill()
-        }
-    }
-
-    private static func drawSmiley(in art: CGRect) {
-        let grid = Grid(rect: art)
-        let face = UIBezierPath(ovalIn: art)
-        dieCut([face])
-        UIColor.auraButter.setFill()
-        face.fill()
-        UIColor.auraPink.withAlphaComponent(0.45).setFill()
-        grid.ellipse(0.23, 0.6, 0.15, 0.09).fill()
-        grid.ellipse(0.77, 0.6, 0.15, 0.09).fill()
-        UIColor.plum.setFill()
-        grid.ellipse(0.36, 0.38, 0.1, 0.17).fill()
-        grid.ellipse(0.64, 0.38, 0.1, 0.17).fill()
-        let smile = UIBezierPath(arcCenter: grid.p(0.5, 0.52), radius: art.width * 0.26,
-                                 startAngle: .pi * 0.18, endAngle: .pi * 0.82, clockwise: true)
-        UIColor.plum.setStroke()
-        smile.lineWidth = art.width * 0.06
-        smile.lineCapStyle = .round
-        smile.stroke()
-    }
-
-    /// One big sparkle with little rays around it, like a flash going off.
-    private static func drawSparkleBurst(in art: CGRect) {
-        let grid = Grid(rect: art)
-        let center = grid.p(0.5, 0.5)
-        let sparkle = sparklePath(center: center, radius: art.width * 0.34)
-        // Rays between the sparkle's points, long and short in turn.
-        let rays = UIBezierPath()
-        for index in 0..<8 {
-            let angle = CGFloat(index) * .pi / 4 + .pi / 8
-            let inner = art.width * 0.31
-            let outer = art.width * (index.isMultiple(of: 2) ? 0.47 : 0.41)
-            rays.move(to: CGPoint(x: center.x + cos(angle) * inner, y: center.y + sin(angle) * inner))
-            rays.addLine(to: CGPoint(x: center.x + cos(angle) * outer, y: center.y + sin(angle) * outer))
-        }
-        let rayWidth = art.width * 0.055
-        dieCut([sparkle])
-        dieCut([rays], width: edge * 0.75 + rayWidth / 2)
-        UIColor.auraPink.setStroke()
-        rays.lineWidth = rayWidth
-        rays.stroke()
-        UIColor.auraButter.setFill()
-        sparkle.fill()
-        // Stroking in the same colour softens the points a little.
-        UIColor.auraButter.setStroke()
-        sparkle.lineWidth = 6
-        sparkle.stroke()
-        UIColor.white.withAlphaComponent(0.75).setFill()
-        sparklePath(center: grid.p(0.42, 0.42), radius: art.width * 0.09).fill()
-    }
-
-    /// A sleepy crescent moon with two little stars.
-    private static func drawMoon(in art: CGRect, context cg: CGContext) {
-        let grid = Grid(rect: art)
-        let bite = grid.p(0.63, 0.41)
-        let biteRadius = art.width * 0.33
-        let moon = crescentPath(center: grid.p(0.42, 0.56), radius: art.width * 0.4, bite: bite, biteRadius: biteRadius)
-        let bigStar = starPath(center: grid.p(0.77, 0.2), outer: art.width * 0.13, inner: art.width * 0.065)
-        let smallStar = starPath(center: grid.p(0.88, 0.5), outer: art.width * 0.08, inner: art.width * 0.04)
-        dieCut([moon, bigStar, smallStar])
-        UIColor.auraButter.setFill()
-        moon.fill()
-        // A warmer shade along the inner curve.
-        cg.saveGState()
-        moon.addClip()
-        let innerEdge = UIBezierPath(ovalIn: CGRect(x: bite.x - biteRadius, y: bite.y - biteRadius, width: biteRadius * 2, height: biteRadius * 2))
-        UIColor.auraPeach.withAlphaComponent(0.4).setStroke()
-        innerEdge.lineWidth = art.width * 0.12
-        innerEdge.stroke()
-        cg.restoreGState()
-        for (star, color) in [(bigStar, UIColor.auraLilac), (smallStar, UIColor.auraPink)] {
-            color.setFill()
-            star.fill()
-            color.setStroke()
-            star.lineWidth = 7
-            star.lineJoinStyle = .round
-            star.stroke()
-        }
-        // A closed, smiling eye and a blush cheek.
-        let eye = UIBezierPath(arcCenter: grid.p(0.21, 0.6), radius: art.width * 0.05,
-                               startAngle: .pi * 0.1, endAngle: .pi * 0.9, clockwise: true)
-        UIColor.plum.setStroke()
-        eye.lineWidth = art.width * 0.025
-        eye.lineCapStyle = .round
-        eye.stroke()
-        UIColor.auraPink.withAlphaComponent(0.45).setFill()
-        grid.ellipse(0.2, 0.74, 0.11, 0.07).fill()
-    }
-
-    /// A pale satin bow with long, wavy ribbon tails.
-    private static func drawRibbonBow(in art: CGRect) {
-        let grid = Grid(rect: art)
-        let loop = UIBezierPath()
-        loop.move(to: grid.p(0.46, 0.27))
-        loop.addCurve(to: grid.p(0.09, 0.06), controlPoint1: grid.p(0.36, 0.08), controlPoint2: grid.p(0.18, -0.01))
-        loop.addCurve(to: grid.p(0.12, 0.42), controlPoint1: grid.p(0.01, 0.12), controlPoint2: grid.p(0.01, 0.36))
-        loop.addCurve(to: grid.p(0.46, 0.34), controlPoint1: grid.p(0.22, 0.48), controlPoint2: grid.p(0.36, 0.41))
-        loop.close()
-        let tail = UIBezierPath()
-        tail.move(to: grid.p(0.45, 0.33))
-        tail.addCurve(to: grid.p(0.28, 0.64), controlPoint1: grid.p(0.36, 0.43), controlPoint2: grid.p(0.25, 0.53))
-        tail.addCurve(to: grid.p(0.2, 0.97), controlPoint1: grid.p(0.32, 0.77), controlPoint2: grid.p(0.22, 0.86))
-        // The notched end of the ribbon.
-        tail.addLine(to: grid.p(0.28, 0.91))
-        tail.addLine(to: grid.p(0.33, 0.98))
-        tail.addCurve(to: grid.p(0.38, 0.65), controlPoint1: grid.p(0.35, 0.88), controlPoint2: grid.p(0.43, 0.77))
-        tail.addCurve(to: grid.p(0.53, 0.36), controlPoint1: grid.p(0.34, 0.55), controlPoint2: grid.p(0.46, 0.44))
-        tail.close()
-        let loops = [loop, mirrored(loop, in: art)]
-        let tails = [tail, mirrored(tail, in: art)]
-        let knot = UIBezierPath(roundedRect: grid.r(0.41, 0.22, 0.18, 0.17), cornerRadius: art.width * 0.06)
-        dieCut(loops + tails + [knot])
-
-        let satin = UIColor.brandBlush
-        let shade = UIColor.brandBlush.mixed(with: .auraPink, amount: 0.3)
-        shade.setFill()
-        tails.forEach { $0.fill() }
-        satin.setFill()
-        loops.forEach { $0.fill() }
-        // A fine pink edge, so the pale satin reads on light photos too.
-        UIColor.auraPink.withAlphaComponent(0.6).setStroke()
-        for path in loops + tails {
-            path.lineWidth = 3.5
-            path.lineJoinStyle = .round
-            path.stroke()
-        }
-        // A fold inside each loop and a shine on top.
-        let fold = UIBezierPath()
-        fold.move(to: grid.p(0.42, 0.31))
-        fold.addQuadCurve(to: grid.p(0.14, 0.2), controlPoint: grid.p(0.26, 0.18))
-        UIColor.auraPink.withAlphaComponent(0.35).setStroke()
-        for path in [fold, mirrored(fold, in: art)] {
-            path.lineWidth = 4
-            path.lineCapStyle = .round
-            path.stroke()
-        }
-        UIColor.white.withAlphaComponent(0.6).setFill()
-        grid.ellipse(0.2, 0.13, 0.1, 0.05, degrees: -28).fill()
-        grid.ellipse(0.8, 0.13, 0.1, 0.05, degrees: 28).fill()
-        shade.setFill()
-        knot.fill()
-        UIColor.auraPink.withAlphaComponent(0.6).setStroke()
-        knot.lineWidth = 3.5
-        knot.stroke()
-    }
-
-    /// A little golden crown with round tips, pink gems and a heart.
-    private static func drawCrown(in art: CGRect, context cg: CGContext) {
-        let grid = Grid(rect: art)
-        let body = UIBezierPath()
-        body.move(to: grid.p(0.12, 0.88))
-        body.addLine(to: grid.p(0.08, 0.32))
-        body.addLine(to: grid.p(0.31, 0.56))
-        body.addLine(to: grid.p(0.5, 0.2))
-        body.addLine(to: grid.p(0.69, 0.56))
-        body.addLine(to: grid.p(0.92, 0.32))
-        body.addLine(to: grid.p(0.88, 0.88))
-        body.addQuadCurve(to: grid.p(0.12, 0.88), controlPoint: grid.p(0.5, 0.97))
-        body.close()
-        let tipRadius = art.width * 0.062
-        let tipCenters = [grid.p(0.08, 0.27), grid.p(0.5, 0.14), grid.p(0.92, 0.27)]
-        let tips = tipCenters.map { UIBezierPath(ovalIn: CGRect(x: $0.x - tipRadius, y: $0.y - tipRadius, width: tipRadius * 2, height: tipRadius * 2)) }
-        dieCut([body] + tips)
-
-        // Stroking the outline in deep gold first rounds the points.
-        let deepGold = UIColor.auraButter.mixed(with: .auraPeach, amount: 0.55)
-        deepGold.setStroke()
-        body.lineWidth = 9
-        body.lineJoinStyle = .round
-        body.stroke()
-        cg.saveGState()
-        body.addClip()
-        if let gold = CGGradient(colorsSpace: CGColorSpaceCreateDeviceRGB(),
-                                 colors: [UIColor.auraButter.mixed(with: .white, amount: 0.35).cgColor, UIColor.auraButter.cgColor, deepGold.cgColor] as CFArray,
-                                 locations: [0, 0.45, 1]) {
-            cg.drawLinearGradient(gold, start: CGPoint(x: art.midX, y: art.minY), end: CGPoint(x: art.midX, y: art.maxY), options: [])
-        }
-        // The band along the bottom.
-        UIColor.auraPeach.withAlphaComponent(0.45).setFill()
-        UIBezierPath(rect: grid.r(0, 0.7, 1, 0.3)).fill()
-        cg.restoreGState()
-
-        UIColor.auraPink.setFill()
-        tips.forEach { $0.fill() }
-        // Gems on the band: a heart between two round ones.
-        UIColor.auraLilac.setFill()
-        grid.ellipse(0.27, 0.79, 0.09, 0.09).fill()
-        grid.ellipse(0.73, 0.79, 0.09, 0.09).fill()
-        UIColor.auraPink.setFill()
-        heartPath(in: grid.r(0.42, 0.69, 0.16, 0.17)).fill()
-        UIColor.white.withAlphaComponent(0.7).setFill()
-        for center in tipCenters {
-            UIBezierPath(ovalIn: CGRect(x: center.x - tipRadius * 0.55, y: center.y - tipRadius * 0.6,
-                                        width: tipRadius * 0.6, height: tipRadius * 0.45)).fill()
-        }
-        grid.ellipse(0.46, 0.73, 0.04, 0.03, degrees: -30).fill()
-        sparklePath(center: grid.p(0.5, 0.45), radius: art.width * 0.07).fill()
-    }
-
-    /// A white daisy with a butter-yellow centre.
-    private static func drawDaisy(in art: CGRect) {
-        let grid = Grid(rect: art)
-        let petals = (0..<12).map { index -> UIBezierPath in
-            let angle = CGFloat(index) * 30 - 90
-            let radians = angle * .pi / 180
-            return grid.ellipse(0.5 + cos(radians) * 0.29, 0.5 + sin(radians) * 0.29, 0.15, 0.4, degrees: angle + 90)
-        }
-        let heart = UIBezierPath(ovalIn: grid.r(0.35, 0.35, 0.3, 0.3))
-        dieCut(petals + [heart])
-        // A soft lilac line first, so white petals show on the white edge
-        // and on a bright sky; the fills cover its inner half.
-        UIColor.auraLilac.withAlphaComponent(0.45).setStroke()
-        for petal in petals {
-            petal.lineWidth = 4
-            petal.stroke()
-        }
-        UIColor.white.setFill()
-        petals.forEach { $0.fill() }
-        UIColor.auraButter.mixed(with: .auraPeach, amount: 0.25).setFill()
-        heart.fill()
-        UIColor.auraPeach.withAlphaComponent(0.7).setFill()
-        for index in 0..<6 {
-            let radians = (CGFloat(index) * 60 + 15) * .pi / 180
-            grid.ellipse(0.5 + cos(radians) * 0.085, 0.5 + sin(radians) * 0.085, 0.035, 0.035).fill()
-        }
-        UIColor.white.withAlphaComponent(0.6).setFill()
-        grid.ellipse(0.44, 0.42, 0.08, 0.05, degrees: -30).fill()
-    }
-
-    /// A pastel rainbow with a cloud at each end.
-    private static func drawRainbow(in art: CGRect) {
-        let grid = Grid(rect: art)
-        let center = grid.p(0.5, 0.86)
-        let outer = art.width * 0.44
-        let band = art.width * 0.062
-        let colors: [UIColor] = [.auraPink, .auraPeach, .auraButter, .auraMint, .auraLilac]
-        let whole = arch(center: center, outer: outer, inner: outer - band * CGFloat(colors.count))
-        let clouds = [grid.p(0.2, 0.83), grid.p(0.8, 0.83)].map { cloudPath(center: $0, width: art.width * 0.36) }
-        dieCut([whole] + clouds)
-        for (index, color) in colors.enumerated() {
-            color.setFill()
-            arch(center: center, outer: outer - band * CGFloat(index), inner: outer - band * CGFloat(index + 1)).fill()
-        }
-        // Rim first, then the fill, so only the clouds' outline shows.
-        UIColor.auraLilac.withAlphaComponent(0.5).setStroke()
-        for cloud in clouds {
-            cloud.lineWidth = 5
-            cloud.stroke()
-        }
-        UIColor.white.setFill()
-        clouds.forEach { $0.fill() }
-    }
-
-    /// A smiling white cloud.
-    private static func drawCloud(in art: CGRect, context cg: CGContext) {
-        let grid = Grid(rect: art)
-        let cloud = cloudPath(center: grid.p(0.5, 0.57), width: art.width * 0.92)
-        dieCut([cloud])
-        UIColor.auraLilac.withAlphaComponent(0.5).setStroke()
-        cloud.lineWidth = 6
-        cloud.stroke()
-        UIColor.white.setFill()
-        cloud.fill()
-        // A soft lilac shade along the bottom.
-        cg.saveGState()
-        cloud.addClip()
-        if let shade = CGGradient(colorsSpace: CGColorSpaceCreateDeviceRGB(),
-                                  colors: [UIColor.auraLilac.withAlphaComponent(0).cgColor, UIColor.auraLilac.withAlphaComponent(0.22).cgColor] as CFArray,
-                                  locations: [0.55, 1]) {
-            cg.drawLinearGradient(shade, start: CGPoint(x: art.midX, y: art.minY), end: CGPoint(x: art.midX, y: art.maxY), options: [])
-        }
-        cg.restoreGState()
-        UIColor.plum.setFill()
-        grid.ellipse(0.41, 0.58, 0.04, 0.085).fill()
-        grid.ellipse(0.59, 0.58, 0.04, 0.085).fill()
-        let smile = UIBezierPath(arcCenter: grid.p(0.5, 0.63), radius: art.width * 0.04,
-                                 startAngle: .pi * 0.15, endAngle: .pi * 0.85, clockwise: true)
-        UIColor.plum.setStroke()
-        smile.lineWidth = art.width * 0.02
-        smile.lineCapStyle = .round
-        smile.stroke()
-        UIColor.auraPink.withAlphaComponent(0.4).setFill()
-        grid.ellipse(0.32, 0.67, 0.09, 0.07).fill()
-        grid.ellipse(0.68, 0.67, 0.09, 0.07).fill()
-    }
-
-    /// Two joined eighth notes and a little sparkle.
-    private static func drawMusicNotes(in art: CGRect) {
-        let grid = Grid(rect: art)
-        let notes = UIBezierPath()
-        notes.append(grid.ellipse(0.24, 0.8, 0.3, 0.2, degrees: -22))
-        notes.append(grid.ellipse(0.74, 0.7, 0.3, 0.2, degrees: -22))
-        notes.append(UIBezierPath(rect: grid.r(0.33, 0.2, 0.065, 0.6)))
-        notes.append(UIBezierPath(rect: grid.r(0.83, 0.1, 0.065, 0.6)))
-        let beam = UIBezierPath()
-        beam.move(to: grid.p(0.33, 0.2))
-        beam.addLine(to: grid.p(0.895, 0.08))
-        beam.addLine(to: grid.p(0.895, 0.23))
-        beam.addLine(to: grid.p(0.33, 0.35))
-        beam.close()
-        notes.append(beam)
-        let sparkle = sparklePath(center: grid.p(0.12, 0.24), radius: art.width * 0.1)
-        dieCut([notes, sparkle])
-        UIColor.auraPink.setFill()
-        notes.fill()
-        // Stroking in the same colour rounds the corners.
-        UIColor.auraPink.setStroke()
-        notes.lineWidth = 6
-        notes.lineJoinStyle = .round
-        notes.stroke()
-        UIColor.auraLilac.setFill()
-        sparkle.fill()
-        UIColor.white.withAlphaComponent(0.55).setFill()
-        grid.ellipse(0.19, 0.77, 0.09, 0.05, degrees: -22).fill()
-        grid.ellipse(0.69, 0.67, 0.09, 0.05, degrees: -22).fill()
-        grid.ellipse(0.5, 0.23, 0.16, 0.035, degrees: -12).fill()
-    }
-
-    /// A cute retro camera with a big lens and a heart on it.
-    private static func drawCamera(in art: CGRect) {
-        let grid = Grid(rect: art)
-        let body = UIBezierPath(roundedRect: grid.r(0.02, 0.24, 0.96, 0.72), cornerRadius: art.width * 0.1)
-        let top = UIBezierPath(roundedRect: grid.r(0.3, 0.08, 0.34, 0.24), cornerRadius: art.width * 0.05)
-        let button = UIBezierPath(roundedRect: grid.r(0.73, 0.13, 0.15, 0.15), cornerRadius: art.width * 0.03)
-        dieCut([body, top, button])
-        UIColor.auraPink.setFill()
-        button.fill()
-        UIColor.brandBlush.mixed(with: .auraPink, amount: 0.3).setFill()
-        top.fill()
-        UIColor.brandBlush.setFill()
-        body.fill()
-        // A grip band across the middle.
-        UIColor.auraPink.withAlphaComponent(0.22).setFill()
-        UIBezierPath(rect: grid.r(0.02, 0.5, 0.96, 0.2)).fill()
-        // The lens, ring by ring, and its glint.
-        let lens = grid.p(0.5, 0.6)
-        let rings: [(CGFloat, UIColor)] = [(0.25, .brandInk), (0.2, .plum), (0.135, .auraLilac), (0.07, .brandInk)]
-        for (radius, color) in rings {
-            let r = art.width * radius
-            color.setFill()
-            UIBezierPath(ovalIn: CGRect(x: lens.x - r, y: lens.y - r, width: r * 2, height: r * 2)).fill()
-        }
-        UIColor.white.withAlphaComponent(0.8).setFill()
-        grid.ellipse(0.45, 0.52, 0.07, 0.05, degrees: -35).fill()
-        UIColor.auraButter.setFill()
-        UIBezierPath(roundedRect: grid.r(0.09, 0.33, 0.15, 0.11), cornerRadius: art.width * 0.02).fill()
-        UIColor.auraPink.setFill()
-        heartPath(in: grid.r(0.8, 0.36, 0.1, 0.11)).fill()
-    }
-
-    /// A tilted strip of film with three pastel frames.
-    private static func drawFilmStrip(in art: CGRect, context cg: CGContext) {
-        cg.saveGState()
-        cg.translateBy(x: art.midX, y: art.midY)
-        cg.rotate(by: -7 * .pi / 180)
-        let width = art.width * 0.86
-        let height = art.height * 0.64
-        let strip = UIBezierPath(roundedRect: CGRect(x: -width / 2, y: -height / 2, width: width, height: height), cornerRadius: height * 0.08)
-        dieCut([strip])
-        UIColor.brandInk.setFill()
-        strip.fill()
-        // Sprocket holes along both edges.
-        let holes = 9
-        let hole = CGSize(width: width * 0.05, height: height * 0.09)
-        let step = width / CGFloat(holes)
-        UIColor.white.withAlphaComponent(0.9).setFill()
-        for index in 0..<holes {
-            let x = -width / 2 + step * (CGFloat(index) + 0.5) - hole.width / 2
-            for y in [-height / 2 + height * 0.06, height / 2 - height * 0.06 - hole.height] {
-                UIBezierPath(roundedRect: CGRect(x: x, y: y, width: hole.width, height: hole.height), cornerRadius: hole.height * 0.3).fill()
-            }
-        }
-        // Three frames, each with a little drawing.
-        let gap = width * 0.035
-        let frame = CGSize(width: (width - gap * 4) / 3, height: height * 0.6)
-        let colors: [UIColor] = [.brandBlush, .auraButter, .auraMint]
-        for (index, color) in colors.enumerated() {
-            let rect = CGRect(x: -width / 2 + gap + CGFloat(index) * (frame.width + gap), y: -frame.height / 2,
-                              width: frame.width, height: frame.height)
-            color.setFill()
-            UIBezierPath(roundedRect: rect, cornerRadius: frame.height * 0.08).fill()
-            let mark = CGRect(x: rect.midX - frame.height * 0.22, y: rect.midY - frame.height * 0.2,
-                              width: frame.height * 0.44, height: frame.height * 0.4)
-            UIColor.white.setFill()
-            switch index {
-            case 0: heartPath(in: mark).fill()
-            case 1: sparklePath(center: CGPoint(x: mark.midX, y: mark.midY), radius: mark.width * 0.55).fill()
-            default: starPath(center: CGPoint(x: mark.midX, y: mark.midY + mark.height * 0.04), outer: mark.width * 0.5, inner: mark.width * 0.25).fill()
-            }
-        }
-        cg.restoreGState()
-    }
-
-    private static func drawBubble(_ sticker: Sticker, in art: CGRect) {
+    private static func drawBubble(_ sticker: Sticker, in art: CGRect, context cg: CGContext) {
         let body = CGRect(x: art.minX, y: art.minY, width: art.width, height: art.height - bubbleTail)
         let bubble = UIBezierPath(roundedRect: body, cornerRadius: min(body.height / 2, 64))
         let tail = UIBezierPath()
@@ -770,9 +298,13 @@ enum StickerArt {
             path.lineJoinStyle = .round
             path.stroke()
         }
-        bubbleColors(sticker.kind).fill.setFill()
-        bubble.fill()
+        let fill = bubbleColors(sticker.kind).fill
+        fill.setFill()
         tail.fill()
+        // A soft sheen from the top, like a glossy printed bubble.
+        linear(bubble, [lighter(fill, 0.3), fill, fill], [0, 0.55, 1], in: cg)
+        shine(CGRect(x: body.minX + body.height * 0.3, y: body.minY + body.height * 0.12, width: min(body.width * 0.3, 120), height: body.height * 0.2),
+              degrees: -4, alpha: 0.45, clip: bubble, in: cg)
         let text = bubbleText(sticker)
         let size = text.size()
         text.draw(at: CGPoint(x: body.midX - size.width / 2, y: body.midY - size.height / 2))
@@ -788,14 +320,15 @@ enum StickerArt {
         cg.restoreGState()
     }
 
-    // MARK: Text
-
     private static func bubbleColors(_ kind: StickerKind) -> (fill: UIColor, text: UIColor) {
         switch kind {
         case .slay: return (.brandInk, .brandBlush)
         case .bestie: return (.brandBlush, .brandInk)
         case .mainCharacter: return (.auraButter, .plum)
         case .yay: return (.auraPink, .white)
+        case .itGirl: return (.auraLilac, .white)
+        case .vibes: return (.auraMint, .plum)
+        case .coreMemory: return (.auraPeach, .plum)
         default: return (.white, .auraPink)
         }
     }
@@ -818,9 +351,129 @@ enum StickerArt {
         return String(format: "'%02d %02d %02d", (parts.year ?? 2026) % 100, parts.month ?? 1, parts.day ?? 1)
     }
 
+    // MARK: Paint
+
+    /// Every sticker's keyline, so the sheet shares one stroke weight.
+    static let keylineWidth: CGFloat = 3.5
+    /// Faces, folds and other drawn lines.
+    static let detailWidth: CGFloat = 5
+
+    /// `color` lifted toward white.
+    static func lighter(_ color: UIColor, _ amount: CGFloat = 0.4) -> UIColor {
+        color.mixed(with: .white, amount: amount)
+    }
+
+    /// `color` deepened toward plum, the brand's shadow colour.
+    static func deeper(_ color: UIColor, _ amount: CGFloat = 0.25) -> UIColor {
+        color.mixed(with: .plum, amount: amount)
+    }
+
+    /// Fills `path` with a linear gradient, top to bottom of its bounds
+    /// unless `start` and `end` say otherwise.
+    static func linear(_ path: UIBezierPath, _ colors: [UIColor], _ locations: [CGFloat]? = nil,
+                       from start: CGPoint? = nil, to end: CGPoint? = nil, in cg: CGContext) {
+        let stops = locations ?? colors.indices.map { CGFloat($0) / CGFloat(max(colors.count - 1, 1)) }
+        guard let gradient = CGGradient(colorsSpace: CGColorSpaceCreateDeviceRGB(), colors: colors.map(\.cgColor) as CFArray,
+                                        locations: stops) else { return }
+        let bounds = path.bounds
+        cg.saveGState()
+        path.addClip()
+        cg.drawLinearGradient(gradient, start: start ?? CGPoint(x: bounds.midX, y: bounds.minY),
+                              end: end ?? CGPoint(x: bounds.midX, y: bounds.maxY),
+                              options: [.drawsBeforeStartLocation, .drawsAfterEndLocation])
+        cg.restoreGState()
+    }
+
+    /// The sheet's usual body: lighter at the top, the colour, a deeper
+    /// shade toward the bottom.
+    static func glossy(_ path: UIBezierPath, _ color: UIColor, in cg: CGContext) {
+        linear(path, [lighter(color, 0.45), color, deeper(color, 0.2)], [0, 0.5, 1], in: cg)
+    }
+
+    /// A round, lit-from-the-top-left fill, for balls, pearls and puffy shapes.
+    static func radial(_ path: UIBezierPath, _ colors: [UIColor], _ locations: [CGFloat]? = nil,
+                       light: CGPoint, radius: CGFloat, in cg: CGContext) {
+        let stops = locations ?? colors.indices.map { CGFloat($0) / CGFloat(max(colors.count - 1, 1)) }
+        guard let gradient = CGGradient(colorsSpace: CGColorSpaceCreateDeviceRGB(), colors: colors.map(\.cgColor) as CFArray,
+                                        locations: stops) else { return }
+        cg.saveGState()
+        path.addClip()
+        cg.drawRadialGradient(gradient, startCenter: light, startRadius: 0, endCenter: light, endRadius: radius,
+                              options: [.drawsAfterEndLocation])
+        cg.restoreGState()
+    }
+
+    /// A thin, deeper line around the art inside the white edge, as on
+    /// printed sticker sheets.
+    static func keyline(_ paths: [UIBezierPath], _ color: UIColor, width: CGFloat = keylineWidth) {
+        color.setStroke()
+        for path in paths {
+            path.lineWidth = width
+            path.lineJoinStyle = .round
+            path.lineCapStyle = .round
+            path.stroke()
+        }
+    }
+
+    /// A glossy shine: a turned ellipse in `rect`, white at its top and
+    /// fading out, inside `clip` when given.
+    static func shine(_ rect: CGRect, degrees: CGFloat = -30, alpha: CGFloat = 0.75, clip: UIBezierPath? = nil, in cg: CGContext) {
+        let ellipse = UIBezierPath(ovalIn: CGRect(x: -rect.width / 2, y: -rect.height / 2, width: rect.width, height: rect.height))
+        ellipse.apply(CGAffineTransform(rotationAngle: degrees * .pi / 180))
+        ellipse.apply(CGAffineTransform(translationX: rect.midX, y: rect.midY))
+        let bounds = ellipse.bounds
+        cg.saveGState()
+        clip?.addClip()
+        ellipse.addClip()
+        if let gradient = CGGradient(colorsSpace: CGColorSpaceCreateDeviceRGB(),
+                                     colors: [UIColor.white.withAlphaComponent(alpha).cgColor, UIColor.white.withAlphaComponent(alpha * 0.15).cgColor] as CFArray,
+                                     locations: [0, 1]) {
+            cg.drawLinearGradient(gradient, start: CGPoint(x: bounds.midX, y: bounds.minY), end: CGPoint(x: bounds.midX, y: bounds.maxY), options: [])
+        }
+        cg.restoreGState()
+    }
+
+    /// A small, solid white glint.
+    static func glint(_ center: CGPoint, _ radius: CGFloat, alpha: CGFloat = 0.9) {
+        UIColor.white.withAlphaComponent(alpha).setFill()
+        circle(center, radius).fill()
+    }
+
+    /// Kawaii eyes: plum ovals with a white catchlight.
+    static func eyes(_ centers: [CGPoint], width: CGFloat, height: CGFloat) {
+        for center in centers {
+            UIColor.plum.setFill()
+            UIBezierPath(ovalIn: CGRect(x: center.x - width / 2, y: center.y - height / 2, width: width, height: height)).fill()
+            UIColor.white.setFill()
+            let glintSize = width * 0.42
+            UIBezierPath(ovalIn: CGRect(x: center.x - width * 0.32, y: center.y - height * 0.36, width: glintSize, height: glintSize)).fill()
+        }
+    }
+
+    /// Rosy cheeks.
+    static func blush(_ centers: [CGPoint], width: CGFloat, height: CGFloat, alpha: CGFloat = 0.45) {
+        UIColor.auraPink.withAlphaComponent(alpha).setFill()
+        for center in centers {
+            UIBezierPath(ovalIn: CGRect(x: center.x - width / 2, y: center.y - height / 2, width: width, height: height)).fill()
+        }
+    }
+
+    /// A small smile, as an arc under `center`.
+    static func smile(_ center: CGPoint, radius: CGFloat, width: CGFloat = detailWidth) {
+        let path = UIBezierPath(arcCenter: center, radius: radius, startAngle: .pi * 0.15, endAngle: .pi * 0.85, clockwise: true)
+        UIColor.plum.setStroke()
+        path.lineWidth = width
+        path.lineCapStyle = .round
+        path.stroke()
+    }
+
     // MARK: Paths
 
-    private static func heartPath(in rect: CGRect) -> UIBezierPath {
+    static func circle(_ center: CGPoint, _ radius: CGFloat) -> UIBezierPath {
+        UIBezierPath(ovalIn: CGRect(x: center.x - radius, y: center.y - radius, width: radius * 2, height: radius * 2))
+    }
+
+    static func heartPath(in rect: CGRect) -> UIBezierPath {
         let grid = Grid(rect: rect)
         let heart = UIBezierPath()
         heart.move(to: grid.p(0.5, 0.98))
@@ -848,7 +501,28 @@ enum StickerArt {
         return path
     }
 
-    private static func starPath(center: CGPoint, outer: CGFloat, inner: CGFloat) -> UIBezierPath {
+    /// A polygon whose corners are rounded with `radius`.
+    static func roundedPolygon(_ points: [CGPoint], radius: CGFloat) -> UIBezierPath {
+        guard let first = points.first, let last = points.last else { return UIBezierPath() }
+        let path = CGMutablePath()
+        path.move(to: CGPoint(x: (last.x + first.x) / 2, y: (last.y + first.y) / 2))
+        for (index, corner) in points.enumerated() {
+            path.addArc(tangent1End: corner, tangent2End: points[(index + 1) % points.count], radius: radius)
+        }
+        path.closeSubpath()
+        return UIBezierPath(cgPath: path)
+    }
+
+    /// The corners of a five-point star, from the top point clockwise.
+    static func starPoints(center: CGPoint, outer: CGFloat, inner: CGFloat) -> [CGPoint] {
+        (0..<10).map { index in
+            let radius = index.isMultiple(of: 2) ? outer : inner
+            let angle = CGFloat(index) * .pi / 5 - .pi / 2
+            return CGPoint(x: center.x + cos(angle) * radius, y: center.y + sin(angle) * radius)
+        }
+    }
+
+    static func starPath(center: CGPoint, outer: CGFloat, inner: CGFloat) -> UIBezierPath {
         let path = UIBezierPath()
         for index in 0..<10 {
             let radius = index.isMultiple(of: 2) ? outer : inner
@@ -860,9 +534,33 @@ enum StickerArt {
         return path
     }
 
+    /// A star lit from the top left: each point's two halves get a light
+    /// and a shaded face, like a folded paper star. Clip to the star first.
+    static func facetedStar(center: CGPoint, outer: CGFloat, inner: CGFloat, light: UIColor, shade: UIColor) {
+        let points = starPoints(center: center, outer: outer, inner: inner)
+        for index in 0..<10 {
+            let facet = UIBezierPath()
+            facet.move(to: center)
+            facet.addLine(to: points[index])
+            facet.addLine(to: points[(index + 1) % 10])
+            facet.close()
+            // Faces turned up and left catch the light.
+            let mid = CGPoint(x: (points[index].x + points[(index + 1) % 10].x) / 2, y: (points[index].y + points[(index + 1) % 10].y) / 2)
+            let facing = (mid.x - center.x) * -0.6 + (mid.y - center.y) * -0.8
+            (facing > 0 ? light : shade).setFill()
+            facet.fill()
+        }
+    }
+
+    static func mirrored(_ path: UIBezierPath, in rect: CGRect) -> UIBezierPath {
+        let copy = UIBezierPath(cgPath: path.cgPath)
+        copy.apply(CGAffineTransform(a: -1, b: 0, c: 0, d: 1, tx: rect.midX * 2, ty: 0))
+        return copy
+    }
+
     /// The part of a circle that a second circle (the bite, overlapping its
     /// edge) doesn't cover: a crescent.
-    private static func crescentPath(center: CGPoint, radius: CGFloat, bite: CGPoint, biteRadius: CGFloat) -> UIBezierPath {
+    static func crescentPath(center: CGPoint, radius: CGFloat, bite: CGPoint, biteRadius: CGFloat) -> UIBezierPath {
         let dx = bite.x - center.x
         let dy = bite.y - center.y
         let distance = max(hypot(dx, dy), 0.001)
@@ -884,7 +582,7 @@ enum StickerArt {
     }
 
     /// The top half of a ring, for rainbow bands.
-    private static func arch(center: CGPoint, outer: CGFloat, inner: CGFloat) -> UIBezierPath {
+    static func arch(center: CGPoint, outer: CGFloat, inner: CGFloat) -> UIBezierPath {
         let path = UIBezierPath(arcCenter: center, radius: outer, startAngle: .pi, endAngle: 2 * .pi, clockwise: true)
         path.addArc(withCenter: center, radius: inner, startAngle: 2 * .pi, endAngle: .pi, clockwise: false)
         path.close()
@@ -893,7 +591,7 @@ enum StickerArt {
 
     /// A puffy cloud about `width` wide and 0.6 of that tall, centred on
     /// `center`: three bumps on a rounded base.
-    private static func cloudPath(center: CGPoint, width: CGFloat) -> UIBezierPath {
+    static func cloudPath(center: CGPoint, width: CGFloat) -> UIBezierPath {
         func bump(_ x: CGFloat, _ y: CGFloat, _ r: CGFloat) -> UIBezierPath {
             UIBezierPath(ovalIn: CGRect(x: center.x + (x - r) * width, y: center.y + (y - r) * width, width: r * 2 * width, height: r * 2 * width))
         }
@@ -905,14 +603,8 @@ enum StickerArt {
         return cloud
     }
 
-    private static func mirrored(_ path: UIBezierPath, in rect: CGRect) -> UIBezierPath {
-        let copy = UIBezierPath(cgPath: path.cgPath)
-        copy.apply(CGAffineTransform(a: -1, b: 0, c: 0, d: 1, tx: rect.midX * 2, ty: 0))
-        return copy
-    }
-
     /// The white die-cut edge, drawn under the shapes' fills.
-    private static func dieCut(_ paths: [UIBezierPath], width: CGFloat = edge) {
+    static func dieCut(_ paths: [UIBezierPath], width: CGFloat = edge) {
         UIColor.white.setStroke()
         for path in paths {
             path.lineWidth = width * 2
@@ -923,7 +615,7 @@ enum StickerArt {
     }
 
     /// 0…1 coordinates in a rectangle.
-    private struct Grid {
+    struct Grid {
         let rect: CGRect
 
         func p(_ x: CGFloat, _ y: CGFloat) -> CGPoint {
