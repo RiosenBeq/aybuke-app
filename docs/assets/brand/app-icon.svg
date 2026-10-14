@@ -1,57 +1,39 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
-  <!-- Glowlit app icon, "Glow Print" (Aura edition): a sharp-cornered white print, tilted on an aura
-       tile (mint, lilac, pink, peach, with a butter glow), showing a white sparkle glowing pink on plum,
-       with a pink heart on the print's chin.
-       The PNGs (default, dark, tinted) are rendered by scripts/render-brand-assets.py. -->
+  <!-- Glowlit app icon, concept C "Glow Gem". Written by scripts/render-brand-assets.py from the same paths as the PNGs; edit the script, not this file. -->
   <defs>
-    <linearGradient id="aura" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#78E1CD"/>
-      <stop offset="0.4" stop-color="#A78BFA"/>
-      <stop offset="0.75" stop-color="#FF5CA1"/>
-      <stop offset="1" stop-color="#FFAA78"/>
-    </linearGradient>
-    <radialGradient id="glowA" cx="0.15" cy="0.1" r="0.55">
-      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.55"/>
-      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/>
-    </radialGradient>
-    <radialGradient id="glowB" cx="0.95" cy="0.95" r="0.45">
-      <stop offset="0" stop-color="#FFDE6E" stop-opacity="0.55"/>
-      <stop offset="1" stop-color="#FFDE6E" stop-opacity="0"/>
-    </radialGradient>
-    <linearGradient id="plum" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#3C185A"/>
-      <stop offset="1" stop-color="#140A1E"/>
-    </linearGradient>
-    <radialGradient id="halo" cx="0.5" cy="0.5" r="0.5">
-      <stop offset="0" stop-color="#FF5CA1" stop-opacity="0.95"/>
-      <stop offset="1" stop-color="#FF5CA1" stop-opacity="0"/>
-    </radialGradient>
-    <radialGradient id="lilacGlow" cx="0.37" cy="0.65" r="0.33">
-      <stop offset="0" stop-color="#A78BFA" stop-opacity="0.55"/>
-      <stop offset="1" stop-color="#A78BFA" stop-opacity="0"/>
-    </radialGradient>
-    <radialGradient id="butterGlow" cx="0.66" cy="0.68" r="0.24">
-      <stop offset="0" stop-color="#FFDE6E" stop-opacity="0.45"/>
-      <stop offset="1" stop-color="#FFDE6E" stop-opacity="0"/>
-    </radialGradient>
-    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
-      <feDropShadow dx="0" dy="26" stdDeviation="30" flood-color="#140A1E" flood-opacity="0.3"/>
-    </filter>
-    <path id="sparkle" d="M0,-1 Q0.18,-0.18 1,0 Q0.18,0.18 0,1 Q-0.18,0.18 -1,0 Q-0.18,-0.18 0,-1 Z"/>
+    <linearGradient id="gradient1" gradientUnits="userSpaceOnUse" x1="102.4" y1="0.0" x2="921.6" y2="1024.0"><stop offset="0" stop-color="#A78BFA"/><stop offset="0.6" stop-color="#CDA0F5"/><stop offset="1" stop-color="#FFAACD"/></linearGradient>
+    <radialGradient id="glow2"><stop offset="0" stop-color="#FFFFFF" stop-opacity="0.400"/><stop offset="0.125" stop-color="#FFFFFF" stop-opacity="0.383"/><stop offset="0.25" stop-color="#FFFFFF" stop-opacity="0.338"/><stop offset="0.375" stop-color="#FFFFFF" stop-opacity="0.273"/><stop offset="0.5" stop-color="#FFFFFF" stop-opacity="0.200"/><stop offset="0.625" stop-color="#FFFFFF" stop-opacity="0.127"/><stop offset="0.75" stop-color="#FFFFFF" stop-opacity="0.062"/><stop offset="0.875" stop-color="#FFFFFF" stop-opacity="0.017"/><stop offset="1" stop-color="#FFFFFF" stop-opacity="0.000"/></radialGradient>
+    <filter id="blur3" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="32.8"/></filter>
+    <linearGradient id="gradient4" gradientUnits="userSpaceOnUse" x1="297.0" y1="221.7" x2="727.0" y2="723.5"><stop offset="0" stop-color="#FFA0CC"/><stop offset="1" stop-color="#FF5094"/></linearGradient>
+    <radialGradient id="glow5"><stop offset="0" stop-color="#FFECF5" stop-opacity="0.750"/><stop offset="0.125" stop-color="#FFECF5" stop-opacity="0.718"/><stop offset="0.25" stop-color="#FFECF5" stop-opacity="0.633"/><stop offset="0.375" stop-color="#FFECF5" stop-opacity="0.513"/><stop offset="0.5" stop-color="#FFECF5" stop-opacity="0.375"/><stop offset="0.625" stop-color="#FFECF5" stop-opacity="0.237"/><stop offset="0.75" stop-color="#FFECF5" stop-opacity="0.117"/><stop offset="0.875" stop-color="#FFECF5" stop-opacity="0.032"/><stop offset="1" stop-color="#FFECF5" stop-opacity="0.000"/></radialGradient>
+    <clipPath id="clip6"><path d="M512.0 372.2L586.0 320.9L673.9 340.4L719.1 418.3L692.6 504.3L512.0 713.7L331.4 504.3L304.9 418.3L350.1 340.4L438.0 320.9Z"/></clipPath>
   </defs>
-  <rect width="1024" height="1024" fill="url(#aura)"/>
-  <rect width="1024" height="1024" fill="url(#glowA)"/>
-  <rect width="1024" height="1024" fill="url(#glowB)"/>
-  <g transform="rotate(-7 512 512)" filter="url(#shadow)">
-    <rect x="236" y="194" width="553" height="655" fill="#FFFFFF"/>
-    <rect x="282" y="240" width="461" height="476" fill="url(#plum)"/>
-    <rect x="282" y="240" width="461" height="476" fill="url(#halo)"/>
-    <rect x="282" y="240" width="461" height="476" fill="url(#lilacGlow)"/>
-    <rect x="282" y="240" width="461" height="476" fill="url(#butterGlow)"/>
-    <use href="#sparkle" transform="translate(512 478) scale(133)" fill="#FFFFFF"/>
-    <use href="#sparkle" transform="translate(620 376) scale(36)" fill="#FFDE6E"/>
-    <path d="M512,812 L463,768 A25,25 0 1 1 512,742 A25,25 0 1 1 561,768 Z" fill="#FF5CA1"/>
-  </g>
-  <use href="#sparkle" transform="translate(865 159) scale(67)" fill="#FFFFFF"/>
-  <use href="#sparkle" transform="translate(932 261) scale(29)" fill="#FFFFFF"/>
+  <rect width="1024" height="1024" fill="url(#gradient1)"/>
+  <circle cx="512.0" cy="532.5" r="614.4" fill="url(#glow2)"/>
+  <path d="M512.0 326.1L639.6 237.6L791.1 271.3L869.1 405.6L823.4 553.9L512.0 914.9L200.6 553.9L154.9 405.6L232.9 271.3L384.4 237.6Z" fill="#3C185A" fill-opacity="0.32" filter="url(#blur3)"/>
+  <path d="M512.0 299.5L639.6 211.0L586.0 320.9Z" fill="#FFE2EE" stroke="#FFE2EE" stroke-width="1" stroke-linejoin="round"/>
+  <path d="M512.0 299.5L586.0 320.9L512.0 372.2Z" fill="#FFD2E5" stroke="#FFD2E5" stroke-width="1" stroke-linejoin="round"/>
+  <path d="M639.6 211.0L791.1 244.7L673.9 340.4Z" fill="#FFCCE2" stroke="#FFCCE2" stroke-width="1" stroke-linejoin="round"/>
+  <path d="M639.6 211.0L673.9 340.4L586.0 320.9Z" fill="#FFA8CE" stroke="#FFA8CE" stroke-width="1" stroke-linejoin="round"/>
+  <path d="M791.1 244.7L869.1 378.9L719.1 418.3Z" fill="#FF5FA3" stroke="#FF5FA3" stroke-width="1" stroke-linejoin="round"/>
+  <path d="M791.1 244.7L719.1 418.3L673.9 340.4Z" fill="#EB4993" stroke="#EB4993" stroke-width="1" stroke-linejoin="round"/>
+  <path d="M869.1 378.9L823.4 527.3L692.6 504.3Z" fill="#B22372" stroke="#B22372" stroke-width="1" stroke-linejoin="round"/>
+  <path d="M869.1 378.9L692.6 504.3L719.1 418.3Z" fill="#961D68" stroke="#961D68" stroke-width="1" stroke-linejoin="round"/>
+  <path d="M823.4 527.3L512.0 888.3L512.0 713.7Z" fill="#971D68" stroke="#971D68" stroke-width="1" stroke-linejoin="round"/>
+  <path d="M823.4 527.3L512.0 713.7L692.6 504.3Z" fill="#801860" stroke="#801860" stroke-width="1" stroke-linejoin="round"/>
+  <path d="M512.0 888.3L200.6 527.3L331.4 504.3Z" fill="#EE4C95" stroke="#EE4C95" stroke-width="1" stroke-linejoin="round"/>
+  <path d="M512.0 888.3L331.4 504.3L512.0 713.7Z" fill="#D83785" stroke="#D83785" stroke-width="1" stroke-linejoin="round"/>
+  <path d="M200.6 527.3L154.9 378.9L304.9 418.3Z" fill="#FF7DB5" stroke="#FF7DB5" stroke-width="1" stroke-linejoin="round"/>
+  <path d="M200.6 527.3L304.9 418.3L331.4 504.3Z" fill="#FF5FA3" stroke="#FF5FA3" stroke-width="1" stroke-linejoin="round"/>
+  <path d="M154.9 378.9L232.9 244.7L350.1 340.4Z" fill="#FFE0ED" stroke="#FFE0ED" stroke-width="1" stroke-linejoin="round"/>
+  <path d="M154.9 378.9L350.1 340.4L304.9 418.3Z" fill="#FFBEDB" stroke="#FFBEDB" stroke-width="1" stroke-linejoin="round"/>
+  <path d="M232.9 244.7L384.4 211.0L438.0 320.9Z" fill="#FFE2EE" stroke="#FFE2EE" stroke-width="1" stroke-linejoin="round"/>
+  <path d="M232.9 244.7L438.0 320.9L350.1 340.4Z" fill="#FFCBE2" stroke="#FFCBE2" stroke-width="1" stroke-linejoin="round"/>
+  <path d="M384.4 211.0L512.0 299.5L512.0 372.2Z" fill="#FF99C6" stroke="#FF99C6" stroke-width="1" stroke-linejoin="round"/>
+  <path d="M384.4 211.0L512.0 372.2L438.0 320.9Z" fill="#FF7AB3" stroke="#FF7AB3" stroke-width="1" stroke-linejoin="round"/>
+  <path d="M512.0 372.2L586.0 320.9L673.9 340.4L719.1 418.3L692.6 504.3L512.0 713.7L331.4 504.3L304.9 418.3L350.1 340.4L438.0 320.9Z" fill="url(#gradient4)" stroke="url(#gradient4)" stroke-width="1" stroke-linejoin="round"/>
+  <circle cx="426.0" cy="386.6" r="204.8" fill="url(#glow5)" clip-path="url(#clip6)"/>
+  <path d="M397.3 329.2Q413.1 385.1 469.0 400.9Q413.1 416.7 397.3 472.6Q381.5 416.7 325.6 400.9Q381.5 385.1 397.3 329.2Z" fill="#FFFFFF" stroke="#FFFFFF" stroke-width="1" stroke-linejoin="round"/>
+  <path d="M865.3 107.5Q878.8 150.3 921.6 163.8Q878.8 177.4 865.3 220.2Q851.8 177.4 809.0 163.8Q851.8 150.3 865.3 107.5Z" fill="#FFFFFF" stroke="#FFFFFF" stroke-width="1" stroke-linejoin="round"/>
+  <path d="M937.0 236.5Q943.3 254.7 961.5 261.1Q943.3 267.5 937.0 285.7Q930.6 267.5 912.4 261.1Q930.6 254.7 937.0 236.5Z" fill="#FFFFFF" stroke="#FFFFFF" stroke-width="1" stroke-linejoin="round"/>
 </svg>

@@ -7,7 +7,7 @@ Legend: ✅ done in this repository · ⏳ next · 🔭 later
 - ✅ Market & competitor research: 15 apps, user loves and pains, trends, monetization benchmarks → [01](01-market-research.md)
 - ✅ Brand & design research: hue map, palettes with WCAG checks, typography, naming, UX patterns, icon → [research](research/brand-and-design.md)
 - ✅ AI technology & compliance research: models, fal.ai, Supabase, Apple frameworks, App Review, EU AI Act → [research](research/tech-and-compliance.md)
-- ✅ Name decision: **Glowlit** (domain screen) · palette **Blush** (pink, replacing the original Golden Hour amber) with **Aura** accents · **Poppins** + New York Italic accents (Bricolage Grotesque until Oct 2026) · icon **Glow Print**, colorful Aura edition (Oct 2026; was Sunrise Split) → [02](02-brand-identity.md)
+- ✅ Name decision: **Glowlit** (domain screen) · palette **Blush** (pink, replacing the original Golden Hour amber) with **Aura** accents · **Poppins** + New York Italic accents (Bricolage Grotesque until Oct 2026) · icon **Glow Gem** (Oct 2026; was Glow Print, before that Sunrise Split) → [02](02-brand-identity.md)
 - ✅ Product spec: positioning, features, flows, pricing, unit economics, KPIs → [03](03-product-spec.md)
 
 ## Phase 1 — Foundation ✅
@@ -84,7 +84,7 @@ Legend: ✅ done in this repository · ⏳ next · 🔭 later
 - ⏳ Turn on Sign in with Apple for the app id, enable the Apple provider in Supabase, set `APPLE_TEAM_ID` / `APPLE_SIGNIN_KEY_ID` / `APPLE_SIGNIN_PRIVATE_KEY`, and test sign-in and the merge on two devices
 - ✅ Age step with the Declared Age Range API and teen defaults (on-device only under 13, no automatic paywall under 18, guardian step in the consent sheet)
 - ⏳ Age rating questionnaire (target 13+ with the override; "Age Assurance" once shipped)
-- ✅ "Glow Print" app icon, colorful Aura edition, with dark and tinted variants (`scripts/render-brand-assets.py`)
+- ✅ "Glow Gem" app icon (Oct 14, replacing Glow Print) with dark and tinted variants and Mac sizes (`scripts/render-brand-assets.py`; concepts in [brand/icon-concepts](brand/icon-concepts/concepts.png))
 - ⏳ Build with the latest SDK (iOS 26/27); Icon Composer `.icon` with clear variants
 - ✅ App Store copy (EN/TR), 8 generated screenshots per language, social images → [marketing](marketing/README.md)
 - ⏳ Recapture the screenshots with real AI results (needs an AI key), including the new effects and Cover star scenes in `screenshot-captions.json`; header asset, Custom Product Pages
