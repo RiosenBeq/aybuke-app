@@ -162,6 +162,8 @@ struct CollageView: View {
         VStack(spacing: 0) {
             topBar
             CollageCanvas(model: model)
+                // One shadow for the whole canvas, not one per photo and sticker.
+                .compositingGroup()
                 .shadow(color: Palette.shadow, radius: 16, y: 8)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .padding(.horizontal, Metrics.gutter)
