@@ -91,6 +91,8 @@ struct OnboardingView: View {
                 }
 
                 PageDots(count: pages.count + 3, current: page)
+                    // A gap, so scrolled content never meets the dots.
+                    .padding(.top, 8)
                     .padding(.bottom, 20)
 
                 if isLastPage {
@@ -474,7 +476,9 @@ private struct TryItPage<Footer: View>: View {
                 if let photo {
                     BeforeAfterSlider(before: photo.original, after: photo.result)
                         .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
-                        .frame(maxHeight: 320)
+                        // Smaller on short screens and with long titles, so the
+                        // photo isn't cut off under the page dots.
+                        .containerRelativeFrame(.vertical) { height, _ in min(320, height * 0.4) }
                         .frame(maxWidth: .infinity)
                         .transition(.opacity.combined(with: .scale(scale: 0.96)))
                 } else {
