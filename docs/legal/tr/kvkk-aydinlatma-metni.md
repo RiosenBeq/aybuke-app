@@ -16,9 +16,9 @@ Bu Aydınlatma Metni, 6698 sayılı Kişisel Verilerin Korunması Kanunu ("**KVK
 
 ## 1. Veri sorumlusu
 
-- **Veri sorumlusu:** NEXTGEN YAZILIM EĞİTİM İNŞAAT SANAYİ VE TİCARET LİMİTED ŞİRKETİ (NextGen Yazılım Ltd. Şti.)
-- **Adres:** Postane Mah. Atatürk Cad. No: 28 İç Kapı No: 1, 34940 Tuzla, İstanbul, Türkiye
-- **Ticaret sicili / MERSİS numarası:** MERSİS No: 0734069467300012 (Tuzla Vergi Dairesi, VKN: 6312110904)
+- **Veri sorumlusu:** Okan Berk Manavoğlu (bireysel geliştirici)
+- **Adres:** İstanbul, Türkiye, Türkiye
+- **Ticaret sicili / MERSİS numarası:** Yok (bireysel geliştirici)
 - **E-posta:** [hello@buaze.com](mailto:hello@buaze.com)
 
 ## 2. İşlenen kişisel veri kategorileri
@@ -108,7 +108,7 @@ haklarına sahipsiniz.
 
 Haklarınızı kullanmak için, Veri Sorumlusuna Başvuru Usul ve Esasları Hakkında Tebliğ uyarınca başvurunuzu Türkçe olarak şu yollarla iletebilirsiniz:
 
-- **Yazılı olarak:** Postane Mah. Atatürk Cad. No: 28 İç Kapı No: 1, 34940 Tuzla, İstanbul, Türkiye adresine ıslak imzalı dilekçeyle;
+- **Yazılı olarak:** İstanbul, Türkiye, Türkiye adresine ıslak imzalı dilekçeyle;
 - **Güvenli elektronik imza veya mobil imza ile:** [hello@buaze.com](mailto:hello@buaze.com) adresine;
 - **E-posta ile:** daha önce bize bildirdiğiniz ve sistemimizde kayıtlı olan e-posta adresinizden [hello@buaze.com](mailto:hello@buaze.com) adresine.
 

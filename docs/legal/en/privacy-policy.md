@@ -15,10 +15,10 @@ Last updated: 14 October 2026
 
 ## 1. Who we are
 
-NEXTGEN YAZILIM EĞİTİM İNŞAAT SANAYİ VE TİCARET LİMİTED ŞİRKETİ (NextGen Yazılım Ltd. Şti.) ("**we**", "**us**" or "**our**") develops and operates the Glowlit iOS app and its online services (the "**Service**"). We are the controller responsible for your personal data (under Türkiye's KVKK, the *veri sorumlusu*).
+Okan Berk Manavoğlu (individual developer) ("**we**", "**us**" or "**our**") develops and operates the Glowlit iOS app and its online services (the "**Service**"). We are the controller responsible for your personal data (under Türkiye's KVKK, the *veri sorumlusu*).
 
-- **Address:** Postane Mah. Atatürk Cad. No: 28 İç Kapı No: 1, 34940 Tuzla, İstanbul, Türkiye
-- **Trade registry / MERSİS number:** MERSİS no. 0734069467300012 (Tuzla Tax Office, tax no. 6312110904)
+- **Address:** Istanbul, Türkiye, Türkiye
+- **Trade registry / MERSİS number:** None (individual developer)
 - **Privacy contact:** [hello@buaze.com](mailto:hello@buaze.com)
 - **Representative in the EU (Art. 27 GDPR):** None appointed. Contact hello@buaze.com for any request.
 - **Representative in the UK (Art. 27 UK GDPR):** None appointed. Contact hello@buaze.com for any request.
@@ -371,7 +371,7 @@ We process personal data in accordance with the Law on the Protection of Persona
 
 **How to apply.** Under the Communiqué on the Procedures and Principles of Application to the Data Controller, you can apply:
 
-- in writing, to Postane Mah. Atatürk Cad. No: 28 İç Kapı No: 1, 34940 Tuzla, İstanbul, Türkiye;
+- in writing, to Istanbul, Türkiye, Türkiye;
 - by email signed with a secure electronic signature or mobile signature, to [hello@buaze.com](mailto:hello@buaze.com); or
 - by email to [hello@buaze.com](mailto:hello@buaze.com) from an email address you have previously notified to us and that is registered in our systems.
 
@@ -451,7 +451,7 @@ We'll update this policy when our practices or the law change. If a change is ma
 
 ## 24. Contact us
 
-- **Controller:** NEXTGEN YAZILIM EĞİTİM İNŞAAT SANAYİ VE TİCARET LİMİTED ŞİRKETİ (NextGen Yazılım Ltd. Şti.), Postane Mah. Atatürk Cad. No: 28 İç Kapı No: 1, 34940 Tuzla, İstanbul, Türkiye
+- **Controller:** Okan Berk Manavoğlu (individual developer), Istanbul, Türkiye, Türkiye
 - **Privacy requests (including from parents and guardians):** [hello@buaze.com](mailto:hello@buaze.com)
 - **General contact:** [hello@buaze.com](mailto:hello@buaze.com)
 - **EU representative:** None appointed. Contact hello@buaze.com for any request.

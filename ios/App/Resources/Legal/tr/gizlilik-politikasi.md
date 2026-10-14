@@ -13,10 +13,10 @@ Son güncelleme: 14 Ekim 2026
 
 ## 1. Biz kimiz?
 
-Glowlit iOS uygulamasını ve buna bağlı çevrim içi hizmetleri ("**Hizmet**") NEXTGEN YAZILIM EĞİTİM İNŞAAT SANAYİ VE TİCARET LİMİTED ŞİRKETİ (NextGen Yazılım Ltd. Şti.) ("**biz**") geliştirir ve işletir. Kişisel verileriniz bakımından veri sorumlusu biziz (6698 sayılı Kişisel Verilerin Korunması Kanunu, "**KVKK**", anlamında *veri sorumlusu*; GDPR anlamında *controller*).
+Glowlit iOS uygulamasını ve buna bağlı çevrim içi hizmetleri ("**Hizmet**") Okan Berk Manavoğlu (bireysel geliştirici) ("**biz**") geliştirir ve işletir. Kişisel verileriniz bakımından veri sorumlusu biziz (6698 sayılı Kişisel Verilerin Korunması Kanunu, "**KVKK**", anlamında *veri sorumlusu*; GDPR anlamında *controller*).
 
-- **Adres:** Postane Mah. Atatürk Cad. No: 28 İç Kapı No: 1, 34940 Tuzla, İstanbul, Türkiye
-- **Ticaret sicili / MERSİS numarası:** MERSİS No: 0734069467300012 (Tuzla Vergi Dairesi, VKN: 6312110904)
+- **Adres:** İstanbul, Türkiye, Türkiye
+- **Ticaret sicili / MERSİS numarası:** Yok (bireysel geliştirici)
 - **Gizlilik iletişim adresi:** [hello@buaze.com](mailto:hello@buaze.com)
 - **AB temsilcisi (GDPR md. 27):** Atanmış temsilci yok. Her talep için hello@buaze.com adresine yazabilirsiniz.
 - **Birleşik Krallık temsilcisi (UK GDPR md. 27):** Atanmış temsilci yok. Her talep için hello@buaze.com adresine yazabilirsiniz.
@@ -369,7 +369,7 @@ Kişisel verileri 6698 sayılı Kişisel Verilerin Korunması Kanunu'na ("**KVKK
 
 **Nasıl başvurursunuz?** Veri Sorumlusuna Başvuru Usul ve Esasları Hakkında Tebliğ uyarınca başvurunuzu şu yollarla yapabilirsiniz:
 
-- yazılı olarak Postane Mah. Atatürk Cad. No: 28 İç Kapı No: 1, 34940 Tuzla, İstanbul, Türkiye adresine;
+- yazılı olarak İstanbul, Türkiye, Türkiye adresine;
 - güvenli elektronik imza veya mobil imza ile imzalanmış e-postayla [hello@buaze.com](mailto:hello@buaze.com) adresine veya
 - daha önce bize bildirdiğiniz ve sistemimizde kayıtlı olan e-posta adresinizden [hello@buaze.com](mailto:hello@buaze.com) adresine.
 
@@ -449,7 +449,7 @@ Uygulamalarımız veya kanun değiştiğinde bu politikayı güncelleriz. Öneml
 
 ## 24. Bize ulaşın
 
-- **Veri sorumlusu:** NEXTGEN YAZILIM EĞİTİM İNŞAAT SANAYİ VE TİCARET LİMİTED ŞİRKETİ (NextGen Yazılım Ltd. Şti.), Postane Mah. Atatürk Cad. No: 28 İç Kapı No: 1, 34940 Tuzla, İstanbul, Türkiye
+- **Veri sorumlusu:** Okan Berk Manavoğlu (bireysel geliştirici), İstanbul, Türkiye, Türkiye
 - **Gizlilik talepleri (veli ve vasi talepleri dahil):** [hello@buaze.com](mailto:hello@buaze.com)
 - **Genel iletişim:** [hello@buaze.com](mailto:hello@buaze.com)
 - **AB temsilcisi:** Atanmış temsilci yok. Her talep için hello@buaze.com adresine yazabilirsiniz.

@@ -178,6 +178,6 @@ We may update this policy to respond to new risks, changes to the Service or cha
 
 - **Reports, appeals and questions:** [hello@buaze.com](mailto:hello@buaze.com)
 - **Privacy questions and parents' requests:** [hello@buaze.com](mailto:hello@buaze.com)
-- **Company:** NEXTGEN YAZILIM EĞİTİM İNŞAAT SANAYİ VE TİCARET LİMİTED ŞİRKETİ (NextGen Yazılım Ltd. Şti.), Postane Mah. Atatürk Cad. No: 28 İç Kapı No: 1, 34940 Tuzla, İstanbul, Türkiye
+- **Company:** Okan Berk Manavoğlu (individual developer), Istanbul, Türkiye, Türkiye
 
 Authorities of EU Member States, the European Commission, the European Board for Digital Services and users can reach our single point of contact under Articles 11 and 12 of the EU Digital Services Act at [hello@buaze.com](mailto:hello@buaze.com), in English or Turkish. Our representative in the EU: None appointed. Contact hello@buaze.com for any request..
