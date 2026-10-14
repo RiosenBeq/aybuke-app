@@ -10,11 +10,9 @@ import AppCore
 @MainActor
 enum PhotoInsightsService {
     /// Keyed by the image object; the editor asks again after each step.
-    private static let cache: NSCache<UIImage, Box> = {
-        let cache = NSCache<UIImage, Box>()
-        cache.countLimit = 4
-        return cache
-    }()
+    /// Weak keys: an NSCache kept the last four full-size photos alive after
+    /// the editor closed.
+    private static let cache = NSMapTable<UIImage, Box>.weakToStrongObjects()
 
     private final class Box {
         let insight: PhotoInsight
