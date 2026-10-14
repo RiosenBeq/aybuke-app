@@ -366,3 +366,87 @@ private struct EffectTile: View {
         .accessibilityAddTraits(isSelected ? [.isButton, .isSelected] : .isButton)
     }
 }
+
+/// Crop: posting shapes, a quarter turn left, mirror and straighten. Free,
+/// on-device geometry only (uniform scaling, never a stretch).
+struct CropPanel: View {
+    let aspect: CropAspect
+    @Binding var angle: Double
+    let canApply: Bool
+    let onAspect: (CropAspect) -> Void
+    let onRotate: () -> Void
+    let onFlip: () -> Void
+    let onReset: () -> Void
+    let onApply: () -> Void
+
+    var body: some View {
+        VStack(spacing: 12) {
+            ScrollView(.horizontal) {
+                HStack(spacing: 8) {
+                    ForEach(CropAspect.allCases) { option in
+                        SelectableChip(title: title(of: option), symbolName: symbol(of: option), isSelected: aspect == option) {
+                            onAspect(option)
+                        }
+                    }
+                }
+            }
+            .scrollIndicators(.hidden)
+
+            HStack(spacing: 10) {
+                Button(action: onRotate) { Image(systemName: "rotate.left") }
+                    .buttonStyle(.icon)
+                    .accessibilityLabel("Rotate left")
+                Button(action: onFlip) { Image(systemName: "arrow.left.and.right.righttriangle.left.righttriangle.right") }
+                    .buttonStyle(.icon)
+                    .accessibilityLabel("Flip horizontally")
+                Slider(
+                    value: Binding(
+                        get: { angle },
+                        set: { angle = CropGeometry.snappedAngle($0) }
+                    ),
+                    in: -CropGeometry.maxAngle...CropGeometry.maxAngle
+                )
+                .tint(Palette.accent)
+                .accessibilityLabel("Straighten")
+                .accessibilityValue(Text("\(Int(angle.rounded())) degrees"))
+                .sensoryFeedback(.alignment, trigger: angle == 0) { _, isLevel in isLevel }
+                Text(verbatim: "\(Int(angle.rounded()))°")
+                    .font(.footnote.weight(.semibold).monospacedDigit())
+                    .foregroundStyle(Palette.textSecondary)
+                    .frame(width: 36, alignment: .trailing)
+                    .accessibilityHidden(true)
+            }
+
+            HStack(spacing: 12) {
+                Button("Reset", action: onReset)
+                    .buttonStyle(.secondary)
+                    .disabled(!canApply)
+                Button("Apply", action: onApply)
+                    .buttonStyle(.primary)
+                    .disabled(!canApply)
+            }
+        }
+    }
+
+    private func title(of option: CropAspect) -> LocalizedStringKey {
+        switch option {
+        case .original: return "Original"
+        // The crop shape, not the price.
+        case .free: return "Freeform"
+        default:
+            guard let ratio = option.ratio else { return "" }
+            return LocalizedStringKey(String("\(ratio.width):\(ratio.height)"))
+        }
+    }
+
+    private func symbol(of option: CropAspect) -> String {
+        switch option {
+        case .original: return "photo"
+        case .free: return "crop"
+        case .square: return "square"
+        case .portrait: return "rectangle.portrait"
+        case .story: return "rectangle.ratio.9.to.16"
+        case .landscape: return "rectangle.ratio.16.to.9"
+        }
+    }
+}

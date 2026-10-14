@@ -12,6 +12,7 @@ enum ScreenshotScene: String, CaseIterable {
     case edit
     case editor
     case effects
+    case crop
     case result
     case library
     case paywall

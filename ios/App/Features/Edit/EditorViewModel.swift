@@ -8,10 +8,14 @@ final class EditorViewModel {
     struct Step {
         let image: UIImage
         let operation: AIOperation?
+        let before: UIImage
     }
 
     let original: UIImage
     private(set) var current: UIImage
+    /// The original with every applied crop and turn, so before/after views
+    /// line up with the edited photo.
+    private(set) var before: UIImage
     /// Strongest AI operation applied so far — drives the provenance label on export.
     private(set) var appliedOperation: AIOperation?
 
@@ -52,6 +56,14 @@ final class EditorViewModel {
     private(set) var effectThumbnails: [RetroEffect: UIImage] = [:]
     @ObservationIgnored private var effectTask: Task<Void, Never>?
 
+    // Crop (on-device geometry)
+    var crop = CropGeometry()
+    private(set) var cropAspect: CropAspect = .original
+    /// The preview photo with the session's turns and mirror, under the crop box.
+    private(set) var cropProxy: UIImage?
+    /// Demo results carry a "DEMO PREVIEW" mark in a corner that a crop can cut off.
+    var stampsDemoResults = false
+
     @ObservationIgnored private var undoStack: [Step] = []
     @ObservationIgnored private var redoStack: [Step] = []
     @ObservationIgnored private var jobTask: Task<Void, Never>?
@@ -63,6 +75,7 @@ final class EditorViewModel {
     init(launch: EditorLaunch) {
         original = launch.image
         current = launch.image
+        before = launch.image
         activeTool = launch.tool ?? .magicEdit
         magicPrompt = launch.prompt ?? ""
         if let previewResult = launch.previewResult {
@@ -71,6 +84,11 @@ final class EditorViewModel {
         }
         if let effect = launch.previewEffect {
             previewEffect(effect)
+        }
+        if activeTool == .crop {
+            refreshCropProxy()
+            if let aspect = launch.cropAspect { setCropAspect(aspect) }
+            crop.angle = launch.cropAngle
         }
     }
 
@@ -84,6 +102,7 @@ final class EditorViewModel {
     enum PendingPreview {
         case effect(RetroEffect, dateStamp: Bool)
         case adjust(AdjustmentSettings)
+        case crop(CropGeometry, CropAspect)
     }
 
     /// Read from the settings rather than the preview images: the first effect
@@ -96,6 +115,8 @@ final class EditorViewModel {
             return .effect(effect, dateStamp: effectDateStamp)
         case .adjust?:
             return adjustments.isNeutral ? nil : .adjust(adjustments)
+        case .crop?:
+            return crop.isIdentity ? nil : .crop(crop, cropAspect)
         default:
             return nil
         }
@@ -111,7 +132,7 @@ final class EditorViewModel {
 
     /// What the canvas shows right now.
     var displayImage: UIImage {
-        if isHoldingOriginal { return original }
+        if isHoldingOriginal { return before }
         if activeTool == .adjust, let adjustPreview { return adjustPreview }
         if activeTool == .effects, let effectPreview { return effectPreview }
         return current
@@ -138,8 +159,13 @@ final class EditorViewModel {
         if activeTool == .adjust { resetAdjustments() }
         if activeTool == .effects { clearEffect() }
         if activeTool == .erase { strokes.removeAll() }
+        if activeTool == .crop {
+            crop = CropGeometry()
+            cropAspect = .original
+        }
         isComparing = false
         activeTool = tool
+        refreshCropProxy()
         Haptics.selection()
     }
 
@@ -147,25 +173,28 @@ final class EditorViewModel {
 
     func undo() {
         guard let previous = undoStack.popLast() else { return }
-        redoStack.append(Step(image: current, operation: appliedOperation))
+        redoStack.append(Step(image: current, operation: appliedOperation, before: before))
         current = previous.image
         appliedOperation = previous.operation
+        before = previous.before
         afterHistoryChange()
     }
 
     func redo() {
         guard let next = redoStack.popLast() else { return }
-        undoStack.append(Step(image: current, operation: appliedOperation))
+        undoStack.append(Step(image: current, operation: appliedOperation, before: before))
         current = next.image
         appliedOperation = next.operation
+        before = next.before
         afterHistoryChange()
     }
 
-    private func commit(_ image: UIImage, operation: AIOperation?) {
-        undoStack.append(Step(image: current, operation: appliedOperation))
+    private func commit(_ image: UIImage, operation: AIOperation?, before newBefore: UIImage? = nil) {
+        undoStack.append(Step(image: current, operation: appliedOperation, before: before))
         if undoStack.count > 20 { undoStack.removeFirst() }
         redoStack.removeAll()
         current = image
+        if let newBefore { before = newBefore }
         if let operation {
             appliedOperation = Self.stronger(appliedOperation, operation)
         }
@@ -183,6 +212,9 @@ final class EditorViewModel {
         adjustments = .neutral
         adjustPreview = nil
         previewSource = nil
+        crop = CropGeometry()
+        cropAspect = .original
+        if activeTool == .crop { refreshCropProxy() }
         // A chosen effect follows the photo it will be applied to (after Undo, say).
         if let effect {
             effectPreview = nil
@@ -228,7 +260,7 @@ final class EditorViewModel {
             }
             let size = ImageUtilities.pixelSize(of: current)
             job.mask = MaskRenderer.render(strokes, size: CGSize(width: size.width, height: size.height))
-        case .enhance, .removeBackground, .adjust, .effects:
+        case .enhance, .removeBackground, .adjust, .effects, .crop:
             break
         }
 
@@ -448,8 +480,75 @@ final class EditorViewModel {
         switch pendingPreview {
         case .effect?: await applyEffect()
         case .adjust?: await applyAdjustments()
+        case .crop?: await applyCrop()
         case nil: break
         }
+    }
+
+    // MARK: Crop (on-device, free)
+
+    /// Full-size pixels of the photo being cropped.
+    var cropSourceSize: CropSize {
+        let pixels = ImageUtilities.pixelSize(of: current)
+        return CropSize(width: Double(pixels.width), height: Double(pixels.height))
+    }
+
+    func setCropAspect(_ aspect: CropAspect) {
+        cropAspect = aspect
+        if aspect != .free {
+            let size = crop.orientedSize(of: cropSourceSize)
+            withAnimation(.snappy) {
+                crop.rect = CropGeometry.largestRect(ratio: aspect.widthOverHeight(for: size), in: size)
+            }
+        }
+        Haptics.selection()
+    }
+
+    func rotateCropLeft() {
+        crop.rotateLeft(aspect: cropAspect, source: cropSourceSize)
+        refreshCropProxy()
+        Haptics.selection()
+    }
+
+    func flipCrop() {
+        crop.flip()
+        refreshCropProxy()
+        Haptics.selection()
+    }
+
+    func resetCrop() {
+        crop = CropGeometry()
+        cropAspect = .original
+        refreshCropProxy()
+    }
+
+    private func refreshCropProxy() {
+        guard activeTool == .crop else {
+            cropProxy = nil
+            return
+        }
+        cropProxy = CropRenderer.oriented(adjustProxy(), geometry: crop)
+    }
+
+    /// Crops, turns and straightens at full size; the before/after original
+    /// gets the same geometry so comparisons keep lining up.
+    func applyCrop() async {
+        guard !crop.isIdentity, !isProcessing else { return }
+        let geometry = crop
+        let aspect = cropAspect
+        let source = current
+        let sourceBefore = before
+        let restamp = stampsDemoResults && appliedOperation.map { !$0.runsOnDevice } == true
+        processingTitle = String(localized: "Cropping…")
+        isProcessingInCloud = false
+        isProcessing = true
+        let (output, newBefore) = await Task.detached(priority: .userInitiated) {
+            let cropped = CropRenderer.render(source, geometry: geometry, aspect: aspect)
+            return (restamp ? DemoArt.stamp(cropped) : cropped, CropRenderer.render(sourceBefore, geometry: geometry, aspect: aspect))
+        }.value
+        isProcessing = false
+        commit(output, operation: nil, before: newBefore)
+        Haptics.success()
     }
 
     /// Downscaled copy of the current image for live slider previews.

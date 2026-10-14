@@ -13,7 +13,7 @@ Read this first, then the doc for your area (links below). Keep it current: when
 | **Magic Edit** | "Say the change" ("give me pink hair"), then compare before/after; one free retry if the result doesn't look like you (Likeness Lock + an on-device likeness check) |
 | **One-tap looks** | 30 trend templates (Doll Box, Y2K Digicam, Ballet Core…) in collections |
 | **Create** | Text to image with 14 styles, 5 sizes, up to 4 images with Pro |
-| **Free on-device tools** | Seven 80s/90s/Y2K effects, Adjust with one-tap Auto, RAW auto-develop, background removal, Best shot (selfie ranking), simple **video editor** (auto-cut silences, retro effects, trim) |
+| **Free on-device tools** | Seven 80s/90s/Y2K effects, Adjust with one-tap Auto, Crop (posting shapes, rotate, mirror, straighten), RAW auto-develop, background removal, Best shot (selfie ranking), simple **video editor** (auto-cut silences, retro effects, trim) |
 | **Sharing** | Photo, Before/After, 9:16 Story card, **Cover star** magazine cover, **Photo strip**, Help me pick; Instagram Stories via the share sheet (no Meta App ID needed); "Glow together" invite card with a QR code |
 | **Engagement** | Home/Lock Screen widgets, Dynamic Island Live Activity, iOS 18 Control Center controls, gentle local notifications (never at night or during school hours), first-run guided tour |
 | **Accounts** | Anonymous by default; optional Sign in with Apple so Pro and credits follow the user |
