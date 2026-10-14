@@ -118,6 +118,7 @@ Legend: ✅ done in this repository · ⏳ next · 🔭 later
 
 - ✅ Pink "Blush" palette (sampled from the owner's reference brand), light-first with Dark and Automatic appearances
 - ✅ Girls-first catalog: 36 year-round looks in Trending, Glow-up looks, Aesthetic edits, Dreamy portraits, Art, Pet portraits and For your shop, plus seasonal looks (Halloween, winter, Galentine's) promoted on Home in season; 14 styles incl. Pastel Dream and Kawaii; identity clause now protects body shape too
+- ✅ Content pack: 51 year-round looks (Bow Era, Soft Film, Sticker Sheet, Holo Card, Grad Day, Manga Panel, three more pet looks and a Bestie pics collection with Sleepover, Bracelet Club, Twinning and Concert Night); 20 styles (Sticker, Storybook, Pop Art, Cozy Knit, Paper Craft, Diorama); more Inspire me, caption and Magic Edit ideas that vary by photo; four collage arrangements; all translated and policy-tested in 11 languages
 - ✅ Share composer: Instagram Stories, before/after collage, 9:16 story card, caption and hashtags, copy image, AI-label tip
 - ✅ Favorites in My Works, sparkle celebration, editorial serif accents, Settings › Appearance and "Spread the glow"
 - ✅ Developer AI key slot (`ios/Config/Secrets.xcconfig`, DEBUG only) with direct xAI, fal.ai, OpenAI and Gemini adapters
