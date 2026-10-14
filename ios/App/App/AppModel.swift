@@ -1395,7 +1395,10 @@ extension AppModel {
             seedScreenshotLibrary(trash: scene == .libraryTrash)
         case .editor:
             selectedTab = .home
-            editorLaunch = EditorLaunch(image: ScreenshotFixtures.overcastLandscape, tool: .magicEdit, prompt: String(localized: "Golden hour light"))
+            // `-GLEditorTool <tool>` opens another tool's panel (layout QA).
+            let tool = UserDefaults.standard.string(forKey: "GLEditorTool").flatMap(EditorTool.init(rawValue:)) ?? .magicEdit
+            editorLaunch = EditorLaunch(image: ScreenshotFixtures.overcastLandscape, tool: tool,
+                                        prompt: tool == .magicEdit ? String(localized: "Golden hour light") : nil)
         case .result:
             selectedTab = .home
             editorLaunch = EditorLaunch(

@@ -235,11 +235,12 @@ struct OnboardingView: View {
     }
 
     #if DEBUG
-    /// `-GLOnboardingPage tryit|result` for screenshots of the last page.
+    /// `-GLOnboardingPage tryit|result|interests|1` for screenshots of a later page.
     private func applyScreenshotPage() {
         guard ScreenshotScene.current == .onboarding, !app.needsAgeStep,
               let target = UserDefaults.standard.string(forKey: "GLOnboardingPage") else { return }
-        page = tryItPage
+        // `interests` and `1` (the second value page) for layout QA.
+        page = target == "interests" ? interestPage : Int(target) ?? tryItPage
         if target == "result" {
             let image = ScreenshotFixtures.goldenLandscape
             tryPhoto = TryItPhoto(original: image, result: TryItPhoto.effect.apply(to: image, options: TryItPhoto.options),
