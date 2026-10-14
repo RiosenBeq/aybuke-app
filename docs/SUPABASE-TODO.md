@@ -1,106 +1,198 @@
-# Supabase kurulumu — sonraya bırakıldı
+# Supabase kurulumu: canlıya alma listesi
 
-Bu dosya, Aybuke'nin arka ucunu (Supabase) canlıya almak için kalan adımları listeler. Kod hazır: `backend/` klasöründe veritabanı geçişleri, Edge Functions ve testler var. Ayrıntılı İngilizce rehber: [`backend/README.md`](../backend/README.md).
+Bu dosya, Aybuke'nin arka ucunu (Supabase projesi `efapupjvidyqhqdevmcu`, Frankfurt) canlıya almak için kalan adımları listeler. Kod hazır: veritabanı geçişleri `backend/supabase/migrations/` klasöründe, Edge Functions `backend/supabase/functions/` klasöründe. Gerekçeler ve kötüye kullanım runbook'u: [`backend/README.md`](../backend/README.md). Sahibin yapacakları ve kararları [`docs/SAHIP-YAPILACAKLAR.md`](SAHIP-YAPILACAKLAR.md) listesinde; bu dosyadaki `§` numaraları o listenin atıfları için sabittir.
 
-> **Önemli:** Arka uç canlı olmadan uygulamadaki yapay zekâ özellikleri **demo modunda** çalışır (sonuçlar simüle edilir). App Store'a incelemeye göndermeden önce aşağıdaki adımlar tamamlanmalı; yoksa inceleme ekibi gerçek sonuç göremez ve uygulama "eksik" (Guideline 2.1) gerekçesiyle reddedilebilir.
+> **Durum (14 Ekim 2026):** Bu depodan canlı projeye bağlanılamadı, bu yüzden hiçbir madde tamamlanmış sayılmaz. "Doğrulanamadı" işaretli her madde sahibin Supabase, xAI, AdMob veya App Store panelinde kontrol etmesini bekler. Arka uç canlı olana kadar yapay zekâ özellikleri demo modunda çalışır; App Store incelemesine bu adımlar bitmeden gönderilmez.
 
-## 1. Giriş ve temizlik
+> **Kural:** Anahtar, şifre, service role anahtarı, `.p8` içeriği ve e-posta adresi bu dosyaya, bir commit'e ya da bir sohbete yazılmaz. Değerler yalnızca ilgili panele girilir. Proje kimliği ve AdMob birim kimlikleri herkese açıktır.
 
-- [ ] Chrome'da Supabase'e giriş yap: **Continue with ChatGPT** → **Okan Berk Manavoğlu** hesabı.
-- [ ] Eski **envanter** projesini sil: Project Settings → General → Delete project. (Kalıcı silme olduğu için bunu hesap sahibi yapmalı.)
+## §0 Önce kontrol
 
-## 2. Yeni proje
+Eski notlar (`docs/HANDOFF-PROMPT.md`) `20261011000000`–`20261018000000` ve `20261019500000` dosyalarının uygulandığını söylüyor. Bu, veritabanında aşağıdaki sorguyla doğrulanır; nota güvenilmez. `20261017000000` ve `20261018000000` için canlı durum bilinmiyor.
 
-- [ ] **New project** → ad: `Aybuke`, bölge: **Central EU (Frankfurt)** (KVKK/GDPR açısından AB önerilir).
-- [ ] Veritabanı şifresi: "Generate a password" ile oluştur ve şifre yöneticisine kaydet.
+- [ ] SQL Editor'da aşağıdaki sorguyu çalıştır. Satırlar hangi dosyanın canlıda olduğunu gösterir: `true` olanlar tamam, `false` olanlar uygulanmamış demektir.
 
-## 3. Veritabanı (SQL Editor)
-
-- [ ] `backend/supabase/migrations/` içindeki dosyaları sırayla çalıştır:
-  1. `20261011000000_init.sql`
-  2. `20261012000000_reports_and_retention.sql`
-  3. `20261013000000_accounts.sql`
-  4. `20261014000000_retry_reopen.sql`
-  5. `20261015000000_merged_users.sql`
-  6. `20261016000000_explicit_grants.sql`
-  7. `20261017000000_unclaimed_results.sql` (uygulamaya hiç ulaşmayan sonuçların iadesi; `ai-image` yeniden yayımlanmadan önce)
-  8. `20261018000000_revenuecat_deletion_queue.sql` (RevenueCat silme kuyruğu; `account` yeniden yayımlanmadan önce)
-  9. `20261019000000_ad_rewards.sql` (ödüllü reklam kredileri)
-  10. `20261019500000_keepalive.sql` (ücretsiz planda projeyi uyanık tutan günlük nabız; `.github/workflows/keepalive.yml` çağırır)
-- [ ] Zamanlanmış temizlik (takılan işleri ve uygulamaya ulaşmayan sonuçları iade eder, sonuçları 1 saat sonra siler; reklam ödül kayıtlarını 30 gün sonra siler):
-  ```sql
-  create extension if not exists pg_cron;
-  select cron.schedule('sweep-jobs', '*/5 * * * *', 'select public.sweep_jobs()');
-  select cron.schedule('sweep-ad-rewards', '17 * * * *', 'select public.sweep_ad_rewards()');
-  ```
-- [ ] RevenueCat silme kuyruğu için saatlik çağrı (`pg_net` uzantısını aç; anahtar yokken istekler kuyrukta bekler, anahtar eklenince bu çağrı onları gönderir). Proje URL'sini ve service role anahtarını bir kez Vault'a koy, sonra zamanla:
-  ```sql
-  create extension if not exists pg_net;
-  select vault.create_secret('https://<project-ref>.supabase.co', 'project_url');
-  select vault.create_secret('<service role key>', 'service_role_key');
-  select cron.schedule('revenuecat-deletions', '17 * * * *', $$
-    select net.http_post(
-      url := (select decrypted_secret from vault.decrypted_secrets where name = 'project_url')
-             || '/functions/v1/account/revenuecat-deletions',
-      headers := jsonb_build_object('Authorization', 'Bearer ' ||
-        (select decrypted_secret from vault.decrypted_secrets where name = 'service_role_key'))
-    )
-  $$);
-  ```
-
-## 4. Kimlik doğrulama (Authentication)
-
-- [ ] **Anonymous sign-ins** açık olsun (kayıt ekranı yok; Apple yönergesi 5.1.1(v)).
-- [ ] Kötüye kullanıma karşı **CAPTCHA (Turnstile)** önerilir.
-- [ ] **Apple** sağlayıcısı: Client IDs alanına `app.glowlit.ios` ekle.
-- [ ] Apple Developer'da App ID için **Sign in with Apple** açık olsun; hesap silmede token iptali için bir "Sign in with Apple" anahtarı (.p8) oluştur.
-
-## 5. Edge Functions
-
-Terminalde (Supabase CLI kurulu):
-
-```bash
-cd backend
-supabase login
-supabase link --project-ref <proje-ref>
-supabase functions deploy ai-image credits-redeem account report
-# AdMob'un doğrulama çağrısında JWT yok; fonksiyon Google'ın imzasını kendisi doğrular.
-supabase functions deploy ad-reward --no-verify-jwt
+```sql
+select 'public.credit_wallets (20261011000000)' as nesne, to_regclass('public.credit_wallets') is not null as var
+union all select 'public.reports (20261012000000)', to_regclass('public.reports') is not null
+union all select 'public.apple_accounts (20261013000000)', to_regclass('public.apple_accounts') is not null
+union all select 'public.merged_users (20261015000000)', to_regclass('public.merged_users') is not null
+union all select 'jobs.delivered_at (20261017000000)', exists (select 1 from information_schema.columns where table_schema = 'public' and table_name = 'jobs' and column_name = 'delivered_at')
+union all select 'public.pending_revenuecat_deletions (20261018000000)', to_regclass('public.pending_revenuecat_deletions') is not null
+union all select 'public.ad_reward_tokens (20261019000000)', to_regclass('public.ad_reward_tokens') is not null
+union all select 'public.keepalive() (20261019500000)', to_regprocedure('public.keepalive()') is not null
+union all select 'public.credit_policy() v2 (20261020000000)', exists (select 1 from information_schema.parameters where specific_schema = 'public' and parameter_name = 'cost_input_image_cents')
+union all select 'private.app_installs (20261021000000)', to_regclass('private.app_installs') is not null
+union all select 'private.ai_switches (20261022000000)', to_regclass('private.ai_switches') is not null
+union all select 'public.ad_reward_overview() (20261023000000)', to_regprocedure('public.ad_reward_overview(uuid, boolean, text, text, text)') is not null
+union all select 'private.ai_usage_daily con RLS (20261024000000)', coalesce((select rowsecurity from pg_tables where schemaname = 'private' and tablename = 'ai_usage_daily'), false)
+union all select 'public.record_entitlement() (20261024000002)', to_regprocedure('public.record_entitlement(uuid, text, text, timestamptz, boolean, text, boolean)') is not null;
 ```
 
-- [ ] AdMob → Aybuke → ödüllü reklam birimi (`ca-app-pub-2292230772061554/1406702504`, ödül miktarı 1, öğe `credit`) → **Server-side verification** → geri çağırma adresi `https://<proje-ref>.supabase.co/functions/v1/ad-reward` (sorgu dizesi olmadan) → **Verify URL**. Ayrıntılar: [`backend/README.md`](../backend/README.md), "Rewarded ads".
+  - `20261011000000`–`20261018000000` satırlarından biri `false` ise o dosya §1'den önce, kendi `begin; … commit;` bloğunda uygulanır; sıra zaman damgasına göre. `20261019000000` ve sonrası §1'de uygulanır, `true` olanlar atlanır. Uygulanmış bir dosyayı yeniden çalıştırma; `add column` ve `create table` gibi adımlar hata verir.
+  - Sorgu yerel bir PostgreSQL 16 kopyasında denendi: eksik dosyalar `false`, tam kurulum `true` döndürdü. Canlı proje bu ortamdan denenemedi.
+- [ ] Sayıları kontrol et: `select * from public.credit_policy();` ve `select * from public.ad_reward_policy();`. Beklenen: `free_daily` 2, `pro_monthly` 80, `pro_rollover_cap` 160, `trial_credits` 20, `free_retries_daily` 3, kırıcılar 1500 / 200 / 8000; reklam için `daily_cap` 2, `credits` 1, `token_ttl` 30 dakika. Farklıysa `backend/README.md` "Credit rules" ile karşılaştır.
+- [ ] Uzantıları kontrol et: `select extname, extversion from pg_extension where extname in ('pg_cron', 'pg_net', 'supabase_vault');`. §3 için üçü de gerekir; eksikse Database › Extensions'tan aç. (Doğrulanamadı: Vault uzantısının kayıt adı ve panel yolu.)
 
-## 6. Gizli anahtarlar (Edge Functions → Secrets)
+## §1 Migrasyonlar
 
-Bu değerleri hesap sahibi yapıştırmalı (anahtarları ben giremem). Şablon: `backend/.env.example`.
+Her dosya kendi blokunda, sırayla çalıştırılır. Dosyaların içinde `begin` ve `commit` yoktur; blok her dosyanın etrafına sen koyarsın:
 
-- [ ] `XAI_API_KEY` — xAI anahtarı (yapay zekâ için)
-- [ ] `APPLE_BUNDLE_ID` = `app.glowlit.ios`
-- [ ] `APPLE_APP_ID` — App Store Connect'teki sayısal uygulama kimliği (uygulama kaydı oluşunca)
-- [ ] `APPLE_TEAM_ID` = `CBTKNY3LFC`
-- [ ] `APPLE_SIGNIN_KEY_ID` ve `APPLE_SIGNIN_PRIVATE_KEY` — Sign in with Apple anahtarı
-- [ ] `REVENUECAT_SECRET_KEY` ve `REVENUECAT_PROJECT_ID` — hesap silinince RevenueCat müşterisini de silmek için. RevenueCat → Project settings → API keys'te yalnızca `customer_information:customers:read_write` izinli bir **v2** gizli anahtar oluştur; proje kimliği aynı sayfada. Boş kalırsa hesap silme yine çalışır; RevenueCat silme istekleri `pending_revenuecat_deletions` tablosunda bekler ve anahtar eklenince (her hesap silmede ve saatlik zamanlanmış çağrıda, bkz. `backend/README.md` 6. adım) gönderilir.
-- [ ] (İsteğe bağlı) `FAL_KEY` — bağımsız çıktı güvenlik kontrolü (fal.ai) ve yedek sağlayıcı. Her sonuç tek bir çıktı kontrolünden geçer ve kontrol çalışamazsa sonuç engellenip kredi iade edilir (kapatma ayarı yok; eski `OUTPUT_MODERATION` artık okunmuyor). `FAL_KEY` yokken kontrol xAI'nin kendi denetim kararıdır. `FAL_KEY` eklenince sonuçlar fal.ai'ye gider; bu yüzden önce fal.ai'yi onay ekranına (`aiProcessors`) geri ekleyen bir uygulama sürümü yayımlanmalı.
-- [ ] (İsteğe bağlı) `XAI_SAFETY_MODEL` — bir xAI görme modeli (ör. bir grok-4 fast modeli) ile her sonuca ve düzenlenecek fotoğrafa ek güvenlik denetimi. Boşsa kapalıdır; ayarlanırsa denetim hata verdiğinde, zaman aşımına uğradığında, reddettiğinde ya da beklenmeyen bir yanıt döndüğünde iş engellenir ve kredi iade edilir.
-- [ ] `ADMOB_REWARDED_AD_UNIT` = `ca-app-pub-2292230772061554/1406702504` — yalnızca bu reklam biriminin imzalı çağrıları kredi verir; boş kalırsa hiçbir ödül verilmez
+```sql
+begin;
+-- backend/supabase/migrations/<dosya adı>.sql dosyasının tüm içeriği (kopyalayıp yapıştır)
+commit;
+```
 
-> **Onay ekranı:** Uygulamanın yapay zekâ onay ekranı, işleyicileri `ios/App/Resources/AppConfig.json` içindeki `aiProcessors` listesinden gösterir (şu an Supabase ve xAI). `AI_PROVIDER`'ı değiştirmek veya listede olmayan bir işleyici eklemek, önce o işleyiciyi listeleyen bir uygulama güncellemesi gerektirir; liste değişince uygulama onayı yeniden ister. Backend sağlayıcıyı uygulama sürümü olmadan değiştirebilir, bu yüzden sırayı koru.
+- Sıra zaman damgasına göre. Bir dosya hata verirse **dur**: hata metnini kaydet, sonraki dosyaya geçme ve dosyayı değiştirme. Uygulanmış migrasyon düzenlenmez; düzeltme yeni bir dosyada yapılır.
+- Hangi dosyaların atlanacağı §0 sonucuna göre belirlenir. Dokuz dosyanın tamamı, her biri kendi `begin; … commit;` bloğunda, yerel PostgreSQL 16 kopyasında hatasız uygulandı.
 
-## 7. xAI konsolu
+- [ ] **1.1 `20261019000000_ad_rewards.sql`:** ödüllü reklam kredileri; tablolar `public.ad_reward_tokens` ve `public.ad_rewards`, `sweep_ad_rewards`. 1.6 bazı işlevleri değiştirir.
+- [ ] **1.2 `20261019500000_keepalive.sql`:** `public.ops_heartbeat` ve `public.keepalive()`, GitHub keep-alive iş akışının çağırdığı işlev. Eski notlara göre uygulanmış olabilir; §0 sonucuna göre atla.
+- [ ] **1.3 `20261020000000_credit_policy_v2.sql`:** `public.credit_policy()`, sunucudaki kredi, kırıcı, hız sınırı ve saklama sayılarının tamamı.
+- [ ] **1.4 `20261021000000_install_and_subscription_credits.sql`:** `private` şeması, kurulum tuzu, App Store kurulumu başına ücretsiz kredi, abonelik ve paket kredileri. 1.3'ten sonra gelir.
+- [ ] **1.5 `20261022000000_abuse_controls.sql`:** `public.admit_job()`, kırıcılar, hız sınırları, uyarılar (strike), bekleme süreleri, engeller ve `ops_*` sahip araçları.
+- [ ] **1.6 `20261023000000_ad_rewards_per_install.sql`:** reklam sınırı kullanıcı ve kurulum başına; `ad_reward_overview` eklenir.
+- [ ] **1.7 `20261024000000_private_rls.sql`:** `private` şemasının tablolarında satır güvenliği (RLS) açılır; politika eklenmez.
+- [ ] **1.8 `20261024000001_abuse_fixes.sql`:** 1.5'teki `admit_job`, `add_strike` ve `ops_unblock` işlevlerini yerinde değiştirir.
+- [ ] **1.9 `20261024000002_entitlement_order.sql`:** `public.record_entitlement()`; abonelik kaydı yalnızca ileri gider.
 
-- [ ] [console.x.ai](https://console.x.ai) → ekip ayarlarında **Zero Data Retention**'ı aç. Selfie'ler kişisel veri; gizlilik politikamız ve xAI şartları bunu bekliyor.
-- [ ] `XAI_API_KEY` anahtarı için Zero Data Retention'ın gerçekten açık olduğunu konsolda doğrula; gizlilik politikası bunu söylüyor ve depo bunu kanıtlayamaz.
-- [ ] Faturalandırma ve harcama limiti tanımla.
+## §2 Güvenlik kontrolleri
 
-## 8. Uygulamayı arka uca bağla
+- [ ] **Anonim ve giriş yapmış kullanıcının çalıştırabildiği işlevler.** Sorgu tek satır döndürmeli: `keepalive()`, `anon` true, `authenticated` false. Başka satır varsa ilgili migrasyonda `revoke execute … from public, anon, authenticated` eksiktir; düzeltme yeni bir migrasyonla yapılır.
 
-- [ ] `ios/App/Resources/AppConfig.json`:
-  - `backendBaseURL`: `https://<proje-ref>.supabase.co`
-  - `supabaseAnonKey`: projenin publishable (anon) anahtarı (herkese açık olması tasarım gereği sorun değil)
-- [ ] Commit → yeni build → TestFlight'ta gerçek bir Magic Edit ile uçtan uca test.
-- [ ] Sonra App Store'a incelemeye gönder.
+```sql
+select p.oid::regprocedure as fn,
+       has_function_privilege('anon', p.oid, 'EXECUTE') as anon,
+       has_function_privilege('authenticated', p.oid, 'EXECUTE') as authenticated
+from pg_proc p join pg_namespace n on n.oid = p.pronamespace
+where n.nspname = 'public'
+  and (has_function_privilege('anon', p.oid, 'EXECUTE') or has_function_privilege('authenticated', p.oid, 'EXECUTE'));
+```
 
-## Notlar
+- [ ] **Satır güvenliği.** `select schemaname, tablename, rowsecurity from pg_tables where schemaname in ('public', 'private') order by 1, 2;` Bütün satırlar `true` olmalı.
+- [ ] **Security Advisor.** Advisors › Security Advisor'ı §1'den sonra aç. Beklenen: "function search path mutable" ve RLS kapalı bulgusu yok. Yerel kopyada her işlevin `search_path`'i sabitti. Kabul edilen tek uyarı `keepalive()`: anonim çalıştırılır ve `security definer` olduğu için panel işaretleyebilir; bu bilinçli bir karardır. (Doğrulanamadı: panelin uyarı adı ve düzeyi.)
+- [ ] **Kod kontrolü.** Bu depoda doğrulandı: migrasyonlar her `public` işlevinin `anon` yetkisini kapatır (tek tek `revoke` ya da 20261022000000'daki döngü ile); `anon`'a açık bırakılan tek işlev `keepalive` (20261019500000).
 
-- Çözülemeyen engel: Chrome uzantısı OpenAI giriş sayfasına güvenlik gereği erişemiyor; ChatGPT ile girişte hesap seçimini kullanıcı yapmalı.
-- Arka uç tasarımı, maliyetler ve kredi kuralları: [`backend/README.md`](../backend/README.md), [`docs/03-product-spec.md`](03-product-spec.md).
+## §3 Zamanlanmış işler (cron)
+
+Migrasyonlar zamanlama oluşturmaz; yalnızca yorumlarda geçer. Komutları SQL Editor'da elle çalıştır. Önce mevcut işlere bak:
+
+```sql
+select jobname, schedule, active from cron.job;
+```
+
+Aynı adla `cron.schedule` çağırmak mevcut işi değiştirir (pg_cron'un bu davranışı canlıda doğrulanamadı). Listede adı olan işe dokunma.
+
+- [ ] **`sweep-jobs`** (her 5 dakika): takılan işleri başarısız sayıp iade eder, uygulamaya ulaşmayan sonuçları iade eder, çıktıları 1 saat sonra siler ve eski kayıtları saklama süresine göre temizler. Kötüye kullanım temizliği ayrı bir iş değil; `sweep_jobs` içinde.
+
+```sql
+select cron.schedule('sweep-jobs', '*/5 * * * *', 'select public.sweep_jobs()');
+```
+
+- [ ] **`sweep-ad-rewards`** (her saat :17): süresi dolan reklam jetonlarını bir gün sonra, reklam kayıtlarını 30 gün sonra siler.
+
+```sql
+select cron.schedule('sweep-ad-rewards', '17 * * * *', 'select public.sweep_ad_rewards()');
+```
+
+- [ ] **`revenuecat-deletions`** (her saat :17): bekleyen RevenueCat silmelerini gönderir. RevenueCat anahtarı yokken de çalışır; istekler kuyrukta bekler. Önce Vault'a iki sır eklenir, bir kez: `project_url` ve `service_role_key`. Değeri sahip girer; dosyaya, commit'e ya da sohbete yazılmaz. Ad zaten varsa `select name from vault.decrypted_secrets;` ile görüp yeniden ekleme.
+
+```sql
+select vault.create_secret('https://efapupjvidyqhqdevmcu.supabase.co', 'project_url');
+select vault.create_secret('<service role anahtarı>', 'service_role_key');
+select cron.schedule('revenuecat-deletions', '17 * * * *', $$
+  select net.http_post(
+    url := (select decrypted_secret from vault.decrypted_secrets where name = 'project_url')
+           || '/functions/v1/account/revenuecat-deletions',
+    headers := jsonb_build_object('Authorization', 'Bearer ' ||
+      (select decrypted_secret from vault.decrypted_secrets where name = 'service_role_key'))
+  )
+$$);
+```
+
+- [ ] **Kontrol.** `select jobname, schedule, active from cron.job;` çıktısında üç ad de `active` olarak görünmeli. Başka bir ad görürsen silmeden sahibe sor.
+- [ ] **Keep-alive (veritabanı dışı).** `.github/workflows/keepalive.yml` her gün 07:23 UTC'de `public.keepalive()` çağırır; anon anahtarı kullanır, sır gerekmez. GitHub Actions'ta "Backend keep-alive" son çalışması yeşil olmalı. (Doğrulanamadı: çalışma geçmişi bu ortamdan görülmedi.) Public depoda 60 gün commit yoksa GitHub zamanlamayı durdurur; durursa Actions'tan yeniden etkinleştir.
+
+## §4 Kimlik doğrulama ayarları
+
+Supabase panelinde Authentication. (Doğrulanamadı: menü adları panel sürümüne göre değişebilir.)
+
+- [ ] **Anonymous sign-ins: açık.** Uygulama anonim kullanıcıyı yalnızca ilk onaylı bulut işinde ya da satın almada açar; kayıt ekranı yok (App Review 5.1.1(v)).
+- [ ] **Anonim giriş sınırı: saatte IP başına 15** (Rate Limits). Hesap açmanın çoğaltılmasını sınırlar.
+- [ ] **Email sağlayıcısı: kapalı.**
+- [ ] **CAPTCHA: kapalı kalsın.** Uygulamada CAPTCHA widget'ı yok; açılırsa her anonim kayıt başarısız olur. Eski Turnstile önerisi geçersiz.
+- [ ] **Apple sağlayıcısı: Client ID `app.glowlit.ios`.** Apple ile giriş bu sürümde kapalı (`signInWithApple: false`, `ios/App/Resources/AppConfig.json`). Açılma koşulu: §6 ve SAHIP 5.6.
+
+## §5 Edge Functions
+
+Önkoşul: §1 migrasyonları ve §0 nesneleri tamam; §6'daki zorunlu değerler girili. `ai-image` `admit_job` ve `deliver_outputs` gibi işlevleri, `ad-reward` `ad_reward_overview` ve `redeem_ad_reward` işlevlerini çağırır; bu yüzden fonksiyonlar migrasyonlardan sonra yayımlanır.
+
+`backend/` klasöründe, önce `supabase login` ve isteğe bağlı `supabase link --project-ref efapupjvidyqhqdevmcu`:
+
+```bash
+supabase functions deploy ai-image --project-ref efapupjvidyqhqdevmcu --use-api
+supabase functions deploy credits-redeem --project-ref efapupjvidyqhqdevmcu --use-api
+supabase functions deploy account --project-ref efapupjvidyqhqdevmcu --use-api
+supabase functions deploy report --project-ref efapupjvidyqhqdevmcu --use-api
+# AdMob'un geri çağrısında JWT yok; ad-reward Google'ın imzasını kendisi denetler.
+supabase functions deploy ad-reward --project-ref efapupjvidyqhqdevmcu --use-api --no-verify-jwt
+```
+
+- [ ] Her komut hatasız bitti. (Doğrulanamadı: `--use-api` bayrağı bu ortamda denenmedi, Supabase CLI kurulu değil; `supabase functions deploy --help` ile bak.)
+- [ ] `ad-reward` `--no-verify-jwt` ile yayımlandı. Bu bayrak olmazsa AdMob'un geri çağrısı reddedilir.
+- [ ] Edge Functions › Logs'ta her fonksiyonun ilk istekten sonra başlatma hatası yok.
+- [ ] Yayımlanacak commit'te CI yeşil: `.github/workflows/ci.yml` `deno check` ve `deno test` çalıştırır.
+- [ ] **AdMob doğrulama adresi.** Server-side verification: `https://efapupjvidyqhqdevmcu.supabase.co/functions/v1/ad-reward` (sorgu dizesi yok), ardından **Verify URL**. Test geri çağrısı 200 döner ve kredi vermez. Ayrıntı: `backend/README.md` "Rewarded ads"; SAHIP 3.2.
+
+## §6 Gizli değerler (secrets)
+
+Değerleri sahip girer. Yer: Supabase panelinde Edge Functions › Secrets; ya da `backend/.env.example` dosyasını `backend/.env` olarak doldurup `supabase secrets set --env-file backend/.env` çalıştır (`.env` git'te yok sayılır, commit etme). `SUPABASE_URL` ve `SUPABASE_SERVICE_ROLE_KEY` Supabase tarafından verilir; bunları ayarlama.
+
+**Zorunlu**
+
+- [ ] `XAI_API_KEY`: xAI anahtarı. Canlıda ayarlı olup olmadığı doğrulanamadı (HANDOFF'a göre ayarlı). Döndürme: SAHIP 1.2.
+- [ ] `APPLE_APP_ID` = `6822716008`. Üretim (App Store) satın almalarını doğrulamak için şart; yoksa üretim AppTransaction reddedilir ve ücretsiz krediler kapalı kalır. Sandbox bu olmadan da çalışır.
+- [ ] `ADMOB_REWARDED_AD_UNIT` = `ca-app-pub-2292230772061554/1406702504`. Boş kalırsa hiçbir reklam ödülü verilmez.
+- [ ] `APPLE_BUNDLE_ID` = `app.glowlit.ios`. Kodda bu varsayılan; yine de gir.
+- [ ] `APPLE_TEAM_ID` = `CBTKNY3LFC`. Kodda yalnızca Apple ile giriş yolu okur (`_shared/apple-signin.ts`); Apple ile giriş kapalıyken gerekmez (açık soru).
+
+**İsteğe bağlı (varsayılan kapalı)**
+
+- [ ] `REVENUECAT_SECRET_KEY` ve `REVENUECAT_PROJECT_ID` = `3e7e4f4a`: hesap silinince RevenueCat müşterisini de siler. Anahtar yalnızca `customer_information:customers:read_write` izinli bir v2 gizli anahtar olmalı. Yoksa silmeler `pending_revenuecat_deletions` tablosunda bekler. SAHIP 5.7.
+- [ ] `APPLE_SIGNIN_KEY_ID` ve `APPLE_SIGNIN_PRIVATE_KEY`: yalnızca Apple ile giriş açılacaksa; hesap silinince token iptali için. Bu sürümde girilmez. SAHIP 5.6.
+- [ ] `FAL_KEY`: **girilmez.** Girilirse her çıktı fal.ai'ye gider; önce fal.ai uygulama onay ekranına (`aiProcessors`) ve gizlilik metinlerine eklenmeli. Boşken çıktı denetimi xAI'nin kendi kararıdır. SAHIP 5.8.
+- [ ] `XAI_SAFETY_MODEL`: **boş bırakılır.** Ayarlanırsa her fotoğraf ve sonuç ek bir xAI görme modeliyle denetlenir. Canlı API'de test edilmedi. SAHIP 5.8.
+- [ ] `AI_PROVIDER`, `XAI_IMAGE_MODEL`, `XAI_EDIT_MODEL`: boş bırakılır. `AI_PROVIDER` boşken `XAI_API_KEY` varsa xAI, yoksa fal kullanılır.
+
+**Girilmez**
+
+- [ ] `GLOWLIT_ALLOW_XCODE_APP_TRANSACTIONS`: yalnızca yerel geliştirme içindir. Barındırılan projede fonksiyon bunu yok sayar ve günlüğe yazar; yine de ayarlanmaz.
+- [ ] `OUTPUT_MODERATION`: hiçbir fonksiyon okumaz ve çıktı denetimi kapatılamaz. Varsa sil.
+
+## §7 xAI ve dış hesap kontrolleri
+
+Sahibin işi. console.x.ai üzerinde. (Doğrulanamadı: konsolun arayüz adları.)
+
+- [ ] **Kredi ve aylık limit.** Ekip faturalandırmasında kredi yüklü ve aylık harcama limiti tanımlı. Kredi bitince her AI işi başarısız olur ve kredi iade edilir. SAHIP 1.1.
+- [ ] **Zero Data Retention.** Ekip ayarlarında açık ve bu anahtar için geçerli. Gizlilik metinleri (`legal/tr/gizlilik-politikasi.md`, 5. madde) bunu söyler; depo bunu kanıtlayamaz. Açılamıyorsa metinler yanlış olur; karar için SAHIP 1.3 ve 6.1.
+- [ ] **Anahtar döndürme.** `XAI_API_KEY` bir sohbete, dosyaya ya da bilete yazıldıysa: yeni anahtar üret, Supabase'de değiştir, bir AI işi dene, eskisini iptal et. SAHIP 1.2.
+
+## §8 Yükleme sonrası kontroller (TestFlight)
+
+TestFlight derlemesi Sandbox ile çalışır; sunucu Sandbox işlemlerini her zaman kabul eder (`_shared/apple.ts`). Aşağıdakiler App Store incelemesinden önce, Sandbox derlemesinde kontrol edilir (SAHIP 2.12).
+
+- [ ] **İlk deneme: 2 ücretsiz kredi.** Temiz kurulumda ilk denemeden önce bakiye 2 kredi gösterir. Ücretsiz kredi doğrulanmış App Store kurulumuna bağlıdır; kanıt yoksa verilmez.
+- [ ] **Gerçek sonuç.** Bir Magic Edit gerçek sonuç döndürür ve sonuçta "DEMO PREVIEW" damgası yoktur.
+- [ ] **"Preview build" bandı yok.** Keşfet'te "Preview build: AI results are samples" görünmez; bu bant yalnızca demo modunda gösterilir (`AppModel.modeBanner`).
+- [ ] **Sandbox satın alma.** Bir Sandbox satın alması bakiyeyi değiştirir. SQL Editor'da `select kind, daily, subscription, purchased, created_at from public.credit_ledger order by created_at desc limit 5;` ile yeni satırı gör.
+- [ ] **Sahip okuması.** `backend/README.md` "Abuse runbook" bölümünü oku. İlk gerçek günden sonra `select public.ops_daily_summary();` çalıştır.
+
+## §9 Sahip kararları
+
+Bu bölümdeki işleri ajan yapmaz; karar sahibindedir.
+
+- [ ] **Eski "envanter" Supabase projesi.** Bu depoya ait değildir. Silme kalıcıdır; yalnızca sahip yapar. Ajan silmez ve silme komutu yazmaz.
+- [ ] **İade ve iptal bildirimleri (App Store Server Notifications V2).** Lansmandan önce uç nokta kurulacak mı? Kurulmazsa iade edilen Pro abonelik `expires_at` tarihine kadar Pro kalır. Karar: SAHIP 5.2.
+- [ ] **Paylaşılan adres eşiği.** Doğrulanmamış bir adresten üç uyarı, o adresteki herkesi bekletir. Adres anahtarları için eşik yükseltilecek mi? Karar: SAHIP 5.3.
+- [ ] **Deneme kredilerinin devri (trial roll-in).** Yıllık planın 7 günlük denemesinde kullanılmayan 20 kredi ilk ücretli aya eklensin mi? Karar: SAHIP 5.1.
