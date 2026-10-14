@@ -572,6 +572,8 @@ struct VideoEditorView: View {
                 .font(.caption)
                 .foregroundStyle(Palette.textSecondary)
             }
+            // Wraps instead of cutting long titles ("Cortar silencios automáticamente").
+            .fixedSize(horizontal: false, vertical: true)
         }
         .tint(Palette.accent)
         .disabled(model.isAnalyzing || !(model.silencePlan?.cutsSomething ?? false))

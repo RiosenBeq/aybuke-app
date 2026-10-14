@@ -23,7 +23,10 @@ struct CaptionsCard: View {
                         .fixedSize(horizontal: false, vertical: true)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
+                // The button keeps its whole label ("Untertitel hinzufügen");
+                // the text beside it wraps instead.
                 trailing
+                    .layoutPriority(1)
             }
             if case .working(let progress) = captions.status {
                 ProgressView(value: fraction(progress))
