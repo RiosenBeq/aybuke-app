@@ -34,6 +34,8 @@ BANNED_PLACES = [
 
 # A string literal mentioning a specific device, outside comments.
 DEVICE = re.compile(r'"[^"\n]*(?:\biPhones?\b|\bphones?\b|iOS Settings)[^"\n]*"')
+# SF Symbol names ("phone.bubble") are never shown as text.
+SYMBOL = re.compile(r'(?:systemImage|systemName):\s*"[^"\n]*"')
 
 RESOLUTION = re.compile(
     r"resolution|çözünürlük|resolución|Auflösung|résolution|risoluzione|resolução|разрешени|解像度|해상도|分辨率|resolusi",
@@ -61,7 +63,7 @@ def main():
                 # Comments, and AI prompts ("a phone" as a doll accessory), aren't UI copy.
                 if line.lstrip().startswith("//") or "prompt:" in line:
                     continue
-                match = DEVICE.search(line)
+                match = DEVICE.search(SYMBOL.sub("", line))
                 if match:
                     problems.append(f"{file.relative_to(ROOT)}:{number}: device-specific wording: {match.group(0)}")
 
