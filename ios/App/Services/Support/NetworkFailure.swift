@@ -24,15 +24,6 @@ enum NetworkFailure {
             return AIServiceError.network(String(localized: "Check your internet connection and try again."))
         }
     }
-
-    /// Worth asking again while a job runs on the server: the job and its
-    /// credit are still there after a short drop.
-    static func isTransient(_ error: Error) -> Bool {
-        switch error as? AIServiceError {
-        case .offline, .timedOut, .network: return true
-        default: return false
-        }
-    }
 }
 
 extension URLSession {

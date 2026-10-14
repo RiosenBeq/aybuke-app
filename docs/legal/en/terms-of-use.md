@@ -68,7 +68,7 @@ Glowlit doesn't ask you to sign up or give us your name, email address or a pass
 
 ### Optional Sign in with Apple
 
-You can choose to sign in with Apple, for example to keep Pro and your credits when you switch or add an iPhone. Signing in is never required to use Glowlit. When you sign in, the anonymous account on that iPhone is merged into your account, including its purchased credits. Signing out returns that iPhone to a new anonymous account; your credits stay with your account, and an active subscription stays with the Apple Account that bought it. Your photos and library are not synced between devices.
+Where the app offers it, you can choose to sign in with Apple, for example to keep your credits when you switch or add a device; an active subscription stays with the Apple Account that bought it. Not every version of the app offers signing in, and it is never required to use Glowlit. When you sign in, the anonymous account on that iPhone is merged into your account, including its purchased credits. Signing out returns that iPhone to a new anonymous account; your credits stay with your account, and an active subscription stays with the Apple Account that bought it. Your photos and library are not synced between devices.
 
 ### Keep your device secure
 

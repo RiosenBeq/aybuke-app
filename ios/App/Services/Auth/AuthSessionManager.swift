@@ -12,6 +12,8 @@ actor AuthSessionManager {
     /// credits have been merged into the account (so a failed merge can retry).
     private var pendingMerge: AuthSession?
     private var inFlight: Task<AuthSession, Error>?
+    /// A refresh that never falls back to signing up (`existingAccessToken`).
+    private var refreshInFlight: Task<AuthSession, Error>?
     private static let keychainKey = "auth.session"
     private static let pendingMergeKey = "auth.pendingMerge"
 
@@ -92,13 +94,22 @@ actor AuthSessionManager {
     }
 
     /// A valid token for the stored session, refreshed if needed, or nil when
-    /// there is no session. Never signs up: deleting an account must not
-    /// create a new one first. Throws `unauthorized` when the refresh token
-    /// was rejected (the user was deleted, or the session revoked).
+    /// there is no session. Never signs up: deleting an account (or polling a
+    /// job, or reading the balance) must not create a new one. Throws
+    /// `unauthorized` when the refresh token was rejected (the user was
+    /// deleted, or the session revoked). Concurrent callers share one refresh.
     func existingAccessToken() async throws -> String? {
         guard let current else { return nil }
         if !current.isExpired() { return current.accessToken }
-        let refreshed = try await Self.refresh(current.refreshToken, config: config, session: session)
+        if let refreshInFlight {
+            return try await refreshInFlight.value.accessToken
+        }
+        let task = Task<AuthSession, Error> { [config, session] in
+            try await Self.refresh(current.refreshToken, config: config, session: session)
+        }
+        refreshInFlight = task
+        defer { refreshInFlight = nil }
+        let refreshed = try await task.value
         self.current = refreshed
         Keychain.save(refreshed, key: Self.keychainKey)
         return refreshed.accessToken

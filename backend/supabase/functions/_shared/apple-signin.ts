@@ -14,11 +14,21 @@ interface AppleSignInConfig {
   clientId: string;
 }
 
+/** False while the Sign in with Apple key secrets are missing: tokens can be neither kept nor revoked. */
+export function appleSignInConfigured(): boolean {
+  return appleConfig() !== null;
+}
+
 function appleConfig(): AppleSignInConfig | null {
   const teamId = Deno.env.get("APPLE_TEAM_ID");
   const keyId = Deno.env.get("APPLE_SIGNIN_KEY_ID");
   const privateKey = Deno.env.get("APPLE_SIGNIN_PRIVATE_KEY");
-  if (!teamId || !keyId || !privateKey) return null;
+  if (!teamId || !keyId || !privateKey) {
+    console.warn(
+      "APPLE_TEAM_ID, APPLE_SIGNIN_KEY_ID or APPLE_SIGNIN_PRIVATE_KEY is not set: Sign in with Apple tokens can't be kept or revoked",
+    );
+    return null;
+  }
   return {
     teamId,
     keyId,

@@ -159,16 +159,30 @@ struct APIErrorEnvelope: Decodable {
 }
 
 /// How often to poll a job: quick at first (most edits finish in 5–15 s),
-/// then backing off, with an overall deadline.
+/// then backing off, with an overall deadline. A poll that can't reach the
+/// server (a lift, a tunnel, a busy gateway) doesn't end the wait: the job and
+/// its credit are still on the server, so the app retries with growing gaps
+/// and stops only after `offlineGrace` without an answer. The server refunds a
+/// result that never reached the app (backend `sweep_jobs()`).
 public struct PollingSchedule: Equatable, Sendable {
     public var delays: [TimeInterval]
     public var maxDelay: TimeInterval
+    /// A job the server still runs after this is cancelled (and refunded).
     public var timeout: TimeInterval
+    /// Waits after polls in a row that couldn't reach the server.
+    public var retryDelays: [TimeInterval]
+    /// How long the server may stay out of reach before the app stops waiting.
+    public var offlineGrace: TimeInterval
 
-    public init(delays: [TimeInterval] = [1, 1, 1.5, 1.5, 2, 2, 2.5], maxDelay: TimeInterval = 3, timeout: TimeInterval = 180) {
+    public init(
+        delays: [TimeInterval] = [1, 1, 1.5, 1.5, 2, 2, 2.5], maxDelay: TimeInterval = 3, timeout: TimeInterval = 180,
+        retryDelays: [TimeInterval] = [2, 3, 5, 8, 13], offlineGrace: TimeInterval = 120
+    ) {
         self.delays = delays
         self.maxDelay = maxDelay
         self.timeout = timeout
+        self.retryDelays = retryDelays
+        self.offlineGrace = offlineGrace
     }
 
     public static let standard = PollingSchedule()
@@ -176,6 +190,47 @@ public struct PollingSchedule: Equatable, Sendable {
     public func delay(forAttempt attempt: Int) -> TimeInterval {
         guard attempt >= 0 else { return delays.first ?? maxDelay }
         return attempt < delays.count ? delays[attempt] : maxDelay
+    }
+
+    /// The wait after `failures` polls in a row couldn't reach the server.
+    public func retryDelay(afterFailures failures: Int) -> TimeInterval {
+        guard let last = retryDelays.last else { return maxDelay }
+        return failures >= 1 && failures <= retryDelays.count ? retryDelays[failures - 1] : last
+    }
+
+    public enum Step: Equatable, Sendable {
+        /// Ask again after this many seconds.
+        case poll(after: TimeInterval)
+        /// The server's last answer says the job still runs past the deadline: cancel it.
+        case cancel
+        /// The server has been out of reach too long: stop, without claiming a refund.
+        case giveUp
+    }
+
+    /// What to do after a poll: `elapsed` seconds since the job started,
+    /// `attempt` polls so far, and the last `failures` polls in a row not
+    /// reaching the server, the first of them `outage` seconds ago. The outage
+    /// is measured while the app runs, so a poll cut off by a trip to the
+    /// background is simply asked again.
+    public func next(elapsed: TimeInterval, attempt: Int, failures: Int, outage: TimeInterval = 0) -> Step {
+        if failures > 0 {
+            return outage >= offlineGrace ? .giveUp : .poll(after: retryDelay(afterFailures: failures))
+        }
+        return elapsed >= timeout ? .cancel : .poll(after: delay(forAttempt: attempt))
+    }
+
+    /// Failures worth polling through: no connection, a timeout, a rate limit,
+    /// or a server or gateway error. A job the server doesn't know, or a
+    /// session it rejects, isn't.
+    public static func isWorthRetrying(_ error: Error) -> Bool {
+        switch error as? AIServiceError {
+        case .offline, .timedOut, .network, .rateLimited:
+            return true
+        case .server(let code, _):
+            return code.hasPrefix("http_5") || code == "internal"
+        default:
+            return false
+        }
     }
 }
 
@@ -314,7 +369,16 @@ public enum RequestFactory {
                        query: [URLQueryItem(name: "job_id", value: jobID)], accessToken: accessToken)
     }
 
+    /// Stops a job she cancelled or stopped waiting for. The server refunds
+    /// it unless its results already reached the app.
     public static func cancelJob(jobID: String, config: BackendConfiguration, accessToken: String?) throws -> URLRequest {
+        try authorized(config: config, path: config.functionPath, method: "DELETE",
+                       query: [URLQueryItem(name: "job_id", value: jobID), URLQueryItem(name: "intent", value: "cancel")],
+                       accessToken: accessToken)
+    }
+
+    /// "Got it": the app has the results, so the server deletes them right away.
+    public static func confirmJob(jobID: String, config: BackendConfiguration, accessToken: String?) throws -> URLRequest {
         try authorized(config: config, path: config.functionPath, method: "DELETE",
                        query: [URLQueryItem(name: "job_id", value: jobID)], accessToken: accessToken)
     }
@@ -447,6 +511,31 @@ public enum ResponseDecoder {
         default:
             return response
         }
+    }
+
+    /// The balance a job response carries, if any: the 202 after the charge,
+    /// a finished poll, a cancel's refund, or an error body (out of credits).
+    public static func reportedBalance(in data: Data) -> Int? {
+        struct Body: Decodable {
+            struct ErrorBody: Decodable {
+                let creditsRemaining: Int?
+                enum CodingKeys: String, CodingKey { case creditsRemaining = "credits_remaining" }
+            }
+            let creditsRemaining: Int?
+            let error: ErrorBody?
+            enum CodingKeys: String, CodingKey {
+                case error
+                case creditsRemaining = "credits_remaining"
+            }
+        }
+        guard let body = try? JSONDecoder().decode(Body.self, from: data) else { return nil }
+        return body.creditsRemaining ?? body.error?.creditsRemaining
+    }
+
+    /// The status in a job response, if any (e.g. a cancel's "cancelled").
+    public static func reportedStatus(in data: Data) -> GenerationResponse.Status? {
+        struct Body: Decodable { let status: GenerationResponse.Status? }
+        return (try? JSONDecoder().decode(Body.self, from: data))?.status
     }
 
     public static func decodeBalance(data: Data, statusCode: Int) throws -> Int {

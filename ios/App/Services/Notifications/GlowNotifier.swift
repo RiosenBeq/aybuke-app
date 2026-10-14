@@ -135,7 +135,9 @@ final class GlowNotifier {
             ? (title: isCreate ? String(localized: "Your images are ready ✨") : String(localized: "Your edit is ready ✨"),
                body: String(localized: "Tap to see it."))
             : (title: String(localized: "That one didn't work"),
-               body: String(localized: "No credit was used. Tap to try again."))
+               // Not "no credit was used": a result lost with the connection is
+               // refunded later, by the server.
+               body: String(localized: "Failed creations are refunded automatically. Tap to try again."))
         content.title = copy.title
         content.body = copy.body
         content.sound = .default

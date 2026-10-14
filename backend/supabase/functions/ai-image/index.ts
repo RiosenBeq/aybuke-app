@@ -2,21 +2,27 @@
 //
 //   POST   /ai-image            enqueue a job        → 202 { job_id, status: "queued", credits_remaining }
 //   GET    /ai-image?job_id=ID  poll a job            → { job_id, status, outputs?, error?, credits_remaining? }
+//                               (credits_remaining once the job is finished)
 //   DELETE /ai-image?job_id=ID  cancel + refund a job → { job_id, status: "cancelled", credits_remaining }
-//                               (on a completed job: "got it", the results are cleared)
+//          [&intent=cancel]     (on a completed job the app received: a plain DELETE is the "got it" that
+//                               clears the results; intent=cancel means the app gave up waiting)
 //   GET    /ai-image            current balance       → { credits_remaining, is_pro }
 //
 // Contract: ios/Packages/AppCore/Sources/AppCore/BackendAPI.swift
 //
 // Providers: xAI (default when XAI_API_KEY is set) or fal (AI_PROVIDER=fal).
 // fal jobs are queued at fal and advanced while the app polls; xAI answers in
-// one request, which runs in the background after the 202. A DELETE on a
-// completed job confirms the app has the images, and clears them right away.
+// one request, which runs in the background after the 202. Every result passes
+// the output check (moderation.ts) or is blocked and refunded. The poll that
+// returns the results records the delivery; a DELETE on a delivered job
+// confirms the app has the images and clears them right away. Results the app
+// never received are refunded (cancel_job(), settle_unconfirmed(), sweep_jobs()).
 import type { SupabaseClient } from "npm:@supabase/supabase-js@2.117.3";
 import { resolveEntitlement } from "../_shared/apple.ts";
 import { requireUser, serviceClient } from "../_shared/auth.ts";
 import * as fal from "../_shared/fal.ts";
 import { corsHeaders, errorResponse, HttpError, json } from "../_shared/http.ts";
+import { checkOutputs, outputCheck } from "../_shared/moderation.ts";
 import { EDIT_GUARD, evaluatePrompt } from "../_shared/policy.ts";
 import { PRO_STYLES, templateRecipe } from "../_shared/templates.ts";
 import * as xai from "../_shared/xai.ts";
@@ -58,6 +64,8 @@ interface JobRow {
   created_at: string;
 }
 
+console.info(`output check in force: ${outputCheck()}`);
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
   try {
@@ -78,7 +86,7 @@ Deno.serve(async (req) => {
       }
       case "DELETE":
         if (!jobId) throw new HttpError(400, "bad_request", "Missing job_id.");
-        return await cancelJob(db, user.id, jobId);
+        return await cancelJob(db, user.id, jobId, url.searchParams.get("intent") === "cancel");
       default:
         throw new HttpError(405, "method_not_allowed", "Method not allowed.");
     }
@@ -258,7 +266,17 @@ async function pollJob(db: SupabaseClient, userId: string, jobId: string): Promi
     await advance(db, job);
   }
   const fresh = await loadJob(db, userId, jobId);
-  return json(present(fresh));
+  if (fresh.status === "completed") {
+    // Handing the results over is what counts as delivered: results the app
+    // never received are refunded (sweep_jobs()).
+    const { data: outputs, error } = await db.rpc("deliver_outputs", { p_job: fresh.id, p_user: userId });
+    if (error) {
+      console.error("couldn't record the delivery", error.message);
+    } else {
+      fresh.outputs = Array.isArray(outputs) ? outputs as fal.Output[] : null;
+    }
+  }
+  return json(await presentFinished(db, userId, fresh));
 }
 
 /** Moves a pending job forward by asking the provider (no webhook needed). */
@@ -288,13 +306,24 @@ async function finish(db: SupabaseClient, jobId: string, outcome: fal.ResultOutc
     await failJob(db, jobId, outcome.code, outcome.message);
     return;
   }
-  if (await fal.outputsLookUnsafe(outcome.outputs)) {
-    await failJob(
-      db,
-      jobId,
-      "content_blocked",
-      "This result was blocked by our safety filters. Your credit was refunded.",
-    );
+  const verdict = await checkOutputs(outcome.outputs, outcome.moderatedBy);
+  if (!verdict.ok) {
+    console.warn(`output check (${verdict.check}) blocked job ${jobId}: ${verdict.reason}`);
+    if (verdict.reason === "flagged") {
+      await failJob(
+        db,
+        jobId,
+        "content_blocked",
+        "This result was blocked by our safety filters. Your credit was refunded.",
+      );
+    } else {
+      await failJob(
+        db,
+        jobId,
+        "safety_check_failed",
+        "Our safety check couldn't run, so this result wasn't shown. Your credit was refunded.",
+      );
+    }
     return;
   }
   await db.from("jobs")
@@ -305,27 +334,22 @@ async function finish(db: SupabaseClient, jobId: string, outcome: fal.ResultOutc
 
 // MARK: - Cancel
 
-async function cancelJob(db: SupabaseClient, userId: string, jobId: string): Promise<Response> {
+/**
+ * Cancels and refunds a job that is still running, or that finished without
+ * its results ever reaching the app. On a delivered job a plain DELETE is the
+ * app's "got it" (the results are cleared right away), and `giveUp` (the app
+ * stopped waiting and never got them) settles it as the cleanup would.
+ */
+async function cancelJob(db: SupabaseClient, userId: string, jobId: string, giveUp: boolean): Promise<Response> {
   const job = await loadJob(db, userId, jobId);
-  if (job.status === "completed") {
-    // The app has its images: don't keep them a minute longer.
-    await db.from("jobs").update({ outputs: null, updated_at: new Date().toISOString() })
-      .eq("id", job.id).eq("status", "completed");
-    return json({ job_id: job.id, status: "completed" });
+  if ((job.status === "queued" || job.status === "processing") && job.cancel_url) await fal.cancel(job.cancel_url);
+  const { data, error } = await db.rpc("cancel_job", { p_job: job.id, p_user: userId, p_cancel: giveUp });
+  if (error || !data) throw new HttpError(500, "internal", "Something went wrong. Please try again.");
+  const result = data as { status: JobRow["status"]; credits_remaining: number | null };
+  if (result.status === "cancelled" || result.status === "completed") {
+    return json({ job_id: job.id, status: result.status, credits_remaining: result.credits_remaining ?? undefined });
   }
-  if (job.status === "queued" || job.status === "processing") {
-    if (job.cancel_url) await fal.cancel(job.cancel_url);
-    const { data } = await db.from("jobs")
-      .update({ status: "cancelled", updated_at: new Date().toISOString() })
-      .eq("id", job.id)
-      .in("status", ["queued", "processing"])
-      .select("id");
-    if (data && data.length > 0) {
-      const { data: remaining } = await db.rpc("release_credits", { p_job: job.id });
-      return json({ job_id: job.id, status: "cancelled", credits_remaining: remaining ?? undefined });
-    }
-  }
-  return json(present(await loadJob(db, userId, jobId)));
+  return json(await presentFinished(db, userId, await loadJob(db, userId, jobId)));
 }
 
 // MARK: - Helpers
@@ -336,8 +360,15 @@ async function loadJob(db: SupabaseClient, userId: string, jobId: string): Promi
   return data as JobRow;
 }
 
-/** Marks a pending job failed and refunds it (both idempotent). */
+/**
+ * Marks a pending job failed and refunds it, in one step (fail_job()), so a
+ * background task cut off halfway can't leave a failed job unrefunded.
+ */
 async function failJob(db: SupabaseClient, jobId: string, code: string, message: string): Promise<void> {
+  const { error } = await db.rpc("fail_job", { p_job: jobId, p_code: code, p_message: message });
+  if (!error) return;
+  // Before the migration that adds fail_job(): the two idempotent steps.
+  console.error("fail_job failed, falling back", error.message);
   const { data } = await db.from("jobs")
     .update({ status: "failed", error_code: code, error_message: message, updated_at: new Date().toISOString() })
     .eq("id", jobId)
@@ -365,6 +396,28 @@ function present(job: JobRow): Record<string, unknown> {
     };
   }
   return body;
+}
+
+/** A finished job also carries the balance, so the app shows the charge or the refund at once. */
+async function presentFinished(db: SupabaseClient, userId: string, job: JobRow): Promise<Record<string, unknown>> {
+  const body = present(job);
+  if (job.status === "completed" || job.status === "failed" || job.status === "cancelled") {
+    const remaining = await walletBalance(db, userId);
+    if (remaining !== undefined) body.credits_remaining = remaining;
+  }
+  return body;
+}
+
+/**
+ * The stored balance, read without refreshing the wallet: a poll carries no
+ * proof of Pro, and refreshing as a free user would end Pro's credits.
+ */
+async function walletBalance(db: SupabaseClient, userId: string): Promise<number | undefined> {
+  const { data } = await db.from("credit_wallets").select("daily, subscription, purchased").eq("user_id", userId)
+    .maybeSingle();
+  if (!data) return undefined;
+  const wallet = data as { daily: number; subscription: number; purchased: number };
+  return wallet.daily + wallet.subscription + wallet.purchased;
 }
 
 async function balance(db: SupabaseClient, userId: string, isPro: boolean): Promise<number> {

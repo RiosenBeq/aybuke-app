@@ -98,17 +98,17 @@ Privacy Policy: {{PRIVACY_URL}}
 
 > Welcome to Glowlit ✨ Edit photos just by saying it, try 50+ one-tap looks, add free 80s & 90s effects, cut the silences out of your videos and create art from text. Share magazine covers, photo strips, before/after collages and story cards in one tap. Widgets, a Dynamic Island Live Activity, iPhone and iPad, 12 languages. Private by default, fair pricing, no weekly plan.
 
-**App Review notes** (2345/4000)
+**App Review notes** (2630/4000)
 
 ```text
-Glowlit is an AI photo editor and image generator for iPhone and iPad. No login is required: the app creates an anonymous account with our backend when a cloud feature is first used. Sign in with Apple is optional.
+Glowlit is an AI photo editor and image generator for iPhone and iPad. No login is required: the app creates an anonymous account with our backend when a cloud feature is first used (there is no sign-in in this version).
 
 How to review:
 1. Onboarding ends with "Try Digicam '04 on your photo": pick a photo and the free on-device effect is applied (or tap "Skip for now"). "Keep editing" opens the editor on Effects; "Save to My Works" keeps the result. A soft paywall that can be closed with X follows (after the editor closes, if it was opened), then a short guided tour (Next or Skip); replay it from Settings > Show me around.
 2. Explore > tap "Try it on your photo" (Magic Edit) or any template. Seasonal looks (Halloween Oct 1-Nov 2, winter Dec 1-Jan 6, Galentine's Feb 1-14) get their own Explore row only in season; all of them are available all year in Edit > Styles. Before any photo or prompt is sent to the cloud, an explicit consent screen names the processor (xAI, which runs its Grok Imagine models). Tap "Allow AI processing". Choosing "Not now" keeps on-device features working.
 3. On-device features that never leave the device and need no consent or credits: Edit > Effects (80s to 2010s), Edit > Remove BG, Edit > Adjust (with Auto), Edit > Find your best shot, and Edit > Edit a video (auto-cut silences, effects, trim).
 4. Purchases: subscriptions (yearly with a 7-day free trial; monthly with a first-month introductory price for eligible users) and consumable credit packs are standard StoreKit 2 in-app purchases; please use a sandbox account. Restore is on the paywall and in Settings. The RevenueCat SDK only records purchases for analytics.
-5. Safety: prompts are filtered on device and on the server in all 12 app languages, the AI provider applies its own moderation and outputs are screened automatically. Templates preserve identity and never reshape bodies. Users can report any result (results screen > "..." > Report this image, or the flag in the editor); reports go to our backend for review.
+5. Safety: prompts are filtered on device and on the server in all 12 app languages, and every result passes xAI's own moderation before the app can download it; a result it filters, or one that can't be checked, is blocked and its credit refunded. Templates preserve identity and never reshape bodies. Users can report any result (results screen > "..." > Report this image, or the flag in the editor); reports go to our backend for review.
 6. AI labelling: exported AI images carry IPTC DigitalSourceType metadata (EU AI Act Art. 50), and the share screen offers an optional visible "AI-edited" label.
 7. Account deletion: Settings > Delete my data & account (Guideline 5.1.1(v)).
 8. Privacy Policy, Terms of Use and Acceptable Use Policy are bundled in the app (Settings > Terms, privacy & legal) and published at the URLs in App Store Connect. The app is localized in 12 languages; the legal documents are in English and Turkish.

@@ -129,5 +129,12 @@ enum CoreStrings {
         String(localized: "Pillow fort & fairy lights", comment: "One-tap look description, shown under its name"),
         String(localized: "Your pet, as a soft toy", comment: "One-tap look description, shown under its name"),
         String(localized: "Dreamy 35mm snapshot", comment: "One-tap look description, shown under its name"),
+        String(localized: "Creating your glow…", comment: "Live Activity headline (Dynamic Island and Lock Screen) while an AI job runs or when it ends"),
+        String(localized: "Adding the final sparkle…", comment: "Live Activity headline (Dynamic Island and Lock Screen) while an AI job runs or when it ends"),
+        String(localized: "Your glow-up is ready", comment: "Live Activity headline (Dynamic Island and Lock Screen) while an AI job runs or when it ends"),
+        String(localized: "That one didn't work", comment: "Live Activity headline (Dynamic Island and Lock Screen) while an AI job runs or when it ends"),
+        String(localized: "You can leave the app — we'll keep going.", comment: "Live Activity line under the progress bar (Dynamic Island and Lock Screen)"),
+        String(localized: "Tap to see it ✨", comment: "Live Activity line under the progress bar (Dynamic Island and Lock Screen)"),
+        String(localized: "Failed creations are refunded automatically. Tap to try again.", comment: "Live Activity line under the progress bar (Dynamic Island and Lock Screen)"),
     ]
 }

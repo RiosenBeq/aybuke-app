@@ -18,7 +18,10 @@ run() {
 cleanup() { run "$PG_BIN/pg_ctl" -D "$DATA" -m immediate stop >/dev/null 2>&1 || true; rm -rf "$DATA"; }
 trap cleanup EXIT
 
-run "$PG_BIN/initdb" -D "$DATA" -A trust -U postgres >/dev/null
+# A shell without a locale (LANG empty, as on macOS) stops initdb and the
+# postmaster, so run both in the C locale with UTF-8 text.
+export LC_ALL="${LC_ALL:-C}"
+run "$PG_BIN/initdb" -D "$DATA" -A trust -U postgres --no-locale -E UTF8 >/dev/null
 run "$PG_BIN/pg_ctl" -D "$DATA" -o "-p $PORT -k /tmp" -l "$DATA/log" start >/dev/null
 for _ in $(seq 1 30); do "$PG_BIN/pg_isready" -h /tmp -p "$PORT" >/dev/null 2>&1 && break; sleep 0.5; done
 
@@ -28,6 +31,7 @@ for migration in "$ROOT"/supabase/migrations/*.sql; do
   "${PSQL[@]}" -f "$migration"
 done
 "${PSQL[@]}" -c "grant select on all tables in schema public to authenticated;"
-for test in "$ROOT/supabase/tests/credits_test.sql" "$ROOT/supabase/tests/reports_test.sql" "$ROOT/supabase/tests/accounts_test.sql" "$ROOT/supabase/tests/retry_test.sql"; do
+for test in credits reports accounts retry unclaimed revenuecat; do
+  test="$ROOT/supabase/tests/${test}_test.sql"
   "${PSQL[@]}" -f "$test"
 done

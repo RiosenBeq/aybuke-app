@@ -68,7 +68,7 @@ Glowlit sizden kayıt olmanızı veya adınızı, e-posta adresinizi ya da bir �
 
 ### İsteğe bağlı Apple ile giriş
 
-Örneğin iPhone değiştirdiğinizde veya yeni bir iPhone eklediğinizde Pro üyeliğinizi ve kredilerinizi korumak için Apple ile giriş yapmayı seçebilirsiniz. Glowlit uygulamasını kullanmak için giriş yapmak hiçbir zaman zorunlu değildir. Giriş yaptığınızda o iPhone'daki anonim hesap, satın aldığınız krediler dahil, hesabınızla birleştirilir. Çıkış yaptığınızda o iPhone yeni bir anonim hesaba döner; kredileriniz hesabınızda kalır, etkin bir abonelik ise onu satın alan Apple Hesabı'na bağlı kalır. Fotoğraflarınız ve kütüphaneniz cihazlar arasında eşitlenmez.
+Uygulamanın sunduğu durumlarda, örneğin cihaz değiştirdiğinizde veya yeni bir cihaz eklediğinizde kredilerinizi korumak için Apple ile giriş yapmayı seçebilirsiniz; etkin bir abonelik onu satın alan Apple Hesabı'na bağlı kalır. Giriş yapmak uygulamanın her sürümünde sunulmaz ve Glowlit uygulamasını kullanmak için hiçbir zaman zorunlu değildir. Giriş yaptığınızda o iPhone'daki anonim hesap, satın aldığınız krediler dahil, hesabınızla birleştirilir. Çıkış yaptığınızda o iPhone yeni bir anonim hesaba döner; kredileriniz hesabınızda kalır, etkin bir abonelik ise onu satın alan Apple Hesabı'na bağlı kalır. Fotoğraflarınız ve kütüphaneniz cihazlar arasında eşitlenmez.
 
 ### Cihazınızı güvende tutun
 

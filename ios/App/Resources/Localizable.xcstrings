@@ -41042,6 +41042,76 @@
         }
       }
     },
+    "Failed creations are refunded automatically. Tap to try again." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fehlgeschlagene Kreationen werden automatisch erstattet. Tippe für einen neuen Versuch."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Si una creación falla, te devolvemos el crédito automáticamente. Toca para intentarlo de nuevo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les créations qui échouent sont remboursées automatiquement. Appuie pour réessayer."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kredit untuk kreasi yang gagal dikembalikan secara otomatis. Ketuk untuk mencoba lagi."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le creazioni non riuscite vengono rimborsate automaticamente. Tocca per riprovare."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "失敗した作成のクレジットは自動で返却されます。タップしてもう一度お試しください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "생성에 실패하면 크레딧이 자동으로 환불돼요. 탭해서 다시 시도해 보세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Criações que falham têm o crédito devolvido automaticamente. Toque para tentar de novo."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "За неудачные создания кредит возвращается автоматически. Нажми, чтобы попробовать ещё раз."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Başarısız işlerde kredin otomatik olarak iade edilir. Tekrar denemek için dokun."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "创作失败会自动退还点数。轻点即可重试。"
+          }
+        }
+      }
+    },
     "Face gems" : {
       "comment" : "Makeup Studio choice on a chip in the editor: a lip color, eye look, blush, extra, hair color or how strong the makeup is. “As is” leaves that part of the photo unchanged.",
       "localizations" : {
@@ -52833,6 +52903,146 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "更换或添加 iPhone 时，Pro 和点数都能保留。登录与否由你决定。"
+          }
+        }
+      }
+    },
+    "Keep your credits on *every device*" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deine Credits auf *jedem Gerät*"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lleva tus créditos a *todos tus dispositivos*"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Garde tes crédits sur *tous tes appareils*"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bawa kreditmu ke *setiap perangkat*"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Porta i tuoi crediti su *ogni dispositivo*"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "*どの端末でも*クレジットはそのまま"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "*모든 기기*에서 내 크레딧 그대로"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seus créditos em *qualquer aparelho*"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Твои кредиты — на *каждом устройстве*"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kredilerin *her cihazda* seninle"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "*每台设备*都能用你的点数"
+          }
+        }
+      }
+    },
+    "Keep your credits when you switch or add a device. Pro stays with your Apple Account. Signing in is optional." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Behalte deine Credits, wenn du dein Gerät wechselst oder ein weiteres hinzufügst. Pro bleibt bei deinem Apple Account. Die Anmeldung ist optional."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conserva tus créditos cuando cambies de dispositivo o añadas otro. Pro sigue vinculado a tu cuenta de Apple. Iniciar sesión es opcional."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Garde tes crédits si tu changes d’appareil ou en ajoutes un. Pro reste lié à ton compte Apple. La connexion est facultative."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kreditmu tetap ikut saat kamu ganti atau menambah perangkat. Pro tetap terhubung ke Akun Apple-mu. Masuk tidak wajib."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mantieni i tuoi crediti quando cambi o aggiungi un dispositivo. Pro resta legato al tuo Account Apple. L'accesso è facoltativo."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "端末を買い替えたり追加したりしても、クレジットを引き継げます。ProはAppleアカウントにひも付いています。サインインは任意です。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "기기를 바꾸거나 추가해도 크레딧이 그대로 유지돼요. Pro는 Apple 계정에 연결돼 있어요. 로그인은 선택 사항이에요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mantenha seus créditos ao trocar de aparelho ou usar mais um. O Pro fica com a sua Conta Apple. Entrar é opcional."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Кредиты останутся с тобой при смене или добавлении устройства. Pro привязан к твоему Аккаунту Apple. Вход — по желанию."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cihaz değiştirdiğinde ya da yeni bir cihaz eklediğinde kredilerin seninle kalsın. Pro, Apple Hesabı'na bağlı kalır. Giriş yapmak isteğe bağlı."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "更换或添加设备时，点数都能保留。Pro 绑定在你的 Apple 账户上。登录与否由你决定。"
           }
         }
       }
@@ -65030,6 +65240,76 @@
         }
       }
     },
+    "Our safety check couldn't run, so this result wasn't shown. Your credit was refunded." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unsere Sicherheitsprüfung konnte nicht laufen, deshalb zeigen wir dieses Ergebnis nicht. Dein Credit wurde erstattet."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nuestra comprobación de seguridad no pudo hacerse, así que no mostramos este resultado. Te devolvemos el crédito."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notre contrôle de sécurité n’a pas pu se faire, donc ce résultat n’est pas affiché. Ton crédit a été remboursé."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pemeriksaan keamanan kami tidak bisa berjalan, jadi hasil ini tidak ditampilkan. Kreditmu sudah dikembalikan."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Il nostro controllo di sicurezza non è riuscito, quindi questo risultato non viene mostrato. Il tuo credito è stato rimborsato."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "安全チェックを実行できなかったため、この結果は表示されません。クレジットは返却されました。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "안전 검사를 할 수 없어서 이 결과는 보여 드리지 않아요. 크레딧은 환불됐어요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nossa verificação de segurança não pôde ser feita, então este resultado não foi mostrado. Seu crédito foi devolvido."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нашу проверку безопасности не удалось выполнить, поэтому мы не показываем этот результат. Кредит возвращён."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Güvenlik kontrolümüz çalışamadı, bu yüzden bu sonuç gösterilmedi. Kredin iade edildi."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "我们的安全检查未能完成，因此不会显示此结果。你的点数已退还。"
+          }
+        }
+      }
+    },
     "Our servers: your AI jobs and credits" : {
       "localizations" : {
         "de" : {
@@ -67156,6 +67436,76 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "第 %1$lld 张，共 %2$lld 张"
+          }
+        }
+      }
+    },
+    "Pro works wherever you use the same Apple Account" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pro gilt überall, wo du denselben Apple Account nutzt"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pro funciona donde uses la misma cuenta de Apple"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pro marche partout où tu utilises le même compte Apple"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pro berlaku di mana pun kamu memakai Akun Apple yang sama"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pro funziona ovunque usi lo stesso Account Apple"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "同じAppleアカウントならどこでもProを利用可能"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "같은 Apple 계정이라면 어디서든 Pro 사용"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Pro funciona onde você usar a mesma Conta Apple"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pro работает везде, где тот же Аккаунт Apple"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aynı Apple Hesabı'nı kullandığın her yerde Pro"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "使用同一 Apple 账户的设备都能用 Pro"
           }
         }
       }
@@ -81597,6 +81947,76 @@
         }
       }
     },
+    "Sign in with Apple and your credits come with you when you switch or add a device. Pro stays with the Apple Account you subscribed with." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Melde dich mit Apple an und nimm deine Credits mit, wenn du dein Gerät wechselst oder ein weiteres hinzufügst. Pro bleibt bei dem Apple Account, mit dem du es abonniert hast."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inicia sesión con Apple y tus créditos irán contigo cuando cambies de dispositivo o añadas otro. Pro sigue vinculado a la cuenta de Apple con la que te suscribiste."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Connecte-toi avec Apple : tes crédits te suivent quand tu changes d’appareil ou en ajoutes un. Pro reste lié au compte Apple qui a souscrit l’abonnement."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Masuk dengan Apple agar kreditmu ikut pindah saat kamu ganti atau menambah perangkat. Pro tetap terhubung ke Akun Apple yang kamu pakai untuk berlangganan."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Accedi con Apple: i tuoi crediti ti seguiranno quando cambi o aggiungi un dispositivo. Pro resta legato all'Account Apple con cui hai sottoscritto l'abbonamento."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Appleでサインインすれば、端末を買い替えたり追加したりしてもクレジットを引き継げます。Proは登録したAppleアカウントにひも付いています。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple로 로그인하면 기기를 바꾸거나 추가해도 크레딧이 함께 따라와요. Pro는 구독한 Apple 계정에 연결돼 있어요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Entre com a Apple para levar seus créditos quando trocar de aparelho ou usar mais um. O Pro fica com a Conta Apple usada na assinatura."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Войди через Apple — и кредиты останутся с тобой, даже если сменишь устройство или добавишь ещё одно. Pro привязан к Аккаунту Apple, с которого оформлена подписка."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple ile giriş yap; cihaz değiştirdiğinde ya da yeni bir cihaz eklediğinde kredilerin de seninle gelsin. Pro, abone olduğun Apple Hesabı'na bağlı kalır."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "通过 Apple 登录，更换或添加设备时，点数都会跟着你。Pro 绑定在你订阅时使用的 Apple 账户上。"
+          }
+        }
+      }
+    },
     "Sign out" : {
       "localizations" : {
         "de" : {
@@ -90954,6 +91374,76 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "当 Glowlit 旁边打开了其他应用时，相机会暂停。"
+          }
+        }
+      }
+    },
+    "The connection dropped before your result arrived. If it never reaches you, your credit comes back automatically within about an hour." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Verbindung ist abgebrochen, bevor dein Ergebnis da war. Kommt es nicht bei dir an, bekommst du deinen Credit innerhalb von etwa einer Stunde automatisch zurück."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se cortó la conexión antes de que llegara tu resultado. Si no te llega, te devolvemos el crédito automáticamente en aproximadamente una hora."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La connexion a été coupée avant l’arrivée de ton résultat. S’il ne t’arrive pas, ton crédit te sera rendu automatiquement d’ici une heure environ."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Koneksi terputus sebelum hasilmu sampai. Kalau hasilnya tidak sampai ke kamu, kreditmu dikembalikan otomatis dalam sekitar satu jam."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La connessione si è interrotta prima che arrivasse il tuo risultato. Se non ti arriva, il credito ti viene restituito automaticamente entro circa un'ora."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "結果が届く前に接続が切れました。結果が届かなかった場合、クレジットは約1時間以内に自動で返却されます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "결과가 도착하기 전에 연결이 끊겼어요. 결과를 받지 못하면 크레딧은 약 1시간 안에 자동으로 환불돼요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A conexão caiu antes de o resultado chegar. Se ele não chegar até você, seu crédito volta automaticamente em cerca de uma hora."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Соединение прервалось до того, как пришёл результат. Если он до тебя не дойдёт, кредит автоматически вернётся примерно в течение часа."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sonucun gelmeden bağlantı koptu. Sonuç sana ulaşmazsa kredin yaklaşık bir saat içinde otomatik olarak iade edilir."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "结果送达前连接中断了。如果你没有收到结果，点数会在大约一小时内自动退还。"
           }
         }
       }
@@ -102280,6 +102770,76 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "你每天可获得 3 个免费点数。免费工具不消耗点数，编辑失败也一律退还点数。"
+          }
+        }
+      }
+    },
+    "You're signed in ✨ Your credits now come with you." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Du bist angemeldet ✨ Deine Credits sind jetzt überall dabei."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sesión iniciada ✨ Ahora tus créditos van contigo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Connexion réussie ✨ Tes crédits te suivent désormais."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kamu sudah masuk ✨ Kreditmu kini ikut bersamamu."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Accesso effettuato ✨ Ora i tuoi crediti ti seguono ovunque."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "サインインしました ✨ これでクレジットをどの端末でも使えます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "로그인했어요 ✨ 이제 크레딧이 어디서든 함께해요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Você entrou ✨ Agora seus créditos vão com você."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вход выполнен ✨ Теперь кредиты всегда с тобой."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Giriş yaptın ✨ Kredilerin artık seninle."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你已登录 ✨ 现在点数都会跟着你。"
           }
         }
       }

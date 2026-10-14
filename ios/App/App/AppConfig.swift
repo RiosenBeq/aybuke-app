@@ -56,17 +56,23 @@ struct AppConfig: Decodable {
     var aiShareHashtags: [String] = ["AIphoto", "MadeWithAI"]
     /// RevenueCat public SDK key ("appl_…"; safe to ship). Empty: RevenueCat off.
     var revenueCatAPIKey: String
+    /// Offers Sign in with Apple (Settings › Account, the paywall's "Sign in",
+    /// the prompt after a purchase). Off until the backend can revoke Apple
+    /// tokens on deletion (APPLE_SIGNIN_KEY_ID / APPLE_SIGNIN_PRIVATE_KEY);
+    /// anonymous accounts, purchases, credits and Delete my data work either way.
+    var signInWithApple = false
     /// Bump to ask everyone for consent again (the processor list changing
     /// asks again by itself).
     var consentVersion = 1
     /// Who processes cloud AI requests. Must match the backend: a new
-    /// provider or FAL_KEY needs an app update that lists it first.
+    /// provider or FAL_KEY (fal.ai's output check, role `.safety`) needs an
+    /// app update that lists it first. Without FAL_KEY, xAI's own moderation
+    /// is the output check, so fal.ai sees nothing and isn't listed.
     var aiProcessors: [AIProcessor] = AppConfig.defaultProcessors
 
     static let defaultProcessors = [
         AIProcessor(name: "Supabase", role: .servers),
         AIProcessor(name: "xAI (Grok Imagine)", role: .images),
-        AIProcessor(name: "fal.ai", role: .safety),
     ]
 
     static let current: AppConfig = load()
@@ -101,7 +107,7 @@ struct AppConfig: Decodable {
     private enum CodingKeys: String, CodingKey {
         case backendBaseURL, supabaseAnonKey, forceDemoMode, aiProviderName, dataRetentionHours
         case privacyPolicyURL, termsURL, supportEmail, appStoreID, websiteURL, instagramAppID, shareHashtags
-        case aiShareHashtags, revenueCatAPIKey, consentVersion, aiProcessors
+        case aiShareHashtags, revenueCatAPIKey, consentVersion, aiProcessors, signInWithApple
     }
 
     init(
@@ -144,6 +150,7 @@ struct AppConfig: Decodable {
         revenueCatAPIKey = try container.decodeIfPresent(String.self, forKey: .revenueCatAPIKey) ?? ""
         consentVersion = try container.decodeIfPresent(Int.self, forKey: .consentVersion) ?? fallback.consentVersion
         aiProcessors = try container.decodeIfPresent([AIProcessor].self, forKey: .aiProcessors) ?? fallback.aiProcessors
+        signInWithApple = try container.decodeIfPresent(Bool.self, forKey: .signInWithApple) ?? false
     }
 
     var backend: BackendConfiguration? {

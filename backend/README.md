@@ -10,8 +10,8 @@ or to [fal.ai](https://fal.ai) with `AI_PROVIDER=fal`.
 iOS app ──► Supabase Auth (anonymous JWT; optional Sign in with Apple ID token)
    │
    ├─► POST   /functions/v1/ai-image            enqueue job  ──► xAI request in the background (or fal's queue)
-   ├─► GET    /functions/v1/ai-image?job_id=…   poll job     ──► job status / results (+ output safety check)
-   ├─► DELETE /functions/v1/ai-image?job_id=…   cancel job   ──► exact credit refund; on a finished job: results cleared
+   ├─► GET    /functions/v1/ai-image?job_id=…   poll job     ──► job status / results (+ output safety check, delivery recorded)
+   ├─► DELETE /functions/v1/ai-image?job_id=…   cancel job   ──► exact credit refund (&intent=cancel); on a delivered job, a plain DELETE is the "got it": results cleared
    ├─► GET    /functions/v1/ai-image            balance
    ├─► POST   /functions/v1/credits-redeem      credit pack  ──► Apple JWS verification → grant once
    ├─► POST   /functions/v1/report              "Report this image" (reason, job id) → public.reports
@@ -28,10 +28,10 @@ The wire contract is defined (and unit-tested) in
 |---|---|
 | **Async jobs + polling** | Edge Functions time out after ~150 s idle; generations take 5–40 s. The function answers in < 1 s and the app polls (1 s → 3 s back-off). xAI requests run in the background (`EdgeRuntime.waitUntil`); fal jobs sit on fal's durable queue. |
 | **Operations, not endpoints** | The app sends `operation` + `template_id`; the server picks the model (`_shared/xai.ts`, `_shared/fal.ts`) and the prompt recipe (`_shared/catalog.json`). Models can be swapped without an app release, and nobody can use our keys for arbitrary models. |
-| **Server-side credit ledger** | `reserve_credits` → job → `release_credits` on any failure, cancel or timeout. Exact per-bucket refunds, idempotent, append-only audit trail (`credit_ledger`). |
+| **Server-side credit ledger** | `reserve_credits` → job → `release_credits` on any failure, cancel, timeout or result the app never received (`cancel_job()`, `sweep_jobs()`). Exact per-bucket refunds, idempotent, append-only audit trail (`credit_ledger`). |
 | **Apple-verified entitlements** | Pro status comes from a StoreKit 2 signed transaction verified with Apple's App Store Server Library, then bound to one user at a time. |
 | **No input storage** | Photos are passed to the provider as data URIs and never written to our database or storage. xAI results come back as base64, are held on the job only until the app confirms the download (then cleared; `sweep_jobs()` clears any left after an hour). With xAI Zero Data Retention on, xAI deletes requests within an hour and never trains on them. fal outputs expire after 1 hour (`X-Fal-Object-Lifecycle-Preference`) and request I/O history is disabled (`X-Fal-Store-IO: 0`). |
-| **Layered safety** | Prompt policy (client + server) → provider moderation (xAI filters outputs; fal's strict `safety_tolerance`) → output NSFW check (when `FAL_KEY` is set) → in-app reporting. Documented for EU AI Act Art. 5(1)(ba) (from 2 Dec 2026). |
+| **Layered safety** | Prompt policy (client + server) → provider moderation (fal's strict `safety_tolerance`) → one output check on every result that fails closed (`_shared/moderation.ts`): fal.ai's NSFW classifier when `FAL_KEY` is set, otherwise xAI's own moderation verdict; a flag, an error or a missing verdict blocks the result and refunds it, and there's no switch to turn it off → in-app reporting. Documented for EU AI Act Art. 5(1)(ba) (from 2 Dec 2026). |
 
 ## Models (late 2026 picks)
 
@@ -69,20 +69,33 @@ Prices, latency and alternatives: [`docs/research/tech-and-compliance.md`](../do
    ```bash
    supabase functions deploy ai-image credits-redeem account report
    ```
-6. **Schedule the sweeper** (fails and refunds stuck jobs, clears job outputs after 1 hour, deletes job rows after 30 days and reports after 12 months): enable the `pg_cron` extension, then run
+6. **Schedule the sweeper** (fails and refunds stuck jobs, refunds results the app never received and clears job outputs after 1 hour, deletes job rows after 30 days and reports after 12 months): enable the `pg_cron` extension, then run
    ```sql
    select cron.schedule('sweep-jobs', '*/5 * * * *', 'select public.sweep_jobs()');
+   ```
+   **And the RevenueCat deletion queue** (deletions wait in `public.pending_revenuecat_deletions` until `REVENUECAT_SECRET_KEY` is set; this retries them every hour). Enable `pg_net`, keep the project URL and the service role key in Vault once, then schedule the call:
+   ```sql
+   select vault.create_secret('https://<project-ref>.supabase.co', 'project_url');
+   select vault.create_secret('<service role key>', 'service_role_key');
+   select cron.schedule('revenuecat-deletions', '17 * * * *', $$
+     select net.http_post(
+       url := (select decrypted_secret from vault.decrypted_secrets where name = 'project_url')
+              || '/functions/v1/account/revenuecat-deletions',
+       headers := jsonb_build_object('Authorization', 'Bearer ' ||
+         (select decrypted_secret from vault.decrypted_secrets where name = 'service_role_key'))
+     )
+   $$);
    ```
 7. **Point the app at it** — in `ios/App/Resources/AppConfig.json` set `backendBaseURL` to `https://<project-ref>.supabase.co` and `supabaseAnonKey` to the project's publishable (anon) key. Both are public by design; access is enforced by JWTs, RLS and the functions themselves.
 
 ## Accounts (Sign in with Apple)
 
-Everyone starts anonymous, so nobody has to sign up. Signing in is optional and is offered mainly to Pro members and credit-pack buyers, so their membership and credits follow them to another iPhone:
+Everyone starts anonymous, so nobody has to sign up. Signing in is optional, and the app offers it only with `signInWithApple` set in `ios/App/Resources/AppConfig.json` (off in this version, until `APPLE_SIGNIN_KEY_ID` / `APPLE_SIGNIN_PRIVATE_KEY` are set so deletion can revoke the token). It's meant mainly for Pro members and credit-pack buyers, so their credits follow them to another device (Pro itself follows the Apple Account that bought it):
 
 1. The app gets an identity token from Apple and signs in with Supabase's native Apple provider (`POST /auth/v1/token?grant_type=id_token`).
 2. It then calls `POST /account/link` with the new session, the previous anonymous session and Apple's one-time authorization code. `merge_accounts()` moves purchased credits, the subscription, jobs and reports into the account (daily free credits never move), and the anonymous user is deleted. Running it twice is safe.
 3. Apple's refresh token is kept in `public.apple_accounts` (service role only), so `DELETE /account` can revoke it, as Apple requires for account deletion.
-4. `link` also records the merged anonymous id in `public.merged_users` (service role only). RevenueCat keeps a purchase made while anonymous on that anonymous customer, so `DELETE /account` deletes the RevenueCat customers for the account and every merged id (`REVENUECAT_SECRET_KEY`, plus `REVENUECAT_PROJECT_ID` for a v2 key; skipped with a warning when unset). RevenueCat queues the deletion.
+4. `link` also records the merged anonymous id in `public.merged_users` (service role only). RevenueCat keeps a purchase made while anonymous on that anonymous customer, so `DELETE /account` deletes the RevenueCat customers for the account and every merged id (`REVENUECAT_SECRET_KEY`, plus `REVENUECAT_PROJECT_ID` for a v2 key). The ids are queued first in `public.pending_revenuecat_deletions` (service role only, no link to the deleted user) and the queue is worked through at every account deletion and by the hourly `POST /account/revenuecat-deletions` (step 6); a row goes as soon as RevenueCat deletes that customer or never had it. Without the key nothing is skipped: the deletions wait, with a warning in the logs, and go through once the key is set. RevenueCat then queues the deletion on its side.
 
 The app creates the anonymous user only when it's first needed (a cloud AI job after consent, or a purchase), never at launch, and configures RevenueCat only for people who buy. Deleting the account never signs up first: without a stored session there is nothing on the server to delete.
 
@@ -106,7 +119,7 @@ Defined once in SQL (`public.credit_policy()`) and mirrored in the app (`CreditP
 - Pro: **100 credits per month**, unused credits roll over one month (cap 200).
 - Credit packs: never expire (App Review Guideline 3.1.1).
 - Spending order: daily → subscription → purchased (expiring credits first).
-- Any failure, cancellation, safety block or timeout is refunded exactly once.
+- Any failure, cancellation, safety block or timeout is refunded exactly once, and so is a result that never reached the app. The poll that hands the results over records the delivery (`deliver_outputs()`); a finished job that was never handed over is refunded when its hour is up, or at once when the app cancels it, and one that was handed over but never confirmed (a download that broke) is refunded at most once a day per user, so skipping the confirmation can't keep both the images and the credit.
 
 Change the numbers in `credit_policy()` (new migration) to retune pricing without an app update; update `CreditPolicy.standard` so the app's copy matches.
 

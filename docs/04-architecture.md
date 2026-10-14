@@ -75,7 +75,7 @@ docs/                       research, brand, spec, architecture, compliance, roa
 | **Swift 5 language mode** | Keeps the build reliable across Xcode 16/26/27. Migrating to Swift 6 strict concurrency is on the roadmap. |
 | **Synchronized Xcode folder** | No merge conflicts in `project.pbxproj` when adding files. |
 | **AppCore package** | The contract, credits, catalog and policy are unit-tested on Linux and macOS without a simulator. The backend's template recipes are generated from it, and a sync test keeps the two aligned. |
-| **Async job API** | Generations take 5–40 s, but Edge Functions shouldn't hold connections open. The function answers 202 at once: an xAI request then runs in the background (`EdgeRuntime.waitUntil`), while a fal job waits on fal's queue. The app polls with back-off (1 s → 3 s, 180 s deadline) and cancels server-side if the user leaves. |
+| **Async job API** | Generations take 5–40 s, but Edge Functions shouldn't hold connections open. The function answers 202 at once: an xAI request then runs in the background (`EdgeRuntime.waitUntil`), while a fal job waits on fal's queue. The app polls with back-off (1 s → 3 s, 180 s deadline), keeps polling through dropped connections (2 s → 13 s, for up to two minutes without an answer) and cancels server-side if the user leaves or the job runs past the deadline. |
 | **Server-authoritative credits** | The client mirrors the rules for instant UI and demo mode. In production the server reserves, captures and refunds credits atomically in SQL. |
 | **Operations, not models** | The app sends `operation` + `template_id`; the server picks the provider, model and prompt (`_shared/xai.ts`, `_shared/fal.ts`). Models can be hot-swapped without an app update, and provider keys can't be misused. |
 | **xAI by default, fal.ai as the alternative** | Grok Imagine (`grok-imagine-image-2.0` at 1k; low quality for free users, medium for Pro) is the best quality for the price, about $0.06 per cloud operation. `AI_PROVIDER=fal` switches back without an app release. |
@@ -99,9 +99,10 @@ App                          ai-image (Edge)                         Postgres   
  │                             in the background (waitUntil) ───────► jobs(processing)
  │                             POST /v1/images/{generations|edits} ─────────────────────────► Grok Imagine
  │                             b64 results, moderated by xAI ◄──────────────────────────────┘
- │                             NSFW check (when FAL_KEY is set) ────► jobs(completed, outputs)
+ │                             output check (fails closed) ─────────► jobs(completed, outputs)
  │ GET ?job_id (1s, 1s, 1.5s…) ► read job
- │ ◄──── {completed, outputs:[base64]}                 (failure → jobs(failed) + release_credits)
+ │ ◄──── {completed, outputs:[base64], credits_remaining} ─ deliver_outputs() ─► delivered_at
+ │                                                       (failure → jobs(failed) + release_credits)
  │ DELETE ?job_id ("got it") ─► clear the results ──────────────────► outputs = null
  │ editor/result → export with IPTC provenance
 ```
@@ -110,9 +111,9 @@ With `AI_PROVIDER=fal`, the job goes to fal's queue instead (`queue.fal.run`), e
 
 **Failure modes**
 - Provider error, safety block, timeout (3 min for xAI, 10 min for fal, server-side) or user cancel → `release_credits(job)`: an exact, idempotent refund.
-- `sweep_jobs()` (pg_cron) refunds jobs whose client disappeared and clears any outputs still stored after an hour.
+- `sweep_jobs()` (pg_cron) refunds jobs whose client disappeared and clears any outputs still stored after an hour. A finished job whose results were never handed to the app is refunded then (or at once if the app cancels it); a delivered one the app never confirmed is refunded at most once a day per user.
 - A 401 triggers one token refresh and retry.
-- Network errors surface as friendly toasts.
+- Network errors surface as friendly toasts. When the app stops waiting through a lost connection, it says the result didn't arrive and that an undelivered one is refunded automatically, and it sends no DELETE (one could read as "got it" if the results had been handed over in an answer that never arrived).
 
 ## Security & privacy
 
@@ -137,8 +138,8 @@ With `AI_PROVIDER=fal`, the job goes to fal's queue instead (`queue.fal.run`), e
 1. Client prompt policy (`ContentPolicy`, all 12 app languages): sexual and undressing requests, revealing clothing, and for photo edits face/body reshaping, skin-tone changes, skin retouching, looks rating and humiliating edits. Checked before the consent sheet or paywall opens.
 2. Server prompt policy (`_shared/policy.ts`, the same terms via the generated `_shared/policy-terms.json`; shared test vectors in `_shared/policy-vectors.json`). The server also appends the edit guard (`PromptBuilder.editGuard`: keep faces, body shapes, skin tone, skin texture and age; clothing at least as modest) to every Magic Edit.
 3. Server-side template recipes (prompt tampering is impossible).
-4. Provider moderation: xAI drops filtered outputs (`respect_moderation: false`); fal runs with `safety_tolerance: "2"`.
-5. Output NSFW check (on by default; runs on fal when `FAL_KEY` is set, otherwise xAI's moderation is the output check).
+4. Provider moderation: xAI withholds the image data of anything it filters (`respect_moderation: false`); fal runs with `safety_tolerance: "2"`.
+5. One output check on every result, failing closed (`_shared/moderation.ts`, no off switch): fal.ai's NSFW classifier when `FAL_KEY` is set, otherwise xAI's own verdict, where a filtered or missing image blocks the whole job. A flag, an error, a timeout or an unreadable answer blocks the result and refunds it. Setting `FAL_KEY` sends results to fal.ai, so it must be listed in the consent sheet (`aiProcessors`) first.
 6. "Report this image".
 
 ## Performance

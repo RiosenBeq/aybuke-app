@@ -7,7 +7,9 @@ import AppCore
 /// - Demo mode: this local wallet is the ledger (daily free credits, Pro
 ///   monthly allowance with rollover, purchased packs, exact refunds).
 /// - Backend mode: the server is authoritative. We display the last
-///   `credits_remaining` it reported and let it accept or reject each job.
+///   `credits_remaining` it reported (the charge when a job starts, the
+///   balance when it finishes or is refunded) and let it accept or reject
+///   each job.
 @MainActor
 @Observable
 final class CreditsManager {
@@ -15,6 +17,8 @@ final class CreditsManager {
     let isServerAuthoritative: Bool
     private(set) var wallet: CreditWallet
     private(set) var serverBalance: Int?
+    /// When the request behind `serverBalance` was sent.
+    @ObservationIgnored private var serverBalanceAsOf: Date?
     private let defaults: UserDefaults
     private static let storageKey = "credits.wallet.v2"
 
@@ -89,8 +93,14 @@ final class CreditsManager {
         persist()
     }
 
-    func sync(serverBalance: Int) {
+    /// `asOf`: when the request that reported it was sent. An older answer
+    /// that arrives late (a cancel's refund after the next job's charge)
+    /// never overwrites a newer one. Absolute numbers only, so nothing is
+    /// counted twice.
+    func sync(serverBalance: Int, asOf: Date = Date()) {
+        if let serverBalanceAsOf, asOf < serverBalanceAsOf { return }
         self.serverBalance = max(0, serverBalance)
+        serverBalanceAsOf = asOf
     }
 
     /// Demo-mode grant for a purchased pack (the backend grants it in production).
@@ -102,12 +112,14 @@ final class CreditsManager {
     /// Signed out: the account's balance isn't hers on this device anymore.
     func resetServerBalance() {
         serverBalance = nil
+        serverBalanceAsOf = nil
     }
 
     /// "Delete my data": a fresh day's free credits, and no server balance
     /// until a new session reports one.
     func resetAll() {
         serverBalance = nil
+        serverBalanceAsOf = nil
         wallet = .fresh(now: Date(), policy: policy)
         defaults.removeObject(forKey: Self.storageKey)
     }
