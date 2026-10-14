@@ -17,9 +17,16 @@ struct BestShotView: View {
 
     static let maxPhotos = 12
 
+    /// Only a small thumbnail stays in memory; the chosen photo is loaded
+    /// again from Photos for editing, so twelve full selfies are never held.
     struct Shot: Identifiable {
+        enum Source {
+            case item(PhotosPickerItem)
+            case image(UIImage)
+        }
+
         let id = UUID()
-        let data: Data
+        let source: Source
         let thumbnail: UIImage
         let quality: Float
     }
@@ -79,8 +86,8 @@ struct BestShotView: View {
         .onAppear {
             // Sample pictures (no real faces), already sorted, for screenshots.
             guard ScreenshotScene.current == .bestShot, shots.isEmpty else { return }
-            shots = ScreenshotFixtures.generatedArt(count: 6).enumerated().compactMap { index, image in
-                image.jpegData(compressionQuality: 0.8).map { Shot(data: $0, thumbnail: image, quality: 1 - Float(index) / 10) }
+            shots = ScreenshotFixtures.generatedArt(count: 6).enumerated().map { index, image in
+                Shot(source: .image(image), thumbnail: image, quality: 1 - Float(index) / 10)
             }
         }
         #endif
@@ -170,12 +177,15 @@ struct BestShotView: View {
         var missing = 0
         for item in newItems {
             guard let data = try? await item.loadTransferable(type: Data.self),
-                  let image = UIImage(data: data) else { continue }
-            let thumbnail = await Task.detached(priority: .userInitiated) {
-                ImageUtilities.normalized(image, maxLongEdge: 1280)
-            }.value
-            if let quality = await FaceAnalysis.captureQuality(of: thumbnail) {
-                ranked.append(Shot(data: data, thumbnail: thumbnail, quality: quality))
+                  let analysis = await Task.detached(priority: .userInitiated, operation: {
+                      ImageUtilities.decodedImage(from: data, maxPixel: 1280)
+                  }).value
+            else { continue }
+            if let quality = await FaceAnalysis.captureQuality(of: analysis) {
+                let thumbnail = await Task.detached(priority: .userInitiated) {
+                    ImageUtilities.normalized(analysis, maxLongEdge: 480)
+                }.value
+                ranked.append(Shot(source: .item(item), thumbnail: thumbnail, quality: quality))
             } else {
                 missing += 1
             }
@@ -194,13 +204,25 @@ struct BestShotView: View {
 
     /// Opens the free, on-device Adjust tool; she can switch tools there.
     private func edit(_ shot: Shot) {
-        guard let image = UIImage(data: shot.data) else { return }
-        // Keeps an AI marking the file already carries.
-        let provenance = Provenance(inheritedSourceType: ImageExporter.digitalSourceType(in: shot.data))
-        dismiss()
         Task {
+            let image: UIImage
+            var sourceType: DigitalSourceType?
+            switch shot.source {
+            case .image(let fixture):
+                image = fixture
+            case .item(let item):
+                guard let data = try? await item.loadTransferable(type: Data.self),
+                      let decoded = await PhotoDecoder.decode(data) else {
+                    app.showToast("That file isn't a supported photo.", style: .error)
+                    return
+                }
+                image = decoded.image
+                // Keeps an AI marking the file already carries.
+                sourceType = decoded.sourceType
+            }
+            dismiss()
             try? await Task.sleep(for: .milliseconds(450))
-            app.openEditor(with: image, tool: .adjust, provenance: provenance)
+            app.openEditor(with: image, tool: .adjust, provenance: Provenance(inheritedSourceType: sourceType))
         }
     }
 }

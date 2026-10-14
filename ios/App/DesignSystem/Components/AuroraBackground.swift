@@ -1,5 +1,28 @@
 import SwiftUI
 
+extension View {
+    /// Fine print over the aurora: the glow lowers its contrast (about 3:1 in
+    /// dark mode), so in dark mode it sits on a solid surface.
+    func finePrintBacking() -> some View {
+        modifier(FinePrintBacking())
+    }
+}
+
+private struct FinePrintBacking: ViewModifier {
+    @Environment(\.colorScheme) private var colorScheme
+
+    func body(content: Content) -> some View {
+        if colorScheme == .dark {
+            content
+                .padding(.horizontal, 10)
+                .padding(.vertical, 6)
+                .background(Palette.surface, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+        } else {
+            content
+        }
+    }
+}
+
 /// Slow-moving blurred blush and white fields behind hero areas — a soft
 /// pink glow on the petal canvas. Static when the user prefers reduced motion.
 struct AuroraBackground: View {

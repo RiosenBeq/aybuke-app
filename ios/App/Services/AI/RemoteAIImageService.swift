@@ -69,6 +69,7 @@ final class RemoteAIImageService: AIImageService {
         var response = initial
         let started = Date()
         var attempt = 0
+        var droppedPolls = 0
         while !response.isFinished {
             guard let jobID = response.jobID else { throw AIServiceError.invalidResponse }
             guard Date().timeIntervalSince(started) < schedule.timeout else {
@@ -83,8 +84,15 @@ final class RemoteAIImageService: AIImageService {
                 throw CancellationError()
             }
             attempt += 1
-            let token = try await auth.validAccessToken()
-            response = try await decodeJob(RequestFactory.jobStatus(jobID: jobID, config: config, accessToken: token))
+            do {
+                let token = try await auth.validAccessToken()
+                response = try await decodeJob(RequestFactory.jobStatus(jobID: jobID, config: config, accessToken: token))
+                droppedPolls = 0
+            } catch where NetworkFailure.isTransient(error) && droppedPolls < 4 {
+                // A short drop (a lift, a tunnel) shouldn't abandon a job
+                // whose credit is already reserved; ask again next round.
+                droppedPolls += 1
+            }
         }
         return response
     }
@@ -253,15 +261,7 @@ final class RemoteAIImageService: AIImageService {
     // MARK: Networking
 
     private func load(_ request: URLRequest) async throws -> (Data, URLResponse) {
-        do {
-            return try await session.data(for: request)
-        } catch let error as URLError where error.code == .cancelled {
-            throw CancellationError()
-        } catch is CancellationError {
-            throw CancellationError()
-        } catch {
-            throw AIServiceError.network(String(localized: "Check your internet connection and try again."))
-        }
+        try await session.mappedData(for: request)
     }
 
     private func loadImage(_ output: GenerationResponse.Output) async throws -> UIImage? {

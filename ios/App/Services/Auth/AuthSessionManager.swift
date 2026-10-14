@@ -38,7 +38,7 @@ actor AuthSessionManager {
             }
         }
         let request = try RequestFactory.signInWithApple(idToken: idToken, nonce: nonce, config: config)
-        let (data, response) = try await session.data(for: request)
+        let (data, response) = try await session.mappedData(for: request)
         let account = try ResponseDecoder.decodeSession(data: data, statusCode: (response as? HTTPURLResponse)?.statusCode ?? 0)
         current = account
         Keychain.save(account, key: Self.keychainKey)
@@ -119,14 +119,14 @@ actor AuthSessionManager {
 
     private static func refresh(_ refreshToken: String, config: BackendConfiguration, session: URLSession) async throws -> AuthSession {
         let request = try RequestFactory.refreshSession(refreshToken: refreshToken, config: config)
-        let (data, response) = try await session.data(for: request)
+        let (data, response) = try await session.mappedData(for: request)
         let status = (response as? HTTPURLResponse)?.statusCode ?? 0
         return try ResponseDecoder.decodeSession(data: data, statusCode: status)
     }
 
     private static func signUpAnonymously(config: BackendConfiguration, session: URLSession) async throws -> AuthSession {
         let request = RequestFactory.anonymousSignUp(config: config)
-        let (data, response) = try await session.data(for: request)
+        let (data, response) = try await session.mappedData(for: request)
         let status = (response as? HTTPURLResponse)?.statusCode ?? 0
         return try ResponseDecoder.decodeSession(data: data, statusCode: status)
     }

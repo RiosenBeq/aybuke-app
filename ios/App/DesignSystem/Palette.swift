@@ -32,10 +32,10 @@ enum Palette {
     /// Soft drop shadow for cards in light mode (dark mode relies on strokes).
     static let shadow = Color(light: 0x121212, dark: 0x000000, lightOpacity: 0.07, darkOpacity: 0)
 
-    // MARK: Text — ink on petal is 15:1, secondary 5.9:1, tertiary 4.6:1
+    // MARK: Text — ink on petal is 15:1, secondary 5.9:1, tertiary 5.3:1
     static let textPrimary = Color(light: 0x121212, dark: 0xF8F8F6)
     static let textSecondary = Color(light: 0x5C5457, dark: 0xAAAAA8)
-    static let textTertiary = Color(light: 0x6E6468, dark: 0x90908F)
+    static let textTertiary = Color(light: 0x645A5E, dark: 0x90908F)
 
     // MARK: Brand roles
     /// Blush: selection, highlights, hero fills and glows.

@@ -5,6 +5,8 @@ import AppCore
 struct MagicEditPanel: View {
     @Binding var prompt: String
     let cost: Int
+    /// Off while "Ideas for this photo" shows its own chips above.
+    var showsExamples = true
     let onSubmit: () -> Void
 
     @FocusState private var isFocused: Bool
@@ -24,25 +26,43 @@ struct MagicEditPanel: View {
         !prompt.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
 
+    private func submit() {
+        guard canSubmit else { return }
+        isFocused = false
+        onSubmit()
+    }
+
     var body: some View {
         VStack(spacing: 12) {
-            ScrollView(.horizontal) {
-                HStack(spacing: 8) {
-                    ForEach(suggestions, id: \.self) { suggestion in
-                        SelectableChip(title: LocalizedStringKey(suggestion), isSelected: prompt == suggestion) {
-                            prompt = suggestion
-                            Haptics.selection()
+            if showsExamples {
+                ScrollView(.horizontal) {
+                    HStack(spacing: 8) {
+                        ForEach(suggestions, id: \.self) { suggestion in
+                            SelectableChip(title: LocalizedStringKey(suggestion), isSelected: prompt == suggestion) {
+                                prompt = suggestion
+                                Haptics.selection()
+                            }
                         }
                     }
                 }
+                .scrollIndicators(.hidden)
+                .transition(.opacity)
             }
-            .scrollIndicators(.hidden)
 
             HStack(alignment: .bottom, spacing: 10) {
                 TextField("Describe your edit…", text: $prompt, axis: .vertical)
                     .lineLimit(1...3)
                     .focused($isFocused)
                     .submitLabel(.go)
+                    // A multi-line field turns Go (Return) into a newline
+                    // instead of submitting, so a trailing one sends.
+                    .onChange(of: prompt) { _, text in
+                        guard text.contains("\n") else { return }
+                        let pressedGo = text.hasSuffix("\n")
+                        prompt = text.replacingOccurrences(of: "\n", with: " ").trimmingCharacters(in: .whitespaces)
+                        if pressedGo { submit() }
+                    }
+                    .onSubmit(submit)
                     .padding(.horizontal, 14)
                     .padding(.vertical, 12)
                     .background(Palette.surface, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
@@ -50,10 +70,7 @@ struct MagicEditPanel: View {
                         RoundedRectangle(cornerRadius: 18, style: .continuous)
                             .strokeBorder(isFocused ? Palette.accent : Palette.strokeStrong, lineWidth: isFocused ? 1.5 : 1)
                     )
-                Button {
-                    isFocused = false
-                    onSubmit()
-                } label: {
+                Button(action: submit) {
                     Image(systemName: "arrow.up")
                         .font(.headline.weight(.bold))
                         .foregroundStyle(canSubmit ? Palette.onAccent : Palette.textTertiary)
@@ -230,7 +247,7 @@ struct AdjustPanel: View {
                             .font(.subheadline.weight(.bold))
                             .foregroundStyle(Palette.onAccent)
                             .padding(.horizontal, 14)
-                            .padding(.vertical, 9)
+                            .frame(minHeight: 44)
                             .background(Palette.accent, in: Capsule())
                     }
                     .buttonStyle(.pressable)

@@ -19,6 +19,10 @@ struct CreateView: View {
                             .foregroundStyle(Palette.textSecondary)
                     }
 
+                    if app.isCloudOffline {
+                        OfflineNotice()
+                    }
+
                     promptCard
                         .tourAnchor(.create)
                     styleSection
@@ -110,7 +114,8 @@ struct CreateView: View {
                     } label: {
                         Image(systemName: "xmark.circle.fill")
                             .foregroundStyle(Palette.textTertiary)
-                            .frame(minWidth: 32, minHeight: 32)
+                            .frame(minWidth: 44, minHeight: 44)
+                            .contentShape(Rectangle())
                     }
                     .accessibilityLabel("Clear prompt")
                 }
@@ -232,6 +237,7 @@ struct CreateView: View {
         }
         .buttonStyle(.primary)
         .disabled(!model.canGenerate)
+        .keyboardShortcut(.return, modifiers: .command)
         .padding(.horizontal, Metrics.gutter)
         .padding(.top, 10)
         .padding(.bottom, 8)

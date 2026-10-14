@@ -51,6 +51,9 @@ struct CreditPill: View {
             .padding(.horizontal, 12)
             .padding(.vertical, 7)
             .background(Palette.accent, in: Capsule())
+            // The pill stays small; the touch target doesn't.
+            .frame(minWidth: 44, minHeight: 44)
+            .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
         .accessibilityLabel("\(balance) credits left")
@@ -77,9 +80,14 @@ struct SectionHeader: View {
             }
             Spacer()
             if let actionTitle, let action {
-                Button(actionTitle, action: action)
-                    .font(.subheadline.weight(.semibold))
-                    .foregroundStyle(Palette.accent)
+                Button(action: action) {
+                    Text(actionTitle)
+                        .padding(.leading, 8)
+                        .frame(minHeight: 44)
+                        .contentShape(Rectangle())
+                }
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(Palette.accent)
             }
         }
     }

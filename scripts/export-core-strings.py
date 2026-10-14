@@ -78,6 +78,10 @@ def collect() -> tuple[list[tuple[str, str]], list[tuple[str, str]]]:
         app.append((text, "Shown when a request is blocked by the content policy"))
     for text in literals(r"return " + LITERAL, block(read("BackendAPI.swift"), "public var errorDescription: String?")):
         app.append((text, "Error message"))
+    backend = read("BackendAPI.swift")
+    reasons = backend[backend.index("public enum ReportReason"):]
+    for text in literals(r"return " + LITERAL, block(reasons, "public var title: String")):
+        app.append((text, "Reason for reporting an AI result, a button in the Report dialog"))
     direct = read("DirectAI.swift")
     for text in literals(r"\.(?:invalidRequest|contentBlocked|network)\(" + LITERAL, direct + read("BackendAPI.swift")):
         app.append((text, "Error message"))

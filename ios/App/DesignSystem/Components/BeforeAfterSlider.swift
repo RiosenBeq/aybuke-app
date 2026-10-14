@@ -11,6 +11,7 @@ struct BeforeAfterSlider: View {
     @State private var position: CGFloat = 0.5
     @State private var hasPeeked = false
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
 
     var body: some View {
         GeometryReader { proxy in
@@ -101,6 +102,6 @@ struct BeforeAfterSlider: View {
             .foregroundStyle(.white)
             .padding(.horizontal, 8)
             .padding(.vertical, 4)
-            .background(.black.opacity(0.45), in: Capsule())
+            .background(Palette.ink.opacity(reduceTransparency ? 0.9 : 0.65), in: Capsule())
     }
 }

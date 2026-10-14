@@ -1,4 +1,7 @@
 import UIKit
+import ImageIO
+import UniformTypeIdentifiers
+import AppCore
 
 /// Stores library images in Application Support with file protection, plus a
 /// small in-memory thumbnail cache for the grid.
@@ -12,15 +15,93 @@ enum ImageStore {
         return base
     }
 
+    /// What a library file says about itself, so a lost database can be
+    /// rebuilt without dropping the AI marking or the free-tier mark.
+    struct Tag: Equatable {
+        var operationRaw: String = Creation.manualEditRaw
+        var source: String?
+        var inheritedSourceType: DigitalSourceType?
+
+        init(operation: AIOperation?, source: String? = nil, inheritedSourceType: DigitalSourceType? = nil) {
+            self.operationRaw = operation?.rawValue ?? Creation.manualEditRaw
+            self.source = source
+            self.inheritedSourceType = inheritedSourceType
+        }
+
+        var operation: AIOperation? { AIOperation(rawValue: operationRaw) }
+        var provenance: Provenance { Creation.provenance(operation: operation, source: source, inheritedSourceType: inheritedSourceType) }
+    }
+
+    private static let iptcExtNamespace = "http://iptc.org/std/Iptc4xmpExt/2008-02-29/" as CFString
+    private static let tagNamespace = "https://glowlit.app/ns/library/1.0/" as CFString
+
     /// PNG keeps transparency (cut-outs); everything else is stored as JPEG.
-    static func save(_ image: UIImage) throws -> String {
+    /// "Unless open" lets a job that finishes after the device locks still
+    /// write its file, which stays unreadable until the next unlock.
+    static func save(_ image: UIImage, tag: Tag) throws -> String {
         let usePNG = ImageUtilities.hasAlpha(image)
         let name = UUID().uuidString + (usePNG ? ".png" : ".jpg")
-        guard let data = usePNG ? image.pngData() : image.jpegData(compressionQuality: 0.92) else {
-            throw CocoaError(.fileWriteUnknown)
-        }
-        try data.write(to: url(for: name), options: [.atomic, .completeFileProtection])
+        let data = try encode(image, png: usePNG, tag: tag)
+        try data.write(to: url(for: name), options: [.atomic, .completeFileProtectionUnlessOpen])
         return name
+    }
+
+    private static func encode(_ image: UIImage, png: Bool, tag: Tag) throws -> Data {
+        let source = image.cgImage == nil || image.imageOrientation != .up ? ImageUtilities.redraw(image, to: ImageUtilities.pixelSize(of: image)) : image
+        guard let cgImage = source.cgImage else { throw CocoaError(.fileWriteUnknown) }
+        let output = NSMutableData()
+        let type = (png ? UTType.png : UTType.jpeg).identifier as CFString
+        guard let destination = CGImageDestinationCreateWithData(output, type, 1, nil) else { throw CocoaError(.fileWriteUnknown) }
+        let metadata = CGImageMetadataCreateMutable()
+        _ = CGImageMetadataRegisterNamespaceForPrefix(metadata, tagNamespace, "glowlit" as CFString, nil)
+        _ = CGImageMetadataSetValueWithPath(metadata, nil, "glowlit:operation" as CFString, tag.operationRaw as CFString)
+        if let value = tag.source {
+            _ = CGImageMetadataSetValueWithPath(metadata, nil, "glowlit:source" as CFString, value as CFString)
+        }
+        if let value = tag.inheritedSourceType {
+            _ = CGImageMetadataSetValueWithPath(metadata, nil, "glowlit:inherited" as CFString, value.rawValue as CFString)
+        }
+        if let sourceType = tag.provenance.sourceType {
+            _ = CGImageMetadataRegisterNamespaceForPrefix(metadata, iptcExtNamespace, "Iptc4xmpExt" as CFString, nil)
+            _ = CGImageMetadataSetValueWithPath(metadata, nil, "Iptc4xmpExt:DigitalSourceType" as CFString, sourceType.uri as CFString)
+        }
+        var properties: [CFString: Any] = [:]
+        if !png { properties[kCGImageDestinationLossyCompressionQuality] = 0.92 }
+        CGImageDestinationAddImageAndMetadata(destination, cgImage, metadata, properties as CFDictionary)
+        guard CGImageDestinationFinalize(destination) else { throw CocoaError(.fileWriteUnknown) }
+        #if DEBUG
+        assert(libraryInfo(in: CGImageSourceCreateWithData(output, nil))?.tag == tag, "The library file lost its tag")
+        #endif
+        return output as Data
+    }
+
+    /// The tag and upright pixel size of a stored file. Files saved before
+    /// tags existed carry no marking, so they're treated as AI-made rather
+    /// than risk losing a label.
+    static func libraryInfo(at url: URL) -> (tag: Tag, size: PixelSize)? {
+        libraryInfo(in: CGImageSourceCreateWithURL(url as CFURL, [kCGImageSourceShouldCache: false] as CFDictionary))
+    }
+
+    private static func libraryInfo(in source: CGImageSource?) -> (tag: Tag, size: PixelSize)? {
+        guard let source,
+              let properties = CGImageSourceCopyPropertiesAtIndex(source, 0, nil) as? [CFString: Any],
+              let width = properties[kCGImagePropertyPixelWidth] as? Int,
+              let height = properties[kCGImagePropertyPixelHeight] as? Int
+        else { return nil }
+        let orientation = (properties[kCGImagePropertyOrientation] as? UInt32) ?? 1
+        let size = orientation >= 5 ? PixelSize(width: height, height: width) : PixelSize(width: width, height: height)
+        let metadata = CGImageSourceCopyMetadataAtIndex(source, 0, nil)
+        func value(_ path: String) -> String? {
+            metadata.flatMap { CGImageMetadataCopyStringValueWithPath($0, nil, path as CFString) as String? }
+        }
+        guard let operationRaw = value("glowlit:operation") else {
+            let marked = value("Iptc4xmpExt:DigitalSourceType").flatMap(DigitalSourceType.init(uri:))
+            return (Tag(operation: nil, inheritedSourceType: marked ?? .trainedAlgorithmicMedia), size)
+        }
+        var tag = Tag(operation: nil, source: value("glowlit:source"),
+                      inheritedSourceType: value("glowlit:inherited").flatMap(DigitalSourceType.init(rawValue:)))
+        tag.operationRaw = operationRaw
+        return (tag, size)
     }
 
     static func url(for name: String) -> URL {
@@ -48,6 +129,7 @@ final class ThumbnailCache {
 
     private init() {
         cache.countLimit = 200
+        cache.totalCostLimit = 50 * 1024 * 1024
     }
 
     func thumbnail(for name: String, maxPixel: CGFloat = 480) async -> UIImage? {
@@ -61,7 +143,8 @@ final class ThumbnailCache {
             return full.preparingThumbnail(of: size) ?? full
         }.value
         if let image {
-            cache.setObject(image, forKey: name as NSString)
+            let cost = image.cgImage.map { $0.bytesPerRow * $0.height } ?? 0
+            cache.setObject(image, forKey: name as NSString, cost: cost)
         }
         return image
     }

@@ -21,6 +21,12 @@ struct HomeView: View {
                             .reveal(1)
                     }
 
+                    if app.allowsCloudAI && app.isCloudOffline {
+                        OfflineNotice()
+                            .padding(.horizontal, Metrics.gutter)
+                            .transition(.opacity)
+                    }
+
                     // Under 13 Explore shows only the free on-device tools.
                     if app.allowsCloudAI {
                         heroCard
@@ -156,6 +162,8 @@ struct HomeView: View {
         }
         .buttonStyle(PressableButtonStyle(scale: 0.97))
         .accessibilityLabel("Magic Edit. Describe any change to your photo.")
+        // Voice Control: the words shown on the button work too.
+        .accessibilityInputLabels(["Magic Edit", "Try it on your photo"])
     }
 
     private var quickTools: some View {

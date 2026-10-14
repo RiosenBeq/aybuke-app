@@ -14,8 +14,8 @@ enum PhotoDecoder {
             if isRAW, let developed = AutoDevelop.developRAW(data) {
                 return (ImageUtilities.normalized(developed), isRAW, sourceType)
             }
-            guard let image = UIImage(data: data) else { return nil }
-            return (ImageUtilities.normalized(image), isRAW, sourceType)
+            guard let image = ImageUtilities.decodedImage(from: data) else { return nil }
+            return (image, isRAW, sourceType)
         }.value
     }
 }

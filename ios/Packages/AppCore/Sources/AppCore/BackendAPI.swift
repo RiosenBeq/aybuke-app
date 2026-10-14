@@ -224,6 +224,12 @@ public enum AIServiceError: Error, Equatable, Sendable {
     case rateLimited(retryAfter: TimeInterval?)
     case server(code: String, message: String)
     case network(String)
+    /// No connection at all; the free on-device tools still work.
+    case offline
+    /// The connection was too slow to answer in time.
+    case timedOut
+    /// The server's certificate or the TLS handshake failed.
+    case insecureConnection
     case invalidResponse
     case noSubjectFound
 }
@@ -249,6 +255,12 @@ extension AIServiceError: LocalizedError {
             return message
         case .network(let message):
             return message
+        case .offline:
+            return "You're offline. Effects, Adjust, Cut out and Video still work."
+        case .timedOut:
+            return "This is taking too long. Check your connection and try again."
+        case .insecureConnection:
+            return "Secure connection failed."
         case .invalidResponse:
             return "Something went wrong. Please try again."
         case .noSubjectFound:

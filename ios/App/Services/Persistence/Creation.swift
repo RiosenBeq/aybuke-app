@@ -2,56 +2,67 @@ import Foundation
 import SwiftData
 import AppCore
 
-/// A saved result in the user's library. Pixels live on disk (`ImageStore`);
-/// the model only stores metadata.
-@Model
-final class Creation {
-    @Attribute(.unique) var id: UUID
-    var createdAt: Date
-    var operationRaw: String
-    var title: String
-    var prompt: String?
-    var imageFileName: String
-    var pixelWidth: Int
-    var pixelHeight: Int
-    /// Hearted in My Works.
-    var isFavorite: Bool = false
-    /// Who made the pixels when it wasn't Glowlit's own pipeline
-    /// (`imagePlaygroundSource`); `nil` for everything else.
-    var source: String? = nil
-    /// The IPTC marking the edited photo already carried (a `DigitalSourceType`
-    /// raw value), so the copy keeps it on export.
-    var sourceTypeRaw: String? = nil
+/// The live library model. Changing a stored property means a new frozen
+/// schema version plus a migration stage in `GlowlitMigrationPlan`.
+typealias Creation = CreationSchemaV2.Creation
 
-    /// Stored for images that only received manual adjustments (no AI).
-    static let manualEditRaw = "adjust"
-    /// Made by Apple's Image Playground sheet.
-    static let imagePlaygroundSource = "imagePlayground"
+enum CreationSchemaV2: VersionedSchema {
+    static var versionIdentifier: Schema.Version { Schema.Version(2, 0, 0) }
+    static var models: [any PersistentModel.Type] { [Creation.self] }
 
-    init(
-        id: UUID = UUID(),
-        createdAt: Date = Date(),
-        operation: AIOperation?,
-        title: String,
-        prompt: String?,
-        imageFileName: String,
-        pixelWidth: Int,
-        pixelHeight: Int,
-        source: String? = nil,
-        inheritedSourceType: DigitalSourceType? = nil
-    ) {
-        self.sourceTypeRaw = inheritedSourceType?.rawValue
-        self.id = id
-        self.createdAt = createdAt
-        self.operationRaw = operation?.rawValue ?? Self.manualEditRaw
-        self.title = title
-        self.prompt = prompt
-        self.imageFileName = imageFileName
-        self.pixelWidth = pixelWidth
-        self.pixelHeight = pixelHeight
-        self.source = source
+    /// A saved result in the user's library. Pixels live on disk (`ImageStore`);
+    /// the model only stores metadata.
+    @Model
+    final class Creation {
+        @Attribute(.unique) var id: UUID
+        var createdAt: Date
+        var operationRaw: String
+        var title: String
+        var prompt: String?
+        var imageFileName: String
+        var pixelWidth: Int
+        var pixelHeight: Int
+        /// Hearted in My Works.
+        var isFavorite: Bool = false
+        /// Who made the pixels when it wasn't Glowlit's own pipeline
+        /// (`imagePlaygroundSource`); `nil` for everything else.
+        var source: String? = nil
+        /// The IPTC marking the edited photo already carried (a `DigitalSourceType`
+        /// raw value), so the copy keeps it on export.
+        var sourceTypeRaw: String? = nil
+
+        /// Stored for images that only received manual adjustments (no AI).
+        static let manualEditRaw = "adjust"
+        /// Made by Apple's Image Playground sheet.
+        static let imagePlaygroundSource = "imagePlayground"
+
+        init(
+            id: UUID = UUID(),
+            createdAt: Date = Date(),
+            operation: AIOperation?,
+            title: String,
+            prompt: String?,
+            imageFileName: String,
+            pixelWidth: Int,
+            pixelHeight: Int,
+            source: String? = nil,
+            inheritedSourceType: DigitalSourceType? = nil
+        ) {
+            self.sourceTypeRaw = inheritedSourceType?.rawValue
+            self.id = id
+            self.createdAt = createdAt
+            self.operationRaw = operation?.rawValue ?? Self.manualEditRaw
+            self.title = title
+            self.prompt = prompt
+            self.imageFileName = imageFileName
+            self.pixelWidth = pixelWidth
+            self.pixelHeight = pixelHeight
+            self.source = source
+        }
     }
+}
 
+extension CreationSchemaV2.Creation {
     /// The AI operation behind this image; `nil` when it was only adjusted
     /// by hand (so exports make no AI claim).
     var operation: AIOperation? { AIOperation(rawValue: operationRaw) }

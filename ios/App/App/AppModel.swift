@@ -4,6 +4,7 @@ import PhotosUI
 import Observation
 import AuthenticationServices
 import StoreKit
+import Network
 import AppCore
 
 enum AppTab: Hashable {
@@ -38,6 +39,18 @@ struct EditorLaunch: Identifiable {
 struct ConsentRequest: Identifiable {
     let id = UUID()
     let onAccept: () -> Void
+}
+
+struct PhotosAccessRequest: Identifiable {
+    let id = UUID()
+    let shareInstead: SharePayload?
+
+    /// Photos privacy settings: the app's own page on iPhone and iPad,
+    /// Privacy & Security › Photos on the Mac.
+    static var settingsURL: URL? {
+        URL(string: Platform.isMac ? "x-apple.systempreferences:com.apple.preference.security?Privacy_Photos"
+                                   : UIApplication.openSettingsURLString)
+    }
 }
 
 /// Settings › Appearance. Light (the pink "Blush" look) is the default.
@@ -103,7 +116,16 @@ final class AppModel {
     var isVideoPickerPresented = false
     var videoSource: VideoSource?
     var toast: ToastMessage?
+    /// "Photos access is off" with Open Settings (and Share instead).
+    var photosAccessRequest: PhotosAccessRequest?
     @ObservationIgnored private var pendingEditorRequest: EditorRequest?
+    /// How My Works opened at launch; a repair is reported once in `start()`.
+    @ObservationIgnored var libraryOutcome: LibraryStore.Outcome = .opened
+    /// Library saves that failed while the device was locked, retried after unlock.
+    @ObservationIgnored private var deferredSaves: [DeferredSave] = []
+    @ObservationIgnored private var unlockWatcher: Task<Void, Never>?
+    private(set) var isOnline = true
+    @ObservationIgnored private var pathMonitor: NWPathMonitor?
 
     // MARK: Services
     let config: AppConfig
@@ -271,6 +293,30 @@ final class AppModel {
 
     var isDemoMode: Bool { config.isDemoMode }
 
+    /// Cloud AI can't be reached. Demo mode runs without a network, so it
+    /// never counts as offline (nor do screenshot scenes).
+    var isCloudOffline: Bool {
+        #if DEBUG
+        if ScreenshotScene.current != nil { return UserDefaults.standard.bool(forKey: "GLOffline") }
+        #endif
+        return !isOnline && !isDemoMode
+    }
+
+    /// Starts once; the first update arrives within moments, so until then
+    /// she's assumed online rather than shown a false offline notice.
+    private func watchNetwork() {
+        guard pathMonitor == nil else { return }
+        let monitor = NWPathMonitor()
+        monitor.pathUpdateHandler = { [weak self] path in
+            let online = path.status == .satisfied
+            Task { @MainActor in
+                if self?.isOnline != online { self?.isOnline = online }
+            }
+        }
+        monitor.start(queue: DispatchQueue(label: "app.glowlit.network", qos: .utility))
+        pathMonitor = monitor
+    }
+
     /// Banner on Explore explaining simulated (demo) or developer-key results.
     var modeBanner: String? {
         #if DEBUG
@@ -289,8 +335,17 @@ final class AppModel {
 
     /// Called once from the root view's `.task`.
     func start() async {
+        watchNetwork()
         liveActivity.endLeftovers()
         Task { await TemporaryFiles.sweep() }
+        switch libraryOutcome {
+        case .opened: break
+        case .rebuilt:
+            showToast("We rebuilt My Works. Your images are back; titles and hearts couldn't be restored.", style: .info)
+        case .temporary:
+            showToast("My Works couldn't open, so new creations won't be kept this time. Free up some space and restart Glowlit.", style: .error)
+        }
+        libraryOutcome = .opened
         storefrontCountry = await Storefront.current?.countryCode
         // No account and no RevenueCat here: both wait until she buys or uses
         // a cloud feature (Privacy Policy §5).
@@ -447,6 +502,9 @@ final class AppModel {
         credits.resetAll()
         credits.refresh(isPro: purchases.isPro)
         deleteAllCreations() // also resets the widgets, after the credits
+        deferredSaves = []
+        // A library moved aside after damage still holds titles and prompts.
+        LibraryStore.removeAllCorruptStores()
         liveActivity.endAll()
         await notifier.reset(keeping: purchases.isPro ? [TrialReminder.identifier] : [])
         URLCache.shared.removeAllCachedResponses()
@@ -678,6 +736,10 @@ final class AppModel {
             noteUnavailable()
             return
         }
+        if !operation.runsOnDevice && isCloudOffline {
+            handle(AIServiceError.offline)
+            return
+        }
         if requiresPro && !purchases.isPro {
             presentPaywall(source: "pro_content")
             return
@@ -708,6 +770,8 @@ final class AppModel {
     /// background, so people can switch apps while they wait.
     func run(_ job: AIJob, saveToLibrary: Bool) async throws -> AIJobResult {
         let isCloud = !job.operation.runsOnDevice
+        // Also covers the free retry, which skips `requestAccess`.
+        if isCloud && isCloudOffline { throw AIServiceError.offline }
         let showsActivity = isCloud && liveActivity.start(
             // Catalog text only: her prompt would show on the Lock Screen.
             title: L10n.core(job.template?.title ?? job.operation.displayName).shortened(to: 34),
@@ -783,29 +847,87 @@ final class AppModel {
     func saveToLibrary(_ images: [UIImage], operation: AIOperation?, title: String, prompt: String?, source: String? = nil,
                        inheritedSourceType: DigitalSourceType? = nil) async {
         let context = container.mainContext
+        let tag = ImageStore.Tag(operation: operation, source: source, inheritedSourceType: inheritedSourceType)
+        var saved: [UIImage] = []
         for image in images {
-            let stored = await Task.detached(priority: .utility) { () -> (String, PixelSize)? in
-                guard let name = try? ImageStore.save(image) else { return nil }
-                return (name, ImageUtilities.pixelSize(of: image))
+            let stored = await Task.detached(priority: .utility) { () -> Result<(String, PixelSize), Error> in
+                Result { (try ImageStore.save(image, tag: tag), ImageUtilities.pixelSize(of: image)) }
             }.value
-            guard let stored else { continue }
-            let (name, size) = stored
-            context.insert(Creation(
-                operation: operation,
-                title: title,
-                prompt: prompt,
-                imageFileName: name,
-                pixelWidth: size.width,
-                pixelHeight: size.height,
-                source: source,
-                inheritedSourceType: inheritedSourceType
-            ))
+            switch stored {
+            case .success(let (name, size)):
+                context.insert(Creation(
+                    operation: operation,
+                    title: title,
+                    prompt: prompt,
+                    imageFileName: name,
+                    pixelWidth: size.width,
+                    pixelHeight: size.height,
+                    source: source,
+                    inheritedSourceType: inheritedSourceType
+                ))
+                saved.append(image)
+            case .failure:
+                if isDeviceLocked {
+                    deferredSaves.append(DeferredSave(image: image, operation: operation, title: title, prompt: prompt,
+                                                      source: source, inheritedSourceType: inheritedSourceType))
+                    watchForUnlock()
+                } else {
+                    showToast("Couldn't save to My Works", style: .error)
+                }
+            }
         }
+        guard !saved.isEmpty else { return }
         try? context.save()
-        if let newest = images.last {
+        if let newest = saved.last {
             GlowWidgetBridge.updateLatestImage(newest)
         }
         syncWidgets()
+    }
+
+    /// Kept in memory only: if the app is closed while locked, it's lost,
+    /// which is why files are written "unless open" in the first place.
+    private struct DeferredSave {
+        let image: UIImage
+        let operation: AIOperation?
+        let title: String
+        let prompt: String?
+        let source: String?
+        let inheritedSourceType: DigitalSourceType?
+    }
+
+    private var isDeviceLocked: Bool {
+        #if targetEnvironment(macCatalyst)
+        false
+        #else
+        !UIApplication.shared.isProtectedDataAvailable
+        #endif
+    }
+
+    private func watchForUnlock() {
+        guard unlockWatcher == nil else { return }
+        unlockWatcher = Task { [weak self] in
+            for await _ in NotificationCenter.default.notifications(named: UIApplication.protectedDataDidBecomeAvailableNotification) {
+                guard let self else { return }
+                await self.retryDeferredSaves()
+                if self.deferredSaves.isEmpty { break }
+            }
+            self?.unlockWatcher = nil
+        }
+    }
+
+    private func retryDeferredSaves() async {
+        let pending = deferredSaves
+        deferredSaves = []
+        let before = (try? container.mainContext.fetchCount(FetchDescriptor<Creation>())) ?? 0
+        for item in pending {
+            await saveToLibrary([item.image], operation: item.operation, title: item.title, prompt: item.prompt,
+                                source: item.source, inheritedSourceType: item.inheritedSourceType)
+        }
+        let after = (try? container.mainContext.fetchCount(FetchDescriptor<Creation>())) ?? 0
+        // A failure already showed "Couldn't save to My Works".
+        if after > before, deferredSaves.isEmpty {
+            showToast("Saved to My Works", style: .success)
+        }
     }
 
     /// Writes credits and the newest creation for the Home Screen widgets.
@@ -1020,8 +1142,23 @@ final class AppModel {
         return error is CancellationError || (error as? URLError)?.code == .cancelled
     }
 
+    /// Saving to Photos without access: an alert that can open Settings, and
+    /// share the image instead when the caller has it at hand.
+    func handleSaveError(_ error: Error, shareInstead: SharePayload?) {
+        if case PhotoLibrarySaver.SaveError.denied = error {
+            Haptics.error()
+            photosAccessRequest = PhotosAccessRequest(shareInstead: shareInstead)
+            return
+        }
+        handle(error)
+    }
+
     func handle(_ error: Error) {
         if Self.isCancellation(error) { return }
+        if case PhotoLibrarySaver.SaveError.denied = error {
+            handleSaveError(error, shareInstead: nil)
+            return
+        }
         Haptics.error()
         registerSetback()
         if case AIServiceError.insufficientCredits(let remaining) = error {
@@ -1199,7 +1336,7 @@ extension AppModel {
         let images = [ScreenshotFixtures.goldenLandscape] + ScreenshotFixtures.generatedArt(count: 8)
         let context = container.mainContext
         for (index, image) in images.enumerated() {
-            guard let name = try? ImageStore.save(image) else { continue }
+            guard let name = try? ImageStore.save(image, tag: ImageStore.Tag(operation: index == 0 ? .magicEdit : .textToImage)) else { continue }
             let size = ImageUtilities.pixelSize(of: image)
             context.insert(Creation(
                 createdAt: Date().addingTimeInterval(TimeInterval(-index * 3600)),

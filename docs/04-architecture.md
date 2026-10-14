@@ -131,7 +131,7 @@ With `AI_PROVIDER=fal`, the job goes to fal's queue instead (`queue.fal.run`), e
 - fal outputs expire after 1 hour, and fal's request history is disabled.
 - Effects, Auto, RAW development, Best shot and video editing never leave the device.
 - RevenueCat receives purchase records, our account ID and basic device and app information, never photos, prompts or results.
-- The library lives on the device with `completeFileProtection`. Tokens are in the Keychain (`AfterFirstUnlockThisDeviceOnly`).
+- The library lives on the device with `completeFileProtectionUnlessOpen`, so a job that finishes after the device locks still saves; closed files stay unreadable until unlock. Each file carries a small XMP tag (operation, source, IPTC DigitalSourceType) so `LibraryStore` can rebuild My Works if the SwiftData store is damaged (versioned schema + migration plan; a damaged store is moved to `Corrupt-<date>/` and deleted after 30 days or with Delete my data; a full disk falls back to an in-memory library instead). Tokens are in the Keychain (`AfterFirstUnlockThisDeviceOnly`).
 
 **Safety:** a layered stack.
 1. Client prompt policy (`ContentPolicy`, all 12 app languages): sexual and undressing requests, revealing clothing, and for photo edits face/body reshaping, skin-tone changes, skin retouching, looks rating and humiliating edits. Checked before the consent sheet or paywall opens.

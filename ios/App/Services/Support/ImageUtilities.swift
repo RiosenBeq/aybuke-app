@@ -1,9 +1,29 @@
 import UIKit
+import ImageIO
 import AppCore
 
 enum ImageUtilities {
     static func pixelSize(of image: UIImage) -> PixelSize {
         PixelSize(width: Int(image.size.width * image.scale), height: Int(image.size.height * image.scale))
+    }
+
+    /// Decodes straight to an upright image of at most `maxPixel` on the long
+    /// edge. A 48 MP photo never becomes a full-size bitmap (about 190 MB),
+    /// which `UIImage(data:)` plus `normalized` would make. Call it off the
+    /// main actor.
+    static func decodedImage(from data: Data, maxPixel: Int = 2048) -> UIImage? {
+        guard let source = CGImageSourceCreateWithData(data as CFData, [kCGImageSourceShouldCache: false] as CFDictionary) else {
+            return nil
+        }
+        let options: [CFString: Any] = [
+            // Without "always", ImageIO may hand back the small embedded preview.
+            kCGImageSourceCreateThumbnailFromImageAlways: true,
+            kCGImageSourceThumbnailMaxPixelSize: maxPixel,
+            kCGImageSourceCreateThumbnailWithTransform: true,
+            kCGImageSourceShouldCacheImmediately: true,
+        ]
+        guard let cgImage = CGImageSourceCreateThumbnailAtIndex(source, 0, options as CFDictionary) else { return nil }
+        return UIImage(cgImage: cgImage, scale: 1, orientation: .up)
     }
 
     /// Bakes in EXIF orientation and downsizes to `maxLongEdge` pixels at scale 1.

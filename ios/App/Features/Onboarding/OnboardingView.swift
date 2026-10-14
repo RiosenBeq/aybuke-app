@@ -126,9 +126,10 @@ struct OnboardingView: View {
     private var legalCaption: some View {
         Text(consentText)
             .font(.caption2)
-            .foregroundStyle(Palette.textTertiary)
+            .foregroundStyle(Palette.textSecondary)
             .multilineTextAlignment(.center)
-            .padding(.horizontal, 32)
+            .finePrintBacking()
+            .padding(.horizontal, 24)
             .padding(.top, 12)
             .padding(.bottom, 8)
             .environment(\.openURL, OpenURLAction { url in
@@ -181,7 +182,7 @@ struct OnboardingView: View {
 
     // MARK: Try it
 
-    /// Decodes like the editor does (full size, RAW developed), then applies
+    /// Decodes like the editor does (editing size, RAW developed), then applies
     /// Digicam '04 on the device.
     private func tryLook(on item: PhotosPickerItem) async {
         isTrying = true
@@ -289,6 +290,7 @@ private struct OnboardingPageView: View {
     let page: OnboardingPage
     @Environment(\.dynamicTypeSize) private var typeSize
     @State private var appeared = false
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
         OnboardingScroll {
@@ -342,7 +344,7 @@ private struct OnboardingPageView: View {
                             .symbolEffect(.bounce, value: appeared)
                     }
                 )
-                .rotationEffect(.degrees(appeared ? 4 : 0))
+                .rotationEffect(.degrees(appeared && !reduceMotion ? 4 : 0))
                 .shadow(color: Palette.ink.opacity(0.10), radius: 24, y: 12)
             Image(systemName: "sparkle")
                 .font(.system(size: 30, weight: .bold))

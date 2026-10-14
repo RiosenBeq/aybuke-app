@@ -152,6 +152,7 @@ struct EditHubView: View {
                     HStack(alignment: .top, spacing: 10) {
                         Image(systemName: "lock.shield")
                             .foregroundStyle(Palette.success)
+                            .accessibilityHidden(true)
                         // Under 13 there are no cloud edits to mention.
                         Group {
                             if app.allowsCloudAI {

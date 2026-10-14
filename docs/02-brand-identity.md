@@ -82,7 +82,7 @@ In October 2026 the owner retargeted Glowlit at **girls and young women** and as
 | `accent` / `onAccent` | `#121212` / `#F7C1D9` | `#F7C1D9` / `#121212` | **The one primary action per screen** (ink pill with a blush label), links, tints | 12.1:1 |
 | `textPrimary` | `#121212` | `#F8F8F6` | Body text | 15.0:1 on petal |
 | `textSecondary` | `#5C5457` | `#AAAAA8` | Secondary text | 5.9:1 on petal |
-| `textTertiary` | `#6E6468` | `#90908F` | Captions | 4.6:1 on petal |
+| `textTertiary` | `#645A5E` | `#90908F` | Captions (not over blush or the aurora: 4.3:1 there, so fine print uses `textSecondary`) | 5.3:1 on petal |
 | `success` / `warning` / `danger` | `#0B7A54` / `#8A6100` / `#B42318` | `#34D399` / `#FFD43B` / `#FF6B6B` | Feedback, always with an icon | ≥ 4.2:1 |
 
 **Rules**

@@ -28,6 +28,11 @@
 		<string>instagram-stories</string>
 		<string>instagram</string>
 	</array>
+	<key>UIApplicationSceneManifest</key>
+	<dict>
+		<key>UIApplicationSupportsMultipleScenes</key>
+		<false/>
+	</dict>
 	<key>UILaunchScreen</key>
 	<dict>
 		<key>UIColorName</key>
