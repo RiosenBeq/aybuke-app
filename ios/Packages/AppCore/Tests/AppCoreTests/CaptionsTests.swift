@@ -322,9 +322,36 @@ final class CaptionLanguageTests: XCTestCase {
         XCTAssertEqual(CaptionLanguage.bestMatch(preferred: ["pt-BR"], available: available, region: "PT"), "pt_BR")
     }
 
+    func testDeviceLanguageLeadsWhenTheAppFellBack() {
+        XCTAssertEqual(CaptionLanguage.preferred(appLanguage: "tr", deviceLanguages: ["tr-TR", "en-US"]), ["tr", "tr-TR", "en-US"])
+        // Dutch device, English app (no Dutch): her voice is likely Dutch.
+        XCTAssertEqual(CaptionLanguage.preferred(appLanguage: "en", deviceLanguages: ["nl-NL", "en-US"]), ["nl-NL", "en", "en-US"])
+        XCTAssertEqual(CaptionLanguage.preferred(appLanguage: "en", deviceLanguages: []), ["en"])
+    }
+
     func testChineseMatchesItsScript() {
         XCTAssertEqual(CaptionLanguage.bestMatch(preferred: ["zh-Hans"], available: available, region: nil), "zh_CN")
         XCTAssertEqual(CaptionLanguage.bestMatch(preferred: ["zh-Hant-TW"], available: available, region: nil), "zh_TW")
         XCTAssertEqual(CaptionLanguage.bestMatch(preferred: ["zh-Hans"], available: ["zh_TW"], region: nil), nil)
+    }
+}
+
+final class SpeechChunksTests: XCTestCase {
+    func testShortClipsStayWhole() {
+        XCTAssertEqual(SpeechChunks.ranges(levels: Array(repeating: -20, count: 400), window: 0.05), [0...20])
+        XCTAssertEqual(SpeechChunks.ranges(levels: [], window: 0.05), [])
+    }
+
+    func testLongClipsAreCutAtTheirQuietestMoments() {
+        // Two minutes of speech with quiet moments at 42 s and 90 s.
+        var levels = Array(repeating: -20.0, count: 2400)
+        levels[840] = -60
+        levels[1800] = -60
+        let ranges = SpeechChunks.ranges(levels: levels, window: 0.05)
+        XCTAssertEqual(ranges.count, 3)
+        XCTAssertEqual(ranges[0].upperBound, 42.025, accuracy: 0.001)
+        XCTAssertEqual(ranges[1].upperBound, 90.025, accuracy: 0.001)
+        XCTAssertEqual(ranges[2].upperBound, 120, accuracy: 0.001)
+        XCTAssertTrue(ranges.allSatisfy { $0.upperBound - $0.lowerBound <= 55 })
     }
 }

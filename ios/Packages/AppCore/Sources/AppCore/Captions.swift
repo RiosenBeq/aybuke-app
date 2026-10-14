@@ -555,19 +555,8 @@ public enum CaptionTimeline {
     public static func remap(_ cues: [CaptionCue], keeping ranges: [ClosedRange<Double>]) -> [CaptionCue] {
         var result: [CaptionCue] = []
         for cue in cues where !cue.isBlank {
-            var offset = 0.0
-            var start: Double?
-            var end: Double?
-            for range in ranges {
-                let lower = max(cue.start, range.lowerBound)
-                let upper = min(cue.end, range.upperBound)
-                if upper > lower {
-                    if start == nil { start = offset + lower - range.lowerBound }
-                    end = offset + upper - range.lowerBound
-                }
-                offset += range.upperBound - range.lowerBound
-            }
-            guard let start, let end, end - start >= shortestKept else { continue }
+            guard let shown = outputRange(of: cue, keeping: ranges) else { continue }
+            let start = shown.lowerBound, end = shown.upperBound
             var moved = cue
             moved.start = start
             moved.end = end
@@ -579,6 +568,24 @@ public enum CaptionTimeline {
             result.append(moved)
         }
         return result.sorted { $0.start < $1.start }
+    }
+
+    /// When a cue shows in the edited video; nil when (nearly) all of it was cut.
+    public static func outputRange(of cue: CaptionCue, keeping ranges: [ClosedRange<Double>]) -> ClosedRange<Double>? {
+        var offset = 0.0
+        var start: Double?
+        var end: Double?
+        for range in ranges {
+            let lower = max(cue.start, range.lowerBound)
+            let upper = min(cue.end, range.upperBound)
+            if upper > lower {
+                if start == nil { start = offset + lower - range.lowerBound }
+                end = offset + upper - range.lowerBound
+            }
+            offset += range.upperBound - range.lowerBound
+        }
+        guard let start, let end, end - start >= shortestKept else { return nil }
+        return start...end
     }
 
     /// The cue showing at `time` in cues sorted by start; when two overlap,
@@ -595,6 +602,35 @@ public enum CaptionTimeline {
             index -= 1
         }
         return nil
+    }
+}
+
+// MARK: - Long clips
+
+/// SFSpeechRecognizer (before iOS 26) works best on parts under a minute, so
+/// a long clip is heard in parts, each cut at its quietest moment.
+public enum SpeechChunks {
+    /// Parts of the clip (seconds) from loudness per window (dBFS): each at
+    /// most `maxLength`, cut in the quietest window after `minLength`.
+    public static func ranges(levels: [Double], window: Double, maxLength: Double = 55, minLength: Double = 35) -> [ClosedRange<Double>] {
+        let duration = Double(levels.count) * window
+        guard duration > 0, window > 0 else { return [] }
+        var ranges: [ClosedRange<Double>] = []
+        var start = 0.0
+        while duration - start > maxLength {
+            let from = Int((start + minLength) / window)
+            let to = min(levels.count - 1, Int((start + maxLength) / window) - 1)
+            guard from <= to else { break }
+            var quietest = to
+            for index in from...to where levels[index] < levels[quietest] {
+                quietest = index
+            }
+            let cut = (Double(quietest) + 0.5) * window
+            ranges.append(start...cut)
+            start = cut
+        }
+        ranges.append(start...duration)
+        return ranges
     }
 }
 
@@ -652,6 +688,16 @@ public enum CaptionLanguage {
             parts.script = ["TW", "HK", "MO"].contains(parts.region ?? "") ? "Hant" : "Hans"
         }
         return parts
+    }
+
+    /// Languages to try, in order: the app's language, then the device's.
+    /// When the app shows a fallback (she reads Dutch, the app has no Dutch),
+    /// the device's own first language is the better guess for her voice.
+    public static func preferred(appLanguage: String, deviceLanguages: [String]) -> [String] {
+        guard let first = deviceLanguages.first, parts(first).language != parts(appLanguage).language else {
+            return [appLanguage] + deviceLanguages
+        }
+        return [first, appLanguage] + deviceLanguages.dropFirst()
     }
 
     /// The best of `available` for the first of `preferred` that has a

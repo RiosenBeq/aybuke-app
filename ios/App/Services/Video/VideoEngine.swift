@@ -129,21 +129,26 @@ enum VideoEngine {
     }
 
     /// Colours every frame with the effect and, when `showsExtra` is on, its
-    /// overlay (date stamp, letterbox or camcorder display). Nil = no effect.
-    /// `fps` sets the camcorder timecode's frame count.
-    static func videoComposition(for asset: AVAsset, effect: RetroEffect?, showsExtra: Bool, fps: Double = 30) async throws -> AVVideoComposition? {
-        guard let effect else { return nil }
-        let overlays = OverlayCache(effect: showsExtra && effect.option?.worksOnVideo == true ? effect : nil)
+    /// overlay (date stamp, letterbox or camcorder display), then draws the
+    /// captions on top. Nil = no effect and no captions. `fps` sets the
+    /// camcorder timecode's frame count.
+    static func videoComposition(for asset: AVAsset, effect: RetroEffect?, showsExtra: Bool, fps: Double = 30,
+                                 captions: CaptionTrack? = nil) async throws -> AVVideoComposition? {
+        guard effect != nil || captions != nil else { return nil }
+        let overlays = OverlayCache(effect: showsExtra && effect?.option?.worksOnVideo == true ? effect : nil)
         let rate = CamcorderClock.frameRate(fps)
         return try await AVMutableVideoComposition.videoComposition(with: asset) { request in
             let source = request.sourceImage.clampedToExtent().cropped(to: request.sourceImage.extent)
-            var frame = effect.grade(source).cropped(to: source.extent)
+            var frame = effect.map { $0.grade(source).cropped(to: source.extent) } ?? source
             if let overlay = overlays.overlay(for: source.extent) {
                 frame = overlay.composited(over: frame)
             }
             // The output timeline's time, so the preview and the export match.
             if let camcorder = overlays.camcorder(for: source.extent) {
                 frame = camcorder.composite(over: frame, seconds: request.compositionTime.seconds, fps: rate)
+            }
+            if let captions {
+                frame = captions.composite(over: frame, seconds: request.compositionTime.seconds)
             }
             request.finish(with: frame, context: nil)
         }

@@ -25,7 +25,11 @@ extension ScreenshotFixtures {
             try? FileManager.default.removeItem(at: video)
             try? FileManager.default.removeItem(at: audio)
             try await writeFrames(to: video, seconds: seconds)
-            try writeTone(to: audio, seconds: seconds)
+            if UserDefaults.standard.bool(forKey: "GLVideoSpeech") {
+                try await writeSpeech(to: audio)
+            } else {
+                try writeTone(to: audio, seconds: seconds)
+            }
             try await combine(video: video, audio: audio, into: output)
             return output
         }.value
