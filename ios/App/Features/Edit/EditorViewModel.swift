@@ -91,7 +91,9 @@ final class EditorViewModel {
     @ObservationIgnored private var previewTask: Task<Void, Never>?
     @ObservationIgnored private var previewSource: (source: UIImage, proxy: UIImage)?
     @ObservationIgnored private var lastJob: AIJob?
+    @ObservationIgnored private var memoryWatcher: Task<Void, Never>?
     private(set) var historyVersion = 0
+    static let historyLimit = 8
 
     init(launch: EditorLaunch) {
         original = launch.image
@@ -122,6 +124,29 @@ final class EditorViewModel {
             crop.angle = launch.cropAngle
         }
         if activeTool == .hideFaces { startHidingFaces(preselect: true) }
+        // Holds self weakly, so it ends at the first warning after the editor closes.
+        memoryWatcher = Task { [weak self] in
+            for await _ in NotificationCenter.default.notifications(named: UIApplication.didReceiveMemoryWarningNotification) {
+                guard let self else { return }
+                self.releaseRebuildableImages()
+            }
+        }
+    }
+
+    /// Under memory pressure, drops what can be rendered again (and redo,
+    /// which only exists right after an undo). Undo history and the preview
+    /// on screen stay.
+    private func releaseRebuildableImages() {
+        if !redoStack.isEmpty {
+            redoStack.removeAll()
+            historyVersion += 1
+        }
+        previewSource = nil
+        if activeTool != .effects {
+            effectThumbnails = [:]
+            effectPreview = nil
+        }
+        if activeTool != .adjust { adjustPreview = nil }
     }
 
     var canUndo: Bool { historyVersion >= 0 && !undoStack.isEmpty }
@@ -237,7 +262,8 @@ final class EditorViewModel {
 
     private func commit(_ image: UIImage, operation: AIOperation?, before newBefore: UIImage? = nil, composite: Bool = false) {
         undoStack.append(Step(image: current, operation: appliedOperation, before: before, isComposite: isComposite))
-        if undoStack.count > 20 { undoStack.removeFirst() }
+        // Each step holds up to two 2048-px bitmaps (about 16 MB each).
+        if undoStack.count > Self.historyLimit { undoStack.removeFirst() }
         redoStack.removeAll()
         current = image
         if let newBefore { before = newBefore }

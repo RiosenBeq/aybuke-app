@@ -338,11 +338,11 @@ private struct TryItPage: View {
             Task {
                 defer { isWorking = false }
                 guard let data = try? await newItem.loadTransferable(type: Data.self),
-                      let picked = UIImage(data: data) else { return }
-                let (before, after) = await Task.detached(priority: .userInitiated) { () -> (UIImage, UIImage) in
-                    let normalized = ImageUtilities.normalized(picked, maxLongEdge: 1600)
-                    return (normalized, OnDeviceImageService.quickGlow(normalized))
-                }.value
+                      let (before, after) = await Task.detached(priority: .userInitiated, operation: { () -> (UIImage, UIImage)? in
+                          guard let picked = ImageUtilities.decodedImage(from: data, maxPixel: 1600) else { return nil }
+                          return (picked, OnDeviceImageService.quickGlow(picked))
+                      }).value
+                else { return }
                 original = before
                 enhanced = after
                 Haptics.success()
