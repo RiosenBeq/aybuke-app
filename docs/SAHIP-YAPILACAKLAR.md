@@ -2,7 +2,7 @@
 
 Bu liste yalnızca sahibin yapabileceği işleri içerir: Supabase, xAI, AdMob, AdSense, App Store Connect, Search Console, Vercel ve Mac'te Xcode. Ajan (bu depoda kod ve belge değiştiren asistan) bu hesaplara giremez, anahtar giremez ve gönderme kararı veremez. "Öneri" satırları yalnızca yardımcı görüştür; karar sahibindedir.
 
-**Durum.** 14 Ekim 2026. `pink-girls-redesign` dalının origin'deki son commit'i `31f8817`. Çalışma ağacında commit edilmemiş dört dosya var (`AGENTS.md`, `docs/NEXT-STEPS.md`, `docs/SUPABASE-TODO.md`, `docs/marketing/app-store-connect-setup.md`); aşağıdaki maddeler bu taslakları da dikkate alır. Bu ortamdan dış sitelere çıkılamadı (proxy 403, örneğin example.com dahil); aybuke.org ve github.io adresleri burada kontrol edilemedi. Tarayıcıdan bakılmalı.
+**Durum.** 14 Ekim 2026. `pink-girls-redesign` dalının origin'deki son commit'i `09e1b19`. `main` `d007a8b` (PR #1 birleşti); yeniden adlandırma (`6f2959d`), ad-reward CI testleri (`31f8817`), aybuke.org adresleri ve belgeler (`28c16eb`, `09e1b19`) henüz `main`'de değil. Bu ortamdan dış sitelere çıkılamadı (proxy 403); aybuke.org ve github.io adresleri burada kontrol edilemedi, tarayıcıdan bakılmalı.
 
 **Önerilen sıra.** 1.1 ve 1.3 (xAI), 1.4 (migrasyon), 1.5 (gizli değer), 1.6 (fonksiyon), 1.7 ve 1.8 (zamanlama, kimlik), 1.9 (kontrol), 3.1–3.4 (AdMob), 2.1 (URL), 2.2–2.12 (derleme ve testler), 4 (arama), 5 ve 6 (kararlar), en son 2.13 (gönderme kararı).
 
@@ -70,9 +70,9 @@ supabase functions deploy ad-reward --project-ref efapupjvidyqhqdevmcu --use-api
   - **Nerede:** Supabase panosu > Advisors > Security Advisor; SQL Editor; Terminal. Proje adresi ve anon anahtar `ios/App/Resources/AppConfig.json` içinde. Değerleri kopyalayıp bir dosyaya yazma.
   - **Sıra:** 1) Security Advisor'da beklenen sonuç: "function search path mutable" bulgusu yok; `private` tablolarda RLS kapalı bulgusu yok. `docs/SUPABASE-TODO.md` §2 sorgusunda anonim kullanıcının çalıştırabildiği tek fonksiyon `public.keepalive()`. Başka bulgu varsa listele ve ajana ver. 2) Anonim oturum aç; `GET /functions/v1/ai-image` ile bakiyeyi al. 3) `DELETE /functions/v1/account` ile sil. 4) Authentication > Users'ta kullanıcının gittiğini gör. 5) İsteğe bağlı: `select public.ops_daily_summary();` ile günü oku.
 
-### 1.10 Eski "envanter" projesine dokunma
-- [ ] **Ne:** Commit'li `docs/SUPABASE-TODO.md` §1 "Eski envanter projesini sil" diyordu. Çalışma ağacındaki taslak aynı işi §11'de "eski inventory projesi" olarak sahibin kararına bırakıyor. Silme geri alınamaz.
-  - **Neden:** Taslak §11: "This is permanent and is the owner's call; it is not part of this repository." Bu depoyla ilgisi yoksa silinmemeli.
+### 1.10 Eski "inventory" projesine dokunma
+- [ ] **Ne:** Supabase hesabında bu uygulamayla ilgisi belirsiz eski bir proje olabilir. Silme geri alınamaz.
+  - **Neden:** `docs/SUPABASE-TODO.md` §9: bu depoya ait değil; karar sahibin.
   - **Nerede:** Supabase > proje listesi > proje ayarları (General).
   - **Sıra:** 1) Proje adını ve içeriğini kontrol et. 2) Bu uygulamayla ilgisi kanıtlanmadıkça silme. 3) Silinecekse yalnızca sahip yapar. Ajan silmeye dokunmaz.
 
@@ -294,11 +294,11 @@ supabase functions deploy ad-reward --project-ref efapupjvidyqhqdevmcu --use-api
 - Kredi ve kötüye kullanım dalı birleşti. Doğrulama: yerelde Deno fmt, lint ve check ile 50 test geçti; `backend/scripts/test-db.sh` PostgreSQL 16'da geçti.
 - Mac dalı birleşti. Doğrulama: Mac Catalyst derlemesi CI'da; ekran yakalamaları henüz yapılmadı (2.10).
 - Web sitesi (`RiosenBeq/aybuke`, `main` `c750808`) birleşti; Vercel üretime yayınlıyor; hukuk metinleri uygulamadan senkron. Doğrulama: aybuke.org bu ortamdan açılamadı.
-- Yeniden adlandırma (`6f2959d`, Glowlit → Aybuke) ve `31f8817` (ad-reward Deno testleri CI'da). CI `6f2959d` için çalışıyor görüldü; `31f8817` için çalıştırma kaydı görünmedi. AppCore testleri yeniden adlandırmadan önce 315 geçti; sonrası henüz koşulmadı.
+- Yeniden adlandırma (`6f2959d`, Glowlit → Aybuke) ve `31f8817` (ad-reward Deno testleri CI'da). CI, `6f2959d` için `workflow_dispatch` ile çalıştırıldı ve tamamen yeşil (iOS derlemesi iPhone ve Mac Catalyst için dahil). AppCore testleri yeniden adlandırmadan sonra 319 geçti (yerel Linux Swift 6.1).
 - Bu oturumda yerelde geçen kontroller: `build-legal.py --check`, `export-core-strings.py --check`, `check-honest-copy.py`, `check-release-config.py --report`. `--online` iki github.io adresini doğrulayamadı (2.1).
 
-## Belgelerdeki eski bilgiler (ajan düzeltecek, sahip onayıyla)
+## Belgelerde kalan düzeltmeler
 
-- `docs/SUPABASE-TODO.md`: çalışma ağacındaki taslakta 7 migrasyon, kapalı CAPTCHA ve kaldırılmış `OUTPUT_MODERATION` var; commit edilmeli (commit'li sürüm eski). §6'daki `APPLE_APP_ID` "uygulama kaydı oluşunca" ifadesi artık geçersiz; kayıt var.
-- `docs/RELEASE-CHECKLIST.md`: §1.1'deki `OUTPUT_MODERATION` beklentisi kaldırılacak; §11 ve §12-6 sürüm numarası (`MARKETING_VERSION = 1.0`); özet satırı yalnızca iki migrasyon anıyor; §11 ekran görüntüsü sayıları gerçek durumla eşleştirilecek; App Privacy listesi 2.7'ye göre düzeltilecek.
-- `docs/marketing/app-store-connect-setup.md`: §4 `10-paywall.jpg` yerine `09-paywall.jpg`; §5 kurulum anahtarı hash'i eksik; §2 Age Assurance koşulu netleştirilecek.
+- `docs/marketing/app-store-connect-setup.md` §4: `10-paywall.jpg` yerine `09-paywall.jpg` (dosya öyle). §5 ve §2: kurulum anahtarı hash'i ve Age Assurance kararları 2.7 ve 2.8'e göre yazılacak.
+- `backend/README.md` 'Reports' bölümünde 'günde 20 rapor' yazıyor; politika ve runbook 10 diyor. Ajan düzeltir.
+- `docs/research/2026-10-ux-audit.md` eski '3 AI credits' ifadesini tarihsel kayıt olarak taşıyor; değiştirilmez.
