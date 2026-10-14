@@ -442,7 +442,9 @@ public enum CaptionChunker {
             for i in stride(from: j - 1, through: 0, by: -1) where best[i] < .infinity {
                 let chunk = words[i..<j]
                 if j - i > 1, !fits(chunk, limits: limits) { break }
-                var cost = best[i] + 0.5
+                // Fewer captions, and evenly filled ones ("Today I am trying" |
+                // "the new pink hair look", not 6 + 3).
+                var cost = best[i] + 0.5 + 0.02 * Double((j - i) * (j - i))
                 if j < n {
                     if endsSentence(words[j - 1]) {
                         cost += 0

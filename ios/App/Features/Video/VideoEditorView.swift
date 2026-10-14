@@ -51,6 +51,8 @@ final class VideoEditorModel {
     @ObservationIgnored private var rebuildTask: Task<Void, Never>?
     @ObservationIgnored private var captionsTask: Task<Void, Never>?
     @ObservationIgnored private var currentComposition: AVMutableComposition?
+    /// A seek still on its way, which a caption redraw mustn't undo.
+    @ObservationIgnored private var seekTarget: CMTime?
     @ObservationIgnored private var loopObserver: NSObjectProtocol?
 
     @ObservationIgnored private var exportTask: Task<URL, Error>?
@@ -99,7 +101,11 @@ final class VideoEditorModel {
     func seek(to seconds: Double) {
         player.pause()
         isPlaying = false
-        player.seek(to: CMTime(seconds: seconds, preferredTimescale: 600), toleranceBefore: .zero, toleranceAfter: .zero)
+        let target = CMTime(seconds: seconds, preferredTimescale: 600)
+        seekTarget = target
+        player.seek(to: target, toleranceBefore: .zero, toleranceAfter: .zero) { [weak self] _ in
+            Task { @MainActor in if self?.seekTarget == target { self?.seekTarget = nil } }
+        }
     }
 
     func load() async {
@@ -197,11 +203,12 @@ final class VideoEditorModel {
             guard !Task.isCancelled, item === player.currentItem else { return }
             item.videoComposition = videoComposition
             // A paused frame redraws only when asked.
-            if !isPlaying { await player.seek(to: player.currentTime(), toleranceBefore: .zero, toleranceAfter: .zero) }
+            if !isPlaying { await player.seek(to: seekTarget ?? player.currentTime(), toleranceBefore: .zero, toleranceAfter: .zero) }
         }
     }
 
     func togglePlayback() {
+        seekTarget = nil
         if isPlaying { player.pause() } else { player.play() }
         isPlaying.toggle()
         Haptics.tap()
@@ -631,7 +638,7 @@ struct VideoEditorView: View {
         if defaults.object(forKey: "GLVideoSeek") != nil {
             let seconds = defaults.double(forKey: "GLVideoSeek")
             Task {
-                try? await Task.sleep(for: .milliseconds(900))
+                try? await Task.sleep(for: .milliseconds(1500))
                 model.seek(to: seconds)
             }
         }

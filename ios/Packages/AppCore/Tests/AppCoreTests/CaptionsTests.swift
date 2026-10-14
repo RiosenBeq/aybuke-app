@@ -148,8 +148,9 @@ final class CaptionChunkerTests: XCTestCase {
         let phrase = TranscriptPhrase(pieces: pieces)
         XCTAssertEqual(phrase.words.map(\.text), ["channel ", "today.", " I ", "am"])
         let cues = CaptionChunker.cues(from: [phrase])
-        XCTAssertEqual(cues.map(\.text), ["channel today. I am"])
-        XCTAssertEqual(cues[0].words?.map(\.text), ["channel", "today.", "I", "am"])
+        // Split where the sentence ends.
+        XCTAssertEqual(cues.map(\.text), ["channel today.", "I am"])
+        XCTAssertEqual(cues[0].words?.map(\.text), ["channel", "today."])
     }
 
     func testShortSentencesShareACueButLongerOnesSplitAtTheirEnd() {
@@ -353,5 +354,17 @@ final class SpeechChunksTests: XCTestCase {
         XCTAssertEqual(ranges[1].upperBound, 90.025, accuracy: 0.001)
         XCTAssertEqual(ranges[2].upperBound, 120, accuracy: 0.001)
         XCTAssertTrue(ranges.allSatisfy { $0.upperBound - $0.lowerBound <= 55 })
+    }
+}
+
+final class CaptionChunkBalanceTests: XCTestCase {
+    func testLongSentencesSplitEvenly() {
+        var time = 0.0
+        let pieces = "Today I am trying the new pink hair look.".split(separator: " ").enumerated().map { index, word -> TranscriptPiece in
+            defer { time += 0.3 }
+            return TranscriptPiece(text: (index == 0 ? "" : " ") + word, start: time, end: time + 0.28)
+        }
+        let cues = CaptionChunker.cues(from: [TranscriptPhrase(pieces: pieces)])
+        XCTAssertEqual(cues.map { $0.words?.count ?? 0 }.sorted(), [4, 5])
     }
 }

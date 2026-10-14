@@ -216,6 +216,14 @@ struct CaptionsEditor: View {
                     .onChange(of: focused) { _, id in
                         if let id { withAnimation { proxy.scrollTo(id, anchor: .center) } }
                     }
+                    #if DEBUG
+                    // `-GLCaptionsEditorScroll bottom` for a shot of the language rows.
+                    .task {
+                        guard UserDefaults.standard.string(forKey: "GLCaptionsEditorScroll") == "bottom" else { return }
+                        try? await Task.sleep(for: .milliseconds(800))
+                        proxy.scrollTo("copy", anchor: .bottom)
+                    }
+                    #endif
                 }
             }
             .background(Palette.background.ignoresSafeArea())
@@ -307,7 +315,7 @@ struct CaptionsEditor: View {
             Text("Style")
         } footer: {
             if captions.style == .karaoke {
-                Text("Each word lights up as it's said. Captions you retype show like Pop.")
+                Text("Each word lights up as it's said. Captions you write or rewrite yourself show like Pop.")
             }
         }
         .listRowBackground(Palette.surface)
@@ -394,6 +402,7 @@ struct CaptionsEditor: View {
                 Label(copied ? "Copied" : "Copy captions (SRT)", systemImage: copied ? "checkmark" : "doc.on.doc")
             }
             .disabled(!captions.shows)
+            .id("copy")
         } footer: {
             Text("Captions are made on your device with Apple's speech recognition. The sound and words of your video are never uploaded.")
         }

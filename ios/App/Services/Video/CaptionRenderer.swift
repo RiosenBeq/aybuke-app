@@ -68,12 +68,13 @@ enum CaptionSize: String, CaseIterable, Identifiable, Sendable {
         }
     }
 
-    /// Font size as a share of the frame's shorter side.
+    /// Font size as a share of the frame's shorter side. Medium fits a full
+    /// 32-character line across a portrait video.
     var scale: CGFloat {
         switch self {
-        case .small: return 0.042
-        case .medium: return 0.052
-        case .large: return 0.066
+        case .small: return 0.045
+        case .medium: return 0.056
+        case .large: return 0.07
         }
     }
 }
@@ -210,9 +211,10 @@ final class CaptionTrack: @unchecked Sendable {
                 let fill = max(size.width / background.size.width, size.height / background.size.height)
                 let drawn = CGSize(width: background.size.width * fill, height: background.size.height * fill)
                 background.draw(in: CGRect(x: (size.width - drawn.width) / 2, y: (size.height - drawn.height) / 2, width: drawn.width, height: drawn.height))
-                // Dimmed a little, like a frame behind real captions.
+                // Dimmed a little, like a frame behind real captions (plain
+                // `fill` copies the colour instead of blending it).
                 UIColor.black.withAlphaComponent(0.18).setFill()
-                context.fill(CGRect(origin: .zero, size: size))
+                context.fill(CGRect(origin: .zero, size: size), blendMode: .normal)
             }
             if let caption {
                 UIImage(cgImage: caption.image).draw(in: caption.bounds)

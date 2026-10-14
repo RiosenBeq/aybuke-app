@@ -93,8 +93,19 @@ enum CaptionTranscriber {
         let relay = ProgressRelay(progress)
         let phrases: [TranscriptPhrase]
         if #available(iOS 26.0, *), let dictation = await analyzerUses(language) {
-            phrases = try await analyze(asset, track: track, duration: duration, locale: locale, dictation: dictation, relay: relay)
+            #if DEBUG
+            CaptionsTrace.note("\(language) with SpeechAnalyzer (\(dictation ? "DictationTranscriber" : "SpeechTranscriber"))")
+            #endif
+            do {
+                phrases = try await analyze(asset, track: track, duration: duration, locale: locale, dictation: dictation, relay: relay)
+            } catch Failure.unavailable where SFSpeechRecognizer(locale: locale)?.supportsOnDeviceRecognition == true {
+                // No model for SpeechAnalyzer here, but on-device dictation has one.
+                phrases = try await recognizeOnDevice(asset, track: track, duration: duration, locale: locale, relay: relay)
+            }
         } else {
+            #if DEBUG
+            CaptionsTrace.note("\(language) with SFSpeechRecognizer on device")
+            #endif
             phrases = try await recognizeOnDevice(asset, track: track, duration: duration, locale: locale, relay: relay)
         }
         try Task.checkCancellation()
@@ -155,11 +166,22 @@ enum CaptionTranscriber {
                 try Task.checkCancellation()
                 return try await collector.value
             } catch {
+                #if DEBUG
+                CaptionsTrace.note("SpeechAnalyzer stopped: \(error)")
+                #endif
                 reader.cancel()
                 collector.cancel()
                 await analyzer.cancelAndFinishNow()
                 if error is CancellationError || Task.isCancelled { throw CancellationError() }
                 if let failure = error as? Failure { throw failure }
+                if let speechError = error as? SFSpeechError {
+                    switch speechError.code {
+                    case .noModel, .assetLocaleNotAllocated, .tooManyAssetLocalesAllocated, .cannotAllocateUnsupportedLocale:
+                        throw Failure.unavailable
+                    default:
+                        break
+                    }
+                }
                 throw Failure.failed
             }
         } onCancel: {
@@ -172,10 +194,22 @@ enum CaptionTranscriber {
     /// download, no audio involved), with progress.
     @available(iOS 26.0, *)
     private static func installModel(for module: any SpeechModule, locale: Locale, relay: ProgressRelay) async throws {
+        // Apps reserve the languages they use, a few at most; the oldest
+        // reservation makes room for a new one.
+        let reserved = await AssetInventory.reservedLocales
+        if !reserved.contains(where: { bcp47($0) == bcp47(locale) }) {
+            if reserved.count >= AssetInventory.maximumReservedLocales, let oldest = reserved.first {
+                await AssetInventory.release(reservedLocale: oldest)
+            }
+            _ = try? await AssetInventory.reserve(locale: locale)
+        }
         let request: AssetInstallationRequest?
         do {
             request = try await AssetInventory.assetInstallationRequest(supporting: [module])
         } catch {
+            #if DEBUG
+            CaptionsTrace.note("asset request: \(error)")
+            #endif
             // Apps can keep only a few languages; make room and ask again.
             for reserved in await AssetInventory.reservedLocales where reserved != locale {
                 await AssetInventory.release(reservedLocale: reserved)
@@ -324,6 +358,9 @@ enum CaptionTranscriber {
                     }
                     if let error {
                         let code = (error as NSError).code
+                        #if DEBUG
+                        CaptionsTrace.note("SFSpeechRecognizer: \(error)")
+                        #endif
                         // 1110: "No speech detected". Not a failure, just no captions.
                         if (error as NSError).domain == "kAFAssistantErrorDomain", code == 1110 {
                             pending.finish(.success([]))
@@ -384,6 +421,26 @@ enum CaptionTranscriber {
         if reader.status == .failed { throw reader.error ?? Failure.failed }
     }
 }
+
+#if DEBUG
+/// QA trace of automatic captions: the log, standard error, and
+/// `glowlit-captions.log` in the app's tmp folder (the simulator script reads it).
+enum CaptionsTrace {
+    static func note(_ message: String) {
+        NSLog("[captions] %@", message)
+        FileHandle.standardError.write(Data("[captions] \(message)\n".utf8))
+        let url = FileManager.default.temporaryDirectory.appendingPathComponent("glowlit-captions.log")
+        let line = Data((message + "\n").utf8)
+        if let handle = try? FileHandle(forWritingTo: url) {
+            handle.seekToEndOfFile()
+            handle.write(line)
+            try? handle.close()
+        } else {
+            try? line.write(to: url)
+        }
+    }
+}
+#endif
 
 /// SpeechTranscriber and DictationTranscriber results alike.
 @available(iOS 26.0, *)

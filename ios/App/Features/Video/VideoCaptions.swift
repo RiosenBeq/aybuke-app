@@ -70,6 +70,9 @@ final class VideoCaptions {
     /// Listens to the clip on the device and replaces the captions with what
     /// was said.
     func make(from asset: AVAsset, duration: Double) {
+        #if DEBUG
+        CaptionsTrace.note("make, \(duration) s")
+        #endif
         work?.cancel()
         generation += 1
         let current = generation
@@ -77,6 +80,9 @@ final class VideoCaptions {
         status = .working(.preparing)
         work = Task {
             await loadLanguages()
+            #if DEBUG
+            CaptionsTrace.note("\(languages.count) languages, using \(languageID ?? "none")")
+            #endif
             guard current == generation else { return }
             guard let language = languageID else {
                 status = .failed(.unavailable)
@@ -94,10 +100,13 @@ final class VideoCaptions {
                 status = .done
                 Haptics.success()
                 #if DEBUG
-                // QA reads what was heard from the console (`-GLCaptions auto`).
-                print("[captions] \(language): \(made.map { String(format: "%.2f–%.2f %@", $0.start, $0.end, $0.text) }.joined(separator: " | "))")
+                // QA reads what was heard from the log (`-GLCaptions auto`).
+                CaptionsTrace.note("\(language): " + made.map { String(format: "%.2f–%.2f ", $0.start, $0.end) + $0.text }.joined(separator: " | "))
                 #endif
             } catch {
+                #if DEBUG
+                CaptionsTrace.note("\(language) failed: \(error)")
+                #endif
                 guard current == generation else { return }
                 if error is CancellationError {
                     status = cues.isEmpty ? .idle : .done
