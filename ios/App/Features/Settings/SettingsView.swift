@@ -104,7 +104,10 @@ struct SettingsView: View {
                 }
                 Button("Cancel", role: .cancel) {}
             } message: {
-                if app.canUseAccounts {
+                if !app.allowsCloudAI {
+                    // Under 13 nothing was sent, and there are no credits or subscriptions.
+                    Text("Deletes your creations and resets every setting on this device.")
+                } else if app.canUseAccounts {
                     Text("Deletes your creations and your account with its credits from our servers, and resets every setting on this device. Subscriptions are managed by Apple and must be cancelled separately.")
                 } else {
                     // Preview builds have no server account to delete.
@@ -365,7 +368,11 @@ struct SettingsView: View {
         } header: {
             Text("Privacy")
         } footer: {
-            Text("Uploaded photos are deleted from our servers within \(app.config.retentionPhrase) and are never used to train AI models. Exports include an invisible “made with AI” label (IPTC metadata) as required by the EU AI Act.")
+            if app.allowsCloudAI {
+                Text("Uploaded photos are deleted from our servers within \(app.config.retentionPhrase) and are never used to train AI models. Exports include an invisible “made with AI” label (IPTC metadata) as required by the EU AI Act.")
+            } else {
+                Text("Every tool runs on your device. Your photos are never uploaded.")
+            }
         }
         .listRowBackground(Palette.surface)
     }

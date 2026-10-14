@@ -40,7 +40,8 @@ enum TourStep: Int, CaseIterable, Identifiable {
         }
     }
 
-    func message(isPro: Bool, policy: CreditPolicy) -> String {
+    /// `cloudAI` false (under 13): only the free on-device tools are named.
+    func message(isPro: Bool, policy: CreditPolicy, cloudAI: Bool = true) -> String {
         switch self {
         case .hero:
             return String(localized: "Describe any change, like pink hair, golden hour or soft glam, and watch your photo glow. Or tap a trend below.")
@@ -49,7 +50,9 @@ enum TourStep: Int, CaseIterable, Identifiable {
                 ? String(localized: "Pro gives you \(policy.proMonthlyAllowance) credits every month. Free tools never use credits, and failed edits are always refunded.")
                 : String(localized: "You get \(policy.freeDailyAllowance) free credits every day. Free tools never use credits, and failed edits are always refunded.")
         case .quickTools:
-            return String(localized: "80s & 90s effects, Cut out and Adjust are free and run right on your device. Enhance and Erase add AI magic.")
+            return cloudAI
+                ? String(localized: "80s & 90s effects, Cut out and Adjust are free and run right on your device. Enhance and Erase add AI magic.")
+                : String(localized: "80s & 90s effects, Cut out and Adjust are free and run right on your device.")
         case .create:
             return String(localized: "Type an idea, pick a style and get art in seconds. No prompt skills needed.")
         case .edit:
@@ -198,7 +201,7 @@ struct TourOverlay: View {
             Text(styled: step.title(isPro: app.purchases.isPro), size: 24)
                 .foregroundStyle(Palette.textPrimary)
                 .accessibilityAddTraits(.isHeader)
-            Text(step.message(isPro: app.purchases.isPro, policy: app.credits.policy))
+            Text(step.message(isPro: app.purchases.isPro, policy: app.credits.policy, cloudAI: app.allowsCloudAI))
                 .font(.subheadline)
                 .foregroundStyle(Palette.textSecondary)
                 .fixedSize(horizontal: false, vertical: true)
