@@ -133,6 +133,7 @@ struct LibraryView: View {
 
 struct ThumbnailView: View {
     let fileName: String
+    @Environment(\.scenePhase) private var scenePhase
     @State private var image: UIImage?
 
     var body: some View {
@@ -145,10 +146,17 @@ struct ThumbnailView: View {
                     .transition(.opacity)
             }
         }
-        .task(id: fileName) {
-            let loaded = await ThumbnailCache.shared.thumbnail(for: fileName)
-            withAnimation(.easeOut(duration: 0.2)) { image = loaded }
+        .task(id: fileName) { await load() }
+        // Protected files can't be read while the device is locked, so try
+        // again when the app comes back instead of leaving a blank tile.
+        .onChange(of: scenePhase) { _, phase in
+            if phase == .active, image == nil { Task { await load() } }
         }
+    }
+
+    private func load() async {
+        let loaded = await ThumbnailCache.shared.thumbnail(for: fileName)
+        withAnimation(.easeOut(duration: 0.2)) { image = loaded }
     }
 }
 

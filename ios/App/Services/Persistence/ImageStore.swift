@@ -35,14 +35,22 @@ enum ImageStore {
     private static let iptcExtNamespace = "http://iptc.org/std/Iptc4xmpExt/2008-02-29/" as CFString
     private static let tagNamespace = "https://glowlit.app/ns/library/1.0/" as CFString
 
-    /// PNG keeps transparency (cut-outs); everything else is stored as JPEG.
     /// "Unless open" lets a job that finishes after the device locks still
-    /// write its file, which stays unreadable until the next unlock.
+    /// write its file, which stays unreadable until the next unlock. The Mac
+    /// uses "until first unlock": FileVault already encrypts its disk, and a
+    /// locked screen would otherwise leave My Works blank.
+    #if targetEnvironment(macCatalyst)
+    private static let fileProtection: Data.WritingOptions = .completeFileProtectionUntilFirstUserAuthentication
+    #else
+    private static let fileProtection: Data.WritingOptions = .completeFileProtectionUnlessOpen
+    #endif
+
+    /// PNG keeps transparency (cut-outs); everything else is stored as JPEG.
     static func save(_ image: UIImage, tag: Tag) throws -> String {
         let usePNG = ImageUtilities.hasAlpha(image)
         let name = UUID().uuidString + (usePNG ? ".png" : ".jpg")
         let data = try encode(image, png: usePNG, tag: tag)
-        try data.write(to: url(for: name), options: [.atomic, .completeFileProtectionUnlessOpen])
+        try data.write(to: url(for: name), options: [.atomic, fileProtection])
         return name
     }
 
@@ -137,10 +145,20 @@ final class ThumbnailCache {
             return cached
         }
         let image = await Task.detached(priority: .utility) { () -> UIImage? in
-            guard let full = ImageStore.load(name) else { return nil }
-            let scale = min(1, maxPixel / max(full.size.width, full.size.height))
-            let size = CGSize(width: full.size.width * scale, height: full.size.height * scale)
-            return full.preparingThumbnail(of: size) ?? full
+            // ImageIO decodes straight to a small bitmap. preparingThumbnail
+            // needed the full-size decode first, and on the Mac its images
+            // drew as blank tiles.
+            let options: [CFString: Any] = [
+                kCGImageSourceCreateThumbnailFromImageAlways: true,
+                kCGImageSourceCreateThumbnailWithTransform: true,
+                kCGImageSourceShouldCacheImmediately: true,
+                kCGImageSourceThumbnailMaxPixelSize: maxPixel,
+            ]
+            let url = ImageStore.url(for: name)
+            guard let source = CGImageSourceCreateWithURL(url as CFURL, [kCGImageSourceShouldCache: false] as CFDictionary),
+                  let thumbnail = CGImageSourceCreateThumbnailAtIndex(source, 0, options as CFDictionary)
+            else { return nil }
+            return UIImage(cgImage: thumbnail)
         }.value
         if let image {
             let cost = image.cgImage.map { $0.bytesPerRow * $0.height } ?? 0
