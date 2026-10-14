@@ -48,6 +48,10 @@ struct RootView: View {
             VideoEditorView(source: source)
                 .environment(app)
         }
+        .fullScreenCover(isPresented: $app.isCollagePresented, onDismiss: { app.presentationEnded() }) {
+            CollageView()
+                .environment(app)
+        }
         .overlay {
             if app.tour.isRunning {
                 TourOverlay()
@@ -55,7 +59,7 @@ struct RootView: View {
             }
         }
         .animation(.easeInOut(duration: 0.25), value: app.tour.isRunning)
-        .modifier(AppPresentations(isActive: app.editorLaunch == nil && app.videoSource == nil))
+        .modifier(AppPresentations(isActive: app.editorLaunch == nil && app.videoSource == nil && !app.isCollagePresented))
         .onOpenURL { url in
             if let link = GlowDeepLink(url: url) { app.handle(link) }
         }
@@ -68,7 +72,7 @@ struct MainTabView: View {
 
     var body: some View {
         @Bindable var app = app
-        let isCovered = app.editorLaunch != nil || app.videoSource != nil
+        let isCovered = app.editorLaunch != nil || app.videoSource != nil || app.isCollagePresented
 
         TabView(selection: $app.selectedTab) {
             HomeView()

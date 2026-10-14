@@ -178,6 +178,10 @@ struct HomeView: View {
                             app.startEditing(tool: tool)
                         }
                     }
+                    QuickToolTile(title: "Collage", caption: "Photo dump · carousel", symbolName: "rectangle.3.offgrid.fill", palette: .mint) {
+                        Haptics.tap()
+                        app.isCollagePresented = true
+                    }
                     QuickToolTile(title: "Video", caption: "Cut silences · effects", symbolName: "video.fill", palette: .sunset) {
                         Haptics.tap()
                         app.isVideoPickerPresented = true

@@ -83,6 +83,9 @@ struct EditHubView: View {
                     .buttonStyle(PressableButtonStyle(scale: 0.97))
                     .reveal(2)
 
+                    CollageHubCard()
+                        .reveal(2)
+
                     Button {
                         Haptics.tap()
                         app.isVideoPickerPresented = true

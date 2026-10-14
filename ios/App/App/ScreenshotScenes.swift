@@ -43,6 +43,13 @@ enum ScreenshotScene: String, CaseIterable {
     /// length (default 8), `-GLVideoBroken YES` shows the can't-open state, and
     /// `-GLEffect`, `-GLCutSilences YES`, `-GLVideoAction save|share|close` act on it.
     case video
+    /// The collage maker on synthetic photos: `-GLCollageStyle grid|mosaic|filmStrip|
+    /// polaroid|scrapbook|moodboard`, `-GLCollageVariant <n>`, `-GLCollagePhotos <2…9>`,
+    /// `-GLCollageFormat portrait|square|story|classic|carousel` (`-GLCollageSlides <2…5>`),
+    /// `-GLCollageBackground <name>`, `-GLCollageCaption <text>`, `-GLCollagePanel
+    /// layout|size|style|text`, `-GLCollageSelect <slot>`, `-GLCollageEmpty YES` (before
+    /// photos) and `-GLCollageExport YES` (writes the export to tmp/glowlit-collage-qa).
+    case collage
 
     static var current: ScreenshotScene? {
         UserDefaults.standard.string(forKey: "GLScreenshotScene").flatMap(ScreenshotScene.init(rawValue:))

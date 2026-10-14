@@ -113,6 +113,8 @@ final class AppModel {
     var isAccountPromptPresented = false
     /// "Find your best shot" (on-device, by light and focus).
     var isBestShotPresented = false
+    /// The collage and photo dump maker (full screen, on-device).
+    var isCollagePresented = false
     /// The simple video editor: picker, then the editor itself.
     var isVideoPickerPresented = false
     var videoSource: VideoSource?
@@ -671,7 +673,7 @@ final class AppModel {
 
     private var isPresentingSomething: Bool {
         isPaywallPresented || outOfCredits != nil || editorLaunch != nil || videoSource != nil || consentRequest != nil
-            || shareRequest != nil || isAccountPromptPresented || isBestShotPresented
+            || shareRequest != nil || isAccountPromptPresented || isBestShotPresented || isCollagePresented
     }
 
     /// Mac menu commands and dropped photos only act on the main screens:
@@ -1268,6 +1270,9 @@ extension AppModel {
         case .bestShot:
             selectedTab = .home
             isBestShotPresented = true
+        case .collage:
+            selectedTab = .home
+            isCollagePresented = true
         case .effects:
             selectedTab = .home
             editorLaunch = EditorLaunch(image: ScreenshotFixtures.goldenLandscape, tool: .effects,
