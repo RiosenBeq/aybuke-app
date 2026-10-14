@@ -11,7 +11,7 @@ import { requireEnv } from "./http.ts";
 export const DEFAULT_MODEL = "grok-imagine-image-2.0";
 
 export const ENHANCE_PROMPT =
-  "Enhance this photo: make it sharper and more detailed, reduce blur and noise, restore faces naturally and gently improve the lighting. Keep the composition, colors, every person and their identity exactly the same.";
+  "Enhance this photo: make it sharper and more detailed, reduce blur and noise, restore faces naturally and gently improve the lighting. Keep real skin texture, freckles, moles, pores and blemishes; don't retouch or smooth the skin, and don't reshape the face or body. Keep the composition, colors, every person and their identity exactly the same.";
 
 export const ERASE_PROMPT =
   "<IMAGE_1> is a mask. Remove everything covered by its white area from <IMAGE_0> and fill that area naturally so it matches the surroundings. Keep everything else in <IMAGE_0> unchanged, with the same framing, and return only the edited <IMAGE_0>.";

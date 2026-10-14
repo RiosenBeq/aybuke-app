@@ -106,7 +106,7 @@ Bir güvenlik açığı bulursanız, bundan yararlanmak yerine lütfen [support@
 
 Birden çok katmanlı güvenlik önlemi kullanırız:
 
-1. **İstem filtreleri**, uygulamada ve sunucularımızda çıplaklık veya cinsel içerik, "soyma" ya da çıplaklaştırma ve küçükleri içeren cinsel içerik taleplerini engeller.
+1. **İstem filtreleri**, uygulamada ve sunucularımızda çıplaklık veya cinsel içerik, "soyma" ya da çıplaklaştırma, küçükleri içeren cinsel içerik ve mayo ya da iç çamaşırı gibi açık kıyafet taleplerini engeller. Fotoğraf düzenlemelerinde ayrıca bir yüzü veya vücudu yeniden şekillendirme, ten rengini değiştirme, cildi rötuşlama veya birinin görünüşünü puanlama taleplerini ve birini alaya alan ya da aşağılayan düzenlemeleri de engeller. Her Magic Edit ayrıca yapay zekâya yüzleri, vücut şekillerini, ten rengini, cilt dokusunu ve yaşı olduğu gibi korumasını söyler.
 2. **Sağlayıcı güvenlik ayarları**, yapay zekâ modellerinin güvenli olmayan içeriği reddetmesini sağlar.
 3. **Otomatik çıktı kontrolü**, her sonucu teslim edilmeden önce çıplaklık veya cinsel içerik bakımından tarar.
 4. **Tasarımdan güvenli özellikler**: şablonlarımız kimliği koruyacak şekilde tasarlanır, ünlülere veya gerçek kişilere dayalı şablonlar sunmayız ve vücut şeklini değiştiren ya da cildi açan özellikler sunmayız.

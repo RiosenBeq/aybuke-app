@@ -134,8 +134,8 @@ With `AI_PROVIDER=fal`, the job goes to fal's queue instead (`queue.fal.run`), e
 - The library lives on the device with `completeFileProtection`. Tokens are in the Keychain (`AfterFirstUnlockThisDeviceOnly`).
 
 **Safety:** a layered stack.
-1. Client prompt policy (sexual requests are blocked in all 12 app languages).
-2. Server prompt policy (the same rules in `_shared/policy.ts`).
+1. Client prompt policy (`ContentPolicy`, all 12 app languages): sexual and undressing requests, revealing clothing, and for photo edits face/body reshaping, skin-tone changes, skin retouching, looks rating and humiliating edits. Checked before the consent sheet or paywall opens.
+2. Server prompt policy (`_shared/policy.ts`, the same terms via the generated `_shared/policy-terms.json`; shared test vectors in `_shared/policy-vectors.json`). The server also appends the edit guard (`PromptBuilder.editGuard`: keep faces, body shapes, skin tone, skin texture and age; clothing at least as modest) to every Magic Edit.
 3. Server-side template recipes (prompt tampering is impossible).
 4. Provider moderation: xAI drops filtered outputs (`respect_moderation: false`); fal runs with `safety_tolerance: "2"`.
 5. Output NSFW check (on by default; runs on fal when `FAL_KEY` is set, otherwise xAI's moderation is the output check).

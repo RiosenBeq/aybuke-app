@@ -4,7 +4,7 @@
   },
   "fmt": {
     "lineWidth": 120,
-    "exclude": ["_shared/catalog.json"]
+    "exclude": ["_shared/catalog.json", "_shared/policy-terms.json"]
   },
   "lint": {
     "rules": {

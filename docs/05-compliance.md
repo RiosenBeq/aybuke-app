@@ -61,7 +61,7 @@ Glowlit is now designed for girls and young women, so many users will be 13–17
 | Area | Status |
 |---|---|
 | **Teen-safe design** | ✅ No ads, tracking, profiling, public profiles or feeds; cloud AI off until opt-in; library on device; "Under 16? Check with a parent" on the consent screen; Privacy Policy §3 (plain-language for under-18s) and §18 (UK Children's Code standards applied to everyone). ⏳ DPIA. |
-| **Body image** | ✅ Every people template's identity clause also protects **body shape**; no body-reshaping or skin-lightening features; the AUP bans shaming or deceptive body edits. |
+| **Body image** | ✅ Every people template's identity clause also protects **body shape**; no body-reshaping or skin-lightening features; the prompt policy (app and server, 12 languages) blocks reshaping, skin-tone changes, skin retouching and looks rating in free-text edits, and every Magic Edit carries a guard that keeps faces, bodies, skin and age as they are; the AUP bans shaming or deceptive body edits. |
 | **Templates** | ✅ No brand, celebrity or character names (the doll trend is "Doll Box", text-free packaging); outfits are modest by instruction. |
 | **Legal set** | ✅ Terms (EULA + subscriptions + credits + Apple terms), Privacy Policy (GDPR, UK GDPR, KVKK, CCPA/CPRA and other US states, COPPA), Acceptable Use & AI Content Policy, KVKK Aydınlatma Metni, in English and Turkish → [legal/](../legal/README.md). ⏳ Lawyer review and the checklist in `legal/README.md`. |
 | **Türkiye (KVKK)** | ✅ Aydınlatma metni; transfers abroad on the Board's standard contracts (Law 7499 amendments); application channels (written, KEP, e-signature, registered email). ⏳ Sign and notify the standard contracts within 5 business days; VERBİS assessment. |

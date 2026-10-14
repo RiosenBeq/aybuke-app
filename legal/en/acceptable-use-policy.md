@@ -104,7 +104,7 @@ If you find a security vulnerability, please report it to [{{CONTACT_EMAIL}}](ma
 
 We use several layers of safety measures:
 
-1. **Prompt filters** in the app and on our servers block requests for nudity or sexual content, "undressing" or nudification, and sexual content involving minors.
+1. **Prompt filters** in the app and on our servers block requests for nudity or sexual content, "undressing" or nudification, sexual content involving minors, and revealing clothing such as swimwear or underwear. For photo edits they also block requests to reshape a face or body, change skin tone, retouch skin or rate someone's looks, and edits that mock or degrade someone. Every Magic Edit also tells the AI to keep faces, body shapes, skin tone, skin texture and age as they are.
 2. **Provider safety settings** make the AI models refuse unsafe content.
 3. **An automated output check** scans every result for nudity or sexual content before it's delivered.
 4. **Safe-by-design features**: our templates are designed to preserve identity, we don't offer templates based on celebrities or real people, and we don't offer body-reshaping or skin-lightening features.

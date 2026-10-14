@@ -170,6 +170,13 @@ final class EditorViewModel {
                 app.showToast("Describe the change you want first.")
                 return
             }
+            // Refuse before the consent sheet or paywall opens, so a blocked
+            // idea never looks like it needs credits.
+            if case .blocked(let reason, _) = ContentPolicy.evaluate(prompt, operation: .magicEdit) {
+                app.showToast(verbatim: L10n.core(reason), style: .error)
+                Haptics.error()
+                return
+            }
             job.prompt = editsOnlyMainPerson
                 ? prompt + ". Only change the main person in front; keep everyone else exactly as they are."
                 : prompt

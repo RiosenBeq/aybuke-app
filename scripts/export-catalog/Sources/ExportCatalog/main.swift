@@ -10,6 +10,20 @@ struct Recipe: Encodable {
     let prompt: String
 }
 
+// `--policy` prints the prompt-policy terms instead (_shared/policy-terms.json).
+if CommandLine.arguments.dropFirst().first == "--policy" {
+    let encoder = JSONEncoder()
+    encoder.outputFormatting = [.prettyPrinted, .sortedKeys, .withoutEscapingSlashes]
+    let payload: [String: AnyEncodable] = [
+        "_comment": AnyEncodable("Generated from ios/Packages/AppCore (ContentPolicy, PromptBuilder.editGuard). Do not edit by hand: run scripts/export-catalog.sh."),
+        "editGuard": AnyEncodable(PromptBuilder.editGuard),
+        "messages": AnyEncodable(ContentPolicy.exportedMessages),
+        "terms": AnyEncodable(ContentPolicy.exportedTerms),
+    ]
+    print(String(data: try encoder.encode(payload), encoding: .utf8)!)
+    exit(0)
+}
+
 let recipes = TemplateCatalog.all.map { Recipe(id: $0.id, title: $0.title, isPro: $0.isPro, prompt: $0.prompt) }
 let encoder = JSONEncoder()
 encoder.outputFormatting = [.prettyPrinted, .sortedKeys, .withoutEscapingSlashes]

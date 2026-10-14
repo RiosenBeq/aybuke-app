@@ -76,7 +76,7 @@ xcodebuild build -project ios/Glowlit.xcodeproj -scheme Glowlit -configuration D
 swift test --package-path ios/Packages/AppCore
 
 # Backend: Deno checks (CI) and SQL tests on a throwaway Postgres
-(cd backend/supabase/functions && deno fmt --check && deno lint && deno check ai-image/index.ts credits-redeem/index.ts account/index.ts report/index.ts)
+(cd backend/supabase/functions && deno fmt --check && deno lint && deno check ai-image/index.ts credits-redeem/index.ts account/index.ts report/index.ts && deno test _shared/)
 backend/scripts/test-db.sh
 
 # Generated files must stay in sync (CI checks both)
@@ -96,7 +96,7 @@ Deterministic screens for QA and marketing (DEBUG builds): launch with `-GLScree
 ## 4. How things work
 
 - **AI modes** (`AppConfig.aiMode`): *backend* (production: Supabase Edge Functions → xAI `grok-imagine-image-2.0`, low quality for free and medium for Pro, 1k), *direct* (DEBUG only, key from `ios/Config/Secrets.xcconfig`, `GL_AI_PROVIDER = xai|fal|openai|gemini`), *demo* (no backend: simulated results stamped "DEMO PREVIEW"). Jobs are async: POST → poll → download → DELETE to confirm, which clears results server-side.
-- **Gates for every AI action:** content policy (client + server, all app languages) → consent → Pro/credits. Credits are server-authoritative in production; failures are refunded exactly once.
+- **Gates for every AI action:** content policy (client + server, all app languages; checked before the consent sheet or paywall opens) → consent → Pro/credits. Credits are server-authoritative in production; failures are refunded exactly once.
 - **On-device tools** never need consent or credits and save without a watermark. Free cloud AI results carry a small mark; Pro removes it.
 - **Localization:** String Catalogs. In SwiftUI use literals or `LocalizedStringKey`; in models use `String(localized:)`; AppCore text is English and translated at runtime with `L10n.core(_:)`, so after changing AppCore strings run `python3 scripts/export-core-strings.py`. Add or update translations with `xcodebuild -exportLocalizations` / `-importLocalizations`. Keep placeholders, `*accent*` pairs and line breaks identical. Legal documents exist in English and Turkish only.
 - **Purchases:** StoreKit 2 in `PurchaseManager`; the backend verifies Apple-signed transactions. RevenueCat runs in observer mode for analytics only (project "Glowlit", public key in `AppConfig.json`).
@@ -108,7 +108,7 @@ Deterministic screens for QA and marketing (DEBUG builds): launch with `-GLScree
 
 - **Never commit or print secrets.** AI keys live in Supabase Edge Function secrets or the git-ignored `ios/Config/Secrets.xcconfig`. Public-by-design values (Supabase anon key, RevenueCat `appl_…` key) may go in `AppConfig.json`.
 - Don't commit `.claude/`. Don't add personal email addresses to public files.
-- **Teen safety:** no sexual, undressing or body-reshaping features or prompts; keep the prompt policy (`ContentPolicy.swift` and `backend/.../_shared/policy.ts`) in sync; template prompts keep identity, skin tone and body unchanged and outfits age-appropriate.
+- **Teen safety:** no sexual, undressing, revealing-clothing, humiliating or body/face/skin-reshaping features or prompts. The prompt policy lives in `ContentPolicy.swift` (terms per category, all app languages, subject-bound so "slim gold necklace" still works); after changing it run `scripts/export-catalog.sh`, which writes `_shared/policy-terms.json` for `policy.ts`, and add cases to `_shared/policy-vectors.json` (run by both `swift test` and `deno test`). Every Magic Edit ends with `PromptBuilder.editGuard` (the server appends it too). Template prompts keep identity, skin tone and body unchanged and outfits age-appropriate.
 - **Honest copy:** claims in the app, website, App Store text and legal documents must match the code (example: there is no remote template catalog, so never promise new looks without an app update). Don't name competitors in user-facing copy.
 - **Legal:** edit `legal/` only, then run `python3 scripts/build-legal.py`. Adding a data processor means updating the privacy policies (EN, TR, KVKK) in the same change.
 - Match the surrounding code style: SwiftUI + Observation, sparse comments that explain *why*, Blush palette tokens, `Text(styled:)` for headlines with one accent word.

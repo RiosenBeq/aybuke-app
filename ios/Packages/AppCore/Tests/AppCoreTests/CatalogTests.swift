@@ -12,7 +12,7 @@ final class CatalogTests: XCTestCase {
             XCTAssertFalse(template.title.isEmpty, template.id)
             XCTAssertGreaterThan(template.prompt.count, 40, template.id)
             XCTAssertLessThanOrEqual(template.prompt.count, PromptBuilder.maxPromptLength, template.id)
-            XCTAssertTrue(ContentPolicy.evaluate(template.prompt).isAllowed, template.id)
+            XCTAssertTrue(ContentPolicy.evaluate(template.prompt, operation: .restyle).isAllowed, template.id)
         }
     }
 
