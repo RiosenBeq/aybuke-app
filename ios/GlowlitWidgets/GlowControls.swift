@@ -12,8 +12,12 @@ import AppCore
 struct MagicEditControl: ControlWidget {
     var body: some ControlWidgetConfiguration {
         StaticControlConfiguration(kind: "app.glowlit.ios.control.magic-edit") {
-            ControlWidgetButton(action: OpenURLIntent(GlowDeepLink.magicEdit.url)) {
-                Label("Magic Edit", systemImage: "wand.and.stars")
+            // Under 13 (her age band, shared by the app) no cloud AI: the
+            // free Cut out instead. The app reloads controls when it changes.
+            let cloud = GlowSharedStore.load()?.showsCloudAI ?? true
+            ControlWidgetButton(action: OpenURLIntent((cloud ? GlowDeepLink.magicEdit : .removeBackground).url)) {
+                Label(cloud ? LocalizedStringKey("Magic Edit") : LocalizedStringKey("Cut out"),
+                      systemImage: cloud ? "wand.and.stars" : "scissors")
             }
         }
         .displayName("Magic Edit")

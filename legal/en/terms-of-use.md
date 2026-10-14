@@ -196,7 +196,7 @@ These are reference prices in US dollars. The app shows the price in your local 
 
 If you're eligible, the yearly plan starts with a 7-day free trial. Eligibility is decided under Apple's rules for introductory offers.
 
-Unless you cancel at least 24 hours before the trial ends, your subscription starts automatically and you're charged the yearly price when the trial ends. If you allow notifications, the app reminds you one day before your trial ends.
+Unless you cancel at least 24 hours before the trial ends, your subscription starts automatically and you're charged the yearly price when the trial ends. If you allow notifications, the app reminds you before that cancel-by time: at least 26 hours before your trial ends, and earlier when that would fall at night or during school hours.
 
 If you buy a subscription while you're in a free trial, any unused part of the trial is forfeited where applicable.
 

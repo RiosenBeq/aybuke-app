@@ -123,7 +123,12 @@ struct SettingsView: View {
                 Label {
                     VStack(alignment: .leading, spacing: 2) {
                         Text("\(Brand.name) Pro").font(.headline)
-                        Text("Thank you for supporting us ✦").font(.caption).foregroundStyle(Palette.textSecondary)
+                        if let trial = app.purchases.trial {
+                            Text("Free trial until \(trial.endsAt.formatted(date: .abbreviated, time: .shortened))")
+                                .font(.caption).foregroundStyle(Palette.textSecondary)
+                        } else {
+                            Text("Thank you for supporting us ✦").font(.caption).foregroundStyle(Palette.textSecondary)
+                        }
                     }
                 } icon: {
                     Image(systemName: "crown.fill").foregroundStyle(Palette.accent)

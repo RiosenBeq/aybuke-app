@@ -142,6 +142,31 @@ public enum NotificationPlanner {
         return result
     }
 
+    /// How long before the trial ends the reminder may fire at the latest:
+    /// she must cancel at least 24 hours before, and gets 2 more to do it.
+    public static let trialReminderLead: TimeInterval = 26 * 3600
+
+    /// The trial reminder: the latest moment outside quiet and school hours
+    /// that is at least 26 hours before `trialEnd` (so before the 24-hour
+    /// cancel-by time) and still after `now`. Nil when no such moment is
+    /// left (a sandbox trial, which StoreKit speeds up).
+    public static func trialReminder(trialEnd: Date, now: Date, calendar: Calendar = .current) -> Date? {
+        // On a whole minute, rounded down (never later than the lead allows).
+        let latest = trialEnd.addingTimeInterval(-trialReminderLead).timeIntervalSinceReferenceDate
+        var candidate = Date(timeIntervalSinceReferenceDate: (latest / 60).rounded(.down) * 60)
+        // Each step lands on the evening before (or the same evening), so a
+        // few steps always reach an allowed slot.
+        for _ in 0..<4 {
+            if !isQuiet(candidate, calendar: calendar) && !isSchoolTime(candidate, calendar: calendar) {
+                return candidate > now ? candidate : nil
+            }
+            let hour = calendar.component(.hour, from: candidate)
+            let day = hour >= quietStartHour ? candidate : calendar.date(byAdding: .day, value: -1, to: candidate) ?? candidate
+            candidate = calendar.date(bySettingHour: quietStartHour - 1, minute: 59, second: 0, of: day) ?? candidate
+        }
+        return nil
+    }
+
     /// "Your free credits are back" at the refill time, moved out of quiet hours.
     public static func creditsBack(refill: Date, dailyCredits: Int, calendar: Calendar = .current) -> PlannedNotification {
         PlannedNotification(
@@ -149,14 +174,15 @@ public enum NotificationPlanner {
             kind: .creditsBack,
             date: outsideQuietHours(refill, calendar: calendar),
             title: "Your free credits are back ✨",
-            body: "\(dailyCredits) fresh credits for today. What are we glowing up?",
+            body: "\(dailyCredits) fresh credits for today.",
             link: .create
         )
     }
 
     /// The next few Friday looks, each naming that day's trend, so the
-    /// notification matches the "Today's trend" widget.
-    public static func weeklyLooks(after now: Date, count: Int = 4, calendar: Calendar = .current) -> [PlannedNotification] {
+    /// notification matches the "Today's trend" widget (free looks unless Pro).
+    public static func weeklyLooks(after now: Date, isPro: Bool, count: Int = 4,
+                                   calendar: Calendar = .current) -> [PlannedNotification] {
         var components = DateComponents()
         components.weekday = weeklyLookWeekday
         components.hour = weeklyLookHour
@@ -165,14 +191,14 @@ public enum NotificationPlanner {
         var cursor = now
         while results.count < count,
               let next = calendar.nextDate(after: cursor, matching: components, matchingPolicy: .nextTime) {
-            let look = TemplateCatalog.trendOfTheDay(on: next, calendar: calendar)
+            let look = TemplateCatalog.trendOfTheDay(on: next, isPro: isPro, calendar: calendar)
             let stamp = calendar.dateComponents([.year, .month, .day], from: next)
             results.append(PlannedNotification(
                 id: "glowlit.weekly-look.\(stamp.year ?? 0)-\(stamp.month ?? 0)-\(stamp.day ?? 0)",
                 kind: .weeklyLook,
                 date: next,
                 title: "This week's look: \(look.title) ✨",
-                body: "\(look.subtitle). Try it on your photo.",
+                body: "\(look.subtitle).",
                 link: .template(look.id)
             ))
             cursor = next
@@ -180,12 +206,18 @@ public enum NotificationPlanner {
         return results
     }
 
-    /// Shown right away when a job finishes while the app is in the background.
-    /// Tapping it simply brings the app back to the result.
-    public static func jobFinished(success: Bool, title: String) -> (title: String, body: String) {
+    /// Shown right away when a job finishes while the app is in the
+    /// background, never at night or in school hours (then the Live Activity
+    /// and My Works show it). Never her prompt: it would sit on the Lock Screen.
+    public static func jobFinished(success: Bool, isCreate: Bool) -> (title: String, body: String) {
         if success {
-            return ("Your glow-up is ready ✨", "Tap to see “\(title.shortened(to: 40))”.")
+            return (isCreate ? "Your images are ready ✨" : "Your edit is ready ✨", "Tap to see it.")
         }
         return ("That one didn't work", "No credit was used. Tap to try again.")
+    }
+
+    /// Whether a "ready" ping may be posted now.
+    public static func mayPostNow(_ date: Date, calendar: Calendar = .current) -> Bool {
+        !isQuiet(date, calendar: calendar) && !isSchoolTime(date, calendar: calendar)
     }
 }

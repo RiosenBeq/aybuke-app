@@ -91,7 +91,7 @@ Cloud jobs run on xAI Grok Imagine (`grok-imagine-image-2.0` at 1k): low quality
 
 ## Notifications, ratings and accounts
 
-- **Notifications** are local and opt-in (`GlowNotifier`, `NotificationPlanner` in AppCore): glow ready, free credits back, one look a week. Never at night (21:00–09:00) or during school hours on weekdays.
+- **Notifications** are local and opt-in (`GlowNotifier`, `NotificationPlanner` in AppCore): edit ready, free credits back, one free look a week, and the trial reminder (at least 26 hours before the trial ends). Never at night (21:00–09:00) or during school hours on weekdays, and never her prompt on the Lock Screen (Live Activity and widget titles are catalog names).
 - **Rating prompts** follow `ReviewPromptPolicy`: only after the third save, share or heart, from day 3, once per version, never after a failure, report, retry or paywall.
 - **Accounts** are optional: Sign in with Apple, then the backend merges the anonymous user (see [backend/README.md](backend/README.md#accounts-sign-in-with-apple)). Turn on the Sign in with Apple capability for `app.glowlit.ios` before running on a device.
 

@@ -43,7 +43,7 @@ struct GlowWidgetView: View {
     var body: some View {
         switch family {
         case .accessoryCircular:
-            circular
+            if snapshot.showsCloudAI { circular } else { circularEffects }
         case .systemMedium:
             medium
         default:
@@ -96,10 +96,15 @@ struct GlowWidgetView: View {
                 (entry.latestImage == nil ? Text("glow ✨") : Text(L10n.core(snapshot.latestTitle ?? String(localized: "creation"))))
                     .font(entry.latestImage == nil ? .widgetAccent(20) : .widgetTitle(15))
                     .lineLimit(2)
+                    // Hidden while locked (StandBy, the iPad Lock Screen).
+                    .privacySensitive()
             }
             .foregroundStyle(entry.latestImage == nil ? WidgetPalette.ink : .white)
         }
-        .overlay(alignment: .topLeading) { creditsPill }
+        .overlay(alignment: .topLeading) {
+            // Under 13 there are no credits to count.
+            if snapshot.showsCloudAI { creditsPill }
+        }
         .overlay(alignment: .topTrailing) {
             if snapshot.latestIsFavorite && entry.latestImage != nil {
                 Image(systemName: "heart.fill")
@@ -110,7 +115,7 @@ struct GlowWidgetView: View {
             }
         }
         .containerBackground(for: .widget) { artwork }
-        .widgetURL(entry.latestImage == nil ? GlowDeepLink.magicEdit.url : GlowDeepLink.library.url)
+        .widgetURL(entry.latestImage == nil ? firstTool.url : GlowDeepLink.library.url)
     }
 
     private var medium: some View {
@@ -124,6 +129,7 @@ struct GlowWidgetView: View {
                             .strokeBorder(.white.opacity(0.8), lineWidth: 2)
                     )
                     .shadow(color: WidgetPalette.ink.opacity(0.15), radius: 8, y: 4)
+                    .privacySensitive()
             }
             VStack(alignment: .leading, spacing: 8) {
                 HStack(alignment: .firstTextBaseline, spacing: 4) {
@@ -133,10 +139,20 @@ struct GlowWidgetView: View {
                         .font(.widgetAccent(19))
                 }
                 .foregroundStyle(WidgetPalette.ink)
-                creditsLine
+                if snapshot.showsCloudAI {
+                    creditsLine
+                } else {
+                    Text("Free, on your device")
+                        .font(.system(size: 12, weight: .semibold, design: .rounded))
+                        .foregroundStyle(WidgetPalette.inkSoft)
+                }
                 Spacer(minLength: 0)
                 HStack(spacing: 8) {
-                    action("wand.and.stars", "Magic", .magicEdit)
+                    if snapshot.showsCloudAI {
+                        action("wand.and.stars", "Magic", .magicEdit)
+                    } else {
+                        action("scissors", "Cut out", .removeBackground)
+                    }
                     action("camera.filters", "Effects", .effects)
                     action("video.fill", "Video", .video)
                 }
@@ -182,6 +198,21 @@ struct GlowWidgetView: View {
                     .lineLimit(1)
             }
         }
+    }
+
+    /// Magic Edit, or the free effects under 13 (no cloud AI entry points).
+    private var firstTool: GlowDeepLink { snapshot.showsCloudAI ? .magicEdit : .effects }
+
+    private var circularEffects: some View {
+        ZStack {
+            AccessoryWidgetBackground()
+            Image(systemName: "camera.filters")
+                .font(.system(size: 22, weight: .semibold))
+        }
+        .widgetAccentable()
+        .containerBackground(for: .widget) { Color.clear }
+        .widgetURL(GlowDeepLink.effects.url)
+        .accessibilityLabel(Text("Retro effects"))
     }
 
     private var circular: some View {

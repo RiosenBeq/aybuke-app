@@ -23,8 +23,23 @@ final class GlowSharedTests: XCTestCase {
         let next = day.addingTimeInterval(86_400)
         XCTAssertEqual(TemplateCatalog.trendOfTheDay(on: day, calendar: calendar), TemplateCatalog.trendOfTheDay(on: day.addingTimeInterval(60), calendar: calendar))
         XCTAssertNotEqual(TemplateCatalog.trendOfTheDay(on: day, calendar: calendar), TemplateCatalog.trendOfTheDay(on: next, calendar: calendar))
-        let categories: Set<TemplateCategory> = [.trending, .glowUp, .aesthetic]
+        let categories: Set<TemplateCategory> = [.trending, .aesthetic, .art]
         XCTAssertTrue(categories.contains(TemplateCatalog.trendOfTheDay(on: day, calendar: calendar).category))
+    }
+
+    func testFreeUsersNeverGetAProTrendAndNoOneGetsGlowUps() {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = TimeZone(identifier: "UTC")!
+        let start = Date(timeIntervalSince1970: 1_791_000_000)
+        for offset in 0..<365 {
+            let day = start.addingTimeInterval(TimeInterval(offset) * 86_400)
+            let free = TemplateCatalog.trendOfTheDay(on: day, isPro: false, calendar: calendar)
+            XCTAssertFalse(free.isPro, "day \(offset)")
+            XCTAssertNotEqual(free.category, .glowUp)
+            XCTAssertNotEqual(TemplateCatalog.trendOfTheDay(on: day, isPro: true, calendar: calendar).category, .glowUp)
+        }
+        XCTAssertFalse(TemplateCatalog.pushPool(isPro: false).isEmpty)
+        XCTAssertTrue(TemplateCatalog.pushPool(isPro: true).allSatisfy { $0.season == nil })
     }
 
     func testSnapshotRoundTripsThroughADirectory() throws {
@@ -57,6 +72,10 @@ final class GlowSharedTests: XCTestCase {
         XCTAssertEqual(snapshot.credits, 2)
         XCTAssertNil(snapshot.packs)
         XCTAssertEqual(snapshot.balanceKind, .mixed, "unknown split: no \"today\" or \"this month\" label")
+        XCTAssertTrue(snapshot.showsCloudAI, "no age band yet: as before")
+        var under13 = snapshot
+        under13.cloudAIAllowed = false
+        XCTAssertFalse(under13.showsCloudAI)
     }
 
     func testBalanceKindAndGauge() {

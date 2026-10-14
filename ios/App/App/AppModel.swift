@@ -213,6 +213,9 @@ final class AppModel {
             Task { await self.refreshServerBalance() }
         }
         purchases.onLatePurchase = { [weak self] purchase in self?.completeLatePurchase(purchase) }
+        purchases.onTrialChange = { trial in
+            Task { await Self.syncTrialReminder(trial) }
+        }
         notifier.onOpenLink = { [weak self] link in self?.handle(link) }
 
         #if DEBUG
@@ -249,6 +252,9 @@ final class AppModel {
             consentRequest = nil
             if selectedTab == .create { selectedTab = .home }
         }
+        // Widgets, controls and reminders follow her age band.
+        syncWidgets()
+        syncReminders()
         return true
     }
 
@@ -308,6 +314,17 @@ final class AppModel {
     /// Back in the foreground: notification permission may have changed.
     func becameActive() {
         syncReminders()
+        // A trial cancelled in Settings › Subscriptions loses its reminder.
+        Task { await purchases.refreshEntitlements() }
+    }
+
+    /// The trial reminder exists only while a trial runs and will renew.
+    private static func syncTrialReminder(_ trial: TrialStatus?) async {
+        guard let trial, trial.willRenew else {
+            TrialReminder.cancel()
+            return
+        }
+        await TrialReminder.schedule(trialEnd: trial.endsAt, price: trial.price, mayAsk: false)
     }
 
     /// Adds a purchased pack: locally in demo mode, verified by the server in production.
@@ -336,11 +353,7 @@ final class AppModel {
             return
         }
         showToast("Welcome to \(Brand.name) Pro ✦", style: .success)
-        // Keep the paywall's "We'll remind you before your trial ends" promise.
-        if let trialEnd = purchase.trialEndsAt,
-           let price = purchases.products.first(where: { $0.id == purchase.productID })?.displayPrice {
-            Task { await TrialReminder.schedule(billingDate: trialEnd, price: price, mayAsk: false) }
-        }
+        // The trial reminder follows from `onTrialChange`.
     }
 
     /// Binds purchases to the backend user (StoreKit `appAccountToken`) and
@@ -695,7 +708,8 @@ final class AppModel {
     func run(_ job: AIJob, saveToLibrary: Bool) async throws -> AIJobResult {
         let isCloud = !job.operation.runsOnDevice
         let showsActivity = isCloud && liveActivity.start(
-            title: job.title.shortened(to: 34),
+            // Catalog text only: her prompt would show on the Lock Screen.
+            title: L10n.core(job.template?.title ?? job.operation.displayName).shortened(to: 34),
             symbolName: job.template?.symbolName ?? job.operation.symbolName,
             expectedSeconds: GlowActivityController.expectedSeconds(for: job.operation, outputs: job.numOutputs)
         )
@@ -707,13 +721,13 @@ final class AppModel {
         }
         do {
             let result = try await perform(job, saveToLibrary: saveToLibrary)
-            if isCloud { finishCloudJob(success: true, title: job.title, showsActivity: showsActivity) }
+            if isCloud { finishCloudJob(success: true, operation: job.operation, showsActivity: showsActivity) }
             return result
         } catch {
             if Self.isCancellation(error) {
                 if showsActivity { liveActivity.cancel() }
             } else if isCloud {
-                finishCloudJob(success: false, title: job.title, showsActivity: showsActivity)
+                finishCloudJob(success: false, operation: job.operation, showsActivity: showsActivity)
             }
             throw error
         }
@@ -721,12 +735,12 @@ final class AppModel {
 
     /// The Live Activity shows the outcome; without one (switched off in
     /// Settings, say) a notification does, if she opted in.
-    private func finishCloudJob(success: Bool, title: String, showsActivity: Bool) {
+    private func finishCloudJob(success: Bool, operation: AIOperation, showsActivity: Bool) {
         let inBackground = UIApplication.shared.applicationState != .active
         if showsActivity {
             liveActivity.finish(success: success, lingers: inBackground)
         } else {
-            notifier.notifyJobFinished(success: success, title: title)
+            notifier.notifyJobFinished(success: success, isCreate: operation == .textToImage)
         }
     }
 
@@ -807,7 +821,8 @@ final class AppModel {
             latest: (try? context.fetch(newest))?.first,
             creationsCount: count,
             breakdown: credits.breakdown,
-            nextGrant: credits.nextSubscriptionGrant
+            nextGrant: credits.nextSubscriptionGrant,
+            cloudAIAllowed: allowsCloudAI
         )
     }
 
@@ -864,7 +879,8 @@ final class AppModel {
                 credits: credits.balance,
                 isPro: purchases.isPro,
                 nextRefill: credits.nextFreeRefill,
-                dailyCredits: credits.policy.freeDailyAllowance
+                dailyCredits: credits.policy.freeDailyAllowance,
+                cloudAIAllowed: allowsCloudAI
             )
         }
     }

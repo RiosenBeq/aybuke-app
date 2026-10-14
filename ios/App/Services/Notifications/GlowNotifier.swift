@@ -91,7 +91,9 @@ final class GlowNotifier {
     }
 
     /// Replaces the scheduled reminders with the current plan.
-    func reschedule(credits: Int, isPro: Bool, nextRefill: Date, dailyCredits: Int) async {
+    /// `cloudAIAllowed` false (under 13): no credits or AI-look reminders,
+    /// they'd only point at tools she doesn't have.
+    func reschedule(credits: Int, isPro: Bool, nextRefill: Date, dailyCredits: Int, cloudAIAllowed: Bool) async {
         let center = UNUserNotificationCenter.current()
         let ours = await center.pendingNotificationRequests().map(\.identifier).filter { id in
             Self.scheduledPrefixes.contains { id.hasPrefix($0) }
@@ -101,11 +103,11 @@ final class GlowNotifier {
         guard isAllowedBySystem else { return }
 
         var plan: [PlannedNotification] = []
-        if preferences.creditsBack, !isPro, credits == 0 {
+        if cloudAIAllowed, preferences.creditsBack, !isPro, credits == 0 {
             plan.append(NotificationPlanner.creditsBack(refill: nextRefill, dailyCredits: dailyCredits))
         }
-        if preferences.weeklyLook {
-            plan += NotificationPlanner.weeklyLooks(after: Date())
+        if cloudAIAllowed, preferences.weeklyLook {
+            plan += NotificationPlanner.weeklyLooks(after: Date(), isPro: isPro)
         }
         for item in plan where item.date > Date() {
             let content = UNMutableNotificationContent()
@@ -121,15 +123,17 @@ final class GlowNotifier {
         }
     }
 
-    /// "Your glow-up is ready" when a job finishes while she's in another app
-    /// and no Live Activity is showing it already.
-    func notifyJobFinished(success: Bool, title: String) {
-        guard preferences.glowReady, isAllowedBySystem,
+    /// "Your edit is ready" when a job finishes while she's in another app
+    /// and no Live Activity is showing it already. Never at night or in
+    /// school hours (a later ping could point at an edit that's gone), and
+    /// never her prompt: it would sit on the Lock Screen.
+    func notifyJobFinished(success: Bool, isCreate: Bool) {
+        guard preferences.glowReady, isAllowedBySystem, NotificationPlanner.mayPostNow(Date()),
               UIApplication.shared.applicationState != .active else { return }
         let content = UNMutableNotificationContent()
         let copy = success
-            ? (title: String(localized: "Your glow-up is ready ✨"),
-               body: String(localized: "Tap to see “\(L10n.core(title).shortened(to: 40))”."))
+            ? (title: isCreate ? String(localized: "Your images are ready ✨") : String(localized: "Your edit is ready ✨"),
+               body: String(localized: "Tap to see it."))
             : (title: String(localized: "That one didn't work"),
                body: String(localized: "No credit was used. Tap to try again."))
         content.title = copy.title
@@ -144,13 +148,13 @@ final class GlowNotifier {
         switch item.kind {
         case .creditsBack:
             return (String(localized: "Your free credits are back ✨"),
-                    String(localized: "\(dailyCredits) fresh credits for today. What are we glowing up?"))
+                    String(localized: "\(dailyCredits) fresh credits for today."))
         case .weeklyLook:
             guard case .template(let id) = item.link, let look = TemplateCatalog.template(id: id) else {
                 return (item.title, item.body)
             }
             return (String(localized: "This week's look: \(L10n.core(look.title)) ✨"),
-                    String(localized: "\(L10n.core(look.subtitle)). Try it on your photo."))
+                    String(localized: "\(L10n.core(look.subtitle))."))
         case .glowReady:
             return (item.title, item.body)
         }

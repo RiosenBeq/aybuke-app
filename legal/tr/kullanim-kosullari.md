@@ -196,7 +196,7 @@ Bunlar ABD doları cinsinden referans fiyatlardır. Uygulama, satın almadan ön
 
 Uygunsanız yıllık plan 7 günlük ücretsiz deneme süresiyle başlar. Uygunluk, Apple'ın tanıtım teklifleri (introductory offers) kurallarına göre belirlenir.
 
-Deneme süresinin bitiminden en az 24 saat önce iptal etmezseniz aboneliğiniz otomatik olarak başlar ve deneme süresi sona erdiğinde yıllık ücret tahsil edilir. Bildirimlere izin verdiyseniz uygulama, deneme sürenizin bitmesinden bir gün önce size hatırlatma gönderir.
+Deneme süresinin bitiminden en az 24 saat önce iptal etmezseniz aboneliğiniz otomatik olarak başlar ve deneme süresi sona erdiğinde yıllık ücret tahsil edilir. Bildirimlere izin verdiyseniz uygulama, bu son iptal zamanından önce size hatırlatma gönderir: deneme sürenizin bitmesinden en az 26 saat önce; bu zaman geceye veya okul saatlerine denk gelirse daha erken.
 
 Ücretsiz deneme süresi devam ederken bir abonelik satın alırsanız, uygulanabildiği hallerde deneme süresinin kullanılmayan kısmı sona erer.
 
