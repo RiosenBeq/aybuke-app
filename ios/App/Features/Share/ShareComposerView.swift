@@ -17,6 +17,9 @@ struct ShareComposerView: View {
     @State private var rendered: UIImage?
     @State private var isWorking = false
     @State private var activityItems: ActivityItems?
+    @State private var captionIdeas: [String] = []
+    @State private var ideasFromWriter = false
+    @State private var isLoadingIdeas = false
 
     /// On-device edits are never branded; free cloud AI results are.
     private var branded: Bool { payload.provenance.showsMark(isPro: app.purchases.isPro) }
@@ -60,6 +63,7 @@ struct ShareComposerView: View {
                         .tint(Palette.accent)
                     }
                     captionCard
+                    captionIdeasCard
                     notes
                 }
                 .padding(.horizontal, Metrics.gutter)
@@ -80,6 +84,10 @@ struct ShareComposerView: View {
         .tint(Palette.accent)
         .task(id: RenderKey(format: format, showPrompt: showPrompt, branded: branded, aiLabel: showsAILabel)) {
             await render()
+        }
+        .task {
+            app.writer.prewarm()
+            await loadCaptionIdeas()
         }
         .onAppear {
             if caption.isEmpty {
@@ -190,6 +198,63 @@ struct ShareComposerView: View {
         .cardStyle()
     }
 
+    /// Three short captions about the vibe, never about how anyone looks:
+    /// from Apple's on-device writer when it's available, otherwise
+    /// hand-written ones. Instagram can't prefill text, so a tap copies one.
+    private var captionIdeasCard: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            HStack {
+                Text("Caption ideas")
+                    .font(.cardTitle)
+                    .foregroundStyle(Palette.textPrimary)
+                Spacer()
+                Button {
+                    Haptics.tap()
+                    Task { await loadCaptionIdeas() }
+                } label: {
+                    Image(systemName: "arrow.clockwise")
+                        .font(.subheadline.weight(.semibold))
+                }
+                .foregroundStyle(Palette.accent)
+                .disabled(isLoadingIdeas)
+                .accessibilityLabel("New caption ideas")
+            }
+            if captionIdeas.isEmpty {
+                ProgressView()
+                    .tint(Palette.accent)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 12)
+            }
+            ForEach(captionIdeas, id: \.self) { idea in
+                Button {
+                    copyCaptionIdea(idea)
+                } label: {
+                    HStack(spacing: 10) {
+                        Text(idea)
+                            .font(.subheadline)
+                            .foregroundStyle(Palette.textPrimary)
+                            .multilineTextAlignment(.leading)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                        Image(systemName: "doc.on.doc")
+                            .font(.footnote.weight(.semibold))
+                            .foregroundStyle(Palette.accent)
+                    }
+                    .padding(.horizontal, 14)
+                    .padding(.vertical, 12)
+                    .background(Palette.background, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+                }
+                .buttonStyle(.pressable)
+                .accessibilityLabel(Text("Copy caption: \(idea)"))
+            }
+            Text(ideasFromWriter ? "Written on your device. Tap one to copy it with the hashtags." : "Tap one to copy it with the hashtags.")
+                .font(.caption)
+                .foregroundStyle(Palette.textTertiary)
+        }
+        .padding(16)
+        .cardStyle()
+        .animation(.snappy, value: captionIdeas)
+    }
+
     private var notes: some View {
         VStack(alignment: .leading, spacing: 12) {
             if branded {
@@ -248,6 +313,33 @@ struct ShareComposerView: View {
     private func encodedFile() throws -> URL {
         guard let rendered else { throw CocoaError(.fileWriteUnknown) }
         return try ImageExporter.temporaryFile(for: rendered, sourceType: payload.provenance.sourceType, watermark: false)
+    }
+
+    // MARK: Caption ideas
+
+    private func loadCaptionIdeas() async {
+        guard !isLoadingIdeas else { return }
+        isLoadingIdeas = true
+        defer { isLoadingIdeas = false }
+        let context = OnDeviceWriter.IdeaContext.caption(look: nil, madeWithAI: madeWithAI)
+        let fresh = await app.writer.ideas(context)
+        if fresh.isEmpty {
+            // Three hand-written ones, different from the last set where possible.
+            let pool = CuratedIdeas.for(context)
+            let unseen = pool.filter { !captionIdeas.contains($0) }
+            captionIdeas = Array((unseen.count >= 3 ? unseen : pool).shuffled().prefix(3))
+            ideasFromWriter = false
+        } else {
+            captionIdeas = fresh
+            ideasFromWriter = true
+        }
+    }
+
+    private func copyCaptionIdea(_ idea: String) {
+        let tags = ShareCaption.hashtagLine(app.config.shareHashtags, aiHashtags: app.config.aiShareHashtags, madeWithAI: madeWithAI)
+        UIPasteboard.general.string = tags.isEmpty ? idea : idea + "\n" + tags
+        Haptics.success()
+        app.showToast("Caption copied", style: .success)
     }
 
     // MARK: Destinations
