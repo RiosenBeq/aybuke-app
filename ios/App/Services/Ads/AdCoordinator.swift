@@ -354,9 +354,11 @@ final class AdCoordinator {
     }
 
     /// Settings: whether to offer Google's privacy options. Asks Google only
-    /// if she has asked for an ad on this device before.
+    /// if she has asked for an ad on this device before, and never for Pro
+    /// (no ads, so nothing ad-related loads; Delete my data still resets it).
     func refreshPrivacyChoices() async {
-        guard defaults.bool(forKey: Self.usedKey), provider.isAvailable, let audience else {
+        guard defaults.bool(forKey: Self.usedKey), provider.isAvailable, let audience,
+              let app, !app.purchases.isPro else {
             showsPrivacyChoices = false
             return
         }

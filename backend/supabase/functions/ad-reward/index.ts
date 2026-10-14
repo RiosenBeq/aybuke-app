@@ -89,8 +89,10 @@ async function adMobCallback(req: Request): Promise<Response> {
     return json({ error: { code: "misconfigured", message: "Rewards are off." } }, 503);
   }
   if (!adUnitAllowed(callback.adUnit, allowList)) {
+    // Genuinely Google's, but not one of our rewarded units (a replayed
+    // callback from another app, say): nothing is granted, and no retries.
     console.warn("admob callback for another ad unit", callback.adUnit);
-    return json({ error: { code: "unknown_ad_unit", message: "Not our ad unit." } }, 403);
+    return json({ ok: true, outcome: "unknown_ad_unit" });
   }
   if (!isRewardToken(callback.customData)) {
     // A verified callback without our token (the AdMob console's test callback,
