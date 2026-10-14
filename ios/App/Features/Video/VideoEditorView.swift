@@ -397,7 +397,9 @@ struct VideoEditorView: View {
         Button { model.togglePlayback() } label: {
             PlayerView(player: model.player)
                 .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
-                .overlay(alignment: .topTrailing) {
+                // Top center: the corners belong to Camcorder '06's REC, SP,
+                // battery, date and timecode.
+                .overlay(alignment: .top) {
                     if model.resultDuration > 0 {
                         Text(timeLabel)
                             .font(.caption.weight(.bold).monospacedDigit())
