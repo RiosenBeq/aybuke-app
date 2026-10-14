@@ -172,6 +172,12 @@ struct HomeView: View {
                 .padding(.horizontal, Metrics.gutter)
             ScrollView(.horizontal) {
                 HStack(spacing: 12) {
+                    if RetroCam.isAvailable {
+                        QuickToolTile(title: "Retro Cam", caption: "Live effects · booth", symbolName: "camera.fill", palette: .mint) {
+                            Haptics.tap()
+                            app.isRetroCamPresented = true
+                        }
+                    }
                     ForEach(Array(EditorTool.quickTools.filter { app.allowsCloudAI || !$0.usesCloudAI }.enumerated()), id: \.element) { index, tool in
                         QuickToolTile(title: LocalizedStringKey(tool.title), caption: LocalizedStringKey(tool.caption), symbolName: tool.symbolName, palette: Self.toolPalettes[index % Self.toolPalettes.count]) {
                             Haptics.tap()

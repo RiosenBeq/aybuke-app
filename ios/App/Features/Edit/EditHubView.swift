@@ -52,6 +52,11 @@ struct EditHubView: View {
                     .buttonStyle(PressableButtonStyle(scale: 0.97))
                     .reveal(1)
 
+                    if RetroCam.isAvailable {
+                        RetroCamHubCard()
+                            .reveal(2)
+                    }
+
                     Button {
                         Haptics.tap()
                         app.isBestShotPresented = true
