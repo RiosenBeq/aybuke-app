@@ -11178,7 +11178,7 @@
     "Allow camera access for Glowlit in System Settings › Privacy & Security › Camera." : {
 
     },
-    "Allow camera access in Settings to use Retro Cam and Photo Booth." : {
+    "Allow camera access in Settings to use Retro Cam and Retro Booth." : {
 
     },
     "Allow notifications in iOS Settings" : {
@@ -44311,7 +44311,7 @@
         }
       }
     },
-    "Photo Booth" : {
+    "Retro Booth" : {
 
     },
     "Photo dump · carousel" : {
@@ -56094,7 +56094,7 @@
     "Start photo booth" : {
 
     },
-    "Start Photo Booth" : {
+    "Start Retro Booth" : {
 
     },
     "Start with your photo" : {

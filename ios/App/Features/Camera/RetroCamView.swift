@@ -326,7 +326,7 @@ struct RetroCamView: View {
                   title: "Camera access is *off*",
                   message: Platform.isMac
                       ? Text("Allow camera access for Glowlit in System Settings › Privacy & Security › Camera.")
-                      : Text("Allow camera access in Settings to use Retro Cam and Photo Booth.")) {
+                      : Text("Allow camera access in Settings to use Retro Cam and Retro Booth.")) {
             Button {
                 let settings = Platform.isMac ? "x-apple.systempreferences:com.apple.preference.security?Privacy_Camera" : UIApplication.openSettingsURLString
                 if let url = URL(string: settings) { openURL(url) }

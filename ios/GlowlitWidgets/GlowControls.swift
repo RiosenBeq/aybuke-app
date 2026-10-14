@@ -71,10 +71,10 @@ struct PhotoBoothControl: ControlWidget {
     var body: some ControlWidgetConfiguration {
         StaticControlConfiguration(kind: "app.glowlit.ios.control.photo-booth") {
             ControlWidgetButton(action: OpenURLIntent(GlowDeepLink.photoBooth.url)) {
-                Label("Photo Booth", systemImage: "square.grid.2x2.fill")
+                Label("Retro Booth", systemImage: "square.grid.2x2.fill")
             }
         }
-        .displayName("Photo Booth")
+        .displayName("Retro Booth")
         .description("Four shots with a 3-2-1 countdown. Free.")
     }
 }
