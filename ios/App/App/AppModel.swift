@@ -1333,6 +1333,9 @@ extension AppModel {
         case .cutout:
             selectedTab = .home
             editorLaunch = EditorLaunch(image: ScreenshotFixtures.cutoutPhoto, tool: .removeBackground)
+        case .textStickers:
+            selectedTab = .home
+            editorLaunch = EditorLaunch(image: ScreenshotFixtures.goldenLandscape, tool: .textStickers)
         case .video:
             selectedTab = .home
             let defaults = UserDefaults.standard
