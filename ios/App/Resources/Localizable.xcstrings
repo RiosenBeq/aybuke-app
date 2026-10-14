@@ -360,6 +360,76 @@
         }
       }
     },
+    "%@ is part of Pro" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ gehört zu Pro"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ forma parte de Pro"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ fait partie de Pro"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ termasuk dalam Pro"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ fa parte di Pro"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@はProで使えます"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@은(는) Pro 전용이에요"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ faz parte do Pro"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ входит в Pro"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@, Pro'ya dahil"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 是 Pro 专属"
+          }
+        }
+      }
+    },
     "%@ needs the cloud." : {
       "localizations" : {
         "de" : {
@@ -496,6 +566,76 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@ Pro"
+          }
+        }
+      }
+    },
+    "%@ Pro unlocks every look and style." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ Pro schaltet alle Looks und Stile frei."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ Pro desbloquea todos los looks y estilos."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ Pro débloque tous les looks et tous les styles."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ Pro membuka semua gaya dan style."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ Pro sblocca ogni look e ogni stile."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ Proなら、すべてのルックとスタイルが使えます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ Pro로 모든 룩과 스타일을 쓸 수 있어요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O %@ Pro libera todos os looks e estilos."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ Pro открывает все образы и стили."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ Pro, tüm görünümlerin ve stillerin kilidini açar."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ Pro 解锁全部造型和风格。"
           }
         }
       }
@@ -14027,6 +14167,190 @@
         }
       }
     },
+    "Always free: every on-device tool and %lld AI credits a day." : {
+      "localizations" : {
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Immer gratis: alle Tools auf deinem Gerät und %lld KI-Credit pro Tag."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Immer gratis: alle Tools auf deinem Gerät und %lld KI-Credits pro Tag."
+                }
+              }
+            }
+          }
+        },
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Always free: every on-device tool and %lld AI credit a day."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Always free: every on-device tool and %lld AI credits a day."
+                }
+              }
+            }
+          }
+        },
+        "es" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Siempre gratis: todas las herramientas en tu dispositivo y %lld crédito de IA al día."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Siempre gratis: todas las herramientas en tu dispositivo y %lld créditos de IA al día."
+                }
+              }
+            }
+          }
+        },
+        "fr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Toujours gratuit : tous les outils sur ton appareil et %lld crédit d’IA par jour."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Toujours gratuit : tous les outils sur ton appareil et %lld crédits d’IA par jour."
+                }
+              }
+            }
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Selalu gratis: semua alat di perangkatmu dan %lld kredit AI per hari."
+          }
+        },
+        "it" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Sempre gratis: tutti gli strumenti sul tuo dispositivo e %lld credito IA al giorno."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Sempre gratis: tutti gli strumenti sul tuo dispositivo e %lld crediti IA al giorno."
+                }
+              }
+            }
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "いつでも無料：端末内のツールすべてと、毎日%lldのAIクレジット。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "언제나 무료: 기기에서 쓰는 모든 도구와 하루 %lld AI 크레딧."
+          }
+        },
+        "pt-BR" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Sempre grátis: todas as ferramentas no seu aparelho e %lld crédito de IA por dia."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Sempre grátis: todas as ferramentas no seu aparelho e %lld créditos de IA por dia."
+                }
+              }
+            }
+          }
+        },
+        "ru" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Всегда бесплатно: все инструменты на твоём устройстве и %lld ИИ-кредита в день."
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Всегда бесплатно: все инструменты на твоём устройстве и %lld ИИ-кредитов в день."
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Всегда бесплатно: все инструменты на твоём устройстве и %lld ИИ-кредит в день."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Всегда бесплатно: все инструменты на твоём устройстве и %lld ИИ-кредита в день."
+                }
+              }
+            }
+          }
+        },
+        "tr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Her zaman ücretsiz: cihazında çalışan tüm araçlar ve günde %lld yapay zekâ kredisi."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Her zaman ücretsiz: cihazında çalışan tüm araçlar ve günde %lld yapay zekâ kredisi."
+                }
+              }
+            }
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "永久免费：所有本机工具，以及每天 %lld 个 AI 点数。"
+          }
+        }
+      }
+    },
     "an hour" : {
       "localizations" : {
         "de" : {
@@ -26780,6 +27104,76 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "正在施展魔法…"
+          }
+        }
+      }
+    },
+    "Creating several images at once is part of Pro" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mehrere Bilder auf einmal gehören zu Pro"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Crear varias imágenes a la vez forma parte de Pro"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Créer plusieurs images d’un coup fait partie de Pro"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Membuat beberapa gambar sekaligus termasuk dalam Pro"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Creare più immagini insieme fa parte di Pro"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "一度に複数の画像を作るのはProの機能です"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "한 번에 여러 장 만들기는 Pro 전용이에요"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Criar várias imagens de uma vez faz parte do Pro"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Создание нескольких картинок за раз входит в Pro"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aynı anda birden fazla görsel oluşturmak Pro'ya dahil"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "一次生成多张图片是 Pro 专属功能"
           }
         }
       }
@@ -56772,6 +57166,76 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "第 %1$lld 张，共 %2$lld 张"
+          }
+        }
+      }
+    },
+    "Pro removes the small %@ mark from AI results" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pro entfernt das kleine %@-Wasserzeichen aus KI-Ergebnissen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pro quita la pequeña marca de %@ de los resultados de IA"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pro retire le petit filigrane %@ des résultats d’IA"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pro menghapus tanda kecil %@ dari hasil AI"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pro rimuove la piccola filigrana %@ dai risultati IA"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ProならAIの仕上がりに小さな%@マークが入りません"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pro는 AI 결과물의 작은 %@ 마크를 없애 줘요"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Pro remove a pequena marca do %@ dos resultados de IA"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pro убирает небольшой знак %@ с результатов ИИ"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pro, yapay zekâ sonuçlarındaki küçük %@ filigranını kaldırır"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pro 会去掉 AI 作品上的 %@ 小标记"
           }
         }
       }
@@ -88421,6 +88885,76 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "本月*点数*已用完"
+          }
+        }
+      }
+    },
+    "You've used today's free credits" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Du hast die Gratis-Credits für heute aufgebraucht"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ya usaste los créditos gratis de hoy"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tu as utilisé tes crédits gratuits du jour"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kredit gratis hari ini sudah terpakai"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hai usato i crediti gratis di oggi"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "今日の無料クレジットを使い切りました"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오늘의 무료 크레딧을 다 썼어요"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Você já usou os créditos grátis de hoje"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Бесплатные кредиты на сегодня закончились"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bugünün ücretsiz kredilerini kullandın"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "今天的免费点数已用完"
           }
         }
       }

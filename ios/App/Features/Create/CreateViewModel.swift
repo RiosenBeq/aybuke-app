@@ -148,9 +148,17 @@ final class CreateViewModel {
             Haptics.error()
             return
         }
-        app.requestAccess(for: .textToImage, outputs: job.numOutputs, requiresPro: job.isProOnly) { [weak self] in
+        app.requestAccess(for: .textToImage, outputs: job.numOutputs, requiresPro: job.isProOnly,
+                          proSource: Self.paywallSource(for: job)) { [weak self] in
             self?.start(job, app: app)
         }
+    }
+
+    /// What made the job Pro, so the paywall can say so: the style first,
+    /// then the number of images.
+    private static func paywallSource(for job: AIJob) -> String {
+        if let style = job.style, style.isPro { return "style_\(style.id)" }
+        return job.numOutputs > 1 ? "create_count" : "pro_content"
     }
 
     /// A picture from Apple's Image Playground sheet: no credits, kept in My

@@ -763,10 +763,13 @@ final class AppModel {
 
     /// Runs `action` only when the user may perform `operation`:
     /// Pro-only content → paywall, cloud processing → consent, no credits → paywall.
+    /// `proSource` tells the paywall what was Pro (`template_<id>`,
+    /// `style_<id>`, `create_count`), so it can say why it opened.
     func requestAccess(
         for operation: AIOperation,
         outputs: Int = 1,
         requiresPro: Bool = false,
+        proSource: String = "pro_content",
         then action: @escaping () -> Void
     ) {
         if !operation.runsOnDevice && !allowsCloudAI {
@@ -778,13 +781,13 @@ final class AppModel {
             return
         }
         if requiresPro && !purchases.isPro {
-            presentPaywall(source: "pro_content")
+            presentPaywall(source: proSource)
             return
         }
         if !operation.runsOnDevice && !hasAIConsent {
             // The sheet records consent (with the guardian answer) before this runs.
             consentRequest = ConsentRequest { [weak self] in
-                self?.requestAccess(for: operation, outputs: outputs, requiresPro: requiresPro, then: action)
+                self?.requestAccess(for: operation, outputs: outputs, requiresPro: requiresPro, proSource: proSource, then: action)
             }
             return
         }
@@ -1408,7 +1411,9 @@ extension AppModel {
             )
         case .paywall:
             selectedTab = .home
-            paywallSource = "screenshot"
+            // `-GLPaywallSource out_of_credits|template_<id>|style_<id>|create_count|share_watermark`
+            // shows the line that says why it opened.
+            paywallSource = UserDefaults.standard.string(forKey: "GLPaywallSource") ?? "screenshot"
             isPaywallPresented = true
         case .outOfCredits:
             selectedTab = .home
