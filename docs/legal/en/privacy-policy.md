@@ -267,7 +267,7 @@ No system is completely secure. If a personal data breach occurs, we'll notify t
 - **Cloud AI processing**: switch it off at any time in **Settings → Cloud AI processing** to withdraw your consent. Withdrawal doesn't affect processing that has already happened.
 - **Delete all creations**: removes your library from your device.
 - **Delete my data & account**: in Settings. Deletes your server account and all server-side records (credit wallet, credit ledger, job records, entitlement records and reports), asks RevenueCat to delete its subscription analytics records about you, and resets the app on your device: your library, settings, recent prompts, reminders and AI consent. Apple subscriptions must be cancelled separately in your Apple Account settings.
-- **Camera, photos and notifications**: manage camera, photo and notification permissions in iOS Settings.
+- **Camera, photos, speech recognition and notifications**: manage these permissions in your device's Settings (System Settings on a Mac). Speech recognition is only asked for when you make video captions on iOS versions before 26.
 
 ### Your rights
 

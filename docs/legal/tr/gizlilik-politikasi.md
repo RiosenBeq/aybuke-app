@@ -267,7 +267,7 @@ Hiçbir sistem tamamen güvenli değildir. Bir kişisel veri ihlali yaşanırsa,
 - **Cloud AI processing**: Rızanızı geri almak için bu seçeneği **Ayarlar** içinden istediğiniz zaman kapatabilirsiniz. Geri alma, daha önce gerçekleşmiş işlemeyi etkilemez.
 - **Tüm oluşturduklarımı sil**: kütüphanenizi cihazınızdan kaldırır.
 - **Verilerimi ve hesabımı sil**: Ayarlar'da yer alır. Sunucudaki hesabınızı ve sunucu tarafındaki tüm kayıtları (kredi cüzdanı, kredi defteri, iş kayıtları, hak kayıtları ve bildirimler) siler, RevenueCat'ten sizinle ilgili abonelik analizi kayıtlarını silmesini ister ve cihazınızdaki uygulamayı sıfırlar: kütüphaneniz, ayarlarınız, son istemleriniz, hatırlatıcılarınız ve yapay zekâ onayınız. Apple abonelikleri Apple Hesabı ayarlarınızdan ayrıca iptal edilmelidir.
-- **Kamera, fotoğraf ve bildirim izinleri**: iOS Ayarları'ndan yönetilir.
+- **Kamera, fotoğraf, konuşma tanıma ve bildirim izinleri**: cihazının Ayarlar uygulamasından (Mac'te Sistem Ayarları) yönetilir. Konuşma tanıma izni yalnızca iOS 26'dan eski sürümlerde video altyazısı oluştururken istenir.
 
 ### Haklarınız
 
