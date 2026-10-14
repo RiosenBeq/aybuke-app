@@ -60,7 +60,7 @@ enum GlowIntents {
 /// The photo effects as Shortcuts lists them. A type of its own, so a new
 /// `RetroEffect` never changes what a saved shortcut means.
 enum RetroEffectChoice: String, AppEnum {
-    case vhs, disposable, kira, digicam, instant, glamour, neon, throwback16, camcorder06, filmStill
+    case vhs, disposable, kira, digicam, instant, glamour, neon, throwback16, camcorder06, filmStill, tinyWorld
 
     static let typeDisplayRepresentation: TypeDisplayRepresentation = "Retro Effect"
     // Effect names stay the same in every language, like `RetroEffect.title`.
@@ -75,6 +75,7 @@ enum RetroEffectChoice: String, AppEnum {
         .throwback16: DisplayRepresentation(title: "Throwback '16", subtitle: "2010s"),
         .camcorder06: DisplayRepresentation(title: "Camcorder '06", subtitle: "Y2K"),
         .filmStill: DisplayRepresentation(title: "Film Still", subtitle: "Film"),
+        .tinyWorld: DisplayRepresentation(title: "Tiny World", subtitle: "Mini"),
     ]
 
     var effect: RetroEffect {
@@ -89,6 +90,7 @@ enum RetroEffectChoice: String, AppEnum {
         case .throwback16: return .throwback16
         case .camcorder06: return .camcorder06
         case .filmStill: return .filmStill
+        case .tinyWorld: return .tinyWorld
         }
     }
 }
