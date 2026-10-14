@@ -125,7 +125,11 @@ struct EditorIdeasRow: View {
     // MARK: Actions
 
     private func suggestions(for insight: PhotoInsight, rotation: Int) -> [LookSuggestion] {
-        LookSuggester.suggest(for: insight, date: AppClock.now, freeEffects: Self.freeEffects, rotation: rotation)
+        let all = LookSuggester.suggest(for: insight, date: AppClock.now, freeEffects: Self.freeEffects, rotation: rotation)
+        // Under 13 only the free on-device tools are offered, so no looks or
+        // Magic Edit ideas (see AgeDefaults).
+        guard !app.allowsCloudAI else { return all }
+        return all.filter { if case .effect = $0 { return true } else { return false } }
     }
 
     /// Applies the next free effect that suits the photo. Never anything
@@ -165,6 +169,7 @@ struct EditorIdeasRow: View {
         let found = await PhotoInsightsService.insight(for: model.original)
         withAnimation(.easeOut(duration: 0.25)) { insight = found }
 
+        guard app.allowsCloudAI else { return }
         app.writer.refreshAvailability()
         guard app.writer.isAvailable else { return }
         let labels = found.labels + [found.animalKind].compactMap { $0 }
