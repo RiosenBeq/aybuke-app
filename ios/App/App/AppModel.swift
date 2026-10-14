@@ -687,10 +687,16 @@ final class AppModel {
         tour.start(steps: steps)
     }
 
+    /// The editor, the video editor, Retro Cam or the collage maker fills the
+    /// screen. Each shows the app's sheets itself (the root's would open
+    /// behind it), and deep links leave it alone: its work may not be saved.
+    var isFullScreenCoverPresented: Bool {
+        editorLaunch != nil || videoSource != nil || isRetroCamPresented || isCollagePresented
+    }
+
     private var isPresentingSomething: Bool {
-        isPaywallPresented || outOfCredits != nil || editorLaunch != nil || videoSource != nil || consentRequest != nil
-            || shareRequest != nil || isAccountPromptPresented || isBestShotPresented || isRetroCamPresented
-            || isCollagePresented
+        isPaywallPresented || outOfCredits != nil || isFullScreenCoverPresented || consentRequest != nil
+            || shareRequest != nil || isAccountPromptPresented || isBestShotPresented
     }
 
     /// Mac menu commands and dropped photos only act on the main screens:
@@ -1127,7 +1133,7 @@ final class AppModel {
     // MARK: Deep links (widgets, Live Activities)
 
     func handle(_ link: GlowDeepLink) {
-        guard hasCompletedOnboarding, !needsAgeStep, editorLaunch == nil else { return }
+        guard hasCompletedOnboarding, !needsAgeStep, !isFullScreenCoverPresented else { return }
         isPaywallPresented = false
         outOfCredits = nil
         if !allowsCloudAI {

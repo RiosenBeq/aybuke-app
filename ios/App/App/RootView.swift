@@ -60,8 +60,7 @@ struct RootView: View {
             }
         }
         .animation(.easeInOut(duration: 0.25), value: app.tour.isRunning)
-        .modifier(AppPresentations(isActive: app.editorLaunch == nil && app.videoSource == nil && !app.isRetroCamPresented
-                                       && !app.isCollagePresented))
+        .modifier(AppPresentations(isActive: !app.isFullScreenCoverPresented))
         .onOpenURL { url in
             if let link = GlowDeepLink(url: url) { app.handle(link) }
         }
@@ -74,7 +73,7 @@ struct MainTabView: View {
 
     var body: some View {
         @Bindable var app = app
-        let isCovered = app.editorLaunch != nil || app.videoSource != nil || app.isRetroCamPresented || app.isCollagePresented
+        let isCovered = app.isFullScreenCoverPresented
 
         TabView(selection: $app.selectedTab) {
             HomeView()
