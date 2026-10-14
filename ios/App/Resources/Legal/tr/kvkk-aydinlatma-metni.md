@@ -13,10 +13,10 @@ Bu Aydınlatma Metni, 6698 sayılı Kişisel Verilerin Korunması Kanunu ("**KVK
 
 ## 1. Veri sorumlusu
 
-- **Veri sorumlusu:** [Şirket unvanı]
-- **Adres:** [Kayıtlı adres], Türkiye
-- **Ticaret sicili / MERSİS numarası:** [Ticaret sicil ve MERSİS numarası]
-- **Kayıtlı elektronik posta (KEP):** [KEP adresi]
+- **Veri sorumlusu:** Okan Berk Manavoğlu (bireysel geliştirici)
+- **Adres:** İstanbul, Türkiye, Türkiye
+- **Ticaret sicili / MERSİS numarası:** Yok (bireysel geliştirici)
+- **Kayıtlı elektronik posta (KEP):** Yok
 - **E-posta:** [hello@buaze.com](mailto:hello@buaze.com)
 
 ## 2. İşlenen kişisel veri kategorileri
@@ -62,7 +62,7 @@ Kişisel verileriniz, Glowlit mobil uygulaması aracılığıyla elektronik orta
 
 Kişisel verileriniz, yukarıdaki amaçlarla sınırlı olarak ve KVKK md. 8 ve 9'a uygun şekilde şu alıcılara aktarılabilir:
 
-- **Yurt dışındaki hizmet sağlayıcılarımız (veri işleyenler):** arka uç barındırma, veritabanı ve anonim kimlik doğrulama için Supabase Inc. (ABD; barındırma bölgesi: [Supabase bölgesi, örn. AB (Frankfurt)]); yapay zekâ çıkarımı için xAI (X.AI LLC ve bağlı şirketleri, ABD; Sıfır Veri Saklama açık); otomatik çıktı güvenlik kontrolü için ve sağlayıcı değiştirmemiz hâlinde Features & Labels, Inc. (fal.ai, ABD) ve fal.ai'ın çalıştırdığı modellerin geliştiricileri (örneğin Google LLC), Google LLC (Gemini API) veya OpenAI (Images API); abonelik analizi için RevenueCat, Inc. (ABD; fotoğraf, istem veya sonuç almaz); e-posta hizmet sağlayıcımız.
+- **Yurt dışındaki hizmet sağlayıcılarımız (veri işleyenler):** arka uç barındırma, veritabanı ve anonim kimlik doğrulama için Supabase Inc. (ABD; barındırma bölgesi: AB (Frankfurt)); yapay zekâ çıkarımı için xAI (X.AI LLC ve bağlı şirketleri, ABD; Sıfır Veri Saklama açık); otomatik çıktı güvenlik kontrolü için ve sağlayıcı değiştirmemiz hâlinde Features & Labels, Inc. (fal.ai, ABD) ve fal.ai'ın çalıştırdığı modellerin geliştiricileri (örneğin Google LLC), Google LLC (Gemini API) veya OpenAI (Images API); abonelik analizi için RevenueCat, Inc. (ABD; fotoğraf, istem veya sonuç almaz); e-posta hizmet sağlayıcımız.
 - **Apple:** satın alma ve abonelik işlemlerinin yürütülmesi ile Apple ile girişin doğrulanması ve hesap silindiğinde iptal edilmesi amacıyla; Apple bu işlemleri satıcı ve bağımsız veri sorumlusu sıfatıyla yürütür. Fotoğraflarınızı veya istemlerinizi Apple'a göndermeyiz; tek istisna, Create bölümünde **Create with Image Playground** seçeneğini kullandığınızda açıklamanızın Apple'ın Image Playground özelliğine gitmesidir. Bu, Apple'ın kendi özelliğidir: görsel cihazınızda veya iOS 27'den itibaren Apple'ın Private Cloud Compute sunucularında, Apple'ın koşulları ve kullanım sınırlarıyla oluşturulur; bu sürümlerde uygulama ilk kullanımdan önce sizi bilgilendirir. Uygulama yalnızca bitmiş görseli alır; görsel cihazınızdaki kütüphanede kalır ve bize gönderilmez.
 - **Yetkili kamu kurum ve kuruluşları ile adli makamlar:** kanunen yetkili oldukları hâllerde ve hukuki yükümlülüklerimizin gerektirdiği ölçüde.
 
@@ -103,8 +103,8 @@ haklarına sahipsiniz.
 
 Haklarınızı kullanmak için, Veri Sorumlusuna Başvuru Usul ve Esasları Hakkında Tebliğ uyarınca başvurunuzu Türkçe olarak şu yollarla iletebilirsiniz:
 
-- **Yazılı olarak:** [Kayıtlı adres], Türkiye adresine ıslak imzalı dilekçeyle;
-- **KEP ile:** [KEP adresi] adresine;
+- **Yazılı olarak:** İstanbul, Türkiye, Türkiye adresine ıslak imzalı dilekçeyle;
+- **KEP ile:** Yok adresine;
 - **Güvenli elektronik imza veya mobil imza ile:** [hello@buaze.com](mailto:hello@buaze.com) adresine;
 - **E-posta ile:** daha önce bize bildirdiğiniz ve sistemimizde kayıtlı olan e-posta adresinizden [hello@buaze.com](mailto:hello@buaze.com) adresine.
 

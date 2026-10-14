@@ -3,7 +3,7 @@
 Son güncelleme: 14 Ekim 2026
 
 > **Kısaca.** Bu özet, metinde yolunuzu bulmanıza yardımcı olur; aşağıdaki Koşulların yerine geçmez.
-> - Bu Koşullar, sizinle Glowlit uygulamasının geliştiricisi [Şirket unvanı] arasında yapılan bir sözleşmedir. Apple bu sözleşmenin tarafı değildir.
+> - Bu Koşullar, sizinle Glowlit uygulamasının geliştiricisi Okan Berk Manavoğlu (bireysel geliştirici) arasında yapılan bir sözleşmedir. Apple bu sözleşmenin tarafı değildir.
 > - En az 13 yaşında olmalısınız. 18 yaşından küçükseniz velinizin veya vasinizin izni gerekir. 4. bölüm sizin için yazıldı.
 > - Glowlit uygulamasını gençleri düşünerek tasarlıyoruz: reklam yok, takip yok, herkese açık akış yok; bulut yapay zekâ ancak siz onay verdikten sonra çalışır.
 > - Cihaz üzerindeki araçlar her zaman ücretsizdir. Ücretsiz kullanıcılar her gün 3 kredi alır. Pro abonelikleri, siz Apple Hesabı ayarlarınızdan iptal edene kadar otomatik olarak yenilenir. Satın aldığınız kredi paketlerinin süresi hiçbir zaman dolmaz.
@@ -13,7 +13,7 @@ Son güncelleme: 14 Ekim 2026
 
 ## 1. Bu Koşullar hakkında
 
-İşbu Kullanım Koşulları ("**Koşullar**"), Glowlit iOS uygulamasını ve buna bağlı çevrim içi hizmetleri (birlikte "**Hizmet**") kullanımınızı düzenler. Hizmet, [Şirket unvanı] ([Kayıtlı adres], Türkiye) tarafından sunulmaktadır ("**biz**" veya "**Şirket**"). İletişim bilgilerimizin tamamı 26. bölümde yer alır.
+İşbu Kullanım Koşulları ("**Koşullar**"), Glowlit iOS uygulamasını ve buna bağlı çevrim içi hizmetleri (birlikte "**Hizmet**") kullanımınızı düzenler. Hizmet, Okan Berk Manavoğlu (bireysel geliştirici) (İstanbul, Türkiye, Türkiye) tarafından sunulmaktadır ("**biz**" veya "**Şirket**"). İletişim bilgilerimizin tamamı 26. bölümde yer alır.
 
 Glowlit uygulamasını indirerek, yükleyerek veya kullanarak bu Koşulları kabul etmiş olursunuz. Kabul etmiyorsanız lütfen Hizmeti kullanmayın.
 
@@ -306,7 +306,7 @@ Güvenlik sistemlerimiz bir talebi veya sonucu engelleyebilir. Engellenen talepl
 
 ## 15. Fikri mülkiyet haklarımız ve uygulamayı kullanma lisansınız
 
-Uygulama, Glowlit adı ve markası, tasarım, şablon ve stil tarifleri ve yazılım, [Şirket unvanı] veya lisans verenlerine aittir ve fikri mülkiyet mevzuatıyla korunur.
+Uygulama, Glowlit adı ve markası, tasarım, şablon ve stil tarifleri ve yazılım, Okan Berk Manavoğlu (bireysel geliştirici) veya lisans verenlerine aittir ve fikri mülkiyet mevzuatıyla korunur.
 
 Bu Koşullara uymanız kaydıyla, uygulamayı sahibi olduğunuz veya kontrol ettiğiniz Apple markalı cihazlarda, Apple Kullanım Kuralları'nın (Usage Rules) izin verdiği şekilde (bkz. 24. bölüm) indirmeniz, yüklemeniz ve kullanmanız için size kişisel, sınırlı, münhasır olmayan, devredilemez ve geri alınabilir bir lisans veriyoruz.
 
@@ -441,14 +441,14 @@ Resmi bir yola başvurmadan önce, sorunu birlikte çözmeye çalışabilmemiz i
 
 Bu koşullar, Glowlit uygulamasını Apple App Store'dan edindiğiniz için geçerlidir. Bu Koşulların diğer hükümleriyle çelişmeleri halinde, uygulamayı kullanımınız bakımından bu bölüm esas alınır. Bu Koşullar, uygulama için Apple Medya Hizmetleri Hüküm ve Koşulları ile çelişen kullanım kuralları öngörmez.
 
-1. **Taraflar.** Bu Koşullar yalnızca sizinle [Şirket unvanı] arasında akdedilmiştir; Apple Inc. ("**Apple**") bu Koşulların tarafı değildir. Uygulamadan ve içeriğinden Apple değil, yalnızca [Şirket unvanı] sorumludur.
+1. **Taraflar.** Bu Koşullar yalnızca sizinle Okan Berk Manavoğlu (bireysel geliştirici) arasında akdedilmiştir; Apple Inc. ("**Apple**") bu Koşulların tarafı değildir. Uygulamadan ve içeriğinden Apple değil, yalnızca Okan Berk Manavoğlu (bireysel geliştirici) sorumludur.
 2. **Lisansın kapsamı.** Uygulamayı kullanma lisansınız, Apple Medya Hizmetleri Hüküm ve Koşulları'nda yer alan Kullanım Kuralları'nın izin verdiği şekilde, sahibi olduğunuz veya kontrol ettiğiniz Apple markalı ürünlerde kullanmaya yönelik devredilemez bir lisansla sınırlıdır. Ancak uygulamaya, mümkün olduğu hallerde Aile Paylaşımı veya toplu satın alma yoluyla sizinle ilişkilendirilmiş diğer hesaplar da erişebilir ve bu hesaplar uygulamayı kullanabilir.
-3. **Bakım ve destek.** Uygulamaya ilişkin bakım ve destek hizmetlerini bu Koşullarda belirtildiği veya uygulanacak hukukun gerektirdiği şekilde sağlamaktan yalnızca [Şirket unvanı] sorumludur. Apple'ın uygulamaya ilişkin herhangi bir bakım ve destek hizmeti sunma yükümlülüğü yoktur.
-4. **Garanti.** Etkili bir şekilde hariç tutulmadığı ölçüde, açık veya kanundan doğan her türlü ürün garantisinden yalnızca [Şirket unvanı] sorumludur. Uygulamanın geçerli herhangi bir garantiye uymaması halinde Apple'a bildirimde bulunabilirsiniz; Apple, varsa uygulamanın satın alma bedelini size iade eder. Uygulanacak hukukun izin verdiği azami ölçüde, Apple'ın uygulamaya ilişkin başka hiçbir garanti yükümlülüğü yoktur ve garantiye uyulmamasından kaynaklanan diğer tüm talep, kayıp, yükümlülük, zarar, maliyet ve masraflar yalnızca [Şirket unvanı] sorumluluğundadır.
-5. **Ürüne ilişkin talepler.** Sizin veya üçüncü kişilerin uygulamaya ya da uygulamaya sahip olmanıza ve onu kullanmanıza ilişkin taleplerini karşılamaktan Apple değil, [Şirket unvanı] sorumludur. Bu talepler şunları kapsar: (i) ürün sorumluluğu talepleri; (ii) uygulamanın geçerli herhangi bir yasal veya düzenleyici gerekliliğe uymadığına ilişkin talepler; ve (iii) tüketicinin korunması, gizlilik veya benzeri mevzuattan doğan talepler. Bu Koşullar, [Şirket unvanı] sorumluluğunu uygulanacak hukukun izin verdiğinin ötesinde sınırlandırmaz.
-6. **Fikri mülkiyet.** Üçüncü bir kişinin, uygulamanın veya uygulamaya sahip olmanızın ve onu kullanmanızın kendi fikri mülkiyet haklarını ihlal ettiğini iddia etmesi halinde, bu iddianın araştırılmasından, savunulmasından, sulh yoluyla çözülmesinden ve sonuçlandırılmasından Apple değil, yalnızca [Şirket unvanı] sorumludur.
+3. **Bakım ve destek.** Uygulamaya ilişkin bakım ve destek hizmetlerini bu Koşullarda belirtildiği veya uygulanacak hukukun gerektirdiği şekilde sağlamaktan yalnızca Okan Berk Manavoğlu (bireysel geliştirici) sorumludur. Apple'ın uygulamaya ilişkin herhangi bir bakım ve destek hizmeti sunma yükümlülüğü yoktur.
+4. **Garanti.** Etkili bir şekilde hariç tutulmadığı ölçüde, açık veya kanundan doğan her türlü ürün garantisinden yalnızca Okan Berk Manavoğlu (bireysel geliştirici) sorumludur. Uygulamanın geçerli herhangi bir garantiye uymaması halinde Apple'a bildirimde bulunabilirsiniz; Apple, varsa uygulamanın satın alma bedelini size iade eder. Uygulanacak hukukun izin verdiği azami ölçüde, Apple'ın uygulamaya ilişkin başka hiçbir garanti yükümlülüğü yoktur ve garantiye uyulmamasından kaynaklanan diğer tüm talep, kayıp, yükümlülük, zarar, maliyet ve masraflar yalnızca Okan Berk Manavoğlu (bireysel geliştirici) sorumluluğundadır.
+5. **Ürüne ilişkin talepler.** Sizin veya üçüncü kişilerin uygulamaya ya da uygulamaya sahip olmanıza ve onu kullanmanıza ilişkin taleplerini karşılamaktan Apple değil, Okan Berk Manavoğlu (bireysel geliştirici) sorumludur. Bu talepler şunları kapsar: (i) ürün sorumluluğu talepleri; (ii) uygulamanın geçerli herhangi bir yasal veya düzenleyici gerekliliğe uymadığına ilişkin talepler; ve (iii) tüketicinin korunması, gizlilik veya benzeri mevzuattan doğan talepler. Bu Koşullar, Okan Berk Manavoğlu (bireysel geliştirici) sorumluluğunu uygulanacak hukukun izin verdiğinin ötesinde sınırlandırmaz.
+6. **Fikri mülkiyet.** Üçüncü bir kişinin, uygulamanın veya uygulamaya sahip olmanızın ve onu kullanmanızın kendi fikri mülkiyet haklarını ihlal ettiğini iddia etmesi halinde, bu iddianın araştırılmasından, savunulmasından, sulh yoluyla çözülmesinden ve sonuçlandırılmasından Apple değil, yalnızca Okan Berk Manavoğlu (bireysel geliştirici) sorumludur.
 7. **Mevzuata uyum.** (i) ABD Hükümeti tarafından ambargo uygulanan veya ABD Hükümeti tarafından "teröre destek veren" ülke olarak belirlenmiş bir ülkede bulunmadığınızı ve (ii) ABD Hükümeti'nin yasaklı veya kısıtlı taraf listelerinden herhangi birinde yer almadığınızı beyan ve taahhüt edersiniz.
-8. **Geliştiricinin adı ve adresi.** Uygulamaya ilişkin her türlü soru, şikâyet veya talebinizi [Şirket unvanı], [Kayıtlı adres], Türkiye adresine veya [hello@buaze.com](mailto:hello@buaze.com) e-posta adresine iletebilirsiniz.
+8. **Geliştiricinin adı ve adresi.** Uygulamaya ilişkin her türlü soru, şikâyet veya talebinizi Okan Berk Manavoğlu (bireysel geliştirici), İstanbul, Türkiye, Türkiye adresine veya [hello@buaze.com](mailto:hello@buaze.com) e-posta adresine iletebilirsiniz.
 9. **Üçüncü taraf koşulları.** Uygulamayı kullanırken, örneğin kablosuz veri hizmeti sözleşmeniz gibi geçerli üçüncü taraf sözleşme koşullarına uymanız gerekir.
 10. **Lehine hak tanınan üçüncü kişi.** Apple ve Apple'ın bağlı şirketleri, bu Koşullar bakımından lehine hak tanınan üçüncü kişilerdir (üçüncü kişi yararına sözleşme). Bu Koşulları kabul etmenizle birlikte Apple, bu Koşulları lehine hak tanınan üçüncü kişi sıfatıyla size karşı uygulama hakkına sahip olur ve bu hakkı kabul etmiş sayılır.
 
@@ -464,15 +464,15 @@ Bu koşullar, Glowlit uygulamasını Apple App Store'dan edindiğiniz için geç
 
 ## 26. İletişim
 
-- **Unvan:** [Şirket unvanı]
-- **Adres:** [Kayıtlı adres], Türkiye
-- **Ticaret sicil / MERSİS numarası:** [Ticaret sicil ve MERSİS numarası]
+- **Unvan:** Okan Berk Manavoğlu (bireysel geliştirici)
+- **Adres:** İstanbul, Türkiye, Türkiye
+- **Ticaret sicil / MERSİS numarası:** Yok (bireysel geliştirici)
 - **E-posta:** [hello@buaze.com](mailto:hello@buaze.com)
-- **KEP adresi:** [KEP adresi]
+- **KEP adresi:** Yok
 - **Gizlilik soruları ve veli talepleri:** [hello@buaze.com](mailto:hello@buaze.com)
 
 ### AB Dijital Hizmetler Yasası kapsamında iletişim noktası
 
 AB üye devletlerinin yetkili makamları, Avrupa Komisyonu, Avrupa Dijital Hizmetler Kurulu ve Hizmetin kullanıcıları bize doğrudan [hello@buaze.com](mailto:hello@buaze.com) adresinden ulaşabilir. Bu adres, Dijital Hizmetler Yasası'nın (Tüzük (AB) 2022/2065) 11. ve 12. maddeleri kapsamındaki tek iletişim noktamızdır. Bize İngilizce veya Türkçe yazabilirsiniz.
 
-AB temsilcimiz: [AB temsilcisi: unvan ve adres].
+AB temsilcimiz: Atanmış temsilci yok. Her talep için hello@buaze.com adresine yazabilirsiniz..

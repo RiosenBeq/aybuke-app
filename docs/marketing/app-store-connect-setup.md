@@ -21,7 +21,7 @@ Every value needed to create Glowlit in App Store Connect, in the order the form
 |---|---|
 | Category | Primary **Photo & Video**, secondary **Graphics & Design** |
 | Content rights | Doesn't contain, show or access third-party content |
-| Privacy Policy URL | `https://riosenbeq.github.io/furkan/legal/en/privacy-policy.html` (needs GitHub Pages; until then the repository's `main` copy of `docs/legal/en/privacy-policy.md` works) |
+| Privacy Policy URL | `https://riosenbeq.github.io/aybuke-app/legal/en/privacy-policy.html` (needs GitHub Pages; until then the repository's `main` copy of `docs/legal/en/privacy-policy.md` works) |
 | Localizations | Add every locale in `app-store-metadata.json`: en-US, tr, es-ES, es-MX, pt-BR, fr-FR, de-DE, it, ru, ja, ko, zh-Hans, id |
 
 **Age rating:** answer honestly — no violence, sexual content, profanity, gambling, horror, drugs, medical content or unrestricted web access; no chat between users. Generated images are filtered (prompt policy in all languages, provider moderation, output check) and can be reported. Set the rating to **13+** to match the Terms (cloud AI, accounts and purchases from 13) with **Override to Higher Age Rating**, which is needed while the Terms keep a minimum age above the calculated rating. Under In-App Controls, tick **Age Assurance** only once a build with the age step is live. The app uses the **Declared Age Range** capability (`com.apple.developer.declared-age-range`; no approval needed): turn it on for the app id `app.glowlit.ios` if automatic signing doesn't.
@@ -68,7 +68,7 @@ No tracking. Matches `ios/App/Resources/PrivacyInfo.xcprivacy`.
 | Field | Value |
 |---|---|
 | Promotional text, description, keywords, What's New | `app-store-metadata.json` |
-| Support URL | `https://riosenbeq.github.io/furkan/` (landing page with the support email) |
+| Support URL | `https://riosenbeq.github.io/aybuke-app/` (landing page with the support email) |
 | Marketing URL | same as Support URL |
 | Copyright | `2026 Glowlit` |
 | App Review information | Contact name, phone and email of the owner; no demo account needed; notes from [`app-store-listing.md`](app-store-listing.md) ("App Review notes") |

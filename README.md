@@ -53,7 +53,7 @@
   </tr>
 </table>
 
-Captured on an iPhone simulator in demo mode (AI results are simulated). The [Screenshots workflow](.github/workflows/screenshots.yml) refreshes the full-resolution set on the [`screenshots` branch](https://github.com/RiosenBeq/furkan/tree/screenshots); `scripts/screenshot-gallery.py` rebuilds this gallery.
+Captured on an iPhone simulator in demo mode (AI results are simulated). The [Screenshots workflow](.github/workflows/screenshots.yml) refreshes the full-resolution set on the [`screenshots` branch](https://github.com/RiosenBeq/aybuke-app/tree/screenshots); `scripts/screenshot-gallery.py` rebuilds this gallery.
 
 ## Quick start
 

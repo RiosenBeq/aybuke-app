@@ -1,21 +1,30 @@
 {
-  "backendBaseURL": "",
-  "supabaseAnonKey": "",
+  "backendBaseURL": "https://efapupjvidyqhqdevmcu.supabase.co",
+  "supabaseAnonKey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVmYXB1cGp2aWR5cWhxZGV2bWN1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE5NzI0OTIsImV4cCI6MjEwNzU0ODQ5Mn0.iad_XFp5CR64q-15GQwRJGPiY93oOkF_uXzV9XdoeyA",
   "forceDemoMode": false,
   "aiProviderName": "xAI (Grok Imagine)",
   "dataRetentionHours": 1,
-  "privacyPolicyURL": "https://github.com/RiosenBeq/furkan/blob/main/docs/legal/en/privacy-policy.md",
-  "termsURL": "https://github.com/RiosenBeq/furkan/blob/main/docs/legal/en/terms-of-use.md",
+  "privacyPolicyURL": "https://riosenbeq.github.io/aybuke-app/legal/en/privacy-policy.html",
+  "termsURL": "https://riosenbeq.github.io/aybuke-app/legal/en/terms-of-use.html",
   "supportEmail": "hello@buaze.com",
-  "appStoreID": "",
-  "websiteURL": "",
+  "appStoreID": "6822716008",
+  "websiteURL": "https://riosenbeq.github.io/aybuke-app/",
   "instagramAppID": "",
   "revenueCatAPIKey": "appl_nMgLjPGSrACLwsGJMMoDmMXUvwS",
   "consentVersion": 1,
   "aiProcessors": [
-    { "name": "Supabase", "role": "servers" },
-    { "name": "xAI (Grok Imagine)", "role": "images" },
-    { "name": "fal.ai", "role": "safety" }
+    {
+      "name": "Supabase",
+      "role": "servers"
+    },
+    {
+      "name": "xAI (Grok Imagine)",
+      "role": "images"
+    },
+    {
+      "name": "fal.ai",
+      "role": "safety"
+    }
   ],
   "shareHashtags": [
     "Glowlit",

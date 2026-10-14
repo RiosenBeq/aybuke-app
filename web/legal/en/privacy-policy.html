@@ -23,14 +23,14 @@
 <li>You can switch off cloud AI processing or delete your data and account in the app at any time. If you're under 18, start with section 3.</li>
 </ul></blockquote>
 <h2>1. Who we are</h2>
-<p>[Company legal name] ("<strong>we</strong>", "<strong>us</strong>" or "<strong>our</strong>") develops and operates the Glowlit iOS app and its online services (the "<strong>Service</strong>"). We are the controller responsible for your personal data (under Türkiye's KVKK, the <em>veri sorumlusu</em>).</p>
+<p>Okan Berk Manavoğlu (individual developer) ("<strong>we</strong>", "<strong>us</strong>" or "<strong>our</strong>") develops and operates the Glowlit iOS app and its online services (the "<strong>Service</strong>"). We are the controller responsible for your personal data (under Türkiye's KVKK, the <em>veri sorumlusu</em>).</p>
 <ul>
-<li><strong>Address:</strong> [Registered address], Türkiye</li>
-<li><strong>Trade registry / MERSİS number:</strong> [Trade registry and MERSİS number]</li>
+<li><strong>Address:</strong> Istanbul, Türkiye, Türkiye</li>
+<li><strong>Trade registry / MERSİS number:</strong> None (individual developer)</li>
 <li><strong>Privacy contact:</strong> <a href="mailto:hello@buaze.com">hello@buaze.com</a></li>
-<li><strong>Registered email (KEP):</strong> [KEP address]</li>
-<li><strong>Representative in the EU (Art. 27 GDPR):</strong> [EU representative: name and address]</li>
-<li><strong>Representative in the UK (Art. 27 UK GDPR):</strong> [UK representative: name and address]</li>
+<li><strong>Registered email (KEP):</strong> None</li>
+<li><strong>Representative in the EU (Art. 27 GDPR):</strong> None appointed. Contact hello@buaze.com for any request.</li>
+<li><strong>Representative in the UK (Art. 27 UK GDPR):</strong> None appointed. Contact hello@buaze.com for any request.</li>
 </ul>
 <p>For any privacy question, including anything you would raise with a data protection officer, email us at <a href="mailto:hello@buaze.com">hello@buaze.com</a>.</p>
 <p>This policy covers the Service. It doesn't cover third-party services you use together with Glowlit, such as Apple's App Store or the apps you share to (for example Instagram), which have their own privacy policies. If you're in Türkiye, please also read our <a href="../tr/kvkk-aydinlatma-metni.html">KVKK Information Notice</a>. Our <a href="terms-of-use.html">Terms of Use</a> and <a href="acceptable-use-policy.html">Acceptable Use &amp; AI Content Policy</a> explain the rules for using Glowlit.</p>
@@ -103,7 +103,7 @@
 <h2>6. How cloud AI processing works</h2>
 <ol>
 <li><strong>Your consent comes first.</strong> Before any photo or prompt leaves your device for one of our cloud AI features, the app shows an opt-in screen that names the companies that process it. Nothing is sent until you agree. If you're under the age required by law, a parent or guardian must give or approve this consent (sections 3, 17 and 19). You can withdraw consent at any time in <strong>Settings → Cloud AI processing</strong>, and on-device features keep working.</li>
-<li><strong>Upload.</strong> The app sends your input over an encrypted connection to our backend (Supabase Edge Functions; hosting region: [Supabase region, e.g. EU (Frankfurt)]).</li>
+<li><strong>Upload.</strong> The app sends your input over an encrypted connection to our backend (Supabase Edge Functions; hosting region: EU (Frankfurt)).</li>
 <li><strong>Safety checks.</strong> Your prompt is checked by our safety filters before the request is processed (section 9).</li>
 <li><strong>AI processing.</strong> Our backend passes your input to our AI inference provider for that request only. By default, this is xAI (X.AI LLC and its affiliates, USA), which runs its Grok Imagine image models. If we change providers, jobs may instead go to fal.ai (Features &amp; Labels, Inc., USA), which runs third-party models (where fal.ai uses a model developer's own service to run a model, for example Google for its Gemini image models, that developer also processes the request), or directly to Google (Gemini API) or OpenAI (Images API). The current list is in section 12.</li>
 <li><strong>No storage of inputs.</strong> We don't store your photo, mask or prompt. We use xAI's Zero Data Retention option, under which xAI deletes requests and results within 1 hour and keeps no stored copies. When fal.ai is used, we instruct it not to keep request history, which means no storage of inputs or outputs.</li>
@@ -160,7 +160,7 @@
 <h2>12. Sub-processors</h2>
 <p>These companies process personal data on our behalf. We keep this list up to date. If we add or replace an AI provider, we'll update this list and the cloud AI consent screen before the change takes effect, and ask for your consent again where required.</p>
 <ul>
-<li><strong>Supabase Inc.</strong> (USA): backend hosting, database, anonymous authentication and optional Sign in with Apple, server functions and server logs. Hosting region: [Supabase region, e.g. EU (Frankfurt)]. Data: anonymous user ID or account (Apple user identifier, email or relay address if shared), session data, job records, credits, entitlements, reports and server logs. Your inputs pass through in transit only.</li>
+<li><strong>Supabase Inc.</strong> (USA): backend hosting, database, anonymous authentication and optional Sign in with Apple, server functions and server logs. Hosting region: EU (Frankfurt). Data: anonymous user ID or account (Apple user identifier, email or relay address if shared), session data, job records, credits, entitlements, reports and server logs. Your inputs pass through in transit only.</li>
 <li><strong>xAI (X.AI LLC and its affiliates)</strong> (USA): AI inference, meaning it runs the Grok Imagine models for cloud AI features and checks their results with its own moderation. Data: photos, masks, prompts and results, for the duration of the request. Zero Data Retention is on: requests and results are deleted within 1 hour, and nothing is used to train models.</li>
 <li><strong>Features &amp; Labels, Inc. (fal.ai)</strong> (USA): the automated output safety check where we use it, and an alternative AI provider. Data: results (and, if we route jobs to fal.ai, photos, masks and prompts), for the duration of the request. Request history is disabled, and results are deleted within 1 hour.</li>
 <li><strong>Developers of the models that fal.ai runs</strong>, for example <strong>Google LLC</strong> (USA) for Gemini image models: where fal.ai uses the developer's own service to run a model, that developer processes the inputs and results of the request on fal.ai's behalf.</li>
@@ -170,7 +170,7 @@
 <li><strong>Our email service provider</strong>: receives and stores the emails you send us.</li>
 </ul>
 <h2>13. International data transfers</h2>
-<p>We're based in Türkiye. Our backend is hosted in [Supabase region, e.g. EU (Frankfurt)]. Our AI providers are based in the United States and may process data there or in other countries where they or their sub-processors operate. This means your data may be processed outside your country, including in countries that don't offer the same level of data protection.</p>
+<p>We're based in Türkiye. Our backend is hosted in EU (Frankfurt). Our AI providers are based in the United States and may process data there or in other countries where they or their sub-processors operate. This means your data may be processed outside your country, including in countries that don't offer the same level of data protection.</p>
 <h3>From the EEA, the UK and Switzerland</h3>
 <p>When you use Glowlit, you provide your data directly to us. Where we or our providers transfer it to a country without an adequacy decision, we rely on:</p>
 <ul>
@@ -240,7 +240,7 @@
 </ul>
 <p><strong>Young users and consent (Art. 8 GDPR).</strong> Where we rely on consent, as we do for cloud AI processing, and you're under the age of digital consent in your country, your parent or guardian must give or authorise that consent. This age is between 13 and 16 in the EU and EEA, depending on the country, and 13 in the UK. Where the law requires it, we may take steps to check that a parent or guardian has given or authorised consent.</p>
 <p><strong>Complaints.</strong> You can lodge a complaint with a supervisory authority. Because we don't have an establishment in the EU, there is no lead supervisory authority for us. You can contact the authority in the EU or EEA country where you live or work, or where an alleged infringement took place (<a href="https://www.edpb.europa.eu/about-edpb/about-edpb/members_en">list of authorities</a>). In the UK, you can contact the Information Commissioner's Office (<a href="https://ico.org.uk">ico.org.uk</a>). In Switzerland, you can contact the Federal Data Protection and Information Commissioner (<a href="https://www.edoeb.admin.ch">edoeb.admin.ch</a>). We'd appreciate the chance to address your concerns first.</p>
-<p><strong>Representatives.</strong> Our EU representative is [EU representative: name and address]. Our UK representative is [UK representative: name and address]. You can contact them instead of us on any data protection matter.</p>
+<p><strong>Representatives.</strong> Our EU representative is None appointed. Contact hello@buaze.com for any request.. Our UK representative is None appointed. Contact hello@buaze.com for any request.. You can contact them instead of us on any data protection matter.</p>
 <h2>18. How we apply the UK Children's Code</h2>
 <p>The UK Age Appropriate Design Code (the "Children's Code") sets 15 standards for online services likely to be used by under-18s. We apply them to all users, wherever they live:</p>
 <ul>
@@ -284,8 +284,8 @@
 </ul>
 <p><strong>How to apply.</strong> Under the Communiqué on the Procedures and Principles of Application to the Data Controller, you can apply:</p>
 <ul>
-<li>in writing, to [Registered address], Türkiye;</li>
-<li>by registered email (KEP), to [KEP address];</li>
+<li>in writing, to Istanbul, Türkiye, Türkiye;</li>
+<li>by registered email (KEP), to None;</li>
 <li>by email signed with a secure electronic signature or mobile signature, to <a href="mailto:hello@buaze.com">hello@buaze.com</a>; or</li>
 <li>by email to <a href="mailto:hello@buaze.com">hello@buaze.com</a> from an email address you have previously notified to us and that is registered in our systems.</li>
 </ul>
@@ -335,12 +335,12 @@
 <p>We'll update this policy when our practices or the law change. If a change is material, we'll notify you in the app before it takes effect and ask for your consent again where required. The "Last updated" date at the top shows the current version.</p>
 <h2>24. Contact us</h2>
 <ul>
-<li><strong>Controller:</strong> [Company legal name], [Registered address], Türkiye</li>
+<li><strong>Controller:</strong> Okan Berk Manavoğlu (individual developer), Istanbul, Türkiye, Türkiye</li>
 <li><strong>Privacy requests (including from parents and guardians):</strong> <a href="mailto:hello@buaze.com">hello@buaze.com</a></li>
 <li><strong>General contact:</strong> <a href="mailto:hello@buaze.com">hello@buaze.com</a></li>
-<li><strong>Registered email (KEP):</strong> [KEP address]</li>
-<li><strong>EU representative:</strong> [EU representative: name and address]</li>
-<li><strong>UK representative:</strong> [UK representative: name and address]</li>
+<li><strong>Registered email (KEP):</strong> None</li>
+<li><strong>EU representative:</strong> None appointed. Contact hello@buaze.com for any request.</li>
+<li><strong>UK representative:</strong> None appointed. Contact hello@buaze.com for any request.</li>
 </ul>
 </main>
 <footer class="legal-footer"><a href="../../index.html">glowlit</a> · <a href="terms-of-use.html">Terms of Use</a> · <a href="privacy-policy.html">Privacy Policy</a></footer>

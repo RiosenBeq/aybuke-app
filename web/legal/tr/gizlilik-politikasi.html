@@ -23,14 +23,14 @@
 <li>Bulut yapay zekâ işlemeyi istediğiniz zaman kapatabilir, verilerinizi ve hesabınızı uygulama içinden silebilirsiniz. 18 yaşından küçükseniz 3. bölümden başlayın.</li>
 </ul></blockquote>
 <h2>1. Biz kimiz?</h2>
-<p>Glowlit iOS uygulamasını ve buna bağlı çevrim içi hizmetleri ("<strong>Hizmet</strong>") [Şirket unvanı] ("<strong>biz</strong>") geliştirir ve işletir. Kişisel verileriniz bakımından veri sorumlusu biziz (6698 sayılı Kişisel Verilerin Korunması Kanunu, "<strong>KVKK</strong>", anlamında <em>veri sorumlusu</em>; GDPR anlamında <em>controller</em>).</p>
+<p>Glowlit iOS uygulamasını ve buna bağlı çevrim içi hizmetleri ("<strong>Hizmet</strong>") Okan Berk Manavoğlu (bireysel geliştirici) ("<strong>biz</strong>") geliştirir ve işletir. Kişisel verileriniz bakımından veri sorumlusu biziz (6698 sayılı Kişisel Verilerin Korunması Kanunu, "<strong>KVKK</strong>", anlamında <em>veri sorumlusu</em>; GDPR anlamında <em>controller</em>).</p>
 <ul>
-<li><strong>Adres:</strong> [Kayıtlı adres], Türkiye</li>
-<li><strong>Ticaret sicili / MERSİS numarası:</strong> [Ticaret sicil ve MERSİS numarası]</li>
+<li><strong>Adres:</strong> İstanbul, Türkiye, Türkiye</li>
+<li><strong>Ticaret sicili / MERSİS numarası:</strong> Yok (bireysel geliştirici)</li>
 <li><strong>Gizlilik iletişim adresi:</strong> <a href="mailto:hello@buaze.com">hello@buaze.com</a></li>
-<li><strong>Kayıtlı elektronik posta (KEP):</strong> [KEP adresi]</li>
-<li><strong>AB temsilcisi (GDPR md. 27):</strong> [AB temsilcisi: unvan ve adres]</li>
-<li><strong>Birleşik Krallık temsilcisi (UK GDPR md. 27):</strong> [Birleşik Krallık temsilcisi: unvan ve adres]</li>
+<li><strong>Kayıtlı elektronik posta (KEP):</strong> Yok</li>
+<li><strong>AB temsilcisi (GDPR md. 27):</strong> Atanmış temsilci yok. Her talep için hello@buaze.com adresine yazabilirsiniz.</li>
+<li><strong>Birleşik Krallık temsilcisi (UK GDPR md. 27):</strong> Atanmış temsilci yok. Her talep için hello@buaze.com adresine yazabilirsiniz.</li>
 </ul>
 <p>Bir veri koruma görevlisine iletebileceğiniz sorular dahil, gizlilikle ilgili her konuda bize <a href="mailto:hello@buaze.com">hello@buaze.com</a> adresinden yazabilirsiniz.</p>
 <p>Bu politika Hizmeti kapsar. Glowlit ile birlikte kullandığınız üçüncü taraf hizmetleri (örneğin Apple App Store veya paylaşım yaptığınız Instagram gibi uygulamalar) kapsamaz; bunların kendi gizlilik politikaları vardır. Türkiye'deyseniz lütfen <a href="kvkk-aydinlatma-metni.html">KVKK Aydınlatma Metni</a> metnimizi de okuyun. Glowlit kullanım kuralları <a href="kullanim-kosullari.html">Kullanım Koşulları</a> ve <a href="kabul-edilebilir-kullanim-politikasi.html">Kabul Edilebilir Kullanım ve Yapay Zekâ İçerik Politikası</a> metinlerinde yer alır.</p>
@@ -103,7 +103,7 @@
 <h2>6. Bulut yapay zekâ işleme nasıl çalışır?</h2>
 <ol>
 <li><strong>Önce onayınız.</strong> Bulut yapay zekâ özelliklerimizden biri için herhangi bir fotoğraf veya istem cihazınızdan çıkmadan önce uygulama, içeriği işleyecek şirketlerin adlarını gösteren bir onay ekranı açar. Siz kabul etmeden hiçbir şey gönderilmez. Kanunun öngördüğü yaşın altındaysanız bu onayı veliniz veya vasiniz vermeli ya da onaylamalıdır (3., 17. ve 19. bölümler). Onayınızı <strong>Ayarlar → Cloud AI processing</strong> üzerinden istediğiniz zaman geri alabilirsiniz; cihaz üzerindeki özellikler çalışmaya devam eder.</li>
-<li><strong>Yükleme.</strong> Uygulama girdinizi şifreli bir bağlantıyla arka ucumuza gönderir (Supabase Edge Functions; barındırma bölgesi: [Supabase bölgesi, örn. AB (Frankfurt)]).</li>
+<li><strong>Yükleme.</strong> Uygulama girdinizi şifreli bir bağlantıyla arka ucumuza gönderir (Supabase Edge Functions; barındırma bölgesi: AB (Frankfurt)).</li>
 <li><strong>Güvenlik kontrolleri.</strong> İsteminiz, işlenmeden önce güvenlik filtrelerimizden geçer (9. bölüm).</li>
 <li><strong>Yapay zekâ işleme.</strong> Arka ucumuz girdinizi yalnızca o istek için yapay zekâ çıkarım (inference) sağlayıcımıza iletir. Varsayılan sağlayıcı, Grok Imagine görsel modellerini çalıştıran xAI'dır (X.AI LLC ve bağlı şirketleri, ABD). Sağlayıcı değiştirirsek işler, üçüncü taraf modelleri çalıştıran fal.ai'a (Features &amp; Labels, Inc., ABD; fal.ai bir modeli çalıştırmak için model geliştiricisinin kendi hizmetini kullanıyorsa, örneğin Gemini görsel modelleri için Google, o geliştirici de isteği işler) ya da doğrudan Google'a (Gemini API) veya OpenAI'a (Images API) gidebilir. Güncel liste 12. bölümdedir.</li>
 <li><strong>Girdiler saklanmaz.</strong> Fotoğrafınızı, maskenizi veya isteminizi saklamayız. xAI'ın Sıfır Veri Saklama (Zero Data Retention) seçeneğini kullanırız; bu seçenekte xAI istekleri ve sonuçları 1 saat içinde siler ve kayıtlı kopya tutmaz. fal.ai kullanıldığında ona istek geçmişi tutmamasını, yani girdileri ve çıktıları saklamamasını bildiririz.</li>
@@ -160,7 +160,7 @@
 <h2>12. Alt işleyenler</h2>
 <p>Aşağıdaki şirketler kişisel verileri bizim adımıza işler. Bu listeyi güncel tutarız. Bir yapay zekâ sağlayıcısı ekler veya değiştirirsek, değişiklik yürürlüğe girmeden önce bu listeyi ve bulut yapay zekâ onay ekranını güncelleriz; gerektiğinde rızanızı yeniden isteriz.</p>
 <ul>
-<li><strong>Supabase Inc.</strong> (ABD): arka uç barındırma, veritabanı, anonim kimlik doğrulama ve isteğe bağlı Apple ile giriş, sunucu fonksiyonları ve sunucu kayıtları. Barındırma bölgesi: [Supabase bölgesi, örn. AB (Frankfurt)]. Veriler: anonim kullanıcı kimliği veya hesap (Apple kullanıcı tanımlayıcısı, paylaşıldıysa e-posta veya aktarma adresi), oturum verileri, iş kayıtları, krediler, haklar, bildirimler ve sunucu kayıtları. Girdileriniz yalnızca aktarım sırasında geçer.</li>
+<li><strong>Supabase Inc.</strong> (ABD): arka uç barındırma, veritabanı, anonim kimlik doğrulama ve isteğe bağlı Apple ile giriş, sunucu fonksiyonları ve sunucu kayıtları. Barındırma bölgesi: AB (Frankfurt). Veriler: anonim kullanıcı kimliği veya hesap (Apple kullanıcı tanımlayıcısı, paylaşıldıysa e-posta veya aktarma adresi), oturum verileri, iş kayıtları, krediler, haklar, bildirimler ve sunucu kayıtları. Girdileriniz yalnızca aktarım sırasında geçer.</li>
 <li><strong>xAI (X.AI LLC ve bağlı şirketleri)</strong> (ABD): yapay zekâ çıkarımı; yani bulut yapay zekâ özellikleri için Grok Imagine modellerini çalıştırır ve sonuçlarını kendi denetimiyle (moderasyon) kontrol eder. Veriler: istek süresince fotoğraflar, maskeler, istemler ve sonuçlar. Sıfır Veri Saklama açıktır: istekler ve sonuçlar 1 saat içinde silinir ve hiçbiri model eğitiminde kullanılmaz.</li>
 <li><strong>Features &amp; Labels, Inc. (fal.ai)</strong> (ABD): kullandığımız durumlarda otomatik çıktı güvenlik kontrolü ve alternatif yapay zekâ sağlayıcısı. Veriler: istek süresince sonuçlar (işleri fal.ai'a yönlendirirsek fotoğraflar, maskeler ve istemler de). İstek geçmişi kapalıdır; sonuçlar 1 saat içinde silinir.</li>
 <li><strong>fal.ai'ın çalıştırdığı modellerin geliştiricileri</strong>, örneğin Gemini görsel modelleri için <strong>Google LLC</strong> (ABD): fal.ai bir modeli çalıştırmak için geliştiricinin kendi hizmetini kullandığında, o geliştirici isteğin girdilerini ve sonuçlarını fal.ai adına işler.</li>
@@ -170,7 +170,7 @@
 <li><strong>E-posta hizmet sağlayıcımız</strong>: bize gönderdiğiniz e-postaları alır ve saklar.</li>
 </ul>
 <h2>13. Yurt dışına veri aktarımı</h2>
-<p>Türkiye merkezliyiz. Arka ucumuz [Supabase bölgesi, örn. AB (Frankfurt)] bölgesinde barındırılır. Yapay zekâ sağlayıcılarımız Amerika Birleşik Devletleri merkezlidir ve verileri orada veya kendilerinin ya da alt işleyenlerinin faaliyet gösterdiği diğer ülkelerde işleyebilir. Bu nedenle verileriniz, aynı düzeyde veri koruması sağlamayan ülkeler dahil, ülkeniz dışında işlenebilir.</p>
+<p>Türkiye merkezliyiz. Arka ucumuz AB (Frankfurt) bölgesinde barındırılır. Yapay zekâ sağlayıcılarımız Amerika Birleşik Devletleri merkezlidir ve verileri orada veya kendilerinin ya da alt işleyenlerinin faaliyet gösterdiği diğer ülkelerde işleyebilir. Bu nedenle verileriniz, aynı düzeyde veri koruması sağlamayan ülkeler dahil, ülkeniz dışında işlenebilir.</p>
 <h3>AEA, Birleşik Krallık ve İsviçre'den aktarımlar</h3>
 <p>Glowlit uygulamasını kullandığınızda verilerinizi doğrudan bize sağlarsınız. Biz veya sağlayıcılarımız verileri yeterlilik kararı bulunmayan bir ülkeye aktardığımızda şunlara dayanırız:</p>
 <ul>
@@ -240,7 +240,7 @@
 </ul>
 <p><strong>Genç kullanıcılar ve rıza (GDPR md. 8).</strong> Bulut yapay zekâ işlemede olduğu gibi rızaya dayandığımız hâllerde, ülkenizdeki dijital rıza yaşının altındaysanız bu rızanın veliniz veya vasiniz tarafından verilmesi ya da onaylanması gerekir. Bu yaş AB ve AEA'da ülkeye göre 13 ile 16 arasında, Birleşik Krallık'ta ise 13'tür. Kanunun gerektirdiği hâllerde, rızanın bir veli veya vasi tarafından verildiğini ya da onaylandığını kontrol etmek için adımlar atabiliriz.</p>
 <p><strong>Şikâyet.</strong> Bir denetim makamına şikâyette bulunabilirsiniz. AB'de bir yerleşimimiz bulunmadığından bizim için bir öncü denetim makamı yoktur. Yaşadığınız veya çalıştığınız ya da iddia edilen ihlalin gerçekleştiği AB veya AEA ülkesindeki makama başvurabilirsiniz (<a href="https://www.edpb.europa.eu/about-edpb/about-edpb/members_en">makamların listesi</a>). Birleşik Krallık'ta Information Commissioner's Office'e (<a href="https://ico.org.uk">ico.org.uk</a>), İsviçre'de Federal Veri Koruma ve Bilgi Komiserliği'ne (<a href="https://www.edoeb.admin.ch">edoeb.admin.ch</a>) başvurabilirsiniz. Endişelerinizi önce bizimle paylaşmanızdan memnuniyet duyarız.</p>
-<p><strong>Temsilciler.</strong> AB temsilcimiz: [AB temsilcisi: unvan ve adres]. Birleşik Krallık temsilcimiz: [Birleşik Krallık temsilcisi: unvan ve adres]. Veri korumayla ilgili her konuda bizim yerimize onlara da başvurabilirsiniz.</p>
+<p><strong>Temsilciler.</strong> AB temsilcimiz: Atanmış temsilci yok. Her talep için hello@buaze.com adresine yazabilirsiniz.. Birleşik Krallık temsilcimiz: Atanmış temsilci yok. Her talep için hello@buaze.com adresine yazabilirsiniz.. Veri korumayla ilgili her konuda bizim yerimize onlara da başvurabilirsiniz.</p>
 <h2>18. Birleşik Krallık Yaşa Uygun Tasarım Kurallarını nasıl uyguluyoruz?</h2>
 <p>Birleşik Krallık Yaşa Uygun Tasarım Kuralları ("Children's Code"), 18 yaşından küçüklerin kullanma ihtimali bulunan çevrim içi hizmetler için 15 standart belirler. Bunları, nerede yaşarlarsa yaşasınlar tüm kullanıcılara uygularız:</p>
 <ul>
@@ -284,8 +284,8 @@
 </ul>
 <p><strong>Nasıl başvurursunuz?</strong> Veri Sorumlusuna Başvuru Usul ve Esasları Hakkında Tebliğ uyarınca başvurunuzu şu yollarla yapabilirsiniz:</p>
 <ul>
-<li>yazılı olarak [Kayıtlı adres], Türkiye adresine;</li>
-<li>kayıtlı elektronik posta (KEP) ile [KEP adresi] adresine;</li>
+<li>yazılı olarak İstanbul, Türkiye, Türkiye adresine;</li>
+<li>kayıtlı elektronik posta (KEP) ile Yok adresine;</li>
 <li>güvenli elektronik imza veya mobil imza ile imzalanmış e-postayla <a href="mailto:hello@buaze.com">hello@buaze.com</a> adresine veya</li>
 <li>daha önce bize bildirdiğiniz ve sistemimizde kayıtlı olan e-posta adresinizden <a href="mailto:hello@buaze.com">hello@buaze.com</a> adresine.</li>
 </ul>
@@ -335,12 +335,12 @@
 <p>Uygulamalarımız veya kanun değiştiğinde bu politikayı güncelleriz. Önemli bir değişiklik olursa, değişiklik yürürlüğe girmeden önce sizi uygulama içinde bilgilendirir ve gerektiğinde rızanızı yeniden isteriz. En üstteki "Son güncelleme" tarihi geçerli sürümü gösterir.</p>
 <h2>24. Bize ulaşın</h2>
 <ul>
-<li><strong>Veri sorumlusu:</strong> [Şirket unvanı], [Kayıtlı adres], Türkiye</li>
+<li><strong>Veri sorumlusu:</strong> Okan Berk Manavoğlu (bireysel geliştirici), İstanbul, Türkiye, Türkiye</li>
 <li><strong>Gizlilik talepleri (veli ve vasi talepleri dahil):</strong> <a href="mailto:hello@buaze.com">hello@buaze.com</a></li>
 <li><strong>Genel iletişim:</strong> <a href="mailto:hello@buaze.com">hello@buaze.com</a></li>
-<li><strong>Kayıtlı elektronik posta (KEP):</strong> [KEP adresi]</li>
-<li><strong>AB temsilcisi:</strong> [AB temsilcisi: unvan ve adres]</li>
-<li><strong>Birleşik Krallık temsilcisi:</strong> [Birleşik Krallık temsilcisi: unvan ve adres]</li>
+<li><strong>Kayıtlı elektronik posta (KEP):</strong> Yok</li>
+<li><strong>AB temsilcisi:</strong> Atanmış temsilci yok. Her talep için hello@buaze.com adresine yazabilirsiniz.</li>
+<li><strong>Birleşik Krallık temsilcisi:</strong> Atanmış temsilci yok. Her talep için hello@buaze.com adresine yazabilirsiniz.</li>
 </ul>
 </main>
 <footer class="legal-footer"><a href="../../index.html">glowlit</a> · <a href="kullanim-kosullari.html">Kullanım Koşulları</a> · <a href="gizlilik-politikasi.html">Gizlilik Politikası</a></footer>

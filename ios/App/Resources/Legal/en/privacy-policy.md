@@ -12,14 +12,14 @@ Last updated: 14 October 2026
 
 ## 1. Who we are
 
-[Company legal name] ("**we**", "**us**" or "**our**") develops and operates the Glowlit iOS app and its online services (the "**Service**"). We are the controller responsible for your personal data (under Türkiye's KVKK, the *veri sorumlusu*).
+Okan Berk Manavoğlu (individual developer) ("**we**", "**us**" or "**our**") develops and operates the Glowlit iOS app and its online services (the "**Service**"). We are the controller responsible for your personal data (under Türkiye's KVKK, the *veri sorumlusu*).
 
-- **Address:** [Registered address], Türkiye
-- **Trade registry / MERSİS number:** [Trade registry and MERSİS number]
+- **Address:** Istanbul, Türkiye, Türkiye
+- **Trade registry / MERSİS number:** None (individual developer)
 - **Privacy contact:** [hello@buaze.com](mailto:hello@buaze.com)
-- **Registered email (KEP):** [KEP address]
-- **Representative in the EU (Art. 27 GDPR):** [EU representative: name and address]
-- **Representative in the UK (Art. 27 UK GDPR):** [UK representative: name and address]
+- **Registered email (KEP):** None
+- **Representative in the EU (Art. 27 GDPR):** None appointed. Contact hello@buaze.com for any request.
+- **Representative in the UK (Art. 27 UK GDPR):** None appointed. Contact hello@buaze.com for any request.
 
 For any privacy question, including anything you would raise with a data protection officer, email us at [hello@buaze.com](mailto:hello@buaze.com).
 
@@ -128,7 +128,7 @@ If you email us, we receive your email address, the content of your message and 
 ## 6. How cloud AI processing works
 
 1. **Your consent comes first.** Before any photo or prompt leaves your device for one of our cloud AI features, the app shows an opt-in screen that names the companies that process it. Nothing is sent until you agree. If you're under the age required by law, a parent or guardian must give or approve this consent (sections 3, 17 and 19). You can withdraw consent at any time in **Settings → Cloud AI processing**, and on-device features keep working.
-2. **Upload.** The app sends your input over an encrypted connection to our backend (Supabase Edge Functions; hosting region: [Supabase region, e.g. EU (Frankfurt)]).
+2. **Upload.** The app sends your input over an encrypted connection to our backend (Supabase Edge Functions; hosting region: EU (Frankfurt)).
 3. **Safety checks.** Your prompt is checked by our safety filters before the request is processed (section 9).
 4. **AI processing.** Our backend passes your input to our AI inference provider for that request only. By default, this is xAI (X.AI LLC and its affiliates, USA), which runs its Grok Imagine image models. If we change providers, jobs may instead go to fal.ai (Features & Labels, Inc., USA), which runs third-party models (where fal.ai uses a model developer's own service to run a model, for example Google for its Gemini image models, that developer also processes the request), or directly to Google (Gemini API) or OpenAI (Images API). The current list is in section 12.
 5. **No storage of inputs.** We don't store your photo, mask or prompt. We use xAI's Zero Data Retention option, under which xAI deletes requests and results within 1 hour and keeps no stored copies. When fal.ai is used, we instruct it not to keep request history, which means no storage of inputs or outputs.
@@ -201,7 +201,7 @@ We don't sell your data, rent it, or share it with anyone for their own advertis
 
 These companies process personal data on our behalf. We keep this list up to date. If we add or replace an AI provider, we'll update this list and the cloud AI consent screen before the change takes effect, and ask for your consent again where required.
 
-- **Supabase Inc.** (USA): backend hosting, database, anonymous authentication and optional Sign in with Apple, server functions and server logs. Hosting region: [Supabase region, e.g. EU (Frankfurt)]. Data: anonymous user ID or account (Apple user identifier, email or relay address if shared), session data, job records, credits, entitlements, reports and server logs. Your inputs pass through in transit only.
+- **Supabase Inc.** (USA): backend hosting, database, anonymous authentication and optional Sign in with Apple, server functions and server logs. Hosting region: EU (Frankfurt). Data: anonymous user ID or account (Apple user identifier, email or relay address if shared), session data, job records, credits, entitlements, reports and server logs. Your inputs pass through in transit only.
 - **xAI (X.AI LLC and its affiliates)** (USA): AI inference, meaning it runs the Grok Imagine models for cloud AI features and checks their results with its own moderation. Data: photos, masks, prompts and results, for the duration of the request. Zero Data Retention is on: requests and results are deleted within 1 hour, and nothing is used to train models.
 - **Features & Labels, Inc. (fal.ai)** (USA): the automated output safety check where we use it, and an alternative AI provider. Data: results (and, if we route jobs to fal.ai, photos, masks and prompts), for the duration of the request. Request history is disabled, and results are deleted within 1 hour.
 - **Developers of the models that fal.ai runs**, for example **Google LLC** (USA) for Gemini image models: where fal.ai uses the developer's own service to run a model, that developer processes the inputs and results of the request on fal.ai's behalf.
@@ -212,7 +212,7 @@ These companies process personal data on our behalf. We keep this list up to dat
 
 ## 13. International data transfers
 
-We're based in Türkiye. Our backend is hosted in [Supabase region, e.g. EU (Frankfurt)]. Our AI providers are based in the United States and may process data there or in other countries where they or their sub-processors operate. This means your data may be processed outside your country, including in countries that don't offer the same level of data protection.
+We're based in Türkiye. Our backend is hosted in EU (Frankfurt). Our AI providers are based in the United States and may process data there or in other countries where they or their sub-processors operate. This means your data may be processed outside your country, including in countries that don't offer the same level of data protection.
 
 ### From the EEA, the UK and Switzerland
 
@@ -298,7 +298,7 @@ If the GDPR, the UK GDPR or the Swiss Federal Act on Data Protection applies to 
 
 **Complaints.** You can lodge a complaint with a supervisory authority. Because we don't have an establishment in the EU, there is no lead supervisory authority for us. You can contact the authority in the EU or EEA country where you live or work, or where an alleged infringement took place ([list of authorities](https://www.edpb.europa.eu/about-edpb/about-edpb/members_en)). In the UK, you can contact the Information Commissioner's Office ([ico.org.uk](https://ico.org.uk)). In Switzerland, you can contact the Federal Data Protection and Information Commissioner ([edoeb.admin.ch](https://www.edoeb.admin.ch)). We'd appreciate the chance to address your concerns first.
 
-**Representatives.** Our EU representative is [EU representative: name and address]. Our UK representative is [UK representative: name and address]. You can contact them instead of us on any data protection matter.
+**Representatives.** Our EU representative is None appointed. Contact hello@buaze.com for any request.. Our UK representative is None appointed. Contact hello@buaze.com for any request.. You can contact them instead of us on any data protection matter.
 
 ## 18. How we apply the UK Children's Code
 
@@ -347,8 +347,8 @@ We process personal data in accordance with the Law on the Protection of Persona
 
 **How to apply.** Under the Communiqué on the Procedures and Principles of Application to the Data Controller, you can apply:
 
-- in writing, to [Registered address], Türkiye;
-- by registered email (KEP), to [KEP address];
+- in writing, to Istanbul, Türkiye, Türkiye;
+- by registered email (KEP), to None;
 - by email signed with a secure electronic signature or mobile signature, to [hello@buaze.com](mailto:hello@buaze.com); or
 - by email to [hello@buaze.com](mailto:hello@buaze.com) from an email address you have previously notified to us and that is registered in our systems.
 
@@ -428,9 +428,9 @@ We'll update this policy when our practices or the law change. If a change is ma
 
 ## 24. Contact us
 
-- **Controller:** [Company legal name], [Registered address], Türkiye
+- **Controller:** Okan Berk Manavoğlu (individual developer), Istanbul, Türkiye, Türkiye
 - **Privacy requests (including from parents and guardians):** [hello@buaze.com](mailto:hello@buaze.com)
 - **General contact:** [hello@buaze.com](mailto:hello@buaze.com)
-- **Registered email (KEP):** [KEP address]
-- **EU representative:** [EU representative: name and address]
-- **UK representative:** [UK representative: name and address]
+- **Registered email (KEP):** None
+- **EU representative:** None appointed. Contact hello@buaze.com for any request.
+- **UK representative:** None appointed. Contact hello@buaze.com for any request.
