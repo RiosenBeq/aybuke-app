@@ -394,7 +394,8 @@ final class EditorViewModel {
         let text = FilmSubtitle.clean(effectSubtitle)
         var allowed = true
         var approved = text
-        if case .blocked(let reason) = ContentPolicy.evaluate(text) {
+        // Text drawn over the photo, not an edit instruction: the text rules apply.
+        if case .blocked(let reason, _) = ContentPolicy.evaluate(text, operation: .textToImage) {
             app.showToast(verbatim: L10n.core(reason), style: .error)
             Haptics.error()
             approved = ""
