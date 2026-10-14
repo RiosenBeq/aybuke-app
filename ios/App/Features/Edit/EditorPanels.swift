@@ -301,21 +301,32 @@ struct EffectsPanel: View {
 
     var body: some View {
         VStack(spacing: 12) {
-            ScrollView(.horizontal) {
-                HStack(spacing: 10) {
-                    ForEach(RetroEffect.allCases) { effect in
-                        Button {
-                            onSelect(effect)
-                        } label: {
-                            EffectTile(effect: effect, thumbnail: thumbnails[effect], isSelected: selected == effect)
+            ScrollViewReader { proxy in
+                ScrollView(.horizontal) {
+                    HStack(spacing: 10) {
+                        ForEach(RetroEffect.allCases) { effect in
+                            Button {
+                                onSelect(effect)
+                            } label: {
+                                EffectTile(effect: effect, thumbnail: thumbnails[effect], isSelected: selected == effect)
+                            }
+                            .buttonStyle(.pressable)
+                            .id(effect)
                         }
-                        .buttonStyle(.pressable)
                     }
+                    .padding(.vertical, 4)
                 }
-                .padding(.vertical, 4)
+                .scrollIndicators(.hidden)
+                .scrollClipDisabled()
+                // An effect picked elsewhere (an idea, a deep link) may sit past the edge.
+                .onAppear {
+                    if let selected { proxy.scrollTo(selected, anchor: .center) }
+                }
+                .onChange(of: selected) { _, effect in
+                    guard let effect else { return }
+                    withAnimation(.snappy) { proxy.scrollTo(effect, anchor: .center) }
+                }
             }
-            .scrollIndicators(.hidden)
-            .scrollClipDisabled()
 
             if let option = selected?.option {
                 Toggle(isOn: $showsExtra) {

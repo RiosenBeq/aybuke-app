@@ -5,7 +5,8 @@ import AppCore
 
 /// On-device "special effects" with an era: VHS tapes, disposable cameras,
 /// Y2K digicams, instant film, 90s glamour shots, glitter, 2016 phone
-/// photos, a 2006 camcorder and film stills. Pure Core Image plus a little
+/// photos, a 2006 camcorder and film stills, plus a tilt-shift "tiny
+/// world". Pure Core Image plus a little
 /// UIKit drawing (date stamps, frames, sparkles, camera chrome), so they're
 /// instant, free for everyone and never leave the device.
 enum RetroEffect: String, CaseIterable, Identifiable {
@@ -19,6 +20,7 @@ enum RetroEffect: String, CaseIterable, Identifiable {
     case throwback16
     case camcorder06
     case filmStill
+    case tinyWorld
 
     var id: String { rawValue }
 
@@ -35,6 +37,7 @@ enum RetroEffect: String, CaseIterable, Identifiable {
         case .throwback16: return "Throwback '16"
         case .camcorder06: return "Camcorder '06"
         case .filmStill: return "Film Still"
+        case .tinyWorld: return "Tiny World"
         }
     }
 
@@ -46,6 +49,7 @@ enum RetroEffect: String, CaseIterable, Identifiable {
         case .throwback16: return "2010s"
         case .kira: return String(localized: "Sparkle")
         case .filmStill: return String(localized: "Film", comment: "Era tag of the Film Still effect: the look of a movie frame")
+        case .tinyWorld: return String(localized: "Mini", comment: "Tag of the Tiny World effect: a tilt-shift photo that looks like a miniature model")
         }
     }
 
@@ -131,7 +135,7 @@ enum RetroEffect: String, CaseIterable, Identifiable {
     }
 
     /// Effects that also work on video frames (no frames or per-frame sparkles).
-    static let videoEffects: [RetroEffect] = [.vhs, .disposable, .digicam, .glamour, .neon, .throwback16, .camcorder06, .filmStill]
+    static let videoEffects: [RetroEffect] = [.vhs, .disposable, .digicam, .glamour, .neon, .throwback16, .camcorder06, .filmStill, .tinyWorld]
 
     /// The colour, grain and light of the effect, for photos and video frames.
     func grade(_ input: CIImage) -> CIImage {
@@ -243,6 +247,11 @@ enum RetroEffect: String, CaseIterable, Identifiable {
             image = RetroEffect.liftBlacks(image, amount: 0.05)
             image = RetroEffect.halation(over: image, unit: unit)
             return RetroEffect.grain(over: image, amount: 0.07, scale: unit)
+        case .tinyWorld:
+            // A toy-like scene: a little more colour and snap, then the
+            // tilt-shift blur.
+            let lifted = input.applyingFilter("CIColorControls", parameters: [kCIInputSaturationKey: 1.22, kCIInputContrastKey: 1.07])
+            return RetroEffect.tiltShift(lifted, unit: unit)
         }
     }
 
@@ -424,6 +433,32 @@ enum RetroEffect: String, CaseIterable, Identifiable {
         gradient.color1 = CIColor(red: color.red, green: color.green, blue: color.blue, alpha: 0)
         guard let leak = gradient.outputImage?.cropped(to: image.extent) else { return image }
         return leak.applyingFilter("CIScreenBlendMode", parameters: [kCIInputBackgroundImageKey: image])
+    }
+
+    /// Tilt-shift: a sharp band a little below the middle and blur that grows
+    /// toward the top and bottom, so the scene looks like a model. The mask
+    /// is two gradients (white = blurred), so it costs no pixels to build.
+    private static func tiltShift(_ image: CIImage, unit: CGFloat) -> CIImage {
+        let extent = image.extent
+        // Core Image's y runs up: 46% from the bottom is 54% from the top.
+        let focus = extent.minY + extent.height * 0.46
+        let halfBand = extent.height * 0.09
+        let fade = extent.height * 0.3
+        func ramp(from start: CGFloat, to end: CGFloat) -> CIImage? {
+            let gradient = CIFilter.linearGradient()
+            gradient.point0 = CGPoint(x: extent.midX, y: start)
+            gradient.point1 = CGPoint(x: extent.midX, y: end)
+            gradient.color0 = CIColor(red: 0, green: 0, blue: 0)
+            gradient.color1 = CIColor(red: 1, green: 1, blue: 1)
+            return gradient.outputImage
+        }
+        guard let above = ramp(from: focus + halfBand, to: focus + halfBand + fade),
+              let below = ramp(from: focus - halfBand, to: focus - halfBand - fade) else { return image }
+        let blur = CIFilter.maskedVariableBlur()
+        blur.inputImage = image.clampedToExtent()
+        blur.mask = above.applyingFilter("CIMaximumCompositing", parameters: [kCIInputBackgroundImageKey: below]).cropped(to: extent)
+        blur.radius = Float(16 * unit)
+        return blur.outputImage?.cropped(to: extent) ?? image
     }
 
     /// Red-orange glow around the brightest lights, like light scattering

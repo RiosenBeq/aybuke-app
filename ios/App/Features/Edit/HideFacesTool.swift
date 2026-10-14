@@ -40,7 +40,7 @@ final class FaceHider {
             guard !Task.isCancelled else { return }
             #if DEBUG
             // Screenshots use cartoon figures, which have no real faces.
-            if rects.isEmpty, preselect, ScreenshotScene.current == .hideFaces {
+            if rects.isEmpty, preselect, ScreenshotScene.current == .hideFaces || ScreenshotScene.current == .share {
                 rects = ScreenshotFixtures.groupFaces
                 if let cover = UserDefaults.standard.string(forKey: "GLFaceCover").flatMap(FaceCover.init(rawValue:)) { self.cover = cover }
             }

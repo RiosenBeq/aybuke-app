@@ -13,7 +13,7 @@ final class LookSuggesterTests: XCTestCase {
     }
 
     /// The app's effect ids (RetroEffect raw values).
-    private let effects = ["vhs", "disposable", "kira", "digicam", "instant", "glamour", "neon", "throwback16", "camcorder06", "filmStill"]
+    private let effects = ["vhs", "disposable", "kira", "digicam", "instant", "glamour", "neon", "throwback16", "camcorder06", "filmStill", "tinyWorld"]
 
     private func suggest(_ insight: PhotoInsight, month: Int = 4, rotation: Int = 0) -> [LookSuggestion] {
         LookSuggester.suggest(for: insight, date: date(month: month), calendar: utc, freeEffects: effects, rotation: rotation)
@@ -32,7 +32,10 @@ final class LookSuggesterTests: XCTestCase {
         XCTAssertEqual(PhotoInsight(labels: ["dog"]).kind, .pet)
         XCTAssertEqual(PhotoInsight(labels: ["sky", "water_body"]).kind, .landscape)
         XCTAssertEqual(PhotoInsight(labels: ["structure", "street"], isDark: true).kind, .cityNight)
-        XCTAssertEqual(PhotoInsight(labels: ["structure", "street"], isDark: false).kind, .other)
+        XCTAssertEqual(PhotoInsight(labels: ["structure", "street"], isDark: false).kind, .city)
+        // Sky in view keeps it a landscape; a room keeps it indoors.
+        XCTAssertEqual(PhotoInsight(labels: ["building", "sky"]).kind, .landscape)
+        XCTAssertEqual(PhotoInsight(labels: ["structure", "room"]).kind, .indoor)
         XCTAssertEqual(PhotoInsight(labels: ["baked_goods", "table"]).kind, .food)
         XCTAssertEqual(PhotoInsight(labels: ["furniture", "room"]).kind, .indoor)
         XCTAssertEqual(PhotoInsight().kind, .other)
@@ -44,7 +47,7 @@ final class LookSuggesterTests: XCTestCase {
 
     func testAtMostFourAndFreeEffectFirst() {
         for kind in [PhotoInsight(faceCount: 1), PhotoInsight(faceCount: 2), PhotoInsight(labels: ["cat"]),
-                     PhotoInsight(labels: ["sky"]), PhotoInsight(labels: ["food"]), PhotoInsight()] {
+                     PhotoInsight(labels: ["sky"]), PhotoInsight(labels: ["street"]), PhotoInsight(labels: ["food"]), PhotoInsight()] {
             let ideas = suggest(kind)
             XCTAssertLessThanOrEqual(ideas.count, LookSuggester.maxSuggestions)
             guard case .effect(let id) = ideas.first else { return XCTFail("First idea should be a free effect") }
@@ -81,6 +84,16 @@ final class LookSuggesterTests: XCTestCase {
                     XCTAssertFalse(candidates.contains { $0.category == .glowUp && $0.id != "pink-hair" })
                 }
             }
+        }
+    }
+
+    func testTinyWorldForCitiesAndLandscapes() {
+        XCTAssertEqual(suggest(PhotoInsight(labels: ["street", "building"])).first, .effect("tinyWorld"))
+        XCTAssertTrue(suggest(PhotoInsight(labels: ["sky", "mountain"])).contains(.effect("tinyWorld")))
+        XCTAssertTrue(LookSuggester.effectIDs(for: .cityNight, theme: nil).contains("tinyWorld"))
+        // A tilt-shift blur is never suggested for photos of people.
+        for kind in PhotoKind.allCases where kind.hasPeople {
+            XCTAssertFalse(LookSuggester.effectIDs(for: kind, theme: nil).contains("tinyWorld"))
         }
     }
 

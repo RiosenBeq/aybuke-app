@@ -134,6 +134,7 @@ final class EditorViewModel {
             let mode = UserDefaults.standard.string(forKey: "GLOverlayMode").flatMap(OverlaySession.Mode.init(rawValue:))
             overlays.loadScreenshotFixture(mode: mode ?? .stickers)
         }
+        if ScreenshotScene.current == .erase { strokes = ScreenshotFixtures.eraseStrokes }
         #endif
         // Holds self weakly, so it ends at the first warning after the editor closes.
         memoryWatcher = Task { [weak self] in
@@ -808,6 +809,16 @@ final class EditorViewModel {
                     case let name?: CutoutGradient(rawValue: name).map { cutout.setBackdrop(.gradient($0)) }
                     case nil: break
                     }
+                    if let refine = defaults.string(forKey: "GLCutoutRefine") {
+                        for fixture in ScreenshotFixtures.refineStrokes {
+                            cutout.setRefineMode(fixture.keeps ? .keepMore : .keepLess)
+                            cutout.addRefineStroke(fixture.stroke)
+                        }
+                        // The brush she'd be holding.
+                        let mode: CutoutSession.RefineMode = refine == "less" ? .keepLess : .keepMore
+                        if cutout.refineMode != mode { cutout.setRefineMode(mode) }
+                    }
+                    if defaults.bool(forKey: "GLCutoutShadow") { cutout.toggleShadow() }
                 }
                 #endif
                 Haptics.success()

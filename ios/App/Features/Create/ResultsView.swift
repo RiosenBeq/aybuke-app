@@ -233,7 +233,7 @@ struct ResultsView: View {
         let others = images.indices.filter { $0 != selection }.map { images[$0] }
         let provenance = provenance
         return SharePayload(image: current, operation: provenance.operation, prompt: prompt, alternatives: others,
-                            inheritedSourceType: provenance.inheritedSourceType)
+                            inheritedSourceType: provenance.inheritedSourceType, offersHidingFaces: true)
     }
 }
 

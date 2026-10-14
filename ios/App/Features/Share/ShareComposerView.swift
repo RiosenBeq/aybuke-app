@@ -20,6 +20,7 @@ struct ShareComposerView: View {
     @State private var captionIdeas: [String] = []
     @State private var ideasFromWriter = false
     @State private var isLoadingIdeas = false
+    @State private var faces = ShareFaceHiding()
 
     /// On-device edits are never branded; free cloud AI results are.
     private var branded: Bool { payload.provenance.showsMark(isPro: app.purchases.isPro) }
@@ -49,6 +50,10 @@ struct ShareComposerView: View {
                             .font(.subheadline.weight(.semibold))
                             .tint(Palette.accent)
                     }
+                    if faces.isOffered {
+                        HideOtherFacesSection(faces: faces)
+                            .transition(.opacity)
+                    }
                     destinations
                     if madeWithAI {
                         Toggle(isOn: $showsAILabel) {
@@ -69,6 +74,8 @@ struct ShareComposerView: View {
                 .padding(.horizontal, Metrics.gutter)
                 .padding(.bottom, 24)
                 .readableWidth(Metrics.compactWidth)
+                // The face switch arrives once the photo has been looked at.
+                .animation(.snappy, value: faces.isOffered)
             }
             .scrollIndicators(.hidden)
             #if DEBUG
@@ -86,13 +93,14 @@ struct ShareComposerView: View {
             }
         }
         .tint(Palette.accent)
-        .task(id: RenderKey(format: format, showPrompt: showPrompt, branded: branded, aiLabel: showsAILabel)) {
+        .task(id: RenderKey(format: format, showPrompt: showPrompt, branded: branded, aiLabel: showsAILabel, faces: faces.plan)) {
             await render()
         }
         .task {
             app.writer.prewarm()
             await loadCaptionIdeas()
         }
+        .task { await faces.prepare(payload) }
         .onAppear {
             if caption.isEmpty {
                 caption = ShareCaption.make(for: payload, hashtags: app.config.shareHashtags,
@@ -296,10 +304,12 @@ struct ShareComposerView: View {
         let showPrompt: Bool
         let branded: Bool
         let aiLabel: Bool
+        let faces: ShareFaceHiding.Plan?
     }
 
     private func render() async {
-        let payload = payload
+        let payload = await faces.covering(payload)
+        guard !Task.isCancelled else { return }
         let format = format
         let showPrompt = showPrompt
         let branded = branded

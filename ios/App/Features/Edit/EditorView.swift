@@ -568,41 +568,13 @@ struct EditorView: View {
 
     // MARK: Tool bar
 
-    /// Every tool in one row on any iPhone or iPad (no scrolling), on a
-    /// floating Liquid Glass bar.
+    /// One row on iPad and the Mac, a scrolling one on iPhone (see `EditorToolBar`).
     private var toolBar: some View {
-        HStack(spacing: 2) {
-            ForEach(EditorTool.available(cloudAI: app.allowsCloudAI)) { tool in
-                let isActive = model.activeTool == tool
-                Button {
-                    model.select(tool)
-                } label: {
-                    VStack(spacing: 4) {
-                        Image(systemName: tool.symbolName)
-                            .font(.system(size: 18, weight: .semibold))
-                            .symbolEffect(.bounce, value: isActive)
-                        Text(tool.shortTitle)
-                            .font(.system(size: 10.5, weight: .semibold))
-                            .lineLimit(1)
-                            .minimumScaleFactor(0.6)
-                    }
-                    .foregroundStyle(isActive ? Palette.onPrimary : Palette.textSecondary)
-                    .frame(maxWidth: .infinity)
-                    .frame(height: 54)
-                    .background(isActive ? Palette.primary : Color.clear, in: Capsule())
-                    // Blush alone is too faint on the glass to mark the tool.
-                    .overlay(Capsule().strokeBorder(isActive ? Palette.ink : Color.clear, lineWidth: 1.5))
-                    .contentShape(Capsule())
-                }
-                .buttonStyle(.plain)
-                // The short "Remove BG" fits the tile; VoiceOver reads it in full.
-                .accessibilityLabel(tool == .removeBackground ? String(localized: "Remove background") : tool.title)
-                .accessibilityAddTraits(isActive ? .isSelected : [])
-            }
+        EditorToolBar(tools: EditorTool.available(cloudAI: app.allowsCloudAI), activeTool: model.activeTool) { tool in
+            model.select(tool)
         }
-        .padding(5)
-        .liquidGlass(in: Capsule(), tint: Palette.white.opacity(0.4))
-        .frame(maxWidth: 560)
+        // Room for all ten tools in one row on iPad and the Mac in most languages.
+        .frame(maxWidth: Metrics.readableWidth)
         .padding(.horizontal, 10)
         .padding(.bottom, 4)
         .shadow(color: Palette.shadow, radius: 14, y: 6)
