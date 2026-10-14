@@ -6,6 +6,7 @@
 
 **Ne değişti?** Cihaz içi, ücretsiz içerik çoğaldı:
 - **12 yeni çıkartma (Text & Stickers):** parıltı patlaması, ay ve yıldızlar, uzun kurdeleli fiyonk, taç, papatya, gökkuşağı, gülen bulut, notalar, fotoğraf makinesi, film şeridi ve iki konuşma balonu ("main character", "yay"). Hepsi kodla çiziliyor; emoji veya SF Symbol yok. Adları ve balon yazıları 11 dile çevrildi.
+- **Çıkartmalar ikinci tur:** 30 çıkartma daha: inci kolye, pötikare fiyonk, kalp madalyon, krom yıldız, hologram kalp, kelebek toka, kapaklı telefon, CD, çilek, mantar, tavşan, kedi, ayıcık, kalpli bulut, bubble tea, dudak parlatıcısı, pudra kutusu, oje, rimel, parfüm (güzellik ürünleri yalnızca nesne olarak, asla dudak ya da vücut), kabarık kalp, iki kalp, aşk mektubu, gül, güneş, kayan yıldız, gezegen ve "it girl", "vibes", "core memory" balonları. Eski çıkartmalar degrade, parlama ve ince konturla yeniden çizildi; tepside bölümler var (All, Cute, Y2K, Glam, Love, Sky, Words). Toplam 55 çıkartma, hepsi 11 dile çevrildi.
 - **2 yeni retro efekt:** **Toy Cam '09** (çapraz banyo renkleri: camgöbeği gölgeler, sıcak ışıklar ve koyu köşeler) ve **Rainbow '17** (prizmadan geçen gökkuşağı ışığı sol üst köşeden giriyor). Toplam 12 retro efekt, ayrıca Tiny World. İkisi de yalnızca renk ve ışıkla oynuyor; Retro Cam'de canlı, videoda, Kestirmeler'deki "Apply a Retro Effect" eyleminde ve "Ideas for this photo" önerilerinde var.
 - **Yeni altyazı stili:** **Candy**, kalın beyaz kenarlı pembe harfler (çıkartma gibi). Videoda artık 5 altyazı stili var.
 
