@@ -256,6 +256,9 @@ enum CuratedIdeas {
                 String(localized: "A rainy autumn street with orange leaves and a glowing café window", comment: "Autumn idea for creating an image"),
                 String(localized: "A Halloween costume party for woodland animals, soft watercolor", comment: "Autumn idea for creating an image"),
                 String(localized: "A mug of hot chocolate on a windowsill while leaves fall outside", comment: "Autumn idea for creating an image"),
+                String(localized: "A fox curled up in a pile of golden leaves under a soft autumn sun", comment: "Autumn idea for creating an image"),
+                String(localized: "A cozy reading corner with spiced cocoa, candles and a knitted blanket", comment: "Autumn idea for creating an image"),
+                String(localized: "A hot-air balloon festival over orange forests at sunrise", comment: "Autumn idea for creating an image"),
             ]
         case .winter:
             return [
@@ -265,6 +268,9 @@ enum CuratedIdeas {
                 String(localized: "A cozy reading nook with a knitted blanket, fairy lights and falling snow outside", comment: "Winter idea for creating an image"),
                 String(localized: "A winter market at night with lanterns, ribbons and steaming cocoa", comment: "Winter idea for creating an image"),
                 String(localized: "A snow globe holding a tiny pastel city", comment: "Winter idea for creating an image"),
+                String(localized: "A penguin family building a snowman on a starry night", comment: "Winter idea for creating an image"),
+                String(localized: "A frozen lake with ice skates, lanterns and soft falling snow", comment: "Winter idea for creating an image"),
+                String(localized: "A little fox wearing a knitted scarf in a snowy forest", comment: "Winter idea for creating an image"),
             ]
         case .spring:
             return [
@@ -274,6 +280,9 @@ enum CuratedIdeas {
                 String(localized: "A rainy spring day seen through a window with raindrops and a rainbow", comment: "Spring idea for creating an image"),
                 String(localized: "A meadow picnic with strawberries, daisies and a striped blanket", comment: "Spring idea for creating an image"),
                 String(localized: "A tiny hedgehog carrying a flower umbrella", comment: "Spring idea for creating an image"),
+                String(localized: "A row of pastel houses with flower boxes after a spring rain", comment: "Spring idea for creating an image"),
+                String(localized: "A bunny reading a book under a blossoming apple tree", comment: "Spring idea for creating an image"),
+                String(localized: "A paper boat floating down a stream full of cherry petals", comment: "Spring idea for creating an image"),
             ]
         case .summer:
             return [
@@ -283,6 +292,9 @@ enum CuratedIdeas {
                 String(localized: "A rooftop garden at night with string lights and fireflies", comment: "Summer idea for creating an image"),
                 String(localized: "A watermelon-themed pool party for ducks, bright and playful", comment: "Summer idea for creating an image"),
                 String(localized: "A camper van under the stars beside a calm lake", comment: "Summer idea for creating an image"),
+                String(localized: "A seaside café with lemon cakes and a view of sailboats", comment: "Summer idea for creating an image"),
+                String(localized: "A sunflower field at golden hour with a vintage bicycle", comment: "Summer idea for creating an image"),
+                String(localized: "A night picnic on the beach with lanterns and a sky full of stars", comment: "Summer idea for creating an image"),
             ]
         }
     }
@@ -327,6 +339,15 @@ enum CuratedIdeas {
         String(localized: "New favourite, no notes", comment: "Caption idea for sharing a picture"),
         String(localized: "Colour me happy", comment: "Caption idea for sharing a picture"),
         String(localized: "Just a little daydream", comment: "Caption idea for sharing a picture"),
+        String(localized: "Pastel state of mind", comment: "Caption idea for sharing a picture"),
+        String(localized: "Living in my own little movie", comment: "Caption idea for sharing a picture"),
+        String(localized: "Collecting moments, not things", comment: "Caption idea for sharing a picture"),
+        String(localized: "Proof that today was a good day", comment: "Caption idea for sharing a picture"),
+        String(localized: "Here for the little things", comment: "Caption idea for sharing a picture"),
+        String(localized: "Daydream mode: on", comment: "Caption idea for sharing a picture"),
+        String(localized: "This one's going on the fridge", comment: "Caption idea for sharing a picture"),
+        String(localized: "Sunshine in picture form", comment: "Caption idea for sharing a picture"),
+        String(localized: "Bestie-approved 💖", comment: "Caption idea for sharing a picture"),
     ]
 
     /// Only offered when the picture really was made with AI.

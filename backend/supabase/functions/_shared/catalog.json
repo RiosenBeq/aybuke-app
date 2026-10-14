@@ -4,7 +4,9 @@
     "fantasy",
     "oil",
     "neon",
-    "clay"
+    "clay",
+    "knit",
+    "papercraft"
   ],
   "templates" : [
     {
@@ -264,6 +266,96 @@
       "isPro" : false,
       "prompt" : "Turn this into a retro photo-booth picture: a pink curtain with paper hearts, heart-shaped sunglasses as props, bright even flash and a light film grain. Keep the outfit modest and age-appropriate, with sleeves and a high neckline. Keep every person's face, identity, skin tone, body shape and expression exactly the same.",
       "title" : "Heart Photo Booth"
+    },
+    {
+      "id" : "concert-night",
+      "isPro" : true,
+      "prompt" : "Place the people in this photo in the crowd at an outdoor evening concert: colorful stage lights and light beams, floating confetti, glow sticks and a soft haze. Give everyone a sparkly sequin jacket over their outfit. No alcohol, no band names, logos or readable text. Keep natural skin texture, no skin smoothing. Keep the outfit modest and age-appropriate, with sleeves and a high neckline. Keep every person's face, identity, skin tone, body shape and expression exactly the same.",
+      "title" : "Concert Night"
+    },
+    {
+      "id" : "pet-studio",
+      "isPro" : false,
+      "prompt" : "Turn this into a soft studio portrait by a pet photographer: a seamless pastel backdrop, gentle studio lighting and a soft shadow on the floor. Change only the background and the light. Keep the animal's breed, markings, colors and face exactly the same. If a person is in the photo, keep them exactly the same too. Keep the person's face, identity, skin tone, body shape and expression exactly the same.",
+      "title" : "Pet & Me Studio"
+    },
+    {
+      "id" : "sticker-sheet",
+      "isPro" : false,
+      "prompt" : "Turn the person in this photo into a sheet of six glossy die-cut vinyl stickers on a pastel backing sheet: cute illustrated versions of her in cheerful poses, each with a small prop such as a heart, a star, a bubble tea, a camera, a flower or a rainbow. Thick white sticker borders, soft shadows and no text, logos or brand names. Keep her real hairstyle, hair color, skin tone and outfit in every sticker. Keep the person's face, identity, skin tone, body shape and expression exactly the same.",
+      "title" : "Sticker Sheet"
+    },
+    {
+      "id" : "tennis-club",
+      "isPro" : true,
+      "prompt" : "Restyle the photo as a sunny tennis-club moment: a white sleeved tennis polo with a pastel sweater tied over the shoulders, a knee-length pleated tennis skirt, a racket and tennis balls, a green court with crisp white lines and bright midday light. No logos or brand names. Keep natural skin texture, no skin smoothing. Keep the outfit modest and age-appropriate, with sleeves and a high neckline. Keep the person's face, identity, skin tone, body shape and expression exactly the same.",
+      "title" : "Tennis Club"
+    },
+    {
+      "id" : "grad-day",
+      "isPro" : false,
+      "prompt" : "Turn this into a graduation-day photo: a classic graduation cap and gown over her outfit, a sunny campus lawn with leafy trees, golden confetti and tossed caps in the air, and warm afternoon light. Keep natural skin texture, no skin smoothing. Keep the person's face, identity, skin tone, body shape and expression exactly the same.",
+      "title" : "Grad Day"
+    },
+    {
+      "id" : "bracelet-club",
+      "isPro" : false,
+      "prompt" : "Turn this into a sunny friendship-bracelet afternoon: colorful beaded friendship bracelets on everyone's wrists, a picnic blanket with little boxes of beads and string, wildflowers and soft golden light. Keep everyone's outfits from the photo. Match the lighting naturally. Keep every person's face, identity, skin tone, body shape and expression exactly the same.",
+      "title" : "Bracelet Club"
+    },
+    {
+      "id" : "trading-card",
+      "isPro" : true,
+      "prompt" : "Turn the person in this photo into a shiny holographic collectible trading card: her portrait as glossy card art inside an ornate pastel frame with a rainbow foil shimmer and sparkles, the card standing on a desk in soft light. No text, numbers, logos or brand names. Keep the person's face, identity, skin tone, body shape and expression exactly the same.",
+      "title" : "Holo Card"
+    },
+    {
+      "id" : "twinning",
+      "isPro" : false,
+      "prompt" : "Give everyone in this photo matching outfits: cozy pastel-pink zip hoodies, with a soft pastel color grade and light film grain. Keep the background and each person's hairstyle and hair color. No logos or brand names. Keep natural skin texture, no skin smoothing. Keep the outfit modest and age-appropriate, with sleeves and a high neckline. Keep every person's face, identity, skin tone, body shape and expression exactly the same.",
+      "title" : "Twinning"
+    },
+    {
+      "id" : "pet-party",
+      "isPro" : false,
+      "prompt" : "Turn this into a cute birthday party for the pet: a tiny striped party hat, pastel balloons, paper bunting, confetti and a small pet-safe cake with one candle on the table. Keep the animal's breed, markings, colors and face exactly the same. If a person is in the photo, keep them exactly the same too. Keep the person's face, identity, skin tone, body shape and expression exactly the same.",
+      "title" : "Pawty Time"
+    },
+    {
+      "id" : "manga",
+      "isPro" : false,
+      "prompt" : "Redraw this photo as a classic black-and-white manga panel with clean ink lines, soft screentone shading, sparkles and floating flowers around the people, and gentle speed lines in the background. Keep the composition and each person's recognizable features.",
+      "title" : "Manga Panel"
+    },
+    {
+      "id" : "postcard",
+      "isPro" : true,
+      "prompt" : "Turn this photo into a vintage travel postcard: place the person on a sunny seaside promenade with pastel houses, a lighthouse and sailboats, inside a white deckled postcard border with a decorative stamp and a round postmark in the corner. No readable text. Match the lighting naturally. Keep the person's face, identity, skin tone, body shape and expression exactly the same.",
+      "title" : "Travel Postcard"
+    },
+    {
+      "id" : "bow-era",
+      "isPro" : false,
+      "prompt" : "Restyle the photo with a soft bow aesthetic: pink satin ribbon bows in her hair, a cream knit cardigan with a lace collar and pearl buttons, a pastel pink backdrop with little bows, soft daylight and light film grain. Keep her hairstyle and hair color; just add the bows. Keep the outfit modest and age-appropriate, with sleeves and a high neckline. Keep the person's face, identity, skin tone, body shape and expression exactly the same.",
+      "title" : "Bow Era"
+    },
+    {
+      "id" : "sleepover",
+      "isPro" : false,
+      "prompt" : "Turn this into a cozy sleepover photo: a pillow fort with fairy lights, soft blankets, popcorn bowls, instant photos pinned to a string and a warm movie-night glow. Everyone wears matching long-sleeve pastel pajamas. Keep natural skin texture, no skin smoothing. Keep the outfit modest and age-appropriate, with sleeves and a high neckline. Keep every person's face, identity, skin tone, body shape and expression exactly the same.",
+      "title" : "Sleepover"
+    },
+    {
+      "id" : "plushie-pet",
+      "isPro" : true,
+      "prompt" : "Turn the pet in this photo into a cute handmade stitched plush toy sitting on a cozy knitted blanket: soft fabric in the pet's real colors and markings, visible seams, embroidered details and a little ribbon collar. No logos, labels or brand names. Keep the animal's breed, markings, colors and face exactly the same. If a person is in the photo, keep them exactly the same too. Keep the person's face, identity, skin tone, body shape and expression exactly the same.",
+      "title" : "Plushie Pet"
+    },
+    {
+      "id" : "soft-film",
+      "isPro" : false,
+      "prompt" : "Make this look like a dreamy 35mm film snapshot: soft window light, a pastel color grade, gentle halation around the highlights, a faint light leak at the edge and fine grain. Keep the scene and the outfit unchanged. Keep natural skin texture, no skin smoothing. Keep the person's face, identity, skin tone, body shape and expression exactly the same.",
+      "title" : "Soft Film"
     }
   ]
 }

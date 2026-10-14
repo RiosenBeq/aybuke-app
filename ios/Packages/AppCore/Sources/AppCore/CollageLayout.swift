@@ -115,28 +115,37 @@ public enum CarouselSlicer {
 public enum CollageStyle: String, CaseIterable, Sendable {
     /// The classic photo dump: even rows or columns.
     case grid
-    /// One big photo (the first) next to the rest.
+    /// One big photo (the first) next to the rest, or in the middle of them.
     case mosaic
     /// Frames on dark film strips with sprocket holes.
     case filmStrip
-    /// Instant-camera prints scattered with a slight tilt.
+    /// Instant-camera prints scattered with a slight tilt, or hanging from
+    /// ribbons like a garland.
     case polaroid
-    /// White-bordered prints with tape and stickers.
+    /// White-bordered prints with tape and stickers, scattered or in tidy rows.
     case scrapbook
-    /// A tight masonry board with a colour card sampled from the photos.
+    /// A tight masonry board with a colour card sampled from the photos,
+    /// optionally led by one featured photo.
     case moodboard
 
     /// A white card with a shadow sits under each photo.
     public var hasCards: Bool { self == .polaroid || self == .scrapbook }
 
+    /// Scattered prints shuffle through this many scatters, then one neat
+    /// arrangement: a garland of instant prints, a tidy scrapbook page.
+    static let scatterShuffles = 6
+
     /// How many arrangements "Shuffle" goes through for `count` photos.
     public func variantCount(for count: Int) -> Int {
         switch self {
         case .grid: return min(max(count, 1), 3)
-        case .mosaic: return count < 2 ? 1 : (CollageLayout.hasLShape(count) ? 3 : 2)
+        case .mosaic:
+            // Hero first, hero last, the L of 6 or 8, the hero in the middle.
+            guard count >= 2 else { return 1 }
+            return 2 + (CollageLayout.hasLShape(count) ? 1 : 0) + (count >= 3 ? 1 : 0)
         case .filmStrip: return 2
-        case .polaroid, .scrapbook: return 6
-        case .moodboard: return count < 2 ? 1 : 2
+        case .polaroid, .scrapbook: return Self.scatterShuffles + 1
+        case .moodboard: return count < 2 ? 1 : (count >= 3 ? 3 : 2)
         }
     }
 
@@ -251,9 +260,14 @@ public struct CollageLayout: Equatable, Sendable {
         case .filmStrip:
             builder.addFilmStrips(count, variant: variant, aspects: aspects)
         case .polaroid:
-            builder.addPolaroids(count, seed: seed(count, variant, salt: 3))
+            if variant == CollageStyle.scatterShuffles {
+                builder.addGarland(count, seed: seed(count, variant, salt: 3))
+            } else {
+                builder.addPolaroids(count, seed: seed(count, variant, salt: 3))
+            }
         case .scrapbook:
-            builder.addScrapbook(count, aspects: aspects, seed: seed(count, variant, salt: 7))
+            builder.addScrapbook(count, aspects: aspects, seed: seed(count, variant, salt: 7),
+                                 tidy: variant == CollageStyle.scatterShuffles)
         case .moodboard:
             builder.addMoodboard(count, variant: variant, aspects: aspects)
         }
@@ -372,9 +386,13 @@ extension CollageLayout {
     }
 
     /// The first photo large, the rest in a grid along the long side; for 6
-    /// or 8 photos also an L of small ones around a big square.
+    /// or 8 photos also an L of small ones around a big square; from 3
+    /// photos also the first one in the middle (the last arrangement).
     static func mosaic(_ count: Int, in box: Box, gap: Double, variant: Int, aspects: [Double]) -> [Box] {
         guard count > 1 else { return [box] }
+        if count >= 3, variant == CollageStyle.mosaic.variantCount(for: count) - 1 {
+            return centerStage(count, in: box, gap: gap, aspects: aspects)
+        }
         if variant == 2, hasLShape(count) {
             let side = count / 2
             let cellWidth = (box.w - gap * Double(side - 1)) / Double(side)
@@ -406,6 +424,32 @@ extension CollageLayout {
         }
         let others = gridArrangements(count - 1, in: rest, gap: gap, aspects: Array(aspects.dropFirst())).first ?? []
         return [hero] + others
+    }
+
+    /// Center stage: the first photo in the middle, the others split between
+    /// a column on each side (rows above and below it on a tall canvas).
+    static func centerStage(_ count: Int, in box: Box, gap: Double, aspects: [Double]) -> [Box] {
+        let before = (count - 1) / 2
+        let after = count - 1 - before
+        let share = count == 3 ? 0.5 : count <= 5 ? 0.46 : 0.42
+        let hero: Box, first: Box, second: Box
+        if box.w >= box.h {
+            let heroWidth = (box.w - 2 * gap) * share
+            let side = (box.w - 2 * gap - heroWidth) / 2
+            first = Box(x: box.x, y: box.y, w: side, h: box.h)
+            hero = Box(x: box.x + side + gap, y: box.y, w: heroWidth, h: box.h)
+            second = Box(x: hero.x + heroWidth + gap, y: box.y, w: side, h: box.h)
+        } else {
+            let heroHeight = (box.h - 2 * gap) * share
+            let side = (box.h - 2 * gap - heroHeight) / 2
+            first = Box(x: box.x, y: box.y, w: box.w, h: side)
+            hero = Box(x: box.x, y: box.y + side + gap, w: box.w, h: heroHeight)
+            second = Box(x: box.x, y: hero.y + heroHeight + gap, w: box.w, h: side)
+        }
+        let others = Array(aspects.dropFirst())
+        let firstCells = gridArrangements(before, in: first, gap: gap, aspects: Array(others.prefix(before))).first ?? []
+        let secondCells = gridArrangements(after, in: second, gap: gap, aspects: Array(others.dropFirst(before))).first ?? []
+        return [hero] + firstCells + secondCells
     }
 }
 
@@ -523,13 +567,72 @@ private struct Builder {
         }
     }
 
+    /// A garland: instant prints hanging in rows from ribbons, each pinned in
+    /// its top border with a scrap of tape and swinging a little about the pin.
+    mutating func addGarland(_ count: Int, seed: UInt64) {
+        let cardAspect = 54.0 / 86.0
+        var random = CollageRandom(seed: seed)
+        let sideGap = max(gap, 0.03 * short)
+        let edge = 0.012 * short
+        // The row count that makes the prints biggest; a print takes at most
+        // 78% of its row, which leaves room for the ribbon and the swing.
+        var best = (rows: 1, width: 0.0)
+        for rows in 1...count {
+            let perRow = Int((Double(count) / Double(rows)).rounded(.up))
+            let byWidth = (content.w - Double(perRow + 1) * sideGap) / Double(perRow)
+            let byHeight = content.h / Double(rows) * 0.78 * cardAspect
+            let width = min(byWidth, byHeight)
+            if width > best.width * 1.0001 { best = (rows, width) }
+        }
+        let plan = CollageLayout.distribute(count, into: best.rows)
+        let band = content.h / Double(best.rows)
+        let ribbon = max(0.006 * short, best.width * 0.035)
+
+        for (row, items) in plan.enumerated() {
+            let top = content.y + Double(row) * band + (band - best.width / cardAspect) / 2
+            let pinY = top + best.width / cardAspect * 0.04
+            layout.decorations.append(CollageDecoration(
+                kind: .tape(tone: row % 4),
+                frame: Box(x: 0, y: pinY - ribbon / 2, w: aspect, h: ribbon).normalized(aspect),
+                rotation: 0
+            ))
+            let spacing = (content.w - Double(items) * best.width) / Double(items + 1)
+            for item in 0..<items {
+                var width = best.width
+                var height = width / cardAspect
+                let pinX = content.x + spacing + Double(item) * (width + spacing) + width / 2
+                let sign: Double = (row + item).isMultiple(of: 2) ? -1 : 1
+                let tilt = sign * (2 + 3.5 * random.next())
+                // Turned about the pin, so the print swings out from under it.
+                var center = Self.rotate(x: pinX, y: pinY + height * 0.46, aroundX: pinX, y: pinY, degrees: tilt)
+                let radians = tilt * .pi / 180
+                let boundsX = width * abs(cos(radians)) + height * abs(sin(radians))
+                let boundsY = width * abs(sin(radians)) + height * abs(cos(radians))
+                let shrink = min(1, (content.w + 2 * edge) / boundsX, (content.h + 2 * edge) / boundsY)
+                width *= shrink
+                height *= shrink
+                center.x = Self.clamp(center.x, content.x - edge + boundsX * shrink / 2, content.x + content.w + edge - boundsX * shrink / 2)
+                center.y = Self.clamp(center.y, content.y - edge + boundsY * shrink / 2, content.y + content.h + edge - boundsY * shrink / 2)
+                let card = Box(x: center.x - width / 2, y: center.y - height / 2, w: width, h: height)
+                let window = Box(x: card.x + card.w * 0.074, y: card.y + card.h * 0.0756, w: card.w * 0.852, h: card.h * 0.7209)
+                layout.slots.append(CollageSlot(frame: card.normalized(aspect), window: window.normalized(aspect), rotation: tilt))
+                addDecoration(.tape(tone: (row + item + 1) % 4), on: card, rotation: tilt,
+                              local: (0, -height * 0.46), size: (width * 0.26, width * 0.1), tilt: 0)
+            }
+        }
+    }
+
     /// Prints with a thin white border that keep each photo's shape, taped
-    /// down, with a sticker on every other one.
-    mutating func addScrapbook(_ count: Int, aspects: [Double], seed: UInt64) {
+    /// down, with a sticker on every other one. A `tidy` page lines them up
+    /// in rows, barely tilted and never overlapping much.
+    mutating func addScrapbook(_ count: Int, aspects: [Double], seed: UInt64, tidy: Bool = false) {
         var random = CollageRandom(seed: seed)
         let shapes = aspects.map { min(max($0, 0.65), 1.5) }
-        let spots = scatter(count, cardAspects: shapes, sameSize: false, fill: 1.02 - 0.3 * gapShare, jitter: 0.08, maxTilt: 5,
-                            random: &random)
+        let spots = tidy
+            ? scatter(count, cardAspects: shapes, sameSize: false, fill: 0.94 - 0.3 * gapShare, jitter: 0, maxTilt: 2.5,
+                      random: &random)
+            : scatter(count, cardAspects: shapes, sameSize: false, fill: 1.02 - 0.3 * gapShare, jitter: 0.08, maxTilt: 5,
+                      random: &random)
         for (index, spot) in spots.enumerated() {
             let card = spot.box
             let border = 0.045 * min(card.w, card.h)
@@ -646,38 +749,72 @@ private struct Builder {
     // MARK: Moodboard
 
     /// Masonry columns that each fill the height, plus a colour card with a
-    /// dot sampled from each of the first five photos.
+    /// dot sampled from each of the first five photos. Variant 2 features the
+    /// first photo across the top (down the left of a wide carousel) and
+    /// builds the board in the space left.
     mutating func addMoodboard(_ count: Int, variant: Int, aspects: [Double]) {
-        let items = count + (count > 1 ? 1 : 0)
-        let base = Int((Double(items) * content.w / content.h * 0.75).squareRoot().rounded())
+        let shapes = (0..<count).map { min(max(aspects[$0], 0.6), 1.5) } + (count > 1 ? [1.7] : [])
+        if variant == 2, count >= 3 {
+            let heroShape = min(max(aspects[0], 0.8), 1.8)
+            let hero: Box, rest: Box
+            if content.w <= content.h * 1.1 {
+                let height = min(max(content.w / heroShape, content.h * 0.32), content.h * 0.5)
+                hero = Box(x: content.x, y: content.y, w: content.w, h: height)
+                rest = Box(x: content.x, y: content.y + height + gap, w: content.w, h: content.h - height - gap)
+            } else {
+                let width = min(max(content.h * heroShape, content.w * 0.25), content.w * 0.45)
+                hero = Box(x: content.x, y: content.y, w: width, h: content.h)
+                rest = Box(x: content.x + width + gap, y: content.y, w: content.w - width - gap, h: content.h)
+            }
+            let others = Array(shapes.dropFirst())
+            let boxes = [hero] + masonry(others, columns: Self.moodboardColumns(others.count, in: rest, variant: 0), in: rest)
+            addFlat(Array(boxes.prefix(count)))
+            if let palette = boxes.last { addPalette(palette, photos: count) }
+            return
+        }
+        let boxes = masonry(shapes, columns: Self.moodboardColumns(shapes.count, in: content, variant: variant), in: content)
+        addFlat(Array(boxes.prefix(count)))
+        guard shapes.count > count, let palette = boxes.last else { return }
+        addPalette(palette, photos: count)
+    }
+
+    /// How many masonry columns `items` (photos and the colour card) get.
+    private static func moodboardColumns(_ items: Int, in area: Box, variant: Int) -> Int {
+        let base = Int((Double(items) * area.w / area.h * 0.75).squareRoot().rounded())
         var columns = min(max(base, 2), max(items - 1, 1))
         if variant == 1 { columns = columns + 1 <= items - 1 ? columns + 1 : max(columns - 1, 1) }
-        let columnWidth = (content.w - gap * Double(columns - 1)) / Double(columns)
+        return columns
+    }
+
+    /// Masonry columns filling `area`; `shapes` are width over height, in order.
+    private func masonry(_ shapes: [Double], columns: Int, in area: Box) -> [Box] {
+        let columnWidth = (area.w - gap * Double(columns - 1)) / Double(columns)
 
         // Shortest column first, so the board fills evenly.
         var stacks = Array(repeating: [(item: Int, height: Double)](), count: columns)
         var heights = Array(repeating: 0.0, count: columns)
-        for item in 0..<items {
-            let shape = item < count ? min(max(aspects[item], 0.6), 1.5) : 1.7
+        for (item, shape) in shapes.enumerated() {
             let column = heights.indices.min { heights[$0] < heights[$1] } ?? 0
             stacks[column].append((item, columnWidth / shape))
             heights[column] += columnWidth / shape + gap
         }
 
-        var boxes = Array(repeating: Box(x: 0, y: 0, w: 0, h: 0), count: items)
+        var boxes = Array(repeating: Box(x: 0, y: 0, w: 0, h: 0), count: shapes.count)
         for (column, stack) in stacks.enumerated() where !stack.isEmpty {
-            let available = content.h - gap * Double(stack.count - 1)
+            let available = area.h - gap * Double(stack.count - 1)
             let scale = available / stack.reduce(0) { $0 + $1.height }
-            var y = content.y
+            var y = area.y
             for entry in stack {
                 let height = entry.height * scale
-                boxes[entry.item] = Box(x: content.x + Double(column) * (columnWidth + gap), y: y, w: columnWidth, h: height)
+                boxes[entry.item] = Box(x: area.x + Double(column) * (columnWidth + gap), y: y, w: columnWidth, h: height)
                 y += height + gap
             }
         }
-        addFlat(Array(boxes.prefix(count)))
+        return boxes
+    }
 
-        guard items > count, let palette = boxes.last else { return }
+    /// The colour card with a dot sampled from each of the first five photos.
+    private mutating func addPalette(_ palette: Box, photos count: Int) {
         layout.decorations.append(CollageDecoration(kind: .palette, frame: palette.normalized(aspect), rotation: 0))
         let dots = min(count, 5)
         let diameter = min(palette.h * 0.46, palette.w / (Double(dots) * 1.45))

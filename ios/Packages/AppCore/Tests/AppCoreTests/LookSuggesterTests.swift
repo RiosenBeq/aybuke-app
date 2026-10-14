@@ -159,6 +159,33 @@ final class LookSuggesterTests: XCTestCase {
         XCTAssertEqual(suggest(insight, rotation: 3), suggest(insight, rotation: 3))
     }
 
+    func testDifferentPhotosCanLeadWithDifferentIdeasAndLooks() {
+        let labelSets: [[String]] = [[], ["indoor"], ["outdoor", "sky"], ["beach"], ["room", "bed"], ["street"],
+                                     ["flower", "garden"], ["snow"], ["food"], ["tree", "grass"], ["window"], ["concert"]]
+        var ideas = Set<String>()
+        var looks = Set<String>()
+        for labels in labelSets {
+            let insight = PhotoInsight(faceCount: 1, labels: labels)
+            let suggestions = suggest(insight)
+            XCTAssertEqual(suggestions, suggest(insight), "the same photo always gets the same ideas")
+            for suggestion in suggestions {
+                if case .magicEdit(let prompt) = suggestion { ideas.insert(prompt) }
+                if case .template(let id) = suggestion { looks.insert(id) }
+            }
+        }
+        XCTAssertGreaterThan(ideas.count, 2)
+        XCTAssertGreaterThan(looks.count, 2)
+    }
+
+    func testNewPetLooksCanLead() {
+        var looks = Set<String>()
+        for labels in [["cat"], ["dog"], ["rabbit"], ["bird"], ["hamster"], ["puppy"], ["kitten"], ["dog", "grass"], ["cat", "sofa"], ["pet", "bed"]] {
+            looks.formUnion(templates(suggest(PhotoInsight(labels: labels))).map(\.id))
+        }
+        XCTAssertFalse(looks.isDisjoint(with: ["pet-party", "pet-studio"]), "\(looks)")
+        XCTAssertFalse(looks.contains("plushie-pet"), "a Pro look never leads")
+    }
+
     func testRotationMovesThroughEffects() {
         let insight = PhotoInsight(labels: ["sky"])
         var seen: [LookSuggestion] = []
@@ -176,6 +203,21 @@ final class LookSuggesterTests: XCTestCase {
         XCTAssertFalse(LookSuggester.allMagicEditIdeas.isEmpty)
         for idea in LookSuggester.allMagicEditIdeas {
             XCTAssertEqual(ContentPolicy.evaluate(idea, operation: .magicEdit), .allowed, idea)
+            // What the server checks: the idea with the edit guard appended.
+            XCTAssertEqual(ContentPolicy.evaluate(PromptBuilder.editInstruction(idea), operation: .magicEdit), .allowed, idea)
+        }
+    }
+
+    func testEveryKindHasSeveralIdeas() {
+        for kind in PhotoKind.allCases {
+            let ideas = LookSuggester.magicEditIdeas(for: kind, theme: nil)
+            XCTAssertGreaterThanOrEqual(ideas.count, 5, "\(kind)")
+            XCTAssertEqual(ideas.count, Set(ideas).count, "\(kind) repeats an idea")
+            // The season's idea always leads, whatever the photo.
+            for theme in SeasonalTheme.allCases {
+                let seasonal = LookSuggester.magicEditIdeas(for: kind, theme: theme, offset: 3)
+                XCTAssertEqual(seasonal.first, LookSuggester.magicEditIdeas(for: kind, theme: theme).first)
+            }
         }
     }
 

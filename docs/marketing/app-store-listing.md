@@ -40,7 +40,7 @@ ONE TAP. A WHOLE NEW AESTHETIC.
 • Dreamy portraits: Fairy Princess, Golden Hour Glow, Birthday Glam, Restore Old Photo
 
 DREAM IT. CREATE IT.
-• Create anything from text with 14 styles, from Pastel Dream and Kawaii to Watercolor and Anime
+• Create anything from text with 20 styles, from Pastel Dream and Kawaii to Watercolor and Anime
 • 5 sizes, including Story 9:16
 • With Pro, up to 4 images at once
 
@@ -96,7 +96,7 @@ Privacy Policy: {{PRIVACY_URL}}
 
 **What's New in 1.0** (372/4000)
 
-> Welcome to Glowlit ✨ Edit photos just by saying it, try 35+ one-tap looks, add free 80s & 90s effects, cut the silences out of your videos and create art from text. Share magazine covers, photo strips, before/after collages and story cards in one tap. Widgets, a Dynamic Island Live Activity, iPhone and iPad, 12 languages. Private by default, fair pricing, no weekly plan.
+> Welcome to Glowlit ✨ Edit photos just by saying it, try 50+ one-tap looks, add free 80s & 90s effects, cut the silences out of your videos and create art from text. Share magazine covers, photo strips, before/after collages and story cards in one tap. Widgets, a Dynamic Island Live Activity, iPhone and iPad, 12 languages. Private by default, fair pricing, no weekly plan.
 
 **App Review notes** (2345/4000)
 
@@ -152,7 +152,7 @@ TEK DOKUNUŞ. BAMBAŞKA BİR ESTETİK.
 • Rüya gibi portreler: Peri Prensesi, Altın Saat Işıltısı, Doğum Günü Glam, Eski Fotoğrafı Onar
 
 HAYAL ET, OLUŞTUR.
-• Pastel Rüya ve Kawaii'den Suluboya ve Anime'ye 14 stille metinden görsel oluştur
+• Pastel Rüya ve Kawaii'den Suluboya ve Anime'ye 20 stille metinden görsel oluştur
 • Hikâye 9:16 dahil 5 boyut
 • Pro ile tek seferde 4 görsele kadar
 
@@ -208,7 +208,7 @@ Gizlilik Politikası: {{PRIVACY_URL}}
 
 **What's New in 1.0** (425/4000)
 
-> Glowlit'e hoş geldin ✨ Fotoğraflarını sadece söyleyerek düzenle, 35+ tek dokunuşluk görünümü dene, ücretsiz 80'ler ve 90'lar efektleri ekle, videolarındaki sessiz kısımları kes ve metinden sanat oluştur. Dergi kapaklarını, fotoğraf şeritlerini, önce/sonra kolajlarını ve hikâye kartlarını tek dokunuşla paylaş. Widget'lar, Dynamic Island desteği, iPhone ve iPad, 12 dil. Varsayılan olarak gizli, adil fiyat, haftalık plan yok.
+> Glowlit'e hoş geldin ✨ Fotoğraflarını sadece söyleyerek düzenle, 50+ tek dokunuşluk görünümü dene, ücretsiz 80'ler ve 90'lar efektleri ekle, videolarındaki sessiz kısımları kes ve metinden sanat oluştur. Dergi kapaklarını, fotoğraf şeritlerini, önce/sonra kolajlarını ve hikâye kartlarını tek dokunuşla paylaş. Widget'lar, Dynamic Island desteği, iPhone ve iPad, 12 dil. Varsayılan olarak gizli, adil fiyat, haftalık plan yok.
 
 ## Product Page Optimization: alternatives to A/B test
 

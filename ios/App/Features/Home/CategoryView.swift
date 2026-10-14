@@ -92,6 +92,7 @@ extension TemplateCategory {
         case .trending: return String(localized: "Looks inspired by what's trending.")
         case .glowUp: return String(localized: "Hair, makeup and glam, and still 100% you.")
         case .aesthetic: return String(localized: "Moods, places and colours for your feed.")
+        case .besties: return String(localized: "Sleepovers, concerts and matching fits with your besties.")
         case .dreamy: return String(localized: "Soft, magical portraits.")
         case .seasonal:
             // No scarcity talk: seasonal looks stay in the editor all year.

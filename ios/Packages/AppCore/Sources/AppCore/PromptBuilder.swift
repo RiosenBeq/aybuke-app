@@ -70,6 +70,18 @@ public enum PromptBuilder {
         "A corgi wearing a pink raincoat in a rainy Tokyo alley",
         "A minimalist poster of a hot-air balloon over lavender fields",
         "A pastel macaron tower on a marble table, product shot",
+        "A cozy bookshop café with a sleepy cat on a stack of pastel books",
+        "A tiny dragon sipping bubble tea at a lantern-lit night market",
+        "A floating island with a pink waterfall and a little cottage at sunrise",
+        "A whale swimming through the clouds above a sleepy seaside town",
+        "A glass greenhouse full of glowing flowers under a starry sky",
+        "A pastel space station with a flower garden and a view of Saturn",
+        "A bunny astronaut planting carrots on the moon",
+        "A snail with a tiny lantern exploring a mossy forest at night",
+        "A vintage train winding through lavender fields at golden hour",
+        "A treehouse with fairy lights and a rope bridge in a misty forest",
+        "A koi pond with cherry petals and a little wooden bridge, seen from above",
+        "An underwater tea party with jellyfish lanterns and seashell cups",
     ]
 
     public static func surprisePrompt<G: RandomNumberGenerator>(using generator: inout G) -> String {

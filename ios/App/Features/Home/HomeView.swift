@@ -326,7 +326,7 @@ struct HomeView: View {
     /// Puts the categories that match onboarding interests first.
     private var orderedCategories: [TemplateCategory] {
         let preferred: [String: TemplateCategory] = [
-            "selfies": .glowUp, "looks": .glowUp, "aesthetic": .aesthetic, "besties": .trending,
+            "selfies": .glowUp, "looks": .glowUp, "aesthetic": .aesthetic, "besties": .besties,
             "art": .art, "memories": .dreamy, "social": .trending, "business": .business,
         ]
         let boosted = app.interests.compactMap { preferred[$0] }

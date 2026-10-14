@@ -6618,6 +6618,148 @@
         }
       }
     },
+    "A bunny astronaut planting carrots on the moon" : {
+      "comment" : "Example idea for creating an image, put in the prompt field",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ein Hasen-Astronaut, der auf dem Mond Karotten pflanzt"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un conejito astronauta plantando zanahorias en la Luna"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un lapin astronaute qui plante des carottes sur la Lune"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kelinci astronaut menanam wortel di bulan"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un coniglietto astronauta che pianta carote sulla Luna"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "月でにんじんを植えるうさぎの宇宙飛行士"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "달에서 당근을 심는 토끼 우주비행사"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Um coelhinho astronauta plantando cenouras na Lua"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Зайчик-космонавт сажает морковку на Луне"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ay'da havuç eken astronot bir tavşan"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "一只兔子宇航员在月球上种胡萝卜"
+          }
+        }
+      }
+    },
+    "A bunny reading a book under a blossoming apple tree" : {
+      "comment" : "Spring idea for creating an image",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ein Häschen, das unter einem blühenden Apfelbaum ein Buch liest"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un conejito leyendo un libro bajo un manzano en flor"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un lapin qui lit un livre sous un pommier en fleurs"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kelinci membaca buku di bawah pohon apel yang berbunga"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un coniglietto che legge un libro sotto un melo in fiore"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "花咲くりんごの木の下で本を読むうさぎ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "꽃이 핀 사과나무 아래서 책을 읽는 토끼"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Um coelhinho lendo um livro debaixo de uma macieira florida"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Зайчик читает книжку под цветущей яблоней"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Çiçek açmış bir elma ağacının altında kitap okuyan bir tavşan"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "一只兔子在开花的苹果树下看书"
+          }
+        }
+      }
+    },
     "A camper van under the stars beside a calm lake" : {
       "comment" : "Summer idea for creating an image",
       "localizations" : {
@@ -6902,6 +7044,77 @@
         }
       }
     },
+    "A cozy bookshop café with a sleepy cat on a stack of pastel books" : {
+      "comment" : "Example idea for creating an image, put in the prompt field",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ein gemütliches Buchcafé mit einer schläfrigen Katze auf einem Stapel Pastellbücher"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Una librería café acogedora con un gato dormilón sobre una pila de libros pastel"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un café-librairie douillet avec un chat endormi sur une pile de livres pastel"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kafe toko buku yang nyaman dengan kucing mengantuk di atas tumpukan buku pastel"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un'accogliente libreria-caffè con un gatto assonnato su una pila di libri pastello"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "パステルカラーの本の山でうとうとする猫がいる、居心地のいいブックカフェ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "파스텔 책 더미 위에서 졸고 있는 고양이가 있는 아늑한 북카페"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Um café-livraria aconchegante com um gato sonolento numa pilha de livros em tons pastel"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Уютное книжное кафе с сонным котиком на стопке пастельных книг"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pastel kitap yığınının üstünde uyuklayan bir kediyle sıcacık bir kitapçı kafe"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "温馨的书店咖啡馆，一只困倦的猫趴在一摞粉彩色的书上"
+          }
+        }
+      }
+    },
     "A cozy Parisian café at sunrise, painted in soft watercolor" : {
       "comment" : "Example idea for creating an image, put in the prompt field",
       "localizations" : {
@@ -7040,6 +7253,77 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "黄金时刻的温馨南瓜田，挂着串灯，铺着格子毯"
+          }
+        }
+      }
+    },
+    "A cozy reading corner with spiced cocoa, candles and a knitted blanket" : {
+      "comment" : "Autumn idea for creating an image",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eine gemütliche Leseecke mit Gewürzkakao, Kerzen und einer Strickdecke"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un rincón de lectura acogedor con cacao especiado, velas y una manta de punto"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un coin lecture douillet avec un chocolat chaud épicé, des bougies et un plaid tricoté"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sudut baca yang nyaman dengan kakao rempah, lilin, dan selimut rajut"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un angolo lettura accogliente con cioccolata speziata, candele e una coperta a maglia"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "スパイスココアとキャンドル、ニットのブランケットがある居心地のいい読書コーナー"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "향긋한 코코아와 촛불, 니트 담요가 있는 아늑한 독서 공간"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Um cantinho de leitura aconchegante com chocolate quente com especiarias, velas e uma manta de tricô"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Уютный уголок для чтения с пряным какао, свечами и вязаным пледом"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Baharatlı kakao, mumlar ve örgü battaniyeyle sıcacık bir okuma köşesi"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "温馨的阅读角：香料热可可、蜡烛和针织毯"
           }
         }
       }
@@ -7327,6 +7611,148 @@
         }
       }
     },
+    "A floating island with a pink waterfall and a little cottage at sunrise" : {
+      "comment" : "Example idea for creating an image, put in the prompt field",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eine schwebende Insel mit einem rosa Wasserfall und einem kleinen Häuschen bei Sonnenaufgang"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Una isla flotante con una cascada rosa y una casita al amanecer"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Une île flottante avec une cascade rose et une petite maison au lever du soleil"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pulau melayang dengan air terjun pink dan pondok kecil saat matahari terbit"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un'isola sospesa con una cascata rosa e una casetta all'alba"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "朝焼けに浮かぶ、ピンクの滝と小さなコテージがある空中の島"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "해 뜰 무렵, 분홍 폭포와 작은 오두막이 있는 떠다니는 섬"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uma ilha flutuante com uma cachoeira rosa e uma casinha ao nascer do sol"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Парящий остров с розовым водопадом и маленьким домиком на рассвете"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gün doğumunda pembe bir şelalesi ve küçük bir kulübesi olan uçan bir ada"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "日出时分，一座有粉色瀑布和小木屋的漂浮岛屿"
+          }
+        }
+      }
+    },
+    "A fox curled up in a pile of golden leaves under a soft autumn sun" : {
+      "comment" : "Autumn idea for creating an image",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ein Fuchs, zusammengerollt in einem Haufen goldener Blätter unter sanfter Herbstsonne"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un zorro acurrucado en un montón de hojas doradas bajo un suave sol de otoño"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un renard lové dans un tas de feuilles dorées sous un doux soleil d’automne"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rubah meringkuk di tumpukan daun keemasan di bawah matahari musim gugur yang lembut"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Una volpe acciambellata in un mucchio di foglie dorate sotto un tenue sole d'autunno"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "やわらかな秋の日ざしの下、金色の落ち葉の山で丸くなるキツネ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "부드러운 가을 햇살 아래 황금빛 낙엽 더미에 몸을 웅크린 여우"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uma raposa encolhida num monte de folhas douradas sob um sol suave de outono"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Лисичка свернулась клубком в куче золотых листьев под мягким осенним солнцем"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yumuşak sonbahar güneşi altında altın rengi yaprak yığınına kıvrılmış bir tilki"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "柔和的秋日阳光下，一只狐狸蜷在一堆金色落叶里"
+          }
+        }
+      }
+    },
     "A free enhance that runs on your iPhone — nothing is uploaded." : {
       "extractionState" : "stale",
       "localizations" : {
@@ -7464,6 +7890,77 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "免费的 Y2K 相机风格，直接在你的设备上生成，不会上传任何内容。"
+          }
+        }
+      }
+    },
+    "A frozen lake with ice skates, lanterns and soft falling snow" : {
+      "comment" : "Winter idea for creating an image",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ein zugefrorener See mit Schlittschuhen, Laternen und sanft fallendem Schnee"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un lago helado con patines, farolillos y nieve cayendo suavemente"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un lac gelé avec des patins, des lanternes et une douce neige qui tombe"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Danau beku dengan sepatu es, lentera, dan salju yang turun pelan"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un lago ghiacciato con pattini, lanterne e neve che cade leggera"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "スケート靴とランタン、しんしんと降る雪がある凍った湖"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "스케이트와 랜턴, 소복소복 내리는 눈이 있는 얼어붙은 호수"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Um lago congelado com patins, lanternas e neve caindo de leve"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Замёрзшее озеро с коньками, фонариками и тихо падающим снегом"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buz patenleri, fenerler ve usulca yağan karla donmuş bir göl"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "结冰的湖面：冰鞋、灯笼和轻轻飘落的雪"
           }
         }
       }
@@ -7610,6 +8107,77 @@
         }
       }
     },
+    "A glass greenhouse full of glowing flowers under a starry sky" : {
+      "comment" : "Example idea for creating an image, put in the prompt field",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ein Glasgewächshaus voller leuchtender Blumen unter einem Sternenhimmel"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un invernadero de cristal lleno de flores luminosas bajo un cielo estrellado"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Une serre en verre pleine de fleurs lumineuses sous un ciel étoilé"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rumah kaca penuh bunga bercahaya di bawah langit berbintang"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Una serra di vetro piena di fiori luminosi sotto un cielo stellato"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "星空の下、光る花でいっぱいのガラスの温室"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "별이 빛나는 하늘 아래 빛나는 꽃으로 가득한 유리 온실"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uma estufa de vidro cheia de flores brilhantes sob um céu estrelado"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Стеклянная оранжерея, полная светящихся цветов, под звёздным небом"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yıldızlı bir gökyüzünün altında parıldayan çiçeklerle dolu cam bir sera"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "星空下，一座开满发光花朵的玻璃温室"
+          }
+        }
+      }
+    },
     "A greenhouse full of butterflies and pastel flowers in morning light" : {
       "comment" : "Spring idea for creating an image",
       "localizations" : {
@@ -7752,6 +8320,148 @@
         }
       }
     },
+    "A hot-air balloon festival over orange forests at sunrise" : {
+      "comment" : "Autumn idea for creating an image",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ein Heißluftballonfestival über orangefarbenen Wäldern bei Sonnenaufgang"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un festival de globos aerostáticos sobre bosques naranjas al amanecer"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un festival de montgolfières au-dessus de forêts orangées au lever du soleil"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Festival balon udara di atas hutan oranye saat matahari terbit"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un festival di mongolfiere sopra boschi arancioni all'alba"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "朝焼けの中、オレンジ色の森の上に気球がたくさん浮かぶフェスティバル"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "해 뜰 무렵 주황빛 숲 위로 열기구가 가득 뜬 축제"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Um festival de balões de ar quente sobre florestas alaranjadas ao nascer do sol"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Фестиваль воздушных шаров над оранжевыми лесами на рассвете"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gün doğumunda turuncu ormanların üzerinde bir sıcak hava balonu festivali"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "日出时分，橙色森林上空的热气球节"
+          }
+        }
+      }
+    },
+    "A koi pond with cherry petals and a little wooden bridge, seen from above" : {
+      "comment" : "Example idea for creating an image, put in the prompt field",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ein Koiteich mit Kirschblütenblättern und einer kleinen Holzbrücke, von oben gesehen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un estanque de carpas koi con pétalos de cerezo y un puentecito de madera, visto desde arriba"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un bassin de carpes koï avec des pétales de cerisier et un petit pont en bois, vu d’en haut"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kolam koi dengan kelopak sakura dan jembatan kayu kecil, dilihat dari atas"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un laghetto di carpe koi con petali di ciliegio e un ponticello di legno, visto dall'alto"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "上から見た、桜の花びらが浮かび小さな木の橋がかかる鯉の池"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "위에서 내려다본, 벚꽃잎과 작은 나무다리가 있는 잉어 연못"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Um lago de carpas com pétalas de cerejeira e uma pontezinha de madeira, visto de cima"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Пруд с карпами кои, лепестками сакуры и маленьким деревянным мостиком, вид сверху"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yukarıdan görünen, kiraz yapraklı ve küçük ahşap köprülü bir koi havuzu"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "俯瞰视角：漂着樱花瓣、架着小木桥的锦鲤池"
+          }
+        }
+      }
+    },
     "A lemon grove by the sea with a striped parasol and a sketchbook" : {
       "comment" : "Summer idea for creating an image",
       "localizations" : {
@@ -7819,6 +8529,77 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "海边的柠檬园，一把条纹遮阳伞和一本速写本"
+          }
+        }
+      }
+    },
+    "A little fox wearing a knitted scarf in a snowy forest" : {
+      "comment" : "Winter idea for creating an image",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ein kleiner Fuchs mit gestricktem Schal in einem verschneiten Wald"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un zorrito con una bufanda de punto en un bosque nevado"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un petit renard avec une écharpe tricotée dans une forêt enneigée"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rubah kecil memakai syal rajut di hutan bersalju"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Una volpina con una sciarpa di lana in un bosco innevato"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "雪の森でニットのマフラーを巻いた子ギツネ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "눈 덮인 숲에서 니트 목도리를 두른 아기 여우"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uma raposinha usando um cachecol de tricô numa floresta nevada"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Лисёнок в вязаном шарфе в заснеженном лесу"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Karlı bir ormanda örgü atkı takan küçük bir tilki"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "雪林里围着针织围巾的小狐狸"
           }
         }
       }
@@ -8107,6 +8888,148 @@
         }
       }
     },
+    "A night picnic on the beach with lanterns and a sky full of stars" : {
+      "comment" : "Summer idea for creating an image",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ein nächtliches Picknick am Strand mit Laternen und einem Himmel voller Sterne"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un pícnic nocturno en la playa con farolillos y un cielo lleno de estrellas"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un pique-nique de nuit sur la plage avec des lanternes et un ciel plein d’étoiles"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piknik malam di pantai dengan lentera dan langit penuh bintang"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un picnic notturno in spiaggia con lanterne e un cielo pieno di stelle"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ランタンを灯して、満天の星の下で楽しむ夜のビーチピクニック"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "랜턴을 켜 두고 별이 가득한 하늘 아래 즐기는 해변의 밤 피크닉"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Um piquenique noturno na praia com lanternas e um céu cheio de estrelas"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ночной пикник на пляже с фонариками и небом, полным звёзд"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fenerler ve yıldızlarla dolu bir gökyüzüyle sahilde gece pikniği"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "海边夜间野餐：灯笼和满天繁星"
+          }
+        }
+      }
+    },
+    "A paper boat floating down a stream full of cherry petals" : {
+      "comment" : "Spring idea for creating an image",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ein Papierschiffchen, das einen Bach voller Kirschblütenblätter hinuntertreibt"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un barquito de papel flotando en un arroyo lleno de pétalos de cerezo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un bateau en papier qui flotte sur un ruisseau couvert de pétales de cerisier"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Perahu kertas mengapung di sungai kecil yang penuh kelopak sakura"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Una barchetta di carta che scivola in un ruscello pieno di petali di ciliegio"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "桜の花びらでいっぱいの小川を流れる紙の舟"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "벚꽃잎이 가득한 시냇물 위를 떠가는 종이배"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Um barquinho de papel descendo um riacho cheio de pétalas de cerejeira"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Бумажный кораблик плывёт по ручью, полному лепестков сакуры"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kiraz yapraklarıyla dolu bir derede süzülen kâğıttan bir kayık"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "一只纸船顺着飘满樱花瓣的小溪漂流"
+          }
+        }
+      }
+    },
     "A parent or guardian said yes" : {
       "localizations" : {
         "de" : {
@@ -8385,6 +9308,148 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "大理石桌上的粉彩马卡龙塔，产品摄影"
+          }
+        }
+      }
+    },
+    "A pastel space station with a flower garden and a view of Saturn" : {
+      "comment" : "Example idea for creating an image, put in the prompt field",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eine pastellfarbene Raumstation mit Blumengarten und Blick auf den Saturn"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Una estación espacial pastel con un jardín de flores y vistas a Saturno"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Une station spatiale pastel avec un jardin fleuri et une vue sur Saturne"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stasiun luar angkasa pastel dengan taman bunga dan pemandangan Saturnus"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Una stazione spaziale pastello con un giardino fiorito e vista su Saturno"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "花畑があって土星が見える、パステルカラーの宇宙ステーション"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "꽃밭이 있고 토성이 보이는 파스텔 우주 정거장"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uma estação espacial pastel com um jardim de flores e vista para Saturno"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Пастельная космическая станция с цветочным садом и видом на Сатурн"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Çiçek bahçesi ve Satürn manzarası olan pastel bir uzay istasyonu"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "一座有花园、能望见土星的粉彩太空站"
+          }
+        }
+      }
+    },
+    "A penguin family building a snowman on a starry night" : {
+      "comment" : "Winter idea for creating an image",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eine Pinguinfamilie, die in einer Sternennacht einen Schneemann baut"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Una familia de pingüinos haciendo un muñeco de nieve en una noche estrellada"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Une famille de pingouins qui fait un bonhomme de neige par une nuit étoilée"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keluarga penguin membuat manusia salju di malam berbintang"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Una famiglia di pinguini che costruisce un pupazzo di neve in una notte stellata"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "星空の夜、雪だるまを作るペンギンの家族"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "별이 빛나는 밤에 눈사람을 만드는 펭귄 가족"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uma família de pinguins fazendo um boneco de neve numa noite estrelada"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Семья пингвинов лепит снеговика звёздной ночью"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yıldızlı bir gecede kardan adam yapan bir penguen ailesi"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "星光夜里，一家企鹅在堆雪人"
           }
         }
       }
@@ -8744,6 +9809,290 @@
         }
       }
     },
+    "A row of pastel houses with flower boxes after a spring rain" : {
+      "comment" : "Spring idea for creating an image",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eine Reihe pastellfarbener Häuser mit Blumenkästen nach einem Frühlingsregen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Una hilera de casas pastel con jardineras después de una lluvia de primavera"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Une rangée de maisons pastel avec des jardinières après une pluie de printemps"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deretan rumah pastel dengan pot bunga di jendela setelah hujan musim semi"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Una fila di case pastello con fioriere dopo una pioggia primaverile"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "春の雨上がり、フラワーボックスが並ぶパステルカラーの家並み"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "봄비가 그친 뒤, 꽃 화분이 놓인 파스텔빛 집들"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uma fileira de casas pastel com floreiras depois de uma chuva de primavera"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ряд пастельных домиков с цветочными ящиками после весеннего дождя"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bahar yağmurundan sonra pencereleri çiçekli bir sıra pastel ev"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "春雨过后，一排窗台摆满花箱的粉彩小房子"
+          }
+        }
+      }
+    },
+    "A seaside café with lemon cakes and a view of sailboats" : {
+      "comment" : "Summer idea for creating an image",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ein Café am Meer mit Zitronenkuchen und Blick auf Segelboote"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un café junto al mar con pasteles de limón y vistas a los veleros"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un café en bord de mer avec des gâteaux au citron et une vue sur les voiliers"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kafe tepi laut dengan kue lemon dan pemandangan perahu layar"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un caffè sul mare con torte al limone e vista sulle barche a vela"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "レモンケーキがあって、ヨットが見える海辺のカフェ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "레몬 케이크가 있고 요트가 보이는 바닷가 카페"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Um café à beira-mar com bolos de limão e vista para os veleiros"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Кафе у моря с лимонными пирожными и видом на парусники"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Limonlu keklerin ve yelkenli manzarasının olduğu bir sahil kafesi"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "海边咖啡馆：柠檬蛋糕和窗外的帆船"
+          }
+        }
+      }
+    },
+    "A shiny holo card of you" : {
+      "comment" : "One-tap look description, shown under its name",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deine glänzende Holo-Karte"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tu carta holo brillante"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ta carte holo brillante"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kartu holo berkilau versimu"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La tua carta olografica"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "キラキラのホロカードに"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "반짝이는 나만의 홀로 카드"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seu card holográfico brilhante"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Твоя блестящая голо-карточка"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Parıl parıl bir holo kart"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "专属你的闪亮镭射卡"
+          }
+        }
+      }
+    },
+    "A snail with a tiny lantern exploring a mossy forest at night" : {
+      "comment" : "Example idea for creating an image, put in the prompt field",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eine Schnecke mit einer winzigen Laterne, die nachts einen moosigen Wald erkundet"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un caracol con un farolillo explorando un bosque de musgo de noche"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un escargot avec une petite lanterne qui explore une forêt moussue la nuit"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Siput membawa lentera mungil menjelajahi hutan berlumut di malam hari"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Una lumaca con una lanternina che esplora un bosco muschioso di notte"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "夜、小さなランタンを持って苔むした森を探検するカタツムリ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "밤에 작은 등불을 들고 이끼 낀 숲을 탐험하는 달팽이"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Um caracol com uma lanterninha explorando uma floresta cheia de musgo à noite"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Улитка с крошечным фонариком исследует мшистый лес ночью"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gece, minik bir fenerle yosunlu bir ormanı keşfeden bir salyangoz"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "一只提着小灯笼的蜗牛在夜晚的苔藓森林里探险"
+          }
+        }
+      }
+    },
     "A snow globe holding a tiny pastel city" : {
       "comment" : "Winter idea for creating an image",
       "localizations" : {
@@ -8882,6 +10231,148 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "窗透暖光的雪中小木屋，黄昏时的粉色天空"
+          }
+        }
+      }
+    },
+    "A sunflower field at golden hour with a vintage bicycle" : {
+      "comment" : "Summer idea for creating an image",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ein Sonnenblumenfeld zur goldenen Stunde mit einem Vintage-Fahrrad"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un campo de girasoles en la hora dorada con una bicicleta vintage"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un champ de tournesols à l’heure dorée avec un vélo vintage"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ladang bunga matahari saat golden hour dengan sepeda vintage"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un campo di girasoli all'ora d'oro con una bicicletta vintage"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ゴールデンアワーのひまわり畑とヴィンテージ自転車"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "골든아워의 해바라기 밭과 빈티지 자전거"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Um campo de girassóis na golden hour com uma bicicleta vintage"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Поле подсолнухов в золотой час и винтажный велосипед"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Altın saatte vintage bir bisikletle ayçiçeği tarlası"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "黄金时刻的向日葵花田和一辆复古自行车"
+          }
+        }
+      }
+    },
+    "A tiny dragon sipping bubble tea at a lantern-lit night market" : {
+      "comment" : "Example idea for creating an image, put in the prompt field",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ein winziger Drache, der auf einem laternenbeleuchteten Nachtmarkt Bubble Tea schlürft"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un dragoncito tomando bubble tea en un mercado nocturno iluminado con farolillos"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un minuscule dragon qui sirote un bubble tea dans un marché de nuit éclairé de lanternes"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Naga mungil menyeruput bubble tea di pasar malam berhias lampion"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un draghetto che sorseggia un bubble tea in un mercato notturno illuminato da lanterne"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ランタンが灯る夜市でタピオカミルクティーを飲む小さなドラゴン"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "등불이 켜진 야시장에서 버블티를 마시는 작은 용"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Um dragãozinho tomando bubble tea num mercado noturno iluminado por lanternas"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Крошечный дракончик пьёт бабл-ти на ночном рынке с фонариками"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fenerlerle aydınlanan bir gece pazarında bubble tea yudumlayan minik bir ejderha"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "一只小小的龙在灯笼点亮的夜市里喝珍珠奶茶"
           }
         }
       }
@@ -9170,6 +10661,77 @@
         }
       }
     },
+    "A treehouse with fairy lights and a rope bridge in a misty forest" : {
+      "comment" : "Example idea for creating an image, put in the prompt field",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ein Baumhaus mit Lichterketten und einer Hängebrücke in einem nebligen Wald"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Una casa del árbol con lucecitas y un puente de cuerda en un bosque con niebla"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Une cabane dans les arbres avec des guirlandes lumineuses et un pont de corde dans une forêt brumeuse"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rumah pohon dengan lampu tumblr dan jembatan tali di hutan berkabut"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Una casa sull'albero con lucine e un ponte di corda in un bosco nebbioso"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "霧の森にある、ライトとロープの橋がかかったツリーハウス"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "안개 낀 숲속, 꼬마전구와 밧줄 다리가 있는 트리하우스"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uma casa na árvore com luzinhas e uma ponte de corda numa floresta enevoada"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Домик на дереве с гирляндами и верёвочным мостом в туманном лесу"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sisli bir ormanda peri ışıklı ve ip köprülü bir ağaç ev"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "雾气森林里一座挂着串灯、连着绳桥的树屋"
+          }
+        }
+      }
+    },
     "A turtle surfing a sparkly wave under a cotton-candy sky" : {
       "comment" : "Summer idea for creating an image",
       "localizations" : {
@@ -9453,6 +11015,77 @@
         }
       }
     },
+    "A vintage train winding through lavender fields at golden hour" : {
+      "comment" : "Example idea for creating an image, put in the prompt field",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ein Vintage-Zug, der sich zur goldenen Stunde durch Lavendelfelder schlängelt"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un tren vintage serpenteando entre campos de lavanda en la hora dorada"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un train vintage qui serpente à travers des champs de lavande à l’heure dorée"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kereta vintage berkelok melintasi ladang lavender saat golden hour"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un treno vintage che serpeggia tra i campi di lavanda all'ora d'oro"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ゴールデンアワーのラベンダー畑を走るレトロな列車"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "골든아워의 라벤더 들판 사이를 굽이굽이 달리는 빈티지 기차"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Um trem vintage serpenteando por campos de lavanda na golden hour"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Винтажный поезд петляет среди лавандовых полей в золотой час"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Altın saatte lavanta tarlalarının arasından kıvrılarak geçen vintage bir tren"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "黄金时刻，一列复古火车蜿蜒穿过薰衣草田"
+          }
+        }
+      }
+    },
     "A watermelon-themed pool party for ducks, bright and playful" : {
       "comment" : "Summer idea for creating an image",
       "localizations" : {
@@ -9520,6 +11153,77 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "鸭子们的西瓜主题泳池派对，明亮又俏皮"
+          }
+        }
+      }
+    },
+    "A whale swimming through the clouds above a sleepy seaside town" : {
+      "comment" : "Example idea for creating an image, put in the prompt field",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ein Wal, der durch die Wolken über einem verschlafenen Küstenstädtchen schwimmt"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Una ballena nadando entre las nubes sobre un tranquilo pueblo costero"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Une baleine qui nage dans les nuages au-dessus d’un paisible village côtier"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paus berenang di antara awan di atas kota pantai yang tenang"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Una balena che nuota tra le nuvole sopra un tranquillo paesino sul mare"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "静かな海辺の町の上、雲の中を泳ぐクジラ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "고요한 바닷가 마을 위 구름 속을 헤엄치는 고래"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uma baleia nadando entre as nuvens sobre uma cidadezinha litorânea tranquila"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Кит плывёт сквозь облака над сонным приморским городком"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uykulu bir sahil kasabasının üzerinde bulutların arasında yüzen bir balina"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "一头鲸鱼在宁静海边小镇上空的云间遨游"
           }
         }
       }
@@ -10369,6 +12073,77 @@
         }
       }
     },
+    "Add a dreamy pastel glow and tiny stars" : {
+      "comment" : "Suggested Magic Edit request for her photo, shown on a chip in the editor",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Füg einen verträumten Pastellschimmer und winzige Sterne hinzu"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Añade un brillo pastel de ensueño y estrellitas"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ajoute une lueur pastel rêveuse et de petites étoiles"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tambahkan cahaya pastel yang dreamy dan bintang-bintang mungil"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aggiungi un bagliore pastello da sogno e minuscole stelline"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ゆめかわなパステルの光と小さな星を足して"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "몽환적인 파스텔 빛과 작은 별들을 더해 줘"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Coloca um brilho pastel de sonho e estrelinhas"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Добавь мечтательное пастельное сияние и крошечные звёздочки"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rüya gibi pastel bir ışıltı ve minik yıldızlar ekle"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "加上梦幻的粉彩光晕和小星星"
+          }
+        }
+      }
+    },
     "Add a little bow tie and party balloons" : {
       "comment" : "Example request for editing a photo of a pet\nSuggested Magic Edit request for her photo, shown on a chip in the editor",
       "localizations" : {
@@ -10440,6 +12215,77 @@
         }
       }
     },
+    "Add a rainbow" : {
+      "comment" : "Example Magic Edit request on a chip; tapping it fills the prompt",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Füg einen Regenbogen hinzu"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Añade un arcoíris"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ajoute un arc-en-ciel"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tambahkan pelangi"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aggiungi un arcobaleno"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "虹をかけて"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "무지개를 띄워 줘"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adicione um arco-íris"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Добавь радугу"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gökkuşağı ekle"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "加一道彩虹"
+          }
+        }
+      }
+    },
     "Add a rainbow and a few butterflies" : {
       "comment" : "Example request for editing a photo without people\nSuggested Magic Edit request for her photo, shown on a chip in the editor",
       "localizations" : {
@@ -10507,6 +12353,77 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "加一道彩虹和几只蝴蝶"
+          }
+        }
+      }
+    },
+    "Add a soft rainbow glow behind me" : {
+      "comment" : "Suggested Magic Edit request for her photo, shown on a chip in the editor",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Füg hinter mir ein sanftes Regenbogenleuchten hinzu"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Añade un brillo arcoíris suave detrás de mí"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ajoute une douce lueur arc-en-ciel derrière moi"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tambahkan cahaya pelangi lembut di belakangku"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aggiungi un tenue bagliore arcobaleno dietro di me"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "後ろにふんわり虹色の光を足して"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "내 뒤에 은은한 무지개빛을 더해 줘"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Coloca um brilho de arco-íris suave atrás de mim"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Добавь мягкое радужное сияние у меня за спиной"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Arkama yumuşak bir gökkuşağı ışıltısı ekle"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在我身后加一圈柔和的彩虹光"
           }
         }
       }
@@ -10722,7 +12639,79 @@
         }
       }
     },
+    "Add cherry blossom trees along the street" : {
+      "comment" : "Suggested Magic Edit request for her photo, shown on a chip in the editor",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Füg blühende Kirschbäume entlang der Straße hinzu"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Añade cerezos en flor a lo largo de la calle"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ajoute des cerisiers en fleurs le long de la rue"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tambahkan pohon sakura di sepanjang jalan"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aggiungi ciliegi in fiore lungo la strada"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "通り沿いに満開の桜並木を足して"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "길을 따라 벚꽃나무를 심어 줘"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Coloca cerejeiras floridas ao longo da rua"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Добавь цветущую сакуру вдоль улицы"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sokak boyunca çiçek açmış kiraz ağaçları ekle"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "沿街种上一排樱花树"
+          }
+        }
+      }
+    },
     "Add cherry blossoms" : {
+      "comment" : "Example Magic Edit request on a chip; tapping it fills the prompt",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -10859,6 +12848,77 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "在我们周围加上彩纸和派对灯光"
+          }
+        }
+      }
+    },
+    "Add fairy lights" : {
+      "comment" : "Example Magic Edit request on a chip; tapping it fills the prompt",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Füg Lichterketten hinzu"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Añade lucecitas"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ajoute des guirlandes lumineuses"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tambahkan lampu tumblr"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aggiungi delle lucine"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ストリングライトを飾って"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "꼬마전구를 달아 줘"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adicione luzinhas"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Добавь гирлянды"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Peri ışıkları ekle"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "加上串灯"
           }
         }
       }
@@ -11076,6 +13136,77 @@
         }
       }
     },
+    "Add glowing paper lanterns above the street" : {
+      "comment" : "Suggested Magic Edit request for her photo, shown on a chip in the editor",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Füg leuchtende Papierlaternen über der Straße hinzu"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Añade farolillos de papel encendidos sobre la calle"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ajoute des lanternes en papier lumineuses au-dessus de la rue"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tambahkan lampion kertas yang menyala di atas jalan"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aggiungi lanterne di carta luminose sopra la strada"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "通りの上に光る提灯を飾って"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "거리 위에 빛나는 종이 등불을 달아 줘"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Coloca lanternas de papel acesas sobre a rua"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Добавь над улицей светящиеся бумажные фонарики"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sokağın üstüne parlayan kâğıt fenerler ekle"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在街道上方挂上发光的纸灯笼"
+          }
+        }
+      }
+    },
     "Add glowing pumpkins and candlelight" : {
       "comment" : "Suggested Magic Edit request for her photo, shown on a chip in the editor",
       "localizations" : {
@@ -11143,6 +13274,148 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "加上发光的南瓜和烛光"
+          }
+        }
+      }
+    },
+    "Add heart balloons and fairy lights around us" : {
+      "comment" : "Suggested Magic Edit request for her photo, shown on a chip in the editor",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Füg Herzballons und Lichterketten um uns herum hinzu"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Añade globos de corazón y lucecitas a nuestro alrededor"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ajoute des ballons cœur et des guirlandes lumineuses autour de nous"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tambahkan balon hati dan lampu tumblr di sekitar kami"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aggiungi palloncini a cuore e lucine intorno a noi"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "わたしたちのまわりにハートの風船とライトを飾って"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "우리 주변에 하트 풍선과 꼬마전구를 달아 줘"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Coloca balões de coração e luzinhas ao nosso redor"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Добавь вокруг нас шарики-сердечки и гирлянды"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Etrafımıza kalpli balonlar ve peri ışıkları ekle"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在我们周围加上爱心气球和串灯"
+          }
+        }
+      }
+    },
+    "Add hot-air balloons in the sky" : {
+      "comment" : "Suggested Magic Edit request for her photo, shown on a chip in the editor",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Füg Heißluftballons am Himmel hinzu"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Añade globos aerostáticos en el cielo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ajoute des montgolfières dans le ciel"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tambahkan balon udara di langit"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aggiungi delle mongolfiere nel cielo"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "空に気球を浮かべて"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "하늘에 열기구를 띄워 줘"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Coloca balões de ar quente no céu"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Добавь в небо воздушные шары"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gökyüzüne sıcak hava balonları ekle"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在天空中加几只热气球"
           }
         }
       }
@@ -11284,6 +13557,77 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "给街道加上粉蓝霓虹倒影"
+          }
+        }
+      }
+    },
+    "Add plants and soft morning light" : {
+      "comment" : "Suggested Magic Edit request for her photo, shown on a chip in the editor",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Füg Pflanzen und sanftes Morgenlicht hinzu"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Añade plantas y una suave luz de mañana"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ajoute des plantes et une douce lumière du matin"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tambahkan tanaman dan cahaya pagi yang lembut"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aggiungi piante e una morbida luce del mattino"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "観葉植物とやわらかな朝の光を足して"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "식물과 은은한 아침 햇살을 더해 줘"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Coloca plantas e uma luz suave da manhã"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Добавь растения и мягкий утренний свет"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bitkiler ve yumuşak sabah ışığı ekle"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "加上绿植和柔和的晨光"
           }
         }
       }
@@ -11431,6 +13775,7 @@
       }
     },
     "Add soft glam makeup" : {
+      "comment" : "Example Magic Edit request on a chip; tapping it fills the prompt",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -11496,6 +13841,77 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "加上柔美妆容"
+          }
+        }
+      }
+    },
+    "Add sparkles and a birthday candle" : {
+      "comment" : "Suggested Magic Edit request for her photo, shown on a chip in the editor",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Füg Glitzer und eine Geburtstagskerze hinzu"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Añade brillitos y una vela de cumpleaños"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ajoute des paillettes et une bougie d’anniversaire"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tambahkan kilauan dan lilin ulang tahun"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aggiungi brillantini e una candelina di compleanno"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "キラキラとバースデーキャンドルを足して"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "반짝이와 생일 초를 더해 줘"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Coloca brilhinhos e uma velinha de aniversário"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Добавь блёстки и праздничную свечку"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Parıltılar ve bir doğum günü mumu ekle"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "加上闪光和一根生日蜡烛"
           }
         }
       }
@@ -11572,6 +13988,7 @@
       }
     },
     "Add sparkles everywhere" : {
+      "comment" : "Example Magic Edit request on a chip; tapping it fills the prompt",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -14421,6 +16838,77 @@
         }
       }
     },
+    "An underwater tea party with jellyfish lanterns and seashell cups" : {
+      "comment" : "Example idea for creating an image, put in the prompt field",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eine Unterwasser-Teeparty mit Quallenlaternen und Muscheltassen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Una merienda bajo el mar con farolillos de medusa y tazas de concha"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un goûter sous la mer avec des lanternes en méduse et des tasses en coquillage"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pesta teh bawah laut dengan lentera ubur-ubur dan cangkir kerang"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un tè sott'acqua con lanterne a medusa e tazzine di conchiglia"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "クラゲのランタンと貝がらのカップで楽しむ海の中のお茶会"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "해파리 등불과 조개껍데기 찻잔이 있는 바닷속 티 파티"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Um chá da tarde no fundo do mar com lanternas de água-viva e xícaras de conchinha"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Подводное чаепитие с фонариками-медузами и чашками из ракушек"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Denizanası fenerleri ve deniz kabuğu fincanlarıyla su altında bir çay partisi"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "海底茶会：水母灯笼和贝壳茶杯"
+          }
+        }
+      }
+    },
     "Animated-movie you" : {
       "comment" : "One-tap look description, shown under its name",
       "localizations" : {
@@ -17025,6 +19513,77 @@
         }
       }
     },
+    "Beads, besties & sunshine" : {
+      "comment" : "One-tap look description, shown under its name",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Perlen, Besties & Sonne"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cuentas, besties y sol"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Perles, besties & soleil"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Manik, bestie & sinar matahari"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Perline, BFF e sole"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ビーズと親友と陽ざし"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "비즈, 베프 & 햇살"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Miçangas, BFFs e sol"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Бусины, подружки и солнце"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Boncuklar, kankalar ve güneş"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "串珠、闺蜜与阳光"
+          }
+        }
+      }
+    },
     "Beauty-campaign lighting" : {
       "comment" : "One-tap look description, shown under its name",
       "localizations" : {
@@ -17730,6 +20289,7 @@
       }
     },
     "Bestie pics" : {
+      "comment" : "Template collection heading",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -17866,6 +20426,77 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "闺蜜拍立得"
+          }
+        }
+      }
+    },
+    "Bestie-approved 💖" : {
+      "comment" : "Caption idea for sharing a picture",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Von den Besties abgesegnet 💖"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aprobado por mis besties 💖"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Validé par les besties 💖"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Disetujui bestie 💖"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Approvato dalle BFF 💖"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "親友のお墨付き 💖"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "베프 인증 💖"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aprovado pelas BFFs 💖"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Одобрено подружками 💖"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kanka onaylı 💖"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "闺蜜认证 💖"
           }
         }
       }
@@ -18924,6 +21555,148 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "蝴蝶结"
+          }
+        }
+      }
+    },
+    "Bow Era" : {
+      "comment" : "One-tap look (trend) name. Keep trend names people use in English, such as Y2K or Clean Girl.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schleifen-Ära"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Era de lazos"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tendance nœuds"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Era Pita"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Era dei fiocchi"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "リボンコーデ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "리본 코어"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Era dos Laços"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Эра бантиков"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fiyonklu Günler"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "蝴蝶结风"
+          }
+        }
+      }
+    },
+    "Bracelet Club" : {
+      "comment" : "One-tap look (trend) name. Keep trend names people use in English, such as Y2K or Clean Girl.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Armband-Club"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Club de pulseras"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Club bracelets"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klub Gelang"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Club dei braccialetti"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ブレスレット部"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "팔찌 클럽"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clube das Pulseiras"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Клуб браслетов"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bileklik Kulübü"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "手链俱乐部"
           }
         }
       }
@@ -20837,6 +23610,77 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "烛光万圣节"
+          }
+        }
+      }
+    },
+    "Cap, gown & confetti" : {
+      "comment" : "One-tap look description, shown under its name",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hut, Robe & Konfetti"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Birrete, toga y confeti"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toque, toge & confettis"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toga, topi & konfeti"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tocco, toga e coriandoli"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "角帽、ガウン、紙吹雪"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "학사모, 가운 & 컨페티"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Capelo, beca e confete"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Мантия, шапочка и конфетти"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kep, cüppe ve konfeti"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "学士帽、学位服与彩纸"
           }
         }
       }
@@ -23587,6 +26431,77 @@
         }
       }
     },
+    "Collecting moments, not things" : {
+      "comment" : "Caption idea for sharing a picture",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Momente sammeln, nicht Dinge"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Colecciono momentos, no cosas"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Collectionner des moments, pas des choses"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Koleksi momen, bukan barang"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Collezionare momenti, non cose"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "モノより、思い出を集めたい"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "물건 말고 순간을 모으는 중"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Colecionando momentos, não coisas"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Собираю моменты, а не вещи"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eşya değil, an biriktiriyorum"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "收集瞬间，而不是物件"
+          }
+        }
+      }
+    },
     "Collection · %lld looks" : {
       "localizations" : {
         "de" : {
@@ -23979,6 +26894,77 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "与原图对比"
+          }
+        }
+      }
+    },
+    "Concert Night" : {
+      "comment" : "One-tap look (trend) name. Keep trend names people use in English, such as Y2K or Clean Girl.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Konzertabend"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Noche de concierto"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Soirée concert"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Malam Konser"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Serata concerto"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ライブの夜"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "콘서트 나잇"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Noite de Show"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вечер концерта"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Konser Gecesi"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "演唱会之夜"
           }
         }
       }
@@ -26429,6 +29415,77 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "封面大片"
+          }
+        }
+      }
+    },
+    "Cozy Knit" : {
+      "comment" : "Art style name on the Create screen",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Strickliebe"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tejido a mano"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tricot douillet"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rajutan Hangat"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Maglia a mano"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "あみぐるみ風"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "포근한 뜨개"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tricô Fofinho"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Уютное вязание"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sıcacık Örgü"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "温暖针织"
           }
         }
       }
@@ -29355,6 +32412,77 @@
         }
       }
     },
+    "Daydream mode: on" : {
+      "comment" : "Caption idea for sharing a picture",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tagtraum-Modus: an"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Modo ensoñación: activado"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mode rêverie : activé"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mode melamun: aktif"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Modalità sogno a occhi aperti: on"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "夢見るモード：オン"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "몽상 모드: ON"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Modo devaneio: ligado"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Режим мечтаний: вкл."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hayal modu: açık"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "白日梦模式：开启"
+          }
+        }
+      }
+    },
     "Delete" : {
       "localizations" : {
         "de" : {
@@ -31581,8 +34709,150 @@
         }
       }
     },
+    "Die-cut stickers of you" : {
+      "comment" : "One-tap look description, shown under its name",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sticker von dir"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stickers troquelados de ti"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Des stickers de toi"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stiker die-cut dirimu"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sticker fustellati di te"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "あなたのダイカットステッカー"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "나로 만든 다이컷 스티커"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Figurinhas recortadas de você"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вырезные стикеры с тобой"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kendi çıkartmaların"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你的模切贴纸"
+          }
+        }
+      }
+    },
     "Digicam '04" : {
       "shouldTranslate" : false
+    },
+    "Diorama" : {
+      "comment" : "Art style name on the Create screen",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diorama"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diorama"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diorama"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diorama"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diorama"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ジオラマ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "디오라마"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diorama"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Диорама"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diorama"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "微缩模型"
+          }
+        }
+      }
     },
     "Discard" : {
       "localizations" : {
@@ -32918,6 +36188,77 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "心中所想，\n*即刻可见。*"
+          }
+        }
+      }
+    },
+    "Dreamy 35mm snapshot" : {
+      "comment" : "One-tap look description, shown under its name",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verträumter 35-mm-Schnappschuss"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Foto de 35 mm de ensueño"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Instantané 35 mm rêveur"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jepretan 35mm yang dreamy"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scatto 35mm da sogno"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ふんわり35mmスナップ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "몽환적인 35mm 스냅"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Foto 35mm de sonho"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Мечтательный кадр на 35 мм"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rüya gibi 35mm kare"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "梦幻 35mm 随手拍"
           }
         }
       }
@@ -40256,6 +43597,77 @@
         }
       }
     },
+    "Give me a sparkly butterfly hair clip" : {
+      "comment" : "Suggested Magic Edit request for her photo, shown on a chip in the editor",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Steck mir eine glitzernde Schmetterlingsspange ins Haar"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ponme una horquilla de mariposa brillante"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mets-moi une barrette papillon pailletée"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pakaikan jepit rambut kupu-kupu yang berkilau"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mettimi un fermaglio a farfalla brillante"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "キラキラの蝶々ヘアクリップをつけて"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "반짝이는 나비 헤어핀을 꽂아 줘"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Coloca uma presilha de borboleta brilhante no meu cabelo"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Добавь мне блестящую заколку-бабочку"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Saçıma ışıltılı bir kelebek toka tak"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "给我戴上闪亮的蝴蝶发夹"
+          }
+        }
+      }
+    },
     "Give me pastel pink hair" : {
       "comment" : "Example request for editing a photo of one person\nSuggested Magic Edit request for her photo, shown on a chip in the editor",
       "localizations" : {
@@ -40328,6 +43740,7 @@
       }
     },
     "Give me pink hair" : {
+      "comment" : "Example Magic Edit request on a chip; tapping it fills the prompt",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -40682,7 +44095,7 @@
       }
     },
     "Give my pet a tiny strawberry hat" : {
-      "comment" : "Example request for editing a photo of a pet",
+      "comment" : "Example request for editing a photo of a pet\nSuggested Magic Edit request for her photo, shown on a chip in the editor",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -40890,6 +44303,77 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "给我们换上同款温暖毛衣"
+          }
+        }
+      }
+    },
+    "Give us matching friendship bracelets" : {
+      "comment" : "Suggested Magic Edit request for her photo, shown on a chip in the editor",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gib uns passende Freundschaftsbänder"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ponnos pulseras de la amistad a juego"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mets-nous des bracelets d’amitié assortis"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pakaikan kami gelang persahabatan yang kembar"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mettici dei braccialetti dell'amicizia uguali"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "おそろいのミサンガをつけて"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "우리에게 똑같은 우정 팔찌를 채워 줘"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Coloca pulseiras da amizade iguais na gente"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Надень на нас одинаковые браслеты дружбы"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bize aynı arkadaşlık bilekliklerinden tak"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "给我们戴上同款友谊手链"
           }
         }
       }
@@ -42026,6 +45510,7 @@
       }
     },
     "Golden hour light" : {
+      "comment" : "Example Magic Edit request on a chip; tapping it fills the prompt",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -42233,6 +45718,148 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "金色天空"
+          }
+        }
+      }
+    },
+    "Grad Day" : {
+      "comment" : "One-tap look (trend) name. Keep trend names people use in English, such as Y2K or Clean Girl.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abschlusstag"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Día de graduación"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jour du diplôme"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hari Wisuda"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Giorno del diploma"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "卒業の日"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "졸업식 날"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dia da Formatura"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Выпускной"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mezuniyet Günü"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "毕业日"
+          }
+        }
+      }
+    },
+    "Greetings from the seaside" : {
+      "comment" : "One-tap look description, shown under its name",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grüße vom Meer"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Saludos desde la costa"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Souvenirs du bord de mer"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Salam dari pantai"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Saluti dal mare"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "海辺からこんにちは"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "바닷가에서 보내는 인사"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lembranças do litoral"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Привет с побережья"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sahilden sevgiler"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "来自海边的问候"
           }
         }
       }
@@ -42797,6 +46424,77 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "帮我选选"
+          }
+        }
+      }
+    },
+    "Here for the little things" : {
+      "comment" : "Caption idea for sharing a picture",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hier für die kleinen Dinge"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aquí por las pequeñas cosas"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ici pour les petites choses"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bahagia karena hal-hal kecil"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Qui per le piccole cose"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "小さなしあわせを大切に"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "작은 것들에 진심인 편"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aqui pelas pequenas coisas"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Всё ради мелочей"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Küçük şeyler için buradayım"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "为小确幸而来"
           }
         }
       }
@@ -43498,6 +47196,77 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "按住查看原图"
+          }
+        }
+      }
+    },
+    "Holo Card" : {
+      "comment" : "One-tap look (trend) name. Keep trend names people use in English, such as Y2K or Clean Girl.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Holo-Karte"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Carta holo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Carte holo"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kartu Holo"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Carta olografica"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ホロカード"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "홀로 카드"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Card Holográfico"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Голо-карточка"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Holo Kart"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "镭射闪卡"
           }
         }
       }
@@ -44269,6 +48038,77 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "墨线与网点"
+          }
+        }
+      }
+    },
+    "Ink, sparkles & screentone" : {
+      "comment" : "One-tap look description, shown under its name",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tusche, Glitzer & Raster"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tinta, brillos y tramas"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Encre, paillettes & trames"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tinta, kilau & screentone"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inchiostro, brillii e retini"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "インク線、キラキラ、トーン"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "잉크, 반짝임 & 스크린톤"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nanquim, brilhos e retícula"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Чернила, блёстки и скринтон"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mürekkep, parıltı ve tram"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "墨线、闪光与网点"
           }
         }
       }
@@ -47800,6 +51640,77 @@
         }
       }
     },
+    "Living in my own little movie" : {
+      "comment" : "Caption idea for sharing a picture",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ich lebe in meinem eigenen kleinen Film"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Viviendo en mi propia peli"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Je vis dans mon petit film à moi"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hidup di film kecilku sendiri"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vivo nel mio piccolo film"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "わたしだけの小さな映画の中"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "나만의 작은 영화 속에 사는 중"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vivendo no meu próprio filminho"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Живу в своём маленьком фильме"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kendi küçük filmimde yaşıyorum"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "活在我自己的小电影里"
+          }
+        }
+      }
+    },
     "Look of the week" : {
       "localizations" : {
         "de" : {
@@ -49498,7 +53409,79 @@
         }
       }
     },
+    "Make it a starry night with a big full moon" : {
+      "comment" : "Suggested Magic Edit request for her photo, shown on a chip in the editor",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mach eine Sternennacht mit großem Vollmond daraus"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hazlo una noche estrellada con una gran luna llena"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fais-en une nuit étoilée avec une grande pleine lune"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jadikan malam berbintang dengan bulan purnama besar"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trasformala in una notte stellata con una grande luna piena"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "大きな満月が浮かぶ星空の夜にして"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "커다란 보름달이 뜬 별밤으로 바꿔 줘"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Transforma numa noite estrelada com uma lua cheia enorme"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сделай звёздную ночь с большой полной луной"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kocaman bir dolunayla yıldızlı bir geceye çevir"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "变成挂着大大满月的星夜"
+          }
+        }
+      }
+    },
     "Make it a watercolor" : {
+      "comment" : "Example Magic Edit request on a chip; tapping it fills the prompt",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -49921,6 +53904,148 @@
         }
       }
     },
+    "Make it snow" : {
+      "comment" : "Example Magic Edit request on a chip; tapping it fills the prompt",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lass es schneien"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Haz que nieve"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fais tomber la neige"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Turunkan salju"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fai nevicare"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "雪を降らせて"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "눈이 내리게 해 줘"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Faça nevar"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Пусть идёт снег"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kar yağdır"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "让它下雪"
+          }
+        }
+      }
+    },
+    "Make it snow softly outside the window" : {
+      "comment" : "Suggested Magic Edit request for her photo, shown on a chip in the editor",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lass es draußen vor dem Fenster sanft schneien"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Haz que nieve suavemente al otro lado de la ventana"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fais tomber une neige douce derrière la fenêtre"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buat salju turun pelan di luar jendela"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fai nevicare piano fuori dalla finestra"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "窓の外にしんしんと雪を降らせて"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "창밖에 눈이 소복소복 내리게 해 줘"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Faz nevar de leve do lado de fora da janela"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Пусть за окном тихо идёт снег"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pencerenin dışında usul usul kar yağdır"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "让窗外轻轻飘雪"
+          }
+        }
+      }
+    },
     "Makeup & hair looks" : {
       "localizations" : {
         "de" : {
@@ -50202,6 +54327,77 @@
         }
       }
     },
+    "Manga Panel" : {
+      "comment" : "One-tap look (trend) name. Keep trend names people use in English, such as Y2K or Clean Girl.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Manga-Panel"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Viñeta manga"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Case de manga"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Panel Manga"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vignetta manga"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "マンガの1コマ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "만화 한 컷"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quadro de Mangá"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Кадр из манги"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Manga Karesi"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "漫画一格"
+          }
+        }
+      }
+    },
     "Marker" : {
       "localizations" : {
         "de" : {
@@ -50268,6 +54464,77 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "马克笔"
+          }
+        }
+      }
+    },
+    "Matching fits, same vibe" : {
+      "comment" : "One-tap look description, shown under its name",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gleiche Outfits, gleicher Vibe"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mismo outfit, misma vibra"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Même tenue, même vibe"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Baju samaan, vibe sama"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stessi vestiti, stessa vibe"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "同じ服で、同じ気分"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "똑같은 옷, 똑같은 바이브"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Roupas iguais, mesma vibe"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Одинаковый стиль, общий вайб"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aynı kıyafet, aynı vibe"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "同款穿搭，同频氛围"
           }
         }
       }
@@ -56746,6 +61013,77 @@
         }
       }
     },
+    "Paper Craft" : {
+      "comment" : "Art style name on the Create screen",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Papierkunst"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Papel recortado"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Papier découpé"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kerajinan Kertas"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Carta ritagliata"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ペーパークラフト"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "페이퍼 크래프트"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Arte em Papel"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Бумажная аппликация"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kâğıt Sanatı"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "剪纸手工"
+          }
+        }
+      }
+    },
     "Paris Trip" : {
       "comment" : "One-tap look (trend) name. Keep trend names people use in English, such as Y2K or Clean Girl.",
       "localizations" : {
@@ -56813,6 +61151,77 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "巴黎之旅"
+          }
+        }
+      }
+    },
+    "Party hats & balloons" : {
+      "comment" : "One-tap look description, shown under its name",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Partyhütchen & Ballons"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gorritos de fiesta y globos"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chapeaux de fête & ballons"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Topi pesta & balon"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cappellini da festa e palloncini"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "パーティー帽とバルーン"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "고깔모자 & 풍선"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chapeuzinhos de festa e balões"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Колпачки и воздушные шарики"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Parti şapkaları ve balonlar"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "派对帽与气球"
           }
         }
       }
@@ -57028,6 +61437,77 @@
         }
       }
     },
+    "Pastel state of mind" : {
+      "comment" : "Caption idea for sharing a picture",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pastell-Stimmung"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Modo pastel activado"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Humeur pastel"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lagi mode pastel"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mood pastello"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "気分はパステル"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "마음은 파스텔"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mood pastel"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Пастельное настроение"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pastel bir ruh hali"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "粉彩心情"
+          }
+        }
+      }
+    },
     "Pause" : {
       "localizations" : {
         "de" : {
@@ -57094,6 +61574,77 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "暂停"
+          }
+        }
+      }
+    },
+    "Pawty Time" : {
+      "comment" : "One-tap look (trend) name. Keep trend names people use in English, such as Y2K or Clean Girl.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pfoten-Party"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fiesta peluda"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pattes en fête"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pesta Anabul"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Festa a quattro zampe"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "うちの子パーティー"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "멍냥 파티"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Festa do Pet"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Пушистая вечеринка"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pati Partisi"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "毛孩派对"
           }
         }
       }
@@ -57374,6 +61925,77 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "画笔"
+          }
+        }
+      }
+    },
+    "Pet & Me Studio" : {
+      "comment" : "One-tap look (trend) name. Keep trend names people use in English, such as Y2K or Clean Girl.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Studio mit Haustier"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Estudio con mi mascota"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Studio avec mon animal"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Studio Aku & Peliharaan"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Studio con il cucciolo"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ペットとスタジオ撮影"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "펫이랑 스튜디오"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Estúdio Eu & Meu Pet"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Студия: я и питомец"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Patimle Stüdyo"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "我和宠物的写真"
           }
         }
       }
@@ -59144,6 +63766,77 @@
         }
       }
     },
+    "Pillow fort & fairy lights" : {
+      "comment" : "One-tap look description, shown under its name",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kissenburg & Lichterketten"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fuerte de cojines y lucecitas"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cabane en coussins & guirlandes"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Benteng bantal & lampu tumblr"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fortino di cuscini e lucine"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "クッションの秘密基地とライト"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "베개 요새 & 꼬마전구"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cabaninha de travesseiros e luzinhas"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Шалаш из подушек и гирлянды"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yastık kalesi ve peri ışıkları"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "枕头堡与串灯"
+          }
+        }
+      }
+    },
     "Ping me when it's ready" : {
       "localizations" : {
         "de" : {
@@ -60130,6 +64823,77 @@
         }
       }
     },
+    "Plushie Pet" : {
+      "comment" : "One-tap look (trend) name. Keep trend names people use in English, such as Y2K or Clean Girl.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Plüsch-Haustier"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mascota de peluche"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Animal en peluche"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Peliharaan Jadi Boneka"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cucciolo di peluche"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ぬいぐるみペット"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "인형이 된 펫"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pet de Pelúcia"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Плюшевый питомец"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Peluş Pati"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "毛绒版宠物"
+          }
+        }
+      }
+    },
     "Polished photos for work and your shop." : {
       "localizations" : {
         "de" : {
@@ -60267,6 +65031,77 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "醒目"
+          }
+        }
+      }
+    },
+    "Pop Art" : {
+      "comment" : "Art style name on the Create screen",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pop-Art"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pop art"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pop art"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pop Art"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pop art"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ポップアート"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "팝아트"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pop Art"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Поп-арт"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pop Art"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "波普艺术"
           }
         }
       }
@@ -61999,6 +66834,77 @@
         }
       }
     },
+    "Proof that today was a good day" : {
+      "comment" : "Caption idea for sharing a picture",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Beweis, dass heute ein guter Tag war"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La prueba de que hoy fue un buen día"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La preuve qu’aujourd’hui était une belle journée"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bukti hari ini hari yang menyenangkan"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La prova che oggi è stata una bella giornata"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "今日がいい日だった証拠"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오늘이 좋은 날이었다는 증거"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A prova de que hoje foi um dia bom"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Доказательство, что день удался"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bugünün güzel geçtiğinin kanıtı"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "今天是美好一天的证据"
+          }
+        }
+      }
+    },
     "Protect friends" : {
       "localizations" : {
         "de" : {
@@ -62492,6 +67398,7 @@
       }
     },
     "Put me in a pink dress" : {
+      "comment" : "Example Magic Edit request on a chip; tapping it fills the prompt",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -62557,6 +67464,77 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "给我换上粉色裙子"
+          }
+        }
+      }
+    },
+    "Put my pet in a field of daisies" : {
+      "comment" : "Suggested Magic Edit request for her photo, shown on a chip in the editor",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Setz mein Haustier auf eine Gänseblümchenwiese"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pon a mi mascota en un campo de margaritas"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mets mon animal dans un champ de pâquerettes"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Taruh peliharaanku di padang bunga aster"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Metti il mio animale in un prato di margherite"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ペットをデイジーの花畑に連れて行って"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "반려동물을 데이지 꽃밭에 데려다 줘"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Coloca meu pet num campo de margaridas"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Посади моего питомца на поле ромашек"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Evcil hayvanımı papatya tarlasına koy"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "把我的宠物放进雏菊花田里"
           }
         }
       }
@@ -64250,6 +69228,7 @@
       }
     },
     "Remove the people behind me" : {
+      "comment" : "Example Magic Edit request on a chip; tapping it fills the prompt",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -65857,6 +70836,77 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "把你的想法改写得更详细。可以撤销。"
+          }
+        }
+      }
+    },
+    "Ribbons, lace & pearls" : {
+      "comment" : "One-tap look description, shown under its name",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schleifen, Spitze & Perlen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lazos, encaje y perlas"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rubans, dentelle & perles"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pita, renda & mutiara"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fiocchi, pizzo e perle"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "リボン、レース、パール"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "리본, 레이스 & 진주"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Laços, renda e pérolas"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ленты, кружево и жемчуг"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kurdeleler, dantel ve inciler"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "丝带、蕾丝与珍珠"
           }
         }
       }
@@ -71742,6 +76792,147 @@
         }
       }
     },
+    "Sleepover" : {
+      "comment" : "One-tap look (trend) name. Keep trend names people use in English, such as Y2K or Clean Girl.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pyjamaparty"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pijamada"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Soirée pyjama"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pesta Piyama"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pigiama party"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "パジャマパーティー"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "파자마 파티"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Festa do Pijama"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Пижамная вечеринка"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pijama Partisi"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "睡衣派对"
+          }
+        }
+      }
+    },
+    "Sleepovers, concerts and matching fits with your besties." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pyjamapartys, Konzerte und Partnerlooks mit deinen Besties."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pijamadas, conciertos y outfits a juego con tus besties."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Soirées pyjama, concerts et tenues assorties entre besties."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pesta piyama, konser, dan outfit kembaran bareng bestie."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pigiama party, concerti e look coordinati con le tue BFF."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "親友とパジャマパーティー、ライブ、おそろコーデ。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "베프와 함께하는 파자마 파티, 콘서트, 우정룩."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Festas do pijama, shows e looks combinando com as BFFs."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Пижамные вечеринки, концерты и парные образы с подружками."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kankalarla pijama partileri, konserler ve aynı kombinler."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "和闺蜜一起的睡衣派对、演唱会和闺蜜装。"
+          }
+        }
+      }
+    },
     "Small" : {
       "comment" : "Caption text size",
       "localizations" : {
@@ -72304,6 +77495,77 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "柔和色彩，快乐心情"
+          }
+        }
+      }
+    },
+    "Soft Film" : {
+      "comment" : "One-tap look (trend) name. Keep trend names people use in English, such as Y2K or Clean Girl.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Soft Film"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Soft Film"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Argentique doux"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Soft Film"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pellicola soft"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ふんわりフィルム"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "소프트 필름"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Soft Film"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Мягкая плёнка"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Soft Film"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "柔光胶片"
           }
         }
       }
@@ -73507,6 +78769,77 @@
         }
       }
     },
+    "Stage lights & confetti" : {
+      "comment" : "One-tap look description, shown under its name",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bühnenlicht & Konfetti"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Luces de escenario y confeti"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lumières de scène & confettis"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lampu panggung & konfeti"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Luci del palco e coriandoli"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ステージの光と紙吹雪"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "무대 조명 & 컨페티"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Luzes do palco e confete"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Огни сцены и конфетти"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sahne ışıkları ve konfeti"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "舞台灯光与彩纸"
+          }
+        }
+      }
+    },
     "Star" : {
       "localizations" : {
         "de" : {
@@ -74213,6 +79546,7 @@
       }
     },
     "Sticker" : {
+      "comment" : "Art style name on the Create screen",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -74278,6 +79612,77 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "贴纸"
+          }
+        }
+      }
+    },
+    "Sticker Sheet" : {
+      "comment" : "One-tap look (trend) name. Keep trend names people use in English, such as Y2K or Clean Girl.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stickerbogen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hoja de stickers"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Planche de stickers"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lembar Stiker"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Foglio di sticker"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ステッカーシート"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "스티커 시트"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cartela de Figurinhas"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Лист стикеров"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Çıkartma Sayfası"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "贴纸套装"
           }
         }
       }
@@ -74775,6 +80180,77 @@
         }
       }
     },
+    "Storybook" : {
+      "comment" : "Art style name on the Create screen",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bilderbuch"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cuento ilustrado"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Livre de contes"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buku Cerita"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Libro di fiabe"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "絵本"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "동화책"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Livro de Histórias"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сказка"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Masal Kitabı"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "童话绘本"
+          }
+        }
+      }
+    },
     "Straighten" : {
       "localizations" : {
         "de" : {
@@ -75051,6 +80527,77 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "没有灵感？"
+          }
+        }
+      }
+    },
+    "Studio portrait, together" : {
+      "comment" : "One-tap look description, shown under its name",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Studioporträt zu zweit"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Retrato de estudio, juntos"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Portrait studio à deux"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Potret studio bareng"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ritratto in studio, insieme"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "いっしょにスタジオ写真"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "함께 찍는 스튜디오 사진"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Retrato de estúdio juntinhos"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Студийный портрет вдвоём"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Birlikte stüdyo portresi"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "一起拍的影棚照"
           }
         }
       }
@@ -75548,6 +81095,77 @@
         }
       }
     },
+    "Sunny court, sporty fit" : {
+      "comment" : "One-tap look description, shown under its name",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sonniger Court, sportlicher Look"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pista soleada, look deportivo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Court ensoleillé, look sporty"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lapangan cerah, outfit sporty"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Campo al sole, look sportivo"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "晴れたコートでスポーティーに"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "햇살 코트, 스포티 룩"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quadra ensolarada, look esportivo"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Солнечный корт, спортивный образ"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Güneşli kort, sportif kombin"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "阳光球场，运动穿搭"
+          }
+        }
+      }
+    },
     "Sunset" : {
       "localizations" : {
         "de" : {
@@ -75614,6 +81232,77 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "日落"
+          }
+        }
+      }
+    },
+    "Sunshine in picture form" : {
+      "comment" : "Caption idea for sharing a picture",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sonnenschein als Bild"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sol en forma de foto"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Du soleil en image"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sinar matahari dalam satu foto"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sole in formato foto"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "写真になったおひさま"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "사진이 된 햇살"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Raio de sol em forma de foto"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Солнце в одном кадре"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fotoğraf hâlinde güneş ışığı"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "定格成照片的阳光"
           }
         }
       }
@@ -77155,6 +82844,77 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "轻点要保留的人或物"
+          }
+        }
+      }
+    },
+    "Tennis Club" : {
+      "comment" : "One-tap look (trend) name. Keep trend names people use in English, such as Y2K or Clean Girl.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tennisclub"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Club de tenis"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Club de tennis"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klub Tenis"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Circolo del tennis"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "テニスクラブ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "테니스 클럽"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clube de Tênis"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Теннисный клуб"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tenis Kulübü"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "网球俱乐部"
           }
         }
       }
@@ -79763,6 +85523,77 @@
         }
       }
     },
+    "This one's going on the fridge" : {
+      "comment" : "Caption idea for sharing a picture",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Das kommt an den Kühlschrank"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esta va directa a la nevera"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Celle-là, elle va sur le frigo"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yang ini mau kutempel di kulkas"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Questa va sul frigo"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "これは冷蔵庫に貼っておこう"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이건 냉장고에 붙여 둘 거야"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Essa vai pra porta da geladeira"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Это точно на холодильник"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu buzdolabına asılacak"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "这张要贴在冰箱上"
+          }
+        }
+      }
+    },
     "This photo couldn't be read." : {
       "localizations" : {
         "de" : {
@@ -81604,6 +87435,77 @@
         }
       }
     },
+    "Travel Postcard" : {
+      "comment" : "One-tap look (trend) name. Keep trend names people use in English, such as Y2K or Clean Girl.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reisepostkarte"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Postal de viaje"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Carte postale"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kartu Pos Liburan"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cartolina di viaggio"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "旅のポストカード"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "여행 엽서"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cartão-Postal"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Открытка из поездки"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seyahat Kartpostalı"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "旅行明信片"
+          }
+        }
+      }
+    },
     "Trending now" : {
       "comment" : "Template collection heading",
       "localizations" : {
@@ -82588,7 +88490,7 @@
       }
     },
     "Turn it into a cute cartoon" : {
-      "comment" : "Example request for editing a photo of a pet",
+      "comment" : "Example request for editing a photo of a pet\nSuggested Magic Edit request for her photo, shown on a chip in the editor",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -82654,6 +88556,77 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "变成可爱的卡通"
+          }
+        }
+      }
+    },
+    "Turn it into a cute sticker with a white border" : {
+      "comment" : "Suggested Magic Edit request for her photo, shown on a chip in the editor",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mach einen süßen Sticker mit weißem Rand daraus"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conviértelo en un sticker adorable con borde blanco"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Transforme-le en sticker mignon avec un contour blanc"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jadikan stiker lucu dengan pinggiran putih"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trasformalo in uno sticker carino con il bordo bianco"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "白いふち取りのかわいいステッカーにして"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "흰 테두리가 있는 귀여운 스티커로 만들어 줘"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Transforma numa figurinha fofa com borda branca"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Преврати в милый стикер с белой обводкой"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beyaz kenarlı şirin bir çıkartmaya dönüştür"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "做成带白边的可爱贴纸"
           }
         }
       }
@@ -82938,6 +88911,77 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "变成夜晚的动漫城市"
+          }
+        }
+      }
+    },
+    "Turn it into anime" : {
+      "comment" : "Example Magic Edit request on a chip; tapping it fills the prompt",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mach einen Anime daraus"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conviértela en anime"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Transforme-la en anime"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jadikan anime"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trasformala in un anime"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アニメ風にして"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "애니로 바꿔 줘"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Transforme em anime"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Преврати в аниме"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anime'ye dönüştür"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "变成动漫风"
           }
         }
       }
@@ -83363,6 +89407,148 @@
         }
       }
     },
+    "Turn the background into a pastel cloud sky" : {
+      "comment" : "Suggested Magic Edit request for her photo, shown on a chip in the editor",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mach den Hintergrund zu einem Pastell-Wolkenhimmel"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Convierte el fondo en un cielo de nubes pastel"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Transforme l’arrière-plan en ciel de nuages pastel"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ubah latar belakang jadi langit berawan pastel"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trasforma lo sfondo in un cielo di nuvole pastello"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "背景をパステルカラーの雲の空にして"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "배경을 파스텔 구름 하늘로 바꿔 줘"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Transforma o fundo num céu de nuvens pastel"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Преврати фон в пастельное небо с облаками"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Arka planı pastel bulutlu bir gökyüzüne çevir"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "把背景换成粉彩色的云朵天空"
+          }
+        }
+      }
+    },
+    "Turn the background into a starry night sky" : {
+      "comment" : "Suggested Magic Edit request for her photo, shown on a chip in the editor",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mach den Hintergrund zu einem Sternenhimmel"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Convierte el fondo en un cielo nocturno estrellado"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Transforme l’arrière-plan en ciel étoilé"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ubah latar belakang jadi langit malam berbintang"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trasforma lo sfondo in un cielo stellato"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "背景を満天の星空にして"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "배경을 별이 빛나는 밤하늘로 바꿔 줘"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Transforma o fundo num céu estrelado"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Преврати фон в звёздное ночное небо"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Arka planı yıldızlı bir gece gökyüzüne çevir"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "把背景换成满天繁星的夜空"
+          }
+        }
+      }
+    },
     "Turn the background into a sunset beach" : {
       "comment" : "Example request for editing a photo of several people\nSuggested Magic Edit request for her photo, shown on a chip in the editor",
       "localizations" : {
@@ -83506,7 +89692,7 @@
       }
     },
     "Turn the sky into a pink sunset" : {
-      "comment" : "Example request for editing a photo without people",
+      "comment" : "Example request for editing a photo without people\nSuggested Magic Edit request for her photo, shown on a chip in the editor",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -83642,6 +89828,77 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "把你的照片做成照片合集、情绪板或轮播图。免费，本机处理。"
+          }
+        }
+      }
+    },
+    "Twinning" : {
+      "comment" : "One-tap look (trend) name. Keep trend names people use in English, such as Y2K or Clean Girl.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Partnerlook"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Outfits a juego"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Looks assortis"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Outfit Kembaran"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Look coordinati"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "おそろコーデ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "우정룩"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Looks Combinando"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Парные образы"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "İkiz Kombin"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "闺蜜装"
           }
         }
       }
@@ -91426,6 +97683,77 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "每月点数会在一个月内恢复。"
+          }
+        }
+      }
+    },
+    "Your pet, as a soft toy" : {
+      "comment" : "One-tap look description, shown under its name",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dein Haustier als Kuscheltier"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tu mascota, en peluche"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ton animal en peluche"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Peliharaanmu jadi boneka"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Il tuo animale, di peluche"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "うちの子がぬいぐるみに"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "인형이 된 우리 아이"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seu pet em pelúcia"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Твой питомец — мягкая игрушка"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Peluş oyuncak olarak evcil dostun"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "变成毛绒玩具的毛孩子"
           }
         }
       }

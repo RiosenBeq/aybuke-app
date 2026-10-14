@@ -140,8 +140,10 @@ final class CollageLayoutTests: XCTestCase {
     }
 
     func testMosaicLShapeForSixAndEight() {
-        XCTAssertEqual(CollageStyle.mosaic.variantCount(for: 6), 3)
-        XCTAssertEqual(CollageStyle.mosaic.variantCount(for: 5), 2)
+        // Hero first, hero last, the L (6 and 8 only), then center stage (3 or more).
+        XCTAssertEqual(CollageStyle.mosaic.variantCount(for: 6), 4)
+        XCTAssertEqual(CollageStyle.mosaic.variantCount(for: 5), 3)
+        XCTAssertEqual(CollageStyle.mosaic.variantCount(for: 2), 2)
         let six = CollageLayout.make(style: .mosaic, count: 6, format: .square, spacing: 0)
         XCTAssertEqual(six.slots[0].frame.width, 0.56, accuracy: 1e-9, "the hero beside the rest")
         XCTAssertEqual(six.slots[0].frame.height, 1, accuracy: 1e-9)
@@ -152,6 +154,89 @@ final class CollageLayoutTests: XCTestCase {
             XCTAssertEqual(slot.frame.width, 1.0 / 3, accuracy: 1e-9)
             XCTAssertEqual(slot.frame.height, 1.0 / 3, accuracy: 1e-9)
         }
+    }
+
+    func testMosaicCenterStageKeepsTheHeroInTheMiddle() {
+        for format in formats {
+            for count in 3...9 {
+                let variant = CollageStyle.mosaic.variantCount(for: count) - 1
+                let layout = CollageLayout.make(style: .mosaic, count: count, format: format, variant: variant)
+                let label = "\(format) \(count)"
+                let hero = layout.slots[0].frame
+                let areas = layout.slots.map { $0.frame.width * $0.frame.height }
+                XCTAssertEqual(areas.firstIndex(of: areas.max()!), 0, "the hero is the biggest: \(label)")
+                XCTAssertTrue(abs(hero.midX - 0.5) < 1e-9 || abs(hero.midY - 0.5) < 1e-9, "centred: \(label)")
+                // The others split between both sides of it, along one axis.
+                let others = layout.slots.dropFirst().map(\.frame)
+                let sideBySide = (others.filter { $0.maxX <= hero.minX + 1e-9 }.count, others.filter { $0.minX >= hero.maxX - 1e-9 }.count)
+                let stacked = (others.filter { $0.maxY <= hero.minY + 1e-9 }.count, others.filter { $0.minY >= hero.maxY - 1e-9 }.count)
+                let split = sideBySide.0 + sideBySide.1 == count - 1 ? sideBySide : stacked
+                XCTAssertEqual(split.0 + split.1, count - 1, label)
+                XCTAssertEqual(split.0, (count - 1) / 2, label)
+            }
+        }
+        XCTAssertNotEqual(CollageLayout.make(style: .mosaic, count: 5, format: .portrait, variant: 2),
+                          CollageLayout.make(style: .mosaic, count: 5, format: .portrait, variant: 0))
+    }
+
+    func testFeaturedMoodboardLeadsWithTheFirstPhoto() {
+        XCTAssertEqual(CollageStyle.moodboard.variantCount(for: 2), 2)
+        XCTAssertEqual(CollageStyle.moodboard.variantCount(for: 3), 3)
+        for format in formats {
+            for count in 3...9 {
+                let layout = CollageLayout.make(style: .moodboard, count: count, format: format, variant: 2)
+                let label = "\(format) \(count)"
+                let hero = layout.slots[0].frame
+                let others = layout.slots.dropFirst()
+                if format.isCarousel {
+                    // Down the left, the board beside it.
+                    XCTAssertTrue(others.allSatisfy { $0.frame.minX >= hero.maxX - 1e-9 }, label)
+                    XCTAssertEqual(hero.height, others.map(\.frame.maxY).max()! - others.map(\.frame.minY).min()!, accuracy: 1e-9, label)
+                } else {
+                    // Across the top, as wide as the board under it.
+                    XCTAssertTrue(others.allSatisfy { $0.frame.minY >= hero.maxY - 1e-9 }, label)
+                    XCTAssertEqual(hero.minX, others.map(\.frame.minX).min()!, accuracy: 1e-9, label)
+                    XCTAssertEqual(hero.maxX, others.map(\.frame.maxX).max()!, accuracy: 1e-9, label)
+                }
+                XCTAssertEqual(layout.decorations.filter { $0.kind == .palette }.count, 1, label)
+            }
+        }
+    }
+
+    func testGarlandHangsEveryPrintFromARibbon() {
+        for format in formats {
+            for count in 2...9 {
+                let variant = CollageStyle.polaroid.variantCount(for: count) - 1
+                let layout = CollageLayout.make(style: .polaroid, count: count, format: format, variant: variant)
+                let label = "\(format) \(count)"
+                // Ribbons run across the whole canvas; every print has a pin.
+                let ribbons = layout.decorations.filter { abs($0.frame.width - 1) < 1e-9 }
+                XCTAssertFalse(ribbons.isEmpty, label)
+                XCTAssertEqual(layout.decorations.count - ribbons.count, count, "one pin per print: \(label)")
+                XCTAssert(layout.slots.contains { $0.rotation < 0 } && layout.slots.contains { $0.rotation > 0 }, "they swing both ways: \(label)")
+                for slot in layout.slots {
+                    XCTAssertLessThanOrEqual(abs(slot.rotation), 5.5 + 1e-9, label)
+                    let top = slot.window.minY - slot.frame.minY
+                    XCTAssertGreaterThan(slot.frame.maxY - slot.window.maxY, top * 2, "the instant print's thick bottom border")
+                    // The print hangs from a ribbon: its top edge is close under one.
+                    let hangs = ribbons.contains { ribbon in
+                        abs(ribbon.frame.midY - slot.frame.minY) < slot.frame.height * 0.12
+                    }
+                    XCTAssertTrue(hangs, label)
+                }
+            }
+        }
+    }
+
+    func testTidyScrapbookLinesThePrintsUp() {
+        let variant = CollageStyle.scrapbook.variantCount(for: 6) - 1
+        let layout = CollageLayout.make(style: .scrapbook, count: 6, format: .portrait, variant: variant)
+        XCTAssertTrue(layout.slots.allSatisfy { abs($0.rotation) <= 2.5 + 1e-9 })
+        let rows = Set(layout.slots.map { ($0.frame.midY * 1e6).rounded() })
+        XCTAssertLessThan(rows.count, 6, "prints in a row share their centre line")
+        let tapes = layout.decorations.filter { if case .tape = $0.kind { return true } else { return false } }
+        XCTAssertEqual(tapes.count, 4 + 2 * 2, "every print is still taped down")
+        XCTAssertNotEqual(layout, CollageLayout.make(style: .scrapbook, count: 6, format: .portrait, variant: 0))
     }
 
     func testFilmStripsRunDownTallCanvasesAndAcrossCarousels() {

@@ -124,6 +124,54 @@ final class CatalogTests: XCTestCase {
     func testFreeTemplatesExistInEveryTier() {
         // Users must be able to try the product without paying.
         XCTAssertGreaterThanOrEqual(TemplateCatalog.all.filter { !$0.isPro }.count, 5)
+        for category in TemplateCatalog.categories where category != .seasonal {
+            XCTAssertTrue(TemplateCatalog.templates(in: category).contains { !$0.isPro }, "\(category) has a free look")
+        }
+    }
+
+    func testCatalogSizesMatchTheCopy() {
+        // README, AGENTS.md, web/index.html, docs and the App Store text in every
+        // locale say "50+ one-tap looks", "20 styles" and "8 collections".
+        XCTAssertGreaterThanOrEqual(TemplateCatalog.all.filter { $0.season == nil }.count, 50)
+        XCTAssertEqual(StyleCatalog.all.filter { $0 != StyleCatalog.auto }.count, 20)
+        XCTAssertEqual(TemplateCatalog.categories.filter { $0 != .seasonal }.count, 8)
+    }
+
+    func testBestieLooksKeepEveryoneAsTheyAre() {
+        let besties = TemplateCatalog.templates(in: .besties)
+        XCTAssertGreaterThanOrEqual(besties.count, 3)
+        for template in besties {
+            XCTAssertTrue(template.prompt.contains(TemplateCatalog.groupIdentityClause), template.id)
+            XCTAssertTrue(template.keepsLikeness, template.id)
+            XCTAssertNil(template.season, template.id)
+        }
+    }
+
+    func testLooksOfPeopleCarryTheIdentityClause() {
+        // Art looks keep people recognizable in their own words, and these
+        // three restore or restyle something other than a person.
+        let ownWords: Set<String> = [
+            "anime-film", "watercolor", "3d-cartoon", "oil-painting", "comic", "claymation", "manga",
+            "restore", "product-studio", "golden-sky",
+        ]
+        for template in TemplateCatalog.all where !ownWords.contains(template.id) {
+            let prompt = template.prompt
+            XCTAssertTrue(prompt.contains(TemplateCatalog.identityClause) || prompt.contains(TemplateCatalog.groupIdentityClause), template.id)
+        }
+        for id in ownWords {
+            XCTAssertNotNil(TemplateCatalog.template(id: id), "\(id) is still in the catalog")
+        }
+    }
+
+    func testLooksNeverNameBrandsOrBeautyFixes() {
+        let banned: Set<String> = [
+            "sexy", "slim", "slimmer", "skinny", "thinner", "flawless", "poreless", "airbrushed",
+            "barbie", "disney", "pixar", "ghibli", "pokemon", "pokémon", "lego", "sanrio",
+        ]
+        for template in TemplateCatalog.all {
+            let words = Set(template.prompt.lowercased().split { !$0.isLetter }.map(String.init))
+            XCTAssertTrue(words.isDisjoint(with: banned), "\(template.id): \(words.intersection(banned))")
+        }
     }
 
     func testStyleLookupFallsBackToAuto() {
@@ -135,6 +183,20 @@ final class CatalogTests: XCTestCase {
     func testStyleIDsAreUnique() {
         let ids = StyleCatalog.all.map(\.id)
         XCTAssertEqual(ids.count, Set(ids).count)
+        let names = StyleCatalog.all.map(\.name)
+        XCTAssertEqual(names.count, Set(names).count)
+    }
+
+    func testStylesAreCompleteAndMostlyFree() {
+        for style in StyleCatalog.all where style != StyleCatalog.auto {
+            XCTAssertFalse(style.name.isEmpty, style.id)
+            XCTAssertFalse(style.symbolName.isEmpty, style.id)
+            XCTAssertGreaterThan(style.promptSuffix.count, 20, style.id)
+            XCTAssertEqual(style.swatch.count, 2, style.id)
+            XCTAssertTrue(ContentPolicy.evaluate(style.promptSuffix, operation: .textToImage).isAllowed, style.id)
+        }
+        // Like the looks: most styles are free to try.
+        XCTAssertGreaterThan(StyleCatalog.all.filter { !$0.isPro }.count, StyleCatalog.all.count / 2)
     }
 
     func testHexColorsAreWellFormed() {
