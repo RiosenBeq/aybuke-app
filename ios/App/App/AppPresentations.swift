@@ -13,7 +13,7 @@ struct AppPresentations: ViewModifier {
             .sheet(isPresented: Binding(
                 get: { isActive && app.isPaywallPresented },
                 set: { app.isPaywallPresented = $0 }
-            )) {
+            ), onDismiss: { app.presentationEnded() }) {
                 PaywallView(source: app.paywallSource)
                     .environment(app)
                     .pageSheetSizing()
@@ -38,7 +38,7 @@ struct AppPresentations: ViewModifier {
             .sheet(isPresented: Binding(
                 get: { isActive && app.isAccountPromptPresented && !app.isPaywallPresented && app.outOfCredits == nil },
                 set: { app.isAccountPromptPresented = $0 }
-            )) {
+            ), onDismiss: { app.presentationEnded() }) {
                 AccountPromptSheet()
                     .environment(app)
             }

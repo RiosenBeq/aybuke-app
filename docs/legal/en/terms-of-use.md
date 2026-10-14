@@ -33,7 +33,7 @@ Your purchases are also subject to Apple's terms, such as the Apple Media Servic
 ## 2. Key definitions
 
 - **Cloud AI features**: features that send content from your device to our servers and AI providers for processing. These are Magic Edit, Styles, AI Enhance, Erase and Create from text.
-- **On-device features**: features that run entirely on your iPhone and never send your photos to us. These are Remove background, Adjust and the "quick glow" enhance offered during onboarding.
+- **On-device features**: features that run entirely on your iPhone and never send your photos to us. These are Remove background, Adjust and Effects (including the Digicam '04 look offered during onboarding).
 - **Inputs**: the photos, masks (the areas you brush over) and text prompts you submit to cloud AI features.
 - **Outputs** or **results**: the images the Service generates or edits for you.
 - **Credits**: units you use to pay for cloud AI outputs (section 8).
@@ -100,7 +100,7 @@ Some templates and styles are available only with Pro. We don't offer templates 
 
 ### On-device features
 
-Remove background (using Apple's Vision framework), Adjust (brightness, contrast, saturation, warmth, sharpness and vignette) and the free "quick glow" enhance during onboarding run entirely on your iPhone. They are free, don't use credits and work without consent to cloud processing.
+Remove background (using Apple's Vision framework), Adjust (brightness, contrast, saturation, warmth, sharpness and vignette) and Effects (retro looks such as Digicam '04, which is also offered during onboarding) run entirely on your iPhone. They are free, don't use credits and work without consent to cloud processing.
 
 ### Likeness Lock
 

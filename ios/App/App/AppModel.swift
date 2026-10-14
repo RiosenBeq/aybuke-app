@@ -139,9 +139,14 @@ final class AppModel {
     @ObservationIgnored private var reviewPolicy: ReviewPromptPolicy
     /// The last paywall or permission prompt; no rating prompt for 30 minutes after.
     @ObservationIgnored private var lastInterruption: Date?
+    /// One paywall a session is enough: no onboarding one after another.
+    @ObservationIgnored private var paywallShownThisSession = false
 
     private enum Keys {
         static let onboarding = "onboarding.completed"
+        /// The adult soft paywall waits for the first success (the editor
+        /// closing); kept so a force-quit there still shows it once.
+        static let onboardingPaywallPending = "onboarding.paywallPending"
         /// The old Bool consent, migrated to `consentRecord`.
         static let legacyConsent = "ai.consent.v1"
         static let consent = "ai.consent.v2"
@@ -156,7 +161,7 @@ final class AppModel {
         /// What "Delete my data" removes (other owners' keys spelled out here
         /// so the list is complete in one place).
         static let wiped = [
-            onboarding, legacyConsent, consent, ageRecord, interests, successfulSaves, reviewPolicy, appearance, deletionRequested,
+            onboarding, onboardingPaywallPending, legacyConsent, consent, ageRecord, interests, successfulSaves, reviewPolicy, appearance, deletionRequested,
             "credits.wallet.v2", "notifications.preferences.v1", "notifications.readyPingDeclined", "tour.seen.v1",
         ]
         static let wipedKeychain = [appleUserID, "auth.session", "auth.pendingMerge"]
@@ -304,6 +309,10 @@ final class AppModel {
         if isDemoMode { await purchases.closeForPreviewIfFromAppStore() }
         #endif
         await purchases.loadProducts()
+        // She force-quit the editor she opened from onboarding.
+        if defaults.bool(forKey: Keys.onboardingPaywallPending), hasCompletedOnboarding, !needsAgeStep, editorLaunch == nil {
+            offerOnboardingPaywall()
+        }
     }
 
     /// Back in the foreground: notification permission may have changed.
@@ -540,6 +549,43 @@ final class AppModel {
         defaults.set(true, forKey: Keys.onboarding)
     }
 
+    /// The soft paywall after onboarding: adults only, never for Pro, and
+    /// not when another paywall was already shown this session. The one
+    /// place the age-assurance rules extend.
+    var shouldShowOnboardingPaywall: Bool {
+        !purchases.isPro && ageDefaults.autoPaywall && !paywallShownThisSession
+    }
+
+    /// Onboarding ended (a saved try-it result, or skipped): the paywall now.
+    func offerOnboardingPaywall() {
+        defaults.removeObject(forKey: Keys.onboardingPaywallPending)
+        if shouldShowOnboardingPaywall { presentPaywall(source: "onboarding") }
+    }
+
+    /// Onboarding ended in the editor: the paywall waits until she closes it.
+    func deferOnboardingPaywall() {
+        guard shouldShowOnboardingPaywall else { return }
+        defaults.set(true, forKey: Keys.onboardingPaywallPending)
+    }
+
+    /// The editor's full-screen cover closed.
+    func editorDidClose() {
+        if defaults.bool(forKey: Keys.onboardingPaywallPending) {
+            offerOnboardingPaywall()
+        }
+        presentationEnded()
+    }
+
+    /// A paywall, account prompt or editor closed: a moment later (after a
+    /// purchase the account prompt comes first), offer the tour.
+    func presentationEnded() {
+        guard hasCompletedOnboarding, !tour.hasSeen else { return }
+        Task {
+            try? await Task.sleep(for: .milliseconds(800))
+            offerTourIfNeeded()
+        }
+    }
+
     /// Shows the tour once, after onboarding, when nothing else is on screen.
     func offerTourIfNeeded() {
         #if DEBUG
@@ -548,7 +594,8 @@ final class AppModel {
             return
         }
         #endif
-        guard hasCompletedOnboarding, !needsAgeStep, !tour.hasSeen, !tour.isRunning, !isPresentingSomething else { return }
+        guard hasCompletedOnboarding, !needsAgeStep, !tour.hasSeen, !tour.isRunning, !isPresentingSomething,
+              !isSettingsPresented, !isPhotoPickerPresented, !isVideoPickerPresented else { return }
         startTour()
     }
 
@@ -605,6 +652,7 @@ final class AppModel {
         // Never under 13; for teens, never by itself after onboarding.
         guard allowsPurchases, source != "onboarding" || ageDefaults.autoPaywall else { return }
         lastInterruption = Date() // never ask for a rating right after a paywall
+        paywallShownThisSession = true
         paywallSource = source
         isPaywallPresented = true
     }
@@ -841,9 +889,10 @@ final class AppModel {
         isPhotoPickerPresented = true
     }
 
-    func openEditor(with image: UIImage, tool: EditorTool? = nil, template: PhotoTemplate? = nil, provenance: Provenance = .none) {
+    func openEditor(with image: UIImage, tool: EditorTool? = nil, template: PhotoTemplate? = nil, provenance: Provenance = .none,
+                    previewEffect: RetroEffect? = nil) {
         editorLaunch = EditorLaunch(image: ImageUtilities.normalized(image), tool: permittedTool(tool),
-                                    template: allowsCloudAI ? template : nil, provenance: provenance)
+                                    template: allowsCloudAI ? template : nil, previewEffect: previewEffect, provenance: provenance)
     }
 
     /// Copies a picked video to a temporary file and opens the video editor.
