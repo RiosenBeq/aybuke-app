@@ -9,10 +9,50 @@ import AppCore
 // its own age rules: under 13 that's the free effects, never Magic Edit.
 
 enum GlowIntents {
-    /// Intents reach the app's state through this, registered at launch.
+    /// The app's state for the intents that open the app. Set in the app's
+    /// initializer, which runs before the system performs any intent. (Not
+    /// an `@Dependency`: those exist only inside the system's perform flow,
+    /// so QA couldn't perform the intents itself.)
+    @MainActor private(set) static weak var app: AppModel?
+
     @MainActor static func register(_ app: AppModel) {
-        AppDependencyManager.shared.add(dependency: app)
+        self.app = app
+        #if DEBUG
+        if let name = UserDefaults.standard.string(forKey: "GLIntent") {
+            Task { await performForQA(name) }
+        }
+        #endif
     }
+
+    #if DEBUG
+    /// QA with a screenshot scene: `-GLIntent retroCam|photoBooth|collage|edit|effect`
+    /// performs that intent after launch, as Siri or Shortcuts would. `edit`
+    /// passes the demo photo; `effect` (`-GLEffect <name>`) writes its result
+    /// to tmp/glowlit-intent-qa.
+    private static func performForQA(_ name: String) async {
+        try? await Task.sleep(for: .seconds(1.5))
+        let photo = IntentFile(data: ImageUtilities.jpegData(ScreenshotFixtures.goldenLandscape, maxLongEdge: 1500) ?? Data(),
+                               filename: "golden-hour.jpg", type: .jpeg)
+        switch name {
+        case "retroCam": _ = try? await OpenRetroCamIntent().perform()
+        case "photoBooth": _ = try? await StartPhotoBoothIntent().perform()
+        case "collage": _ = try? await MakeCollageIntent().perform()
+        case "edit":
+            let intent = EditPhotoIntent()
+            intent.photo = photo
+            _ = try? await intent.perform()
+        case "effect":
+            let intent = ApplyRetroEffectIntent()
+            intent.photo = photo
+            intent.effect = UserDefaults.standard.string(forKey: "GLEffect").flatMap(RetroEffectChoice.init(rawValue:)) ?? .vhs
+            guard let file = try? await intent.perform().value else { return }
+            let folder = FileManager.default.temporaryDirectory.appendingPathComponent("glowlit-intent-qa", isDirectory: true)
+            try? FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
+            try? file.data.write(to: folder.appendingPathComponent(file.filename))
+        default: break
+        }
+    }
+    #endif
 }
 
 // MARK: - Apply a retro effect (in the background, also in automations)
@@ -89,12 +129,30 @@ struct ApplyRetroEffectIntent: AppIntent {
 /// location don't. Call it off the main actor.
 enum RetroEffectFile {
     static func render(_ data: Data, effect: RetroEffect) -> (data: Data, fileExtension: String)? {
-        let image = AutoDevelop.isRAW(data)
-            ? AutoDevelop.developRAW(data)
-            : ImageUtilities.decodedImage(from: data, maxPixel: 4096)
+        let isRAW = AutoDevelop.isRAW(data)
+        let image = isRAW ? AutoDevelop.developRAW(data) : ImageUtilities.decodedImage(from: data, maxPixel: 4096)
         guard let image else { return nil }
         let options = RetroEffect.Options(extra: effect.option?.isOnByDefault ?? true)
-        return ImageExporter.encode(effect.apply(to: image, options: options), sourceType: ImageExporter.digitalSourceType(in: data))
+        var output = effect.apply(to: image, options: options)
+        // Core Image and UIKit hand back bitmaps with an alpha channel, which
+        // would make every photo a big PNG; only a transparent source keeps one.
+        if isRAW || !ImageUtilities.hasAlpha(image) {
+            output = opaque(output)
+        }
+        return ImageExporter.encode(output, sourceType: ImageExporter.digitalSourceType(in: data))
+    }
+
+    private static func opaque(_ image: UIImage) -> UIImage {
+        guard let cgImage = image.cgImage else { return image }
+        let width = cgImage.width, height = cgImage.height
+        func context(_ space: CGColorSpace) -> CGContext? {
+            CGContext(data: nil, width: width, height: height, bitsPerComponent: 8, bytesPerRow: 0,
+                      space: space, bitmapInfo: CGImageAlphaInfo.noneSkipLast.rawValue)
+        }
+        // The image's own colour space when an 8-bit bitmap can use it (wide colour stays).
+        guard let context = cgImage.colorSpace.flatMap(context) ?? context(CGColorSpaceCreateDeviceRGB()) else { return image }
+        context.draw(cgImage, in: CGRect(x: 0, y: 0, width: width, height: height))
+        return context.makeImage().map { UIImage(cgImage: $0) } ?? image
     }
 }
 
@@ -115,10 +173,8 @@ struct OpenRetroCamIntent: AppIntent {
     static let description = IntentDescription("Opens the camera with live 80s, 90s and Y2K effects. Free, on your device.")
     static let openAppWhenRun = true
 
-    @Dependency private var app: AppModel
-
     func perform() async throws -> some IntentResult {
-        await app.openFromIntent(.retroCam)
+        await GlowIntents.app?.openFromIntent(.retroCam)
         return .result()
     }
 }
@@ -130,10 +186,8 @@ struct StartPhotoBoothIntent: AppIntent {
     )
     static let openAppWhenRun = true
 
-    @Dependency private var app: AppModel
-
     func perform() async throws -> some IntentResult {
-        await app.openFromIntent(.photoBooth)
+        await GlowIntents.app?.openFromIntent(.photoBooth)
         return .result()
     }
 }
@@ -143,10 +197,8 @@ struct MakeCollageIntent: AppIntent {
     static let description = IntentDescription("Opens the collage maker for photo dumps, moodboards and carousels. Free, on your device.")
     static let openAppWhenRun = true
 
-    @Dependency private var app: AppModel
-
     func perform() async throws -> some IntentResult {
-        await app.openFromIntent(.collage)
+        await GlowIntents.app?.openFromIntent(.collage)
         return .result()
     }
 }
@@ -159,8 +211,6 @@ struct EditPhotoIntent: AppIntent {
     @Parameter(title: "Photo", supportedTypeIdentifiers: ["public.image"])
     var photo: IntentFile?
 
-    @Dependency private var app: AppModel
-
     static var parameterSummary: some ParameterSummary {
         Summary("Edit \(\.$photo)")
     }
@@ -168,7 +218,7 @@ struct EditPhotoIntent: AppIntent {
     func perform() async throws -> some IntentResult {
         // Read here, off the main actor: a shared file may be large.
         let data = photo?.data
-        await app.editFromIntent(data)
+        await GlowIntents.app?.editFromIntent(data)
         return .result()
     }
 }
