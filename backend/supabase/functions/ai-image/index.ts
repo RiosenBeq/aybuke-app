@@ -10,13 +10,15 @@
 //
 // Providers: xAI (default when XAI_API_KEY is set) or fal (AI_PROVIDER=fal).
 // fal jobs are queued at fal and advanced while the app polls; xAI answers in
-// one request, which runs in the background after the 202. A DELETE on a
+// one request, which runs in the background after the 202. Every result passes
+// the output check (moderation.ts) or is blocked and refunded. A DELETE on a
 // completed job confirms the app has the images, and clears them right away.
 import type { SupabaseClient } from "npm:@supabase/supabase-js@2.117.3";
 import { resolveEntitlement } from "../_shared/apple.ts";
 import { requireUser, serviceClient } from "../_shared/auth.ts";
 import * as fal from "../_shared/fal.ts";
 import { corsHeaders, errorResponse, HttpError, json } from "../_shared/http.ts";
+import { checkOutputs, outputCheck } from "../_shared/moderation.ts";
 import { EDIT_GUARD, evaluatePrompt } from "../_shared/policy.ts";
 import { PRO_STYLES, templateRecipe } from "../_shared/templates.ts";
 import * as xai from "../_shared/xai.ts";
@@ -57,6 +59,8 @@ interface JobRow {
   error_message: string | null;
   created_at: string;
 }
+
+console.info(`output check in force: ${outputCheck()}`);
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -288,13 +292,24 @@ async function finish(db: SupabaseClient, jobId: string, outcome: fal.ResultOutc
     await failJob(db, jobId, outcome.code, outcome.message);
     return;
   }
-  if (await fal.outputsLookUnsafe(outcome.outputs)) {
-    await failJob(
-      db,
-      jobId,
-      "content_blocked",
-      "This result was blocked by our safety filters. Your credit was refunded.",
-    );
+  const verdict = await checkOutputs(outcome.outputs, outcome.moderatedBy);
+  if (!verdict.ok) {
+    console.warn(`output check (${verdict.check}) blocked job ${jobId}: ${verdict.reason}`);
+    if (verdict.reason === "flagged") {
+      await failJob(
+        db,
+        jobId,
+        "content_blocked",
+        "This result was blocked by our safety filters. Your credit was refunded.",
+      );
+    } else {
+      await failJob(
+        db,
+        jobId,
+        "safety_check_failed",
+        "Our safety check couldn't run, so this result wasn't shown. Your credit was refunded.",
+      );
+    }
     return;
   }
   await db.from("jobs")

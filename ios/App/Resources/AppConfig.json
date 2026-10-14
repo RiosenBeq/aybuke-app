@@ -20,10 +20,6 @@
     {
       "name": "xAI (Grok Imagine)",
       "role": "images"
-    },
-    {
-      "name": "fal.ai",
-      "role": "safety"
     }
   ],
   "shareHashtags": [

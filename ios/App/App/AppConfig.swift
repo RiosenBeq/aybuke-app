@@ -60,13 +60,14 @@ struct AppConfig: Decodable {
     /// asks again by itself).
     var consentVersion = 1
     /// Who processes cloud AI requests. Must match the backend: a new
-    /// provider or FAL_KEY needs an app update that lists it first.
+    /// provider or FAL_KEY (fal.ai's output check, role `.safety`) needs an
+    /// app update that lists it first. Without FAL_KEY, xAI's own moderation
+    /// is the output check, so fal.ai sees nothing and isn't listed.
     var aiProcessors: [AIProcessor] = AppConfig.defaultProcessors
 
     static let defaultProcessors = [
         AIProcessor(name: "Supabase", role: .servers),
         AIProcessor(name: "xAI (Grok Imagine)", role: .images),
-        AIProcessor(name: "fal.ai", role: .safety),
     ]
 
     static let current: AppConfig = load()

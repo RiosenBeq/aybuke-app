@@ -99,7 +99,7 @@ App                          ai-image (Edge)                         Postgres   
  │                             in the background (waitUntil) ───────► jobs(processing)
  │                             POST /v1/images/{generations|edits} ─────────────────────────► Grok Imagine
  │                             b64 results, moderated by xAI ◄──────────────────────────────┘
- │                             NSFW check (when FAL_KEY is set) ────► jobs(completed, outputs)
+ │                             output check (fails closed) ─────────► jobs(completed, outputs)
  │ GET ?job_id (1s, 1s, 1.5s…) ► read job
  │ ◄──── {completed, outputs:[base64]}                 (failure → jobs(failed) + release_credits)
  │ DELETE ?job_id ("got it") ─► clear the results ──────────────────► outputs = null
@@ -137,8 +137,8 @@ With `AI_PROVIDER=fal`, the job goes to fal's queue instead (`queue.fal.run`), e
 1. Client prompt policy (`ContentPolicy`, all 12 app languages): sexual and undressing requests, revealing clothing, and for photo edits face/body reshaping, skin-tone changes, skin retouching, looks rating and humiliating edits. Checked before the consent sheet or paywall opens.
 2. Server prompt policy (`_shared/policy.ts`, the same terms via the generated `_shared/policy-terms.json`; shared test vectors in `_shared/policy-vectors.json`). The server also appends the edit guard (`PromptBuilder.editGuard`: keep faces, body shapes, skin tone, skin texture and age; clothing at least as modest) to every Magic Edit.
 3. Server-side template recipes (prompt tampering is impossible).
-4. Provider moderation: xAI drops filtered outputs (`respect_moderation: false`); fal runs with `safety_tolerance: "2"`.
-5. Output NSFW check (on by default; runs on fal when `FAL_KEY` is set, otherwise xAI's moderation is the output check).
+4. Provider moderation: xAI withholds the image data of anything it filters (`respect_moderation: false`); fal runs with `safety_tolerance: "2"`.
+5. One output check on every result, failing closed (`_shared/moderation.ts`, no off switch): fal.ai's NSFW classifier when `FAL_KEY` is set, otherwise xAI's own verdict, where a filtered or missing image blocks the whole job. A flag, an error, a timeout or an unreadable answer blocks the result and refunds it. Setting `FAL_KEY` sends results to fal.ai, so it must be listed in the consent sheet (`aiProcessors`) first.
 6. "Report this image".
 
 ## Performance

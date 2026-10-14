@@ -55,11 +55,10 @@ Bu değerleri hesap sahibi yapıştırmalı (anahtarları ben giremem). Şablon:
 - [ ] `APPLE_APP_ID` — App Store Connect'teki sayısal uygulama kimliği (uygulama kaydı oluşunca)
 - [ ] `APPLE_TEAM_ID` = `CBTKNY3LFC`
 - [ ] `APPLE_SIGNIN_KEY_ID` ve `APPLE_SIGNIN_PRIVATE_KEY` — Sign in with Apple anahtarı
-- [ ] `OUTPUT_MODERATION` = `on`
 - [ ] `REVENUECAT_SECRET_KEY` ve `REVENUECAT_PROJECT_ID` — hesap silinince RevenueCat müşterisini de silmek için. RevenueCat → Project settings → API keys'te yalnızca `customer_information:customers:read_write` izinli bir **v2** gizli anahtar oluştur; proje kimliği aynı sayfada. Boş kalırsa silme yine çalışır ama RevenueCat kaydı kalır (günlüğe uyarı düşer).
-- [ ] (İsteğe bağlı) `FAL_KEY` — ek çıktı güvenlik kontrolü ve yedek sağlayıcı
+- [ ] (İsteğe bağlı) `FAL_KEY` — bağımsız çıktı güvenlik kontrolü (fal.ai) ve yedek sağlayıcı. Her sonuç tek bir çıktı kontrolünden geçer ve kontrol çalışamazsa sonuç engellenip kredi iade edilir (kapatma ayarı yok; eski `OUTPUT_MODERATION` artık okunmuyor). `FAL_KEY` yokken kontrol xAI'nin kendi denetim kararıdır. `FAL_KEY` eklenince sonuçlar fal.ai'ye gider; bu yüzden önce fal.ai'yi onay ekranına (`aiProcessors`) geri ekleyen bir uygulama sürümü yayımlanmalı.
 
-> **Onay ekranı:** Uygulamanın yapay zekâ onay ekranı, işleyicileri `ios/App/Resources/AppConfig.json` içindeki `aiProcessors` listesinden gösterir (şu an Supabase, xAI ve fal.ai). `AI_PROVIDER`'ı değiştirmek veya listede olmayan bir işleyici eklemek, önce o işleyiciyi listeleyen bir uygulama güncellemesi gerektirir; liste değişince uygulama onayı yeniden ister. Backend sağlayıcıyı uygulama sürümü olmadan değiştirebilir, bu yüzden sırayı koru.
+> **Onay ekranı:** Uygulamanın yapay zekâ onay ekranı, işleyicileri `ios/App/Resources/AppConfig.json` içindeki `aiProcessors` listesinden gösterir (şu an Supabase ve xAI). `AI_PROVIDER`'ı değiştirmek veya listede olmayan bir işleyici eklemek, önce o işleyiciyi listeleyen bir uygulama güncellemesi gerektirir; liste değişince uygulama onayı yeniden ister. Backend sağlayıcıyı uygulama sürümü olmadan değiştirebilir, bu yüzden sırayı koru.
 
 ## 7. xAI konsolu
 

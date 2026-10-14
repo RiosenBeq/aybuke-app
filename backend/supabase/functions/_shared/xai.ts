@@ -77,8 +77,9 @@ export function buildRequest(input: JobInput, userTag?: string): XAIRequest {
   }
 }
 
+/** `moderatedBy: "xai"`: every image passed xAI's own moderation (see moderation.ts). */
 export type Outcome =
-  | { ok: true; outputs: Output[] }
+  | { ok: true; outputs: Output[]; moderatedBy: "xai" }
   | { ok: false; code: string; message: string };
 
 const BLOCKED: Outcome = {
@@ -110,11 +111,16 @@ export async function generate(input: JobInput, userTag?: string, timeoutMs = 15
     console.error("xai request failed", response.status, text.slice(0, 300));
     return mapError(response.status, text);
   }
-  return parseOutputs(text);
+  return parseOutputs(text, input.operation === "text_to_image" ? input.numOutputs : 1);
 }
 
-/** `data[].b64_json`; outputs xAI's moderation filtered are dropped. */
-export function parseOutputs(text: string): Outcome {
+/**
+ * `data[].b64_json`, with xAI's moderation as the verdict: xAI returns no
+ * image data for an image it filtered (and may say `respect_moderation:
+ * false`). Fails closed: if any of the `expected` images was filtered or is
+ * missing, the whole job is blocked and refunded, never delivered in part.
+ */
+export function parseOutputs(text: string, expected = 1): Outcome {
   let payload: unknown;
   try {
     payload = JSON.parse(text);
@@ -122,23 +128,27 @@ export function parseOutputs(text: string): Outcome {
     payload = undefined;
   }
   const data = (payload as { data?: unknown } | undefined)?.data;
-  const items = Array.isArray(data) ? data as { b64_json?: unknown; respect_moderation?: unknown }[] : [];
-  const kept = items.filter((item) => item?.respect_moderation !== false && typeof item?.b64_json === "string");
-  if (kept.length === 0) {
-    if (items.some((item) => item?.respect_moderation === false)) return BLOCKED;
+  const items = Array.isArray(data) ? data as ({ b64_json?: unknown; respect_moderation?: unknown } | null)[] : [];
+  if (items.length === 0) {
     return { ok: false, code: "empty_result", message: "The AI returned no image. Your credit was refunded." };
   }
+  const passed = items.filter((item) =>
+    item?.respect_moderation !== false && typeof item?.b64_json === "string" && item.b64_json.length > 0
+  );
+  if (passed.length !== items.length || items.length < expected) return BLOCKED;
   return {
     ok: true,
-    outputs: kept.map((item) => {
-      const base64 = item.b64_json as string;
+    moderatedBy: "xai",
+    outputs: passed.map((item) => {
+      const base64 = item?.b64_json as string;
       return { base64, content_type: base64.startsWith("iVBOR") ? "image/png" : "image/jpeg" };
     }),
   };
 }
 
 export function mapError(status: number, text: string): Outcome {
-  if (/safety|nsfw|content.?policy|moderation|flagged|prohibited/i.test(text)) return BLOCKED;
+  // "imagine:content-moderated" and friends.
+  if (/safety|nsfw|content.?policy|moderat|flagged|prohibited/i.test(text)) return BLOCKED;
   if (status === 429) {
     return {
       ok: false,

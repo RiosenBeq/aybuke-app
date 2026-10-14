@@ -142,7 +142,7 @@ Cloud jobs run on **xAI Grok Imagine**, chosen as the best quality for the price
 - **Model and cost:** `grok-imagine-image-2.0` at 1k for every cloud operation, low quality for free users and medium for Pro. That's about $0.04 per created image and $0.05–0.07 per edit (input included), so about $0.06 per cloud operation on average, the figure the credit plan is sized for. Enhance and Erase are edits with a fixed instruction; background removal always runs on the device.
 - **What Pro buys:** quality, not pixels. The Pro benefit is "Our best-quality AI, no watermark" (no longer "HD exports").
 - **Privacy:** each request runs in the background (`EdgeRuntime.waitUntil`). Results come back inline (base64) and are cleared as soon as the app confirms the download, and `sweep_jobs()` clears any left after an hour. xAI doesn't train on API data without permission. **Switch on Zero Data Retention in the xAI console before launch:** selfies are personal data.
-- **Alternative:** fal.ai stays available with `AI_PROVIDER=fal` (Nano Banana 2, SeedVR2, object removal; 2K for Pro). When `FAL_KEY` is set, fal also runs the output NSFW check.
+- **Alternative:** fal.ai stays available with `AI_PROVIDER=fal` (Nano Banana 2, SeedVR2, object removal; 2K for Pro). When `FAL_KEY` is set, fal also runs the output NSFW check (then fal.ai must be listed in the consent sheet first); otherwise xAI's own moderation verdict is the output check. Either way it fails closed.
 - The server picks the model per operation (`XAI_IMAGE_MODEL` / `XAI_EDIT_MODEL` override it), so the provider or model can change without an app release.
 
 ## 6. Success metrics

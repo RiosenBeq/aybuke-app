@@ -54822,6 +54822,76 @@
         }
       }
     },
+    "Our safety check couldn't run, so this result wasn't shown. Your credit was refunded." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unsere Sicherheitsprüfung konnte nicht laufen, deshalb zeigen wir dieses Ergebnis nicht. Dein Credit wurde erstattet."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nuestra comprobación de seguridad no pudo hacerse, así que no mostramos este resultado. Te devolvemos el crédito."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notre contrôle de sécurité n’a pas pu se faire, donc ce résultat n’est pas affiché. Ton crédit a été remboursé."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pemeriksaan keamanan kami tidak bisa berjalan, jadi hasil ini tidak ditampilkan. Kreditmu sudah dikembalikan."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Il nostro controllo di sicurezza non è riuscito, quindi questo risultato non viene mostrato. Il tuo credito è stato rimborsato."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "安全チェックを実行できなかったため、この結果は表示されません。クレジットは返却されました。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "안전 검사를 할 수 없어서 이 결과는 보여 드리지 않아요. 크레딧은 환불됐어요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nossa verificação de segurança não pôde ser feita, então este resultado não foi mostrado. Seu crédito foi devolvido."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нашу проверку безопасности не удалось выполнить, поэтому мы не показываем этот результат. Кредит возвращён."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Güvenlik kontrolümüz çalışamadı, bu yüzden bu sonuç gösterilmedi. Kredin iade edildi."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "我们的安全检查未能完成，因此不会显示此结果。你的点数已退还。"
+          }
+        }
+      }
+    },
     "Our servers: your AI jobs and credits" : {
       "localizations" : {
         "de" : {

@@ -1317,6 +1317,8 @@ final class AppModel {
         "retry_unavailable": String(localized: "This result can't be retried for free anymore."),
         "too_large": String(localized: "That photo is too large. Try a smaller one."),
         "content_blocked": String(localized: "This was blocked by our safety filters. Your credit was refunded."),
+        // The output check fails closed: no verdict, no result.
+        "safety_check_failed": String(localized: "Our safety check couldn't run, so this result wasn't shown. Your credit was refunded."),
         "misconfigured": String(localized: "AI features aren't configured yet."),
         "internal": String(localized: "Something went wrong. Please try again."),
     ]
