@@ -35,27 +35,27 @@ declare
   j uuid := gen_random_uuid();
   fresh uuid := gen_random_uuid();
 begin
-  perform public.refresh_wallet(u, false);
+  perform public.grant_pack(u, 3, 'tx-unclaimed-2');
   insert into public.jobs (id, user_id, operation, endpoint, cost) values (j, u, 'magic_edit', 'test', 1);
   insert into public.jobs (id, user_id, operation, endpoint, cost) values (fresh, u, 'magic_edit', 'test', 1);
-  perform public.reserve_credits(u, false, 1, j);
-  perform public.reserve_credits(u, false, 1, fresh);
+  perform public.reserve_credits(u, 1, j);
+  perform public.reserve_credits(u, 1, fresh);
   update public.jobs set status = 'completed', outputs = '[{"base64":"AAAA"}]', updated_at = now() - interval '61 minutes'
    where id = j;
   update public.jobs set status = 'completed', outputs = '[{"base64":"BBBB"}]', updated_at = now() - interval '10 minutes'
    where id = fresh;
-  assert (select daily from public.credit_wallets where user_id = u) = 1, 'two credits are held';
+  assert (select purchased from public.credit_wallets where user_id = u) = 1, 'two credits are held';
 
   perform public.sweep_jobs();
   assert (select status from public.jobs where id = j) = 'failed', 'the undelivered job fails';
   assert (select error_code from public.jobs where id = j) = 'undelivered';
   assert (select outputs from public.jobs where id = j) is null, 'its results are deleted';
-  assert (select daily from public.credit_wallets where user_id = u) = 2, 'and its credit comes back';
+  assert (select purchased from public.credit_wallets where user_id = u) = 2, 'and its credit comes back';
   assert (select outputs from public.jobs where id = fresh) is not null, 'a result inside its hour waits';
 
   perform public.sweep_jobs();
   assert (select count(*) from public.credit_ledger where job_id = j and kind = 'release') = 1, 'refunded once';
-  assert (select daily from public.credit_wallets where user_id = u) = 2, 'a second sweep changes nothing';
+  assert (select purchased from public.credit_wallets where user_id = u) = 2, 'a second sweep changes nothing';
 end $$;
 
 -- 3. Delivered but never confirmed: refunded once a day per user at most.
@@ -66,12 +66,12 @@ declare
   second_job uuid := gen_random_uuid();
   confirmed uuid := gen_random_uuid();
 begin
-  perform public.refresh_wallet(u, false);
+  perform public.grant_pack(u, 3, 'tx-unclaimed-3');
   insert into public.jobs (id, user_id, operation, endpoint, cost) values
     (first_job, u, 'magic_edit', 'test', 1), (second_job, u, 'magic_edit', 'test', 1), (confirmed, u, 'enhance', 'test', 1);
-  perform public.reserve_credits(u, false, 1, first_job);
-  perform public.reserve_credits(u, false, 1, second_job);
-  perform public.reserve_credits(u, false, 1, confirmed);
+  perform public.reserve_credits(u, 1, first_job);
+  perform public.reserve_credits(u, 1, second_job);
+  perform public.reserve_credits(u, 1, confirmed);
   update public.jobs
      set status = 'completed', outputs = '[{"base64":"AAAA"}]', delivered_at = now() - interval '2 hours',
          updated_at = now() - interval '2 hours'
@@ -80,7 +80,7 @@ begin
   update public.jobs set status = 'completed', outputs = null, delivered_at = now() - interval '2 hours',
          updated_at = now() - interval '2 hours'
    where id = confirmed;
-  assert (select daily from public.credit_wallets where user_id = u) = 0, 'three credits are held';
+  assert (select purchased from public.credit_wallets where user_id = u) = 0, 'three credits are held';
 
   perform public.sweep_jobs();
   assert (select count(*) from public.jobs where id in (first_job, second_job) and error_code = 'unconfirmed') = 1,
@@ -89,7 +89,7 @@ begin
     'the other one stays paid';
   assert (select count(*) from public.jobs where id in (first_job, second_job) and outputs is not null) = 0,
     'both are deleted after the hour';
-  assert (select daily from public.credit_wallets where user_id = u) = 1, 'exactly one credit comes back';
+  assert (select purchased from public.credit_wallets where user_id = u) = 1, 'exactly one credit comes back';
   assert (select status from public.jobs where id = confirmed) = 'completed', 'a confirmed download stays paid';
   assert (select count(*) from public.credit_ledger where job_id = confirmed and kind = 'release') = 0;
 end $$;
@@ -112,11 +112,11 @@ begin
   insert into public.jobs (id, user_id, operation, endpoint, cost) values
     (running, u, 'magic_edit', 'test', 1), (unreceived, u, 'magic_edit', 'test', 1), (received, u, 'magic_edit', 'test', 1),
     (lost, u, 'magic_edit', 'test', 1), (lost_again, u, 'magic_edit', 'test', 1);
-  perform public.reserve_credits(u, false, 1, running);
-  perform public.reserve_credits(u, false, 1, unreceived);
-  perform public.reserve_credits(u, false, 1, received);
-  perform public.reserve_credits(u, false, 1, lost);
-  perform public.reserve_credits(u, false, 1, lost_again);
+  perform public.reserve_credits(u, 1, running);
+  perform public.reserve_credits(u, 1, unreceived);
+  perform public.reserve_credits(u, 1, received);
+  perform public.reserve_credits(u, 1, lost);
+  perform public.reserve_credits(u, 1, lost_again);
   update public.jobs set status = 'processing' where id = running;
   update public.jobs set status = 'completed', outputs = '[{"base64":"AAAA"}]'
    where id in (unreceived, received, lost, lost_again);
@@ -178,7 +178,7 @@ begin
   update public.jobs set retried = true where id = original;
   insert into public.jobs (id, user_id, operation, endpoint, cost, status, retry_of)
     values (retry, u, 'magic_edit', 'test', 0, 'processing', original);
-  perform public.reserve_credits(u, false, 1, j);
+  perform public.reserve_credits(u, 1, j);
   select daily + subscription + purchased into before from public.credit_wallets where user_id = u;
 
   assert public.fail_job(j, 'provider_failed', 'This creation failed. Your credit was refunded.'), 'a running job fails';

@@ -4,104 +4,204 @@
 
 insert into auth.users (id) values
   ('00000000-0000-0000-0000-000000000001'),
-  ('00000000-0000-0000-0000-000000000002');
+  ('00000000-0000-0000-0000-000000000002'),
+  ('00000000-0000-0000-0000-000000000005'),
+  ('00000000-0000-0000-0000-000000000006');
 
--- 1. Free users start with 3 daily credits; holds spend them; insufficient balance raises.
+-- 1. The policy: the numbers, a pinned search_path, service role only.
 do $$
 declare
-  u uuid := '00000000-0000-0000-0000-000000000001';
-  j1 uuid := gen_random_uuid();
-  left_after int;
-  raised boolean := false;
+  pol record;
 begin
-  insert into public.jobs (id, user_id, operation, endpoint, cost) values (j1, u, 'magic_edit', 'test', 2);
-  left_after := public.reserve_credits(u, false, 2, j1);
-  assert left_after = 1, format('expected 1 left, got %s', left_after);
-  begin
-    perform public.reserve_credits(u, false, 2, gen_random_uuid());
-  exception when others then
-    raised := sqlerrm like '%INSUFFICIENT_CREDITS%';
-  end;
-  assert raised, 'expected INSUFFICIENT_CREDITS';
-
-  -- 2. Releasing refunds exactly once.
-  assert public.release_credits(j1) = 3, 'release should restore 3';
-  assert public.release_credits(j1) = 3, 'second release must be a no-op';
-  assert (select count(*) from public.credit_ledger where job_id = j1 and kind = 'release') = 1;
+  select * into pol from public.credit_policy();
+  assert pol.free_daily = 2 and pol.pro_monthly = 80 and pol.pro_rollover_cap = 160, format('policy %s', row_to_json(pol));
+  assert pol.trial_credits = 20 and pol.free_retries_daily = 3, format('policy %s', row_to_json(pol));
+  assert (select proconfig::text from pg_proc where oid = 'public.credit_policy()'::regprocedure) like '%search_path=%',
+    'credit_policy() pins its search_path (Security Advisor)';
+  assert not has_function_privilege('anon', 'public.credit_policy()', 'execute'), 'anon cannot read the limits';
+  assert not has_function_privilege('authenticated', 'public.credit_policy()', 'execute'), 'nor can users';
 end $$;
 
--- 3. Packs are granted once per Apple transaction id, even across users.
+-- 2. Free credits belong to the verified App Store install, not to the account.
 do $$
 declare
-  u uuid := '00000000-0000-0000-0000-000000000001';
-  other uuid := '00000000-0000-0000-0000-000000000002';
+  a uuid := '00000000-0000-0000-0000-000000000001';
+  b uuid := '00000000-0000-0000-0000-000000000002';
+  state jsonb;
+  admitted jsonb;
 begin
-  assert public.grant_pack(u, 30, 'apple-tx-1') = 33, 'pack should add 30';
-  assert public.grant_pack(u, 30, 'apple-tx-1') = 33, 'redelivery must not double-grant';
-  assert public.grant_pack(other, 30, 'apple-tx-1') = 3, 'another user cannot replay the transaction';
+  state := public.wallet_state(a);
+  assert (state->>'credits_remaining')::int = 0 and state->>'free_credits' = 'unverified',
+    format('no AppTransaction, no free credits: %s', state);
+  assert (state->'policy'->>'free_daily')::int = 2 and (state->'policy'->>'trial_credits')::int = 20, 'policy numbers ride along';
+
+  state := public.wallet_state(a, 'atid-shared', 'verified', 'Sandbox');
+  assert (state->>'credits_remaining')::int = 2 and state->>'free_credits' = 'ok', format('a verified install: %s', state);
+
+  admitted := public.admit_job(a, 'magic_edit', 'test', p_input_images => 1,
+                               p_app_transaction_id => 'atid-shared', p_install_status => 'verified');
+  assert (admitted->>'ok')::boolean and (admitted->>'credits_remaining')::int = 1, format('first job: %s', admitted);
+  assert (select free from public.jobs where id = (admitted->>'job_id')::uuid), 'paid with free credits';
+  assert (select install_key from public.jobs where id = (admitted->>'job_id')::uuid) is not null, 'the job names its install';
+
+  -- A second anonymous account made by the same Apple Account shares the allowance.
+  state := public.wallet_state(b, 'atid-shared', 'verified', 'Sandbox');
+  assert (state->>'credits_remaining')::int = 1, format('shared allowance: %s', state);
+  admitted := public.admit_job(b, 'text_to_image', 'test', p_app_transaction_id => 'atid-shared', p_install_status => 'verified');
+  assert (admitted->>'ok')::boolean and (admitted->>'credits_remaining')::int = 0, format('second account: %s', admitted);
+  admitted := public.admit_job(a, 'text_to_image', 'test', p_app_transaction_id => 'atid-shared', p_install_status => 'verified');
+  assert admitted->>'code' = 'insufficient_credits' and (admitted->>'status')::int = 402, format('used up: %s', admitted);
+  assert (select count(*) from public.jobs where user_id = a) = 1, 'a refused job is never booked';
+
+  -- Another Apple Account has its own.
+  state := public.wallet_state(b, 'atid-other', 'verified', 'Production');
+  assert (state->>'credits_remaining')::int = 2, 'another install has its own allowance';
+
+  -- The raw id is never stored; the key is a salted hash.
+  assert not exists (select 1 from private.app_installs where key like '%atid%'), 'no raw appTransactionId';
+  assert (select length(key) from private.app_installs limit 1) = 64, 'SHA-256 hex';
 end $$;
 
--- 4. Pro: monthly allowance, spending order daily → subscription → purchased, exact refund.
+-- 3. Without a valid AppTransaction there are no free credits, but packs work.
 do $$
 declare
-  u uuid := '00000000-0000-0000-0000-000000000001';
+  u uuid := '00000000-0000-0000-0000-000000000005';
+  admitted jsonb;
+begin
+  admitted := public.admit_job(u, 'magic_edit', 'test');
+  assert admitted->>'code' = 'app_transaction_required' and (admitted->>'status')::int = 428, format('missing: %s', admitted);
+  admitted := public.admit_job(u, 'magic_edit', 'test', p_install_status => 'invalid');
+  assert admitted->>'code' = 'app_transaction_invalid', format('invalid: %s', admitted);
+  assert public.grant_pack(u, 30, 'apple-tx-1') = 30, 'pack adds 30';
+  assert public.grant_pack(u, 30, 'apple-tx-1') = 30, 'redelivery must not double-grant';
+  assert public.grant_pack('00000000-0000-0000-0000-000000000006', 30, 'apple-tx-1') = 0, 'another user cannot replay it';
+  admitted := public.admit_job(u, 'magic_edit', 'test', p_install_status => 'invalid');
+  assert (admitted->>'ok')::boolean and (admitted->>'credits_remaining')::int = 29, format('paid credits still work: %s', admitted);
+  assert not (select free from public.jobs where id = (admitted->>'job_id')::uuid), 'a paid job';
+  -- A pack bought with a verified install reports today's free credits too.
+  assert public.grant_pack(u, 100, 'apple-tx-2', 'atid-five', 'verified', 'Sandbox') = 131, 'pack plus free credits';
+end $$;
+
+-- 4. Refunds go back exactly where they came from, once; free credits refill daily and never pile up.
+do $$
+declare
+  u uuid := '00000000-0000-0000-0000-000000000005';
   j uuid := gen_random_uuid();
-  w public.credit_wallets;
+  v_key text := private.keyed_hash('app_transaction', 'atid-five');
   hold public.credit_ledger;
 begin
-  w := public.refresh_wallet(u, true);
-  assert w.subscription = 100 and w.daily = 3 and w.purchased = 30, format('unexpected wallet %s', row_to_json(w));
-  insert into public.jobs (id, user_id, operation, endpoint, cost) values (j, u, 'text_to_image', 'test', 105);
-  assert public.reserve_credits(u, true, 105, j) = 28;
+  -- 2 free + 129 purchased: a 4-image job spends the free ones first.
+  assert public.reserve_credits(u, 4, j, v_key) = 127, 'reserve returns the balance';
   select * into hold from public.credit_ledger where job_id = j and kind = 'hold';
-  assert hold.daily = -3 and hold.subscription = -100 and hold.purchased = -2, format('bad split %s', row_to_json(hold));
-  assert public.release_credits(j) = 133;
+  assert hold.daily = -2 and hold.subscription = 0 and hold.purchased = -2 and hold.install_key = v_key, format('bad split %s', row_to_json(hold));
+  assert public.release_credits(j) = 131, 'release restores both buckets';
+  assert public.release_credits(j) = 131, 'a second release is a no-op';
+  assert (select count(*) from public.credit_ledger where job_id = j and kind = 'release') = 1;
+
+  update private.app_installs set daily = 1, daily_period = (now() at time zone 'utc')::date - 3 where key = v_key;
+  assert (public.wallet_state(u, 'atid-five', 'verified', 'Sandbox')->>'credits_remaining')::int = 131,
+    'a new day starts over at 2, never more';
+  -- A refund after the refill is capped at the allowance.
+  j := gen_random_uuid();
+  perform public.reserve_credits(u, 1, j, v_key);
+  update private.app_installs set daily = 2 where key = v_key;
+  perform public.release_credits(j);
+  assert (select daily from private.app_installs where key = v_key) = 2, 'refunds never exceed the daily allowance';
 end $$;
 
--- 5. Rollover is capped at one extra month; losing Pro expires subscription credits only.
+-- 5. Pro: the subscription's monthly credits, spent before packs, refunded exactly.
 do $$
 declare
   u uuid := '00000000-0000-0000-0000-000000000001';
-  w public.credit_wallets;
+  j uuid := gen_random_uuid();
+  state jsonb;
+  hold public.credit_ledger;
 begin
-  update public.credit_wallets set subscription_period_start = now() - interval '1 month 2 days' where user_id = u;
-  w := public.refresh_wallet(u, true);
-  assert w.subscription = 200, format('expected 200 after one month, got %s', w.subscription);
-  update public.credit_wallets set subscription_period_start = now() - interval '3 months 1 day' where user_id = u;
-  w := public.refresh_wallet(u, true);
-  assert w.subscription = 200, 'rollover must stay capped at 200';
-  w := public.refresh_wallet(u, false);
-  assert w.subscription = 0 and w.subscription_period_start is null, 'subscription credits expire with Pro';
-  assert w.purchased = 30, 'purchased packs never expire';
-  assert w.daily = 3, 'back on the free daily allowance';
+  perform public.grant_pack(u, 30, 'apple-tx-pro-1');
+  insert into public.entitlements (original_transaction_id, user_id, product_id, expires_at)
+    values ('otx-1', u, 'app.glowlit.pro.monthly', now() + interval '1 month');
+  state := public.wallet_state(u, 'atid-shared', 'verified', 'Sandbox');
+  assert (state->>'credits_remaining')::int = 110 and (state->>'is_pro')::boolean and state->>'free_credits' = 'pro',
+    format('80 a month plus the pack, no free daily credits on Pro: %s', state);
+  assert (select credits from public.entitlements where original_transaction_id = 'otx-1') = 80;
+  assert public.reserve_credits(u, 85, j, private.keyed_hash('app_transaction', 'atid-shared')) = 25;
+  select * into hold from public.credit_ledger where job_id = j and kind = 'hold';
+  assert hold.daily = 0 and hold.subscription = -80 and hold.purchased = -5 and hold.entitlement_id = 'otx-1',
+    format('bad split %s', row_to_json(hold));
+  assert public.release_credits(j) = 110;
 end $$;
 
--- 6. Daily credits refill once per UTC day and never accumulate.
+-- 6. Rollover is capped at 160; when Pro ends, subscription credits end and packs stay.
+do $$
+declare
+  u uuid := '00000000-0000-0000-0000-000000000001';
+begin
+  update public.entitlements set credits_period_start = now() - interval '1 month 2 days' where original_transaction_id = 'otx-1';
+  perform public.wallet_state(u);
+  assert (select credits from public.entitlements where original_transaction_id = 'otx-1') = 160, 'one month of rollover';
+  update public.entitlements set credits_period_start = now() - interval '3 months 1 day' where original_transaction_id = 'otx-1';
+  perform public.wallet_state(u);
+  assert (select credits from public.entitlements where original_transaction_id = 'otx-1') = 160, 'capped at 160';
+  update public.entitlements set expires_at = now() - interval '1 minute' where original_transaction_id = 'otx-1';
+  assert (public.wallet_state(u)->>'credits_remaining')::int = 30, 'only the pack is left';
+  assert (select credits from public.entitlements where original_transaction_id = 'otx-1') = 0, 'subscription credits expire';
+end $$;
+
+-- 7. The yearly plan's free trial: 20 credits once, the full month from the first paid period.
+do $$
+declare
+  u uuid := '00000000-0000-0000-0000-000000000006';
+  e public.entitlements;
+begin
+  insert into public.entitlements (original_transaction_id, user_id, product_id, expires_at, is_trial)
+    values ('otx-trial', u, 'app.glowlit.pro.yearly', now() + interval '7 days', true);
+  assert (public.wallet_state(u)->>'credits_remaining')::int = 20, 'trial week: 20';
+  perform public.wallet_state(u);
+  assert (select credits from public.entitlements where original_transaction_id = 'otx-trial') = 20, 'granted once';
+  -- The trial converts: Apple's renewal is no longer a free trial.
+  update public.entitlements set is_trial = false, expires_at = now() + interval '1 year',
+         credits = 5 where original_transaction_id = 'otx-trial';
+  select * into e from public.entitlements where original_transaction_id = 'otx-trial';
+  assert e.trial_granted and e.credits_trial, 'still in the trial period until the paid one is seen';
+  assert (public.wallet_state(u)->>'credits_remaining')::int = 85, 'the first paid period brings the full 80';
+  select * into e from public.entitlements where original_transaction_id = 'otx-trial';
+  assert not e.credits_trial and e.credits_period_start > now() - interval '1 minute';
+  -- A trial flag seen again later never grants trial credits twice.
+  update public.entitlements set is_trial = true where original_transaction_id = 'otx-trial';
+  assert (public.wallet_state(u)->>'credits_remaining')::int = 85, 'no second trial grant';
+  update public.entitlements set is_trial = false where original_transaction_id = 'otx-trial';
+end $$;
+
+-- 8. Moving a subscription to another anonymous account moves its credits; it never mints a new month.
+do $$
+declare
+  a uuid := '00000000-0000-0000-0000-000000000006';
+  b uuid := '00000000-0000-0000-0000-000000000002';
+begin
+  update public.entitlements set user_id = b where original_transaction_id = 'otx-trial';
+  assert (public.wallet_state(b)->>'credits_remaining')::int = 85, 'the credits come along';
+  update public.entitlements set user_id = a where original_transaction_id = 'otx-trial';
+  assert (public.wallet_state(a)->>'credits_remaining')::int = 85, 'and back, still 85';
+  assert (public.wallet_state(b)->>'credits_remaining')::int = 0, 'nothing left behind';
+end $$;
+
+-- 9. The sweeper fails stale jobs and refunds them to the install.
 do $$
 declare
   u uuid := '00000000-0000-0000-0000-000000000002';
-  w public.credit_wallets;
-begin
-  update public.credit_wallets set daily = 0, daily_period = (now() at time zone 'utc')::date - 3 where user_id = u;
-  w := public.refresh_wallet(u, false);
-  assert w.daily = 3, format('expected a single refill to 3, got %s', w.daily);
-end $$;
-
--- 7. The sweeper fails stale jobs and refunds them.
-do $$
-declare
-  u uuid := '00000000-0000-0000-0000-000000000002';
+  v_key text := private.keyed_hash('app_transaction', 'atid-other');
   j uuid := gen_random_uuid();
 begin
-  insert into public.jobs (id, user_id, operation, endpoint, cost, created_at)
-    values (j, u, 'enhance', 'test', 1, now() - interval '20 minutes');
-  perform public.reserve_credits(u, false, 1, j);
+  insert into public.jobs (id, user_id, operation, endpoint, cost, install_key, created_at)
+    values (j, u, 'enhance', 'test', 1, v_key, now() - interval '20 minutes');
+  perform public.reserve_credits(u, 1, j, v_key);
+  assert (select daily from private.app_installs where key = v_key) = 1;
   perform public.sweep_jobs();
   assert (select status from public.jobs where id = j) = 'failed';
-  assert (select daily from public.credit_wallets where user_id = u) = 3, 'stale job must be refunded';
+  assert (select daily from private.app_installs where key = v_key) = 2, 'stale job must be refunded';
 end $$;
 
--- 8. RLS: authenticated users only see their own rows and cannot call ledger functions.
+-- 10. RLS: users see only their own rows and can call none of the functions.
 set role authenticated;
 select set_config('request.jwt.claim.sub', '00000000-0000-0000-0000-000000000002', false);
 do $$
@@ -116,7 +216,23 @@ begin
     denied := true;
   end;
   assert denied, 'clients must not be able to grant credits';
+  denied := false;
+  begin
+    perform 1 from private.app_installs;
+  exception when insufficient_privilege then
+    denied := true;
+  end;
+  assert denied, 'the private schema is closed to clients';
 end $$;
 reset role;
+
+do $$
+begin
+  assert not has_function_privilege('authenticated', 'public.reserve_credits(uuid, int, uuid, text, boolean)', 'execute');
+  assert not has_function_privilege('anon', 'public.wallet_state(uuid, text, text, text)', 'execute');
+  assert not has_function_privilege('authenticated', 'public.job_balance(uuid, uuid)', 'execute');
+  assert not has_schema_privilege('anon', 'private', 'usage') and not has_schema_privilege('authenticated', 'private', 'usage')
+     and not has_schema_privilege('service_role', 'private', 'usage'), 'no API role can use the private schema';
+end $$;
 
 select 'all credit ledger tests passed' as result;
