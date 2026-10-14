@@ -81,7 +81,7 @@
 <h3>Content you send to cloud AI features</h3>
 <p>When you use Magic Edit, Styles, AI Enhance, Erase or Create from text, the app sends the content needed for that request to our backend, which forwards it to our AI provider. This means your photo, the mask you brushed (for Erase) and your text prompt (for Create from text and Magic Edit). Section 6 explains what happens to it.</p>
 <h3>Job records</h3>
-<p>For each cloud AI job, we keep a record with: a job ID, your anonymous user ID, the type of operation, the template ID, the name of the AI model endpoint, the credit cost, the status, any error code and message, retry flags, the provider's request ID and timestamps. Job records don't contain your photos or prompts. We also use them to apply rate limits (6 jobs per minute on the free tier and 20 with Pro).</p>
+<p>For each cloud AI job, we keep a record with: a job ID, your anonymous user ID, the type of operation, the template ID, the name of the AI model endpoint, the credit cost, the status, any error code and message, retry flags, the provider's request ID and timestamps. Job records don't contain the photo you sent or your prompt. Until you download them, they hold your results, which are deleted within 1 hour. We also use them to apply rate limits (6 jobs per minute on the free tier and 20 with Pro).</p>
 <h3>Credits</h3>
 <p>Your credit wallet (daily, subscription and purchased balances, with the related period dates) and your credit ledger (holds and refunds for each job, and credit pack grants with the Apple transaction ID).</p>
 <h3>Purchases and subscriptions</h3>

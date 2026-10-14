@@ -89,7 +89,7 @@ Magic Edit, Styles, AI Enhance, Erase veya Create from text özelliklerini kulla
 
 ### İş kayıtları
 
-Her bulut yapay zekâ işi için şu bilgileri içeren bir kayıt tutarız: iş kimliği, anonim kullanıcı kimliğiniz, işlem türü, şablon kimliği, yapay zekâ model uç noktasının adı, kredi tutarı, durum, varsa hata kodu ve mesajı, yeniden deneme işaretleri, sağlayıcının istek kimliği ve zaman bilgileri. İş kayıtları fotoğraflarınızı veya istemlerinizi içermez. Bu kayıtları kullanım sınırlarını uygulamak için de kullanırız (ücretsiz kullanımda dakikada 6, Pro ile 20 iş).
+Her bulut yapay zekâ işi için şu bilgileri içeren bir kayıt tutarız: iş kimliği, anonim kullanıcı kimliğiniz, işlem türü, şablon kimliği, yapay zekâ model uç noktasının adı, kredi tutarı, durum, varsa hata kodu ve mesajı, yeniden deneme işaretleri, sağlayıcının istek kimliği ve zaman bilgileri. İş kayıtları gönderdiğiniz fotoğrafı veya isteminizi içermez. Siz indirene kadar sonuçlarınızı tutar; sonuçlar en geç 1 saat içinde silinir. Bu kayıtları kullanım sınırlarını uygulamak için de kullanırız (ücretsiz kullanımda dakikada 6, Pro ile 20 iş).
 
 ### Krediler
 

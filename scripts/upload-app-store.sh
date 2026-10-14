@@ -19,7 +19,8 @@
 # ids, App Group and Sign in with Apple, and makes the profiles it needs, which
 # takes an Admin key. The build number defaults to a timestamp such as
 # 20261013.1530 so every upload is higher than the last; override it with
-# BUILD_NUMBER.
+# BUILD_NUMBER. scripts/check-release-config.py runs first and stops the
+# upload on release blockers (GL_PREVIEW_BUILD=1 for a preview build).
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 
@@ -36,6 +37,12 @@ case "$PLATFORM" in
   *) echo "PLATFORM must be ios or mac" >&2; exit 1 ;;
 esac
 ARCHIVE="$OUT/Glowlit.xcarchive"
+
+# Release blockers: demo mode, legal placeholders, dead website or mail
+# domains. For a deliberate preview upload (TestFlight before Supabase and
+# the company details exist) set GL_PREVIEW_BUILD=1, and never submit that
+# build for review.
+python3 "$ROOT/scripts/check-release-config.py" --online
 AUTH=(
   -allowProvisioningUpdates
   -authenticationKeyPath "$KEY_PATH"

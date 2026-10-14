@@ -31,7 +31,7 @@ Markdown rules (the in-app renderer supports a small subset): one `#` title, `##
 6. **VERBİS:** assess whether you must register as a data controller.
 7. **Representatives:** appoint an EU representative (GDPR Art. 27) and a UK representative if you have no establishment there.
 8. **Teens:** the app is designed for girls and young women, including 13–17-year-olds. Run a DPIA, keep the high-privacy defaults described in Privacy Policy §18, and answer Apple's age-rating questionnaire honestly.
-9. **App Store Connect:** make the privacy "nutrition label" match the Privacy Policy (photos, other user content, user ID and purchase history, used for app functionality, not linked to tracking), add the Privacy Policy URL, and either upload `terms-of-use` as a custom EULA or rely on Apple's standard EULA plus your Terms.
+9. **App Store Connect:** make the privacy "nutrition label" match the Privacy Policy (photos, other user content, user ID and purchase history, used for app functionality, linked to the user, not used for tracking), add the Privacy Policy URL, and either upload `terms-of-use` as a custom EULA or rely on Apple's standard EULA plus your Terms.
 10. **Publish stable URLs** (your own domain or the GitHub copies) and keep old versions for your records.
 11. **Keep the operational promises:** review reports, answer appeals with a human, delete job rows after 30 days and outputs after 1 hour (`sweep_jobs` with pg_cron), and keep server logs ≤ 90 days.
 
@@ -51,6 +51,6 @@ Bu klasör, Glowlit'in yasal metinlerinin İngilizce (`en/`) ve Türkçe (`tr/`)
 6. **VERBİS:** veri sorumluları siciline kayıt yükümlülüğünüzü değerlendirin.
 7. **Temsilciler:** AB'de veya Birleşik Krallık'ta yerleşiminiz yoksa GDPR md. 27 kapsamında AB temsilcisi ve Birleşik Krallık temsilcisi atayın.
 8. **Gençler:** Uygulama 13–17 yaş arası dahil kızlar ve genç kadınlar için tasarlandı. Veri koruma etki değerlendirmesi (DPIA) yapın, Gizlilik Politikası §18'deki yüksek gizlilik varsayılanlarını koruyun ve Apple'ın yaş derecelendirme anketini dürüstçe yanıtlayın.
-9. **App Store Connect:** Gizlilik etiketini politikayla uyumlu doldurun (fotoğraflar, diğer kullanıcı içeriği, kullanıcı kimliği ve satın alma geçmişi; uygulama işlevi için, takip yok). Gizlilik Politikası adresini ekleyin. Kullanım Koşulları'nı özel EULA olarak yükleyin ya da Apple'ın standart EULA'sını kullanın.
+9. **App Store Connect:** Gizlilik etiketini politikayla uyumlu doldurun (fotoğraflar, diğer kullanıcı içeriği, kullanıcı kimliği ve satın alma geçmişi; uygulama işlevi için, kullanıcıyla ilişkili, takip için kullanılmaz). Gizlilik Politikası adresini ekleyin. Kullanım Koşulları'nı özel EULA olarak yükleyin ya da Apple'ın standart EULA'sını kullanın.
 10. **Kalıcı adresler:** Metinleri kendi alan adınızda veya GitHub kopyalarında yayınlayın. Eski sürümleri arşivleyin.
 11. **Operasyonel taahhütler:** Bildirimleri inceleyin, itirazları bir insanın yanıtlamasını sağlayın. İş kayıtlarını 30 gün, çıktıları 1 saat sonra silen `sweep_jobs` görevini pg_cron ile çalıştırın. Sunucu kayıtlarını en fazla 90 gün saklayın.

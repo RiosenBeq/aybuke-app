@@ -89,7 +89,7 @@ When you use Magic Edit, Styles, AI Enhance, Erase or Create from text, the app 
 
 ### Job records
 
-For each cloud AI job, we keep a record with: a job ID, your anonymous user ID, the type of operation, the template ID, the name of the AI model endpoint, the credit cost, the status, any error code and message, retry flags, the provider's request ID and timestamps. Job records don't contain your photos or prompts. We also use them to apply rate limits (6 jobs per minute on the free tier and 20 with Pro).
+For each cloud AI job, we keep a record with: a job ID, your anonymous user ID, the type of operation, the template ID, the name of the AI model endpoint, the credit cost, the status, any error code and message, retry flags, the provider's request ID and timestamps. Job records don't contain the photo you sent or your prompt. Until you download them, they hold your results, which are deleted within 1 hour. We also use them to apply rate limits (6 jobs per minute on the free tier and 20 with Pro).
 
 ### Credits
 

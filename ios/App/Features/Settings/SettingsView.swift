@@ -18,7 +18,9 @@ struct SettingsView: View {
         NavigationStack {
             List {
                 membershipSection
-                accountSection
+                if app.canUseAccounts {
+                    accountSection
+                }
                 creditsSection
                 notificationsSection
                 appearanceSection
@@ -61,7 +63,12 @@ struct SettingsView: View {
                 }
                 Button("Cancel", role: .cancel) {}
             } message: {
-                Text("Deletes your creations, your anonymous account and its credits from our servers. Subscriptions are managed by Apple and must be cancelled separately.")
+                if app.canUseAccounts {
+                    Text("Deletes your creations, your anonymous account and its credits from our servers. Subscriptions are managed by Apple and must be cancelled separately.")
+                } else {
+                    // Preview builds have no server account to delete.
+                    Text("Deletes your creations and resets your AI consent on this device. Subscriptions are managed by Apple and must be cancelled separately.")
+                }
             }
         }
         .tint(Palette.accent)
@@ -370,14 +377,20 @@ struct SettingsView: View {
     }
 }
 
-/// Third-party notices required by the SIL Open Font License.
+/// Third-party notices: the Poppins font (SIL Open Font License) and the
+/// RevenueCat SDK (MIT), the app's only third-party code. Licence texts stay in English.
 struct AcknowledgementsView: View {
     private var fontLicense: String {
-        guard let url = Bundle.main.url(forResource: "Poppins-OFL", withExtension: "txt"),
-              let text = try? String(contentsOf: url, encoding: .utf8) else {
-            return String(localized: "Poppins is licensed under the SIL Open Font License 1.1.")
-        }
-        return text
+        Self.bundledText("Poppins-OFL") ?? String(localized: "Poppins is licensed under the SIL Open Font License 1.1.")
+    }
+
+    private var revenueCatLicense: String {
+        Self.bundledText("RevenueCat-LICENSE") ?? "MIT License. Copyright (c) 2024 RevenueCat, Inc."
+    }
+
+    private static func bundledText(_ name: String) -> String? {
+        guard let url = Bundle.main.url(forResource: name, withExtension: "txt") else { return nil }
+        return try? String(contentsOf: url, encoding: .utf8)
     }
 
     var body: some View {
@@ -386,6 +399,12 @@ struct AcknowledgementsView: View {
                 Text("Poppins")
                     .font(.headline)
                 Text(fontLicense)
+                    .font(.caption.monospaced())
+                    .foregroundStyle(Palette.textSecondary)
+                Text(verbatim: "RevenueCat")
+                    .font(.headline)
+                    .padding(.top, 12)
+                Text(revenueCatLicense)
                     .font(.caption.monospaced())
                     .foregroundStyle(Palette.textSecondary)
             }

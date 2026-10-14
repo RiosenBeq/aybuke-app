@@ -83,9 +83,12 @@ backend/scripts/test-db.sh
 python3 scripts/build-legal.py --check
 python3 scripts/export-core-strings.py --check
 python3 scripts/check-honest-copy.py      # no unsupported claims, device-neutral app copy (CI)
+python3 scripts/check-release-config.py   # release blockers: demo mode, legal placeholders, website URL
+                                          # (CI runs it with --report; upload-app-store.sh with --online)
 
 # Archive and upload to App Store Connect / TestFlight with an API key
 # (key file in ~/.appstoreconnect/private_keys/; ids from Users and Access → Integrations)
+# It stops on release blockers; GL_PREVIEW_BUILD=1 allows a deliberate preview (never submit it for review)
 ASC_KEY_ID=<key id> ASC_ISSUER_ID=<issuer id> scripts/upload-app-store.sh
 PLATFORM=mac ASC_KEY_ID=<key id> ASC_ISSUER_ID=<issuer id> scripts/upload-app-store.sh   # Mac App Store
 ```
@@ -96,7 +99,7 @@ Deterministic screens for QA and marketing (DEBUG builds): launch with `-GLScree
 
 ## 4. How things work
 
-- **AI modes** (`AppConfig.aiMode`): *backend* (production: Supabase Edge Functions → xAI `grok-imagine-image-2.0`, low quality for free and medium for Pro, 1k), *direct* (DEBUG only, key from `ios/Config/Secrets.xcconfig`, `GL_AI_PROVIDER = xai|fal|openai|gemini`), *demo* (no backend: simulated results stamped "DEMO PREVIEW"). Jobs are async: POST → poll → download → DELETE to confirm, which clears results server-side.
+- **AI modes** (`AppConfig.aiMode`): *backend* (production: Supabase Edge Functions → xAI `grok-imagine-image-2.0`, low quality for free and medium for Pro, 1k), *direct* (DEBUG only, key from `ios/Config/Secrets.xcconfig`, `GL_AI_PROVIDER = xai|fal|openai|gemini`), *demo* (no backend: simulated results stamped "DEMO PREVIEW"; the banner says "Preview build", accounts and reports are hidden or say they aren't on yet, and a demo build installed from the App Store turns purchases off). Jobs are async: POST → poll → download → DELETE to confirm, which clears results server-side.
 - **Gates for every AI action:** content policy (client + server, all app languages) → consent → Pro/credits. Credits are server-authoritative in production; failures are refunded exactly once.
 - **On-device tools** never need consent or credits and save without a watermark. Free cloud AI results carry a small mark; Pro removes it.
 - **Localization:** String Catalogs. In SwiftUI use literals or `LocalizedStringKey`; in models use `String(localized:)`; AppCore text is English and translated at runtime with `L10n.core(_:)`, so after changing AppCore strings run `python3 scripts/export-core-strings.py`. Add or update translations with `xcodebuild -exportLocalizations` / `-importLocalizations`. Keep placeholders, `*accent*` pairs and line breaks identical. Legal documents exist in English and Turkish only.

@@ -200,7 +200,7 @@ final class AppModel {
         case .direct(let direct):
             return "Developer mode — AI runs directly on \(direct.provider.displayName) with your key from Secrets.xcconfig. Release builds use the backend."
         case .demo:
-            return "Demo mode — AI results are simulated on device. Add an AI key (see README → “Connect an AI provider”) to see real results."
+            return String(localized: "Preview build: AI results are samples")
         }
     }
 
@@ -216,6 +216,9 @@ final class AppModel {
         await refreshServerBalance()
         syncWidgets()
         syncReminders()
+        #if !DEBUG
+        if isDemoMode { await purchases.closeForPreviewIfFromAppStore() }
+        #endif
         await purchases.loadProducts()
     }
 
@@ -262,12 +265,20 @@ final class AppModel {
         await remote?.currentUserID()
     }
 
-    /// "Report this image": sent to the backend for review; logged locally in
-    /// demo and developer mode, where there is no server.
+    /// Reports go to the backend for review; preview (demo and developer)
+    /// builds have no server to send them to.
+    var canSendReports: Bool { remote != nil }
+
+    /// Says so instead of pretending a report was kept.
+    func noteReportingUnavailable() {
+        showToast("Reporting turns on when \(Brand.name) launches. Thanks for looking out.", style: .info)
+    }
+
+    /// "Report this image": sent to the backend for review.
     func report(_ reason: ReportReason, requestID: String?) async {
         registerSetback()
         guard let remote else {
-            showToast("Thanks — your report was noted.", style: .success)
+            noteReportingUnavailable()
             return
         }
         do {

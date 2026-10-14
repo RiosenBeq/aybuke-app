@@ -135,7 +135,10 @@ private struct ReportDialog: ViewModifier {
     @Environment(AppModel.self) private var app
 
     func body(content: Content) -> some View {
-        content.confirmationDialog("Report this image", isPresented: $isPresented, titleVisibility: .visible) {
+        content.confirmationDialog("Report this image", isPresented: Binding(
+            get: { isPresented && app.canSendReports },
+            set: { isPresented = $0 }
+        ), titleVisibility: .visible) {
             ForEach(ReportReason.allCases) { reason in
                 Button(reason.title) {
                     Task { await app.report(reason, requestID: requestID) }
@@ -144,6 +147,12 @@ private struct ReportDialog: ViewModifier {
             Button("Cancel", role: .cancel) {}
         } message: {
             Text("Reports help us review results and improve our safety filters.")
+        }
+        // Preview builds can't send reports: no reasons to pick, just say so.
+        .onChange(of: isPresented) { _, shown in
+            guard shown, !app.canSendReports else { return }
+            isPresented = false
+            app.noteReportingUnavailable()
         }
     }
 }

@@ -227,7 +227,7 @@ struct PaywallView: View {
         }
         .buttonStyle(.primary)
         .disabled((selectedProduct == nil && !isScreenshotPreview) || purchases.isPurchasing
-                  || purchases.isSubscriptionPending || !purchases.canMakePayments)
+                  || purchases.isSubscriptionPending || !purchases.canBuy)
     }
 
     /// With a trial or an intro price the button stays neutral and the line
@@ -413,7 +413,12 @@ struct StoreStatusView: View {
 
     var body: some View {
         VStack(spacing: 10) {
-            if !purchases.canMakePayments {
+            if purchases.isClosedForPreview {
+                Label("Purchases open when \(Brand.name) launches. This is a preview build.", systemImage: "testtube.2")
+                    .font(.footnote.weight(.semibold))
+                    .foregroundStyle(Palette.textSecondary)
+                    .multilineTextAlignment(.center)
+            } else if !purchases.canMakePayments {
                 Label("Purchases are turned off on this device.", systemImage: "lock.fill")
                     .font(.footnote.weight(.semibold))
                     .foregroundStyle(Palette.textSecondary)
@@ -681,7 +686,7 @@ struct CreditPackList: View {
             .cardStyle(radius: 18)
         }
         .buttonStyle(.plain)
-        .disabled(purchases.isPurchasing || isPending || !purchases.canMakePayments)
+        .disabled(purchases.isPurchasing || isPending || !purchases.canBuy)
     }
 
     private func buy(_ product: Product) async {

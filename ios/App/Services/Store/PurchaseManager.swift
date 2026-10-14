@@ -52,6 +52,9 @@ final class PurchaseManager {
     /// False with Screen Time purchase restrictions or device management:
     /// the buy buttons are then turned off, Restore still works.
     private(set) var canMakePayments = true
+    /// A demo-mode build installed from the App Store: its AI only makes
+    /// samples, so it never takes real money (see `closeForPreview`).
+    private(set) var isClosedForPreview = false
     /// Waiting for approval. Kept in memory only: a decline never arrives,
     /// so the waiting state clears on the next launch.
     private(set) var pendingProductIDs: Set<String> = []
@@ -91,6 +94,9 @@ final class PurchaseManager {
         if case .failed(let message) = loadState { return message }
         return nil
     }
+
+    /// The buy buttons work (Restore and Manage always do).
+    var canBuy: Bool { canMakePayments && !isClosedForPreview }
 
     /// Both plans share one subscription group, so one waiting plan blocks both.
     var isSubscriptionPending: Bool { !pendingProductIDs.isDisjoint(with: StoreProducts.subscriptions) }
@@ -177,6 +183,14 @@ final class PurchaseManager {
         if active { pendingProductIDs.subtract(StoreProducts.subscriptions) }
         hasCheckedEntitlements = true
         if changed { onProStatusChange?(active) }
+    }
+
+    /// Turns purchases off when a demo-mode build runs from the App Store
+    /// itself. Xcode, TestFlight (sandbox) and the screenshots keep working.
+    func closeForPreviewIfFromAppStore() async {
+        guard case .verified(let transaction)? = try? await AppTransaction.shared,
+              transaction.environment == .production else { return }
+        isClosedForPreview = true
     }
 
     func isEligibleForTrial(_ product: Product) async -> Bool {
