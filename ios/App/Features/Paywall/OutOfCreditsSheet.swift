@@ -44,7 +44,9 @@ struct OutOfCreditsSheet: View {
                     }
                     refillLine
                     CreditPackList { dismiss() }
-                    Label("Free tools still work: 80s & 90s effects, Cut out, Adjust and the video editor.", systemImage: "wand.and.stars")
+                    // The whole free list, as in the credits sheet.
+                    Label("Always free: effects, Retro Cam, Cut out, Adjust, Crop, Hide faces, Text & Stickers, collages and videos.",
+                          systemImage: "gift.fill")
                         .font(.footnote)
                         .foregroundStyle(Palette.textSecondary)
                 }

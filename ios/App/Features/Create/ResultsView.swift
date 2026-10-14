@@ -41,17 +41,22 @@ struct ResultsView: View {
             }
             .tabViewStyle(.page(indexDisplayMode: images.count > 1 ? .always : .never))
 
-            if isFromImagePlayground {
-                Label("Made with Image Playground", systemImage: "apple.image.playground")
-                    .font(.footnote)
-                    .foregroundStyle(Palette.textSecondary)
-                    .padding(.horizontal, Metrics.gutter)
-            } else if let prompt, !prompt.isEmpty {
-                Text(prompt)
-                    .font(.footnote)
-                    .foregroundStyle(Palette.textSecondary)
-                    .lineLimit(2)
-                    .padding(.horizontal, Metrics.gutter)
+            // One block, so the note doesn't take the picture's room twice.
+            VStack(spacing: 0) {
+                if isFromImagePlayground {
+                    Label("Made with Image Playground", systemImage: "apple.image.playground")
+                        .font(.footnote)
+                        .foregroundStyle(Palette.textSecondary)
+                        .padding(.horizontal, Metrics.gutter)
+                } else if let prompt, !prompt.isEmpty {
+                    Text(prompt)
+                        .font(.footnote)
+                        .foregroundStyle(Palette.textSecondary)
+                        .lineLimit(2)
+                        .padding(.horizontal, Metrics.gutter)
+                }
+                savedNote
+                    .reveal(1)
             }
 
             HStack(spacing: 12) {
@@ -112,6 +117,29 @@ struct ResultsView: View {
             selection = 0
             batch = UUID()
         }
+    }
+
+    /// Create keeps every result in My Works as it arrives, so Save (to
+    /// Photos) is never the only way to keep it. A tap opens My Works.
+    private var savedNote: some View {
+        Button {
+            // The tab change plays its own haptic.
+            app.selectedTab = .library
+        } label: {
+            HStack(spacing: 4) {
+                Label("Saved to My Works", systemImage: "checkmark.circle.fill")
+                Image(systemName: "chevron.right")
+                    .font(.caption2.weight(.bold))
+                    .accessibilityHidden(true)
+            }
+            .font(.footnote.weight(.semibold))
+            .foregroundStyle(Palette.textSecondary)
+            .padding(.horizontal, 12)
+            .frame(minHeight: 44)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .accessibilityHint("Opens My Works")
     }
 
     /// Regenerate and, with more than one image, Save all.

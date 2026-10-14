@@ -52,7 +52,7 @@ private struct ToastModifier: ViewModifier {
                     }
                     .padding(.horizontal, 16)
                     .padding(.vertical, 12)
-                    .glassPanel(radius: 18)
+                    .glassPanel()
                     .padding(.horizontal, Metrics.gutter)
                     .padding(.top, 6)
                     .transition(.move(edge: .top).combined(with: .opacity))

@@ -1,5 +1,6 @@
 import SwiftUI
 import StoreKit
+import AppCore
 
 /// Honest paywall ("Fair-Price Promise", docs/03-product-spec.md):
 /// annual pre-selected with an eligibility-based free trial, monthly without
@@ -50,6 +51,9 @@ struct PaywallView: View {
 
             ScrollView {
                 VStack(spacing: 22) {
+                    if let reason {
+                        ReasonCard(reason: reason, refill: app.credits.nextFreeRefill)
+                    }
                     header
                     benefits
                     plans
@@ -149,10 +153,18 @@ struct PaywallView: View {
             Text(styled: "Your photos,\nin their *best light*", size: 30)
                 .multilineTextAlignment(.center)
                 .foregroundStyle(Palette.textPrimary)
-            Text("\(Brand.name) Pro unlocks every tool and trend.")
+            // Not "every tool": the tools on the device are free for everyone.
+            Text("\(Brand.name) Pro unlocks every look and style.")
                 .font(.subheadline)
                 .foregroundStyle(Palette.textSecondary)
+                .multilineTextAlignment(.center)
         }
+    }
+
+    /// Why the paywall opened, when she didn't open it herself: said first,
+    /// in one line, so it never feels like a surprise.
+    private var reason: PaywallReason? {
+        PaywallReason(source: source, isPro: purchases.isPro)
     }
 
     private var benefits: some View {
@@ -199,6 +211,12 @@ struct PaywallView: View {
                     .foregroundStyle(Palette.textSecondary)
                     .multilineTextAlignment(.center)
                     .padding(.top, 2)
+                // What she keeps without paying, next to what she'd pay for.
+                Label("Always free: every on-device tool and \(app.credits.policy.freeDailyAllowance) AI credits a day.",
+                      systemImage: "gift.fill")
+                    .font(.footnote.weight(.semibold))
+                    .foregroundStyle(Palette.textSecondary)
+                    .multilineTextAlignment(.center)
             }
             if !isScreenshotPreview {
                 StoreStatusView(purchases: purchases, showsSpinner: purchases.yearly == nil && purchases.monthly == nil,
@@ -422,7 +440,91 @@ struct PendingApprovalCard: View {
         }
         .padding(14)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .cardStyle(radius: 18)
+        .cardStyle()
+    }
+}
+
+/// Why the paywall is on screen, from where it was opened.
+enum PaywallReason: Equatable {
+    /// A free member used today's credits.
+    case outOfFreeCredits
+    /// A Pro look or Create style, by its name (already localized).
+    case proItem(String)
+    /// Two to four images at once in Create.
+    case moreImages
+    /// "Remove it with Pro" in the share composer.
+    case watermark
+
+    /// Nil when she opened it herself (Settings, the credits sheet) or
+    /// right after onboarding.
+    init?(source: String, isPro: Bool) {
+        if source == "out_of_credits", !isPro {
+            self = .outOfFreeCredits
+        } else if source == "create_count" {
+            self = .moreImages
+        } else if source == "share_watermark" {
+            self = .watermark
+        } else if source.hasPrefix("template_"), let template = TemplateCatalog.template(id: String(source.dropFirst("template_".count))) {
+            self = .proItem(L10n.core(template.title))
+        } else if source.hasPrefix("style_"), case let id = String(source.dropFirst("style_".count)),
+                  case let style = StyleCatalog.style(id: id), style.id == id {
+            self = .proItem(L10n.core(style.name))
+        } else {
+            return nil
+        }
+    }
+}
+
+/// The reason in one quiet card above the headline. Out of free credits it
+/// also says when they come back, so waiting is a real choice.
+private struct ReasonCard: View {
+    let reason: PaywallReason
+    let refill: Date
+
+    var body: some View {
+        HStack(alignment: .top, spacing: 12) {
+            Image(systemName: symbol)
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(Palette.ink)
+                .frame(width: 32, height: 32)
+                .background(Palette.blush, in: Circle())
+                .accessibilityHidden(true)
+            VStack(alignment: .leading, spacing: 2) {
+                title
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(Palette.textPrimary)
+                if reason == .outOfFreeCredits {
+                    Text("Free credits are back in \(Text(refill, style: .relative))")
+                        .font(.caption)
+                        .foregroundStyle(Palette.textSecondary)
+                }
+            }
+            .fixedSize(horizontal: false, vertical: true)
+            Spacer(minLength: 0)
+        }
+        .padding(14)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Palette.surface, in: .card)
+        .overlay(RoundedRectangle.card.strokeBorder(Palette.stroke, lineWidth: 1))
+        .accessibilityElement(children: .combine)
+    }
+
+    private var symbol: String {
+        switch reason {
+        case .outOfFreeCredits: return "bolt.fill"
+        case .proItem: return "crown.fill"
+        case .moreImages: return "square.grid.2x2.fill"
+        case .watermark: return "seal.fill"
+        }
+    }
+
+    private var title: Text {
+        switch reason {
+        case .outOfFreeCredits: return Text("You've used today's free credits")
+        case .proItem(let name): return Text("\(name) is part of Pro")
+        case .moreImages: return Text("Creating several images at once is part of Pro")
+        case .watermark: return Text("Pro removes the small \(Brand.name) mark from AI results")
+        }
     }
 }
 
@@ -735,7 +837,7 @@ struct CreditPackList: View {
                 .background(Palette.accent, in: .chip)
             }
             .padding(14)
-            .cardStyle(radius: 18)
+            .cardStyle()
         }
         .buttonStyle(.plain)
         .disabled(purchases.isPurchasing || isPending || !purchases.canBuy)

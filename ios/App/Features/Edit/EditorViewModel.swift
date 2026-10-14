@@ -364,7 +364,8 @@ final class EditorViewModel {
             break
         }
 
-        app.requestAccess(for: operation, requiresPro: template?.isPro ?? false) { [weak self] in
+        app.requestAccess(for: operation, requiresPro: template?.isPro ?? false,
+                          proSource: template.map { "template_\($0.id)" } ?? "pro_content") { [weak self] in
             self?.execute(job, app: app)
         }
     }

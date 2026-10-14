@@ -251,6 +251,7 @@ struct HomeView: View {
                                 .equatable()
                         }
                         .buttonStyle(.pressable)
+                        .accessibilityHint(template.lookHint(isPro: app.purchases.isPro))
                     }
                 }
                 .padding(.horizontal, Metrics.gutter)
@@ -340,18 +341,29 @@ struct HomeView: View {
 }
 
 /// Its own view, so a credit or Pro change redraws the pill, not Explore.
+/// A tap explains the number (and when it refills) before any offer.
 private struct HomeCreditPill: View {
     @Environment(AppModel.self) private var app
+    @State private var showsCredits = false
 
     var body: some View {
         CreditPill(balance: app.credits.balance, isPro: app.purchases.isPro) {
-            // Pro: Settings has the Membership and Credits sections.
-            if app.purchases.isPro {
-                app.isSettingsPresented = true
-            } else {
-                app.presentPaywall(source: "home_credits")
-            }
+            Haptics.tap()
+            showsCredits = true
         }
+        .accessibilityHint("Shows your credits and how they work")
+        .sheet(isPresented: $showsCredits) {
+            CreditsSheet()
+                .environment(app)
+                .presentationDetents([.medium, .large])
+                .presentationBackground(Palette.background)
+        }
+        #if DEBUG
+        .onAppear {
+            // `-GLScreenshotScene home -GLCreditsSheet YES`
+            if ScreenshotScene.current == .home, UserDefaults.standard.bool(forKey: "GLCreditsSheet") { showsCredits = true }
+        }
+        #endif
     }
 }
 
@@ -439,6 +451,6 @@ struct ModeBanner: View {
         }
         .padding(12)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .cardStyle(radius: 16)
+        .cardStyle()
     }
 }
