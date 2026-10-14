@@ -15,7 +15,7 @@ Legend: ✅ done in this repository · ⏳ next · 🔭 later
 - ✅ Xcode 16+ project (synchronized folder), shared scheme, StoreKit test configuration
 - ✅ `AppCore` package
   - API contract, credit wallet, catalogs, prompt builder, content policy, polling
-  - 110 unit tests (incl. crop geometry, developer-mode AI providers with xAI, the legal Markdown parser, widget/deep-link helpers, notification and rating rules, accounts, the prompt policy in every app language, Auto adjust and silence cutting), run on Linux and macOS
+  - 170 unit tests (incl. the age defaults, provenance, the look suggester, crop geometry, retro overlay maths, developer-mode AI providers with xAI, the legal Markdown parser, widget/deep-link helpers, notification and rating rules, accounts, the prompt policy in every app language, Auto adjust and silence cutting), run on Linux and macOS
 - ✅ Design system
   - Tokens: palette, type, metrics
   - Components: buttons, chips, badges, cards, aurora background, generating overlay, before/after slider, template card, toast, share sheet
@@ -32,7 +32,7 @@ Legend: ✅ done in this repository · ⏳ next · 🔭 later
   - Undo/redo, hold-to-compare, before/after slider, pinch and double-tap zoom on the canvas
   - 🔭 Zoom in Erase's brush canvas (two fingers pan and zoom, one finger paints)
   - Free "Retry" (Likeness Lock), save and share with provenance
-- ✅ Create: prompt, styles, aspect ratios, multi-image (Pro), "Surprise me", "Enhance prompt", results, report
+- ✅ Create: prompt, styles, aspect ratios, multi-image (Pro), "Surprise me", "Enhance prompt", "Inspire me" and "Make it magic" from the on-device writer, Create with Image Playground, results with a develop reveal, report
 - ✅ My Works library (SwiftData + protected files)
 - ✅ Paywall
   - Plans: annual with trial (preselected) and monthly; credit packs
@@ -80,7 +80,7 @@ Legend: ✅ done in this repository · ⏳ next · 🔭 later
   - Set `APPLE_APP_ID`
 - ✅ RevenueCat project created; public SDK key in `AppConfig.json` (observer mode, on in builds)
 - ⏳ Upload the App Store Connect in-app purchase key (.p8) in RevenueCat (owner)
-- ⏳ App Store Server Notifications V2 endpoint for refunds and revocations
+- ⏳ App Store Server Notifications V2 endpoint for refunds, revocations and Texas consent revocation (backlog `abuse-ops-reports-bans`)
 - ⏳ Turn on Sign in with Apple for the app id, enable the Apple provider in Supabase, set `APPLE_TEAM_ID` / `APPLE_SIGNIN_KEY_ID` / `APPLE_SIGNIN_PRIVATE_KEY`, and test sign-in and the merge on two devices
 - ✅ Age step with the Declared Age Range API and teen defaults (on-device only under 13, no automatic paywall under 18, guardian step in the consent sheet)
 - ⏳ Age rating questionnaire (target 13+ with the override; "Age Assurance" once shipped)
@@ -91,21 +91,23 @@ Legend: ✅ done in this repository · ⏳ next · 🔭 later
 - ⏳ Localized App Store metadata and screenshots for the app's other languages
 
 **Hardening and quality**
-- ⏳ App Attest + DeviceCheck + `appTransactionID` binding against free-credit farming
+- ⏳ App Attest + DeviceCheck + `appTransactionID` binding against free-credit farming (backlog `abuse-ops-reports-bans`)
 - ⏳ QA identity fidelity across skin tones and hair textures; red-team the safety filters and keep evidence logs
 - ⏳ Replace the template card art with real before/after thumbnails (diverse casting)
 - ✅ Backend `report` endpoint + `reports` table (12-month retention) wired to "Report this image"
-- ⏳ Ban list and an abuse inbox/review routine (1.2)
+- ⏳ Ban list and an abuse inbox/review routine (1.2) (backlog `abuse-ops-reports-bans`)
+- ⏳ Independent, fail-closed output moderation before the backend goes live (backlog `server-moderation-stack`)
+- ✅ Release guard: `scripts/check-release-config.py` stops demo-mode and placeholder builds; `scripts/check-honest-copy.py` in CI
 
 ## Phase 5 — Growth 🔭
 
 - 🔭 Likeness Lock v2: 3–5 selfie profile with an identity-similarity check before showing results
 - 🔭 Packs: Headshot pack (20 photos), Restore pack, seasonal trend packs
 - 🔭 Motion: short video versions of templates (figurine → spin, polaroid → develop)
-- 🔭 Remote template catalog with thumbnails, A/B tests and a "Trending this week" CPP feed
-- 🔭 C2PA Content Credentials (server-signed) (the optional visible "AI-edited" label has shipped)
+- 🔭 Remote template catalog with thumbnails, a kill switch, A/B tests and a "Trending this week" CPP feed (backlog `backend-ai-looks`); date-windowed seasonal looks shipped in Phase 7
+- 🔭 C2PA Content Credentials (server-signed) and an imperceptible watermark (backlog `c2pa-trustmark`; the optional visible "AI-edited" label has shipped)
 - 🔭 Webhooks or Realtime push instead of polling; push-updated Live Activities
-- 🔭 Interactive widgets (iOS 17+)
+- 🔭 Interactive widgets (iOS 17+) (backlog `widgets-interactive-accented`)
 - 🔭 Steal the look (reference photo) with Likeness Lock; one look across a whole photo dump; alternate app icons
 - 🔭 Optional iCloud sync of My Works (the user's own iCloud, never our servers)
 - 🔭 iPhone Duo adaptive layouts (12 languages and iPad shipped in Phase 6)
@@ -143,3 +145,74 @@ Legend: ✅ done in this repository · ⏳ next · 🔭 later
 - ✅ App Store screenshots in English and Turkish for iPhone 6.9" and iPad 13" (Magic Edit, trends, effects, Cover star, sharing, gallery, privacy, pricing)
 - ⏳ Refresh the README gallery with the new screens (video editor, invite card, tour)
 
+
+## Phase 7 — Feature audit: safety, honesty and free tools ✅ (14 October 2026)
+
+Seven audits (code, UX and accessibility, platform, competitors, trends, wellbeing and monetization, compliance) became a 66-item backlog; the 26 "implement-now" items shipped in three waves the same day. Research, sources and decisions → [research/2026-10-feature-audit.md](research/2026-10-feature-audit.md)
+
+**Wave 1**
+- ✅ Teen-safety prompt policy: reshaping, skin lightening and smoothing, revealing clothing and humiliation blocked in all 12 languages (client and server, shared test vectors); every Magic Edit ends with the edit guard (`people-edit-safety-policy`)
+- ✅ Date-windowed seasonal looks (Halloween, winter, Galentine's), the 80s Throwback looks, Plushie Me, Bag Charm Mini and Pet portraits (`seasonal-windows-and-trend-pack`)
+- ✅ Throwback '16, Camcorder '06 (photo and video) and Film Still effects (`retro-effects-pack-2`; 🔭 Tiny World tilt-shift still to do)
+- ✅ Honest copy everywhere, checked in CI (`honest-copy-sweep`); truthful Pro credits and packs when Pro runs out (`pro-credits-truth`); release guard and honest demo mode (`release-readiness-guard`); Ask to Buy, load errors and billed terms at the CTA (`store-flows`)
+- ✅ On-device writer for Inspire me and Make it magic (`ai-on-device-writer`); Create with Image Playground (`image-playground-free-create`); the develop reveal (`ai-reveal-moment`)
+- ✅ Save what the editor shows; Retry free keeps the paid result (`editor-save-correctness`); Crop, rotate, straighten and canvas zoom (`editor-crop-rotate-zoom`)
+
+**Wave 2**
+- ✅ AI provenance through re-edits and share paths; no watermark or AI hashtags on on-device edits (`provenance-and-watermark-integrity`)
+- ✅ Caption ideas in the share composer (`ai-share-captions`)
+- ✅ Which vibe? only between two variations, Best shot without ranks, a Feel good page (`comparison-safe-sharing-and-feel-good`)
+- ✅ No account or RevenueCat until a cloud job or purchase; complete deletion (`deferred-identity-and-clean-delete`)
+- ✅ Neutral age step with Declared Age Range; on-device only under 13; no automatic paywall under 18; guardian step (`age-assurance-teen-defaults`)
+- ✅ Hide faces (`hide-faces`); Cut out with subject picking, backgrounds and stickers (`cutout-backdrops-subject-stickers`)
+- ✅ Ideas for this photo and Surprise me in the editor (`ai-smart-suggestions`)
+
+**Wave 3**
+- ✅ Video editor: progress and Cancel, background protection, discard prompt, accessible trim (`video-editor-robustness`)
+- ✅ Consent, onboarding and pack sheets readable at every text size; equal-weight consent; versioned consent record (`consent-sheet-and-ax-layouts`)
+- ✅ First run ends with a real creation before the paywall and tour (`onboarding-first-success`)
+- ✅ Notifications outside nights and school hours, no prompts on the Lock Screen, free non-makeup push pool (`notifications-lockscreen-privacy`)
+- ✅ ImageIO decoding, memory handling, lock-safe files, SwiftData recovery, offline note, one iPad window (`durability-memory-offline`)
+- ✅ VoiceOver, keyboard, Reduce Motion, 44 pt targets, plurals (`a11y-core`)
+- ⏳ Translate the ~360 new strings (catalogs synced, other App Store locales follow the en-US text)
+
+## Later backlog from the October 2026 audit
+
+🔭 Ranked "later" items from the audit. Backend = needs the live Supabase backend.
+
+| Id | Item | Why | Backend |
+|---|---|---|---|
+| `retro-camera-photo-booth` | Retro cam with live effects + Photo Booth (4-shot countdown, four-cut and strip layouts) | Strongest teen trend that needs no server (Dazz Cam, 1998 Cam, Huji, Korean four-cut booths); first after this round | No |
+| `app-intents-shortcuts` | App Intents and App Shortcuts for the free tools (Siri, Spotlight, Action button) | Surfaces the free tools system-wide; today only the controls use App Intents | No |
+| `share-and-photos-extensions` | "Edit in Glowlit" share extension and a Photos editing extension | Meets her where her photos are; needs new targets and a shared image package | No |
+| `tipkit-and-short-tour` | TipKit tips; a 3-step tour instead of 7 | Hold to compare, Retry free and the widget are hard to discover | No |
+| `full-res-export-heic-hdr` | Full-resolution re-render on Save; HEIC; HDR-preserving Adjust | Photos open at 2048 px, so a 48 MP RAW exports at about 3 MP | No |
+| `cloud-erase-enhance-compositing` | Composite cloud Erase inside the mask; blend Enhance detail into the original | xAI returns a regenerated 1k frame, so areas outside the brush can change | Yes |
+| `cloud-job-resume-and-push` | Resume cloud jobs after suspend or kill; push-updated Live Activity with tap and Cancel | Jobs the server finishes and charges are lost on suspend | Yes |
+| `library-bulk-trash` | My Works multi-select, 30-day Recently deleted, stored originals for Before/After, editor drafts | Deletes are permanent and paid results aren't auto-saved | No |
+| `create-results-polish` | Save all, Regenerate, recent prompts and drafts; localized prompt enhancement | Four Pro variations take four saves; Enhance prompt adds English cues | No |
+| `collage-carousel-scrapbook` | Photo dump and seamless carousel, scrapbook, photocard, Fit Check and movie poster formats | SCRL is #11 in Photo & Video; every rival has collages | No |
+| `text-stickers-doodles` | Text, bundled stickers and PencilKit doodles | Every mass-market rival has an overlay layer | No |
+| `batch-and-recipes` | Batch effects, Auto and cut-out; shareable recipes | VSCO, EPIK, Hypic and Photoroom batch-edit | No |
+| `on-device-upscale-and-eraser` | On-device HD upscale (Real-ESRGAN) and LaMa eraser with tap-to-select | Free and private Enhance and Erase; large models need on-demand download | No |
+| `widgets-interactive-accented` | Interactive and configurable widgets; iOS 26 accented and clear rendering | Widgets are static; the photo vanishes in accented mode | No |
+| `spotlight-focus-album` | Spotlight indexing, a Focus filter, an optional Glowlit album | System integration for discovery and privacy | No |
+| `live-photo-and-video-captions` | Live Photo effects, on-device video captions, 9:16 reframe, speed, mute, Hide faces for video | Video gaps against Edits, Wink and Meitu; captions were already planned | No |
+| `universal-links-try-this-look` | Universal links, a "Try this look" card with QR, in-app events | "Add Yours" chains spread the 80s trend; needs a live domain | No |
+| `store-retention-pricing-ops` | Win-back offers, Retention Messaging, regional prices, billing-issue banner | Mostly App Store Connect setup once the app record exists | No |
+| `trial-credit-cap-family-sharing` | Cap credits during the trial; Family Sharing with a smaller allowance | A trial grants 100 credits in the category with the highest refund rate | Yes |
+| `funnel-measurement` | Private funnel measurement: paywall source, peer benchmarks, anonymous counters | The spec's KPIs can't be measured today | Yes |
+| `server-moderation-stack` | Fail-closed output moderation, input nudity screening, multilingual classifier | Output checks pass by default without `FAL_KEY`; must ship before launch | Yes |
+| `abuse-ops-reports-bans` | Ban list, reviewable reports, CSAM/NCII runbook with legal hold, App Attest, App Store Server Notifications, PermissionKit | Apple 1.2 and Texas consent revocation; reports have no image today | Yes |
+| `c2pa-trustmark` | Signed C2PA manifests, imperceptible watermark, a free verify page | The EU Code of Practice expects signed metadata plus a watermark | Yes |
+| `storefront-compliance` | India and Korea visible labels, Brazil ECA Digital, Russia decision, DPIA, red-team safety case, BIPA review | Legal decisions that need counsel and the owner | No |
+| `subject-consent-step` | Per-photo "It's me / someone else, they said yes" for cloud edits | A single classmate's photo gets no prompt today | Yes |
+| `backend-ai-looks` | Remote catalog with kill switch, Hair studio, Outfit vibes, two-photo looks, Chibi stickers, photoshoot packs, Collector Card, Main Character poster, Retro Cinema, Pinterest 2026 pack, Squad sets, photo-to-video presets | High trend value; needs the backend and some wire-format changes | Yes |
+| `ipad-scene-model` | Per-window SceneModel for iPad multi-window | Multi-window is off until UI state is per scene | No |
+| `a11y-dynamic-type-labels` | Dynamic Type containers, Large Content Viewer, haptics, review-prompt timing, Accessibility Nutrition Labels | Polish after the core accessibility work | No |
+| `weekly-theme-and-recaps` | Private weekly theme, opt-in Sunday recap, monthly recap card | A healthier recurring hook than streaks | No |
+| `app-clip-invite` | App Clip for invites: one free effect without installing | Growth lever; needs a live domain and a 15 MB budget | No |
+| `promo-offers-signed` | Server-signed promotional offers | Low value now; needs a signing key | Yes |
+| `translation-policy-precheck` | Translate prompts in other languages before the client policy check | Low value; server moderation is the real gate | No |
+
+Rejected in the audit (never build): celebrity likeness, beauty retouch and reshaping, feeds, likes and streaks, ratings of people, open virtual try-on and AI dance, pet-to-human and future-baby looks, dark-pattern monetization, and unsafe platform shortcuts. Reasons → [the research doc](research/2026-10-feature-audit.md#9-rejected).

@@ -6,19 +6,20 @@
 
 > Working on this repository with an AI agent (or new to it)? Start with [AGENTS.md](AGENTS.md): what the app is, where the code lives, how to build and test, the rules and what's next.
 
-- **Say it, see it:** "give me pink hair", "add soft glam makeup", "put me in a pink dress".
+- **Say it, see it:** "give me pink hair", "add soft glam makeup", "put me in a pink dress". "Ideas for this photo" suggests effects, looks and edits that fit the picture (worked out on the device), and **Surprise me** tries free effects for you.
 - **One-tap looks:** 35+ trends such as Doll Box, Y2K Digicam, 80s Studio Portrait, Plushie Me, Fairy Princess and pet portraits, plus seasonal looks (Halloween, winter, Galentine's) promoted on Home in season.
-- **Dream it, create it:** turn any idea into art with 14 styles, from Pastel Dream and Kawaii to Watercolor.
+- **Dream it, create it:** turn any idea into art with 14 styles, from Pastel Dream and Kawaii to Watercolor. With Apple Intelligence, **Inspire me** and **Make it magic** write ideas and better prompts on the device, and **Create with Image Playground** makes pictures with Apple's own image maker on supported devices. New results "develop" like an instant photo.
 - **Retro effects:** free on-device effects from the 80s to the 2010s (VHS '86, Disposable '98, Kira Kira, Digicam '04, Instant '82, Glamour '92, Neon '84, Throwback '16, Camcorder '06 and Film Still) with an optional date stamp, border, letterbox or camcorder display, one-tap **Auto** for light and colour, and RAW photos developed automatically with the best settings.
 - **Simple video editing:** auto-cut the silences (a jump cut), add a retro effect, trim, then save to Photos or share. Free and on-device, with no watermark and no ending clip, for clips up to 5 minutes.
-- **Made to share:** one tap to Instagram Stories, a "Cover star" magazine cover, a photo-booth "Photo strip", before/after collages, 9:16 story cards and ready-made captions, plus a "Glow together" invite card with a QR code.
-- **Free on your iPhone:** effects, video editing, background removal, adjustments and Best shot run on-device.
+- **Made to share:** one tap to Instagram Stories, a "Cover star" magazine cover, a photo-booth "Photo strip", before/after collages, 9:16 story cards and caption ideas about the vibe (never about looks), plus a "Glow together" invite card with a QR code.
+- **Free on your device:** effects, video editing, adjustments, **Crop** (posting shapes, rotate, mirror, straighten), **Cut out** (tap to pick the subject, then a colour, gradient, blurred or photo background, or an outlined sticker), **Hide faces** (blur, pixelate or cover other people's faces before sharing) and Best shot all run on-device, with no watermark.
 - **Lives on your Home Screen:** "Today's trend" and "My glow" widgets, plus a Live Activity in the Dynamic Island and on the Lock Screen while the AI works.
-- **Things other apps don't do:** an on-device **likeness check** after every people edit, **Best shot** (finds the selfie with the best light and focus, never by looks), **Which vibe?** ("A or B?" cards with two of your creations for friends), a **kindness reminder** when friends are in the photo, and an optional visible **AI-edited** label. See [the audit](docs/07-audit-and-differentiators.md).
+- **Things other apps don't do:** an on-device **likeness check** after every people edit, **Best shot** (finds the selfie with the best light and focus, never by looks), **Which vibe?** ("A or B?" cards with two of your creations for friends, never your photo against an edit), a **kindness reminder** with a one-tap "Hide their faces" when friends are in the photo, a small **Feel good** page, and an optional visible **AI-edited** label that, like the hidden AI metadata, stays with a picture through every re-edit. See [the audit](docs/07-audit-and-differentiators.md).
 - **Speaks your language, on iPhone and iPad:** 12 languages, a universal layout with adaptive grids and readable widths, and the iOS 26 Liquid Glass tab bar and editor toolbar (with a frosted fallback on iOS 17–18).
 - **On the Mac too:** the same app on macOS 14+ (Mac Catalyst), with a menu bar (⌘N New Creation, ⌘O Open Photo…, ⌘1–⌘4 for the tabs, ⌘, Settings), drag and drop of photo files, Esc and ⌘S in the editors, and a resizable window. One purchase covers iPhone, iPad and Mac. The Live Activity and Instagram Stories sharing are iPhone and iPad only.
 - **Easy to find your way:** a 7-step guided tour after onboarding spotlights Magic Edit, the daily credits, the free tools, Create, photos and videos, the private gallery and Settings. Replay it from Settings → "Show me around".
-- **Optional account:** Sign in with Apple keeps Pro and credits on every iPhone. No sign-up wall.
+- **Safe by design:** the prompt filter blocks sexual, revealing, humiliating and body- or face-reshaping requests in every app language, and every edit keeps her face, body, skin tone and skin texture. A neutral age step comes first: under 13 gets the on-device tools only, and under 18 never sees a paywall by itself.
+- **Optional account:** none is created until the first cloud edit or purchase; Sign in with Apple keeps Pro and credits on every device. No sign-up wall, and Delete my data removes everything.
 
 | Promise | What it means |
 |---|---|
