@@ -147,6 +147,12 @@ final class VideoCaptions {
 
     func remove(_ id: UUID) {
         cues.removeAll { $0.id == id }
+        settleIfEmpty()
+    }
+
+    /// With every caption deleted, the card offers to make them again.
+    private func settleIfEmpty() {
+        if cues.isEmpty, status == .done, !heardNothing { status = .idle }
     }
 
     /// A new, empty caption at `seconds` (source time), up to 2 s long and
@@ -167,6 +173,7 @@ final class VideoCaptions {
     /// Empty captions go when the editor closes.
     func removeBlank() {
         cues.removeAll { $0.isBlank }
+        settleIfEmpty()
     }
 
     // MARK: Output

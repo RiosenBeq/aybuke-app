@@ -65,11 +65,11 @@ struct CaptionsCard: View {
                 Text("\(captions.cues.count) captions")
             }
         case .failed(let failure):
-            failureText(failure)
+            Self.failureText(failure)
         }
     }
 
-    private func failureText(_ failure: CaptionTranscriber.Failure) -> Text {
+    static func failureText(_ failure: CaptionTranscriber.Failure) -> Text {
         switch failure {
         case .noSound:
             return Text("This video has no sound. You can add captions yourself.")
@@ -97,16 +97,17 @@ struct CaptionsCard: View {
         case .working:
             Button("Cancel") { captions.cancel() }
                 .buttonStyle(CaptionPillButtonStyle())
-        case .done where !captions.cues.isEmpty:
-            HStack(spacing: 10) {
-                Button("Edit") { captions.isEditing = true }
-                    .buttonStyle(CaptionPillButtonStyle())
-                Toggle("Show captions", isOn: $captions.isOn)
-                    .labelsHidden()
-                    .tint(Palette.accent)
+        case .done, .failed:
+            // Captions from before a failed redo stay editable.
+            if !captions.cues.isEmpty {
+                HStack(spacing: 10) {
+                    Button("Edit") { captions.isEditing = true }
+                        .buttonStyle(CaptionPillButtonStyle())
+                    Toggle("Show captions", isOn: $captions.isOn)
+                        .labelsHidden()
+                        .tint(Palette.accent)
+                }
             }
-        default:
-            EmptyView()
         }
     }
 
@@ -207,7 +208,7 @@ struct CaptionsEditor: View {
                 ScrollViewReader { proxy in
                     List {
                         styleSection
-                        if model.captions.isWorking { progressSection }
+                        progressSection
                         cuesSection
                         languageSection
                     }
@@ -324,6 +325,14 @@ struct CaptionsEditor: View {
     @ViewBuilder
     private var progressSection: some View {
         let captions = model.captions
+        if case .failed(let failure) = captions.status {
+            Section {
+                Label { CaptionsCard.failureText(failure) } icon: { Image(systemName: "exclamationmark.bubble") }
+                    .font(.subheadline)
+                    .foregroundStyle(Palette.textSecondary)
+            }
+            .listRowBackground(Palette.surface)
+        }
         if case .working(let progress) = captions.status {
             Section {
                 HStack(spacing: 12) {
