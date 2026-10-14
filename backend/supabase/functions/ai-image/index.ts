@@ -360,8 +360,15 @@ async function loadJob(db: SupabaseClient, userId: string, jobId: string): Promi
   return data as JobRow;
 }
 
-/** Marks a pending job failed and refunds it (both idempotent). */
+/**
+ * Marks a pending job failed and refunds it, in one step (fail_job()), so a
+ * background task cut off halfway can't leave a failed job unrefunded.
+ */
 async function failJob(db: SupabaseClient, jobId: string, code: string, message: string): Promise<void> {
+  const { error } = await db.rpc("fail_job", { p_job: jobId, p_code: code, p_message: message });
+  if (!error) return;
+  // Before the migration that adds fail_job(): the two idempotent steps.
+  console.error("fail_job failed, falling back", error.message);
   const { data } = await db.from("jobs")
     .update({ status: "failed", error_code: code, error_message: message, updated_at: new Date().toISOString() })
     .eq("id", jobId)

@@ -159,9 +159,45 @@ begin
   assert (select count(*) from public.credit_ledger where job_id in (received, lost_again) and kind = 'release') = 0;
 end $$;
 
--- 5. Clients can't call the job functions.
+-- 5. Failing a running job refunds it in the same step, once; a failed free retry
+--    gives the retry back; a finished job can't be failed afterwards.
+do $$
+declare
+  u uuid := '00000000-0000-0000-0000-0000000000b2';
+  j uuid := gen_random_uuid();
+  original uuid := gen_random_uuid();
+  retry uuid := gen_random_uuid();
+  done uuid := gen_random_uuid();
+  before int;
+begin
+  perform public.grant_pack(u, 5, 'tx-unclaimed-5');
+  insert into public.jobs (id, user_id, operation, endpoint, cost, status) values
+    (j, u, 'magic_edit', 'test', 1, 'processing'),
+    (original, u, 'magic_edit', 'test', 1, 'completed'),
+    (done, u, 'magic_edit', 'test', 1, 'completed');
+  update public.jobs set retried = true where id = original;
+  insert into public.jobs (id, user_id, operation, endpoint, cost, status, retry_of)
+    values (retry, u, 'magic_edit', 'test', 0, 'processing', original);
+  perform public.reserve_credits(u, false, 1, j);
+  select daily + subscription + purchased into before from public.credit_wallets where user_id = u;
+
+  assert public.fail_job(j, 'provider_failed', 'This creation failed. Your credit was refunded.'), 'a running job fails';
+  assert (select status from public.jobs where id = j) = 'failed';
+  assert (select daily + subscription + purchased from public.credit_wallets where user_id = u) = before + 1, 'and is refunded';
+  assert not public.fail_job(j, 'timeout', 'again'), 'only once';
+  assert (select error_code from public.jobs where id = j) = 'provider_failed', 'the first reason stays';
+  assert (select count(*) from public.credit_ledger where job_id = j and kind = 'release') = 1;
+
+  assert public.fail_job(retry, 'provider_failed', 'x'), 'a free retry fails';
+  assert (select retried from public.jobs where id = original) = false, 'and the retry can be used again';
+  assert not public.fail_job(done, 'timeout', 'late'), 'a finished job stays finished';
+  assert (select status from public.jobs where id = done) = 'completed';
+end $$;
+
+-- 6. Clients can't call the job functions.
 do $$
 begin
+  assert not has_function_privilege('authenticated', 'public.fail_job(uuid, text, text)', 'execute');
   assert not has_function_privilege('authenticated', 'public.deliver_outputs(uuid, uuid)', 'execute');
   assert not has_function_privilege('authenticated', 'public.settle_unconfirmed(uuid)', 'execute');
   assert not has_function_privilege('authenticated', 'public.cancel_job(uuid, uuid, boolean)', 'execute');

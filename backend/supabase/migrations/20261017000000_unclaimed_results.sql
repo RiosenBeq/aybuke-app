@@ -19,7 +19,8 @@
 --     up waiting) settles it like the cleanup does.
 --
 -- release_credits() stays the only refund path, and it refunds a job at most
--- once whichever path gets there first.
+-- once whichever path gets there first. fail_job() now fails and refunds a
+-- running job in a single step.
 
 alter table public.jobs add column delivered_at timestamptz;
 
@@ -37,6 +38,30 @@ language sql security definer set search_path = public as $$
    where id = p_job and user_id = p_user and status = 'completed' and outputs is not null
   returning outputs
 $$;
+
+-- Fails a job that is still running and refunds it in one step, so a crash
+-- between the two (a background task cut off) can't leave a failed job
+-- unrefunded: the sweeper only looks at running jobs. A free retry that
+-- failed gives the retry back. False when the job had already ended.
+create or replace function public.fail_job(p_job uuid, p_code text, p_message text)
+returns boolean
+language plpgsql security definer set search_path = public as $$
+declare
+  original uuid;
+begin
+  update public.jobs
+     set status = 'failed', error_code = p_code, error_message = p_message, updated_at = now()
+   where id = p_job and status in ('queued', 'processing')
+  returning retry_of into original;
+  if not found then
+    return false;
+  end if;
+  perform public.release_credits(p_job);
+  if original is not null then
+    update public.jobs set retried = false where id = original;
+  end if;
+  return true;
+end $$;
 
 -- Deletes the results of a finished job the app never confirmed. Refunded
 -- when they never reached the app ('undelivered'), or when they did but the
@@ -144,9 +169,11 @@ begin
 end $$;
 
 revoke execute on function public.deliver_outputs(uuid, uuid) from public, anon, authenticated;
+revoke execute on function public.fail_job(uuid, text, text) from public, anon, authenticated;
 revoke execute on function public.settle_unconfirmed(uuid) from public, anon, authenticated;
 revoke execute on function public.cancel_job(uuid, uuid, boolean) from public, anon, authenticated;
 revoke execute on function public.sweep_jobs() from public, anon, authenticated;
 grant execute on function public.deliver_outputs(uuid, uuid) to service_role;
+grant execute on function public.fail_job(uuid, text, text) to service_role;
 grant execute on function public.settle_unconfirmed(uuid) to service_role;
 grant execute on function public.cancel_job(uuid, uuid, boolean) to service_role;
