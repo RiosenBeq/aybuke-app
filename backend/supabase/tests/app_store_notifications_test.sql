@@ -8,7 +8,8 @@ insert into auth.users (id) values
   ('00000000-0000-0000-0000-0000000000e3'),
   ('00000000-0000-0000-0000-0000000000e4'),
   ('00000000-0000-0000-0000-0000000000e5'),
-  ('00000000-0000-0000-0000-0000000000e6');
+  ('00000000-0000-0000-0000-0000000000e6'),
+  ('00000000-0000-0000-0000-0000000000e7');
 
 -- 1. A refunded or revoked Pro subscription stops Pro and its credits at once.
 do $$
@@ -517,6 +518,62 @@ begin
 end $$;
 reset role;
 
+-- 15. A refund and a redeem of the same transaction take one lock: while a refund
+-- is still open in another session, the redeem of that pack or period waits for it,
+-- then sees it. Needs dblink (part of the PostgreSQL server packages); skipped without.
+do $$
+declare
+  u uuid := '00000000-0000-0000-0000-0000000000e7';
+  period_end timestamptz := now() + interval '15 days';
+  conn text := format('dbname=%s user=%s host=%s port=%s', current_database(), current_user,
+                      split_part(current_setting('unix_socket_directories'), ',', 1), current_setting('port'));
+  waited boolean;
+begin
+  if not exists (select 1 from pg_available_extensions where name = 'dblink') then
+    raise notice 'dblink is not installed: the lock test (15) is skipped';
+    return;
+  end if;
+  create schema lock_test;
+  create extension dblink schema lock_test;
+  perform lock_test.dblink_connect('refund', conn);
+  perform lock_test.dblink_exec('refund', 'begin');
+  assert (select outcome from lock_test.dblink('refund', format(
+    'select public.record_app_store_notification(%L, ''REFUND'', null, ''Production'', ''refund_pack'', '
+    '''apple-pack-asn-lock'', ''apple-pack-asn-lock'', ''app.glowlit.credits.30'', null, now())',
+    '6f0a1c55-0000-4000-8000-000000000161')) as t(outcome text)) = 'no_match';
+  assert (select outcome from lock_test.dblink('refund', format(
+    'select public.record_app_store_notification(%L, ''REFUND'', null, ''Production'', ''revoke'', '
+    '''tx-asn-lock'', ''otx-asn-lock'', ''app.glowlit.pro.monthly'', %L, now())',
+    '6f0a1c55-0000-4000-8000-000000000162', period_end)) as t(outcome text)) = 'no_match';
+
+  -- Both refunds are open, not committed: the redeems wait instead of missing them.
+  perform set_config('lock_timeout', '100ms', true);
+  waited := false;
+  begin
+    perform public.grant_pack(u, 30, 'apple-pack-asn-lock');
+  exception when lock_not_available then
+    waited := true;
+  end;
+  assert waited, 'the pack redeem waits for the open refund';
+  waited := false;
+  begin
+    perform public.record_entitlement(u, 'otx-asn-lock', 'app.glowlit.pro.monthly', period_end, false, 'Production', false);
+  exception when lock_not_available then
+    waited := true;
+  end;
+  assert waited, 'the Pro redeem waits for the open refund';
+  perform set_config('lock_timeout', '0', true);
+
+  perform lock_test.dblink_exec('refund', 'commit');
+  perform lock_test.dblink_disconnect('refund');
+  assert public.grant_pack(u, 30, 'apple-pack-asn-lock') = 0, 'then sees the refund';
+  assert not exists (select 1 from public.credit_ledger where source_ref = 'apple-pack-asn-lock');
+  assert not public.record_entitlement(u, 'otx-asn-lock', 'app.glowlit.pro.monthly', period_end, false, 'Production', false);
+  assert (select revoked from public.entitlements where original_transaction_id = 'otx-asn-lock');
+  drop extension dblink;
+  drop schema lock_test;
+end $$;
+
 -- Clean up the fixtures (the ledger and wallets cascade with the users).
 delete from public.entitlements where original_transaction_id like 'otx-asn-%';
 delete from private.app_store_notifications where notification_uuid::text like '6f0a1c55-%';
@@ -528,7 +585,8 @@ delete from auth.users where id in (
   '00000000-0000-0000-0000-0000000000e3',
   '00000000-0000-0000-0000-0000000000e4',
   '00000000-0000-0000-0000-0000000000e5',
-  '00000000-0000-0000-0000-0000000000e6'
+  '00000000-0000-0000-0000-0000000000e6',
+  '00000000-0000-0000-0000-0000000000e7'
 );
 
 select 'all App Store notification tests passed' as result;

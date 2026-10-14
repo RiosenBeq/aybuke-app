@@ -36,10 +36,10 @@ git switch pink-girls-redesign
 git pull --ff-only origin pink-girls-redesign
 git merge-base --is-ancestor origin/main HEAD && echo "OK: dal main'i içeriyor" || echo "DUR: main'de dalda olmayan commit var"
 git log --oneline -5
-ls backend/supabase/functions/app-store-notifications/index.ts backend/supabase/migrations/2026102500000{0,1,2}_*.sql
+ls backend/supabase/functions/app-store-notifications/index.ts backend/supabase/migrations/2026102500000{0,1,2,3}_*.sql
 ```
 
-**Beklenen:** `ls` üç migrasyonu ve fonksiyonu listeler, "OK" satırı görünür. Hiçbir zaman `--force`, `reset --hard` ya da `rebase` kullanma.
+**Beklenen:** `ls` dört migrasyonu ve fonksiyonu listeler, "OK" satırı görünür. Hiçbir zaman `--force`, `reset --hard` ya da `rebase` kullanma.
 
 ## 2) Araçlar
 
@@ -157,12 +157,13 @@ union all select 'admit_job abuse fixes (20261024000001)', exists (select 1 from
 union all select 'public.record_entitlement() (20261024000002)', to_regprocedure('public.record_entitlement(uuid, text, text, timestamptz, boolean, text, boolean)') is not null
 union all select 'private.app_store_notifications (20261025000000)', to_regclass('private.app_store_notifications') is not null
 union all select 'public.wallet_state 5 args (20261025000001)', to_regprocedure('public.wallet_state(uuid, text, text, text, text)') is not null
-union all select 'private.refunded_transactions (20261025000002)', to_regclass('private.refunded_transactions') is not null;
+union all select 'private.refunded_transactions (20261025000002)', to_regclass('private.refunded_transactions') is not null
+union all select 'prune skip locked (20261025000003)', exists (select 1 from pg_proc p join pg_namespace n on n.oid = p.pronamespace where n.nspname = 'public' and p.proname = 'record_app_store_notification' and p.prosrc like '%skip locked%');
 select extname, extversion from pg_extension where extname in ('pg_cron', 'pg_net', 'supabase_vault') order by 1;
 SQL
 ```
 
-**Beklenen:** her satırda `t` ya da `f`. `f` olan dosyalar 5.3'teki listeye girer. Son sorgu `pg_cron`, `pg_net` ve `supabase_vault`'u göstermeli; eksik olanı Database › Extensions'tan aç. (`20261025000002` satırındaki tablo adı, dosyadaki `create table` satırıyla doğrulanmalı: `grep -n "create table" backend/supabase/migrations/20261025000002_*.sql`.)
+**Beklenen:** her satırda `t` ya da `f`. `f` olan dosyalar 5.3'teki listeye girer. Son sorgu `pg_cron`, `pg_net` ve `supabase_vault`'u göstermeli; eksik olanı Database › Extensions'tan aç.
 
 ### 5.3 Eksik migrasyonları sırayla uygula
 
@@ -183,6 +184,7 @@ apply=(
   20261025000000_app_store_notifications.sql
   20261025000001_sql_gaps.sql
   20261025000002_refunded_transactions.sql
+  20261025000003_notification_prune.sql
 )
 for f in "${apply[@]}"; do
   p="backend/supabase/migrations/$f"
@@ -261,6 +263,10 @@ psql "$SUPABASE_DB_URL" -X -v ON_ERROR_STOP=1 -c "select jobname, schedule, acti
 # Yalnızca listede OLMAYANLARI ekle (aynı adla eklemek mevcut işi değiştirir):
 psql "$SUPABASE_DB_URL" -X -v ON_ERROR_STOP=1 -c "select cron.schedule('sweep-jobs', '*/5 * * * *', 'select public.sweep_jobs()');"
 psql "$SUPABASE_DB_URL" -X -v ON_ERROR_STOP=1 -c "select cron.schedule('sweep-ad-rewards', '17 * * * *', 'select public.sweep_ad_rewards()');"
+# App Store bildirim kayıtları 30 günden sonra silinir (gizlilik metni bunu söyler)
+psql "$SUPABASE_DB_URL" -X -v ON_ERROR_STOP=1 <<'SQL'
+select cron.schedule('sweep-app-store-notifications', '23 3 * * *', $$delete from private.app_store_notifications where received_at < now() - interval '30 days'$$);
+SQL
 ```
 
 `revenuecat-deletions` işi Vault'ta `project_url` ve `service_role_key` ister; komutlar [`SUPABASE-TODO.md`](SUPABASE-TODO.md) §3'te. Service role anahtarını panelin SQL Editor'ünde ya da `read -rs` ile gir; ekrana yazdırma. RevenueCat anahtarı olmadan da lansman yapılabilir (silmeler kuyrukta bekler).

@@ -88,6 +88,8 @@ Prices, latency and alternatives: [`docs/research/tech-and-compliance.md`](../do
    ```sql
    select cron.schedule('sweep-jobs', '*/5 * * * *', 'select public.sweep_jobs()');
    select cron.schedule('sweep-ad-rewards', '17 * * * *', 'select public.sweep_ad_rewards()');
+   -- App Store notification records: 30 days, as the privacy policy says
+   select cron.schedule('sweep-app-store-notifications', '23 3 * * *', $$delete from private.app_store_notifications where received_at < now() - interval '30 days'$$);
    ```
    **And the RevenueCat deletion queue** (deletions wait in `public.pending_revenuecat_deletions` until `REVENUECAT_SECRET_KEY` is set; this retries them every hour). Enable `pg_net`, keep the project URL and the service role key in Vault once, then schedule the call:
    ```sql

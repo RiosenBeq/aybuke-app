@@ -45,7 +45,7 @@ commit;
 ```
 
 - Sıra zaman damgasına göre. Bir dosya hata verirse **dur**: hata metnini kaydet, sonraki dosyaya geçme ve dosyayı değiştirme. Uygulanmış migrasyon düzenlenmez; düzeltme yeni bir dosyada yapılır.
-- Hangi dosyaların atlanacağı §0 sonucuna göre belirlenir. On bir dosyanın tamamı, her biri kendi `begin; … commit;` bloğunda, yerel PostgreSQL 16 kopyasında hatasız uygulandı.
+- Hangi dosyaların atlanacağı §0 sonucuna göre belirlenir. On üç dosyanın tamamı, her biri kendi `begin; … commit;` bloğunda, yerel PostgreSQL 16 kopyasında hatasız uygulandı.
 
 - [ ] **1.1 `20261019000000_ad_rewards.sql`:** ödüllü reklam kredileri; tablolar `public.ad_reward_tokens` ve `public.ad_rewards`, `sweep_ad_rewards`. 1.6 bazı işlevleri değiştirir.
 - [ ] **1.2 `20261019500000_keepalive.sql`:** `public.ops_heartbeat` ve `public.keepalive()`, GitHub keep-alive iş akışının çağırdığı işlev. Eski notlara göre uygulanmış olabilir; §0 sonucuna göre atla.
@@ -58,6 +58,8 @@ commit;
 - [ ] **1.9 `20261024000002_entitlement_order.sql`:** `public.record_entitlement()`; abonelik kaydı yalnızca ileri gider.
 - [ ] **1.10 `20261025000000_app_store_notifications.sql`:** App Store Server Notifications V2 için işlenen bildirim kimlikleri (`private` tablo, RLS açık, yetki yok), `public.revoke_entitlement()` (iade ya da iptalde Pro hemen kapanır, iade geri alınırsa süre dolmadıysa geri açılır) ve kredi paketi iadesinde kredilerin geri alınması (bir kez, sıfırın altına inmez). Yalnızca service role çalıştırır.
 - [ ] **1.11 `20261025000001_sql_gaps.sql`:** `admit_job` günlük ücretsiz tekrar sayısında iade edilen tekrarları saymaz; `flag_job` kullanıcının iptal ettiği işe uyarı (strike) eklemez; `wallet_state` isteğe bağlı istemci adresini alır, böylece adrese bağlı bekleme ve engel bakiyede görünür (eski çağrı aynen çalışır).
+- [ ] **1.12 `20261025000002_refunded_transactions.sql`:** iade ve iptalleri `private.refunded_transactions` tablosunda hatırlar; iadesi gelmiş bir paket sonradan kullanılmak istenirse kredi verilmez, iadesi gelmiş Pro dönemi iptal edilmiş olarak kaydedilir. İade geri alınırsa kayıt kalkar.
+- [ ] **1.13 `20261025000003_notification_prune.sql`:** 1.12'deki eski kayıt temizliğini, aynı anda gelen iki bildirimin birbirini kilitlemeyeceği biçimde değiştirir.
 
 ## §2 Güvenlik kontrolleri
 
@@ -98,6 +100,12 @@ select cron.schedule('sweep-jobs', '*/5 * * * *', 'select public.sweep_jobs()');
 select cron.schedule('sweep-ad-rewards', '17 * * * *', 'select public.sweep_ad_rewards()');
 ```
 
+- [ ] **`sweep-app-store-notifications`** (her gün 03:23 UTC): App Store bildirim kayıtlarını 30 gün sonra siler; gizlilik metinleri bu süreyi söyler.
+
+```sql
+select cron.schedule('sweep-app-store-notifications', '23 3 * * *', $$delete from private.app_store_notifications where received_at < now() - interval '30 days'$$);
+```
+
 - [ ] **`revenuecat-deletions`** (her saat :17): bekleyen RevenueCat silmelerini gönderir. RevenueCat anahtarı yokken de çalışır; istekler kuyrukta bekler. Önce Vault'a iki sır eklenir, bir kez: `project_url` ve `service_role_key`. Değeri sahip girer; dosyaya, commit'e ya da sohbete yazılmaz. Ad zaten varsa `select name from vault.decrypted_secrets;` ile görüp yeniden ekleme.
 
 ```sql
@@ -113,7 +121,7 @@ select cron.schedule('revenuecat-deletions', '17 * * * *', $$
 $$);
 ```
 
-- [ ] **Kontrol.** `select jobname, schedule, active from cron.job;` çıktısında üç ad de `active` olarak görünmeli. Başka bir ad görürsen silmeden sahibe sor.
+- [ ] **Kontrol.** `select jobname, schedule, active from cron.job;` çıktısında dört ad da `active` olarak görünmeli. Başka bir ad görürsen silmeden sahibe sor.
 - [ ] **Keep-alive (veritabanı dışı).** `.github/workflows/keepalive.yml` her gün 07:23 UTC'de `public.keepalive()` çağırır; anon anahtarı kullanır, sır gerekmez. GitHub Actions'ta "Backend keep-alive" son çalışması yeşil olmalı. (Doğrulanamadı: çalışma geçmişi bu ortamdan görülmedi.) Public depoda 60 gün commit yoksa GitHub zamanlamayı durdurur; durursa Actions'tan yeniden etkinleştir.
 
 ## §4 Kimlik doğrulama ayarları
