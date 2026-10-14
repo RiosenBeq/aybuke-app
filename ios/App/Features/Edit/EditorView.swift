@@ -31,6 +31,8 @@ struct EditorView: View {
             VStack(spacing: 0) {
                 topBar
                     .disabled(model.isProcessing)
+                    // Typing covers it; only its Esc shortcut stays.
+                    .opacity(isTypingOverlayText ? 0 : 1)
                     .background { applyShortcut }
                 canvas
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -60,6 +62,13 @@ struct EditorView: View {
                 toolBar
                     .disabled(model.isProcessing)
             }
+            // The typing screen brings its own room above the keyboard.
+            .ignoresSafeArea(.keyboard, edges: isTypingOverlayText ? .bottom : [])
+
+            if isTypingOverlayText {
+                OverlayTextEditor(session: model.overlays)
+                    .transition(.opacity)
+            }
 
             if model.isProcessing {
                 GeneratingOverlay(title: model.processingTitle, offersReadyPing: model.isProcessingInCloud, onCancel: { model.cancelProcessing() })
@@ -72,10 +81,21 @@ struct EditorView: View {
             model.stampsDemoResults = app.isDemoMode
             #if DEBUG
             if ScreenshotScene.current == .cutout { model.startCutout(app: app) }
+            // Screenshot QA of the full-size render: -GLOverlayApply YES.
+            if ScreenshotScene.current == .textStickers, UserDefaults.standard.bool(forKey: "GLOverlayApply") {
+                try? await Task.sleep(for: .seconds(1.5))
+                await model.applyOverlays()
+            }
             #endif
             await model.checkForOtherPeople()
         }
         .animation(.snappy, value: model.showsKindnessNote)
+        .animation(.easeInOut(duration: 0.2), value: isTypingOverlayText)
+        .onChange(of: model.overlays.notice) { _, notice in
+            guard let notice else { return }
+            app.showToast(verbatim: notice, style: .error)
+            model.overlays.notice = nil
+        }
         .task {
             // Launched from a template card: run it right away (one-tap).
             if let template = launch.template {
@@ -99,9 +119,13 @@ struct EditorView: View {
     private var showsIdeas: Bool {
         guard !ideasDismissed, model.lastRequestID == nil, !model.showsKindnessNote else { return false }
         switch model.activeTool {
-        case .crop?, .erase?, .hideFaces?, .removeBackground?: return false
+        case .crop?, .erase?, .hideFaces?, .removeBackground?, .textStickers?: return false
         default: return true
         }
+    }
+
+    private var isTypingOverlayText: Bool {
+        model.activeTool == .textStickers && model.overlays.isEditingText
     }
 
     // MARK: Top bar
@@ -113,6 +137,14 @@ struct EditorView: View {
                 closeButton.background {
                     // Esc drops the crop first, then closes the editor.
                     Button("Reset") { model.resetCrop() }
+                        .keyboardShortcut(.cancelAction)
+                        .opacity(0)
+                        .accessibilityHidden(true)
+                }
+            } else if model.activeTool == .textStickers && model.overlays.hasFocus {
+                closeButton.background {
+                    // Esc finishes typing, then lets go of the picked item.
+                    Button("Done") { model.overlays.dismissFocus() }
                         .keyboardShortcut(.cancelAction)
                         .opacity(0)
                         .accessibilityHidden(true)
@@ -222,8 +254,9 @@ struct EditorView: View {
         return false
     }
 
-    /// Crop shows the whole photo under its box, so there's nothing to compare.
-    private var canCompare: Bool { model.hasChanges && model.activeTool != .crop }
+    /// Crop shows the whole photo under its box, so there's nothing to
+    /// compare; Text & Stickers needs the canvas for its own gestures.
+    private var canCompare: Bool { model.hasChanges && model.activeTool != .crop && model.activeTool != .textStickers }
 
     // MARK: Canvas
 
@@ -235,6 +268,8 @@ struct EditorView: View {
             HideFacesCanvas(image: model.displayImage, hider: model.faceHider)
         } else if model.activeTool == .removeBackground && model.cutout.isActive {
             CutoutCanvas(session: model.cutout, fallback: model.current)
+        } else if model.activeTool == .textStickers {
+            TextStickersCanvas(image: model.current, session: model.overlays)
         } else if model.activeTool == .crop, let proxy = model.cropProxy {
             CropCanvas(image: proxy, geometry: $model.crop, aspect: model.cropAspect, sourceSize: model.cropSourceSize)
                 .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
@@ -467,6 +502,10 @@ struct EditorView: View {
         case .hideFaces?:
             HideFacesPanel(hider: model.faceHider) {
                 Task { await model.applyHideFaces() }
+            }
+        case .textStickers?:
+            TextStickersPanel(session: model.overlays) {
+                Task { await model.applyOverlays() }
             }
         case .erase?:
             ErasePanel(

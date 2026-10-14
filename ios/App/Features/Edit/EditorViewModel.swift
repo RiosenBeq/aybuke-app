@@ -10,6 +10,7 @@ final class EditorViewModel {
         let operation: AIOperation?
         let before: UIImage
         var isComposite = false
+        var inheritedSourceType: DigitalSourceType?
     }
 
     let original: UIImage
@@ -20,8 +21,9 @@ final class EditorViewModel {
     /// Strongest AI operation applied so far — drives the provenance label on export.
     /// Starts at the source's own operation when re-editing an AI result.
     private(set) var appliedOperation: AIOperation?
-    /// The AI marking the opened file already carried (imported file, Image Playground).
-    let inheritedSourceType: DigitalSourceType?
+    /// The AI marking the opened file already carried (imported file, Image
+    /// Playground), or that a pasted cut-out sticker brought along.
+    private(set) var inheritedSourceType: DigitalSourceType?
     /// A cut-out was placed on another photo (IPTC "composite" on export).
     private(set) var isComposite = false
 
@@ -84,6 +86,8 @@ final class EditorViewModel {
     // Hide faces and Cut out (on-device, free)
     let faceHider = FaceHider()
     let cutout = CutoutSession()
+    // Text & Stickers (on-device, free)
+    let overlays = OverlaySession()
 
     @ObservationIgnored private var undoStack: [Step] = []
     @ObservationIgnored private var redoStack: [Step] = []
@@ -124,6 +128,13 @@ final class EditorViewModel {
             crop.angle = launch.cropAngle
         }
         if activeTool == .hideFaces { startHidingFaces(preselect: true) }
+        #if DEBUG
+        // Screenshot QA: -GLOverlayMode text|stickers|doodle picks the panel.
+        if ScreenshotScene.current == .textStickers {
+            let mode = UserDefaults.standard.string(forKey: "GLOverlayMode").flatMap(OverlaySession.Mode.init(rawValue:))
+            overlays.loadScreenshotFixture(mode: mode ?? .stickers)
+        }
+        #endif
         // Holds self weakly, so it ends at the first warning after the editor closes.
         memoryWatcher = Task { [weak self] in
             for await _ in NotificationCenter.default.notifications(named: UIApplication.didReceiveMemoryWarningNotification) {
@@ -164,6 +175,7 @@ final class EditorViewModel {
         case crop(CropGeometry, CropAspect)
         case hideFaces
         case cutout
+        case overlays
     }
 
     /// Read from the settings rather than the preview images: the first effect
@@ -182,6 +194,8 @@ final class EditorViewModel {
             return faceHider.hasSelection ? .hideFaces : nil
         case .removeBackground?:
             return cutout.isActive ? .cutout : nil
+        case .textStickers?:
+            return overlays.hasContent ? .overlays : nil
         default:
             return nil
         }
@@ -231,6 +245,7 @@ final class EditorViewModel {
         }
         if activeTool == .hideFaces { faceHider.reset() }
         if activeTool == .removeBackground { cutout.reset() }
+        if activeTool == .textStickers { overlays.reset() }
         isComparing = false
         activeTool = tool
         refreshCropProxy()
@@ -242,32 +257,41 @@ final class EditorViewModel {
 
     func undo() {
         guard let previous = undoStack.popLast() else { return }
-        redoStack.append(Step(image: current, operation: appliedOperation, before: before, isComposite: isComposite))
-        current = previous.image
-        appliedOperation = previous.operation
-        before = previous.before
-        isComposite = previous.isComposite
-        afterHistoryChange()
+        redoStack.append(currentStep)
+        restore(previous)
     }
 
     func redo() {
         guard let next = redoStack.popLast() else { return }
-        undoStack.append(Step(image: current, operation: appliedOperation, before: before, isComposite: isComposite))
-        current = next.image
-        appliedOperation = next.operation
-        before = next.before
-        isComposite = next.isComposite
+        undoStack.append(currentStep)
+        restore(next)
+    }
+
+    private var currentStep: Step {
+        Step(image: current, operation: appliedOperation, before: before, isComposite: isComposite, inheritedSourceType: inheritedSourceType)
+    }
+
+    private func restore(_ step: Step) {
+        current = step.image
+        appliedOperation = step.operation
+        before = step.before
+        isComposite = step.isComposite
+        inheritedSourceType = step.inheritedSourceType
         afterHistoryChange()
     }
 
-    private func commit(_ image: UIImage, operation: AIOperation?, before newBefore: UIImage? = nil, composite: Bool = false) {
-        undoStack.append(Step(image: current, operation: appliedOperation, before: before, isComposite: isComposite))
+    /// `marking`: AI that came in with the step's content (a pasted sticker
+    /// of an AI edit), kept like an imported file's.
+    private func commit(_ image: UIImage, operation: AIOperation?, before newBefore: UIImage? = nil, composite: Bool = false,
+                        marking: DigitalSourceType? = nil) {
+        undoStack.append(currentStep)
         // Each step holds up to two 2048-px bitmaps (about 16 MB each).
         if undoStack.count > Self.historyLimit { undoStack.removeFirst() }
         redoStack.removeAll()
         current = image
         if let newBefore { before = newBefore }
         if composite { isComposite = true }
+        if let marking { inheritedSourceType = DigitalSourceType.strongest(inheritedSourceType, marking) }
         if let operation {
             appliedOperation = AIOperation.stronger(appliedOperation, operation)
         }
@@ -331,7 +355,7 @@ final class EditorViewModel {
             }
             let size = ImageUtilities.pixelSize(of: current)
             job.mask = MaskRenderer.render(strokes, size: CGSize(width: size.width, height: size.height))
-        case .enhance, .removeBackground, .adjust, .effects, .crop, .hideFaces:
+        case .enhance, .removeBackground, .adjust, .effects, .textStickers, .crop, .hideFaces:
             break
         }
 
@@ -647,6 +671,7 @@ final class EditorViewModel {
         case .crop?: await applyCrop()
         case .hideFaces?: await applyHideFaces()
         case .cutout?: await applyCutout()
+        case .overlays?: await applyOverlays()
         case nil: break
         }
     }
@@ -812,6 +837,36 @@ final class EditorViewModel {
         let composite = cutout.isComposite
         commit(output, operation: .removeBackground, composite: composite)
         lastStepTitle = String(localized: "Cut out")
+        celebration += 1
+        Haptics.success()
+    }
+
+    // MARK: Text & Stickers (on-device, free)
+
+    /// Draws the text, stickers and doodle into the photo at full size, as
+    /// one step. Manual edits: the photo's AI marking stays as it was, except
+    /// that a pasted cut-out makes it a composite (with AI, if the sticker
+    /// came from an AI edit).
+    func applyOverlays() async {
+        guard overlays.hasContent, !isProcessing else { return }
+        let snapshot = overlays.snapshot()
+        guard !snapshot.isEmpty else {
+            overlays.reset()
+            return
+        }
+        let source = current
+        let layers = snapshot.layers
+        let doodle = snapshot.doodle
+        processingTitle = String(localized: "Adding text and stickers…")
+        isProcessingInCloud = false
+        isProcessing = true
+        let output = await Task.detached(priority: .userInitiated) {
+            OverlayRenderer.flatten(source, layers: layers, doodle: doodle)
+        }.value
+        isProcessing = false
+        overlays.reset()
+        commit(output, operation: nil, composite: snapshot.hasPasted, marking: snapshot.pastedAIMarking)
+        lastStepTitle = String(localized: "Text & Stickers")
         celebration += 1
         Haptics.success()
     }

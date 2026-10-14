@@ -39,6 +39,10 @@ enum ScreenshotScene: String, CaseIterable {
     case hideFaces
     /// Cut out with a fixture subject mask and a backdrop.
     case cutout
+    /// Text & Stickers with text, stickers and a doodle on the demo photo;
+    /// `-GLOverlayMode text|stickers|doodle` picks the panel (default stickers),
+    /// `-GLOverlayEdit YES` (text) opens typing, `-GLOverlayApply YES` applies.
+    case textStickers
     /// The video editor on a generated clip; `-GLVideoSeconds <n>` sets its
     /// length (default 8), `-GLVideoBroken YES` shows the can't-open state, and
     /// `-GLEffect`, `-GLCutSilences YES`, `-GLVideoAction save|share|close` act on it.

@@ -5,6 +5,7 @@ enum EditorTool: String, CaseIterable, Identifiable {
     case magicEdit
     case styles
     case effects
+    case textStickers
     case enhance
     case removeBackground
     case erase
@@ -19,6 +20,7 @@ enum EditorTool: String, CaseIterable, Identifiable {
         case .magicEdit: return String(localized: "Magic Edit")
         case .styles: return String(localized: "Styles")
         case .effects: return String(localized: "Effects")
+        case .textStickers: return String(localized: "Text & Stickers")
         case .enhance: return String(localized: "Enhance")
         case .removeBackground: return String(localized: "Remove BG")
         case .erase: return String(localized: "Erase")
@@ -34,6 +36,7 @@ enum EditorTool: String, CaseIterable, Identifiable {
         case .magicEdit: return String(localized: "Magic")
         case .styles: return String(localized: "Styles")
         case .effects: return String(localized: "Effects")
+        case .textStickers: return String(localized: "Stickers", comment: "Bottom bar name of the Text & Stickers tool")
         case .enhance: return String(localized: "Enhance")
         case .removeBackground: return String(localized: "Cut out")
         case .erase: return String(localized: "Erase")
@@ -48,6 +51,7 @@ enum EditorTool: String, CaseIterable, Identifiable {
         case .magicEdit: return String(localized: "Describe a change")
         case .styles: return String(localized: "One-tap looks")
         case .effects: return String(localized: "80s · Y2K · 2010s")
+        case .textStickers: return String(localized: "Text, stickers, doodles")
         case .enhance: return String(localized: "Sharpen & restore")
         case .removeBackground: return String(localized: "Free · on-device")
         case .erase: return String(localized: "Brush to remove")
@@ -61,6 +65,7 @@ enum EditorTool: String, CaseIterable, Identifiable {
         switch self {
         case .adjust: return "slider.horizontal.3"
         case .effects: return "camera.filters"
+        case .textStickers: return "face.smiling"
         case .crop: return "crop.rotate"
         case .hideFaces: return "person.2.slash"
         default: return operation?.symbolName ?? "wand.and.stars"
@@ -74,7 +79,7 @@ enum EditorTool: String, CaseIterable, Identifiable {
         case .enhance: return .enhance
         case .removeBackground: return .removeBackground
         case .erase: return .eraseObject
-        case .adjust, .effects, .crop, .hideFaces: return nil
+        case .adjust, .effects, .textStickers, .crop, .hideFaces: return nil
         }
     }
 
