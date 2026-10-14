@@ -273,23 +273,15 @@ struct CollageView: View {
                     .foregroundStyle(Palette.accent)
             }
         } else if let selection = model.selection, model.photos.indices.contains(selection) {
-            let fitting = model.isFitting(selection)
-            HStack(spacing: 8) {
-                pill(fitting ? "Fill" : "Fit", symbol: fitting ? "arrow.up.left.and.arrow.down.right" : "arrow.down.right.and.arrow.up.left") {
-                    model.toggleFit(selection)
-                }
-                pill("Swap", symbol: "arrow.left.arrow.right") {
-                    Haptics.tap()
-                    model.selection = nil
-                    model.swapping = selection
-                }
-                if model.photos.count > CollageModel.minPhotos {
-                    pill("Remove", symbol: "trash") { model.remove(selection) }
-                }
-                Spacer(minLength: 0)
-                Button("Done") { model.clearSelection() }
-                    .font(.subheadline.weight(.bold))
-                    .foregroundStyle(Palette.accent)
+            // Long words (German) or big text don't fit one row on a small
+            // iPhone: the pills drop their icons, then their words (VoiceOver
+            // still reads them), so Done never leaves the screen.
+            ViewThatFits(in: .horizontal) {
+                photoActions(selection)
+                photoActions(selection)
+                    .labelStyle(.titleOnly)
+                photoActions(selection)
+                    .labelStyle(.iconOnly)
             }
         } else {
             Text(Platform.isMac ? "Drag to move · pinch to zoom · hold to swap · drop a file on a photo to replace it"
@@ -301,13 +293,36 @@ struct CollageView: View {
         }
     }
 
+    /// Fit or Fill, Swap and Remove for the tapped photo, then Done.
+    private func photoActions(_ selection: Int) -> some View {
+        let fitting = model.isFitting(selection)
+        return HStack(spacing: 8) {
+            pill(fitting ? "Fill" : "Fit", symbol: fitting ? "arrow.up.left.and.arrow.down.right" : "arrow.down.right.and.arrow.up.left") {
+                model.toggleFit(selection)
+            }
+            pill("Swap", symbol: "arrow.left.arrow.right") {
+                Haptics.tap()
+                model.selection = nil
+                model.swapping = selection
+            }
+            if model.photos.count > CollageModel.minPhotos {
+                pill("Remove", symbol: "trash") { model.remove(selection) }
+            }
+            Spacer(minLength: 0)
+            Button("Done") { model.clearSelection() }
+                .font(.subheadline.weight(.bold))
+                .foregroundStyle(Palette.accent)
+                .fixedSize()
+        }
+    }
+
     private func pill(_ title: LocalizedStringKey, symbol: String, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             Label(title, systemImage: symbol)
                 .font(.footnote.weight(.bold))
                 .foregroundStyle(Palette.textPrimary)
                 .padding(.horizontal, 14)
-                .frame(minHeight: 44)
+                .frame(minWidth: 44, minHeight: 44)
                 .background(Palette.surface, in: Capsule())
                 .overlay(Capsule().strokeBorder(Palette.stroke, lineWidth: 1))
         }
