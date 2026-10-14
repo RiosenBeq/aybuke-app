@@ -40,6 +40,26 @@ enum FaceAnalysis {
         }.value
     }
 
+    // MARK: Hide faces
+
+    /// Every face Vision finds, normalized with a top-left origin, left to
+    /// right. Small background faces are kept on purpose: bystanders are who
+    /// "Hide faces" protects. Rectangles only; no landmarks.
+    static func faceRects(in image: UIImage) async -> [CGRect] {
+        await Task.detached(priority: .userInitiated) {
+            guard let cgImage = prepared(image, maxLongEdge: 2048) else { return [] }
+            let request = VNDetectFaceRectanglesRequest()
+            try? VNImageRequestHandler(cgImage: cgImage).perform([request])
+            return (request.results ?? [])
+                .map { face in
+                    let box = face.boundingBox
+                    return CGRect(x: box.minX, y: 1 - box.maxY, width: box.width, height: box.height)
+                }
+                .filter { $0.width * $0.height > 0.0001 }
+                .sorted { $0.midX < $1.midX }
+        }.value
+    }
+
     // MARK: Best shot
 
     /// Apple's face capture quality (0…1: light, focus, pose, eyes open) for

@@ -12,8 +12,9 @@ enum ImageExporter {
     private static let iptcExtPrefix = "Iptc4xmpExt" as CFString
 
     /// `operation == nil` means no AI was involved (manual adjustments only),
-    /// so no AI provenance is claimed.
-    static func encode(_ image: UIImage, operation: AIOperation?, watermark: Bool = false) -> (data: Data, fileExtension: String)? {
+    /// so no AI provenance is claimed. `composite`: a cut-out was placed on
+    /// another photo.
+    static func encode(_ image: UIImage, operation: AIOperation?, watermark: Bool = false, composite: Bool = false) -> (data: Data, fileExtension: String)? {
         var normalized = ImageUtilities.normalized(image, maxLongEdge: 4096)
         if watermark {
             normalized = Watermark.apply(to: normalized)
@@ -27,12 +28,12 @@ enum ImageExporter {
             return nil
         }
         let metadata = CGImageMetadataCreateMutable()
-        if let operation {
+        if let sourceType = DigitalSourceType.strongest(operation?.digitalSourceType, composite ? .composite : nil) {
             _ = CGImageMetadataRegisterNamespaceForPrefix(metadata, iptcExtNamespace, iptcExtPrefix, nil)
             _ = CGImageMetadataSetValueWithPath(
                 metadata, nil,
                 "Iptc4xmpExt:DigitalSourceType" as CFString,
-                operation.digitalSourceType.uri as CFString
+                sourceType.uri as CFString
             )
         }
         _ = CGImageMetadataSetValueWithPath(
@@ -47,8 +48,8 @@ enum ImageExporter {
     }
 
     /// Writes a temporary file for the share sheet.
-    static func temporaryFile(for image: UIImage, operation: AIOperation?, watermark: Bool = false) throws -> URL {
-        guard let encoded = encode(image, operation: operation, watermark: watermark) else { throw CocoaError(.fileWriteUnknown) }
+    static func temporaryFile(for image: UIImage, operation: AIOperation?, watermark: Bool = false, composite: Bool = false) throws -> URL {
+        guard let encoded = encode(image, operation: operation, watermark: watermark, composite: composite) else { throw CocoaError(.fileWriteUnknown) }
         let name = "creation-\(Int(Date().timeIntervalSince1970)).\(encoded.fileExtension)"
         let url = FileManager.default.temporaryDirectory.appendingPathComponent(name)
         try encoded.data.write(to: url, options: .atomic)
@@ -69,13 +70,18 @@ enum PhotoLibrarySaver {
         }
     }
 
-    static func save(_ image: UIImage, operation: AIOperation?, watermark: Bool = false) async throws {
+    static func save(_ image: UIImage, operation: AIOperation?, watermark: Bool = false, composite: Bool = false) async throws {
+        guard let encoded = ImageExporter.encode(image, operation: operation, watermark: watermark, composite: composite) else { throw SaveError.encodingFailed }
+        try await save(data: encoded.data)
+    }
+
+    /// Saves an already encoded image (with its metadata) as it is.
+    static func save(data: Data) async throws {
         let status = await PHPhotoLibrary.requestAuthorization(for: .addOnly)
         guard status == .authorized || status == .limited else { throw SaveError.denied }
-        guard let encoded = ImageExporter.encode(image, operation: operation, watermark: watermark) else { throw SaveError.encodingFailed }
         try await PHPhotoLibrary.shared().performChanges {
             let request = PHAssetCreationRequest.forAsset()
-            request.addResource(with: .photo, data: encoded.data, options: nil)
+            request.addResource(with: .photo, data: data, options: nil)
         }
     }
 }

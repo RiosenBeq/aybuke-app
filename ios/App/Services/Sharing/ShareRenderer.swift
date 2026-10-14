@@ -8,6 +8,8 @@ struct SharePayload: Identifiable {
     var original: UIImage?
     let operation: AIOperation?
     var prompt: String?
+    /// A cut-out placed on another photo (IPTC "composite").
+    var isComposite = false
     /// Other variations from the same creation, for "Help me pick".
     var alternatives: [UIImage] = []
 

@@ -9,6 +9,7 @@ final class EditorViewModel {
         let image: UIImage
         let operation: AIOperation?
         let before: UIImage
+        var isComposite = false
     }
 
     let original: UIImage
@@ -18,6 +19,8 @@ final class EditorViewModel {
     private(set) var before: UIImage
     /// Strongest AI operation applied so far — drives the provenance label on export.
     private(set) var appliedOperation: AIOperation?
+    /// A cut-out was placed on another photo (IPTC "composite" on export).
+    private(set) var isComposite = false
 
     var activeTool: EditorTool?
     var magicPrompt = ""
@@ -70,6 +73,10 @@ final class EditorViewModel {
     /// Demo results carry a "DEMO PREVIEW" mark in a corner that a crop can cut off.
     var stampsDemoResults = false
 
+    // Hide faces and Cut out (on-device, free)
+    let faceHider = FaceHider()
+    let cutout = CutoutSession()
+
     @ObservationIgnored private var undoStack: [Step] = []
     @ObservationIgnored private var redoStack: [Step] = []
     @ObservationIgnored private var jobTask: Task<Void, Never>?
@@ -104,6 +111,7 @@ final class EditorViewModel {
             if let aspect = launch.cropAspect { setCropAspect(aspect) }
             crop.angle = launch.cropAngle
         }
+        if activeTool == .hideFaces { startHidingFaces(preselect: true) }
     }
 
     var canUndo: Bool { historyVersion >= 0 && !undoStack.isEmpty }
@@ -119,6 +127,8 @@ final class EditorViewModel {
         case effect(RetroEffect, RetroEffect.Options)
         case adjust(AdjustmentSettings)
         case crop(CropGeometry, CropAspect)
+        case hideFaces
+        case cutout
     }
 
     /// Read from the settings rather than the preview images: the first effect
@@ -133,6 +143,10 @@ final class EditorViewModel {
             return adjustments.isNeutral ? nil : .adjust(adjustments)
         case .crop?:
             return crop.isIdentity ? nil : .crop(crop, cropAspect)
+        case .hideFaces?:
+            return faceHider.hasSelection ? .hideFaces : nil
+        case .removeBackground?:
+            return cutout.isActive ? .cutout : nil
         default:
             return nil
         }
@@ -151,6 +165,7 @@ final class EditorViewModel {
         if isHoldingOriginal { return before }
         if activeTool == .adjust, let adjustPreview { return adjustPreview }
         if activeTool == .effects, let effectPreview { return effectPreview }
+        if activeTool == .hideFaces, let preview = faceHider.preview { return preview }
         return current
     }
 
@@ -179,9 +194,12 @@ final class EditorViewModel {
             crop = CropGeometry()
             cropAspect = .original
         }
+        if activeTool == .hideFaces { faceHider.reset() }
+        if activeTool == .removeBackground { cutout.reset() }
         isComparing = false
         activeTool = tool
         refreshCropProxy()
+        if tool == .hideFaces { startHidingFaces(preselect: true) }
         Haptics.selection()
     }
 
@@ -189,28 +207,31 @@ final class EditorViewModel {
 
     func undo() {
         guard let previous = undoStack.popLast() else { return }
-        redoStack.append(Step(image: current, operation: appliedOperation, before: before))
+        redoStack.append(Step(image: current, operation: appliedOperation, before: before, isComposite: isComposite))
         current = previous.image
         appliedOperation = previous.operation
         before = previous.before
+        isComposite = previous.isComposite
         afterHistoryChange()
     }
 
     func redo() {
         guard let next = redoStack.popLast() else { return }
-        undoStack.append(Step(image: current, operation: appliedOperation, before: before))
+        undoStack.append(Step(image: current, operation: appliedOperation, before: before, isComposite: isComposite))
         current = next.image
         appliedOperation = next.operation
         before = next.before
+        isComposite = next.isComposite
         afterHistoryChange()
     }
 
-    private func commit(_ image: UIImage, operation: AIOperation?, before newBefore: UIImage? = nil) {
-        undoStack.append(Step(image: current, operation: appliedOperation, before: before))
+    private func commit(_ image: UIImage, operation: AIOperation?, before newBefore: UIImage? = nil, composite: Bool = false) {
+        undoStack.append(Step(image: current, operation: appliedOperation, before: before, isComposite: isComposite))
         if undoStack.count > 20 { undoStack.removeFirst() }
         redoStack.removeAll()
         current = image
         if let newBefore { before = newBefore }
+        if composite { isComposite = true }
         if let operation {
             appliedOperation = Self.stronger(appliedOperation, operation)
         }
@@ -231,6 +252,9 @@ final class EditorViewModel {
         crop = CropGeometry()
         cropAspect = .original
         if activeTool == .crop { refreshCropProxy() }
+        // Face boxes and subject masks belong to the photo they came from.
+        cutout.reset()
+        if activeTool == .hideFaces { startHidingFaces(preselect: false) }
         // A chosen effect follows the photo it will be applied to (after Undo, say).
         if let effect {
             effectPreview = nil
@@ -239,15 +263,8 @@ final class EditorViewModel {
     }
 
     private static func stronger(_ lhs: AIOperation?, _ rhs: AIOperation) -> AIOperation {
-        func rank(_ operation: AIOperation) -> Int {
-            switch operation.digitalSourceType {
-            case .trainedAlgorithmicMedia: return 3
-            case .compositeWithTrainedAlgorithmicMedia: return 2
-            case .algorithmicallyEnhanced: return 1
-            }
-        }
         guard let lhs else { return rhs }
-        return rank(rhs) >= rank(lhs) ? rhs : lhs
+        return rhs.digitalSourceType.generativeRank >= lhs.digitalSourceType.generativeRank ? rhs : lhs
     }
 
     // MARK: AI tools
@@ -283,7 +300,7 @@ final class EditorViewModel {
             }
             let size = ImageUtilities.pixelSize(of: current)
             job.mask = MaskRenderer.render(strokes, size: CGSize(width: size.width, height: size.height))
-        case .enhance, .removeBackground, .adjust, .effects, .crop:
+        case .enhance, .removeBackground, .adjust, .effects, .crop, .hideFaces:
             break
         }
 
@@ -338,6 +355,12 @@ final class EditorViewModel {
 
     /// Other people in the photo? A gentle, skippable reminder to ask first.
     func checkForOtherPeople() async {
+        #if DEBUG
+        if UserDefaults.standard.bool(forKey: "GLKindnessNote") {
+            showsKindnessNote = true
+            return
+        }
+        #endif
         guard await FaceAnalysis.faceCount(in: original) >= 2 else { return }
         showsKindnessNote = true
     }
@@ -350,6 +373,12 @@ final class EditorViewModel {
 
     func dismissKindnessNote() {
         showsKindnessNote = false
+    }
+
+    /// "Hide their faces": opens Hide faces with everyone but her selected.
+    func hideTheirFaces() {
+        showsKindnessNote = false
+        select(.hideFaces)
     }
 
     /// Edits meant to keep the person (not stylised ones like anime or a
@@ -547,6 +576,8 @@ final class EditorViewModel {
         case .effect?: await applyEffect()
         case .adjust?: await applyAdjustments()
         case .crop?: await applyCrop()
+        case .hideFaces?: await applyHideFaces()
+        case .cutout?: await applyCutout()
         case nil: break
         }
     }
@@ -615,6 +646,113 @@ final class EditorViewModel {
         isProcessing = false
         commit(output, operation: nil, before: newBefore)
         Haptics.success()
+    }
+
+    // MARK: Hide faces (on-device, free)
+
+    private func startHidingFaces(preselect: Bool) {
+        faceHider.start(source: current, proxy: adjustProxy(), preselect: preselect)
+    }
+
+    /// Covers the chosen faces at full size. The before photo gets the same
+    /// covers, because Before/After, Photo strip and Help me pick share it.
+    func applyHideFaces() async {
+        let faces = faceHider.hiddenRects
+        let cover = faceHider.cover
+        guard !faces.isEmpty, !isProcessing else { return }
+        let source = current
+        let sourceBefore = before
+        processingTitle = String(localized: "Hiding faces…")
+        isProcessingInCloud = false
+        isProcessing = true
+        let (output, newBefore) = await Task.detached(priority: .userInitiated) {
+            let hidden = FaceHiding.render(source, faces: faces, cover: cover)
+            // Same shape: the boxes line up. Otherwise never share an unhidden before.
+            let hiddenBefore = FaceHiding.sameShape(sourceBefore, source)
+                ? FaceHiding.render(sourceBefore, faces: faces, cover: cover)
+                : hidden
+            return (hidden, hiddenBefore)
+        }.value
+        isProcessing = false
+        // On-device and not generative: no AI provenance for this step.
+        commit(output, operation: nil, before: newBefore)
+        lastStepTitle = String(localized: "Hide faces")
+        Haptics.success()
+    }
+
+    // MARK: Cut out (on-device, free)
+
+    /// Finds the subjects with Vision and shows the cut-out without applying it.
+    func startCutout(app: AppModel) {
+        guard !isProcessing, !cutout.isActive else { return }
+        let source = current
+        let version = historyVersion
+        let onlyMe = editsOnlyMainPerson
+        processingTitle = String(localized: "Cutting out the subject…")
+        isProcessingInCloud = false
+        isProcessing = true
+        Task {
+            defer { isProcessing = false }
+            do {
+                let analysis = try await Self.analyzeCutout(source)
+                guard version == historyVersion, activeTool == .removeBackground else { return }
+                // "Only edit me": start with the subject under her face.
+                var keep: Int?
+                if onlyMe, let face = await FaceAnalysis.faceRects(in: source).max(by: { $0.width * $0.height < $1.width * $1.height }) {
+                    keep = analysis.subject(atNormalized: CGPoint(x: face.midX, y: face.midY))
+                }
+                cutout.begin(analysis, keeping: keep)
+                #if DEBUG
+                // Screenshot QA: -GLCutoutKeep <subject from the left> -GLBackdrop blur|<gradient>
+                if ScreenshotScene.current == .cutout {
+                    let defaults = UserDefaults.standard
+                    if defaults.object(forKey: "GLCutoutKeep") != nil, case let index = defaults.integer(forKey: "GLCutoutKeep"), analysis.subjects.indices.contains(index) {
+                        cutout.keepOnly(analysis.subjects[index].id)
+                    }
+                    switch defaults.string(forKey: "GLBackdrop") {
+                    case "blur"?: cutout.setBackdrop(.blurOriginal)
+                    case let name?: CutoutGradient(rawValue: name).map { cutout.setBackdrop(.gradient($0)) }
+                    case nil: break
+                    }
+                }
+                #endif
+                Haptics.success()
+            } catch {
+                app.handle(error)
+            }
+        }
+    }
+
+    private static func analyzeCutout(_ source: UIImage) async throws -> CutoutAnalysis {
+        #if DEBUG
+        if ScreenshotScene.current == .cutout, let fixture = ScreenshotFixtures.cutoutAnalysis(for: source) {
+            return fixture
+        }
+        #endif
+        return try await Task.detached(priority: .userInitiated) { try CutoutAnalysis.analyze(source) }.value
+    }
+
+    func applyCutout() async {
+        guard cutout.isActive, !isProcessing else { return }
+        processingTitle = String(localized: "Cutting out the subject…")
+        isProcessingInCloud = false
+        isProcessing = true
+        let output = await cutout.renderFinal()
+        isProcessing = false
+        guard let output else { return }
+        let composite = cutout.isComposite
+        commit(output, operation: .removeBackground, composite: composite)
+        lastStepTitle = String(localized: "Cut out")
+        celebration += 1
+        Haptics.success()
+    }
+
+    /// Stickers follow Save's rules: AI provenance from the photo's steps,
+    /// and the small mark only when cloud AI made it and she isn't Pro.
+    func cutoutSticker(isPro: Bool) async -> (data: Data, fileExtension: String)? {
+        guard let sticker = await cutout.renderSticker() else { return nil }
+        let usedCloudAI = appliedOperation.map { !$0.runsOnDevice } ?? false
+        return ImageExporter.encode(sticker, operation: Self.stronger(appliedOperation, .removeBackground), watermark: !isPro && usedCloudAI)
     }
 
     /// Downscaled copy of the current image for live slider previews.

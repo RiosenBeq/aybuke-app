@@ -241,7 +241,7 @@ struct ShareComposerView: View {
     /// The rendered image as a file with IPTC "made with AI" metadata.
     private func encodedFile() throws -> URL {
         guard let rendered else { throw CocoaError(.fileWriteUnknown) }
-        return try ImageExporter.temporaryFile(for: rendered, operation: payload.operation, watermark: false)
+        return try ImageExporter.temporaryFile(for: rendered, operation: payload.operation, watermark: false, composite: payload.isComposite)
     }
 
     // MARK: Destinations
@@ -278,7 +278,7 @@ struct ShareComposerView: View {
         isWorking = true
         defer { isWorking = false }
         do {
-            try await PhotoLibrarySaver.save(rendered, operation: payload.operation, watermark: false)
+            try await PhotoLibrarySaver.save(rendered, operation: payload.operation, watermark: false, composite: payload.isComposite)
             Haptics.success()
             app.countHappyMoment()
             app.showToast("Saved to Photos", style: .success)
@@ -289,7 +289,7 @@ struct ShareComposerView: View {
 
     private func copyImage() {
         guard let rendered else { return }
-        if let encoded = ImageExporter.encode(rendered, operation: payload.operation) {
+        if let encoded = ImageExporter.encode(rendered, operation: payload.operation, composite: payload.isComposite) {
             let type = encoded.fileExtension == "png" ? UTType.png : UTType.jpeg
             UIPasteboard.general.setData(encoded.data, forPasteboardType: type.identifier)
         } else {
