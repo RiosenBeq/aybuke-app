@@ -2,8 +2,9 @@ import SwiftUI
 import AuthenticationServices
 import CryptoKit
 
-/// Sign in with Apple, offered (never required) so Pro and credits follow
-/// her to other iPhones. Asks only for an email, which she can hide.
+/// Sign in with Apple, offered (never required) so her credits follow her to
+/// other devices; Pro follows the Apple Account that bought it. Asks only for
+/// an email, which she can hide. Shown only while `AppModel.offersSignIn`.
 struct AppleSignInButton: View {
     var onSignedIn: (() -> Void)?
 
@@ -41,13 +42,14 @@ struct AppleSignInButton: View {
                 ProgressView().tint(colorScheme == .dark ? Palette.ink : Palette.white)
             }
         }
-        .disabled(!app.canUseAccounts || isWorking)
-        .opacity(app.canUseAccounts ? 1 : 0.45)
+        .disabled(!app.offersSignIn || isWorking)
+        .opacity(app.offersSignIn ? 1 : 0.45)
     }
 }
 
-/// "Keep your glow on every iPhone", shown after a purchase or from the
-/// paywall's "Sign in". "Not now" is as easy to tap as signing in.
+/// "Keep your credits on every device", shown after a purchase or from the
+/// paywall's "Sign in" while Sign in with Apple is offered. "Not now" is as
+/// easy to tap as signing in.
 struct AccountPromptSheet: View {
     @Environment(\.dismiss) private var dismiss
 
@@ -61,17 +63,18 @@ struct AccountPromptSheet: View {
                 .padding(.top, 28)
 
             VStack(spacing: 8) {
-                Text(styled: "Keep your glow on *every device*", size: 23)
+                Text(styled: "Keep your credits on *every device*", size: 23)
                     .multilineTextAlignment(.center)
                     .foregroundStyle(Palette.textPrimary)
-                Text("Sign in with Apple and Pro and your credits come with you when you switch or add a device.")
+                Text("Sign in with Apple and your credits come with you when you switch or add a device. Pro stays with the Apple Account you subscribed with.")
                     .font(.subheadline)
                     .multilineTextAlignment(.center)
                     .foregroundStyle(Palette.textSecondary)
             }
 
             VStack(alignment: .leading, spacing: 10) {
-                AccountPoint(symbol: "crown.fill", text: "Pro on all your devices")
+                // Pro comes from the App Store purchases of the Apple Account, not from this sign-in.
+                AccountPoint(symbol: "crown.fill", text: "Pro works wherever you use the same Apple Account")
                 AccountPoint(symbol: "bolt.fill", text: "Credits never get stuck on an old device")
                 AccountPoint(symbol: "eye.slash.fill", text: "Hide your email if you like")
                 AccountPoint(symbol: "photo.on.rectangle", text: "Your photos stay on this device")

@@ -81,7 +81,7 @@ Legend: ✅ done in this repository · ⏳ next · 🔭 later
 - ✅ RevenueCat project created; public SDK key in `AppConfig.json` (observer mode, on in builds)
 - ⏳ Upload the App Store Connect in-app purchase key (.p8) in RevenueCat (owner)
 - ⏳ App Store Server Notifications V2 endpoint for refunds, revocations and Texas consent revocation (backlog `abuse-ops-reports-bans`)
-- ⏳ Turn on Sign in with Apple for the app id, enable the Apple provider in Supabase, set `APPLE_TEAM_ID` / `APPLE_SIGNIN_KEY_ID` / `APPLE_SIGNIN_PRIVATE_KEY`, and test sign-in and the merge on two devices
+- ⏳ Turn on Sign in with Apple for the app id, enable the Apple provider in Supabase, set `APPLE_TEAM_ID` / `APPLE_SIGNIN_KEY_ID` / `APPLE_SIGNIN_PRIVATE_KEY`, set `signInWithApple` to true in `AppConfig.json` (off in 1.0), and test sign-in and the merge on two devices
 - ✅ Age step with the Declared Age Range API and teen defaults (on-device only under 13, no automatic paywall under 18, guardian step in the consent sheet)
 - ⏳ Age rating questionnaire (target 13+ with the override; "Age Assurance" once shipped)
 - ✅ "Glow Gem" app icon (Oct 14, replacing Glow Print) with dark and tinted variants and Mac sizes (`scripts/render-brand-assets.py`; concepts in [brand/icon-concepts](brand/icon-concepts/concepts.png))

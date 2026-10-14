@@ -6,6 +6,8 @@
 - No "iPhone", "phone" or "iOS Settings" in app strings: the app runs on
   iPad and the Mac too ("on your device", "Settings").
 - The App Store description's Pro line names no resolution in any locale.
+- While Sign in with Apple is off (`signInWithApple` in AppConfig.json), no
+  App Store text, review note or website page offers it.
 
 String catalogs are skipped: they keep stale keys until the next
 translation pass. Run from anywhere: python3 scripts/check-honest-copy.py
@@ -42,6 +44,13 @@ RESOLUTION = re.compile(
     re.IGNORECASE,
 )
 
+# "Sign in with Apple" as the App Store locales spell it.
+SIGN_IN = re.compile(
+    r"Sign in with Apple|Apple ile Giriş|Inicia sesión con Apple|Iniciar sessão com a Apple|Connexion avec Apple|"
+    r"Mit Apple anmelden|Accedi con Apple|Вход с Apple|Appleでサインイン|Apple로 로그인|通过 Apple 登录|Masuk dengan Apple",
+    re.IGNORECASE,
+)
+
 
 def files(base, pattern):
     if base == ".":
@@ -72,6 +81,18 @@ def main():
         for line in fields.get("description", "").splitlines():
             if "Pro" in line and RESOLUTION.search(line):
                 problems.append(f"app-store-metadata.json [{locale}]: the Pro line promises a resolution")
+
+    config = json.loads((ROOT / "ios/App/Resources/AppConfig.json").read_text(encoding="utf-8"))
+    if not config.get("signInWithApple", False):
+        off = "Sign in with Apple is off (signInWithApple in AppConfig.json)"
+        for locale, fields in metadata.items():
+            for field, value in fields.items():
+                if isinstance(value, str) and SIGN_IN.search(value):
+                    problems.append(f"app-store-metadata.json [{locale}] {field}: offers sign-in, but {off}")
+        for file in [ROOT / "docs/marketing/app-store-listing.md", *sorted((ROOT / "web").glob("*.html"))]:
+            for number, line in enumerate(file.read_text(encoding="utf-8").splitlines(), 1):
+                if SIGN_IN.search(line):
+                    problems.append(f"{file.relative_to(ROOT)}:{number}: offers sign-in, but {off}")
 
     if problems:
         print("\n".join(problems))

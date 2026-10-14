@@ -15,7 +15,7 @@
 - Ücretsiz deneme ile ilk ay $1.99 aynı abonelik grubundadır. Bir Apple Hesabı bu gruptaki tanıtım tekliflerinden **yalnızca birini** kullanabilir; ikisini de denemek için satın alma geçmişini sıfırlaman ya da ikinci bir hesap kullanman gerekir (§1.3–1.4).
 - Yaş bandı istediğin zaman küçültülebilir ama kendi beyanınla büyütülemez (yılda bir). Geri dönmenin yolu §9'daki silmedir.
 
-**Gönderimden önce kapanması gerekenler (özet):** Paid Apps Agreement (§1.1), Sign in with Apple token iptali için sunucu anahtarları (§9, §12-3), RevenueCat silme anahtarları (§9, §12-4), `FAL_KEY` ve çıktı denetimi kararı (§12-5), xAI Zero Data Retention (§1.1), derleme sürümü `1.0.0` ile App Store Connect'teki `1.0` (§11, §12-6), App Review notları ve telefon (§11). Karar gereken hata: işten sonra bakiyenin güncellenmemesi (§12-1).
+**Gönderimden önce kapanması gerekenler (özet):** Paid Apps Agreement (§1.1), yeni migration'lar ve fonksiyonlar (`20261017000000_unclaimed_results`, `20261018000000_revenuecat_deletion_queue`, ardından `ai-image` ve `account`; §12), RevenueCat silme anahtarı (kuyruk anahtar gelince gönderir; §9, §12-4), xAI Zero Data Retention (§1.1), derleme sürümü `1.0.0` ile App Store Connect'teki `1.0` (§11, §12-6), App Review notları ve telefon (§11). Sign in with Apple bu sürümde gizli (§5); açmadan önce token iptali anahtarları gerekir (§12-3).
 
 ---
 
@@ -124,14 +124,14 @@ Apple'ın güncel belgesine göre TestFlight'tan indirilen uygulama her zaman sa
   - Beklenen: Onay ekranı ya da paywall açılmadan hata çıkar: "Glowlit keeps you, you. Try hair color, makeup colors, outfits, light or backgrounds." (*Glowlit seni sen olarak tutar…*). Sunucuya istek gitmez, kredi düşmez.
 - [ ] **3.3 Onay ekranı** (ilk bulut işi)
   - Yap: **Give me pink hair** çipine dokun → gönder.
-  - Beklenen: **Your photos, your call** (*Fotoğrafların, senin kararın*) ekranı açılır. "Deleted from our servers within an hour" ve "Never used to train AI models" maddeleri var. **Who processes what you send** (*Gönderdiklerini kim işliyor*) altında Supabase (*Sunucularımız: yapay zekâ işlerin ve kredilerin*), xAI (Grok Imagine) (*Görselleri oluşturur ve düzenler*) ve fal.ai (*Sonuçları güvenlik için denetler*) listelenir. **Read our Privacy Policy** uygulama içinde açılır. Düğmeler eşit ağırlıktadır: **Allow AI processing** (*Yapay zekâ ile işlemeye izin ver*) ve **Not now** (*Şimdi değil*).
+  - Beklenen: **Your photos, your call** (*Fotoğrafların, senin kararın*) ekranı açılır. "Deleted from our servers within an hour" ve "Never used to train AI models" maddeleri var. **Who processes what you send** (*Gönderdiklerini kim işliyor*) altında yalnızca Supabase (*Sunucularımız: yapay zekâ işlerin ve kredilerin*) ve xAI (Grok Imagine) (*Görselleri oluşturur ve düzenler*) listelenir (`FAL_KEY` yokken fal.ai hiçbir şey görmez). Daha önce fal.ai'lı listeye onay verdiysen onay ekranı bir kez daha açılır. **Read our Privacy Policy** uygulama içinde açılır. Düğmeler eşit ağırlıktadır: **Allow AI processing** (*Yapay zekâ ile işlemeye izin ver*) ve **Not now** (*Şimdi değil*).
   - Yap: Önce **Not now**.
   - Beklenen: Hiçbir şey gönderilmez, editör açık kalır, Supabase'te yeni kullanıcı oluşmaz.
   - Yap: Tekrar gönder → **Allow AI processing**.
 - [ ] **3.4 Magic Edit uçtan uca**
   - Beklenen: "Applying your edit…" (*Düzenlemen uygulanıyor…*) katmanında **Cancel** (*Vazgeç*) ve ilk seferde **Ping me when it's ready** (*Hazır olunca bana haber ver*) görünür. İş başlayınca Live Activity de başlar; uygulamadan çıkınca Dynamic Island'da görürsün (§7.2). Sonuç genellikle bir dakikadan kısa sürede gelir (3 dakikayı geçerse zaman aşımı ve iade). Önce/sonra karşılaştırma açık gelir; **Hold to see original** (*Orijinali görmek için basılı tut*); **Still you** (*Hâlâ sensin*) etiketi; **Retry free** (*Ücretsiz tekrar dene*) ya da **Doesn't look like you? Retry free** (*Benzemedi mi? Ücretsiz tekrar dene*); bayrak simgesi (Report).
   - Sunucu: `jobs`'ta yeni satır `completed` ve `cost = 1`; `credit_ledger`'da −1 `hold`; `credit_wallets` toplamı 2. Uygulama sonucu indirince `outputs` alanı boşaltılır.
-  - Uygulamadaki bakiye: Doğrusu 2. **Koddan bilinen risk:** başarılı işten sonra uygulama yeni bakiyeyi okumuyor, bu yüzden hap, Settings › Credits left ve widget uygulama yeniden açılana kadar 3 gösterebilir (§12-1). Gördüğünü not et, uygulamayı tamamen kapatıp aç ve tekrar bak.
+  - Uygulamadaki bakiye: İş başlar başlamaz hap 2'ye düşer (sunucunun 202 yanıtındaki bakiye); iş bitince Settings › Credits left da 2'dir, widget iş bitince güncellenir. Uygulamayı kapatıp açınca da 2 kalmalı.
   - Yap: Üst çubukta **Save** (*Kaydet*).
   - Beklenen: İlk kayıtta Fotoğraflar için "yalnızca ekleme" izni sorulur, sonra "Saved to Photos" (*Fotoğraflar'a kaydedildi*). Ücretsiz kullanıcıda resmin köşesinde küçük Glowlit işareti bulunur; eser My Works'e de eklenir.
   - Sorun olursa: Hata metnini, saati ve `jobs.error_code` değerini yaz.
@@ -142,8 +142,10 @@ Apple'ın güncel belgesine göre TestFlight'tan indirilen uygulama her zaman sa
 - [ ] **3.6 Başarısız ya da iptal edilen işte iade**
   - Yap: Yeni bir Magic Edit başlat, katman görünürken **Cancel**.
   - Beklenen: Supabase'te `jobs.status = cancelled`, aynı iş için `credit_ledger`'da `hold` ve `release` (net 0). Uygulamayı yeniden açınca bakiye işten önceki değerdedir.
-  - Yap (isteğe bağlı): İş sürerken Uçak Modu'nu aç.
-  - Beklenen (tasarım): hata ve iade. **Koddan risk:** uygulama 4 başarısız sorgudan sonra vazgeçiyor ama sunucu işi bitirebiliyor; o durumda kredi iade edilmez (§12-8). Sonucu not et.
+  - Yap: İş sürerken Uçak Modu'nu aç, 30 saniye bekle, kapat.
+  - Beklenen: Uygulama vazgeçmez; bağlantı gelince sonuç normal şekilde gelir ve bakiye 1 düşmüş olur.
+  - Yap (isteğe bağlı): İş sürerken Uçak Modu'nu aç ve 2 dakikadan uzun açık bırak.
+  - Beklenen: "The connection dropped before your result arrived. If it never reaches you, your credit comes back automatically within about an hour." (*Sonucun gelmeden bağlantı koptu. Sonuç sana ulaşmazsa kredin yaklaşık bir saat içinde otomatik olarak iade edilir.*). Live Activity "Failed creations are refunded automatically…" der. Yaklaşık 1 saat sonra Supabase'te iş `failed` ve `error_code = undelivered` olur, `credit_ledger`'da aynı iş için `release` vardır; uygulamayı öne getirince bakiye geri gelmiş görünür.
 - [ ] **3.7 Create uçtan uca**
   - Yap: **Create** sekmesi → bir fikir yaz ya da **Inspire me** (*İlham ver*) → **Style** (*Stil*) ve **Size** (*Boyut*) seç → **Generate** (*Oluştur*, 1 kredi).
   - Beklenen: Apple Intelligence olan cihazda **Make it magic** (*Sihir kat*) ve "Written on your device by Apple Intelligence"; yoksa **Enhance prompt** (*Komutu geliştir*). Sonra "Creating your image…" (*Görselin oluşturuluyor…*) ve **Your creation** (*Eserin*) ekranı. Sonuç anlık fotoğraf gibi belirir ve kendiliğinden My Works'e eklenir. **Images** (*Görsel sayısı*) bölümünde 2–4 kilitlidir; seçip Generate'e basınca paywall açılır.
@@ -160,7 +162,7 @@ Apple'ın güncel belgesine göre TestFlight'tan indirilen uygulama her zaman sa
   - Beklenen: Explore'da "You're offline. Effects, Adjust, Cut out and Video still work." (*Çevrimdışısın. Efektler, Ayarla, Dekupe ve Video çalışmaya devam ediyor.*) notu görünür. Magic Edit ve Create aynı uyarıyı verir; hiçbir şey gönderilmez, kredi düşmez. Effects, Adjust, Cut out ve video düzenleyici çalışır. Uçak Modu kapanınca not kaybolur.
 - [ ] **3.10 Onayı Settings'ten değiştirme**
   - Yap: Settings › **Privacy** (*Gizlilik*) › **Cloud AI processing** (*Bulutta yapay zekâ işleme*) anahtarını kapat → bir Magic Edit dene.
-  - Beklenen: Onay ekranı yeniden açılır. Anahtarın altında aynı üç işleyen listelenir; anahtarı açınca da aynı onay ekranı gelir.
+  - Beklenen: Onay ekranı yeniden açılır. Anahtarın altında aynı iki işleyen (Supabase ve xAI) listelenir; anahtarı açınca da aynı onay ekranı gelir.
 - [ ] **3.11 Ertesi gün yenilenme**
   - Yap: Ertesi gün Türkiye saatiyle 03:00'ten sonra uygulamayı aç.
   - Beklenen: Ücretsiz kullanıcıda bakiye 3 olur (6 olmaz). Pro'da günlük kredi 0'dır, aylık krediler devam eder.
@@ -180,14 +182,14 @@ Fiyatlar ABD mağazasında: Yıllık $39.99 (7 gün ücretsiz), Aylık $5.99 (il
 
 - [ ] **4.1 Paywall ürünleri yüklüyor**
   - Yap: Ücretsiz kullanıcıyken Explore'daki kredi hapına dokun.
-  - Beklenen: **Your photos, in their best light** (*Fotoğrafların, en güzel ışığında*) başlığı ve avantajlar. **Yearly** (*Yıllık*) önceden seçili, **BEST VALUE** (*EN AVANTAJLI*) rozetli; büyük yazıyla "… / year", altında "7 days free, then …/year · just …/month". **Monthly** (*Aylık*) **TRY IT** (*DENE*) rozetli, altında "First month $1.99, then $5.99/month · cancel anytime". **No weekly plans, ever.** (*Haftalık plan yok, asla.*) yazar. Altta **Restore** (*Geri yükle*), **Sign in** (*Giriş yap*), **Terms** (*Koşullar*), **Privacy** (*Gizlilik*) ve otomatik yenileme metni, sağ üstte X var. Terms ve Privacy uygulama içinde açılır.
+  - Beklenen: **Your photos, in their best light** (*Fotoğrafların, en güzel ışığında*) başlığı ve avantajlar. **Yearly** (*Yıllık*) önceden seçili, **BEST VALUE** (*EN AVANTAJLI*) rozetli; büyük yazıyla "… / year", altında "7 days free, then …/year · just …/month". **Monthly** (*Aylık*) **TRY IT** (*DENE*) rozetli, altında "First month $1.99, then $5.99/month · cancel anytime". **No weekly plans, ever.** (*Haftalık plan yok, asla.*) yazar. Altta **Restore** (*Geri yükle*), **Terms** (*Koşullar*), **Privacy** (*Gizlilik*) ve otomatik yenileme metni, sağ üstte X var. **Sign in** bu sürümde yoktur (§5). Terms ve Privacy uygulama içinde açılır.
   - Sorun olursa: 10 saniye sonra "Couldn't reach the App Store. Check your connection." ve **Try again** (*Tekrar dene*) ya da "Subscriptions are unavailable right now." görünürse §1.1'i kontrol et ve ekran görüntüsü al.
 - [ ] **4.2 Pro Yearly ve 7 günlük ücretsiz deneme**
   - Yap: Yearly seçiliyken ekranı aşağı kaydır.
   - Beklenen: **How your free trial works** (*Ücretsiz deneme nasıl işler?*) kartında: **Today** (*Bugün*) "Unlock everything. No charge today.", **Day N** (*N. gün*) "We'll remind you before your trial ends.", **Day 7** "You'll be charged … on … unless you cancel before." Düğmede yalnızca **Continue** (*Devam et*) yazar; hemen altında düğme boyutunda "7 days free, then **$39.99**/year" (yinelenen fiyat kalın).
   - Yap: **Continue** → Apple penceresinde koşulları gör → onayla.
-  - Beklenen: "Welcome to Glowlit Pro ✦ Your free trial ends <tarih saat>." (*Glowlit Pro'ya hoş geldin ✦ Ücretsiz denemen … tarihinde bitiyor.*) Paywall kapanır, yaklaşık 1 saniye sonra **Keep your glow on every device** (*Işıltın her cihazda seninle*) sayfası açılır (**Not now** ile kapat). Kredi hapında taç simgesi görünür. Settings › **Membership** (*Üyelik*): **Glowlit Pro**, "Free trial until …" (*Ücretsiz deneme … tarihine kadar*) ve **Manage subscription** (*Aboneliği yönet*).
-  - Sunucu: `entitlements`'ta yeni satır (`environment` Sandbox). Pro ilk görüldüğünde `credit_wallets.subscription` 100 olur; o günün kalan ücretsiz kredileri de durur, ertesi günden itibaren günlük 0'dır. Onay verdiysen uygulama bakiyeyi hemen sunucudan okur (yaklaşık 100 + kalan günlük kredi).
+  - Beklenen: "Welcome to Glowlit Pro ✦ Your free trial ends <tarih saat>." (*Glowlit Pro'ya hoş geldin ✦ Ücretsiz denemen … tarihinde bitiyor.*) Paywall kapanır; bu sürümde ardından hesap sayfası **açılmaz** (Sign in with Apple gizli, §5). Kredi hapında taç simgesi görünür. Settings › **Membership** (*Üyelik*): **Glowlit Pro**, "Free trial until …" (*Ücretsiz deneme … tarihine kadar*) ve **Manage subscription** (*Aboneliği yönet*).
+  - Sunucu: `entitlements`'ta yeni satır (`environment` Sandbox). Pro ilk görüldüğünde `credit_wallets.subscription` 100 olur; o günün kalan ücretsiz kredileri de durur, ertesi günden itibaren günlük 0'dır. Uygulama, onay vermemiş olsan da, bakiyeyi hemen sunucudan okur (yaklaşık 100 + kalan günlük kredi).
   - Sorun olursa: "Purchase failed" (*Satın alma başarısız oldu*) metnini yaz; Pro görünmüyorsa Settings › Restore purchases dene ve not et.
 - [ ] **4.3 Deneme hatırlatması (zamanlama)**
   - Kural (kodda): Hatırlatma, deneme bitişinden **en az 26 saat önceki en geç uygun ana** kurulur. 21:00–09:00 arası ve hafta içi 08:00–15:00 arası atlanır; bu durumda aynı ya da bir önceki akşam 20:59'a çekilir. Örnek: Çarşamba 16:00'da başlayan deneme gelecek Çarşamba 16:00'da biter, hatırlatma Pazartesi 20:59'da gelir ve paywall'da "Day 5" yazar.
@@ -232,19 +234,17 @@ Fiyatlar ABD mağazasında: Yıllık $39.99 (7 gün ücretsiz), Aylık $5.99 (il
 
 ---
 
-## 5. Hesap: Sign in with Apple
+## 5. Hesap: Sign in with Apple (bu sürümde gizli)
 
-- [ ] **5.1 Giriş**
-  - Yap: Settings › **Account** (*Hesap*) › **Sign in with Apple** (sistem düğmesi; Türkçede "Apple ile Giriş Yap") → e-postanı paylaş ya da gizle.
-  - Beklenen: "You're signed in ✨ Pro and your credits now come with you." (*Giriş yaptın ✨ Pro ve kredilerin artık seninle.*). Account bölümünde **Signed in with Apple** (*Apple ile giriş yapıldı*) ve e-posta ya da **Email hidden** (*E-posta gizli*) görünür. Supabase › Users'ta Apple kullanıcısı oluşur; anonim kullanıcının paket ve abonelik kredileri, işleri ve raporları bu hesaba taşınır ve anonim kullanıcı silinir. Günlük ücretsiz krediler bilerek taşınmaz: yeni hesap o günün 3 kredisiyle başlar, bu yüzden toplam bakiye birkaç kredi değişebilir. Paket kredisi kaybolmamalı.
-  - Sorun olursa: "Couldn't sign in with Apple. Please try again." görürsen saati ve Supabase Auth log'unu not et.
-- [ ] **5.2 İkinci cihaz** (iPad ya da Mac varsa; Mac için §10)
-  - Yap: İkinci cihaza Glowlit'i kur ve onboarding'i bitir. Önce Settings › Privacy › **Cloud AI processing**'i aç (onay ekranı), sonra aynı Apple Kimliğiyle Sign in with Apple yap.
-  - Beklenen: Kredi bakiyesi ilk cihazdakiyle aynıdır. Uygulama bakiyeyi açılışta ve yalnızca onay verilmişse okur; gerekirse uygulamayı kapatıp aç. Aynı App Store hesabıyla Pro ikinci cihazda da görünür.
-  - Not al: İkinci cihaz **farklı** bir App Store hesabı kullanıyorsa kod Pro'yu yalnızca StoreKit'ten okur, sunucunun `is_pro` yanıtını kullanmaz. Hesap ekranı "Pro on all your devices" dese de Pro görünmeyebilir (§12-9).
-- [ ] **5.3 Çıkış**
-  - Yap: Settings › Account › **Sign out** (*Çıkış yap*) → "Sign out?" (*Çıkış yapılsın mı?*) → **Sign out**.
-  - Beklenen: "Signed out. Sign in again anytime in Settings." mesajı çıkar ve bakiye yerel değere (3) döner. Tekrar giriş yapınca hesabın bakiyesi geri gelir. Pro, satın alan Apple Hesabında kalır.
+`ios/App/Resources/AppConfig.json` içinde `"signInWithApple": false`. Kod duruyor; açmak bu tek değer, ama önce sunucuya `APPLE_SIGNIN_KEY_ID` ve `APPLE_SIGNIN_PRIVATE_KEY` eklenmeli (silmede token iptali, §12-3) ve App Privacy'de e-posta beyan edilmeli.
+
+- [ ] **5.1 Giriş noktası yok**
+  - Yap: Settings'i aç; paywall'ın altına bak; bir kredi paketi ya da abonelik al.
+  - Beklenen: Settings'te **Account** (*Hesap*) bölümü yok, paywall'da **Sign in** yok, satın almadan sonra hesap sayfası açılmaz. Hiçbir yerde "Sign in with Apple" düğmesi görünmez. Satın almalar, krediler ve §9'daki silme aynen çalışır.
+- [ ] **5.2 Daha önce giriş yapmış test cihazı** (yalnızca eski bir TestFlight sürümünde giriş yaptıysan)
+  - Beklenen: Settings › Account yalnızca bu durumda görünür: **Signed in with Apple** ve **Sign out** (*Çıkış yap*). Çıkış yapınca bölüm kaybolur ve bir daha giriş seçeneği sunulmaz.
+- [ ] **5.3 Açıldığında** (sonraki bir sürüm, `signInWithApple: true`)
+  - Beklenen: Hesap sayfası "Keep your credits on every device" der ve Pro için "Pro works wherever you use the same Apple Account" yazar (Pro, satın alan Apple Hesabından gelir; krediler hesaptan). Giriş sonrası "You're signed in ✨ Your credits now come with you." görünür.
 
 ---
 
@@ -406,7 +406,7 @@ Fiyatlar ABD mağazasında: Yıllık $39.99 (7 gün ücretsiz), Aylık $5.99 (il
 ## 9. Verilerimi ve hesabımı sil (en son yap)
 
 - [ ] **9.1 Silmeden önce not al**
-  - Supabase › Users'taki kullanıcı kimliğini (Apple ile girişliysen Apple kullanıcısı), `credit_wallets` satırını ve RevenueCat'te bu kimliğin büyük harfli müşteri kaydını not et. iPhone'da Settings › [adın] › Sign-In & Security › **Sign in with Apple** (*Giriş ve Güvenlik › Apple ile Giriş Yap*) listesinde Glowlit'in olduğunu gör (yeri iOS sürümüne göre değişebilir).
+  - Supabase › Users'taki kullanıcı kimliğini, `credit_wallets` satırını ve RevenueCat'te bu kimliğin büyük harfli müşteri kaydını not et. (Yalnızca eski bir sürümde Apple ile giriş yaptıysan: iPhone'da Settings › [adın] › Sign-In & Security › **Sign in with Apple** listesinde Glowlit'i gör.)
 - [ ] **9.2 Silme**
   - Yap: Settings › Privacy › **Delete my data & account** (*Verilerimi ve hesabımı sil*) → "Delete my data?" (*Verilerim silinsin mi?*) → **Delete my data** (*Verilerimi sil*).
   - Beklenen: Onay metni "Deletes your creations and your account with its credits from our servers, and resets every setting on this device. Subscriptions are managed by Apple and must be cancelled separately." İlerleme göstergesinden sonra "Your data has been deleted." (*Verilerin silindi.*) ve uygulama onboarding'in başına döner.
@@ -415,11 +415,11 @@ Fiyatlar ABD mağazasında: Yıllık $39.99 (7 gün ücretsiz), Aylık $5.99 (il
 - [ ] **9.4 Sunucuda silinmesi gerekenler**
   - Beklenen: Supabase › Users'ta kullanıcı yok. `credit_wallets`, `credit_ledger`, `jobs`, `entitlements`, `reports`, `apple_accounts` ve `merged_users` satırları silinmiş (cascade).
 - [ ] **9.5 RevenueCat**
-  - Beklenen: Müşteri RevenueCat'ten silinir (kuyruğa alınır, birkaç dakika sürebilir).
-  - Sorun olursa: `account` fonksiyonunun log'unda "REVENUECAT_SECRET_KEY is not set; skipping RevenueCat customer deletion" varsa müşteri silinmemiştir. Gizlilik politikasının sözü tutulmuyor demektir; engelleyicidir (§12-4).
-- [ ] **9.6 Apple ile Giriş token'ı**
-  - Beklenen: Glowlit, Sign in with Apple listesinden kalkar. Apple bu iptali hesap silme özelliği olan uygulamalardan ister (Guideline 5.1.1(v)).
-  - Sorun olursa: `APPLE_SIGNIN_KEY_ID` ve `APPLE_SIGNIN_PRIVATE_KEY` yoksa kalkmaz; engelleyicidir (§12-3).
+  - Beklenen, `REVENUECAT_SECRET_KEY` varken: müşteri RevenueCat'ten silinir (RevenueCat kuyruğa alır, birkaç dakika sürebilir) ve `pending_revenuecat_deletions` tablosunda bu kimlik için satır kalmaz.
+  - Beklenen, anahtar yokken: silme yine tamamlanır; kimlik `pending_revenuecat_deletions` tablosunda bekler ve `account` log'unda "REVENUECAT_SECRET_KEY is not set: RevenueCat deletions wait in pending_revenuecat_deletions" görünür. Anahtar eklenince bir sonraki hesap silmede ya da saatlik `revenuecat-deletions` çağrısında satır silinir (§12-4).
+- [ ] **9.6 Apple ile Giriş token'ı** (yalnızca Apple ile giriş yapılmış bir hesapta; bu sürümde giriş gizli)
+  - Beklenen: Glowlit, Sign in with Apple listesinden kalkar (Guideline 5.1.1(v)).
+  - Sorun olursa: `APPLE_SIGNIN_KEY_ID` / `APPLE_SIGNIN_PRIVATE_KEY` yoksa kalkmaz; `account` log'unda "Sign in with Apple token NOT revoked" ya da "…deleted without a stored token to revoke" hatası görünür (§12-3). Silmenin kendisi yine tamamlanır.
 - [ ] **9.7 Silinmemesi gerekenler**
   - Beklenen: Apple aboneliği sürer; iptali Settings › Apple Account › Subscriptions'tan yapılır. Pro aktifse uygulamada yeniden görünür ve onboarding sonunda paywall çıkmaz. Fotoğraflar'a kaydettiklerin ve uygulamanın dil seçimi durur.
 - [ ] **9.8 Çevrimdışı silme**
@@ -489,16 +489,18 @@ Değerlerin hepsi: [`marketing/app-store-connect-setup.md`](marketing/app-store-
 
 ## 12. Koddan görülen riskler (testte özellikle bak)
 
-1. **İşten sonra bakiye güncellenmiyor.** POST yanıtı (`202`) `credits_remaining` taşıyor, ama `waitUntilFinished` bu yanıtı sorgu yanıtlarıyla değiştiriyor (`ios/App/Services/AI/RemoteAIImageService.swift:68`). Sorgu yanıtında da bakiye yok (`backend/supabase/functions/ai-image/index.ts:358`). Sonuçta `creditsRemaining` boş geliyor ve `ios/App/App/AppModel.swift:864` hiç çalışmıyor. Hap, Settings › Credits left ve widget uygulama yeniden açılana kadar eski sayıyı gösterir (açılışta okuma `AppModel.swift:627`, o da yalnızca onay varsa). İnceleme ekibi kredilerin düşmediğini düşünebilir.
-2. **Live Activity metinleri yerelleştirilmemiş.** `ios/GlowlitWidgets/GlowLiveActivity.swift:30,43,78,91`, `GlowJobStage`'in İngilizce `String` metinlerini (`ios/Packages/AppCore/Sources/AppCore/GlowShared.swift:223-238`) doğrudan gösteriyor; bu metinler widget kataloğunda yok. Türkçe cihazda Dynamic Island İngilizce görünür.
-3. **Sign in with Apple token iptali yapılandırılmamış.** `backend/supabase/functions/_shared/apple-signin.ts:17-28` anahtarlar olmadan `null` döndürüyor. Bu yüzden `account/index.ts:60-69` refresh token saklamıyor, `:87-90` de iptal edemiyor. Apple, hesap silmede bu iptali istiyor (5.1.1(v)).
-4. **RevenueCat silme yapılandırılmamış.** `backend/supabase/functions/_shared/revenuecat.ts:36-40` anahtar yoksa silmeyi atlıyor; gizlilik politikası ise RevenueCat'ten silmesini istediğimizi söylüyor (`legal/en/privacy-policy.md:242,267`).
-5. **Bağımsız çıktı denetimi kapalı ve hata durumunda geçirgen (fail-open).** `backend/supabase/functions/_shared/fal.ts:178`'de `FAL_KEY` yoksa denetim atlanıyor, `:185`'te hata yanıtında görsel geçiyor. Onay ekranı yine de fal.ai'yi "Checks results for safety" diye listeliyor (`ios/App/Resources/AppConfig.json:25`). App Review notları da "outputs are screened automatically" diyor. AGENTS.md §6'ya göre hata durumunda kapanan (fail-closed) denetim Supabase ile birlikte gelmeli.
+Bu sürümde düzeltilenler (yayından önce migration'lar `20261017000000_unclaimed_results` ve `20261018000000_revenuecat_deletion_queue` uygulanmalı, sonra `ai-image` ve `account` yeniden yayımlanmalı):
+
+1. **İşten sonra bakiye — düzeltildi.** 202 yanıtındaki bakiye hemen gösterilir; biten (başarılı, başarısız, iptal) işlerin yanıtı da bakiyeyi taşır. Kontrol: §3.4, §3.6.
+2. **Live Activity metinleri — düzeltildi.** Başlık ve alt satır widget kataloğundan 12 dilde gelir. Kontrol: Türkçe cihazda Dynamic Island (§7.2).
+3. **Sign in with Apple token iptali — anahtarlar hâlâ yok.** `APPLE_SIGNIN_KEY_ID` ve `APPLE_SIGNIN_PRIVATE_KEY` (`backend/supabase/functions/_shared/apple-signin.ts` › `appleConfig()`) eklenmedi; bu yüzden giriş bu sürümde gizli (`signInWithApple: false`, §5). Eksik anahtar artık log'a hata olarak düşer ve silmeyi bozmaz.
+4. **RevenueCat silme — kuyrukta bekliyor.** `REVENUECAT_SECRET_KEY` (ve v2 anahtar için `REVENUECAT_PROJECT_ID`; `_shared/revenuecat.ts` › `revenueCatKey()`) yokken silmeler `pending_revenuecat_deletions` tablosunda bekler; anahtar eklenince hesap silmede ve saatlik `POST /account/revenuecat-deletions` çağrısında gönderilir (zamanlama: `backend/README.md` 6. adım). Kontrol: §9.5.
+5. **Çıktı denetimi — artık hata durumunda kapalı (fail-closed).** Her sonuç tek bir denetimden geçer: `FAL_KEY` yokken xAI'nin kendi denetim kararı (filtrelenen ya da eksik görsel tüm işi engeller), `FAL_KEY` varsa fal.ai sınıflandırıcısı. Denetim çalışamazsa sonuç gösterilmez ve kredi iade edilir ("Our safety check couldn't run…"). Onay ekranı artık fal.ai'yi listelemez; `FAL_KEY` eklenecekse önce fal.ai'yi listeye geri ekleyen bir sürüm gerekir.
 6. **Sürüm numarası uyuşmayabilir.** `ios/Glowlit.xcodeproj/project.pbxproj:428` ve `:468`'de `MARKETING_VERSION = 1.0.0` var, App Store Connect'teki sürüm "1.0".
-7. **Yeniden kurulum temiz değil.** Oturum Keychain'de `kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly` ile saklanıyor (`ios/App/Services/Auth/Keychain.swift:22`) ve açılışta okunuyor (`ios/App/Services/Auth/AuthSessionManager.swift:21`). Uygulamayı silip kurmak eski anonim ya da Apple hesabını ve bakiyeyi geri getirir.
-8. **Bağlantı kopunca iade olmayabilir.** Uygulama 4 başarısız sorgudan sonra işi iptal etmeden vazgeçiyor (`RemoteAIImageService.swift:91-95`). Sunucu işi bitirirse kredi harcanmış sayılır ve iade edilmez; paywall ise "Failed edits are always refunded" diyor.
-9. **"Pro on all your devices" metni.** `ios/App/Features/Account/AccountViews.swift:67,74` böyle diyor, ama Pro yalnızca StoreKit'ten okunuyor (`ios/App/Services/Store/PurchaseManager.swift:188-205`). Sunucunun `is_pro` alanı (`ai-image/index.ts:77`) uygulamada hiç kullanılmıyor. Farklı App Store hesabı olan bir cihazda Pro görünmez.
-10. **Onay verilmeden bakiye sunucudan okunmuyor** (`AppModel.swift:627-632`). Örneğin onay vermeden kredi paketi alıp uygulamayı yeniden açarsan bakiye 3 görünür.
+7. **Yeniden kurulum temiz değil.** Oturum Keychain'de `kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly` ile saklanıyor (`ios/App/Services/Auth/Keychain.swift:22`) ve açılışta okunuyor (`ios/App/Services/Auth/AuthSessionManager.swift:21`). Uygulamayı silip kurmak eski anonim hesabı ve bakiyeyi geri getirir.
+8. **Bağlantı kopunca iade — düzeltildi.** Uygulama kopmalarda geri çekilerek sormaya devam eder ve ancak 2 dakika yanıt alamazsa vazgeçer; sunucu uygulamaya hiç ulaşmayan sonuçları bir saat dolunca iade eder (`undelivered`), ulaşıp onaylanmayanları günde en fazla bir kez (`unconfirmed`). Kontrol: §3.6.
+9. **"Pro on all your devices" metni — düzeltildi.** Hesap metinleri artık Pro'nun Apple Hesabından geldiğini söylüyor (giriş bu sürümde zaten gizli). Pro yine yalnızca StoreKit'ten okunuyor.
+10. **Onay verilmeden bakiye — düzeltildi.** Oturum varsa bakiye açılışta, öne gelişte ve satın almadan sonra onaydan bağımsız okunur; yalnızca okumak için hesap oluşturulmaz. Kontrol: onay vermeden kredi paketi al, uygulamayı kapatıp aç, bakiye paketi göstermeli.
 
 ---
 

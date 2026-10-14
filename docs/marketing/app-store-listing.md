@@ -98,10 +98,10 @@ Privacy Policy: {{PRIVACY_URL}}
 
 > Welcome to Glowlit ✨ Edit photos just by saying it, try 35+ one-tap looks, add free 80s & 90s effects, cut the silences out of your videos and create art from text. Share magazine covers, photo strips, before/after collages and story cards in one tap. Widgets, a Dynamic Island Live Activity, iPhone and iPad, 12 languages. Private by default, fair pricing, no weekly plan.
 
-**App Review notes** (2345/4000)
+**App Review notes** (2630/4000)
 
 ```text
-Glowlit is an AI photo editor and image generator for iPhone and iPad. No login is required: the app creates an anonymous account with our backend when a cloud feature is first used. Sign in with Apple is optional.
+Glowlit is an AI photo editor and image generator for iPhone and iPad. No login is required: the app creates an anonymous account with our backend when a cloud feature is first used (there is no sign-in in this version).
 
 How to review:
 1. Onboarding ends with "Try Digicam '04 on your photo": pick a photo and the free on-device effect is applied (or tap "Skip for now"). "Keep editing" opens the editor on Effects; "Save to My Works" keeps the result. A soft paywall that can be closed with X follows (after the editor closes, if it was opened), then a short guided tour (Next or Skip); replay it from Settings > Show me around.

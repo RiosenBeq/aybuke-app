@@ -335,7 +335,7 @@ struct PaywallView: View {
                     }
                 }
                 .disabled(isRestoring)
-                if app.canUseAccounts, !app.isSignedIn {
+                if app.offersSignIn, !app.isSignedIn {
                     Button("Sign in") { showSignIn = true }
                 }
                 Button("Terms") { legalDocument = .terms }

@@ -19,7 +19,7 @@
 - **On the Mac too:** the same app on macOS 14+ (Mac Catalyst), with a menu bar (⌘N New Creation, ⌘O Open Photo…, ⌘1–⌘4 for the tabs, ⌘, Settings), drag and drop of photo files, Esc and ⌘S in the editors, and a resizable window. One purchase covers iPhone, iPad and Mac. The Live Activity and Instagram Stories sharing are iPhone and iPad only.
 - **Easy to find your way:** a 7-step guided tour after onboarding spotlights Magic Edit, the daily credits, the free tools, Create, photos and videos, the private gallery and Settings. Replay it from Settings → "Show me around".
 - **Safe by design:** the prompt filter blocks sexual, revealing, humiliating and body- or face-reshaping requests in every app language, and every edit keeps her face, body, skin tone and skin texture. A neutral age step comes first: under 13 gets the on-device tools only, and under 18 never sees a paywall by itself.
-- **Optional account:** none is created until the first cloud edit or purchase; Sign in with Apple keeps Pro and credits on every device. No sign-up wall, and Delete my data removes everything.
+- **No sign-up:** an anonymous account is created only at the first cloud edit or purchase, and Delete my data removes everything. Sign in with Apple (credits on every device; Pro always follows the Apple Account) is built but switched off in this version (`signInWithApple` in `AppConfig.json`).
 
 | Promise | What it means |
 |---|---|
@@ -94,7 +94,7 @@ Cloud jobs run on xAI Grok Imagine (`grok-imagine-image-2.0` at 1k): low quality
 
 - **Notifications** are local and opt-in (`GlowNotifier`, `NotificationPlanner` in AppCore): edit ready, free credits back, one free look a week, and the trial reminder (at least 26 hours before the trial ends). Never at night (21:00–09:00) or during school hours on weekdays, and never her prompt on the Lock Screen (Live Activity and widget titles are catalog names).
 - **Rating prompts** follow `ReviewPromptPolicy`: only after the third save, share or heart, from day 3, once per version, never after a failure, report, retry or paywall.
-- **Accounts** are optional: Sign in with Apple, then the backend merges the anonymous user (see [backend/README.md](backend/README.md#accounts-sign-in-with-apple)). Turn on the Sign in with Apple capability for `app.glowlit.ios` before running on a device.
+- **Accounts** are optional and off in this version: with `signInWithApple` set to true in `AppConfig.json`, Sign in with Apple appears and the backend merges the anonymous user (see [backend/README.md](backend/README.md#accounts-sign-in-with-apple)). Turn on the Sign in with Apple capability for `app.glowlit.ios` before running on a device.
 
 ## Widgets and Live Activity
 

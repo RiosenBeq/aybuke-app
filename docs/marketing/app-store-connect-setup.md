@@ -61,7 +61,7 @@ No tracking. Matches `ios/App/Resources/PrivacyInfo.xcprivacy`.
 | Other User Content (prompts, reports) | Yes | App Functionality (prompts reach the AI provider with a hashed user tag we can link back; reports are keyed to the user ID) |
 | User ID (anonymous account ID) | Yes | App Functionality, Analytics (RevenueCat) |
 | Purchase History | Yes | App Functionality, Analytics (RevenueCat) |
-| Email Address (only with optional Sign in with Apple) | Yes | App Functionality |
+| Email Address (only with Sign in with Apple, which is off in this version: `signInWithApple` in `AppConfig.json`) | Yes | App Functionality. Not collected while sign-in is off, so it can stay undeclared now; declare it before turning sign-in on. The privacy manifest keeps listing it, so it stays valid either way |
 
 ## 6. Version 1.0
 

@@ -25,7 +25,9 @@ struct SettingsView: View {
                 // Under 13: no membership, account, credits or AI reminders.
                 if app.allowsPurchases {
                     membershipSection
-                    if app.canUseAccounts {
+                    // Sign in with Apple only where it's offered; an account
+                    // signed in before stays visible, so she can sign out.
+                    if app.offersSignIn || app.isSignedIn {
                         accountSection
                     }
                 }
@@ -193,7 +195,7 @@ struct SettingsView: View {
                 Button("Sign out", role: .destructive) { confirmSignOut = true }
             } else {
                 VStack(alignment: .leading, spacing: 12) {
-                    Text("Keep Pro and your credits when you switch or add a device. Signing in is optional.")
+                    Text("Keep your credits when you switch or add a device. Pro stays with your Apple Account. Signing in is optional.")
                         .font(.subheadline)
                         .foregroundStyle(Palette.textSecondary)
                     AppleSignInButton()

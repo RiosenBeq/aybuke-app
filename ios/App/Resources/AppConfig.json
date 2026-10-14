@@ -11,6 +11,7 @@
   "websiteURL": "https://riosenbeq.github.io/aybuke-app/",
   "instagramAppID": "",
   "revenueCatAPIKey": "appl_nMgLjPGSrACLwsGJMMoDmMXUvwS",
+  "signInWithApple": false,
   "consentVersion": 1,
   "aiProcessors": [
     {

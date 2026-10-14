@@ -44468,6 +44468,146 @@
         }
       }
     },
+    "Keep your credits on *every device*" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deine Credits auf *jedem Gerät*"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lleva tus créditos a *todos tus dispositivos*"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Garde tes crédits sur *tous tes appareils*"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bawa kreditmu ke *setiap perangkat*"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Porta i tuoi crediti su *ogni dispositivo*"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "*どの端末でも*クレジットはそのまま"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "*모든 기기*에서 내 크레딧 그대로"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seus créditos em *qualquer aparelho*"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Твои кредиты — на *каждом устройстве*"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kredilerin *her cihazda* seninle"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "*每台设备*都能用你的点数"
+          }
+        }
+      }
+    },
+    "Keep your credits when you switch or add a device. Pro stays with your Apple Account. Signing in is optional." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Behalte deine Credits, wenn du dein Gerät wechselst oder ein weiteres hinzufügst. Pro bleibt bei deinem Apple Account. Die Anmeldung ist optional."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conserva tus créditos cuando cambies de dispositivo o añadas otro. Pro sigue vinculado a tu cuenta de Apple. Iniciar sesión es opcional."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Garde tes crédits si tu changes d’appareil ou en ajoutes un. Pro reste lié à ton compte Apple. La connexion est facultative."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kreditmu tetap ikut saat kamu ganti atau menambah perangkat. Pro tetap terhubung ke Akun Apple-mu. Masuk tidak wajib."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mantieni i tuoi crediti quando cambi o aggiungi un dispositivo. Pro resta legato al tuo Account Apple. L'accesso è facoltativo."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "端末を買い替えたり追加したりしても、クレジットを引き継げます。ProはAppleアカウントにひも付いています。サインインは任意です。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "기기를 바꾸거나 추가해도 크레딧이 그대로 유지돼요. Pro는 Apple 계정에 연결돼 있어요. 로그인은 선택 사항이에요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mantenha seus créditos ao trocar de aparelho ou usar mais um. O Pro fica com a sua Conta Apple. Entrar é opcional."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Кредиты останутся с тобой при смене или добавлении устройства. Pro привязан к твоему Аккаунту Apple. Вход — по желанию."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cihaz değiştirdiğinde ya da yeni bir cihaz eklediğinde kredilerin seninle kalsın. Pro, Apple Hesabı'na bağlı kalır. Giriş yapmak isteğe bağlı."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "更换或添加设备时，点数都能保留。Pro 绑定在你的 Apple 账户上。登录与否由你决定。"
+          }
+        }
+      }
+    },
     "Keep your glow on *every device*" : {
       "localizations" : {
         "de" : {
@@ -56378,6 +56518,76 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "第 %1$lld 张，共 %2$lld 张"
+          }
+        }
+      }
+    },
+    "Pro works wherever you use the same Apple Account" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pro gilt überall, wo du denselben Apple Account nutzt"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pro funciona donde uses la misma cuenta de Apple"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pro marche partout où tu utilises le même compte Apple"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pro berlaku di mana pun kamu memakai Akun Apple yang sama"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pro funziona ovunque usi lo stesso Account Apple"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "同じAppleアカウントならどこでもProを利用可能"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "같은 Apple 계정이라면 어디서든 Pro 사용"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Pro funciona onde você usar a mesma Conta Apple"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pro работает везде, где тот же Аккаунт Apple"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aynı Apple Hesabı'nı kullandığın her yerde Pro"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "使用同一 Apple 账户的设备都能用 Pro"
           }
         }
       }
@@ -69395,6 +69605,76 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "通过 Apple 登录，换手机或添加手机时，Pro 和点数都会跟着你。"
+          }
+        }
+      }
+    },
+    "Sign in with Apple and your credits come with you when you switch or add a device. Pro stays with the Apple Account you subscribed with." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Melde dich mit Apple an und nimm deine Credits mit, wenn du dein Gerät wechselst oder ein weiteres hinzufügst. Pro bleibt bei dem Apple Account, mit dem du es abonniert hast."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inicia sesión con Apple y tus créditos irán contigo cuando cambies de dispositivo o añadas otro. Pro sigue vinculado a la cuenta de Apple con la que te suscribiste."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Connecte-toi avec Apple : tes crédits te suivent quand tu changes d’appareil ou en ajoutes un. Pro reste lié au compte Apple qui a souscrit l’abonnement."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Masuk dengan Apple agar kreditmu ikut pindah saat kamu ganti atau menambah perangkat. Pro tetap terhubung ke Akun Apple yang kamu pakai untuk berlangganan."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Accedi con Apple: i tuoi crediti ti seguiranno quando cambi o aggiungi un dispositivo. Pro resta legato all'Account Apple con cui hai sottoscritto l'abbonamento."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Appleでサインインすれば、端末を買い替えたり追加したりしてもクレジットを引き継げます。Proは登録したAppleアカウントにひも付いています。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple로 로그인하면 기기를 바꾸거나 추가해도 크레딧이 함께 따라와요. Pro는 구독한 Apple 계정에 연결돼 있어요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Entre com a Apple para levar seus créditos quando trocar de aparelho ou usar mais um. O Pro fica com a Conta Apple usada na assinatura."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Войди через Apple — и кредиты останутся с тобой, даже если сменишь устройство или добавишь ещё одно. Pro привязан к Аккаунту Apple, с которого оформлена подписка."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple ile giriş yap; cihaz değiştirdiğinde ya da yeni bir cihaz eklediğinde kredilerin de seninle gelsin. Pro, abone olduğun Apple Hesabı'na bağlı kalır."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "通过 Apple 登录，更换或添加设备时，点数都会跟着你。Pro 绑定在你订阅时使用的 Apple 账户上。"
           }
         }
       }
@@ -87314,6 +87594,76 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "你每天可获得 3 个免费点数。免费工具不消耗点数，编辑失败也一律退还点数。"
+          }
+        }
+      }
+    },
+    "You're signed in ✨ Your credits now come with you." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Du bist angemeldet ✨ Deine Credits sind jetzt überall dabei."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sesión iniciada ✨ Ahora tus créditos van contigo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Connexion réussie ✨ Tes crédits te suivent désormais."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kamu sudah masuk ✨ Kreditmu kini ikut bersamamu."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Accesso effettuato ✨ Ora i tuoi crediti ti seguono ovunque."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "サインインしました ✨ これでクレジットをどの端末でも使えます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "로그인했어요 ✨ 이제 크레딧이 어디서든 함께해요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Você entrou ✨ Agora seus créditos vão com você."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вход выполнен ✨ Теперь кредиты всегда с тобой."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Giriş yaptın ✨ Kredilerin artık seninle."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你已登录 ✨ 现在点数都会跟着你。"
           }
         }
       }

@@ -90,7 +90,7 @@ Prices, latency and alternatives: [`docs/research/tech-and-compliance.md`](../do
 
 ## Accounts (Sign in with Apple)
 
-Everyone starts anonymous, so nobody has to sign up. Signing in is optional and is offered mainly to Pro members and credit-pack buyers, so their membership and credits follow them to another iPhone:
+Everyone starts anonymous, so nobody has to sign up. Signing in is optional, and the app offers it only with `signInWithApple` set in `ios/App/Resources/AppConfig.json` (off in this version, until `APPLE_SIGNIN_KEY_ID` / `APPLE_SIGNIN_PRIVATE_KEY` are set so deletion can revoke the token). It's meant mainly for Pro members and credit-pack buyers, so their credits follow them to another device (Pro itself follows the Apple Account that bought it):
 
 1. The app gets an identity token from Apple and signs in with Supabase's native Apple provider (`POST /auth/v1/token?grant_type=id_token`).
 2. It then calls `POST /account/link` with the new session, the previous anonymous session and Apple's one-time authorization code. `merge_accounts()` moves purchased credits, the subscription, jobs and reports into the account (daily free credits never move), and the anonymous user is deleted. Running it twice is safe.

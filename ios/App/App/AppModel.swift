@@ -111,7 +111,8 @@ final class AppModel {
     }
     var consentRequest: ConsentRequest?
     var shareRequest: SharePayload?
-    /// "Keep your glow on every iPhone": offered after a purchase.
+    /// "Keep your credits on every device": offered after a purchase while
+    /// Sign in with Apple is offered (`offersSignIn`).
     var isAccountPromptPresented = false
     /// "Find your best shot" (on-device, by light and focus).
     var isBestShotPresented = false
@@ -558,8 +559,14 @@ final class AppModel {
 
     // MARK: Account
 
-    /// Accounts live on the backend, so demo and developer modes can't offer them.
+    /// A server account exists to delete (anonymous, or signed in): demo and
+    /// developer modes have none.
     var canUseAccounts: Bool { remote != nil }
+
+    /// Sign in with Apple is offered: a backend, and `signInWithApple` in
+    /// AppConfig.json (off in this version, so no entry point shows; someone
+    /// already signed in still sees the account and can sign out).
+    var offersSignIn: Bool { remote != nil && config.signInWithApple }
 
     /// Reads the session, finishes a credit merge that failed earlier, and
     /// signs out if the Apple ID stopped using Glowlit.
@@ -598,7 +605,7 @@ final class AppModel {
         await refreshServerBalance()
         syncWidgets()
         Haptics.success()
-        showToast("You're signed in ✨ Pro and your credits now come with you.", style: .success)
+        showToast("You're signed in ✨ Your credits now come with you.", style: .success)
     }
 
     /// Back to an anonymous session on this iPhone. Pro stays tied to the
@@ -619,7 +626,7 @@ final class AppModel {
     /// After a purchase, offer (never require) an account, so the purchase
     /// isn't stuck on this iPhone.
     func offerAccountAfterPurchase() {
-        guard canUseAccounts, !isSignedIn else { return }
+        guard offersSignIn, !isSignedIn else { return }
         Task {
             try? await Task.sleep(for: .milliseconds(700))
             isAccountPromptPresented = true
