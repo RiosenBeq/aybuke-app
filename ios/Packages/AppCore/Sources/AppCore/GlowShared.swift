@@ -213,7 +213,9 @@ public enum GlowSharedStore {
 // MARK: - Live Activity (Dynamic Island)
 
 /// Progress of one cloud AI job, shown in the Dynamic Island and on the Lock
-/// Screen while the user waits (or switches apps).
+/// Screen while the user waits (or switches apps). The text is English; the
+/// widget extension translates it with `L10n.core(_:)` (registered by
+/// `scripts/export-core-strings.py`).
 public enum GlowJobStage: String, Codable, Hashable, Sendable {
     case creating
     case finishing
@@ -233,7 +235,9 @@ public enum GlowJobStage: String, Codable, Hashable, Sendable {
         switch self {
         case .creating, .finishing: return "You can leave the app — we'll keep going."
         case .ready: return "Tap to see it ✨"
-        case .failed: return "No credit was used. Tap to try again."
+        // True whether the server refunded at once or will refund a result
+        // that never reached the app.
+        case .failed: return "Failed creations are refunded automatically. Tap to try again."
         }
     }
 }

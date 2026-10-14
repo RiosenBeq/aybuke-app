@@ -34517,6 +34517,76 @@
         }
       }
     },
+    "Failed creations are refunded automatically. Tap to try again." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fehlgeschlagene Kreationen werden automatisch erstattet. Tippe für einen neuen Versuch."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Si una creación falla, te devolvemos el crédito automáticamente. Toca para intentarlo de nuevo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les créations qui échouent sont remboursées automatiquement. Appuie pour réessayer."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kredit untuk kreasi yang gagal dikembalikan secara otomatis. Ketuk untuk mencoba lagi."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le creazioni non riuscite vengono rimborsate automaticamente. Tocca per riprovare."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "失敗した作成のクレジットは自動で返却されます。タップしてもう一度お試しください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "생성에 실패하면 크레딧이 자동으로 환불돼요. 탭해서 다시 시도해 보세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Criações que falham têm o crédito devolvido automaticamente. Toque para tentar de novo."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "За неудачные создания кредит возвращается автоматически. Нажми, чтобы попробовать ещё раз."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Başarısız işlerde kredin otomatik olarak iade edilir. Tekrar denemek için dokun."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "创作失败会自动退还点数。轻点即可重试。"
+          }
+        }
+      }
+    },
     "Failed edits are always refunded" : {
       "localizations" : {
         "de" : {

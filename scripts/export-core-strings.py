@@ -11,7 +11,7 @@ full of `String(localized:)` calls (never executed) so Xcode extracts those
 keys for translators:
 
   ios/App/App/CoreStrings.swift              everything the app shows
-  ios/GlowlitWidgets/CoreStrings.swift       template and category names (widgets)
+  ios/GlowlitWidgets/CoreStrings.swift       template and category names, Live Activity text (widgets)
 """
 
 from __future__ import annotations
@@ -67,6 +67,13 @@ def collect() -> tuple[list[tuple[str, str]], list[tuple[str, str]]]:
         pair = (text, "One-tap look description, shown under its name")
         app.append(pair)
         widget.append(pair)
+
+    shared = read("GlowShared.swift")
+    stages = shared[shared.index("public enum GlowJobStage"):]
+    for text in literals(r"return " + LITERAL, block(stages, "public var headline: String")):
+        widget.append((text, "Live Activity headline (Dynamic Island and Lock Screen) while an AI job runs or when it ends"))
+    for text in literals(r"return " + LITERAL, block(stages, "public var detail: String")):
+        widget.append((text, "Live Activity line under the progress bar (Dynamic Island and Lock Screen)"))
 
     for text in literals(r"\bname: " + LITERAL, read("StyleCatalog.swift")):
         app.append((text, "Art style name on the Create screen"))

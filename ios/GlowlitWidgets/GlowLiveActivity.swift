@@ -27,7 +27,7 @@ struct GlowLiveActivity: Widget {
                 }
                 DynamicIslandExpandedRegion(.center) {
                     VStack(spacing: 2) {
-                        Text(state.stage.headline)
+                        Text(L10n.core(state.stage.headline))
                             .font(.system(size: 15, weight: .bold, design: .rounded))
                             .foregroundStyle(.white)
                             .lineLimit(1)
@@ -40,7 +40,7 @@ struct GlowLiveActivity: Widget {
                 DynamicIslandExpandedRegion(.bottom) {
                     VStack(spacing: 6) {
                         GlowProgressBar(state: state, track: .white.opacity(0.15))
-                        Text(state.stage.detail)
+                        Text(L10n.core(state.stage.detail))
                             .font(.system(size: 12, weight: .medium, design: .rounded))
                             .foregroundStyle(.white.opacity(0.7))
                     }
@@ -75,7 +75,7 @@ private struct GlowLockScreenView: View {
             HStack(spacing: 12) {
                 ToolBadge(symbol: context.attributes.symbolName, stage: state.stage, size: 46)
                 VStack(alignment: .leading, spacing: 1) {
-                    Text(state.stage.headline)
+                    Text(L10n.core(state.stage.headline))
                         .font(.system(size: 16, weight: .bold, design: .rounded))
                         .foregroundStyle(WidgetPalette.ink)
                     Text(context.attributes.title)
@@ -88,7 +88,7 @@ private struct GlowLockScreenView: View {
             }
             GlowProgressBar(state: state, fill: WidgetPalette.ink, track: WidgetPalette.ink.opacity(0.1))
             HStack {
-                Text(state.stage.detail)
+                Text(L10n.core(state.stage.detail))
                     .font(.system(size: 12, weight: .medium, design: .rounded))
                     .foregroundStyle(WidgetPalette.inkSoft)
                 Spacer()
