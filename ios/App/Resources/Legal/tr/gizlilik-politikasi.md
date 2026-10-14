@@ -1,6 +1,6 @@
 # Gizlilik Politikası
 
-Son güncelleme: 13 Ekim 2026
+Son güncelleme: 14 Ekim 2026
 
 > **Kısaca gizlilik**
 > - Glowlit gençler düşünülerek tasarlandığı için herkese yüksek gizlilik sağlayan varsayılan ayarlar uygulanır: reklam yok, takip yok, profilleme yok, herkese açık profil veya akış yok.

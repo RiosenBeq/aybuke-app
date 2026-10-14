@@ -2,7 +2,7 @@
 
 # Terms of Use
 
-Last updated: 13 October 2026
+Last updated: 14 October 2026
 
 > **The short version.** This summary helps you find your way around. It doesn't replace the full Terms below.
 > - These Terms are a contract between you and [Company legal name], the developer of Glowlit. They are not a contract with Apple.

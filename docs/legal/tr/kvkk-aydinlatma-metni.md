@@ -2,7 +2,7 @@
 
 # Kişisel Verilerin Korunması Kanunu Kapsamında Aydınlatma Metni
 
-Son güncelleme: 13 Ekim 2026
+Son güncelleme: 14 Ekim 2026
 
 > **Kısaca**
 > - Glowlit uygulamasında sizden ad, e-posta veya şifre istemiyoruz; hesabınız anonim, rastgele bir kimlikten ibarettir.

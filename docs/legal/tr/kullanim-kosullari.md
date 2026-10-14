@@ -2,7 +2,7 @@
 
 # Kullanım Koşulları
 
-Son güncelleme: 13 Ekim 2026
+Son güncelleme: 14 Ekim 2026
 
 > **Kısaca.** Bu özet, metinde yolunuzu bulmanıza yardımcı olur; aşağıdaki Koşulların yerine geçmez.
 > - Bu Koşullar, sizinle Glowlit uygulamasının geliştiricisi [Şirket unvanı] arasında yapılan bir sözleşmedir. Apple bu sözleşmenin tarafı değildir.

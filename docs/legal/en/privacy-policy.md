@@ -2,7 +2,7 @@
 
 # Privacy Policy
 
-Last updated: 13 October 2026
+Last updated: 14 October 2026
 
 > **Privacy at a glance**
 > - Glowlit is designed with teens in mind, so everyone gets high-privacy defaults: no ads, no tracking, no profiling and no public profiles or feeds.
