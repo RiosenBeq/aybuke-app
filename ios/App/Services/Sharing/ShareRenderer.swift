@@ -78,8 +78,8 @@ enum ShareFormat: String, CaseIterable, Identifiable {
     var isStory: Bool { self == .story || self == .strip || self == .pick }
 }
 
-/// Renders share formats. Free exports of Glowlit's cloud AI results carry
-/// Glowlit branding (the corner watermark, or a "Made with Glowlit" line on
+/// Renders share formats. Free exports of Aybuke's cloud AI results carry
+/// Aybuke branding (the corner watermark, or a "Made with Aybuke" line on
 /// collages and cards); on-device edits and Pro never do. Pure functions,
 /// safe off the main thread.
 enum ShareRenderer {
@@ -393,7 +393,7 @@ enum ShareCaption {
         return lines.joined(separator: "\n")
     }
 
-    /// "#Glowlit #GlowUp", plus the AI tags when they apply.
+    /// "#Aybuke #GlowUp", plus the AI tags when they apply.
     static func hashtagLine(_ hashtags: [String], aiHashtags: [String], madeWithAI: Bool) -> String {
         (hashtags + (madeWithAI ? aiHashtags : []))
             .map { $0.trimmingCharacters(in: CharacterSet(charactersIn: "# ")) }

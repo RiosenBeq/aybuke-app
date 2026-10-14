@@ -2,7 +2,7 @@
   "_comment" : "Generated from ios/Packages/AppCore (ContentPolicy, PromptBuilder.editGuard). Do not edit by hand: run scripts/export-catalog.sh.",
   "editGuard" : " Keep everything else the same. Don't change anyone's face or body shape, facial features, skin tone, skin texture or age, and keep clothing at least as modest as in the photo.",
   "messages" : {
-    "appearanceChange" : "Glowlit keeps you, you. Try hair color, makeup colors, outfits, light or backgrounds.",
+    "appearanceChange" : "Aybuke keeps you, you. Try hair color, makeup colors, outfits, light or backgrounds.",
     "humiliation" : "Edits that make fun of someone aren't something we do. Try a fun scene instead.",
     "revealingClothing" : "Let's keep outfits cozy and everyday. Try a cozy knit, a party dress or a costume.",
     "sexual" : "Nudity and sexual content aren't allowed. Try a different idea.",

@@ -421,9 +421,9 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Config/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = Glowlit;
+				INFOPLIST_KEY_CFBundleDisplayName = Aybuke;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.photography";
-				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Glowlit saves your creations to your photo library.";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Aybuke saves your creations to your photo library.";
 				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = NO;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -461,9 +461,9 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Config/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = Glowlit;
+				INFOPLIST_KEY_CFBundleDisplayName = Aybuke;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.photography";
-				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Glowlit saves your creations to your photo library.";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Aybuke saves your creations to your photo library.";
 				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = NO;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -499,7 +499,7 @@
 				DEVELOPMENT_TEAM = CBTKNY3LFC;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = GlowlitWidgets/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = Glowlit;
+				INFOPLIST_KEY_CFBundleDisplayName = Aybuke;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -533,7 +533,7 @@
 				DEVELOPMENT_TEAM = CBTKNY3LFC;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = GlowlitWidgets/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = Glowlit;
+				INFOPLIST_KEY_CFBundleDisplayName = Aybuke;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (

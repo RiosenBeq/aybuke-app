@@ -328,7 +328,7 @@ struct RetroCamView: View {
         CamNotice(symbol: "video.slash.fill",
                   title: "Camera access is *off*",
                   message: Platform.isMac
-                      ? Text("Allow camera access for Glowlit in System Settings › Privacy & Security › Camera.")
+                      ? Text("Allow camera access for Aybuke in System Settings › Privacy & Security › Camera.")
                       : Text("Allow camera access in Settings to use Retro Cam and Retro Booth.")) {
             Button {
                 let settings = Platform.isMac ? "x-apple.systempreferences:com.apple.preference.security?Privacy_Camera" : UIApplication.openSettingsURLString

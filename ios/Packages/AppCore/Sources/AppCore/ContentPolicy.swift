@@ -52,7 +52,7 @@ public enum ContentPolicy {
         case .humiliation:
             return .blocked(reason: "Edits that make fun of someone aren't something we do. Try a fun scene instead.", category: .humiliation)
         case .appearanceChange:
-            return .blocked(reason: "Glowlit keeps you, you. Try hair color, makeup colors, outfits, light or backgrounds.", category: .appearanceChange)
+            return .blocked(reason: "Aybuke keeps you, you. Try hair color, makeup colors, outfits, light or backgrounds.", category: .appearanceChange)
         }
     }
 

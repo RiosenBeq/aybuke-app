@@ -4,7 +4,7 @@
 
 ## App Store Review Guidelines (last updated June 8, 2026)
 
-| Rule | Requirement | Status in Glowlit |
+| Rule | Requirement | Status in Aybuke |
 |---|---|---|
 | **5.1.2(i)** third-party AI (Nov 2025) | Disclose where personal data goes, including third-party AI, and get **explicit permission** first | ✅ `AIConsentView` asks before the first cloud job and names the processor: "xAI (Grok Imagine)" (`aiProviderName` in `AppConfig.json`; developer mode names its own provider). It is revocable in Settings. On-device features (effects, video editing, background removal, adjustments, Best shot) work without consent. |
 | 5.1.1 privacy | Privacy policy; data minimisation; out-of-process picker | ✅ `PhotosPicker` (no library permission); only `NSPhotoLibraryAddUsageDescription`. ✅ Privacy Policy drafted (EN/TR) and bundled in the app; published copy in `docs/legal/`. ⏳ Lawyer review and final URL. |
@@ -52,13 +52,13 @@
 ## United States
 
 - **California AI Transparency Act** (in force since 2 Aug 2026; applies above 1M monthly users) and **Washington ESHB 1170** (from 1 Feb 2027) require embedded provenance, and accept C2PA. ⏳ Add C2PA before reaching that scale.
-- **TAKE IT DOWN Act:** applies to platforms that host user content publicly. Glowlit has no public sharing; adding a feed would trigger a 48-hour removal process.
+- **TAKE IT DOWN Act:** applies to platforms that host user content publicly. Aybuke has no public sharing; adding a feed would trigger a 48-hour removal process.
 - **Age assurance:** Texas SB 2420 (new Texas Apple Accounts from 4 Jun 2026, https://developer.apple.com/news/?id=sg176nne), Utah from 6 May 2026 and Louisiana from 1 Jul 2026 (https://developer.apple.com/news/?id=f5zj08ey), Brazil's ECA Digital (no self-declaration). ✅ Declared Age Range API (`com.apple.developer.declared-age-range`), with the gates 13, 16 and 18; where Apple says it's required (`requiredRegulatoryFeatures` / `isEligibleForAgeFeatures`), declining keeps on-device-only mode with a retry; in Brazil a self-declared age gets only the protective defaults (counsel to confirm). ⏳ Later (backend): PermissionKit significant-change approvals and App Store Server `RESCIND_CONSENT` handling; `AppStore.ageRatingCode`; mirroring the band to the widgets. ⏳ California AB 1043 and Alabama dates: cite primary sources before relying on them.
 - **BIPA and right of publicity:** no face templates; no celebrity or "real person" templates.
 
 ## Girls-first redesign (October 2026)
 
-Glowlit is now designed for girls and young women, so many users will be 13–17.
+Aybuke is now designed for girls and young women, so many users will be 13–17.
 
 | Area | Status |
 |---|---|
@@ -81,7 +81,7 @@ Glowlit is now designed for girls and young women, so many users will be 13–17
 | Area | Status |
 |---|---|
 | **xAI as the AI provider** | ✅ Named on the consent screen and in the Privacy Policy (§6, §12) and KVKK notice. Results are cleared as soon as the app confirms the download (1 hour at most); requests carry a one-way user tag, never the user id. xAI doesn't train on API data without permission. ⏳ **Switch on Zero Data Retention in the xAI console before launch** (selfies are personal data); sign xAI's DPA; cover transfers to the US (DPF or SCCs; KVKK standard contract). |
-| **Apple Intelligence in Create** | ✅ "Inspire me" and "Make it magic" use Apple's on-device model: nothing leaves the device, every line passes the prompt policy, Privacy Policy §4. "Create with Image Playground" is Apple's feature: Glowlit's consent and credits don't apply, styles are locked to Apple's cartoon styles, personalization is off, and from iOS 27 (Private Cloud Compute) a one-time notice names Apple before the first use; Privacy Policy §6 and §11 and the KVKK notice say so. ⏳ Test on real iOS 26.x and iOS 27 devices before release: disallowed and body-reshaping prompts typed inside Apple's sheet, "photorealistic" with the style lock, and that her own photo can't be added with personalization off; don't ship it if a realistic edit of a selfie gets through. |
+| **Apple Intelligence in Create** | ✅ "Inspire me" and "Make it magic" use Apple's on-device model: nothing leaves the device, every line passes the prompt policy, Privacy Policy §4. "Create with Image Playground" is Apple's feature: Aybuke's consent and credits don't apply, styles are locked to Apple's cartoon styles, personalization is off, and from iOS 27 (Private Cloud Compute) a one-time notice names Apple before the first use; Privacy Policy §6 and §11 and the KVKK notice say so. ⏳ Test on real iOS 26.x and iOS 27 devices before release: disallowed and body-reshaping prompts typed inside Apple's sheet, "photorealistic" with the style lock, and that her own photo can't be added with personalization off; don't ship it if a realistic edit of a selfie gets through. |
 | **Video editing and effects** | ✅ On-device only (AVFoundation, Core Image): no upload, no consent or credits needed, no AI provenance claim. Videos are copied to a temporary file and deleted when the editor closes. |
 | **Invite card** | ✅ Made from brand art only; never includes the user's photos. The QR code links to the App Store page or the website. |
 | **Languages** | ✅ 12 app languages; the prompt policy blocks sexual requests in all of them. Legal documents are English and Turkish only, and other languages show the English versions. ⏳ Native-speaker review of the translations, especially consent, privacy and paywall copy (3.1.2 wording must stay accurate in every language). |

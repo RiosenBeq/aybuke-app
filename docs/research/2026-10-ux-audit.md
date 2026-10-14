@@ -1,6 +1,6 @@
 # UX audit and first fixes (14 October 2026)
 
-A pass over every main flow of Glowlit, after the October feature audit and the "sharpen the corners" redesign, with one question: is the app easy to use, does it feel made for her, and does it ask for money honestly? This document lists what we found, what changed in this pass and what we recommend next.
+A pass over every main flow of Aybuke, after the October feature audit and the "sharpen the corners" redesign, with one question: is the app easy to use, does it feel made for her, and does it ask for money honestly? This document lists what we found, what changed in this pass and what we recommend next.
 
 For the earlier research see [2026-10-feature-audit.md](2026-10-feature-audit.md) (competitors, trends, wellbeing, compliance; what was built, deferred or rejected). Nothing here reopens a rejected idea: no streaks, feeds or likes, no beauty scores, no urgency, and under-18s never see a paywall on their own.
 
@@ -18,7 +18,7 @@ The ten that mattered most, in order:
 
 1. **Credits were a number with no explanation.** Explore's credit pill only showed a count. Tapping it opened the paywall for free members and Settings for Pro, so the first explanation of credits a teen got was a sales page. Create showed what Generate costs but never what she had left. The widgets explained credits better than the app ("3 free credits today", "New credits in …").
 2. **The paywall never said why it was there.** Running out of free credits, tapping a Pro look, choosing a Pro style or more than one image, and "Remove it with Pro" all opened the same screen.
-3. **The paywall overstated Pro.** "Glowlit Pro unlocks every tool and trend", but every on-device tool is free for everyone; Pro unlocks the Pro looks and styles, more images at once, the best-quality AI and no mark. Nothing on it said what stays free.
+3. **The paywall overstated Pro.** "Aybuke Pro unlocks every tool and trend", but every on-device tool is free for everyone; Pro unlocks the Pro looks and styles, more images at once, the best-quality AI and no mark. Nothing on it said what stays free.
 4. **One-tap looks spend a credit with no price on the way.** A look card opens the photo picker and the look runs as soon as she picks a photo. No card, collection page or the editor's Styles panel mentions the credit (Magic Edit, Enhance and Erase all show theirs).
 5. **"What's free" changed from screen to screen.** Settings named background removal and adjustments; the Pro out-of-credits sheet, the consent sheet and the offline note named four tools each. None mentioned Retro Cam, collages, Crop, Hide faces or Text & Stickers.
 6. **Create results were kept silently.** Every result goes to My Works as it arrives, but the results screen didn't say so; Save (to Photos) looked like the only way to keep a picture.
@@ -66,13 +66,13 @@ What already works well and should stay: the on-device try-it before any paywall
 | 1 | **"Your credits" sheet.** The credit pill (free and Pro) and the balance under Create's Generate open it: the balance, when free credits are back (a relative time, only once some are used) or Pro's next refill when known, the daily or monthly rule, what uses a credit ("AI tools use 1 credit per picture: Magic Edit, looks, Enhance, Erase and Create") and what is always free, then one quiet "Get more credits" (the plans for free members, packs for Pro). No more paywall from a tap on a number | `Features/Paywall/CreditsSheet.swift` (new), `HomeView.swift` (`HomeCreditPill`), `CreateView.swift` (`creditsLink`) |
 | 2 | **Balance under Generate** ("3 credits left", crown for Pro) | `CreateView.swift` |
 | 3 | **The paywall says why it opened**: "You've used today's free credits" with "Free credits are back in 5 hr", "Doll Box is part of Pro", "Fantasy is part of Pro", "Creating several images at once is part of Pro", or that Pro removes the mark. Create and the editor pass the reason through `requestAccess(proSource:)` | `PaywallView.swift` (`PaywallReason`, `ReasonCard`), `AppModel.swift`, `CreateViewModel.swift`, `EditorViewModel.swift` |
-| 4 | **Honest paywall subtitle**: "Glowlit Pro unlocks every look and style." | `PaywallView.swift` |
+| 4 | **Honest paywall subtitle**: "Aybuke Pro unlocks every look and style." | `PaywallView.swift` |
 | 5 | **What stays free, on the paywall**: "Always free: every on-device tool and 3 AI credits a day." next to "No weekly plans, ever." | `PaywallView.swift` |
 | 6 | **Price before one-tap looks**: "1 credit per look · failed looks are refunded" on collection pages | `CategoryView.swift` |
 | 7 | **One free list everywhere**: the credits sheet and the Pro out-of-credits sheet say "Always free: effects, Retro Cam, Cut out, Adjust, Crop, Hide faces, Text & Stickers, collages and videos."; Settings uses the tour's rule ("Free tools never use credits, and failed edits are always refunded") | `CreditsSheet.swift`, `OutOfCreditsSheet.swift`, `SettingsView.swift` |
 | 8 | **"Saved to My Works"** under Create's results; a tap opens My Works | `ResultsView.swift` |
 | 9 | **No dead-end tab under 13**: any request for the Create tab lands on Edit when cloud AI isn't offered | `AppModel.swift` (`selectedTab`) |
-| 10 | **VoiceOver hints**: the credit pill and Create's balance ("Shows your credits and how they work"), look cards on Explore and collection pages ("Choose a photo to try this look", or "Upgrade to Glowlit Pro" for a Pro look), and the saved note ("Opens My Works") | `HomeView.swift`, `CategoryView.swift`, `CreateView.swift`, `ResultsView.swift` |
+| 10 | **VoiceOver hints**: the credit pill and Create's balance ("Shows your credits and how they work"), look cards on Explore and collection pages ("Choose a photo to try this look", or "Upgrade to Aybuke Pro" for a Pro look), and the saved note ("Opens My Works") | `HomeView.swift`, `CategoryView.swift`, `CreateView.swift`, `ResultsView.swift` |
 | 11 | **Shared corners** for the toast, the preview-build banner and the paywall's pending card and pack rows | `Toast.swift`, `HomeView.swift`, `PaywallView.swift` |
 
 Every new string (15) is translated into all 11 languages in `Localizable.xcstrings`, reusing the catalog's words for each tool and its informal tone; existing strings were reused where they already said the right thing ("%lld credits left", "Next refill: %@", the tour's credit rules, "Saved to My Works", "Upgrade to %@ Pro").

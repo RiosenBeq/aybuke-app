@@ -24,7 +24,7 @@ enum CreationSchemaV3: VersionedSchema {
         var pixelHeight: Int
         /// Hearted in My Works.
         var isFavorite: Bool = false
-        /// Who made the pixels when it wasn't Glowlit's own pipeline
+        /// Who made the pixels when it wasn't Aybuke's own pipeline
         /// (`imagePlaygroundSource`); `nil` for everything else.
         var source: String? = nil
         /// The IPTC marking the edited photo already carried (a `DigitalSourceType`
@@ -75,7 +75,7 @@ extension CreationSchemaV3.Creation {
     var isInRecentlyDeleted: Bool { deletedAt != nil }
 
     /// Export markings. Apple made Image Playground pictures, so they're
-    /// marked as AI-generated but never carry Glowlit's mark.
+    /// marked as AI-generated but never carry Aybuke's mark.
     var provenance: Provenance {
         Creation.provenance(operation: operation, source: source, inheritedSourceType: sourceTypeRaw.flatMap(DigitalSourceType.init(rawValue:)))
     }

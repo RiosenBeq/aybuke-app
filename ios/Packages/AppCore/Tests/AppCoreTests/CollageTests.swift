@@ -438,7 +438,7 @@ final class CollageProvenanceTests: XCTestCase {
         XCTAssertEqual(provenance.storedSourceType, .compositeWithTrainedAlgorithmicMedia)
         XCTAssertTrue(provenance.carriesAIProvenance)
         XCTAssertFalse(provenance.isFullyGenerated)
-        // Marked by its sources, never by Glowlit's free-tier mark.
+        // Marked by its sources, never by Aybuke's free-tier mark.
         XCTAssertFalse(provenance.showsMark(isPro: false))
         XCTAssertEqual(Provenance.collage(of: [.compositeWithTrainedAlgorithmicMedia, nil]).sourceType, .compositeWithTrainedAlgorithmicMedia)
     }

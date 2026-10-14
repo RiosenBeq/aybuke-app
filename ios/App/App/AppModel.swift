@@ -116,7 +116,7 @@ final class AppModel {
     var closeActiveCover: (() -> Void)?
     /// File › New Creation asks Create to put the cursor in its prompt.
     var wantsPromptFocus = false
-    /// Settings: the gear on Explore, or Glowlit › Settings… on the Mac.
+    /// Settings: the gear on Explore, or Aybuke › Settings… on the Mac.
     var isSettingsPresented = false
     var isPaywallPresented = false
     /// Pro without enough credits: next refill and packs (free members get the paywall).
@@ -416,7 +416,7 @@ final class AppModel {
         case .rebuilt:
             showToast("We rebuilt My Works. Your images are back; titles and hearts couldn't be restored.", style: .info)
         case .temporary:
-            showToast("My Works couldn't open, so new creations won't be kept this time. Free up some space and restart Glowlit.", style: .error)
+            showToast("My Works couldn't open, so new creations won't be kept this time. Free up some space and restart Aybuke.", style: .error)
         }
         libraryOutcome = .opened
         storefrontCountry = await Storefront.current?.countryCode
@@ -567,7 +567,7 @@ final class AppModel {
         showToast("Your data has been deleted.", style: .success)
     }
 
-    /// Everything Glowlit keeps on this device, back to a fresh install. The
+    /// Everything Aybuke keeps on this device, back to a fresh install. The
     /// per-app language choice stays, and so does the trial reminder while a
     /// trial runs: the Apple subscription outlives the deletion.
     private func wipeLocalData() async {
@@ -617,7 +617,7 @@ final class AppModel {
     var offersSignIn: Bool { remote != nil && config.signInWithApple }
 
     /// Reads the session, finishes a credit merge that failed earlier, and
-    /// signs out if the Apple ID stopped using Glowlit.
+    /// signs out if the Apple ID stopped using Aybuke.
     func refreshAccount() async {
         guard let remote else { return }
         let account = await remote.account()

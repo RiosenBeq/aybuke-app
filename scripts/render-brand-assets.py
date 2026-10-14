@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Render Glowlit's app icons and brand board.
+"""Render Aybuke's app icons and brand board.
 
     python3 scripts/render-brand-assets.py                   # the app icon: concept C, "Glow Gem"
     python3 scripts/render-brand-assets.py --concept a       # switch every output below to concept A or B
@@ -523,7 +523,7 @@ def icon_svg(concept: str) -> str:
     canvas = Vector()
     CONCEPTS[concept][1](canvas, "default")
     name = CONCEPTS[concept][0]
-    return canvas.document(f'Glowlit app icon, concept {concept.upper()} "{name}". Written by '
+    return canvas.document(f'Aybuke app icon, concept {concept.upper()} "{name}". Written by '
                            f"scripts/render-brand-assets.py from the same paths as the PNGs; edit the script, not this file.")
 
 
@@ -603,7 +603,7 @@ def brand_board(app_icon: Image.Image) -> Image.Image:
     board.paste(art, (ix, iy), mask)
 
     x = 600
-    draw.text((x, 150), "Glowlit", font=font("ExtraBold", 150), fill=INK)
+    draw.text((x, 150), "Aybuke", font=font("ExtraBold", 150), fill=INK)
     make = font("Bold", 64)
     draw.text((x + 4, 335), "Make it ", font=make, fill=INK)
     offset = draw.textlength("Make it ", font=make)
@@ -721,7 +721,7 @@ def render_app_icons(concept: str) -> None:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Render Glowlit's app icons and brand board.")
+    parser = argparse.ArgumentParser(description="Render Aybuke's app icons and brand board.")
     parser.add_argument("--concept", choices=sorted(CONCEPTS), default=CHOSEN,
                         help=f"icon concept for every output (default: {CHOSEN}, the app's icon)")
     parser.add_argument("--concept-sheets", action="store_true",

@@ -9,7 +9,7 @@ struct ResultsView: View {
     let operation: AIOperation
     var requestID: String?
     /// `Creation.imagePlaygroundSource` for Apple-made images: no mark, no
-    /// report to Glowlit (we never see them), credited to Image Playground.
+    /// report to Aybuke (we never see them), credited to Image Playground.
     var source: String? = nil
     /// Create's results: run the same job again, after a confirm with its cost.
     var regenerate: Regenerate? = nil

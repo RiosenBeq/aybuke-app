@@ -178,7 +178,7 @@ struct AppConfig: Decodable {
         appStoreID: "",
         websiteURL: "",
         instagramAppID: "",
-        shareHashtags: ["Glowlit", "GlowUp"],
+        shareHashtags: ["Aybuke", "GlowUp"],
         revenueCatAPIKey: ""
     )
 

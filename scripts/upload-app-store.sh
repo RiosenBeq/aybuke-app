@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Archives Glowlit (Release) and uploads it to App Store Connect with an
+# Archives Aybuke (Release) and uploads it to App Store Connect with an
 # App Store Connect API key, so Xcode needs no Apple ID signed in.
 #
 #   ASC_KEY_ID=<key id> ASC_ISSUER_ID=<issuer id> scripts/upload-app-store.sh
@@ -96,4 +96,4 @@ xcodebuild -exportArchive \
   -exportPath "$OUT/export" \
   "${AUTH[@]}"
 
-echo "Uploaded Glowlit $PLATFORM build $BUILD_NUMBER. It appears in App Store Connect → TestFlight once Apple finishes processing it (usually 10–30 minutes)."
+echo "Uploaded Aybuke $PLATFORM build $BUILD_NUMBER. It appears in App Store Connect → TestFlight once Apple finishes processing it (usually 10–30 minutes)."

@@ -8,7 +8,7 @@ those steps clearly listed for a Mac session.
 
 ---
 
-You are finishing **Aybuke** (code name Glowlit), an iPhone/iPad/Mac (Mac Catalyst) AI photo editor for girls and young women 13+, and shipping version 1.0 to the App Store. Repo: `RiosenBeq/aybuke-app`, branch `pink-girls-redesign` (PR #1 into `main`). Read `AGENTS.md` first and follow its rules, plus these:
+You are finishing **Aybuke** (code name Aybuke), an iPhone/iPad/Mac (Mac Catalyst) AI photo editor for girls and young women 13+, and shipping version 1.0 to the App Store. Repo: `RiosenBeq/aybuke-app`, branch `pink-girls-redesign` (PR #1 into `main`). Read `AGENTS.md` first and follow its rules, plus these:
 
 - Never print, commit or paste secrets or API keys. Never use a key pasted into chat; secrets go into the service's own secret store, set by the owner.
 - Don't commit `.claude/`. Every commit message: imperative summary, short body, and the trailer `Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>`.
@@ -29,7 +29,7 @@ Done and pushed on `pink-girls-redesign`:
 - The legal texts name **Okan Berk Manavoğlu (individual developer)** as operator and controller, because the Apple Developer account is an individual one in his name. Contact: hello@buaze.com. `build-legal.py` hides lines whose value is empty (no KEP address).
 - A daily keep-alive (`.github/workflows/keepalive.yml` + migration `20261019500000_keepalive.sql`). It keeps the Free Supabase project from pausing. The owner does not want a paid Supabase plan; the job runs only once it's on `main`.
 - Helper scripts: `scripts/asc/` (App Store Connect API, see its README) and `scripts/tools/`:
-  - `rename-brand.py`: Glowlit → Aybuke.
+  - `rename-brand.py`: Aybuke → Aybuke.
   - `merge_xcstrings.py`: a git merge driver for String Catalogs; enable it as its README says.
   - `merge_json_words.py`: resolves conflicted JSON.
 
@@ -124,10 +124,10 @@ Other services:
 
 ## Remaining steps after the merges
 
-4. **Rename Glowlit → Aybuke** everywhere users see it: `python3 scripts/tools/rename-brand.py . --write`. It keeps bundle ids, the App Group, `glowlit://`, type names, and the Xcode project and scheme.
+4. **Rename Aybuke → Aybuke** everywhere users see it: `python3 scripts/tools/rename-brand.py . --write`. It keeps bundle ids, the App Group, `glowlit://`, type names, and the Xcode project and scheme.
    - **Then:** `python3 scripts/export-core-strings.py`, `python3 scripts/build-legal.py`, `scripts/export-catalog.sh` if policy reason texts change.
    - **Also update:** the share hashtags, the website `<title>`, AdMob's app name (owner's browser), and the RevenueCat display names (optional).
-   - **Check:** review the diff, and grep the remaining "Glowlit" for anything user-facing.
+   - **Check:** review the diff, and grep the remaining "Aybuke" for anything user-facing.
 5. **Full verification:**
    - `swift test --package-path ios/Packages/AppCore`.
    - The Deno checks for every function, including `ad-reward`, then `deno test _shared/`.

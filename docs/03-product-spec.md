@@ -13,13 +13,13 @@ This document turns that brief into a product definition grounded in the researc
 
 ## 1. One-liner and positioning
 
-**Glowlit is the AI photo studio for trend-ready, true-to-you photos.** You can edit by describing the change, restyle in one tap, or create anything from text. Pricing is honest and face data is private by default.
+**Aybuke is the AI photo studio for trend-ready, true-to-you photos.** You can edit by describing the change, restyle in one tap, or create anything from text. Pricing is honest and face data is private by default.
 
-> For people who want to join every photo trend and look their best without looking fake, Glowlit is the AI photo studio that turns their photos into trend-ready, true-to-you results in seconds — with honest pricing and face data that's private by default.
+> For people who want to join every photo trend and look their best without looking fake, Aybuke is the AI photo studio that turns their photos into trend-ready, true-to-you results in seconds — with honest pricing and face data that's private by default.
 
 ### Why this can win in late 2026
 
-| Market reality | Glowlit's answer |
+| Market reality | Aybuke's answer |
 |---|---|
 | ChatGPT and Gemini made generic image generation **free**. a16z: "the bar for standalone image products rose sharply." | Don't compete on the model. Compete on **finished outcomes**: one-tap templates, likeness, speed to trend and polish. |
 | The #1 complaint is **weekly-trial traps and surprise charges**. Annual plans earn about **5×** more per install than weekly ones, and weekly plans keep only 1–2% of subscribers after a year (RevenueCat 2026). | **Fair-Price Promise**: no weekly plan, a visible trial timeline, a reminder before billing, automatic refunds and credits that roll over. |
@@ -60,7 +60,7 @@ This document turns that brief into a product definition grounded in the researc
 | Crop | Original, Freeform, 1:1, 4:5, 9:16 and 16:9 (exact pixel ratios), rotate left, mirror, straighten ±15° that enlarges the photo just enough to never show empty corners; uniform scaling only. On-device, free | `CropPanel`, `CropCanvas`, `AppCore/CropGeometry` |
 | Editor | Undo/redo, hold-to-see-original, before/after compare slider (lined up after a crop), pinch or double-tap zoom up to 4× with trackpad support, save and share (both apply a pending effect, adjustment or crop first, so they export what's on screen); Liquid Glass tool bar on iOS 26 that keeps every label whole at any text size and in every language (one row on iPad and the Mac, scrolling with the chosen tool in view on iPhone) | `EditorView`, `EditorToolBar`, `ZoomableCanvas` |
 | Video | Simple on-device editor: **Auto-cut silences** (jump cut), ten of the retro effects (with their date stamps, letterbox or camcorder display) and Tiny World, trim, save to Photos or share. Free, no watermark, no ending clip, clips up to 5 minutes | `Features/Video`, `VideoEngine`, `AppCore/SilenceCutter` |
-| Create | Text-to-image with 20 styles, 5 aspect ratios, 1–4 images (2+ is Pro), "Inspire me" (seasonal ideas) and "Make it magic" (Apple's on-device model when available, otherwise the offline "Enhance prompt"); "Create with Image Playground" on supported devices (iOS 18.4+): Apple's own image maker, Apple's cartoon styles only, no Glowlit credits, under Apple's terms and limits (never called free or unlimited) | `Features/Create` |
+| Create | Text-to-image with 20 styles, 5 aspect ratios, 1–4 images (2+ is Pro), "Inspire me" (seasonal ideas) and "Make it magic" (Apple's on-device model when available, otherwise the offline "Enhance prompt"); "Create with Image Playground" on supported devices (iOS 18.4+): Apple's own image maker, Apple's cartoon styles only, no Aybuke credits, under Apple's terms and limits (never called free or unlimited) | `Features/Create` |
 | Share | Photo, Before/After, Story card, **Cover star** (4:5 magazine cover; the masthead tucks behind her head with on-device Vision person segmentation), **Photo strip** (date-stamped photo booth), Which vibe? (two variations of one creation, never the original against an edit); caption and hashtags; **Hide other faces** for group photos shared from My Works or Create (keeps the biggest face or the ones she taps and blurs the others, on device, in every format). Stories without a Meta App ID: the system share sheet with just the image and a "Tap Instagram, then Stories" hint | `Features/Share`, `Services/Sharing` |
 | Invite | "Glow together": a 9:16 story card with the app icon and a QR code to the App Store page or website, from Settings and Home; never includes her photos | `InviteView` |
 | Library ("My Works") | Every creation saved on-device (SwiftData + protected files); detail view with save/share/edit/delete | `Features/Library` |
@@ -109,7 +109,7 @@ This document turns that brief into a product definition grounded in the researc
 
 | Tier | Price (US) | Includes |
 |---|---|---|
-| **Free** | $0 | 2 credits every day (low AI quality at 1k, small corner wordmark on exports of cloud AI results, also after a re-edit; share cards of them say "Made with Glowlit"). Unlimited on-device tools: effects, Auto and adjustments, background removal, Best shot and video editing (no watermark on anything made only with them). |
+| **Free** | $0 | 2 credits every day (low AI quality at 1k, small corner wordmark on exports of cloud AI results, also after a re-edit; share cards of them say "Made with Aybuke"). Unlimited on-device tools: effects, Auto and adjustments, background removal, Best shot and video editing (no watermark on anything made only with them). |
 | **Pro Yearly** *(default)* | **$39.99/yr** (≈ $3.33/month), **7-day free trial** for eligible users | 80 credits/month with one month of rollover (cap 160), every template and style, our best-quality AI (medium instead of low quality), up to 4 images at once, no watermark |
 | **Pro Monthly** | **$5.99/mo**; first month **$1.99** for eligible users (introductory offer), no free trial | Same as yearly |
 | **Credit packs** (consumable) | 30 credits **$2.99**, 100 credits **$7.99** | Never expire; for occasional users who don't want a subscription |
@@ -125,7 +125,7 @@ The paywall sums it up: *"No weekly plans, ever."* (No price comparison: our own
 - A trial-end **reminder notification** fires at least 26 hours before the trial ends (earlier when that would fall at night or in school hours).
 
 **Pricing rationale**
-- Competitor annual prices: Picsart $57, Meitu $59.99, Hypic $69.99, YouCam $69.99, Facetune $77.99, Remini $79.99, Photoroom $79.99. At $39.99, Glowlit costs about half the typical ~$70.
+- Competitor annual prices: Picsart $57, Meitu $59.99, Hypic $69.99, YouCam $69.99, Facetune $77.99, Remini $79.99, Photoroom $79.99. At $39.99, Aybuke costs about half the typical ~$70.
 - $39.99/yr matches the RevenueCat North-American cross-category annual median, and $5.99/mo is well under the $9.99 monthly median.
 
 ### Unit economics (from [tech research §3.9](research/tech-and-compliance.md#39-rough-cost-per-active-user))

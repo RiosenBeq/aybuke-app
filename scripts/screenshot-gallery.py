@@ -130,7 +130,7 @@ def overview(screens: list[tuple[Image.Image, str]]) -> Image.Image:
     ImageDraw.Draw(glow).ellipse((width * 0.22, -height * 0.32, width * 0.78, height * 0.2), fill=170)
     canvas.paste(GLOW, (0, 0, width, height), glow.filter(ImageFilter.GaussianBlur(width * 0.07)))
 
-    centered_text(canvas, 64, "Glowlit", title, TEXT_PRIMARY)
+    centered_text(canvas, 64, "Aybuke", title, TEXT_PRIMARY)
     centered_text(canvas, 188, "Make it glow", tagline)
     centered_text(canvas, 256, "AI photo editor made for girls who glow  ·  iOS Simulator, demo mode", subtitle, TEXT_SECONDARY)
 

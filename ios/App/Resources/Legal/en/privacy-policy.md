@@ -3,7 +3,7 @@
 Last updated: 14 October 2026
 
 > **Privacy at a glance**
-> - Glowlit is designed with teens in mind, so everyone gets high-privacy defaults: no tracking, no profiling and no public profiles or feeds.
+> - Aybuke is designed with teens in mind, so everyone gets high-privacy defaults: no tracking, no profiling and no public profiles or feeds.
 > - Free members see a few ads from Google AdMob: a short ad you can choose to watch for 1 credit when you're out of credits (a few a day), and now and then an ad after you save. Ads are never personalised and never use your photos. Pro has no ads, and there are none under 13.
 > - We don't ask for your name, email address or a password. Your account is an anonymous, random ID.
 > - Your library stays on your iPhone. Background removal and manual adjustments never leave your device.
@@ -13,7 +13,7 @@ Last updated: 14 October 2026
 
 ## 1. Who we are
 
-Okan Berk Manavoğlu (individual developer) ("**we**", "**us**" or "**our**") develops and operates the Glowlit iOS app and its online services (the "**Service**"). We are the controller responsible for your personal data (under Türkiye's KVKK, the *veri sorumlusu*).
+Okan Berk Manavoğlu (individual developer) ("**we**", "**us**" or "**our**") develops and operates the Aybuke iOS app and its online services (the "**Service**"). We are the controller responsible for your personal data (under Türkiye's KVKK, the *veri sorumlusu*).
 
 - **Address:** Istanbul, Türkiye, Türkiye
 - **Trade registry / MERSİS number:** None (individual developer)
@@ -23,16 +23,16 @@ Okan Berk Manavoğlu (individual developer) ("**we**", "**us**" or "**our**") de
 
 For any privacy question, including anything you would raise with a data protection officer, email us at [hello@buaze.com](mailto:hello@buaze.com).
 
-This policy covers the Service. It doesn't cover third-party services you use together with Glowlit, such as Apple's App Store or the apps you share to (for example Instagram), which have their own privacy policies. If you're in Türkiye, please also read our [KVKK Information Notice](glowlit-legal://kvkk). Our [Terms of Use](glowlit-legal://terms) and [Acceptable Use & AI Content Policy](glowlit-legal://acceptableUse) explain the rules for using Glowlit.
+This policy covers the Service. It doesn't cover third-party services you use together with Aybuke, such as Apple's App Store or the apps you share to (for example Instagram), which have their own privacy policies. If you're in Türkiye, please also read our [KVKK Information Notice](glowlit-legal://kvkk). Our [Terms of Use](glowlit-legal://terms) and [Acceptable Use & AI Content Policy](glowlit-legal://acceptableUse) explain the rules for using Aybuke.
 
 ## 2. Designed with teens in mind
 
-Glowlit is designed with teen users in mind. That's why we apply high-privacy defaults to everyone who uses it, whatever their age:
+Aybuke is designed with teen users in mind. That's why we apply high-privacy defaults to everyone who uses it, whatever their age:
 
 - **Few ads, never personalised.** Pro members and anyone under 13 see no ads, and neither does the Mac app. Free members see ads from Google AdMob in two places only: a short ad they can choose to watch for 1 credit when they're out of credits (a few a day, as the app shows), and now and then an ad after they save or share a finished creation (never in the first day, at most 3 a day). Ads are never personalised and never use your photos, prompts or results, and teens and anyone whose age we don't know get only ads suitable for a general audience (section 5).
 - **No tracking.** We don't track you across other companies' apps or websites. The app never asks for permission to track you and doesn't access your device's advertising identifier (IDFA). The only third-party analytics SDK is RevenueCat's subscription analytics, which starts only once you make a purchase, and Google's ad SDK starts only when an ad may be shown to a free member (section 5).
 - **No profiling.** We don't build profiles about you, and we don't make decisions about you with legal or similarly significant effects based on automated processing.
-- **No public profiles or feeds.** Nothing about you is public in Glowlit. Your creations are shared only if you choose to share them.
+- **No public profiles or feeds.** Nothing about you is public in Aybuke. Your creations are shared only if you choose to share them.
 - **No sharing for marketing.** We don't sell personal information or share it for personalised (cross-context behavioural) advertising or for marketing, and we don't work with data brokers. We don't send you marketing messages.
 - **Your library stays on your device.** The creations you keep are stored only on your iPhone.
 - **Cloud processing only after you opt in.** Nothing leaves your device for one of our cloud AI features until you agree. Apple's Image Playground has its own notice (section 6).
@@ -58,7 +58,7 @@ This section is for you if you're under 18. The rest of this policy applies to y
 
 ## 4. Data that stays on your iPhone
 
-Much of Glowlit works without sending anything to us. The following data is stored only on your device, and we can't access it:
+Much of Aybuke works without sending anything to us. The following data is stored only on your device, and we can't access it:
 
 - **Your library ("My Works")**: the images you keep, with their title, the type of edit, the text prompt you used (for Create from text and Magic Edit), whether you marked them as a favourite, and timestamps. The library is stored in the app's private storage and protected by iOS Data Protection. When you delete a creation, it stays in **Recently deleted** for 30 days, where you can restore it or delete it for good; after that, it's removed.
 - **App settings** (stored in iOS UserDefaults): whether you've completed onboarding; the interests you picked (for example "Selfie glow-ups" or "Shots for my shop"), which are used only to order the home screen on your device; your age range (under 13, 13 to 15, 16 to 17, or 18 and over), whether it came from Apple's Declared Age Range or the app's own question, and when it was set (never your birth date); your cloud AI consent choice, when you made it, which version of the consent screen and which processors it named (so we can ask again when they change) and, where asked, your answer to "A parent or guardian said yes"; your appearance preference; your notification choices; the last 10 prompts you made pictures with in Create and the text you're still writing there (you can clear the list in Create); a small count of happy moments (saving, sharing or hearting a creation) and when the app last asked, used only to time Apple's rating prompt; for ads, when you first opened the app, how many creations you've saved, when you last saw an ad and how many you saw today (used only to keep ads rare, section 5) and whether you've asked for an ad on this device; Google's record of your ad consent choices, if you made them (kept on your device by Google's consent tool); and, only in offline or demo mode, a local credit balance.
@@ -74,7 +74,7 @@ Much of Glowlit works without sending anything to us. The following data is stor
 
 **On-device video captions.** In the video editor, **Captions** turns what's said in your video into captions with Apple's speech recognition, on your device. From iOS 26 it uses Apple's on-device speech models; each language's model is downloaded once from Apple, and no audio or text is sent with that download. Otherwise it uses Apple's speech recognizer only for languages your device can recognise without the internet, and iOS first asks for your permission to use speech recognition. The sound of your video and the caption text stay on your device and are not sent to us or to Apple. Captions are kept only while you edit and in the videos you save or share.
 
-**Photo access.** You pick photos with Apple's system photo picker, so Glowlit can see only the photos you choose, not your whole library. To save results to your Photos library, the app asks for add-only permission, which lets it add images but not read your library.
+**Photo access.** You pick photos with Apple's system photo picker, so Aybuke can see only the photos you choose, not your whole library. To save results to your Photos library, the app asks for add-only permission, which lets it add images but not read your library.
 
 **Camera access.** Retro Cam and Photo Booth use your camera only while they're open, after you allow camera access. The live preview and the effects run on your iPhone, and your shots stay on your device until you save or share them.
 
@@ -90,7 +90,7 @@ When you first use a cloud AI feature or make a purchase, the app creates an ano
 
 ### Optional account (Sign in with Apple)
 
-Signing in is optional, and not every version of the app offers it. If you sign in with **Sign in with Apple** where the app offers it (so your credits follow you to another device; an active subscription stays with the Apple Account that bought it), Apple confirms your identity and our backend provider receives a stable Apple user identifier and, if you choose to share it, your email address, which can be a private relay address that forwards to you. We don't ask for your name and never see your Apple ID password. The anonymous account you used on that iPhone is merged into your account: paid credits, subscription records, job records and reports move over, and the anonymous account is deleted. We also keep a token from Apple so that, when you delete your account, we can revoke Glowlit's access to your Apple ID, as Apple requires. Your photos and library are not synced and stay on each iPhone.
+Signing in is optional, and not every version of the app offers it. If you sign in with **Sign in with Apple** where the app offers it (so your credits follow you to another device; an active subscription stays with the Apple Account that bought it), Apple confirms your identity and our backend provider receives a stable Apple user identifier and, if you choose to share it, your email address, which can be a private relay address that forwards to you. We don't ask for your name and never see your Apple ID password. The anonymous account you used on that iPhone is merged into your account: paid credits, subscription records, job records and reports move over, and the anonymous account is deleted. We also keep a token from Apple so that, when you delete your account, we can revoke Aybuke's access to your Apple ID, as Apple requires. Your photos and library are not synced and stay on each iPhone.
 
 ### Content you send to cloud AI features
 
@@ -106,7 +106,7 @@ Your credit wallet (purchased credits), your subscription's credits with their p
 
 ### Your App Store download (free credits)
 
-Free daily credits belong to your download of Glowlit from the App Store, not to an anonymous account, so they can't be collected by making new accounts. When you use a cloud AI feature, read your credit balance, buy a credit pack or ask for a rewarded ad, the app sends our server the app transaction that Apple signs for your download (Apple's "AppTransaction": it includes Apple's app transaction ID, the app's bundle ID and version, and the date of your first download). Apple gives each Apple Account one app transaction ID for Glowlit, the same on all its devices and after reinstalling. Our server checks Apple's signature and keeps only:
+Free daily credits belong to your download of Aybuke from the App Store, not to an anonymous account, so they can't be collected by making new accounts. When you use a cloud AI feature, read your credit balance, buy a credit pack or ask for a rewarded ad, the app sends our server the app transaction that Apple signs for your download (Apple's "AppTransaction": it includes Apple's app transaction ID, the app's bundle ID and version, and the date of your first download). Apple gives each Apple Account one app transaction ID for Aybuke, the same on all its devices and after reinstalling. Our server checks Apple's signature and keeps only:
 
 - a one-way, salted hash of the app transaction ID (never the ID itself or the signed app transaction);
 - that day's free daily credits, including credits earned by watching ads;
@@ -117,7 +117,7 @@ While your account exists, your job records, credit ledger and ad reward records
 
 ### Ads for free members
 
-If you don't have Pro and you're 13 or over, Glowlit shows ads from Google AdMob (Google LLC) on iPhone and iPad, in two places only:
+If you don't have Pro and you're 13 or over, Aybuke shows ads from Google AdMob (Google LLC) on iPhone and iPad, in two places only:
 
 - **Rewarded ads, always optional.** When you're out of credits, you can choose to watch a short ad for 1 credit, a limited number of times a day (the app shows how many; the limit counts per account and per App Store download). Before the ad, the app asks our server for a single-use reward code, linked to your anonymous user ID and valid for 30 minutes. The app passes only this code to Google, never your user ID. When the ad has played to the end, Google sends our server a signed confirmation with the code, the ad unit, the reward, a transaction ID and the time, and we add the credit to your download's free daily credits. We keep a record of each confirmed reward (transaction ID, user ID, the hash of your App Store download, ad unit, reward and date) to give each reward only once and to apply the daily limit.
 - **An occasional ad after you save.** Now and then, an ad may appear after you save or share a finished creation: never in your first day with the app or before your third save, never while you're editing, at most one every 4 minutes, 3 a day, and none within 4 minutes of a rewarded ad. The app keeps these counts on your device (section 4).
@@ -164,7 +164,7 @@ If you email us, we receive your email address, the content of your message and 
 
 We use only provider plans whose terms don't allow using customer content to train their models without our permission, and we never give that permission. We never use your photos, prompts or results to train AI models, sell them, or use them for advertising, marketing or data mining.
 
-**Create with Image Playground (Apple).** On devices that support it, Create also offers **Create with Image Playground**, Apple's own image maker. It's Apple's feature, not one of our cloud AI features, so our consent screen and credits don't apply. Your description goes to Apple's Image Playground, which makes the image on your device or, from iOS 27, on Apple's Private Cloud Compute servers, under Apple's terms and with Apple's own usage limits; on those versions the app tells you before the first use. The app allows only Apple's illustration styles and turns off the option to use people from your photo library. Glowlit receives only the finished image, which is kept in your library on your device and is never sent to us.
+**Create with Image Playground (Apple).** On devices that support it, Create also offers **Create with Image Playground**, Apple's own image maker. It's Apple's feature, not one of our cloud AI features, so our consent screen and credits don't apply. Your description goes to Apple's Image Playground, which makes the image on your device or, from iOS 27, on Apple's Private Cloud Compute servers, under Apple's terms and with Apple's own usage limits; on those versions the app tells you before the first use. The app allows only Apple's illustration styles and turns off the option to use people from your photo library. Aybuke receives only the finished image, which is kept in your library on your device and is never sent to us.
 
 ## 7. Why we use your data and our legal bases
 
@@ -175,7 +175,7 @@ The GDPR and the UK GDPR require us to tell you the legal basis for each purpose
 - **Job records, credits, purchases and subscriptions** (tracking jobs, charging and refunding credits, verifying Apple purchases and providing Pro benefits and credit packs). Legal basis: performance of our contract with you (Art. 6(1)(b) GDPR).
 - **Rewarded ads** (giving you the credit you chose to watch an ad for, once, within the daily limit). Data: reward code, reward record, anonymous user ID. Legal basis: performance of our contract with you (Art. 6(1)(b) GDPR).
 - **Ads for free members** (showing a few non-personalised ads that keep the free tier free, and keeping them rare). Data: the device, app and ad-interaction data described in section 5, processed by Google, and the ad counts kept on your device. Legal basis: our legitimate interest in funding a free tier with a small number of non-personalised ads (Art. 6(1)(f) GDPR). Where the law requires consent for storing or reading information on your device, as in the EEA, the UK and Switzerland, Google's consent form asks for it (Art. 6(1)(a) GDPR and the ePrivacy rules); users under the age of consent aren't asked and get only limited ads.
-- **Safety and abuse prevention** (prompt filters, provider safety settings, automated checks of outputs, rate limits, preventing misuse of free credits with the hashed App Store download and network address counts, pausing cloud AI after repeated blocks, reviewing reports and enforcing our AUP). Legal basis: our legitimate interests in keeping Glowlit safe and lawful and in protecting our users, especially young users, and the people shown in images (Art. 6(1)(f) GDPR); and compliance with legal obligations where the law requires us to act, for example to report child sexual abuse material (Art. 6(1)(c) GDPR).
+- **Safety and abuse prevention** (prompt filters, provider safety settings, automated checks of outputs, rate limits, preventing misuse of free credits with the hashed App Store download and network address counts, pausing cloud AI after repeated blocks, reviewing reports and enforcing our AUP). Legal basis: our legitimate interests in keeping Aybuke safe and lawful and in protecting our users, especially young users, and the people shown in images (Art. 6(1)(f) GDPR); and compliance with legal obligations where the law requires us to act, for example to report child sexual abuse material (Art. 6(1)(c) GDPR).
 - **Security and reliability** (server logs and investigating errors and attacks). Legal basis: our legitimate interests in running a secure and reliable service (Art. 6(1)(f) GDPR).
 - **Images of other people shown in your photos.** Legal basis: our legitimate interest in performing the edit our user requested (Art. 6(1)(f) GDPR). The processing is short-lived, limited to the edit and never used to identify anyone, and users must have the consent of the people they photograph.
 - **Support** (answering your messages). Legal basis: performance of our contract where your message concerns the Service; otherwise our legitimate interest in responding to you (Art. 6(1)(b) or (f) GDPR).
@@ -194,11 +194,11 @@ We don't create biometric data: we don't perform face recognition or create face
 
 Please don't upload photos or prompts containing sensitive information you don't want processed.
 
-**Other people in your photos.** Your photos may show other people. We process their images in the same way as yours: only to perform the edit, briefly, and never to identify them. Only upload photos of other people with their consent, and photos of children only if you're their parent or guardian or have their parent's or guardian's permission. If you appear in a photo someone else edited with Glowlit, you can contact us at [hello@buaze.com](mailto:hello@buaze.com).
+**Other people in your photos.** Your photos may show other people. We process their images in the same way as yours: only to perform the edit, briefly, and never to identify them. Only upload photos of other people with their consent, and photos of children only if you're their parent or guardian or have their parent's or guardian's permission. If you appear in a photo someone else edited with Aybuke, you can contact us at [hello@buaze.com](mailto:hello@buaze.com).
 
 ## 9. Safety filters and automated decisions
 
-To keep Glowlit safe, we use automated safety measures:
+To keep Aybuke safe, we use automated safety measures:
 
 - prompt filters in the app and on our servers that block, for example, nudity and sexual content, "undressing" or nudification requests, and any sexual content involving minors;
 - our AI providers' safety settings; and
@@ -247,7 +247,7 @@ We're based in Türkiye. Our backend is hosted in EU (Frankfurt). Our AI provide
 
 ### From the EEA, the UK and Switzerland
 
-When you use Glowlit, you provide your data directly to us. Where we or our providers transfer it to a country without an adequacy decision, we rely on:
+When you use Aybuke, you provide your data directly to us. Where we or our providers transfer it to a country without an adequacy decision, we rely on:
 
 - the EU-US Data Privacy Framework, its UK Extension and the Swiss-US Data Privacy Framework, where the recipient is certified (you can check certifications at [dataprivacyframework.gov](https://www.dataprivacyframework.gov));
 - otherwise, the European Commission's Standard Contractual Clauses, together with the UK International Data Transfer Addendum (or the UK International Data Transfer Agreement) and the adaptations needed for Switzerland; and
@@ -314,7 +314,7 @@ Depending on where you live, you may have the right to access your data, correct
 - For anything else, email [hello@buaze.com](mailto:hello@buaze.com). Users in Türkiye can also use the methods in section 19.
 - Parents and guardians can make requests on behalf of their child. We may ask for reasonable confirmation that you're the child's parent or guardian.
 
-Because your account is anonymous, we may need information that lets us find your data before we can act on a request, for example the Order ID shown on your Apple receipt for a Glowlit purchase. If we can't link a request to any data we hold, we'll tell you. We may ask for information to verify your request, and we'll use it only for that purpose.
+Because your account is anonymous, we may need information that lets us find your data before we can act on a request, for example the Order ID shown on your Apple receipt for a Aybuke purchase. If we can't link a request to any data we hold, we'll tell you. We may ask for information to verify your request, and we'll use it only for that purpose.
 
 We respond within one month under the GDPR and UK GDPR (extendable by two further months for complex requests), within 30 days under KVKK, and within 45 days under the CCPA (extendable once by a further 45 days). Requests are free of charge, except where the law allows a fee, for example for manifestly unfounded or excessive requests or, under KVKK, where a request involves additional costs.
 
@@ -351,10 +351,10 @@ The UK Age Appropriate Design Code (the "Children's Code") sets 15 standards for
 - **Data minimisation.** We collect only what each feature you use needs. We don't ask for your name, email address, phone number, contacts or location.
 - **Data sharing.** We disclose personal data only to the service providers that run the features you request, to Google for the non-personalised ads free members see, and where the law requires it (section 11).
 - **Geolocation.** We don't collect or use your location. For free members, Google's ad software estimates a general location (such as the country or city) from the IP address to serve ads (section 5); it never uses your device's location services.
-- **Parental controls.** Glowlit has no tools that let parents or anyone else monitor your activity or location. Parents can use Apple's Family Sharing and Screen Time, which are provided by Apple.
+- **Parental controls.** Aybuke has no tools that let parents or anyone else monitor your activity or location. Parents can use Apple's Family Sharing and Screen Time, which are provided by Apple.
 - **Profiling.** We don't profile users, and ads are never personalised.
 - **Nudge techniques.** We don't use design tricks to get you to share more data or to switch off privacy protections. You can choose "Not now" on the cloud AI consent screen and keep using on-device features. Watching an ad for a credit is always your choice, offered only when you're out of credits and a few times a day at most, and ads after saving are kept rare.
-- **Connected toys and devices.** Not applicable: Glowlit isn't a connected toy or device.
+- **Connected toys and devices.** Not applicable: Aybuke isn't a connected toy or device.
 - **Online tools.** You can delete your data in the app at any time and make any other request by email (section 16).
 
 ## 19. Türkiye (KVKK)
@@ -450,9 +450,9 @@ A growing number of US states, for example California, Connecticut, Colorado, Ma
 
 ## 21. Children under 13
 
-Glowlit is designed for teens and adults aged 13 and over. Its cloud AI features, accounts and purchases are only for people aged 13 and over. If the age step shows that someone is under 13, the app offers only the free tools that run on the device (effects, Adjust, Cut out, Crop, Best shot and the video editor). In that mode it sends nothing to us or to our providers: it creates no account and makes no cloud AI, purchase, analytics or ad requests, and Google's ad software never starts. We don't knowingly collect personal information from children under 13, including under the US Children's Online Privacy Protection Act (COPPA).
+Aybuke is designed for teens and adults aged 13 and over. Its cloud AI features, accounts and purchases are only for people aged 13 and over. If the age step shows that someone is under 13, the app offers only the free tools that run on the device (effects, Adjust, Cut out, Crop, Best shot and the video editor). In that mode it sends nothing to us or to our providers: it creates no account and makes no cloud AI, purchase, analytics or ad requests, and Google's ad software never starts. We don't knowingly collect personal information from children under 13, including under the US Children's Online Privacy Protection Act (COPPA).
 
-If we learn that we have collected personal information from a child under 13 without verifiable parental consent, we'll delete it. If you believe a child under 13 has used Glowlit, please contact us at [hello@buaze.com](mailto:hello@buaze.com). A parent or guardian can also delete the data immediately with **Settings → Delete my data & account** on the child's device.
+If we learn that we have collected personal information from a child under 13 without verifiable parental consent, we'll delete it. If you believe a child under 13 has used Aybuke, please contact us at [hello@buaze.com](mailto:hello@buaze.com). A parent or guardian can also delete the data immediately with **Settings → Delete my data & account** on the child's device.
 
 ## 22. Do Not Track and Global Privacy Control
 

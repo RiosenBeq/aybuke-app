@@ -1,4 +1,4 @@
-# Glowlit: kalan işler ve devam promptları
+# Aybuke: kalan işler ve devam promptları
 
 > **Türkçe özet:** Uygulama, backend, App Store Connect kaydı, abonelikler, kredi paketleri, gizlilik bilgileri, web sitesi ve App Review notları hazır. Bu dosya bir sonraki oturumun başlangıç noktası. Kalan iş üç parça: (1) iki yarım kalmış çalışmayı (düzen düzeltmeleri ve performans) ana dala birleştirmek ve doğrulamak, (2) iOS ve Mac derlemelerini App Store Connect'e yüklemek, ekran görüntülerini ve satın alımları sürüme bağlamak, (3) son gerçek cihaz testi ve senin açık onayınla incelemeye göndermek. İncelemeye gönderme adımı yalnızca sahibin açık onayıyla yapılır.
 
@@ -15,13 +15,13 @@ Son güncelleme: 14 Ekim 2026. Çalışma durduruldu; aşağıdaki "Açık işle
   - Yeni bir hesapta yerel `.claude/worktrees/` klasörleri olmayabilir; her iki dal GitHub'dan çekilebilir: `git fetch origin && git checkout worktree-agent-...`.
 - **Web sitesi:** https://riosenbeq.github.io/aybuke-app/ (GitHub Pages, `website.yml` iş akışı, `web/` ve `legal/` değişince otomatik yayınlanır)
 - **Backend:** Supabase projesi `efapupjvidyqhqdevmcu` (Frankfurt, EU). Anon anahtar `ios/App/Resources/AppConfig.json` içinde (herkese açık olması tasarım gereği).
-- **App Store Connect uygulama kimliği:** `6822716008` — "Glowlit: AI Photo Editor", iOS ve macOS 1.0 "Prepare for Submission".
+- **App Store Connect uygulama kimliği:** `6822716008` — "Aybuke: AI Photo Editor", iOS ve macOS 1.0 "Prepare for Submission".
 - **Paket kimliği:** `app.glowlit.ios` (widget: `app.glowlit.ios.widgets`), takım `CBTKNY3LFC`.
 
 ## 2. Hesaplar ve gizli bilgiler (repoda OLMAZ)
 
 - **App Store Connect API anahtarı:** dosya `~/.appstoreconnect/private_keys/AuthKey_<KEY_ID>.p8` olarak bu Mac'te. Yeni hesap/makinede kullanmak için sahibin dosyayı güvenli biçimde kopyalaması gerekir. Dosyayı asla commit etme, yazdırma veya bir yere yapıştırma. Anahtar kimliği ile issuer kimliği App Store Connect → Users and Access → Integrations sayfasındadır. **Kontrol:** o sayfadaki anahtar listesinde "Claude Build Upload" adıyla görünen anahtar kimliği, dosya adındaki kimlikle aynı mı, doğrulanmalı.
-- **Supabase CLI:** bu Mac'te `supabase login` ile Glowlit hesabına bağlandı. Yeni makinede `supabase login` yeniden gerekir. Fonksiyon dağıtımı: `supabase functions deploy ai-image credits-redeem account report --project-ref efapupjvidyqhqdevmcu --use-api`.
+- **Supabase CLI:** bu Mac'te `supabase login` ile Aybuke hesabına bağlandı. Yeni makinede `supabase login` yeniden gerekir. Fonksiyon dağıtımı: `supabase functions deploy ai-image credits-redeem account report --project-ref efapupjvidyqhqdevmcu --use-api`.
 - **Supabase gizli değerleri (Edge Function Secrets):** `XAI_API_KEY` (sahip kaydetti), `APPLE_BUNDLE_ID`, `APPLE_TEAM_ID`, `APPLE_APP_ID` ayarlandı (`OUTPUT_MODERATION` artık okunmuyor: çıktı denetimi kapatılamaz ve hata olursa sonucu engeller). `APPLE_SIGNIN_KEY_ID` / `APPLE_SIGNIN_PRIVATE_KEY` ve `REVENUECAT_SECRET_KEY` henüz yok: bu yüzden Sign in with Apple bu sürümde gizli (`signInWithApple: false`), RevenueCat silmeleri de anahtar gelene kadar `pending_revenuecat_deletions` kuyruğunda bekler (bkz. §6).
 - **xAI konsolu:** Zero Data Retention açık olmalı — **sahibin işi, doğrulanmadı.**
 - **Apple sahibi:** App Store Connect "Account Holder" sahibin Apple kimliği. Sözleşmeleri kabul etmek ve gönderimi onaylamak yalnızca sahibin işidir.
@@ -31,7 +31,7 @@ Son güncelleme: 14 Ekim 2026. Çalışma durduruldu; aşağıdaki "Açık işle
 
 - Supabase: tablolar (migration `20261011`–`20261015`, `20261016` izin migration'ı SQL Editor'da çalıştırıldı), cleanup cron işi (`*/5`), anonim giriş açık, Apple sağlayıcısı açık (client id `app.glowlit.ios`), 4 fonksiyon yayında, gerçek AI işi uçtan uca çalıştı (yeni kullanıcıya 3 ücretsiz kredi).
 - App Store Connect: uygulama kaydı, iOS + macOS, ad, alt başlık, açıklama, anahtar kelimeler, promosyon metni (13 dil), gizlilik ve kullanım koşulları URL'leri, yaş derecelendirmesi 13+, kategoriler (Photo & Video / Graphics & Design), fiyat ücretsiz, 174 ülke (Çin anakarası hariç), App Privacy yayında (5 veri türü), App Review iletişimi (ad, e-posta `hello@buaze.com`, telefon) ve notlar.
-- Abonelik grubu "Glowlit Pro": `app.glowlit.pro.yearly` ($39.99, 1 hafta ücretsiz deneme), `app.glowlit.pro.monthly` ($5.99, ilk ay $1.99), her ikisi için en-US ve tr metinleri, 174 ülke fiyatı, tanıtım teklifleri, inceleme ekran görüntüsü.
+- Abonelik grubu "Aybuke Pro": `app.glowlit.pro.yearly` ($39.99, 1 hafta ücretsiz deneme), `app.glowlit.pro.monthly` ($5.99, ilk ay $1.99), her ikisi için en-US ve tr metinleri, 174 ülke fiyatı, tanıtım teklifleri, inceleme ekran görüntüsü.
 - Krediler: `app.glowlit.credits.30` ($2.99) ve `app.glowlit.credits.100` ($7.99), en-US ve tr metinleri, fiyat, ülkeler, inceleme ekran görüntüsü.
 - RevenueCat: uygulama, public key, App Store bağlantısı; Apple sunucu bildirim URL'leri (üretim ve sandbox) ASC'ye girildi.
 - Web sitesi ve yasal metinler: veri sorumlusu ve satıcı "Okan Berk Manavoğlu (bireysel geliştirici)", çünkü Apple geliştirici hesabı bireysel ve onun adına; aybuke.org da aynı bilgileri kullanıyor. Adres "İstanbul, Türkiye", KEP satırları gösterilmiyor; AB/İngiltere temsilcisi atanmadı, barındırma AB (Frankfurt). Tüm iletişim adresi `hello@buaze.com`.
@@ -108,7 +108,7 @@ Sonunda: birleştirilen commit'ler, doğrulama sonuçları, kalan sorunlar.
 4. PLATFORM=mac ile Mac derlemesini yükle.
 5. İşlenme bitince (App Store Connect → TestFlight ya da sürüm → Build) iOS 1.0 ve macOS 1.0 sürümlerine derlemeyi bağla.
 6. Ekran görüntülerini yükle: iPhone (1290×2796, en ve tr dillerinde docs/marketing/app-store/<lang>/), iPad (2064×2752, <lang>/ipad/), Mac (2880×1800, <lang>/mac/). Eski ya da boş dosyaları atla.
-7. Abonelik grubu "Glowlit Pro" ve iki kredi paketini ilk sürüm incelemesine ekle (App Store Connect → sürüm → In-App Purchases and Subscriptions).
+7. Abonelik grubu "Aybuke Pro" ve iki kredi paketini ilk sürüm incelemesine ekle (App Store Connect → sürüm → In-App Purchases and Subscriptions).
 8. Paid Apps Agreement'ın kabul edilmediğini raporla; kabul sahibin işi.
 Gönderim (Submit for Review) yapma. Sonunda: yüklenen derleme numaraları, bağlanan öğeler, eksik kalanlar.
 ```

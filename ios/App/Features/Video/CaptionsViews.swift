@@ -90,8 +90,8 @@ struct CaptionsCard: View {
             return Text("This video has no sound. You can add captions yourself.")
         case .notAllowed:
             return Platform.isMac
-                ? Text("Speech recognition is off for Glowlit. Turn it on in System Settings, or add captions yourself.")
-                : Text("Speech recognition is off for Glowlit. Turn it on in Settings, or add captions yourself.")
+                ? Text("Speech recognition is off for Aybuke. Turn it on in System Settings, or add captions yourself.")
+                : Text("Speech recognition is off for Aybuke. Turn it on in Settings, or add captions yourself.")
         case .unavailable:
             return Text("Automatic captions aren't available for this language on this device. You can add them yourself.")
         case .downloadFailed:
@@ -255,7 +255,7 @@ struct CaptionsEditor: View {
                 Button("Redo captions", role: .destructive) { remake() }
                 Button("Cancel", role: .cancel) {}
             } message: {
-                Text("Glowlit listens to your video again and replaces these captions, including your changes.")
+                Text("Aybuke listens to your video again and replaces these captions, including your changes.")
             }
         }
         .tint(Palette.accent)

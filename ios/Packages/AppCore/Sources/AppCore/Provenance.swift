@@ -5,7 +5,7 @@ import Foundation
 /// visible "AI-edited" label. Re-edits carry it along, so editing an AI
 /// result never strips its marking (EU AI Act Art. 50(2)).
 public struct Provenance: Equatable, Sendable {
-    /// The strongest Glowlit AI operation applied, cloud or on-device.
+    /// The strongest Aybuke AI operation applied, cloud or on-device.
     public var operation: AIOperation?
     /// The marking the source already had: an imported file's XMP, or an
     /// Image Playground picture. Kept as is rather than rewritten.
@@ -35,7 +35,7 @@ public struct Provenance: Equatable, Sendable {
         DigitalSourceType.strongest(inheritedSourceType, isComposite ? .composite : nil)
     }
 
-    /// Glowlit's cloud models made or changed the pixels.
+    /// Aybuke's cloud models made or changed the pixels.
     public var usesGlowlitCloudAI: Bool { operation.map { !$0.runsOnDevice } ?? false }
 
     /// Generative AI made or changed the picture, so the AI hashtags, the
@@ -43,7 +43,7 @@ public struct Provenance: Equatable, Sendable {
     /// cut-out alone, or one placed on another photo, doesn't count.
     public var carriesAIProvenance: Bool { sourceType?.isGenerative ?? false }
 
-    /// The free-tier mark is only for Glowlit's own cloud results. Images
+    /// The free-tier mark is only for Aybuke's own cloud results. Images
     /// marked only by their source weren't made here (or, when they were,
     /// already have the mark in their pixels).
     public func showsMark(isPro: Bool) -> Bool { !isPro && usesGlowlitCloudAI }

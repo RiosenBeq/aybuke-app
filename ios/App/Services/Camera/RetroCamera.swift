@@ -15,7 +15,7 @@ enum RetroCamPause: Equatable, Sendable {
     var message: LocalizedStringResource {
         switch self {
         case .inUseElsewhere: return "Another app is using the camera."
-        case .multitasking: return "The camera pauses while another app is open next to Glowlit."
+        case .multitasking: return "The camera pauses while another app is open next to Aybuke."
         case .systemPressure: return "The camera paused to cool down. It will be back in a moment."
         case .other: return "The camera paused. It will be back in a moment."
         }

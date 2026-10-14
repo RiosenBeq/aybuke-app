@@ -355,7 +355,7 @@ extension ShareRenderer {
 
 // MARK: - Invite card
 
-/// "Share Glowlit": a 9:16 story card with the app icon, what the app does
+/// "Share Aybuke": a 9:16 story card with the app icon, what the app does
 /// and a QR code. Made from brand art only — never the user's photos.
 enum InviteCard {
     static func render(link: URL?) -> UIImage {
@@ -406,8 +406,8 @@ enum InviteCard {
 
     /// Message that travels with the card in Messages, WhatsApp and friends.
     static func message(link: URL?) -> String {
-        let pitch = String(localized: "I edit my photos with Glowlit ✨ AI glow-ups, 80s & 90s effects and easy video edits. Free to start.")
-        guard let link else { return pitch + " " + String(localized: "Find “Glowlit” on the App Store.") }
+        let pitch = String(localized: "I edit my photos with Aybuke ✨ AI glow-ups, 80s & 90s effects and easy video edits. Free to start.")
+        guard let link else { return pitch + " " + String(localized: "Find “Aybuke” on the App Store.") }
         return pitch + "\n" + link.absoluteString
     }
 
@@ -435,7 +435,7 @@ enum InviteCard {
         let size = CGSize(width: 238, height: 300)
         let placements: [(dx: CGFloat, dy: CGFloat, angle: CGFloat, style: Int)] = [(-236, 34, -10, 0), (236, 34, 10, 2), (0, 0, 0, 1)]
         for placement in placements {
-            let art = DemoArt.render(prompt: "Glowlit invite", style: styles[placement.style], size: AspectRatio.portrait.pixelSize(longEdge: 600),
+            let art = DemoArt.render(prompt: "Aybuke invite", style: styles[placement.style], size: AspectRatio.portrait.pixelSize(longEdge: 600),
                                      variant: placement.style, stamped: false)
             let frame = CGRect(x: width / 2 + placement.dx - size.width / 2, y: top + placement.dy, width: size.width, height: size.height)
             cg.saveGState()
@@ -462,7 +462,7 @@ enum InviteCard {
         cg.restoreGState()
 
         guard let link, let code = QRCode.image(for: link.absoluteString, side: 184) else {
-            ShareRenderer.drawText(String(localized: "Find “Glowlit” on the App Store"), font: ShareRenderer.brandFont(40, weight: .bold),
+            ShareRenderer.drawText(String(localized: "Find “Aybuke” on the App Store"), font: ShareRenderer.brandFont(40, weight: .bold),
                                    color: .brandInk, centeredIn: frame.insetBy(dx: 30, dy: 30), lines: 2)
             return
         }
@@ -472,7 +472,7 @@ enum InviteCard {
         cg.interpolationQuality = .default
         let textX = qr.maxX + 30
         let textWidth = frame.maxX - 30 - textX
-        ShareRenderer.drawLeft(String(localized: "Scan to get Glowlit"), font: ShareRenderer.brandFont(40, weight: .heavy), color: .brandInk,
+        ShareRenderer.drawLeft(String(localized: "Scan to get Aybuke"), font: ShareRenderer.brandFont(40, weight: .heavy), color: .brandInk,
                                at: CGPoint(x: textX, y: frame.minY + 42), maxWidth: textWidth)
         ShareRenderer.drawLeft(String(localized: "Free on the App Store"), font: ShareRenderer.brandFont(30, weight: .semibold),
                                color: UIColor(hex: 0x5C5457), at: CGPoint(x: textX, y: frame.minY + 104), maxWidth: textWidth)

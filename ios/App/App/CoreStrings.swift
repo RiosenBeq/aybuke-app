@@ -163,7 +163,7 @@ enum CoreStrings {
         String(localized: "Nudity and sexual content aren't allowed. Try a different idea.", comment: "Shown when a request is blocked by the content policy"),
         String(localized: "Let's keep outfits cozy and everyday. Try a cozy knit, a party dress or a costume.", comment: "Shown when a request is blocked by the content policy"),
         String(localized: "Edits that make fun of someone aren't something we do. Try a fun scene instead.", comment: "Shown when a request is blocked by the content policy"),
-        String(localized: "Glowlit keeps you, you. Try hair color, makeup colors, outfits, light or backgrounds.", comment: "Shown when a request is blocked by the content policy"),
+        String(localized: "Aybuke keeps you, you. Try hair color, makeup colors, outfits, light or backgrounds.", comment: "Shown when a request is blocked by the content policy"),
         String(localized: "AI features aren't configured yet.", comment: "Error message"),
         String(localized: "Allow AI processing to use this feature.", comment: "Error message"),
         String(localized: "You're out of credits for today.", comment: "Error message"),

@@ -1,6 +1,6 @@
 # Social media kit
 
-Everything you need to launch and run Glowlit's social channels, in English and Turkish. Glowlit is the AI photo editor **made for girls who glow**: say what to change, tap a trend, share the glow-up.
+Everything you need to launch and run Aybuke's social channels, in English and Turkish. Aybuke is the AI photo editor **made for girls who glow**: say what to change, tap a trend, share the glow-up.
 
 > **Ground rules for every post**
 > - Celebrate creativity, never "fix" anyone. No body-shaming, no "flawless skin" or "slimmer" promises, no comments on how people look.
@@ -11,9 +11,9 @@ Everything you need to launch and run Glowlit's social channels, in English and 
 
 ## 1. Positioning, pillars and voice
 
-**Positioning (EN).** For girls and young women who live on Instagram and TikTok, Glowlit is the AI photo editor that turns a sentence or a tap into a glow-up that still looks like you, with honest pricing and photos that stay private.
+**Positioning (EN).** For girls and young women who live on Instagram and TikTok, Aybuke is the AI photo editor that turns a sentence or a tap into a glow-up that still looks like you, with honest pricing and photos that stay private.
 
-**Konumlandırma (TR).** Instagram ve TikTok'ta yaşayan kızlar ve genç kadınlar için Glowlit, bir cümleyi ya da tek bir dokunuşu hâlâ sana benzeyen bir glow-up'a dönüştüren, adil fiyatlı ve fotoğrafları gizli tutan yapay zekâlı fotoğraf editörüdür.
+**Konumlandırma (TR).** Instagram ve TikTok'ta yaşayan kızlar ve genç kadınlar için Aybuke, bir cümleyi ya da tek bir dokunuşu hâlâ sana benzeyen bir glow-up'a dönüştüren, adil fiyatlı ve fotoğrafları gizli tutan yapay zekâlı fotoğraf editörüdür.
 
 **Three pillars**
 
@@ -80,13 +80,13 @@ Check that the handles are free on every platform before you commit: **@glowlit*
 
 ### Pinterest (limit 500)
 
-- **EN** (236): Glowlit is the AI photo editor made for girls who glow. Save ideas for pink hair, soft glam makeup, ballet core, Y2K and dreamy portrait edits, then make them yours in one tap. Private by default: your photos are never used to train AI.
-- **TR** (262): Glowlit, ışıldayan kızlar için yapay zekâlı fotoğraf editörü. Pembe saç, soft glam makyaj, ballet core, Y2K ve rüya gibi portre fikirlerini kaydet, sonra tek dokunuşla kendine uyarla. Varsayılan olarak gizli: fotoğrafların asla yapay zekâ eğitiminde kullanılmaz.
+- **EN** (236): Aybuke is the AI photo editor made for girls who glow. Save ideas for pink hair, soft glam makeup, ballet core, Y2K and dreamy portrait edits, then make them yours in one tap. Private by default: your photos are never used to train AI.
+- **TR** (262): Aybuke, ışıldayan kızlar için yapay zekâlı fotoğraf editörü. Pembe saç, soft glam makyaj, ballet core, Y2K ve rüya gibi portre fikirlerini kaydet, sonra tek dokunuşla kendine uyarla. Varsayılan olarak gizli: fotoğrafların asla yapay zekâ eğitiminde kullanılmaz.
 
 ### YouTube (limit 1000)
 
-- **EN** (375): Glowlit is the AI photo editor made for girls who glow ✨ Here you'll find glow-up tutorials, trend looks (Doll Box, Pink Hair, Ballet Core, Fairy Princess), before/after reveals and tips for creating dreamy AI art from text. Glowlit is private by default: nothing goes to the cloud until you say yes, and your photos are never used to train AI. Get the app: {{APP_STORE_URL}}
-- **TR** (411): Glowlit, ışıldayan kızlar için yapay zekâlı fotoğraf editörü ✨ Bu kanalda glow-up eğitimleri, trend görünümler (Doll Box, Pembe Saç, Ballet Core, Peri Prensesi), önce/sonra dönüşümleri ve metinden rüya gibi AI sanatı oluşturma ipuçları bulacaksın. Glowlit varsayılan olarak gizlidir: sen onay vermeden hiçbir şey buluta gitmez ve fotoğrafların asla AI eğitiminde kullanılmaz. Uygulamayı indir: {{APP_STORE_URL}}
+- **EN** (375): Aybuke is the AI photo editor made for girls who glow ✨ Here you'll find glow-up tutorials, trend looks (Doll Box, Pink Hair, Ballet Core, Fairy Princess), before/after reveals and tips for creating dreamy AI art from text. Aybuke is private by default: nothing goes to the cloud until you say yes, and your photos are never used to train AI. Get the app: {{APP_STORE_URL}}
+- **TR** (411): Aybuke, ışıldayan kızlar için yapay zekâlı fotoğraf editörü ✨ Bu kanalda glow-up eğitimleri, trend görünümler (Doll Box, Pembe Saç, Ballet Core, Peri Prensesi), önce/sonra dönüşümleri ve metinden rüya gibi AI sanatı oluşturma ipuçları bulacaksın. Aybuke varsayılan olarak gizlidir: sen onay vermeden hiçbir şey buluta gitmez ve fotoğrafların asla AI eğitiminde kullanılmaz. Uygulamayı indir: {{APP_STORE_URL}}
 
 ### LinkedIn (tagline) (limit 120)
 
@@ -98,7 +98,7 @@ Check that the handles are free on every platform before you commit: **@glowlit*
 
 Instagram recommends a few relevant hashtags rather than long lists: use 3–5 per post, mixing one brand tag, one or two use-case tags and one trend tag.
 
-- **Brand:** #Glowlit #MadeWithGlowlit #GlowlitChallenge
+- **Brand:** #Aybuke #MadeWithGlowlit #GlowlitChallenge
 - **Glow-up looks:** #GlowUp #SoftGlam #PinkHair #HairColorIdeas #MakeupLook
 - **Aesthetic:** #BalletCore #Y2KAesthetic #CleanGirlAesthetic #PinkAesthetic #DreamyEdit
 - **AI art:** #AIArt #AIGenerated #MadeWithAI #DigitalArt #PastelArt
@@ -111,65 +111,65 @@ Instagram recommends a few relevant hashtags rather than long lists: use 3–5 p
 Every caption ends with the AI disclosure. Switch on the platform's AI label when you post.
 
 1. **Before/after carousel: Pink Hair**
-   - EN: Thinking about pink hair but not ready for the salon? 💗 Try it first. Typed "give me pastel pink hair" and slid to see. Swipe for the before → Made with AI in Glowlit. #Glowlit #PinkHair #GlowUp
-   - TR: Pembe saç istiyorsun ama kuaföre hazır değil misin? 💗 Önce dene. "Saçımı pastel pembe yap" yazdım, kaydırıp baktım. Öncesi için kaydır → Glowlit'te yapay zekâ ile yapıldı. #Glowlit #pembesaç #glowup
+   - EN: Thinking about pink hair but not ready for the salon? 💗 Try it first. Typed "give me pastel pink hair" and slid to see. Swipe for the before → Made with AI in Aybuke. #Aybuke #PinkHair #GlowUp
+   - TR: Pembe saç istiyorsun ama kuaföre hazır değil misin? 💗 Önce dene. "Saçımı pastel pembe yap" yazdım, kaydırıp baktım. Öncesi için kaydır → Aybuke'de yapay zekâ ile yapıldı. #Aybuke #pembesaç #glowup
 2. **Trend drop: Doll Box (Reel)**
-   - EN: You, as a collectible doll 🎀 The Doll Box look is live in Glowlit. One photo, one tap. Which accessories would your box have? Made with AI in Glowlit. #Glowlit #DollBox #AIArt
-   - TR: Koleksiyonluk bir bebek olarak sen 🎀 Doll Box görünümü Glowlit'te yayında. Bir fotoğraf, tek dokunuş. Senin kutunda hangi aksesuarlar olurdu? Glowlit'te yapay zekâ ile yapıldı. #Glowlit #yapayzeka #glowup
+   - EN: You, as a collectible doll 🎀 The Doll Box look is live in Aybuke. One photo, one tap. Which accessories would your box have? Made with AI in Aybuke. #Aybuke #DollBox #AIArt
+   - TR: Koleksiyonluk bir bebek olarak sen 🎀 Doll Box görünümü Aybuke'de yayında. Bir fotoğraf, tek dokunuş. Senin kutunda hangi aksesuarlar olurdu? Aybuke'de yapay zekâ ile yapıldı. #Aybuke #yapayzeka #glowup
 3. **Soft Glam (static)**
-   - EN: Soft glam, zero brushes ✨ Rosy blush, glossy lip, same you. Made with AI in Glowlit. #Glowlit #SoftGlam #MakeupLook
-   - TR: Soft glam, sıfır fırça ✨ Pembe allık, parlak dudak, yine sen. Glowlit'te yapay zekâ ile yapıldı. #Glowlit #softglam #makyaj
+   - EN: Soft glam, zero brushes ✨ Rosy blush, glossy lip, same you. Made with AI in Aybuke. #Aybuke #SoftGlam #MakeupLook
+   - TR: Soft glam, sıfır fırça ✨ Pembe allık, parlak dudak, yine sen. Aybuke'de yapay zekâ ile yapıldı. #Aybuke #softglam #makyaj
 4. **Ballet Core carousel**
-   - EN: Satin bows, tulle and that dreamy studio light 🩰 Ballet Core is here. Save this for your next profile pic. Made with AI in Glowlit. #Glowlit #BalletCore #PinkAesthetic
-   - TR: Saten kurdeleler, tül ve o rüya gibi stüdyo ışığı 🩰 Ballet Core geldi. Bir sonraki profil fotoğrafın için kaydet. Glowlit'te yapay zekâ ile yapıldı. #Glowlit #balletcore #estetik
+   - EN: Satin bows, tulle and that dreamy studio light 🩰 Ballet Core is here. Save this for your next profile pic. Made with AI in Aybuke. #Aybuke #BalletCore #PinkAesthetic
+   - TR: Saten kurdeleler, tül ve o rüya gibi stüdyo ışığı 🩰 Ballet Core geldi. Bir sonraki profil fotoğrafın için kaydet. Aybuke'de yapay zekâ ile yapıldı. #Aybuke #balletcore #estetik
 5. **Y2K Digicam**
-   - EN: POV: you found your 2004 digital camera 📸 Flash, date stamp, all the nostalgia. Made with AI in Glowlit. #Glowlit #Y2KAesthetic #Digicam
-   - TR: POV: 2004'ten kalma dijital kamerayı buldun 📸 Flaş, tarih damgası, tüm o nostalji. Glowlit'te yapay zekâ ile yapıldı. #Glowlit #y2k #nostalji
+   - EN: POV: you found your 2004 digital camera 📸 Flash, date stamp, all the nostalgia. Made with AI in Aybuke. #Aybuke #Y2KAesthetic #Digicam
+   - TR: POV: 2004'ten kalma dijital kamerayı buldun 📸 Flaş, tarih damgası, tüm o nostalji. Aybuke'de yapay zekâ ile yapıldı. #Aybuke #y2k #nostalji
 6. **Fairy Princess (Reel)**
-   - EN: Main-character energy, unlocked 🧚 Fairy Princess turns any portrait into an enchanted forest scene. Made with AI in Glowlit. #Glowlit #FairyCore #DreamyEdit
-   - TR: Ana karakter enerjisi açıldı 🧚 Peri Prensesi, herhangi bir portreyi büyülü bir ormana taşır. Glowlit'te yapay zekâ ile yapıldı. #Glowlit #peri #rüyagibi
+   - EN: Main-character energy, unlocked 🧚 Fairy Princess turns any portrait into an enchanted forest scene. Made with AI in Aybuke. #Aybuke #FairyCore #DreamyEdit
+   - TR: Ana karakter enerjisi açıldı 🧚 Peri Prensesi, herhangi bir portreyi büyülü bir ormana taşır. Aybuke'de yapay zekâ ile yapıldı. #Aybuke #peri #rüyagibi
 7. **Restore family photos**
-   - EN: Mom's photo from 1989, restored and colorized in seconds 🕰️💗 Tag someone whose memories deserve a glow. Made with AI in Glowlit. #Glowlit #PhotoRestoration #FamilyMemories
-   - TR: Annemin 1989'dan kalma fotoğrafı, saniyeler içinde onarıldı ve renklendirildi 🕰️💗 Anıları ışıldamayı hak eden birini etiketle. Glowlit'te yapay zekâ ile yapıldı. #Glowlit #anıfotoğrafları #eskifotoğraf
+   - EN: Mom's photo from 1989, restored and colorized in seconds 🕰️💗 Tag someone whose memories deserve a glow. Made with AI in Aybuke. #Aybuke #PhotoRestoration #FamilyMemories
+   - TR: Annemin 1989'dan kalma fotoğrafı, saniyeler içinde onarıldı ve renklendirildi 🕰️💗 Anıları ışıldamayı hak eden birini etiketle. Aybuke'de yapay zekâ ile yapıldı. #Aybuke #anıfotoğrafları #eskifotoğraf
 8. **Create from text**
-   - EN: Typed "a dreamy pastel bedroom with fairy lights and a canopy bed". Got this ✨ What should I create next? Made with AI in Glowlit. #Glowlit #AIArt #PastelArt
-   - TR: "Peri ışıklı, cibinlikli, pastel bir yatak odası" yazdım. Sonuç bu ✨ Sırada ne olsun? Glowlit'te yapay zekâ ile yapıldı. #Glowlit #yapayzeka #pastel
+   - EN: Typed "a dreamy pastel bedroom with fairy lights and a canopy bed". Got this ✨ What should I create next? Made with AI in Aybuke. #Aybuke #AIArt #PastelArt
+   - TR: "Peri ışıklı, cibinlikli, pastel bir yatak odası" yazdım. Sonuç bu ✨ Sırada ne olsun? Aybuke'de yapay zekâ ile yapıldı. #Aybuke #yapayzeka #pastel
 9. **Privacy explainer (carousel)**
-   - EN: 3 things we'll never do with your photos: 1) use them to train AI 2) sell them 3) use them for ads. Your gallery stays on your iPhone 🔒 #Glowlit #PrivacyMatters
-   - TR: Fotoğraflarınla asla yapmayacağımız 3 şey: 1) yapay zekâ eğitmek 2) satmak 3) reklam için kullanmak. Galerin iPhone'unda kalır 🔒 #Glowlit #gizlilik
+   - EN: 3 things we'll never do with your photos: 1) use them to train AI 2) sell them 3) use them for ads. Your gallery stays on your iPhone 🔒 #Aybuke #PrivacyMatters
+   - TR: Fotoğraflarınla asla yapmayacağımız 3 şey: 1) yapay zekâ eğitmek 2) satmak 3) reklam için kullanmak. Galerin iPhone'unda kalır 🔒 #Aybuke #gizlilik
 10. **Fair pricing explainer**
-    - EN: No weekly plan. No surprise charges. Failed edits refunded. A reminder before your trial ends. That's our Fair-Price Promise 💗 #Glowlit
-    - TR: Haftalık plan yok. Sürpriz ücret yok. Başarısız düzenlemeye iade. Deneme bitmeden hatırlatma. İşte Adil Fiyat Sözümüz 💗 #Glowlit
+    - EN: No weekly plan. No surprise charges. Failed edits refunded. A reminder before your trial ends. That's our Fair-Price Promise 💗 #Aybuke
+    - TR: Haftalık plan yok. Sürpriz ücret yok. Başarısız düzenlemeye iade. Deneme bitmeden hatırlatma. İşte Adil Fiyat Sözümüz 💗 #Aybuke
 11. **Café Date**
-    - EN: Latte art, fairy lights and you ☕💗 Café Date puts you in the coziest corner in town. Made with AI in Glowlit. #Glowlit #CafeAesthetic
-    - TR: Latte art, peri ışıkları ve sen ☕💗 Kafe Buluşması seni şehrin en tatlı köşesine taşır. Glowlit'te yapay zekâ ile yapıldı. #Glowlit #kafe
+    - EN: Latte art, fairy lights and you ☕💗 Café Date puts you in the coziest corner in town. Made with AI in Aybuke. #Aybuke #CafeAesthetic
+    - TR: Latte art, peri ışıkları ve sen ☕💗 Kafe Buluşması seni şehrin en tatlı köşesine taşır. Aybuke'de yapay zekâ ile yapıldı. #Aybuke #kafe
 12. **Paris Trip**
-    - EN: Paris weekend, no passport needed 🗼 Paris Trip is live for Pro. Made with AI in Glowlit. #Glowlit #ParisAesthetic
-    - TR: Paris hafta sonu, pasaport gerekmez 🗼 Paris Gezisi Pro'da yayında. Glowlit'te yapay zekâ ile yapıldı. #Glowlit #paris
+    - EN: Paris weekend, no passport needed 🗼 Paris Trip is live for Pro. Made with AI in Aybuke. #Aybuke #ParisAesthetic
+    - TR: Paris hafta sonu, pasaport gerekmez 🗼 Paris Gezisi Pro'da yayında. Aybuke'de yapay zekâ ile yapıldı. #Aybuke #paris
 13. **Birthday Glam**
-    - EN: Birthday photoshoot, from your bedroom 🎂✨ Balloons, confetti, sparklers: one tap. Made with AI in Glowlit. #Glowlit #BirthdayGirl
-    - TR: Doğum günü çekimi, odandan çıkmadan 🎂✨ Balonlar, konfeti, maytaplar: tek dokunuş. Glowlit'te yapay zekâ ile yapıldı. #Glowlit #doğumgünü
+    - EN: Birthday photoshoot, from your bedroom 🎂✨ Balloons, confetti, sparklers: one tap. Made with AI in Aybuke. #Aybuke #BirthdayGirl
+    - TR: Doğum günü çekimi, odandan çıkmadan 🎂✨ Balonlar, konfeti, maytaplar: tek dokunuş. Aybuke'de yapay zekâ ile yapıldı. #Aybuke #doğumgünü
 14. **Bestie Polaroid**
-    - EN: Turn your bestie selfies into 90s instant film 📸💕 Tag the friend who's always in your photos (with her permission!). Made with AI in Glowlit. #Glowlit #Besties
-    - TR: Kankanla çekildiğin selfie'leri 90'lar instant filmine çevir 📸💕 Fotoğraflarında hep olan arkadaşını etiketle (izniyle!). Glowlit'te yapay zekâ ile yapıldı. #Glowlit #kanka
+    - EN: Turn your bestie selfies into 90s instant film 📸💕 Tag the friend who's always in your photos (with her permission!). Made with AI in Aybuke. #Aybuke #Besties
+    - TR: Kankanla çekildiğin selfie'leri 90'lar instant filmine çevir 📸💕 Fotoğraflarında hep olan arkadaşını etiketle (izniyle!). Aybuke'de yapay zekâ ile yapıldı. #Aybuke #kanka
 15. **Background remover (free)**
-    - EN: Free trick: remove any background on your iPhone, no upload, no credits ✂️ Edit > Remove BG. #Glowlit #EditingTips
-    - TR: Ücretsiz ipucu: iPhone'unda herhangi bir arka planı kaldır, yükleme yok, kredi yok ✂️ Edit > Remove BG. #Glowlit #düzenlemeipucu
+    - EN: Free trick: remove any background on your iPhone, no upload, no credits ✂️ Edit > Remove BG. #Aybuke #EditingTips
+    - TR: Ücretsiz ipucu: iPhone'unda herhangi bir arka planı kaldır, yükleme yok, kredi yok ✂️ Edit > Remove BG. #Aybuke #düzenlemeipucu
 16. **Shop owners**
-    - EN: Small shop, big glow 🛍️ Product Studio turns a desk photo into a clean, shop-ready shot. Made with AI in Glowlit. #Glowlit #SmallBusiness #ProductPhotography
-    - TR: Küçük dükkân, büyük ışıltı 🛍️ Product Studio masa üstünde çektiğin fotoğrafı mağazaya hazır bir çekime dönüştürür. Glowlit'te yapay zekâ ile yapıldı. #Glowlit #küçükişletme
+    - EN: Small shop, big glow 🛍️ Product Studio turns a desk photo into a clean, shop-ready shot. Made with AI in Aybuke. #Aybuke #SmallBusiness #ProductPhotography
+    - TR: Küçük dükkân, büyük ışıltı 🛍️ Product Studio masa üstünde çektiğin fotoğrafı mağazaya hazır bir çekime dönüştürür. Aybuke'de yapay zekâ ile yapıldı. #Aybuke #küçükişletme
 17. **Golden Hour Glow**
-    - EN: Missed golden hour? Bring it back 🌅 Golden Hour Glow, one tap. Made with AI in Glowlit. #Glowlit #GoldenHour
-    - TR: Altın saati kaçırdın mı? Geri getir 🌅 Altın Saat Işıltısı, tek dokunuş. Glowlit'te yapay zekâ ile yapıldı. #Glowlit #altınsaat
+    - EN: Missed golden hour? Bring it back 🌅 Golden Hour Glow, one tap. Made with AI in Aybuke. #Aybuke #GoldenHour
+    - TR: Altın saati kaçırdın mı? Geri getir 🌅 Altın Saat Işıltısı, tek dokunuş. Aybuke'de yapay zekâ ile yapıldı. #Aybuke #altınsaat
 18. **Spooky season**
-    - EN: Witchy glam, but make it cute 🖤🎃 Spooky season looks are live. Made with AI in Glowlit. #Glowlit #SpookySeason
-    - TR: Cadı glam'i ama tatlı versiyonu 🖤🎃 Spooky season görünümleri yayında. Glowlit'te yapay zekâ ile yapıldı. #Glowlit #cadılarbayramı
+    - EN: Witchy glam, but make it cute 🖤🎃 Spooky season looks are live. Made with AI in Aybuke. #Aybuke #SpookySeason
+    - TR: Cadı glam'i ama tatlı versiyonu 🖤🎃 Spooky season görünümleri yayında. Aybuke'de yapay zekâ ile yapıldı. #Aybuke #cadılarbayramı
 19. **Challenge launch**
-    - EN: #GlowlitChallenge week 1: Pink Hair 💗 Post your before/after with the hashtag. We'll feature our favorites (with permission) on Friday. #Glowlit
-    - TR: #GlowlitChallenge 1. hafta: Pembe Saç 💗 Önce/sonra fotoğrafını hashtag ile paylaş. Favorilerimizi (izinle) cuma günü öne çıkarıyoruz. #Glowlit
+    - EN: #GlowlitChallenge week 1: Pink Hair 💗 Post your before/after with the hashtag. We'll feature our favorites (with permission) on Friday. #Aybuke
+    - TR: #GlowlitChallenge 1. hafta: Pembe Saç 💗 Önce/sonra fotoğrafını hashtag ile paylaş. Favorilerimizi (izinle) cuma günü öne çıkarıyoruz. #Aybuke
 20. **Story cards**
-    - EN: New: 9:16 story cards and before/after collages, ready for your Stories in one tap 📲✨ #Glowlit
-    - TR: Yeni: 9:16 hikâye kartları ve önce/sonra kolajları, tek dokunuşla Hikâyelerine hazır 📲✨ #Glowlit
+    - EN: New: 9:16 story cards and before/after collages, ready for your Stories in one tap 📲✨ #Aybuke
+    - TR: Yeni: 9:16 hikâye kartları ve önce/sonra kolajları, tek dokunuşla Hikâyelerine hazır 📲✨ #Aybuke
 
 ## 6. Short-form video scripts (Reels, TikTok, Shorts)
 
@@ -192,13 +192,13 @@ Production notes: record in the app's light (pink) mode, use trending audio from
 
 **Who:** adult creators (18+) in beauty, hair, aesthetic, photography and small-business niches, with 5k–200k engaged followers. Don't work with creators under 18, and don't ask creators to feature minors.
 
-**DM (EN):** Hi {name}! We love your {aesthetic/hair/makeup} content 💗 We're launching Glowlit, an AI photo editor made for girls who glow (say "give me pink hair" and watch it happen). Would you like a free year of Pro to try it? No obligation to post. If you'd like to collaborate, we'd love to talk about a paid partnership.
+**DM (EN):** Hi {name}! We love your {aesthetic/hair/makeup} content 💗 We're launching Aybuke, an AI photo editor made for girls who glow (say "give me pink hair" and watch it happen). Would you like a free year of Pro to try it? No obligation to post. If you'd like to collaborate, we'd love to talk about a paid partnership.
 
-**DM (TR):** Merhaba {isim}! {estetik/saç/makyaj} içeriklerine bayılıyoruz 💗 Işıldayan kızlar için bir AI fotoğraf editörü olan Glowlit'i yayınlıyoruz ("saçımı pembe yap" yaz, gerisini izle). Denemen için bir yıllık ücretsiz Pro ister misin? Paylaşım zorunluluğu yok. İş birliği yapmak istersen ücretli bir ortaklık için konuşmayı çok isteriz.
+**DM (TR):** Merhaba {isim}! {estetik/saç/makyaj} içeriklerine bayılıyoruz 💗 Işıldayan kızlar için bir AI fotoğraf editörü olan Aybuke'yi yayınlıyoruz ("saçımı pembe yap" yaz, gerisini izle). Denemen için bir yıllık ücretsiz Pro ister misin? Paylaşım zorunluluğu yok. İş birliği yapmak istersen ücretli bir ortaklık için konuşmayı çok isteriz.
 
-**Email subject:** Paid collab: Glowlit (AI glow-up app) × {name} / Ücretli iş birliği: Glowlit × {isim}
+**Email subject:** Paid collab: Aybuke (AI glow-up app) × {name} / Ücretli iş birliği: Aybuke × {isim}
 
-**Brief (one page):** goal (awareness of one trend look), deliverables (1 Reel + 3 Stories), key message ("say it, see it"), must-haves (show the before/after slider, mention privacy in one line, AI label on, "Paid partnership" tool on and #ad / #reklam in the first line), don'ts (no body or skin comments, no "flawless", no minors, no other brands), usage rights (organic reposting on Glowlit channels for 6 months; paid ads only with a separate fee and written approval).
+**Brief (one page):** goal (awareness of one trend look), deliverables (1 Reel + 3 Stories), key message ("say it, see it"), must-haves (show the before/after slider, mention privacy in one line, AI label on, "Paid partnership" tool on and #ad / #reklam in the first line), don'ts (no body or skin comments, no "flawless", no minors, no other brands), usage rights (organic reposting on Aybuke channels for 6 months; paid ads only with a separate fee and written approval).
 
 **Disclosure rules:** follow the FTC Endorsement Guides in the US and the Turkish Advertising Board's guidance on influencer marketing (Sosyal Medya Etkileyicileri Tarafından Yapılan Ticari Reklam ve Haksız Ticari Uygulamalar Hakkında Kılavuz): disclosure must be clear, at the start, and in the language of the post (#reklam, #işbirliği).
 
@@ -214,13 +214,13 @@ Production notes: record in the app's light (pink) mode, use trending audio from
 8. **Negative App Store review (bug).** EN: We're sorry about this. We've fixed {issue} in version {x}. If anything still feels off, please write to {{SUPPORT_EMAIL}}, we read every message. / TR: Bunun için üzgünüz. {sorun} {x} sürümünde düzeltildi. Hâlâ bir sorun varsa {{SUPPORT_EMAIL}} adresine yaz; her mesajı okuyoruz.
 9. **Negative review (pricing).** EN: Thanks for the honest feedback. There's no weekly plan, packs never expire and failed edits are refunded. If you were charged unexpectedly, Apple can help at reportaproblem.apple.com. / TR: Dürüst geri bildirimin için teşekkürler. Haftalık plan yok, paketlerin süresi dolmaz ve başarısız düzenlemeler iade edilir. Beklenmedik bir ücret olduysa Apple reportaproblem.apple.com üzerinden yardımcı olur.
 10. **Someone edited my photo without consent.** EN: We're really sorry. Please email {{SUPPORT_EMAIL}} with details so we can act, and report it to the platform where it's posted. / TR: Çok üzgünüz. Gerekenleri yapabilmemiz için ayrıntıları {{SUPPORT_EMAIL}} adresine yaz ve paylaşıldığı platforma da bildir.
-11. **"Is this for kids?"** EN: Glowlit is for ages 13+. If you're under 18, check with a parent or guardian before buying or turning on cloud AI. / TR: Glowlit 13 yaş ve üzeri içindir. 18 yaşından küçüksen satın almadan veya bulut yapay zekâyı açmadan önce velinle konuş.
+11. **"Is this for kids?"** EN: Aybuke is for ages 13+. If you're under 18, check with a parent or guardian before buying or turning on cloud AI. / TR: Aybuke 13 yaş ve üzeri içindir. 18 yaşından küçüksen satın almadan veya bulut yapay zekâyı açmadan önce velinle konuş.
 12. **Compliment.** EN: This made our day 🥹💗 Can we share your creation on our page (with credit)? / TR: Günümüzü güzelleştirdin 🥹💗 Oluşturduğunu sayfamızda (etiketleyerek) paylaşabilir miyiz?
 
 ## 9. UGC, challenges and referral ideas
 
 - **#GlowlitChallenge:** one trend per week (Pink Hair, Ballet Core, Doll Box, Bestie Polaroid). Feature favourites only with written permission in DMs.
 - **Template of the week:** a Monday post with a new or trending template, and a Friday recap of community creations.
-- **Share cards:** the in-app share sheet adds "Made with Glowlit" on free exports, so every share is a quiet referral.
+- **Share cards:** the in-app share sheet adds "Made with Aybuke" on free exports, so every share is a quiet referral.
 - **No incentives for ratings:** App Store rules forbid rewarding ratings or reviews. Never offer credits for reviews, and don't make sharing a condition for using any feature.
 - **Seasonal moments:** Valentine's Day (bestie looks), Mother's Day (photo restoration), graduation (headshots), Halloween (spooky looks), New Year (birthday and party glam).

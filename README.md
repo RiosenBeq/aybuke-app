@@ -1,8 +1,8 @@
-# Glowlit — AI Photo Editor & Generator for iOS
+# Aybuke — AI Photo Editor & Generator for iOS
 
-![Glowlit](docs/assets/brand/brand-board.png)
+![Aybuke](docs/assets/brand/brand-board.png)
 
-**Glowlit** is an iPhone and iPad app, also built for the Mac with Mac Catalyst, for AI photo editing and AI image generation, with free on-device effects and video editing, **made for girls who glow**.
+**Aybuke** is an iPhone and iPad app, also built for the Mac with Mac Catalyst, for AI photo editing and AI image generation, with free on-device effects and video editing, **made for girls who glow**.
 
 > Working on this repository with an AI agent (or new to it)? Start with [AGENTS.md](AGENTS.md): what the app is, where the code lives, how to build and test, the rules and what's next.
 
@@ -59,7 +59,7 @@ Captured on an iPhone simulator in demo mode (AI results are simulated). The [Sc
 
 **Requirements:** Xcode 16 or newer (Xcode 26 for the iOS 26 Liquid Glass look; older SDKs build a frosted fallback) and an iOS 17+ iPhone or iPad, simulator or device. For the Mac app, pick the **My Mac (Mac Catalyst)** destination (macOS 14+); [AGENTS.md](AGENTS.md#3-build-run-test) explains running it without an Apple account.
 
-1. Open `ios/Glowlit.xcodeproj` and run the **Glowlit** scheme. Xcode resolves the RevenueCat Swift package on first open.
+1. Open `ios/Glowlit.xcodeproj` and run the **Aybuke** scheme. Xcode resolves the RevenueCat Swift package on first open.
 2. With no AI key or backend configured, the app runs in **demo mode**: every screen works offline and AI results are simulated on-device and stamped "DEMO PREVIEW".
 3. Subscriptions are testable locally: the scheme uses `ios/StoreKit/Products.storekit`.
 
@@ -85,7 +85,7 @@ Cloud jobs run on xAI Grok Imagine (`grok-imagine-image-2.0` at 1k): low quality
 
 ## Sharing and promotion
 
-- **In the app:** the share composer (`ios/App/Features/Share/`, designs in `ios/App/Services/Sharing/ShareDesigns.swift` and `ShareRenderer.swift`) exports a photo, a before/after collage, a 9:16 story card, a "Cover star" 4:5 magazine cover (the masthead tucks behind her head, using on-device Vision person segmentation), a date-stamped photo-booth "Photo strip" or a "Which vibe?" card (two variations of one creation). Free exports carry a small "Made with Glowlit" mark, which Pro removes. Every AI export keeps the IPTC "made with AI" metadata. The composer offers caption ideas written on the device, with hashtags (the AI ones only for AI content). **Stories** works without a Meta App ID: the system share sheet opens with just the image and a hint ("Tap Instagram, then Stories"), and the caption goes to the clipboard. With `instagramAppID` (a Meta App ID) set in `AppConfig.json`, it opens Instagram Stories directly.
+- **In the app:** the share composer (`ios/App/Features/Share/`, designs in `ios/App/Services/Sharing/ShareDesigns.swift` and `ShareRenderer.swift`) exports a photo, a before/after collage, a 9:16 story card, a "Cover star" 4:5 magazine cover (the masthead tucks behind her head, using on-device Vision person segmentation), a date-stamped photo-booth "Photo strip" or a "Which vibe?" card (two variations of one creation). Free exports carry a small "Made with Aybuke" mark, which Pro removes. Every AI export keeps the IPTC "made with AI" metadata. The composer offers caption ideas written on the device, with hashtags (the AI ones only for AI content). **Stories** works without a Meta App ID: the system share sheet opens with just the image and a hint ("Tap Instagram, then Stories"), and the caption goes to the clipboard. With `instagramAppID` (a Meta App ID) set in `AppConfig.json`, it opens Instagram Stories directly.
 - **Invite card:** "Glow together" (`InviteView`, from Settings and Home) makes a 9:16 story card with the app icon and a QR code that links to the App Store page, or to `websiteURL` until there is one. It's made from brand art only and never includes the user's photos.
 - **Marketing kit:** [docs/marketing/](docs/marketing/README.md) contains App Store copy (EN/TR) with measured character counts, a social media kit, a 30-day launch plan, generated App Store screenshots and social images.
 - **Website:** [web/](web/README.md) is a static landing page with the legal pages, ready for GitHub Pages (`.github/workflows/website.yml`).
@@ -105,7 +105,7 @@ Cloud jobs run on xAI Grok Imagine (`grok-imagine-image-2.0` at 1k): low quality
 
 ## Languages
 
-The app speaks 12 languages: English, Turkish, Spanish, Brazilian Portuguese, French, German, Italian, Russian, Japanese, Korean, Simplified Chinese and Indonesian. It follows the iPhone's language. Settings → **Language** opens iOS Settings, where Glowlit can have a language of its own; on the Mac it opens System Settings → Language & Region, where Glowlit can be added under Applications. The legal documents are in English and Turkish only; every other language shows the English versions.
+The app speaks 12 languages: English, Turkish, Spanish, Brazilian Portuguese, French, German, Italian, Russian, Japanese, Korean, Simplified Chinese and Indonesian. It follows the iPhone's language. Settings → **Language** opens iOS Settings, where Aybuke can have a language of its own; on the Mac it opens System Settings → Language & Region, where Aybuke can be added under Applications. The legal documents are in English and Turkish only; every other language shows the English versions.
 
 **Add or change a string**
 - **App and widget text:** write it in English in SwiftUI (`Text("…")`, `String(localized:)`). Xcode adds it to a String Catalog when you build: `ios/App/Resources/Localizable.xcstrings` (app), `ios/GlowlitWidgets/Localizable.xcstrings` (widgets) or `ios/App/Resources/InfoPlist.xcstrings` (permission prompts and other Info.plist text). Translate it in Xcode's catalog editor.

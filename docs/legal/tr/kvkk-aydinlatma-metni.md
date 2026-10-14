@@ -5,14 +5,14 @@
 Son güncelleme: 14 Ekim 2026
 
 > **Kısaca**
-> - Glowlit uygulamasında sizden ad, e-posta veya şifre istemiyoruz; hesabınız anonim, rastgele bir kimlikten ibarettir.
+> - Aybuke uygulamasında sizden ad, e-posta veya şifre istemiyoruz; hesabınız anonim, rastgele bir kimlikten ibarettir.
 > - Fotoğraflarınız ve istemleriniz yalnızca bulut yapay zekâ işlemeye açık rıza verdiğinizde, yalnızca istediğiniz sonucu üretmek için işlenir; tarafımızca saklanmaz ve sonuçlar en geç 1 saat içinde buluttan silinir.
 > - Verilerinizi yapay zekâ eğitmek, kişiselleştirilmiş reklam, pazarlama veya profilleme için kullanmayız ve satmayız.
 > - Pro üyeliği olmayan, 13 yaş ve üzerindeki kullanıcılar Google AdMob'dan birkaç kişiselleştirilmemiş reklam görür: krediniz bittiğinde 1 kredi için isteğe bağlı olarak izleyebileceğiniz bir reklam (günde birkaç kez) ve ara sıra kaydettikten sonra bir reklam. 13 yaşın altında ve Pro'da reklam yoktur.
 > - Yurt dışına aktarımlar, Kişisel Verileri Koruma Kurulu'nun ilan ettiği standart sözleşmelere dayanır.
 > - KVKK md. 11'deki haklarınızı uygulama içinden veya aşağıdaki başvuru yollarıyla kullanabilirsiniz.
 
-Bu Aydınlatma Metni, 6698 sayılı Kişisel Verilerin Korunması Kanunu ("**KVKK**") md. 10 ve Aydınlatma Yükümlülüğünün Yerine Getirilmesinde Uyulacak Usul ve Esaslar Hakkında Tebliğ uyarınca, Glowlit mobil uygulamasını ve buna bağlı çevrim içi hizmetleri ("**Hizmet**") kullanan ilgili kişileri bilgilendirmek amacıyla hazırlanmıştır. Ayrıntılı bilgi [Gizlilik Politikası](gizlilik-politikasi.md) metnimizdedir.
+Bu Aydınlatma Metni, 6698 sayılı Kişisel Verilerin Korunması Kanunu ("**KVKK**") md. 10 ve Aydınlatma Yükümlülüğünün Yerine Getirilmesinde Uyulacak Usul ve Esaslar Hakkında Tebliğ uyarınca, Aybuke mobil uygulamasını ve buna bağlı çevrim içi hizmetleri ("**Hizmet**") kullanan ilgili kişileri bilgilendirmek amacıyla hazırlanmıştır. Ayrıntılı bilgi [Gizlilik Politikası](gizlilik-politikasi.md) metnimizdedir.
 
 ## 1. Veri sorumlusu
 
@@ -52,7 +52,7 @@ Kişisel verilerinizi kişiselleştirilmiş (davranışsal) reklam, pazarlama, p
 
 ## 4. Kişisel verilerin toplanma yöntemi ve hukuki sebepleri
 
-Kişisel verileriniz, Glowlit mobil uygulaması aracılığıyla elektronik ortamda ve otomatik yollarla; satın alımlara ilişkin veriler Apple'dan imzalı işlem bilgisi olarak; ödüllü reklam onayları Google'dan imzalı bildirim olarak; bize yazdığınızda e-posta yoluyla toplanır. Reklam verileri, uygulamadaki Google reklam yazılımı aracılığıyla doğrudan Google tarafından toplanır. Bu veriler aşağıdaki hukuki sebeplere dayanılarak işlenir:
+Kişisel verileriniz, Aybuke mobil uygulaması aracılığıyla elektronik ortamda ve otomatik yollarla; satın alımlara ilişkin veriler Apple'dan imzalı işlem bilgisi olarak; ödüllü reklam onayları Google'dan imzalı bildirim olarak; bize yazdığınızda e-posta yoluyla toplanır. Reklam verileri, uygulamadaki Google reklam yazılımı aracılığıyla doğrudan Google tarafından toplanır. Bu veriler aşağıdaki hukuki sebeplere dayanılarak işlenir:
 
 - **Bir sözleşmenin kurulması veya ifasıyla doğrudan ilgili olması (md. 5/2-c):** anonim hesabın ve isteğe bağlı Apple ile giriş hesabının işletilmesi (hesapların birleştirilmesi dahil), iş kayıtları, krediler (ödüllü reklamlardan kazanılanlar dahil), satın alımlar ve abonelikler, destek talepleri.
 - **Açık rıza (md. 5/1):** bulut yapay zekâ işleme kapsamında fotoğraf, maske ve istemlerin işlenmesi. Bu rızayı uygulama içindeki onay ekranında verirsiniz ve **Ayarlar → Cloud AI processing** seçeneğiyle dilediğiniz zaman geri alabilirsiniz. Bir fotoğraf özel nitelikli kişisel veri ortaya koyuyorsa md. 6/3 kapsamındaki açık rızanıza dayanırız.
@@ -60,7 +60,7 @@ Kişisel verileriniz, Glowlit mobil uygulaması aracılığıyla elektronik orta
 - **Hukuki yükümlülüğün yerine getirilmesi (md. 5/2-ç):** başvuruların yanıtlanması, mevzuatın gerektirdiği kayıtlar ve yetkili makamlara bildirimler (örneğin çocukların cinsel istismarı materyali).
 - **Bir hakkın tesisi, kullanılması veya korunması (md. 5/2-e):** hukuki uyuşmazlıklar.
 
-**18 yaşından küçük kullanıcılar.** Glowlit en az 13 yaşındaki kullanıcılar içindir. Türk Medeni Kanunu uyarınca 18 yaşından küçükler sınırlı ehliyetli olduğundan, açık rıza gerektiren işlemlerde (örneğin bulut yapay zekâ işleme) rızanın velisi veya vasisi tarafından verilmesi ya da onaylanması gerekir. Veliler ve vasiler çocukları adına bize başvurabilir.
+**18 yaşından küçük kullanıcılar.** Aybuke en az 13 yaşındaki kullanıcılar içindir. Türk Medeni Kanunu uyarınca 18 yaşından küçükler sınırlı ehliyetli olduğundan, açık rıza gerektiren işlemlerde (örneğin bulut yapay zekâ işleme) rızanın velisi veya vasisi tarafından verilmesi ya da onaylanması gerekir. Veliler ve vasiler çocukları adına bize başvurabilir.
 
 ## 5. Kişisel verilerin aktarılması
 
@@ -116,7 +116,7 @@ Haklarınızı kullanmak için, Veri Sorumlusuna Başvuru Usul ve Esasları Hakk
 - **Güvenli elektronik imza veya mobil imza ile:** [hello@buaze.com](mailto:hello@buaze.com) adresine;
 - **E-posta ile:** daha önce bize bildirdiğiniz ve sistemimizde kayıtlı olan e-posta adresinizden [hello@buaze.com](mailto:hello@buaze.com) adresine.
 
-Başvurunuzda; adınız, soyadınız ve yazılı başvurularda imzanız, Türkiye Cumhuriyeti vatandaşları için T.C. kimlik numaranız, yabancılar için uyruğunuz ile pasaport veya varsa kimlik numaranız, tebligata esas yerleşim yeri veya iş yeri adresiniz, varsa bildirime esas e-posta adresiniz, telefon veya faks numaranız ve talep konunuz bulunmalıdır. Hesabınız anonim olduğundan, verilerinizi bulabilmemiz için bir Glowlit satın alımına ait Apple Sipariş Kimliği (Order ID) gibi ek bilgiler isteyebiliriz.
+Başvurunuzda; adınız, soyadınız ve yazılı başvurularda imzanız, Türkiye Cumhuriyeti vatandaşları için T.C. kimlik numaranız, yabancılar için uyruğunuz ile pasaport veya varsa kimlik numaranız, tebligata esas yerleşim yeri veya iş yeri adresiniz, varsa bildirime esas e-posta adresiniz, telefon veya faks numaranız ve talep konunuz bulunmalıdır. Hesabınız anonim olduğundan, verilerinizi bulabilmemiz için bir Aybuke satın alımına ait Apple Sipariş Kimliği (Order ID) gibi ek bilgiler isteyebiliriz.
 
 Verilerinizin hemen silinmesi için uygulamadaki **Ayarlar → Verilerimi ve hesabımı sil** seçeneğini de kullanabilirsiniz.
 

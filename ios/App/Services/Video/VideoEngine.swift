@@ -206,7 +206,7 @@ enum VideoEngine {
         guard let session = AVAssetExportSession(asset: asset, presetName: AVAssetExportPresetHighestQuality) else {
             throw VideoError.exportFailed
         }
-        let url = FileManager.default.temporaryDirectory.appendingPathComponent("Glowlit-\(UUID().uuidString.prefix(6)).mp4")
+        let url = FileManager.default.temporaryDirectory.appendingPathComponent("Aybuke-\(UUID().uuidString.prefix(6)).mp4")
         session.videoComposition = videoComposition
         session.shouldOptimizeForNetworkUse = true
         do {

@@ -124,7 +124,7 @@ struct ApplyRetroEffectIntent: AppIntent {
             throw GlowIntentError.notAPhoto
         }
         let base = (photo.filename as NSString).deletingPathExtension
-        let name = "\(base.isEmpty ? "Glowlit" : base)-\(effect.rawValue).\(encoded.fileExtension)"
+        let name = "\(base.isEmpty ? "Aybuke" : base)-\(effect.rawValue).\(encoded.fileExtension)"
         return .result(value: IntentFile(data: encoded.data, filename: name, type: encoded.fileExtension == "png" ? .png : .jpeg))
     }
 }
@@ -198,7 +198,7 @@ struct MakeCollageIntent: AppIntent {
 
 struct EditPhotoIntent: AppIntent {
     static let title: LocalizedStringResource = "Edit a Photo"
-    static let description = IntentDescription("Opens a photo in Glowlit's editor, or lets you pick one.")
+    static let description = IntentDescription("Opens a photo in Aybuke's editor, or lets you pick one.")
     static let openAppWhenRun = true
 
     @Parameter(title: "Photo", supportedTypeIdentifiers: ["public.image"])

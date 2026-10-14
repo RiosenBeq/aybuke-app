@@ -114,7 +114,7 @@ struct HomeView: View {
 
     @ViewBuilder
     private var header: some View {
-        // At accessibility sizes the buttons go above the name, so "Glowlit"
+        // At accessibility sizes the buttons go above the name, so "Aybuke"
         // and the line under it get the whole width and never break mid-word.
         // The Mac shows credits and Settings in its sidebar instead.
         if Platform.isMac {

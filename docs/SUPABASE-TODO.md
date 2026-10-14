@@ -1,6 +1,6 @@
 # Supabase kurulumu — sonraya bırakıldı
 
-Bu dosya, Glowlit'in arka ucunu (Supabase) canlıya almak için kalan adımları listeler. Kod hazır: `backend/` klasöründe veritabanı geçişleri, Edge Functions ve testler var. Ayrıntılı İngilizce rehber: [`backend/README.md`](../backend/README.md).
+Bu dosya, Aybuke'nin arka ucunu (Supabase) canlıya almak için kalan adımları listeler. Kod hazır: `backend/` klasöründe veritabanı geçişleri, Edge Functions ve testler var. Ayrıntılı İngilizce rehber: [`backend/README.md`](../backend/README.md).
 
 > **Önemli:** Arka uç canlı olmadan uygulamadaki yapay zekâ özellikleri **demo modunda** çalışır (sonuçlar simüle edilir). App Store'a incelemeye göndermeden önce aşağıdaki adımlar tamamlanmalı; yoksa inceleme ekibi gerçek sonuç göremez ve uygulama "eksik" (Guideline 2.1) gerekçesiyle reddedilebilir.
 
@@ -11,7 +11,7 @@ Bu dosya, Glowlit'in arka ucunu (Supabase) canlıya almak için kalan adımları
 
 ## 2. Yeni proje
 
-- [ ] **New project** → ad: `Glowlit`, bölge: **Central EU (Frankfurt)** (KVKK/GDPR açısından AB önerilir).
+- [ ] **New project** → ad: `Aybuke`, bölge: **Central EU (Frankfurt)** (KVKK/GDPR açısından AB önerilir).
 - [ ] Veritabanı şifresi: "Generate a password" ile oluştur ve şifre yöneticisine kaydet.
 
 ## 3. Veritabanı (SQL Editor)
@@ -68,7 +68,7 @@ supabase functions deploy ai-image credits-redeem account report
 supabase functions deploy ad-reward --no-verify-jwt
 ```
 
-- [ ] AdMob → Glowlit → ödüllü reklam birimi (`ca-app-pub-2292230772061554/1406702504`, ödül miktarı 1, öğe `credit`) → **Server-side verification** → geri çağırma adresi `https://<proje-ref>.supabase.co/functions/v1/ad-reward` (sorgu dizesi olmadan) → **Verify URL**. Ayrıntılar: [`backend/README.md`](../backend/README.md), "Rewarded ads".
+- [ ] AdMob → Aybuke → ödüllü reklam birimi (`ca-app-pub-2292230772061554/1406702504`, ödül miktarı 1, öğe `credit`) → **Server-side verification** → geri çağırma adresi `https://<proje-ref>.supabase.co/functions/v1/ad-reward` (sorgu dizesi olmadan) → **Verify URL**. Ayrıntılar: [`backend/README.md`](../backend/README.md), "Rewarded ads".
 
 ## 6. Gizli anahtarlar (Edge Functions → Secrets)
 

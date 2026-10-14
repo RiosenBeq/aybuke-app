@@ -1,12 +1,12 @@
-# 02 · Brand identity — Glowlit
+# 02 · Brand identity — Aybuke
 
-![Glowlit brand board](assets/brand/brand-board.png)
+![Aybuke brand board](assets/brand/brand-board.png)
 
 | | |
 |---|---|
-| **Name** | **Glowlit** |
+| **Name** | **Aybuke** |
 | **Tagline** | *Make it glow* |
-| **App Store title** | `Glowlit: AI Photo Editor` (24/30 characters) |
+| **App Store title** | `Aybuke: AI Photo Editor` (24/30 characters) |
 | **Subtitle (draft)** | `AI Headshots & Photo Trends` (27/30) |
 | **Positioning** | The AI photo studio made for girls who glow: trend-ready, true-to-you photos, with honest pricing and private-by-default face data. |
 | **Palette** | "Blush": blush pink `#F7C1D9` and petal `#F8E0EA` with ink `#121212`, charcoal `#24272A`, paper `#F8F8F6` and white; light-first. Decorative "Aura" accents (pink `#FF5CA1`, lilac `#A78BFA`, peach `#FFAA78`, butter `#FFDE6E`, mint `#78E1CD`) for the icon, share cards and template art only |
@@ -44,12 +44,12 @@ The research shortlist was Sunlit, Brilla, Lumora, Liora, Daylit, Aglow, Pixora 
 | Aglow | taken | taken | `aglowapp.com` taken | Actively used |
 | Pixora | taken | taken | `pixoraapp.com` taken | Actively used |
 | Glimmer | taken | taken | — | Common word |
-| **Glowlit** | **free** | **free** | `.com` taken (as is every pronounceable `.com`) | ✅ **chosen** |
+| **Aybuke** | **free** | **free** | `.com` taken (as is every pronounceable `.com`) | ✅ **chosen** |
 | Goldlit | free | free | — | Runner-up; "gold" reads as money |
 | Sunlume | free | free | — | Spelling ambiguity (sun-loom?) |
 | Sunrae | free | free | — | Spelling ambiguity (sunray?) |
 
-### Why Glowlit
+### Why Aybuke
 
 - **Glow** is the category's most emotional outcome word: "glow-up", glowing skin, golden-hour glow. **Lit** means lit by light, and in Gen-Z slang "lit" means great.
 - It is a 7-letter, 2-syllable compound (GLOW-lit) that people spell exactly as they hear it.
@@ -61,7 +61,7 @@ The research shortlist was Sunlit, Brilla, Lumora, Liora, Daylit, Aglow, Pixora 
 
 The name has **not** been cleared legally. Before spending on marketing:
 
-1. Search the App Store and Google Play for "Glowlit".
+1. Search the App Store and Google Play for "Aybuke".
 2. Check USPTO and EUIPO trademarks in Nice classes **9** and **42**.
 3. Check social handles: @glowlit, @glowlitapp.
 4. Register `glowlit.app`, the domain the app's privacy, terms and support URLs already point to.
@@ -70,7 +70,7 @@ The name has **not** been cleared legally. Before spending on marketing:
 
 ## 2. Color — "Blush"
 
-In October 2026 the owner retargeted Glowlit at **girls and young women** and asked for a fully pink, light look built on six exact swatches. The original "Golden Hour" amber direction (below, for the record) was retired.
+In October 2026 the owner retargeted Aybuke at **girls and young women** and asked for a fully pink, light look built on six exact swatches. The original "Golden Hour" amber direction (below, for the record) was retired.
 
 | Token | Light (default) | Dark | Use | Contrast |
 |---|---|---|---|---|
@@ -195,9 +195,9 @@ Headlines, titles and taglines never end with a decorative full stop, in any lan
 
 ## 6. App Store presence
 
-The current, character-counted copy for en-US and tr-TR is in [marketing/app-store-listing.md](marketing/app-store-listing.md) (title `Glowlit: AI Photo Editor`, subtitle `AI Glow-Ups, Trends & Edits`). The original research notes follow.
+The current, character-counted copy for en-US and tr-TR is in [marketing/app-store-listing.md](marketing/app-store-listing.md) (title `Aybuke: AI Photo Editor`, subtitle `AI Glow-Ups, Trends & Edits`). The original research notes follow.
 
-- **Title:** `Glowlit: AI Photo Editor`
+- **Title:** `Aybuke: AI Photo Editor`
   - "ai photo editor" has popularity 70 and difficulty 80; 7 of the top 10 apps use it.
 - **Subtitle:** `AI Headshots & Photo Trends`
   - Put the niche terms in the subtitle and don't repeat title words.

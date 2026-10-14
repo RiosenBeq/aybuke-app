@@ -79,7 +79,7 @@ ICON = ROOT / "docs" / "assets" / "brand" / "app-icon-1024.png"
 SYSTEM = Path("/System/Library/Fonts")
 
 # The name the app shows; captions spell it out, the social images use this.
-APP_NAME = "Glowlit"
+APP_NAME = "Aybuke"
 IPHONE, IPAD, MAC = (1290, 2796), (2064, 2752), (2880, 1800)
 TITLE_LIMIT, SUBTITLE_LIMIT = 28, 60
 

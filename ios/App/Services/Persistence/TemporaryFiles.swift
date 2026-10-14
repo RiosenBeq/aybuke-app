@@ -5,7 +5,7 @@ import Foundation
 /// behind, and a video can be gigabytes, so old ones are swept at launch.
 enum TemporaryFiles {
     /// Name prefixes of the files the app writes to tmp.
-    static let ownedPrefixes = ["glowlit-", "Glowlit-", "creation-"]
+    static let ownedPrefixes = ["glowlit-", "Glowlit-", "aybuke-", "Aybuke-", "creation-"]
 
     /// Deletes app-owned tmp files last changed more than `age` ago. Runs off
     /// the main actor: listing and deleting big files can take a moment.

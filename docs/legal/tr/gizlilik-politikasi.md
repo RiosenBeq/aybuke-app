@@ -5,7 +5,7 @@
 Son güncelleme: 14 Ekim 2026
 
 > **Kısaca gizlilik**
-> - Glowlit gençler düşünülerek tasarlandığı için herkese yüksek gizlilik sağlayan varsayılan ayarlar uygulanır: takip yok, profilleme yok, herkese açık profil veya akış yok.
+> - Aybuke gençler düşünülerek tasarlandığı için herkese yüksek gizlilik sağlayan varsayılan ayarlar uygulanır: takip yok, profilleme yok, herkese açık profil veya akış yok.
 > - Ücretsiz üyeler Google AdMob'dan birkaç reklam görür: krediniz bittiğinde 1 kredi için isteğe bağlı olarak izleyebileceğiniz kısa bir reklam (günde birkaç kez) ve ara sıra kaydettikten sonra bir reklam. Reklamlar asla kişiselleştirilmez ve fotoğraflarınızı asla kullanmaz. Pro'da reklam yoktur; 13 yaşın altında da hiç reklam yoktur.
 > - Adınızı, e-posta adresinizi veya bir şifre istemiyoruz. Hesabınız anonim, rastgele bir kimlikten ibarettir.
 > - Kütüphaneniz iPhone'unuzda kalır. Arka plan kaldırma ve elle yapılan ayarlamalar cihazınızdan hiç çıkmaz.
@@ -15,7 +15,7 @@ Son güncelleme: 14 Ekim 2026
 
 ## 1. Biz kimiz?
 
-Glowlit iOS uygulamasını ve buna bağlı çevrim içi hizmetleri ("**Hizmet**") Okan Berk Manavoğlu (bireysel geliştirici) ("**biz**") geliştirir ve işletir. Kişisel verileriniz bakımından veri sorumlusu biziz (6698 sayılı Kişisel Verilerin Korunması Kanunu, "**KVKK**", anlamında *veri sorumlusu*; GDPR anlamında *controller*).
+Aybuke iOS uygulamasını ve buna bağlı çevrim içi hizmetleri ("**Hizmet**") Okan Berk Manavoğlu (bireysel geliştirici) ("**biz**") geliştirir ve işletir. Kişisel verileriniz bakımından veri sorumlusu biziz (6698 sayılı Kişisel Verilerin Korunması Kanunu, "**KVKK**", anlamında *veri sorumlusu*; GDPR anlamında *controller*).
 
 - **Adres:** İstanbul, Türkiye, Türkiye
 - **Ticaret sicili / MERSİS numarası:** Yok (bireysel geliştirici)
@@ -25,16 +25,16 @@ Glowlit iOS uygulamasını ve buna bağlı çevrim içi hizmetleri ("**Hizmet**"
 
 Bir veri koruma görevlisine iletebileceğiniz sorular dahil, gizlilikle ilgili her konuda bize [hello@buaze.com](mailto:hello@buaze.com) adresinden yazabilirsiniz.
 
-Bu politika Hizmeti kapsar. Glowlit ile birlikte kullandığınız üçüncü taraf hizmetleri (örneğin Apple App Store veya paylaşım yaptığınız Instagram gibi uygulamalar) kapsamaz; bunların kendi gizlilik politikaları vardır. Türkiye'deyseniz lütfen [KVKK Aydınlatma Metni](kvkk-aydinlatma-metni.md) metnimizi de okuyun. Glowlit kullanım kuralları [Kullanım Koşulları](kullanim-kosullari.md) ve [Kabul Edilebilir Kullanım ve Yapay Zekâ İçerik Politikası](kabul-edilebilir-kullanim-politikasi.md) metinlerinde yer alır.
+Bu politika Hizmeti kapsar. Aybuke ile birlikte kullandığınız üçüncü taraf hizmetleri (örneğin Apple App Store veya paylaşım yaptığınız Instagram gibi uygulamalar) kapsamaz; bunların kendi gizlilik politikaları vardır. Türkiye'deyseniz lütfen [KVKK Aydınlatma Metni](kvkk-aydinlatma-metni.md) metnimizi de okuyun. Aybuke kullanım kuralları [Kullanım Koşulları](kullanim-kosullari.md) ve [Kabul Edilebilir Kullanım ve Yapay Zekâ İçerik Politikası](kabul-edilebilir-kullanim-politikasi.md) metinlerinde yer alır.
 
 ## 2. Gençler düşünülerek tasarlandı
 
-Glowlit genç kullanıcılar düşünülerek tasarlanmıştır. Bu nedenle yaşı ne olursa olsun herkese yüksek gizlilik sağlayan varsayılan ayarlar uygularız:
+Aybuke genç kullanıcılar düşünülerek tasarlanmıştır. Bu nedenle yaşı ne olursa olsun herkese yüksek gizlilik sağlayan varsayılan ayarlar uygularız:
 
 - **Az reklam, asla kişiselleştirilmiş değil.** Pro üyeler ve 13 yaşından küçükler hiç reklam görmez; Mac uygulamasında da reklam yoktur. Ücretsiz üyeler Google AdMob reklamlarını yalnızca iki yerde görür: kredileri bittiğinde 1 kredi için isteğe bağlı olarak izleyebilecekleri kısa bir reklam (uygulamanın gösterdiği gibi günde birkaç kez) ve bitmiş bir çalışmayı kaydettikten veya paylaştıktan sonra ara sıra gösterilen bir reklam (ilk gün hiç gösterilmez, günde en fazla 3). Reklamlar asla kişiselleştirilmez; fotoğraflarınızı, istemlerinizi veya sonuçlarınızı asla kullanmaz. Gençler ve yaşını bilmediğimiz herkes yalnızca genel izleyiciye uygun reklamlar görür (5. bölüm).
 - **Takip yok.** Sizi başka şirketlerin uygulamaları veya web siteleri arasında takip etmeyiz. Uygulama sizden takip izni asla istemez ve cihazınızın reklam kimliğine (IDFA) erişmez. Tek üçüncü taraf analiz SDK'sı, yalnızca bir satın alma yaptığınızda başlayan RevenueCat abonelik analizidir; Google'ın reklam SDK'sı ise yalnızca ücretsiz bir üyeye reklam gösterilebilecekken başlar (5. bölüm).
 - **Profilleme yok.** Hakkınızda profil oluşturmayız ve otomatik işlemeye dayanarak sizi hukuken veya benzer şekilde önemli ölçüde etkileyen kararlar almayız.
-- **Herkese açık profil veya akış yok.** Glowlit içinde hakkınızdaki hiçbir şey herkese açık değildir. Oluşturduklarınız yalnızca siz paylaşmayı seçerseniz paylaşılır.
+- **Herkese açık profil veya akış yok.** Aybuke içinde hakkınızdaki hiçbir şey herkese açık değildir. Oluşturduklarınız yalnızca siz paylaşmayı seçerseniz paylaşılır.
 - **Pazarlama için paylaşım yok.** Kişisel verileri satmayız, kişiselleştirilmiş (bağlamlar arası davranışsal) reklamcılık veya pazarlama amacıyla paylaşmayız ve veri simsarlarıyla çalışmayız. Size pazarlama mesajı göndermeyiz.
 - **Kütüphaneniz cihazınızda kalır.** Sakladığınız görseller yalnızca iPhone'unuzda tutulur.
 - **Bulut işleme yalnızca onayınızla.** Siz kabul edene kadar bulut yapay zekâ özelliklerimiz için cihazınızdan hiçbir şey çıkmaz. Apple'ın Image Playground özelliğinin kendi bildirimi vardır (6. bölüm).
@@ -60,7 +60,7 @@ Bu bölüm 18 yaşından küçükseniz sizin için. Politikanın geri kalanı da
 
 ## 4. iPhone'unuzda kalan veriler
 
-Glowlit uygulamasının büyük bölümü bize hiçbir şey göndermeden çalışır. Aşağıdaki veriler yalnızca cihazınızda saklanır ve bizim bunlara erişimimiz yoktur:
+Aybuke uygulamasının büyük bölümü bize hiçbir şey göndermeden çalışır. Aşağıdaki veriler yalnızca cihazınızda saklanır ve bizim bunlara erişimimiz yoktur:
 
 - **Kütüphaneniz ("My Works")**: Sakladığınız görseller ile başlıkları, düzenleme türü, kullandığınız metin istemi (Create from text ve Magic Edit için), favori işareti ve zaman bilgileri. Kütüphane, uygulamanın özel depolama alanında tutulur ve iOS Veri Koruma (Data Protection) ile korunur. Sildiğiniz bir görsel 30 gün boyunca **Recently deleted** bölümünde kalır; orada geri yükleyebilir veya kalıcı olarak silebilirsiniz, sonrasında kaldırılır.
 - **Uygulama ayarları** (iOS UserDefaults içinde): tanıtım adımlarını tamamlayıp tamamlamadığınız; seçtiğiniz ilgi alanları (örneğin "Selfie glow-ups" veya "Shots for my shop"; yalnızca cihazınızda ana ekranın sıralamasında kullanılır); yaş aralığınız (13 yaş altı, 13–15, 16–17 veya 18 ve üzeri), Apple'ın Declared Age Range özelliğinden mi yoksa uygulamanın kendi sorusundan mı geldiği ve ne zaman belirlendiği (doğum tarihiniz asla); bulut yapay zekâ onay tercihiniz, ne zaman verdiğiniz, onay ekranının hangi sürümü olduğu ve hangi işleyicileri adlandırdığı (değiştiklerinde yeniden sorabilmek için) ve sorulduysa "Bir veli veya vasi evet dedi" cevabınız; görünüm tercihiniz; bildirim tercihleriniz; Create bölümünde görsel oluşturduğunuz son 10 istem ve orada yazmakta olduğunuz metin (listeyi Create bölümünden temizleyebilirsiniz); yalnızca Apple'ın değerlendirme isteminin zamanlamasında kullanılan küçük bir mutlu an sayacı (bir görseli kaydetmek, paylaşmak veya kalplemek) ve uygulamanın en son ne zaman sorduğu; reklamlar için uygulamayı ilk ne zaman açtığınız, kaç çalışma kaydettiğiniz, en son ne zaman reklam gördüğünüz ve bugün kaç reklam gördüğünüz (yalnızca reklamları seyrek tutmak için, 5. bölüm) ve bu cihazda bir reklam isteyip istemediğiniz; reklam onay tercihleri yaptıysanız Google'ın bu tercihlere ilişkin kaydı (Google'ın onay aracı tarafından cihazınızda tutulur); yalnızca çevrim dışı veya demo modunda yerel kredi bakiyesi.
@@ -76,7 +76,7 @@ Glowlit uygulamasının büyük bölümü bize hiçbir şey göndermeden çalı�
 
 **Cihaz üzerinde video altyazıları.** Video düzenleyicideki **Captions** (altyazılar), videonuzda söylenenleri Apple'ın konuşma tanıma özelliğiyle cihazınızda altyazıya dönüştürür. iOS 26'dan itibaren Apple'ın cihaz üzerinde çalışan konuşma modellerini kullanır; her dilin modeli Apple'dan bir kez indirilir ve bu indirmeyle hiçbir ses veya metin gönderilmez. Aksi hâlde Apple'ın konuşma tanıyıcısını yalnızca cihazınızın internet olmadan tanıyabildiği dillerde kullanır ve iOS önce konuşma tanımayı kullanmak için izninizi ister. Videonuzun sesi ve altyazı metni cihazınızda kalır; bize veya Apple'a gönderilmez. Altyazılar yalnızca düzenleme sırasında ve kaydettiğiniz veya paylaştığınız videolarda bulunur.
 
-**Fotoğraf erişimi.** Fotoğrafları Apple'ın sistem fotoğraf seçicisiyle seçersiniz; bu nedenle Glowlit tüm kitaplığınızı değil, yalnızca seçtiğiniz fotoğrafları görebilir. Sonuçları Fotoğraflar kitaplığınıza kaydetmek için uygulama yalnızca ekleme izni ister; bu izin görsel eklemeye olanak tanır, kitaplığınızı okumaya değil.
+**Fotoğraf erişimi.** Fotoğrafları Apple'ın sistem fotoğraf seçicisiyle seçersiniz; bu nedenle Aybuke tüm kitaplığınızı değil, yalnızca seçtiğiniz fotoğrafları görebilir. Sonuçları Fotoğraflar kitaplığınıza kaydetmek için uygulama yalnızca ekleme izni ister; bu izin görsel eklemeye olanak tanır, kitaplığınızı okumaya değil.
 
 **Kamera erişimi.** Retro Cam ve Photo Booth kameranızı yalnızca açıkken ve siz kamera erişimine izin verdikten sonra kullanır. Canlı önizleme ve efektler iPhone'unuzda çalışır; çektikleriniz siz kaydedene veya paylaşana kadar cihazınızda kalır.
 
@@ -92,7 +92,7 @@ Bir bulut yapay zekâ özelliğini ilk kez kullandığınızda veya bir satın a
 
 ### İsteğe bağlı hesap (Apple ile giriş)
 
-Giriş yapmak isteğe bağlıdır ve uygulamanın her sürümünde sunulmaz. Uygulamanın sunduğu durumlarda **Apple ile giriş** yaparsanız (kredileriniz başka bir cihaza da gelsin diye; etkin bir abonelik onu satın alan Apple Hesabı'na bağlı kalır), kimliğinizi Apple doğrular ve arka uç sağlayıcımız sabit bir Apple kullanıcı tanımlayıcısı ile, paylaşmayı seçerseniz e-posta adresinizi alır; bu adres size yönlendiren gizli bir aktarma (relay) adresi olabilir. Adınızı istemeyiz ve Apple Kimliği şifrenizi asla görmeyiz. O iPhone'da kullandığınız anonim hesap hesabınızla birleştirilir: ücretli krediler, abonelik kayıtları, iş kayıtları ve bildirimler taşınır, anonim hesap silinir. Apple'ın şart koştuğu üzere, hesabınızı sildiğinizde Glowlit'in Apple Kimliğinize erişimini iptal edebilmek için Apple'dan aldığımız bir anahtarı da saklarız. Fotoğraflarınız ve kütüphaneniz eşitlenmez; her iPhone'da kalır.
+Giriş yapmak isteğe bağlıdır ve uygulamanın her sürümünde sunulmaz. Uygulamanın sunduğu durumlarda **Apple ile giriş** yaparsanız (kredileriniz başka bir cihaza da gelsin diye; etkin bir abonelik onu satın alan Apple Hesabı'na bağlı kalır), kimliğinizi Apple doğrular ve arka uç sağlayıcımız sabit bir Apple kullanıcı tanımlayıcısı ile, paylaşmayı seçerseniz e-posta adresinizi alır; bu adres size yönlendiren gizli bir aktarma (relay) adresi olabilir. Adınızı istemeyiz ve Apple Kimliği şifrenizi asla görmeyiz. O iPhone'da kullandığınız anonim hesap hesabınızla birleştirilir: ücretli krediler, abonelik kayıtları, iş kayıtları ve bildirimler taşınır, anonim hesap silinir. Apple'ın şart koştuğu üzere, hesabınızı sildiğinizde Aybuke'nin Apple Kimliğinize erişimini iptal edebilmek için Apple'dan aldığımız bir anahtarı da saklarız. Fotoğraflarınız ve kütüphaneniz eşitlenmez; her iPhone'da kalır.
 
 ### Bulut yapay zekâ özelliklerine gönderdiğiniz içerik
 
@@ -108,7 +108,7 @@ Kredi cüzdanınız (satın alınmış krediler), aboneliğinizin kredileri ve d
 
 ### App Store indirmeniz (ücretsiz krediler)
 
-Ücretsiz günlük krediler, yeni hesaplar açılarak toplanamaması için anonim bir hesaba değil, Glowlit uygulamasını App Store'dan indirmenize aittir. Bir bulut yapay zekâ özelliğini kullandığınızda, kredi bakiyenizi okuduğunuzda, kredi paketi satın aldığınızda veya ödüllü bir reklam istediğinizde uygulama, Apple'ın indirmeniz için imzaladığı uygulama işlemini (Apple'ın "AppTransaction" kaydı: Apple'ın uygulama işlem kimliğini, uygulamanın paket kimliğini ve sürümünü ve ilk indirme tarihinizi içerir) sunucumuza gönderir. Apple, her Apple Hesabına Glowlit için tüm cihazlarında ve yeniden yüklemelerden sonra da aynı kalan tek bir uygulama işlem kimliği verir. Sunucumuz Apple'ın imzasını doğrular ve yalnızca şunları saklar:
+Ücretsiz günlük krediler, yeni hesaplar açılarak toplanamaması için anonim bir hesaba değil, Aybuke uygulamasını App Store'dan indirmenize aittir. Bir bulut yapay zekâ özelliğini kullandığınızda, kredi bakiyenizi okuduğunuzda, kredi paketi satın aldığınızda veya ödüllü bir reklam istediğinizde uygulama, Apple'ın indirmeniz için imzaladığı uygulama işlemini (Apple'ın "AppTransaction" kaydı: Apple'ın uygulama işlem kimliğini, uygulamanın paket kimliğini ve sürümünü ve ilk indirme tarihinizi içerir) sunucumuza gönderir. Apple, her Apple Hesabına Aybuke için tüm cihazlarında ve yeniden yüklemelerden sonra da aynı kalan tek bir uygulama işlem kimliği verir. Sunucumuz Apple'ın imzasını doğrular ve yalnızca şunları saklar:
 
 - uygulama işlem kimliğinin tek yönlü, tuzlanmış (salted) bir özeti (hash); kimliğin kendisini veya imzalı kaydı asla saklamayız;
 - reklam izleyerek kazanılanlar dahil o günün ücretsiz günlük kredileri;
@@ -119,7 +119,7 @@ Hesabınız var olduğu sürece iş kayıtlarınız, kredi defteriniz ve reklam 
 
 ### Ücretsiz üyeler için reklamlar
 
-Pro üyeliğiniz yoksa ve 13 yaş veya üzerindeyseniz Glowlit, iPhone ve iPad'de Google AdMob (Google LLC) reklamlarını yalnızca iki yerde gösterir:
+Pro üyeliğiniz yoksa ve 13 yaş veya üzerindeyseniz Aybuke, iPhone ve iPad'de Google AdMob (Google LLC) reklamlarını yalnızca iki yerde gösterir:
 
 - **Ödüllü reklamlar, her zaman isteğe bağlı.** Krediniz bittiğinde günde sınırlı sayıda (sayıyı uygulama gösterir; sınır hesap başına ve App Store indirmesi başına sayılır), 1 kredi için kısa bir reklam izlemeyi seçebilirsiniz. Reklamdan önce uygulama, sunucumuzdan anonim kullanıcı kimliğinize bağlı, 30 dakika geçerli, tek kullanımlık bir ödül kodu ister. Uygulama Google'a yalnızca bu kodu iletir, kullanıcı kimliğinizi asla iletmez. Reklam sonuna kadar oynatıldığında Google sunucumuza kodu, reklam birimini, ödülü, bir işlem kimliğini ve zamanı içeren imzalı bir onay gönderir ve krediyi indirmenizin ücretsiz günlük kredilerine ekleriz. Her ödülü yalnızca bir kez vermek ve günlük sınırı uygulamak için onaylanan her ödülün kaydını (işlem kimliği, kullanıcı kimliği, App Store indirmenizin özeti, reklam birimi, ödül ve tarih) tutarız.
 - **Kaydettikten sonra ara sıra bir reklam.** Bitmiş bir çalışmayı kaydettikten veya paylaştıktan sonra zaman zaman bir reklam görünebilir: uygulamayla ilk gününüzde ve üçüncü kaydınızdan önce asla, düzenleme yaparken asla; en fazla 4 dakikada bir, günde 3 kez ve bir ödüllü reklamdan sonraki 4 dakika içinde hiç. Uygulama bu sayıları cihazınızda tutar (4. bölüm).
@@ -166,7 +166,7 @@ Bize e-posta gönderirseniz e-posta adresinizi, mesajınızın içeriğini ve ek
 
 Yalnızca müşteri içeriğinin iznimiz olmadan model eğitiminde kullanılmasına izin vermeyen sağlayıcı planlarını kullanırız ve bu izni asla vermeyiz. Fotoğraflarınızı, istemlerinizi veya sonuçlarınızı yapay zekâ eğitmek, satmak ya da reklam, pazarlama veya veri madenciliği için asla kullanmayız.
 
-**Create with Image Playground (Apple).** Destekleyen cihazlarda Create bölümü, Apple'ın kendi görsel oluşturucusu olan **Create with Image Playground** seçeneğini de sunar. Bu, bizim bulut yapay zekâ özelliklerimizden biri değil, Apple'ın özelliğidir; bu nedenle onay ekranımız ve kredilerimiz bu seçenek için geçerli değildir. Açıklamanız Apple'ın Image Playground özelliğine gider; görsel cihazınızda veya iOS 27'den itibaren Apple'ın Private Cloud Compute sunucularında, Apple'ın koşulları ve kendi kullanım sınırlarıyla oluşturulur; bu sürümlerde uygulama ilk kullanımdan önce sizi bilgilendirir. Uygulama yalnızca Apple'ın illüstrasyon stillerine izin verir ve fotoğraf arşivinizdeki kişileri kullanma seçeneğini kapatır. Glowlit yalnızca bitmiş görseli alır; bu görsel cihazınızdaki kütüphanede tutulur ve bize hiçbir zaman gönderilmez.
+**Create with Image Playground (Apple).** Destekleyen cihazlarda Create bölümü, Apple'ın kendi görsel oluşturucusu olan **Create with Image Playground** seçeneğini de sunar. Bu, bizim bulut yapay zekâ özelliklerimizden biri değil, Apple'ın özelliğidir; bu nedenle onay ekranımız ve kredilerimiz bu seçenek için geçerli değildir. Açıklamanız Apple'ın Image Playground özelliğine gider; görsel cihazınızda veya iOS 27'den itibaren Apple'ın Private Cloud Compute sunucularında, Apple'ın koşulları ve kendi kullanım sınırlarıyla oluşturulur; bu sürümlerde uygulama ilk kullanımdan önce sizi bilgilendirir. Uygulama yalnızca Apple'ın illüstrasyon stillerine izin verir ve fotoğraf arşivinizdeki kişileri kullanma seçeneğini kapatır. Aybuke yalnızca bitmiş görseli alır; bu görsel cihazınızdaki kütüphanede tutulur ve bize hiçbir zaman gönderilmez.
 
 ## 7. Verilerinizi neden kullanıyoruz ve hukuki dayanaklarımız
 
@@ -177,7 +177,7 @@ GDPR ve UK GDPR, her amaç için hukuki dayanağımızı bildirmemizi gerektirir
 - **İş kayıtları, krediler, satın alımlar ve abonelikler** (işlerin takibi, kredilerin düşülmesi ve iadesi, Apple satın alımlarının doğrulanması, Pro avantajları ve kredi paketlerinin sağlanması). Hukuki dayanak: sizinle yaptığımız sözleşmenin ifası (GDPR md. 6(1)(b)).
 - **Ödüllü reklamlar** (izlemeyi seçtiğiniz reklam için krediyi bir kez ve günlük sınır içinde vermek). Veriler: ödül kodu, ödül kaydı, anonim kullanıcı kimliği. Hukuki dayanak: sizinle yaptığımız sözleşmenin ifası (GDPR md. 6(1)(b)).
 - **Ücretsiz üyeler için reklamlar** (ücretsiz katmanı ücretsiz tutan birkaç kişiselleştirilmemiş reklamın gösterilmesi ve seyrek tutulması). Veriler: 5. bölümde açıklanan, Google tarafından işlenen cihaz, uygulama ve reklam etkileşimi verileri ile cihazınızda tutulan reklam sayıları. Hukuki dayanak: ücretsiz bir katmanı az sayıda kişiselleştirilmemiş reklamla finanse etmeye yönelik meşru menfaatimiz (GDPR md. 6(1)(f)). AEA, Birleşik Krallık ve İsviçre'de olduğu gibi cihazınızda bilgi saklamak veya okumak için kanunun rıza aradığı yerlerde bu rızayı Google'ın rıza formu ister (GDPR md. 6(1)(a) ve ePrivacy kuralları); rıza yaşının altındaki kullanıcılara sorulmaz ve onlara yalnızca sınırlı reklamlar gösterilir.
-- **Güvenlik ve kötüye kullanımın önlenmesi** (istem filtreleri, sağlayıcı güvenlik ayarları, çıktıların otomatik kontrolü, kullanım sınırları, App Store indirmesinin özeti ve ağ adresi sayımlarıyla ücretsiz kredilerin kötüye kullanılmasının önlenmesi, tekrarlanan engellemelerden sonra bulut yapay zekâya ara verilmesi, bildirimlerin incelenmesi ve Politikamızın uygulanması). Hukuki dayanak: Glowlit uygulamasını güvenli ve hukuka uygun tutmaya, kullanıcılarımızı (özellikle genç kullanıcıları) ve görsellerde yer alan kişileri korumaya yönelik meşru menfaatlerimiz (GDPR md. 6(1)(f)); kanunun harekete geçmemizi zorunlu kıldığı hâllerde (örneğin çocukların cinsel istismarı materyalinin bildirilmesi) hukuki yükümlülüklerimiz (GDPR md. 6(1)(c)).
+- **Güvenlik ve kötüye kullanımın önlenmesi** (istem filtreleri, sağlayıcı güvenlik ayarları, çıktıların otomatik kontrolü, kullanım sınırları, App Store indirmesinin özeti ve ağ adresi sayımlarıyla ücretsiz kredilerin kötüye kullanılmasının önlenmesi, tekrarlanan engellemelerden sonra bulut yapay zekâya ara verilmesi, bildirimlerin incelenmesi ve Politikamızın uygulanması). Hukuki dayanak: Aybuke uygulamasını güvenli ve hukuka uygun tutmaya, kullanıcılarımızı (özellikle genç kullanıcıları) ve görsellerde yer alan kişileri korumaya yönelik meşru menfaatlerimiz (GDPR md. 6(1)(f)); kanunun harekete geçmemizi zorunlu kıldığı hâllerde (örneğin çocukların cinsel istismarı materyalinin bildirilmesi) hukuki yükümlülüklerimiz (GDPR md. 6(1)(c)).
 - **Güvenlik ve süreklilik** (sunucu kayıtları, hata ve saldırıların incelenmesi). Hukuki dayanak: güvenli ve güvenilir bir hizmet sunmaya yönelik meşru menfaatlerimiz (GDPR md. 6(1)(f)).
 - **Fotoğraflarınızda görünen diğer kişilerin görüntüleri.** Hukuki dayanak: kullanıcımızın istediği düzenlemeyi yapmaya yönelik meşru menfaatimiz (GDPR md. 6(1)(f)). İşleme kısa sürelidir, düzenlemeyle sınırlıdır ve kimseyi tanımlamak için kullanılmaz; kullanıcılar fotoğrafladıkları kişilerin rızasını almalıdır.
 - **Destek** (mesajlarınızın yanıtlanması). Hukuki dayanak: mesajınız Hizmetle ilgiliyse sözleşmenin ifası; aksi hâlde size yanıt vermeye yönelik meşru menfaatimiz (GDPR md. 6(1)(b) veya (f)).
@@ -196,11 +196,11 @@ Biyometrik veri oluşturmayız: yüz tanıma yapmayız, yüz şablonu veya yüz 
 
 İşlenmesini istemediğiniz hassas bilgiler içeren fotoğrafları veya istemleri lütfen yüklemeyin.
 
-**Fotoğraflarınızdaki diğer kişiler.** Fotoğraflarınızda başka kişiler görünebilir. Onların görüntülerini de sizinkiyle aynı şekilde işleriz: yalnızca düzenleme için, kısa süreyle ve hiçbir zaman kimliklerini belirlemeden. Başkalarının fotoğraflarını yalnızca onların rızasıyla, çocukların fotoğraflarını ise yalnızca velisi veya vasisiyseniz ya da velisinin veya vasisinin izniyle yükleyin. Başka birinin Glowlit ile düzenlediği bir fotoğrafta yer alıyorsanız bize [hello@buaze.com](mailto:hello@buaze.com) adresinden ulaşabilirsiniz.
+**Fotoğraflarınızdaki diğer kişiler.** Fotoğraflarınızda başka kişiler görünebilir. Onların görüntülerini de sizinkiyle aynı şekilde işleriz: yalnızca düzenleme için, kısa süreyle ve hiçbir zaman kimliklerini belirlemeden. Başkalarının fotoğraflarını yalnızca onların rızasıyla, çocukların fotoğraflarını ise yalnızca velisi veya vasisiyseniz ya da velisinin veya vasisinin izniyle yükleyin. Başka birinin Aybuke ile düzenlediği bir fotoğrafta yer alıyorsanız bize [hello@buaze.com](mailto:hello@buaze.com) adresinden ulaşabilirsiniz.
 
 ## 9. Güvenlik filtreleri ve otomatik kararlar
 
-Glowlit uygulamasını güvenli tutmak için otomatik güvenlik önlemleri kullanırız:
+Aybuke uygulamasını güvenli tutmak için otomatik güvenlik önlemleri kullanırız:
 
 - uygulamada ve sunucularımızda; örneğin çıplaklık ve cinsel içeriği, "soyma" veya çıplaklaştırma (nudify) taleplerini ve küçükleri içeren her türlü cinsel içeriği engelleyen istem filtreleri;
 - yapay zekâ sağlayıcılarımızın güvenlik ayarları ve
@@ -249,7 +249,7 @@ Türkiye merkezliyiz. Arka ucumuz AB (Frankfurt) bölgesinde barındırılır. Y
 
 ### AEA, Birleşik Krallık ve İsviçre'den aktarımlar
 
-Glowlit uygulamasını kullandığınızda verilerinizi doğrudan bize sağlarsınız. Biz veya sağlayıcılarımız verileri yeterlilik kararı bulunmayan bir ülkeye aktardığımızda şunlara dayanırız:
+Aybuke uygulamasını kullandığınızda verilerinizi doğrudan bize sağlarsınız. Biz veya sağlayıcılarımız verileri yeterlilik kararı bulunmayan bir ülkeye aktardığımızda şunlara dayanırız:
 
 - alıcı sertifikalıysa AB-ABD Veri Gizliliği Çerçevesi (Data Privacy Framework), bunun Birleşik Krallık uzantısı ve İsviçre-ABD Veri Gizliliği Çerçevesi (sertifikaları [dataprivacyframework.gov](https://www.dataprivacyframework.gov) adresinden kontrol edebilirsiniz);
 - aksi hâlde, Avrupa Komisyonu'nun Standart Sözleşme Hükümleri ile birlikte Birleşik Krallık Uluslararası Veri Aktarım Eki (veya Uluslararası Veri Aktarım Sözleşmesi) ve İsviçre için gerekli uyarlamalar ve
@@ -316,7 +316,7 @@ Yaşadığınız yere bağlı olarak verilerinize erişme, bunları düzelttirme
 - Diğer tüm talepler için [hello@buaze.com](mailto:hello@buaze.com) adresine yazın. Türkiye'deki kullanıcılar 19. bölümdeki yöntemleri de kullanabilir.
 - Veliler ve vasiler çocukları adına talepte bulunabilir. Çocuğun velisi veya vasisi olduğunuza dair makul bir teyit isteyebiliriz.
 
-Hesabınız anonim olduğundan, bir talep üzerine işlem yapabilmemiz için verilerinizi bulmamızı sağlayacak bilgilere ihtiyaç duyabiliriz; örneğin bir Glowlit satın alımına ait Apple faturanızda görünen Sipariş Kimliği (Order ID). Bir talebi elimizdeki hiçbir veriyle eşleştiremezsek sizi bilgilendiririz. Talebinizi doğrulamak için bilgi isteyebiliriz ve bu bilgileri yalnızca bu amaçla kullanırız.
+Hesabınız anonim olduğundan, bir talep üzerine işlem yapabilmemiz için verilerinizi bulmamızı sağlayacak bilgilere ihtiyaç duyabiliriz; örneğin bir Aybuke satın alımına ait Apple faturanızda görünen Sipariş Kimliği (Order ID). Bir talebi elimizdeki hiçbir veriyle eşleştiremezsek sizi bilgilendiririz. Talebinizi doğrulamak için bilgi isteyebiliriz ve bu bilgileri yalnızca bu amaçla kullanırız.
 
 GDPR ve UK GDPR kapsamında bir ay içinde (karmaşık taleplerde iki ay daha uzatılabilir), KVKK kapsamında en geç 30 gün içinde ve CCPA kapsamında 45 gün içinde (bir kez 45 gün daha uzatılabilir) yanıt veririz. Kanunun ücret alınmasına izin verdiği hâller (örneğin açıkça dayanaktan yoksun veya aşırı talepler ya da KVKK kapsamında ayrıca bir maliyet gerektiren işlemler) dışında talepler ücretsizdir.
 
@@ -353,10 +353,10 @@ Birleşik Krallık Yaşa Uygun Tasarım Kuralları ("Children's Code"), 18 yaş�
 - **Veri minimizasyonu.** Yalnızca kullandığınız her özelliğin ihtiyaç duyduğu verileri toplarız. Adınızı, e-posta adresinizi, telefon numaranızı, kişilerinizi veya konumunuzu istemeyiz.
 - **Veri paylaşımı.** Kişisel verileri yalnızca istediğiniz özellikleri çalıştıran hizmet sağlayıcılarına, ücretsiz üyelerin gördüğü kişiselleştirilmemiş reklamlar için Google'a ve kanunun gerektirdiği hâllerde açıklarız (11. bölüm).
 - **Konum.** Konumunuzu toplamaz veya kullanmayız. Ücretsiz üyeler için Google'ın reklam yazılımı, reklam sunmak amacıyla IP adresinden genel bir konum (ülke veya şehir gibi) tahmin eder (5. bölüm); cihazınızın konum servislerini asla kullanmaz.
-- **Ebeveyn denetimleri.** Glowlit içinde velilerin veya başka birinin etkinliğinizi ya da konumunuzu izlemesini sağlayan araçlar yoktur. Veliler Apple'ın sunduğu Aile Paylaşımı ve Ekran Süresi özelliklerini kullanabilir.
+- **Ebeveyn denetimleri.** Aybuke içinde velilerin veya başka birinin etkinliğinizi ya da konumunuzu izlemesini sağlayan araçlar yoktur. Veliler Apple'ın sunduğu Aile Paylaşımı ve Ekran Süresi özelliklerini kullanabilir.
 - **Profilleme.** Kullanıcıları profillemeyiz ve reklamlar asla kişiselleştirilmez.
 - **Yönlendirme teknikleri (nudge).** Daha fazla veri paylaşmanız veya gizlilik korumalarını kapatmanız için tasarım hileleri kullanmayız. Bulut yapay zekâ onay ekranında "Not now" seçeneğini seçip cihaz üzerindeki özellikleri kullanmaya devam edebilirsiniz. Kredi için reklam izlemek her zaman sizin seçiminizdir; yalnızca krediniz bittiğinde ve günde en fazla birkaç kez sunulur. Kaydettikten sonraki reklamlar seyrek tutulur.
-- **Bağlantılı oyuncaklar ve cihazlar.** Uygulanmaz; Glowlit bağlantılı bir oyuncak veya cihaz değildir.
+- **Bağlantılı oyuncaklar ve cihazlar.** Uygulanmaz; Aybuke bağlantılı bir oyuncak veya cihaz değildir.
 - **Çevrim içi araçlar.** Verilerinizi istediğiniz zaman uygulama içinden silebilir, diğer tüm talepleri e-postayla iletebilirsiniz (16. bölüm).
 
 ## 19. Türkiye (KVKK)
@@ -452,9 +452,9 @@ Kaliforniya, Connecticut, Colorado, Maryland ve New York gibi giderek artan say�
 
 ## 21. 13 yaşından küçük çocuklar
 
-Glowlit, 13 yaş ve üzeri gençler ve yetişkinler için tasarlanmıştır. Bulut yapay zekâ özellikleri, hesaplar ve satın alımlar yalnızca 13 yaş ve üzeri içindir. Yaş adımı birinin 13 yaşından küçük olduğunu gösterirse uygulama yalnızca cihazda çalışan ücretsiz araçları (efektler, Adjust, Cut out, Crop, Best shot ve video düzenleyici) sunar. Bu modda bize veya hizmet sağlayıcılarımıza hiçbir şey göndermez: hesap oluşturmaz, bulut yapay zekâ, satın alma, analiz veya reklam isteği yapmaz ve Google'ın reklam yazılımı hiç başlamaz. 13 yaşından küçük çocuklara yönelik değildir ve ABD Çocukların Çevrim İçi Gizliliğini Koruma Yasası (COPPA) kapsamı dahil, 13 yaşından küçük çocuklardan bilerek kişisel bilgi toplamayız.
+Aybuke, 13 yaş ve üzeri gençler ve yetişkinler için tasarlanmıştır. Bulut yapay zekâ özellikleri, hesaplar ve satın alımlar yalnızca 13 yaş ve üzeri içindir. Yaş adımı birinin 13 yaşından küçük olduğunu gösterirse uygulama yalnızca cihazda çalışan ücretsiz araçları (efektler, Adjust, Cut out, Crop, Best shot ve video düzenleyici) sunar. Bu modda bize veya hizmet sağlayıcılarımıza hiçbir şey göndermez: hesap oluşturmaz, bulut yapay zekâ, satın alma, analiz veya reklam isteği yapmaz ve Google'ın reklam yazılımı hiç başlamaz. 13 yaşından küçük çocuklara yönelik değildir ve ABD Çocukların Çevrim İçi Gizliliğini Koruma Yasası (COPPA) kapsamı dahil, 13 yaşından küçük çocuklardan bilerek kişisel bilgi toplamayız.
 
-Doğrulanabilir ebeveyn onayı olmadan 13 yaşından küçük bir çocuktan kişisel bilgi topladığımızı öğrenirsek bu bilgileri sileriz. 13 yaşından küçük bir çocuğun Glowlit kullandığını düşünüyorsanız lütfen [hello@buaze.com](mailto:hello@buaze.com) adresinden bize ulaşın. Veli veya vasi, çocuğun cihazında **Ayarlar → Verilerimi ve hesabımı sil** seçeneğiyle verileri hemen silebilir.
+Doğrulanabilir ebeveyn onayı olmadan 13 yaşından küçük bir çocuktan kişisel bilgi topladığımızı öğrenirsek bu bilgileri sileriz. 13 yaşından küçük bir çocuğun Aybuke kullandığını düşünüyorsanız lütfen [hello@buaze.com](mailto:hello@buaze.com) adresinden bize ulaşın. Veli veya vasi, çocuğun cihazında **Ayarlar → Verilerimi ve hesabımı sil** seçeneğiyle verileri hemen silebilir.
 
 ## 22. Do Not Track ve Global Privacy Control
 

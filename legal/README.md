@@ -1,6 +1,6 @@
 # Legal documents
 
-Source texts for Glowlit's legal documents, in English (`en/`) and Turkish (`tr/`).
+Source texts for Aybuke's legal documents, in English (`en/`) and Turkish (`tr/`).
 
 | Document | English | Turkish |
 |---|---|---|
@@ -39,7 +39,7 @@ Markdown rules (the in-app renderer supports a small subset): one `#` title, `##
 
 ## Türkçe: Yayınlamadan önce yapılacaklar
 
-Bu klasör, Glowlit'in yasal metinlerinin İngilizce (`en/`) ve Türkçe (`tr/`) kaynaklarını içerir. Metinler uygulamanın gerçek veri akışlarına göre hazırlanmış **taslaklardır**. Yayınlamadan önce mutlaka bir avukata inceletin.
+Bu klasör, Aybuke'nin yasal metinlerinin İngilizce (`en/`) ve Türkçe (`tr/`) kaynaklarını içerir. Metinler uygulamanın gerçek veri akışlarına göre hazırlanmış **taslaklardır**. Yayınlamadan önce mutlaka bir avukata inceletin.
 
 **Nasıl çalışır?** Metinlerdeki `{{COMPANY_NAME}}` benzeri alanların değerleri `legal/config.json` dosyasındadır. `python3 scripts/build-legal.py` komutu metinleri hem uygulamanın içine (`ios/App/Resources/Legal`) hem de GitHub'da herkese açık kopya olarak `docs/legal` klasörüne üretir. CI, bu kopyaların kaynakla aynı olduğunu kontrol eder.
 

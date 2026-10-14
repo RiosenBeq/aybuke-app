@@ -1,7 +1,7 @@
 {
   "_comment": "Values for the {{TOKENS}} in legal/en and legal/tr. The operator is the App Store seller: the Apple Developer account is an individual one in Okan Berk Manavoğlu's name, so the texts name him (aybuke.org uses the same values). An empty value leaves out every line that uses it. Then run: python3 scripts/build-legal.py",
   "shared": {
-    "APP_NAME": "Glowlit",
+    "APP_NAME": "Aybuke",
     "CONTACT_EMAIL": "hello@buaze.com",
     "PRIVACY_EMAIL": "hello@buaze.com",
     "MIN_AGE": "13"

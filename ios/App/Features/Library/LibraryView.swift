@@ -1096,7 +1096,7 @@ struct CreationDetailView: View {
         guard let image else { return }
         Task {
             do {
-                // Apple made Image Playground pictures, so they don't carry Glowlit's mark.
+                // Apple made Image Playground pictures, so they don't carry Aybuke's mark.
                 let provenance = creation.provenance
                 try await PhotoLibrarySaver.save(image, sourceType: provenance.sourceType, watermark: provenance.showsMark(isPro: app.purchases.isPro))
                 app.showToast("Saved to Photos", style: .success)

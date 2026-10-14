@@ -310,7 +310,7 @@ struct SettingsView: View {
         .listRowBackground(Palette.surface)
     }
 
-    /// iOS keeps a language per app: this opens Glowlit's page in Settings,
+    /// iOS keeps a language per app: this opens Aybuke's page in Settings,
     /// where "Language" lists every language the app speaks. The Mac keeps
     /// it under System Settings › General › Language & Region › Applications.
     private var languageSection: some View {
@@ -331,8 +331,8 @@ struct SettingsView: View {
             }
         } footer: {
             Text(Platform.isMac
-                 ? "Glowlit follows your Mac's language. To pick another one, click Language, then add Glowlit under Applications."
-                 : "Glowlit follows your device's language. To pick another one, tap Language, then choose it in Settings.")
+                 ? "Aybuke follows your Mac's language. To pick another one, click Language, then add Aybuke under Applications."
+                 : "Aybuke follows your device's language. To pick another one, tap Language, then choose it in Settings.")
         }
         .listRowBackground(Palette.surface)
     }

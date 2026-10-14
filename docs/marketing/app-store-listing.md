@@ -8,7 +8,7 @@ Rules followed: no prices in the name, subtitle or keywords; no other platforms,
 
 **App name** (24/30)
 
-    Glowlit: AI Photo Editor
+    Aybuke: AI Photo Editor
 
 **Subtitle** (27/30)
 
@@ -25,7 +25,7 @@ Rules followed: no prices in the name, subtitle or keywords; no other platforms,
 **Description** (3865/4000)
 
 ```text
-Glowlit is the AI photo editor made for girls who glow. Type what you want to change, tap a trend, add an 80s or 90s effect or turn an idea into art, then share it to your Stories in one tap.
+Aybuke is the AI photo editor made for girls who glow. Type what you want to change, tap a trend, add an 80s or 90s effect or turn an idea into art, then share it to your Stories in one tap.
 
 SAY IT. SEE IT.
 • Magic Edit: "give me pink hair", "add soft glam makeup", "put me in a pink dress", "add cherry blossoms". Describe any change and watch it happen
@@ -83,7 +83,7 @@ PRIVATE BY DEFAULT
 
 FAIR PRICING
 • 2 free credits every day, and on-device tools are always free
-• Glowlit Pro: 80 credits a month with rollover, every trend and style, our best-quality AI, no watermark and up to 4 images at once
+• Aybuke Pro: 80 credits a month with rollover, every trend and style, our best-quality AI, no watermark and up to 4 images at once
 • Yearly plan with a 7-day free trial for eligible new subscribers, or monthly with an intro price for the first month. No weekly plan, ever
 • Credit packs that never expire
 • Failed edits are always refunded, and we remind you the day before your trial ends
@@ -96,12 +96,12 @@ Privacy Policy: {{PRIVACY_URL}}
 
 **What's New in 1.0** (372/4000)
 
-> Welcome to Glowlit ✨ Edit photos just by saying it, try 50+ one-tap looks, add free 80s & 90s effects, cut the silences out of your videos and create art from text. Share magazine covers, photo strips, before/after collages and story cards in one tap. Widgets, a Dynamic Island Live Activity, iPhone and iPad, 12 languages. Private by default, fair pricing, no weekly plan.
+> Welcome to Aybuke ✨ Edit photos just by saying it, try 50+ one-tap looks, add free 80s & 90s effects, cut the silences out of your videos and create art from text. Share magazine covers, photo strips, before/after collages and story cards in one tap. Widgets, a Dynamic Island Live Activity, iPhone and iPad, 12 languages. Private by default, fair pricing, no weekly plan.
 
 **App Review notes** (2630/4000)
 
 ```text
-Glowlit is an AI photo editor and image generator for iPhone and iPad. No login is required: the app creates an anonymous account with our backend when a cloud feature is first used (there is no sign-in in this version).
+Aybuke is an AI photo editor and image generator for iPhone and iPad. No login is required: the app creates an anonymous account with our backend when a cloud feature is first used (there is no sign-in in this version).
 
 How to review:
 1. Onboarding ends with "Try Digicam '04 on your photo": pick a photo and the free on-device effect is applied (or tap "Skip for now"). "Keep editing" opens the editor on Effects; "Save to My Works" keeps the result. A soft paywall that can be closed with X follows (after the editor closes, if it was opened), then a short guided tour (Next or Skip); replay it from Settings > Show me around.
@@ -120,7 +120,7 @@ Contact: {{SUPPORT_EMAIL}}
 
 **App name** (28/30)
 
-    Glowlit: AI Fotoğraf Editörü
+    Aybuke: AI Fotoğraf Editörü
 
 **Subtitle** (28/30)
 
@@ -137,7 +137,7 @@ Contact: {{SUPPORT_EMAIL}}
 **Description** (3951/4000)
 
 ```text
-Glowlit, ışıldayan kızlar için tasarlanmış yapay zekâlı fotoğraf editörü. Ne değişsin istiyorsan yaz, bir trende dokun, 80'ler ya da 90'lar efekti ekle veya bir fikri sanata dönüştür; sonra tek dokunuşla Hikâyene paylaş.
+Aybuke, ışıldayan kızlar için tasarlanmış yapay zekâlı fotoğraf editörü. Ne değişsin istiyorsan yaz, bir trende dokun, 80'ler ya da 90'lar efekti ekle veya bir fikri sanata dönüştür; sonra tek dokunuşla Hikâyene paylaş.
 
 SÖYLE, GÖR.
 • Magic Edit: "saçımı pembe yap", "soft glam makyaj ekle", "bana pembe bir elbise giydir", "kiraz çiçekleri ekle". Değişikliği yaz, gerisini izle
@@ -195,7 +195,7 @@ VARSAYILAN OLARAK GİZLİ
 
 ADİL FİYAT
 • Her gün 2 ücretsiz kredi; cihaz üzerindeki araçlar her zaman ücretsiz
-• Glowlit Pro: ayda 80 kredi (kullanılmayanlar devreder), tüm trendler ve stiller, en iyi kalitede yapay zekâ, filigran yok ve tek seferde 4 görsele kadar
+• Aybuke Pro: ayda 80 kredi (kullanılmayanlar devreder), tüm trendler ve stiller, en iyi kalitede yapay zekâ, filigran yok ve tek seferde 4 görsele kadar
 • Uygun yeni aboneler için 7 gün ücretsiz denemeli yıllık plan veya ilk ayı indirimli aylık plan. Haftalık plan asla yok
 • Süresi hiç dolmayan kredi paketleri
 • Başarısız düzenlemeler her zaman iade edilir; denemen bitmeden bir gün önce hatırlatırız
@@ -208,7 +208,7 @@ Gizlilik Politikası: {{PRIVACY_URL}}
 
 **What's New in 1.0** (425/4000)
 
-> Glowlit'e hoş geldin ✨ Fotoğraflarını sadece söyleyerek düzenle, 50+ tek dokunuşluk görünümü dene, ücretsiz 80'ler ve 90'lar efektleri ekle, videolarındaki sessiz kısımları kes ve metinden sanat oluştur. Dergi kapaklarını, fotoğraf şeritlerini, önce/sonra kolajlarını ve hikâye kartlarını tek dokunuşla paylaş. Widget'lar, Dynamic Island desteği, iPhone ve iPad, 12 dil. Varsayılan olarak gizli, adil fiyat, haftalık plan yok.
+> Aybuke'ye hoş geldin ✨ Fotoğraflarını sadece söyleyerek düzenle, 50+ tek dokunuşluk görünümü dene, ücretsiz 80'ler ve 90'lar efektleri ekle, videolarındaki sessiz kısımları kes ve metinden sanat oluştur. Dergi kapaklarını, fotoğraf şeritlerini, önce/sonra kolajlarını ve hikâye kartlarını tek dokunuşla paylaş. Widget'lar, Dynamic Island desteği, iPhone ve iPad, 12 dil. Varsayılan olarak gizli, adil fiyat, haftalık plan yok.
 
 ## Product Page Optimization: alternatives to A/B test
 

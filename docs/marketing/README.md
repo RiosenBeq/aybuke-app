@@ -1,6 +1,6 @@
 # Marketing kit
 
-Everything for launching and promoting Glowlit, the AI photo editor made for girls who glow.
+Everything for launching and promoting Aybuke, the AI photo editor made for girls who glow.
 
 | File | What's inside |
 |---|---|
@@ -21,7 +21,7 @@ Everything for launching and promoting Glowlit, the AI photo editor made for gir
 
 ## Türkçe
 
-Glowlit'in lansmanı ve tanıtımı için gereken her şey burada:
+Aybuke'nin lansmanı ve tanıtımı için gereken her şey burada:
 
 - **app-store-listing.md:** App Store Connect metinleri (İngilizce ve Türkçe), karakter sayılarıyla birlikte.
 - **social-media-kit.md:** Konumlandırma, ses tonu, görsel yön, platform biyografileri, hashtag'ler, 20 iki dilli paylaşım metni, 10 kısa video senaryosu, influencer şablonları ve topluluk yanıtları.

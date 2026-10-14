@@ -14,7 +14,7 @@ enum Platform {
 
 // MARK: - Menu bar
 
-/// The Mac menu bar: Glowlit › Settings…; File › New Creation, Open Photo…
+/// The Mac menu bar: Aybuke › Settings…; File › New Creation, Open Photo…
 /// and Open Video…; Edit › Undo and Redo for the editor's steps; View › the
 /// sidebar and the four sections; Help › Contact support. Each item uses the
 /// same entry point as the matching button in the app.

@@ -123,13 +123,13 @@ WEB_PAGE = """<!doctype html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>{title} · Glowlit</title>
-<meta name="description" content="{title} for Glowlit, the AI photo editor made for girls who glow.">
+<title>{title} · Aybuke</title>
+<meta name="description" content="{title} for Aybuke, the AI photo editor made for girls who glow.">
 <link rel="icon" href="../../assets/icon.png">
 <link rel="stylesheet" href="../../assets/site.css">
 </head>
 <body class="legal">
-<header class="legal-header"><a class="brand" href="../../index.html"><img src="../../assets/icon.png" alt="" width="32" height="32"> Glowlit</a></header>
+<header class="legal-header"><a class="brand" href="../../index.html"><img src="../../assets/icon.png" alt="" width="32" height="32"> Aybuke</a></header>
 <main class="legal-body">
 {content}
 </main>

@@ -1,4 +1,4 @@
-# Glowlit — Yönetici Özeti (Türkçe)
+# Aybuke — Yönetici Özeti (Türkçe)
 
 > Bu belge, araştırmayla alınan tüm kararların Türkçe özetidir. Ayrıntılar ve kaynaklar İngilizce belgelerdedir ([docs/README.md](README.md)).
 
@@ -26,7 +26,7 @@
 - **Cihaz içi yapay zekâ:**
   - **Ideas for this photo:** Editör fotoğrafa cihazda bakıp ona uyan bir efekt, bir görünüm ve bir Magic Edit fikri öneriyor (güzellik görünümleri asla). **Surprise me** ücretsiz efektleri deniyor.
   - **Inspire me / Make it magic:** iOS 26+'da Apple'ın cihaz içi dil modeli Create için fikir ve daha iyi istem yazıyor; metin cihazdan çıkmıyor.
-  - **Create with Image Playground:** Destekleyen cihazlarda Apple'ın kendi görsel üreticisi (yalnızca Apple'ın çizgi stilleri, kişiselleştirme kapalı). Glowlit kredisi harcamıyor, backend olmadan da çalışıyor.
+  - **Create with Image Playground:** Destekleyen cihazlarda Apple'ın kendi görsel üreticisi (yalnızca Apple'ın çizgi stilleri, kişiselleştirme kapalı). Aybuke kredisi harcamıyor, backend olmadan da çalışıyor.
   - **Altyazı fikirleri:** Paylaş ekranında görünüşe değil havaya dair üç kısa altyazı.
   - Yeni AI sonuçları anlık fotoğraf gibi "banyo" oluyor.
 - **Yeni görünümler:** 80s Studio Portrait, Laser Yearbook '86, Disco '79, Plushie Me, Bag Charm Mini ve evcil hayvan portreleri (Royal Pet Portrait, Pet Figurine, Pet Astronaut). Mevsimlik görünümler tarih aralığıyla: Cadılar Bayramı 1 Ekim–2 Kasım, kış 1 Aralık–6 Ocak (Snow Globe Me, Cozy Sweater Digicam, New Year Confetti), Galentine's 1–14 Şubat (arkadaşlık temalı). Ana sayfada yalnızca mevsiminde öne çıkıyor; yıl boyu 51 görünüm var. Bunlar bulut AI şablonları, Supabase açılana kadar demo modunda.
@@ -78,16 +78,16 @@
 - RevenueCat projesi hazır ve herkese açık anahtar girildi. App Store Connect'te bir uygulama içi satın alma anahtarı (.p8) oluşturup RevenueCat'e siz yükleyin; bu dosya depoya girmemeli.
 - App Store Connect'te yeni fiyatları ve aylık planın ilk ay $1.99 teklifini tanımlayın.
 
-## Ekim 2026 güncellemesi: kızlara özel pembe Glowlit
+## Ekim 2026 güncellemesi: kızlara özel pembe Aybuke
 
 **Ne değişti?**
-- **Hedef kitle:** Glowlit artık kızlar ve genç kadınlar için tasarlandı ("made for girls who glow").
+- **Hedef kitle:** Aybuke artık kızlar ve genç kadınlar için tasarlandı ("made for girls who glow").
 - **Renkler:** Talep üzerine tamamen pembe, açık tonlu "Blush" paleti kullanılıyor: blush `#F7C1D9`, petal `#F8E0EA`, ink `#121212`, antrasit `#24272A`, kırık beyaz `#F8F8F6` ve beyaz. Ana butonlar siyah üzerine pembe yazı. Ayarlar'dan Açık (varsayılan), Koyu veya Otomatik görünüm seçilebiliyor.
 - **Tasarım detayları:** Başlıklarda zarif italik serif vurgular ("watch it *glow*"), kalp ve parıltı motifleri, başarı anında parıltı animasyonu, gölgeli beyaz kartlar. Uygulama ikonunun (artık renkli "Aura" sürümü) koyu ve renklendirilmiş varyantları da var.
 - **Yeni şablonlar:** Yıl boyu 51 görünüm, ayrıca mevsimlik görünümler (Cadılar Bayramı, kış, Galentine's; Ana sayfada yalnızca mevsiminde öne çıkar, düzenleyicide her zaman vardır). Örneğin Doll Box, Pembe Saç, Soft Glam, Bouncy Curls, Clean Girl, Ballet Core, Kiraz Çiçeği, Kafe Buluşması, Paris Gezisi, Peri Prensesi, Doğum Günü Glam ve Witchy Glam. 20 stil var (Pastel Dream, Kawaii, Sticker, Storybook, Pop Art, Cozy Knit, Paper Craft ve Diorama eklendi).
   - Tüm şablonlar yüzü, ten rengini ve **vücut şeklini** korur.
   - Vücut inceltme veya cilt açma gibi özellikler bilinçli olarak yok.
-- **Paylaşım (tanıtım için):** Yeni Paylaş ekranından Instagram Hikâyeler, Önce/Sonra kolajı, 9:16 hikâye kartı, görsel kopyalama, hazır açıklama ve hashtag'ler kullanılabiliyor. Bulut yapay zekâ sonuçlarının ücretsiz paylaşımlarında küçük "Made with Glowlit" işareti var (Pro'da ve yalnızca cihaz içi araçlarla yapılan düzenlemelerde yok). Yapay zekâ ile yapılan her dosyada görünmez "yapay zekâ ile yapıldı" etiketi korunuyor, yeniden düzenlemeden sonra da; #AIphoto #MadeWithAI hashtag'leri ve bu not yalnızca o zaman çıkıyor.
+- **Paylaşım (tanıtım için):** Yeni Paylaş ekranından Instagram Hikâyeler, Önce/Sonra kolajı, 9:16 hikâye kartı, görsel kopyalama, hazır açıklama ve hashtag'ler kullanılabiliyor. Bulut yapay zekâ sonuçlarının ücretsiz paylaşımlarında küçük "Made with Aybuke" işareti var (Pro'da ve yalnızca cihaz içi araçlarla yapılan düzenlemelerde yok). Yapay zekâ ile yapılan her dosyada görünmez "yapay zekâ ile yapıldı" etiketi korunuyor, yeniden düzenlemeden sonra da; #AIphoto #MadeWithAI hashtag'leri ve bu not yalnızca o zaman çıkıyor.
 - **Animasyonlar ve süslemeler:** Kartlar sırayla belirir, butonlar dokununca yaylanır. Kalp ve parıltılar yanıp söner, ana karttan ışık geçer. Beklerken kalpler ve yıldızlar ışığın etrafında döner. Önce/sonra kaydırıcısı kendini kısaca gösterir, kredi sayısı animasyonla değişir. "Hareketi azalt" açıksa animasyonlar kapanır.
 - **Widget'lar ve Dynamic Island:**
   - "Günün trendi" ve "My glow" widget'ları (ana ekran ve kilit ekranı). My glow son görseli, kalan krediyi ve Magic / Create / Cut out kısayollarını gösterir.
@@ -123,7 +123,7 @@
 
 **Sizin yapmanız gerekenler:** Yasal metinleri avukata inceletin ve şirket bilgilerini girin. AI API anahtarını iletin. İsterseniz Instagram Hikâyeler'e doğrudan paylaşım için bir Meta App ID alın (artık şart değil). `glowlit.app` alan adını ve marka tescilini kontrol edin.
 
-![Glowlit marka panosu](assets/brand/brand-board.png)
+![Aybuke marka panosu](assets/brand/brand-board.png)
 
 ## Ne yaptık?
 
@@ -137,7 +137,7 @@ Bu brief'i üç paralel araştırmayla (pazar, marka/tasarım, teknoloji/uyumlul
    - 2025–2026 viral trendleri ve fiyatlandırma kıyasları (RevenueCat, Adapty) derlendi.
    - Renk haritası, yazı tipi ve isim çalışması yapıldı.
    - AI modelleri, maliyetler, App Store kuralları ve AB Yapay Zeka Yasası incelendi.
-2. **Marka:** isim **Glowlit**, slogan *"Make it glow"*, pembe "Blush" paleti (Ekim 2026'dan beri; başlangıçta "Golden Hour" amberdi) ve renkli "Aura" vurguları, Poppins + New York Italic yazı tipleri (Ekim 2026'ya kadar Bricolage Grotesque), "Glow Gem" ikonu (mücevher gibi kesilmiş pembe bir kalp; 14 Ekim 2026'ya kadar "Glow Print").
+2. **Marka:** isim **Aybuke**, slogan *"Make it glow"*, pembe "Blush" paleti (Ekim 2026'dan beri; başlangıçta "Golden Hour" amberdi) ve renkli "Aura" vurguları, Poppins + New York Italic yazı tipleri (Ekim 2026'ya kadar Bricolage Grotesque), "Glow Gem" ikonu (mücevher gibi kesilmiş pembe bir kalp; 14 Ekim 2026'ya kadar "Glow Print").
 3. **iOS uygulaması (SwiftUI, iPhone ve iPad):**
    - Ekranlar: onboarding, rehberli tur, AI onayı, keşfet, metinden görsel oluşturma, editör (Magic Edit, stiller, efektler, iyileştirme, arka plan silme, nesne silme, ayarlar), video editörü, paylaşım, kütüphane, paywall, ayarlar.
    - 12 dil desteği.
@@ -153,17 +153,17 @@ Bu brief'i üç paralel araştırmayla (pazar, marka/tasarım, teknoloji/uyumlul
 
 ## Uygulamadan görüntüler
 
-![Glowlit uygulama ekranları](assets/screenshots/overview.jpg)
+![Aybuke uygulama ekranları](assets/screenshots/overview.jpg)
 
 Görüntüler, CI'daki Screenshots iş akışında iPhone Pro simülatöründe demo modunda alındı. Ekranların tek tek hâlleri `assets/screenshots/` klasöründe; en güncel tam çözünürlüklü set ise `screenshots` dalında.
 
 ## Temel kararlar ve nedenleri
 
-### İsim: Glowlit
+### İsim: Aybuke
 - **Anlamı:** "Glow" kategorinin en duygusal sonuç kelimesi (glow-up, ışıl ışıl cilt, altın saat ışığı); "lit" ise ışıkla aydınlanmış demek, Z kuşağı argosunda da "harika" anlamına geliyor.
 - **Neden diğer adaylar değil:** Araştırmadan çıkan Sunlit, Lumora, Pixora, Aglow gibi adayların `.app` ve `.ai` alan adları dolu, yani aktif kullanımdalar. **glowlit.app ve glowlit.ai ise boş.** Türetilmiş bir isim olduğu için marka tescili açısından da sözlük kelimelerinden daha güçlü.
 - **Okunuş ve diller:** Duyulduğu gibi yazılıyor. İngilizce, İspanyolca, Portekizce, Fransızca, Almanca ve Türkçede olumsuz bir anlamı yok.
-- **Mağaza başlığı:** `Glowlit: AI Photo Editor`.
+- **Mağaza başlığı:** `Aybuke: AI Photo Editor`.
 - ⚠️ Lansmandan önce App Store, USPTO ve EUIPO marka taraması yapılmalı ve `glowlit.app` alınmalı.
 
 ### Renk: "Blush" (pembe, açık tema)

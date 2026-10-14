@@ -14,23 +14,23 @@ Last updated: 14 October 2026
 
 ## 1. About this policy
 
-This policy is part of our [Terms of Use](terms-of-use.md). It applies to everything you submit to Glowlit (photos, masks, prompts and reports) and to everything you create with it, including how you share or publish your results. It also explains how we moderate content, how you can report problems and how you can appeal our decisions.
+This policy is part of our [Terms of Use](terms-of-use.md). It applies to everything you submit to Aybuke (photos, masks, prompts and reports) and to everything you create with it, including how you share or publish your results. It also explains how we moderate content, how you can report problems and how you can appeal our decisions.
 
-In this policy, "content" means both what you submit (inputs) and what Glowlit creates for you (outputs).
+In this policy, "content" means both what you submit (inputs) and what Aybuke creates for you (outputs).
 
-Glowlit is designed with teen users in mind. These rules are there to keep everyone safe, especially young people.
+Aybuke is designed with teen users in mind. These rules are there to keep everyone safe, especially young people.
 
 ## 2. Our principles
 
 - **Consent**: people decide how their own image is used.
-- **Kindness**: Glowlit is for creativity, not for hurting or shaming anyone.
+- **Kindness**: Aybuke is for creativity, not for hurting or shaming anyone.
 - **Honesty**: AI-made content must not be passed off as real when that could mislead people.
 - **Safety**: protecting children and young people comes first.
 - **Respect for the law and for others' rights.**
 
 ## 3. Prohibited content and uses
 
-You must not use Glowlit to create, upload, edit or share any of the following.
+You must not use Aybuke to create, upload, edit or share any of the following.
 
 ### Sexual content and nudity
 
@@ -56,7 +56,7 @@ We have zero tolerance for this. We block such content, close the account, prese
 - Bullying or humiliating edits, for example making someone look ugly, injured, ill, arrested or drunk, putting them in embarrassing or degrading situations, or creating images to mock them.
 - Body-altering edits intended to shame or deceive, such as changing someone's body shape, weight, skin colour or facial features to mock or shame them, or to mislead others (for example fake before-and-after results for diets, cosmetics or treatments).
 
-Glowlit doesn't offer body-reshaping or skin-lightening features. Using Magic Edit or any other feature to make body-altering edits that shame or deceive is not allowed.
+Aybuke doesn't offer body-reshaping or skin-lightening features. Using Magic Edit or any other feature to make body-altering edits that shame or deceive is not allowed.
 
 ### Deep fakes, deception and impersonation
 
@@ -85,7 +85,7 @@ Glowlit doesn't offer body-reshaping or skin-lightening features. Using Magic Ed
 
 ## 4. AI labels, watermarks and disclosure
 
-- Every image you export that was created or edited with AI includes machine-readable provenance metadata (the IPTC "Digital Source Type" field), and AI providers may add invisible watermarks such as SynthID. Don't remove, alter or forge these labels or watermarks, with Glowlit or any other tool, to deceive anyone about how an image was made.
+- Every image you export that was created or edited with AI includes machine-readable provenance metadata (the IPTC "Digital Source Type" field), and AI providers may add invisible watermarks such as SynthID. Don't remove, alter or forge these labels or watermarks, with Aybuke or any other tool, to deceive anyone about how an image was made.
 - Don't present AI-generated or AI-manipulated images of real people or events as authentic where that could mislead.
 - Disclose AI-generated or AI-manipulated content when you publish it, wherever the law or platform rules require it. Examples are deep fakes under Article 50(4) of the EU AI Act and the AI labels on Instagram and TikTok.
 
@@ -141,7 +141,7 @@ On a result, open the menu and choose **Report this image**. Select a reason and
 
 ### Report by email
 
-To report illegal content, misuse of Glowlit that affects you (for example a fake or humiliating image of you), or an infringement of your rights, email [hello@buaze.com](mailto:hello@buaze.com) with:
+To report illegal content, misuse of Aybuke that affects you (for example a fake or humiliating image of you), or an infringement of your rights, email [hello@buaze.com](mailto:hello@buaze.com) with:
 
 - a description of the content and why you believe it's illegal or breaks this policy;
 - any information that helps us identify it, such as screenshots, the date and time, the template used or where it was published;
@@ -152,7 +152,7 @@ We'll confirm that we received your report, handle it promptly and carefully, an
 
 ### Content published elsewhere
 
-Glowlit has no public profiles or feeds, and we don't host your creations. If an image made with Glowlit has been published on another platform, please also report it to that platform, because we can't remove it there.
+Aybuke has no public profiles or feeds, and we don't host your creations. If an image made with Aybuke has been published on another platform, please also report it to that platform, because we can't remove it there.
 
 ### Getting help
 

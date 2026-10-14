@@ -18295,72 +18295,72 @@
         }
       }
     },
-    "Allow camera access for Glowlit in System Settings › Privacy & Security › Camera." : {
+    "Allow camera access for Aybuke in System Settings › Privacy & Security › Camera." : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Erlaube Glowlit den Kamerazugriff unter Systemeinstellungen › Datenschutz & Sicherheit › Kamera."
+            "value" : "Erlaube Aybuke den Kamerazugriff unter Systemeinstellungen › Datenschutz & Sicherheit › Kamera."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Permite el acceso a la cámara para Glowlit en Ajustes del Sistema › Privacidad y seguridad › Cámara."
+            "value" : "Permite el acceso a la cámara para Aybuke en Ajustes del Sistema › Privacidad y seguridad › Cámara."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Autorise l’accès à la caméra pour Glowlit dans Réglages Système › Confidentialité et sécurité › Caméra."
+            "value" : "Autorise l’accès à la caméra pour Aybuke dans Réglages Système › Confidentialité et sécurité › Caméra."
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Izinkan akses kamera untuk Glowlit di Pengaturan Sistem › Privasi & Keamanan › Kamera."
+            "value" : "Izinkan akses kamera untuk Aybuke di Pengaturan Sistem › Privasi & Keamanan › Kamera."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Consenti l'accesso alla fotocamera per Glowlit in Impostazioni di Sistema › Privacy e sicurezza › Fotocamera."
+            "value" : "Consenti l'accesso alla fotocamera per Aybuke in Impostazioni di Sistema › Privacy e sicurezza › Fotocamera."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "システム設定 › プライバシーとセキュリティ › カメラ で、Glowlitのカメラへのアクセスを許可してください。"
+            "value" : "システム設定 › プライバシーとセキュリティ › カメラ で、Aybukeのカメラへのアクセスを許可してください。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "시스템 설정 › 개인정보 보호 및 보안 › 카메라에서 Glowlit의 카메라 접근을 허용해 주세요."
+            "value" : "시스템 설정 › 개인정보 보호 및 보안 › 카메라에서 Aybuke의 카메라 접근을 허용해 주세요."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Permita o acesso à câmera para o Glowlit em Ajustes do Sistema › Privacidade e Segurança › Câmera."
+            "value" : "Permita o acesso à câmera para o Aybuke em Ajustes do Sistema › Privacidade e Segurança › Câmera."
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Разреши Glowlit доступ к камере: Системные настройки › Конфиденциальность и безопасность › Камера."
+            "value" : "Разреши Aybuke доступ к камере: Системные настройки › Конфиденциальность и безопасность › Камера."
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sistem Ayarları › Gizlilik ve Güvenlik › Kamera bölümünden Glowlit'in kameraya erişmesine izin ver."
+            "value" : "Sistem Ayarları › Gizlilik ve Güvenlik › Kamera bölümünden Aybuke'nin kameraya erişmesine izin ver."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "请前往“系统设置 › 隐私与安全性 › 相机”，允许 Glowlit 访问相机。"
+            "value" : "请前往“系统设置 › 隐私与安全性 › 相机”，允许 Aybuke 访问相机。"
           }
         }
       }
@@ -19464,72 +19464,72 @@
         }
       }
     },
-    "Apple creates the image on its Private Cloud Compute servers, under Apple's terms and daily limits. Glowlit only gets the finished picture." : {
+    "Apple creates the image on its Private Cloud Compute servers, under Apple's terms and daily limits. Aybuke only gets the finished picture." : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Apple erstellt das Bild auf seinen Private-Cloud-Compute-Servern, nach Apples Bedingungen und Tageslimits. Glowlit bekommt nur das fertige Bild."
+            "value" : "Apple erstellt das Bild auf seinen Private-Cloud-Compute-Servern, nach Apples Bedingungen und Tageslimits. Aybuke bekommt nur das fertige Bild."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Apple crea la imagen en sus servidores de Private Cloud Compute, con sus propias condiciones y límites diarios. Glowlit solo recibe la imagen terminada."
+            "value" : "Apple crea la imagen en sus servidores de Private Cloud Compute, con sus propias condiciones y límites diarios. Aybuke solo recibe la imagen terminada."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Apple crée l’image sur ses serveurs Private Cloud Compute, selon ses conditions et ses limites quotidiennes. Glowlit ne reçoit que l’image finale."
+            "value" : "Apple crée l’image sur ses serveurs Private Cloud Compute, selon ses conditions et ses limites quotidiennes. Aybuke ne reçoit que l’image finale."
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Apple membuat gambarnya di server Private Cloud Compute miliknya, sesuai ketentuan dan batas harian Apple. Glowlit hanya menerima gambar jadinya."
+            "value" : "Apple membuat gambarnya di server Private Cloud Compute miliknya, sesuai ketentuan dan batas harian Apple. Aybuke hanya menerima gambar jadinya."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Apple crea l'immagine sui suoi server Private Cloud Compute, secondo i propri termini e limiti giornalieri. Glowlit riceve solo l'immagine finita."
+            "value" : "Apple crea l'immagine sui suoi server Private Cloud Compute, secondo i propri termini e limiti giornalieri. Aybuke riceve solo l'immagine finita."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "画像はAppleのPrivate Cloud Computeサーバーで、Appleの規約と1日の上限のもとで作成されます。Glowlitが受け取るのは完成した画像だけです。"
+            "value" : "画像はAppleのPrivate Cloud Computeサーバーで、Appleの規約と1日の上限のもとで作成されます。Aybukeが受け取るのは完成した画像だけです。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "이미지는 Apple의 Private Cloud Compute 서버에서 Apple의 약관과 일일 한도에 따라 만들어져요. Glowlit은 완성된 이미지만 받아요."
+            "value" : "이미지는 Apple의 Private Cloud Compute 서버에서 Apple의 약관과 일일 한도에 따라 만들어져요. Aybuke는 완성된 이미지만 받아요."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "A Apple cria a imagem nos servidores do Private Cloud Compute, conforme os termos e limites diários dela. O Glowlit só recebe a imagem pronta."
+            "value" : "A Apple cria a imagem nos servidores do Private Cloud Compute, conforme os termos e limites diários dela. O Aybuke só recebe a imagem pronta."
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Apple создаёт изображение на своих серверах Private Cloud Compute по своим условиям и с дневными лимитами. Glowlit получает только готовую картинку."
+            "value" : "Apple создаёт изображение на своих серверах Private Cloud Compute по своим условиям и с дневными лимитами. Aybuke получает только готовую картинку."
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Görseli Apple, kendi Private Cloud Compute sunucularında, Apple'ın koşulları ve günlük sınırları çerçevesinde oluşturur. Glowlit yalnızca bitmiş resmi alır."
+            "value" : "Görseli Apple, kendi Private Cloud Compute sunucularında, Apple'ın koşulları ve günlük sınırları çerçevesinde oluşturur. Aybuke yalnızca bitmiş resmi alır."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "图片由 Apple 在其私密云计算服务器上生成，遵循 Apple 的条款和每日限额。Glowlit 只会收到最终完成的图片。"
+            "value" : "图片由 Apple 在其私密云计算服务器上生成，遵循 Apple 的条款和每日限额。Aybuke 只会收到最终完成的图片。"
           }
         }
       }
@@ -19604,72 +19604,72 @@
         }
       }
     },
-    "Apple's image maker · no Glowlit credits. Style, size and count here don't apply." : {
+    "Apple's image maker · no Aybuke credits. Style, size and count here don't apply." : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Apples Bildgenerator · keine Glowlit-Credits. Stil, Größe und Anzahl von hier gelten dafür nicht."
+            "value" : "Apples Bildgenerator · keine Aybuke-Credits. Stil, Größe und Anzahl von hier gelten dafür nicht."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "El creador de imágenes de Apple · sin créditos de Glowlit. El estilo, el formato y la cantidad de aquí no se aplican."
+            "value" : "El creador de imágenes de Apple · sin créditos de Aybuke. El estilo, el formato y la cantidad de aquí no se aplican."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Le créateur d’images d’Apple · sans crédits Glowlit. Le style, la taille et le nombre choisis ici ne s’appliquent pas."
+            "value" : "Le créateur d’images d’Apple · sans crédits Aybuke. Le style, la taille et le nombre choisis ici ne s’appliquent pas."
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pembuat gambar dari Apple · tanpa kredit Glowlit. Gaya, ukuran, dan jumlah di sini tidak berlaku."
+            "value" : "Pembuat gambar dari Apple · tanpa kredit Aybuke. Gaya, ukuran, dan jumlah di sini tidak berlaku."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Il generatore di immagini di Apple · senza crediti Glowlit. Stile, formato e numero scelti qui non si applicano."
+            "value" : "Il generatore di immagini di Apple · senza crediti Aybuke. Stile, formato e numero scelti qui non si applicano."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Appleの画像作成機能 · Glowlitのクレジット不要。ここで選んだスタイル・サイズ・枚数は反映されません。"
+            "value" : "Appleの画像作成機能 · Aybukeのクレジット不要。ここで選んだスタイル・サイズ・枚数は反映されません。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Apple의 이미지 생성 기능 · Glowlit 크레딧 필요 없음. 여기서 고른 스타일, 비율, 이미지 수는 적용되지 않아요."
+            "value" : "Apple의 이미지 생성 기능 · Aybuke 크레딧 필요 없음. 여기서 고른 스타일, 비율, 이미지 수는 적용되지 않아요."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "O criador de imagens da Apple · sem créditos do Glowlit. Estilo, tamanho e quantidade daqui não se aplicam."
+            "value" : "O criador de imagens da Apple · sem créditos do Aybuke. Estilo, tamanho e quantidade daqui não se aplicam."
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Генератор изображений Apple · без кредитов Glowlit. Стиль, размер и количество здесь не действуют."
+            "value" : "Генератор изображений Apple · без кредитов Aybuke. Стиль, размер и количество здесь не действуют."
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Apple'ın görsel oluşturucusu · Glowlit kredisi harcamaz. Buradaki stil, boyut ve görsel sayısı geçerli olmaz."
+            "value" : "Apple'ın görsel oluşturucusu · Aybuke kredisi harcamaz. Buradaki stil, boyut ve görsel sayısı geçerli olmaz."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Apple 的图片生成工具 · 不耗 Glowlit 点数。此处的风格、尺寸和数量设置不适用。"
+            "value" : "Apple 的图片生成工具 · 不耗 Aybuke 点数。此处的风格、尺寸和数量设置不适用。"
           }
         }
       }
@@ -45291,142 +45291,142 @@
         }
       }
     },
-    "Find “Glowlit” on the App Store" : {
+    "Find “Aybuke” on the App Store" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Finde „Glowlit“ im App Store"
+            "value" : "Finde „Aybuke“ im App Store"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Busca “Glowlit” en el App Store"
+            "value" : "Busca “Aybuke” en el App Store"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Trouve « Glowlit » sur l’App Store"
+            "value" : "Trouve « Aybuke » sur l’App Store"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cari “Glowlit” di App Store"
+            "value" : "Cari “Aybuke” di App Store"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cerca “Glowlit” sull'App Store"
+            "value" : "Cerca “Aybuke” sull'App Store"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "App Storeで「Glowlit」を検索"
+            "value" : "App Storeで「Aybuke」を検索"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "App Store에서 “Glowlit”을 찾아보세요"
+            "value" : "App Store에서 “Aybuke”를 찾아보세요"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Procure “Glowlit” na App Store"
+            "value" : "Procure “Aybuke” na App Store"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Найди «Glowlit» в App Store"
+            "value" : "Найди «Aybuke» в App Store"
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "App Store'da “Glowlit” diye arat"
+            "value" : "App Store'da “Aybuke” diye arat"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "在 App Store 搜索“Glowlit”"
+            "value" : "在 App Store 搜索“Aybuke”"
           }
         }
       }
     },
-    "Find “Glowlit” on the App Store." : {
+    "Find “Aybuke” on the App Store." : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Finde „Glowlit“ im App Store."
+            "value" : "Finde „Aybuke“ im App Store."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Busca “Glowlit” en el App Store."
+            "value" : "Busca “Aybuke” en el App Store."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Trouve « Glowlit » sur l’App Store."
+            "value" : "Trouve « Aybuke » sur l’App Store."
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cari “Glowlit” di App Store."
+            "value" : "Cari “Aybuke” di App Store."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cerca “Glowlit” sull'App Store."
+            "value" : "Cerca “Aybuke” sull'App Store."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "App Storeで「Glowlit」を検索してね。"
+            "value" : "App Storeで「Aybuke」を検索してね。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "App Store에서 “Glowlit” 검색해 봐."
+            "value" : "App Store에서 “Aybuke” 검색해 봐."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Procure “Glowlit” na App Store."
+            "value" : "Procure “Aybuke” na App Store."
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Найди «Glowlit» в App Store."
+            "value" : "Найди «Aybuke» в App Store."
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "App Store'da “Glowlit” diye arat."
+            "value" : "App Store'da “Aybuke” diye arat."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "在 App Store 搜索“Glowlit”。"
+            "value" : "在 App Store 搜索“Aybuke”。"
           }
         }
       }
@@ -50955,424 +50955,424 @@
         }
       }
     },
-    "Glowlit follows your device's language. To pick another one, tap Language, then choose it in Settings." : {
+    "Aybuke follows your device's language. To pick another one, tap Language, then choose it in Settings." : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Glowlit nutzt die Sprache deines Geräts. Für eine andere tippe auf „Sprache“ und wähl sie dann in den Einstellungen aus."
+            "value" : "Aybuke nutzt die Sprache deines Geräts. Für eine andere tippe auf „Sprache“ und wähl sie dann in den Einstellungen aus."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Glowlit usa el idioma de tu dispositivo. Para elegir otro, toca Idioma y luego selecciónalo en Ajustes."
+            "value" : "Aybuke usa el idioma de tu dispositivo. Para elegir otro, toca Idioma y luego selecciónalo en Ajustes."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Glowlit suit la langue de ton appareil. Pour en choisir une autre, appuie sur Langue, puis sélectionne-la dans Réglages."
+            "value" : "Aybuke suit la langue de ton appareil. Pour en choisir une autre, appuie sur Langue, puis sélectionne-la dans Réglages."
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Glowlit mengikuti bahasa perangkatmu. Untuk memilih bahasa lain, ketuk Bahasa, lalu pilih di Pengaturan."
+            "value" : "Aybuke mengikuti bahasa perangkatmu. Untuk memilih bahasa lain, ketuk Bahasa, lalu pilih di Pengaturan."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Glowlit usa la lingua del tuo dispositivo. Per sceglierne un'altra, tocca Lingua e selezionala in Impostazioni."
+            "value" : "Aybuke usa la lingua del tuo dispositivo. Per sceglierne un'altra, tocca Lingua e selezionala in Impostazioni."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Glowlitは端末の言語設定に合わせて表示されます。別の言語にするには「言語」をタップし、設定で選んでください。"
+            "value" : "Aybukeは端末の言語設定に合わせて表示されます。別の言語にするには「言語」をタップし、設定で選んでください。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Glowlit은 기기의 언어 설정을 따라요. 다른 언어를 고르려면 ‘언어’를 탭한 뒤 설정에서 선택해 주세요."
+            "value" : "Aybuke는 기기의 언어 설정을 따라요. 다른 언어를 고르려면 ‘언어’를 탭한 뒤 설정에서 선택해 주세요."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "O Glowlit segue o idioma do seu aparelho. Para escolher outro, toque em Idioma e selecione-o nos Ajustes."
+            "value" : "O Aybuke segue o idioma do seu aparelho. Para escolher outro, toque em Idioma e selecione-o nos Ajustes."
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Glowlit использует язык твоего устройства. Чтобы выбрать другой, нажми «Язык» и выбери его в Настройках."
+            "value" : "Aybuke использует язык твоего устройства. Чтобы выбрать другой, нажми «Язык» и выбери его в Настройках."
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Glowlit, cihazının dilini kullanır. Başka bir dil seçmek için Dil'e dokun, ardından Ayarlar'da seç."
+            "value" : "Aybuke, cihazının dilini kullanır. Başka bir dil seçmek için Dil'e dokun, ardından Ayarlar'da seç."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Glowlit 会跟随你的设备语言。如需选择其他语言，请轻点“语言”，然后在设置中选择。"
+            "value" : "Aybuke 会跟随你的设备语言。如需选择其他语言，请轻点“语言”，然后在设置中选择。"
           }
         }
       }
     },
-    "Glowlit follows your iPhone's language. To pick another one, tap Language, then choose it in iOS Settings." : {
+    "Aybuke follows your iPhone's language. To pick another one, tap Language, then choose it in iOS Settings." : {
       "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Glowlit nutzt die Sprache deines iPhone. Für eine andere tippe auf „Sprache“ und wähl sie dann in den iOS-Einstellungen aus."
+            "value" : "Aybuke nutzt die Sprache deines iPhone. Für eine andere tippe auf „Sprache“ und wähl sie dann in den iOS-Einstellungen aus."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Glowlit usa el idioma de tu iPhone. Para elegir otro, toca Idioma y luego selecciónalo en Ajustes de iOS."
+            "value" : "Aybuke usa el idioma de tu iPhone. Para elegir otro, toca Idioma y luego selecciónalo en Ajustes de iOS."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Glowlit suit la langue de ton iPhone. Pour en choisir une autre, appuie sur Langue, puis sélectionne-la dans les Réglages iOS."
+            "value" : "Aybuke suit la langue de ton iPhone. Pour en choisir une autre, appuie sur Langue, puis sélectionne-la dans les Réglages iOS."
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Glowlit mengikuti bahasa iPhone-mu. Untuk memilih bahasa lain, ketuk Bahasa, lalu pilih di Pengaturan iOS."
+            "value" : "Aybuke mengikuti bahasa iPhone-mu. Untuk memilih bahasa lain, ketuk Bahasa, lalu pilih di Pengaturan iOS."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Glowlit usa la lingua del tuo iPhone. Per sceglierne un'altra, tocca Lingua e selezionala nelle Impostazioni di iOS."
+            "value" : "Aybuke usa la lingua del tuo iPhone. Per sceglierne un'altra, tocca Lingua e selezionala nelle Impostazioni di iOS."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "GlowlitはiPhoneの言語設定に合わせて表示されます。別の言語にするには「言語」をタップし、iOSの設定で選んでください。"
+            "value" : "AybukeはiPhoneの言語設定に合わせて表示されます。別の言語にするには「言語」をタップし、iOSの設定で選んでください。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Glowlit은 iPhone의 언어 설정을 따라요. 다른 언어를 고르려면 ‘언어’를 탭한 뒤 iOS 설정에서 선택해 주세요."
+            "value" : "Aybuke는 iPhone의 언어 설정을 따라요. 다른 언어를 고르려면 ‘언어’를 탭한 뒤 iOS 설정에서 선택해 주세요."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "O Glowlit segue o idioma do seu iPhone. Para escolher outro, toque em Idioma e selecione-o nos Ajustes do iOS."
+            "value" : "O Aybuke segue o idioma do seu iPhone. Para escolher outro, toque em Idioma e selecione-o nos Ajustes do iOS."
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Glowlit использует язык твоего iPhone. Чтобы выбрать другой, нажми «Язык» и выбери его в Настройках iOS."
+            "value" : "Aybuke использует язык твоего iPhone. Чтобы выбрать другой, нажми «Язык» и выбери его в Настройках iOS."
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Glowlit, iPhone'unun dilini kullanır. Başka bir dil seçmek için Dil'e dokun, ardından iOS Ayarları'nda seç."
+            "value" : "Aybuke, iPhone'unun dilini kullanır. Başka bir dil seçmek için Dil'e dokun, ardından iOS Ayarları'nda seç."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Glowlit 会跟随你的 iPhone 语言。如需选择其他语言，请轻点“语言”，然后在 iOS 设置中选择。"
+            "value" : "Aybuke 会跟随你的 iPhone 语言。如需选择其他语言，请轻点“语言”，然后在 iOS 设置中选择。"
           }
         }
       }
     },
-    "Glowlit follows your Mac's language. To pick another one, click Language, then add Glowlit under Applications." : {
+    "Aybuke follows your Mac's language. To pick another one, click Language, then add Aybuke under Applications." : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Glowlit nutzt die Sprache deines Mac. Für eine andere klicke auf „Sprache“ und füge Glowlit dann unter „Apps“ hinzu."
+            "value" : "Aybuke nutzt die Sprache deines Mac. Für eine andere klicke auf „Sprache“ und füge Aybuke dann unter „Apps“ hinzu."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Glowlit usa el idioma de tu Mac. Para elegir otro, haz clic en Idioma y luego añade Glowlit en Aplicaciones."
+            "value" : "Aybuke usa el idioma de tu Mac. Para elegir otro, haz clic en Idioma y luego añade Aybuke en Aplicaciones."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Glowlit suit la langue de ton Mac. Pour en choisir une autre, clique sur Langue, puis ajoute Glowlit sous Applications."
+            "value" : "Aybuke suit la langue de ton Mac. Pour en choisir une autre, clique sur Langue, puis ajoute Aybuke sous Applications."
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Glowlit mengikuti bahasa Mac-mu. Untuk memilih bahasa lain, klik Bahasa, lalu tambahkan Glowlit di bagian Aplikasi."
+            "value" : "Aybuke mengikuti bahasa Mac-mu. Untuk memilih bahasa lain, klik Bahasa, lalu tambahkan Aybuke di bagian Aplikasi."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Glowlit usa la lingua del tuo Mac. Per sceglierne un'altra, fai clic su Lingua, poi aggiungi Glowlit in Applicazioni."
+            "value" : "Aybuke usa la lingua del tuo Mac. Per sceglierne un'altra, fai clic su Lingua, poi aggiungi Aybuke in Applicazioni."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "GlowlitはMacの言語設定に合わせて表示されます。別の言語にするには「言語」をクリックし、「アプリケーション」にGlowlitを追加してください。"
+            "value" : "AybukeはMacの言語設定に合わせて表示されます。別の言語にするには「言語」をクリックし、「アプリケーション」にAybukeを追加してください。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Glowlit은 Mac의 언어 설정을 따라요. 다른 언어를 고르려면 ‘언어’를 클릭한 뒤 ‘응용 프로그램’에 Glowlit을 추가해 주세요."
+            "value" : "Aybuke는 Mac의 언어 설정을 따라요. 다른 언어를 고르려면 ‘언어’를 클릭한 뒤 ‘응용 프로그램’에 Aybuke를 추가해 주세요."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "O Glowlit segue o idioma do seu Mac. Para escolher outro, clique em Idioma e adicione o Glowlit em Aplicativos."
+            "value" : "O Aybuke segue o idioma do seu Mac. Para escolher outro, clique em Idioma e adicione o Aybuke em Aplicativos."
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Glowlit использует язык твоего Mac. Чтобы выбрать другой, нажми «Язык» и добавь Glowlit в разделе «Приложения»."
+            "value" : "Aybuke использует язык твоего Mac. Чтобы выбрать другой, нажми «Язык» и добавь Aybuke в разделе «Приложения»."
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Glowlit, Mac'inin dilini kullanır. Başka bir dil seçmek için Dil'e tıkla, ardından Uygulamalar bölümüne Glowlit'i ekle."
+            "value" : "Aybuke, Mac'inin dilini kullanır. Başka bir dil seçmek için Dil'e tıkla, ardından Uygulamalar bölümüne Aybuke'yi ekle."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Glowlit 会跟随你的 Mac 语言。如需选择其他语言，请点按“语言”，然后在“应用程序”下添加 Glowlit。"
+            "value" : "Aybuke 会跟随你的 Mac 语言。如需选择其他语言，请点按“语言”，然后在“应用程序”下添加 Aybuke。"
           }
         }
       }
     },
-    "Glowlit invite card with a QR code" : {
+    "Aybuke invite card with a QR code" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Glowlit-Einladungskarte mit QR-Code"
+            "value" : "Aybuke-Einladungskarte mit QR-Code"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tarjeta de invitación de Glowlit con código QR"
+            "value" : "Tarjeta de invitación de Aybuke con código QR"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Carte d’invitation Glowlit avec QR code"
+            "value" : "Carte d’invitation Aybuke avec QR code"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kartu undangan Glowlit dengan kode QR"
+            "value" : "Kartu undangan Aybuke dengan kode QR"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Card d'invito di Glowlit con codice QR"
+            "value" : "Card d'invito di Aybuke con codice QR"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "QRコード付きのGlowlit招待カード"
+            "value" : "QRコード付きのAybuke招待カード"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "QR 코드가 담긴 Glowlit 초대 카드"
+            "value" : "QR 코드가 담긴 Aybuke 초대 카드"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Card de convite do Glowlit com QR code"
+            "value" : "Card de convite do Aybuke com QR code"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Карточка-приглашение в Glowlit с QR-кодом"
+            "value" : "Карточка-приглашение в Aybuke с QR-кодом"
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "QR kodlu Glowlit davet kartı"
+            "value" : "QR kodlu Aybuke davet kartı"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "带二维码的 Glowlit 邀请卡"
+            "value" : "带二维码的 Aybuke 邀请卡"
           }
         }
       }
     },
-    "Glowlit keeps you, you. Try hair color, makeup colors, outfits, light or backgrounds." : {
+    "Aybuke keeps you, you. Try hair color, makeup colors, outfits, light or backgrounds." : {
       "comment" : "Shown when a request is blocked by the content policy",
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bei Glowlit bleibst du du. Probier Haarfarbe, Make-up-Farben, Outfits, Licht oder Hintergründe."
+            "value" : "Bei Aybuke bleibst du du. Probier Haarfarbe, Make-up-Farben, Outfits, Licht oder Hintergründe."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Glowlit te deja ser tú. Prueba con el color de pelo, colores de maquillaje, outfits, la luz o el fondo."
+            "value" : "Aybuke te deja ser tú. Prueba con el color de pelo, colores de maquillaje, outfits, la luz o el fondo."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Avec Glowlit, tu restes toi. Essaie une couleur de cheveux, des couleurs de maquillage, des tenues, la lumière ou le fond."
+            "value" : "Avec Aybuke, tu restes toi. Essaie une couleur de cheveux, des couleurs de maquillage, des tenues, la lumière ou le fond."
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Glowlit menjaga kamu tetap jadi dirimu. Coba warna rambut, warna makeup, outfit, cahaya, atau latar."
+            "value" : "Aybuke menjaga kamu tetap jadi dirimu. Coba warna rambut, warna makeup, outfit, cahaya, atau latar."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Glowlit ti lascia come sei. Prova colore dei capelli, colori del trucco, outfit, luce o sfondi."
+            "value" : "Aybuke ti lascia come sei. Prova colore dei capelli, colori del trucco, outfit, luce o sfondi."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Glowlitはあなたをあなたのままに。髪色、メイクの色、服、光、背景を変えてみてね。"
+            "value" : "Aybukeはあなたをあなたのままに。髪色、メイクの色、服、光、背景を変えてみてね。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Glowlit은 나를 나답게 지켜요. 머리 색, 메이크업 색, 옷, 조명, 배경을 바꿔 보세요."
+            "value" : "Aybuke는 나를 나답게 지켜요. 머리 색, 메이크업 색, 옷, 조명, 배경을 바꿔 보세요."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "O Glowlit mantém você do seu jeito. Experimente cor de cabelo, cores de maquiagem, looks, luz ou fundos."
+            "value" : "O Aybuke mantém você do seu jeito. Experimente cor de cabelo, cores de maquiagem, looks, luz ou fundos."
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Glowlit сохраняет тебя собой. Попробуй цвет волос, оттенки макияжа, наряды, свет или фон."
+            "value" : "Aybuke сохраняет тебя собой. Попробуй цвет волос, оттенки макияжа, наряды, свет или фон."
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Glowlit seni sen olarak tutar. Saç rengi, makyaj renkleri, kıyafetler, ışık ya da arka planlar dene."
+            "value" : "Aybuke seni sen olarak tutar. Saç rengi, makyaj renkleri, kıyafetler, ışık ya da arka planlar dene."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Glowlit 让你始终是你。试试换发色、妆容颜色、服装、光线或背景吧。"
+            "value" : "Aybuke 让你始终是你。试试换发色、妆容颜色、服装、光线或背景吧。"
           }
         }
       }
     },
-    "Glowlit listens to your video again and replaces these captions, including your changes." : {
+    "Aybuke listens to your video again and replaces these captions, including your changes." : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Glowlit hört sich dein Video noch mal an und ersetzt diese Untertitel – auch deine Änderungen."
+            "value" : "Aybuke hört sich dein Video noch mal an und ersetzt diese Untertitel – auch deine Änderungen."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Glowlit vuelve a escuchar tu video y reemplaza estos subtítulos, incluidos tus cambios."
+            "value" : "Aybuke vuelve a escuchar tu video y reemplaza estos subtítulos, incluidos tus cambios."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Glowlit réécoute ta vidéo et remplace ces sous-titres, y compris tes modifications."
+            "value" : "Aybuke réécoute ta vidéo et remplace ces sous-titres, y compris tes modifications."
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Glowlit akan mendengarkan videomu lagi dan mengganti subtitle ini, termasuk perubahanmu."
+            "value" : "Aybuke akan mendengarkan videomu lagi dan mengganti subtitle ini, termasuk perubahanmu."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Glowlit riascolta il tuo video e sostituisce questi sottotitoli, comprese le tue modifiche."
+            "value" : "Aybuke riascolta il tuo video e sostituisce questi sottotitoli, comprese le tue modifiche."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Glowlitが動画をもう一度聞き取り、変更した部分も含めて今の字幕を置き換えます。"
+            "value" : "Aybukeが動画をもう一度聞き取り、変更した部分も含めて今の字幕を置き換えます。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Glowlit이 동영상을 다시 듣고, 직접 수정한 내용까지 포함해 지금의 자막을 새로 바꿔요."
+            "value" : "Aybuke가 동영상을 다시 듣고, 직접 수정한 내용까지 포함해 지금의 자막을 새로 바꿔요."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "O Glowlit ouve seu vídeo de novo e substitui estas legendas, incluindo suas alterações."
+            "value" : "O Aybuke ouve seu vídeo de novo e substitui estas legendas, incluindo suas alterações."
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Glowlit заново прослушает видео и заменит эти субтитры — вместе с твоими правками."
+            "value" : "Aybuke заново прослушает видео и заменит эти субтитры — вместе с твоими правками."
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Glowlit videonu yeniden dinler ve bu altyazıları, yaptığın değişiklikler dahil, yenileriyle değiştirir."
+            "value" : "Aybuke videonu yeniden dinler ve bu altyazıları, yaptığın değişiklikler dahil, yenileriyle değiştirir."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Glowlit 会重新听取视频，并替换现有字幕，包括你做过的修改。"
+            "value" : "Aybuke 会重新听取视频，并替换现有字幕，包括你做过的修改。"
           }
         }
       }
@@ -53917,72 +53917,72 @@
         }
       }
     },
-    "I edit my photos with Glowlit ✨ AI glow-ups, 80s & 90s effects and easy video edits. Free to start." : {
+    "I edit my photos with Aybuke ✨ AI glow-ups, 80s & 90s effects and easy video edits. Free to start." : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ich bearbeite meine Fotos mit Glowlit ✨ KI-Glow-ups, 80er- & 90er-Effekte und einfacher Videoschnitt. Gratis loslegen."
+            "value" : "Ich bearbeite meine Fotos mit Aybuke ✨ KI-Glow-ups, 80er- & 90er-Effekte und einfacher Videoschnitt. Gratis loslegen."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Edito mis fotos con Glowlit ✨ Glow-ups con IA, efectos de los 80 y 90 y edición de video fácil. Gratis para empezar."
+            "value" : "Edito mis fotos con Aybuke ✨ Glow-ups con IA, efectos de los 80 y 90 y edición de video fácil. Gratis para empezar."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Je retouche mes photos avec Glowlit ✨ Glow-ups IA, effets années 80 et 90 et montage vidéo facile. Gratuit pour commencer."
+            "value" : "Je retouche mes photos avec Aybuke ✨ Glow-ups IA, effets années 80 et 90 et montage vidéo facile. Gratuit pour commencer."
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aku edit fotoku pakai Glowlit ✨ Glow-up AI, efek 80-an & 90-an, dan edit video yang gampang. Bisa mulai gratis."
+            "value" : "Aku edit fotoku pakai Aybuke ✨ Glow-up AI, efek 80-an & 90-an, dan edit video yang gampang. Bisa mulai gratis."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Modifico le mie foto con Glowlit ✨ Glow-up con l'IA, effetti anni '80 e '90 e video editing facile. Gratis per iniziare."
+            "value" : "Modifico le mie foto con Aybuke ✨ Glow-up con l'IA, effetti anni '80 e '90 e video editing facile. Gratis per iniziare."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "写真の編集はGlowlitでしてるよ ✨ AIグロウアップ、80〜90年代エフェクト、かんたん動画編集。無料ではじめられるよ。"
+            "value" : "写真の編集はAybukeでしてるよ ✨ AIグロウアップ、80〜90年代エフェクト、かんたん動画編集。無料ではじめられるよ。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "요즘 Glowlit으로 사진 편집해 ✨ AI 글로우업, 80·90년대 효과, 간편한 영상 편집까지. 무료로 시작할 수 있어."
+            "value" : "요즘 Aybuke로 사진 편집해 ✨ AI 글로우업, 80·90년대 효과, 간편한 영상 편집까지. 무료로 시작할 수 있어."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Edito minhas fotos com o Glowlit ✨ Glow ups com IA, efeitos anos 80 e 90 e edição de vídeo fácil. Grátis para começar."
+            "value" : "Edito minhas fotos com o Aybuke ✨ Glow ups com IA, efeitos anos 80 e 90 e edição de vídeo fácil. Grátis para começar."
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Я редактирую фото в Glowlit ✨ ИИ-преображения, эффекты 80-х и 90-х и простой монтаж видео. Начать можно бесплатно."
+            "value" : "Я редактирую фото в Aybuke ✨ ИИ-преображения, эффекты 80-х и 90-х и простой монтаж видео. Начать можно бесплатно."
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Fotoğraflarımı Glowlit ile düzenliyorum ✨ Yapay zekâ ile ışıltı, 80'ler ve 90'lar efektleri ve kolay video düzenleme. Başlamak ücretsiz."
+            "value" : "Fotoğraflarımı Aybuke ile düzenliyorum ✨ Yapay zekâ ile ışıltı, 80'ler ve 90'lar efektleri ve kolay video düzenleme. Başlamak ücretsiz."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "我在用 Glowlit 修图 ✨ AI 变美、80/90 年代特效，还能轻松剪视频。免费就能开始。"
+            "value" : "我在用 Aybuke 修图 ✨ AI 变美、80/90 年代特效，还能轻松剪视频。免费就能开始。"
           }
         }
       }
@@ -64072,72 +64072,72 @@
         }
       }
     },
-    "My Works couldn't open, so new creations won't be kept this time. Free up some space and restart Glowlit." : {
+    "My Works couldn't open, so new creations won't be kept this time. Free up some space and restart Aybuke." : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "„Meine Werke“ ließ sich nicht öffnen, deshalb werden neue Kreationen diesmal nicht gespeichert. Mach etwas Speicherplatz frei und starte Glowlit neu."
+            "value" : "„Meine Werke“ ließ sich nicht öffnen, deshalb werden neue Kreationen diesmal nicht gespeichert. Mach etwas Speicherplatz frei und starte Aybuke neu."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "No se pudo abrir Mis creaciones, así que esta vez no se guardarán las nuevas creaciones. Libera espacio y reinicia Glowlit."
+            "value" : "No se pudo abrir Mis creaciones, así que esta vez no se guardarán las nuevas creaciones. Libera espacio y reinicia Aybuke."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Impossible d’ouvrir Mes créations : tes nouvelles créations ne seront pas conservées cette fois. Libère de l’espace et redémarre Glowlit."
+            "value" : "Impossible d’ouvrir Mes créations : tes nouvelles créations ne seront pas conservées cette fois. Libère de l’espace et redémarre Aybuke."
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Karyaku tidak bisa dibuka, jadi kreasi baru tidak akan disimpan kali ini. Kosongkan sedikit ruang dan buka ulang Glowlit."
+            "value" : "Karyaku tidak bisa dibuka, jadi kreasi baru tidak akan disimpan kali ini. Kosongkan sedikit ruang dan buka ulang Aybuke."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Impossibile aprire Le mie opere, quindi questa volta le nuove creazioni non verranno salvate. Libera spazio e riavvia Glowlit."
+            "value" : "Impossibile aprire Le mie opere, quindi questa volta le nuove creazioni non verranno salvate. Libera spazio e riavvia Aybuke."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "マイ作品を開けなかったため、今回は新しい作品が保存されません。空き容量を増やしてから、Glowlitを再起動してください。"
+            "value" : "マイ作品を開けなかったため、今回は新しい作品が保存されません。空き容量を増やしてから、Aybukeを再起動してください。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "내 작품을 열지 못해서 이번에는 새 작품이 저장되지 않아요. 저장 공간을 확보한 뒤 Glowlit을 다시 시작해 주세요."
+            "value" : "내 작품을 열지 못해서 이번에는 새 작품이 저장되지 않아요. 저장 공간을 확보한 뒤 Aybuke를 다시 시작해 주세요."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Não foi possível abrir Minhas criações, então as novas criações não serão guardadas desta vez. Libere espaço e reinicie o Glowlit."
+            "value" : "Não foi possível abrir Minhas criações, então as novas criações não serão guardadas desta vez. Libere espaço e reinicie o Aybuke."
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Не удалось открыть «Мои работы», поэтому новые работы в этот раз не сохранятся. Освободи место и перезапусти Glowlit."
+            "value" : "Не удалось открыть «Мои работы», поэтому новые работы в этот раз не сохранятся. Освободи место и перезапусти Aybuke."
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Eserlerim açılamadı, bu yüzden yeni eserlerin bu sefer saklanmayacak. Biraz yer aç ve Glowlit'i yeniden başlat."
+            "value" : "Eserlerim açılamadı, bu yüzden yeni eserlerin bu sefer saklanmayacak. Biraz yer aç ve Aybuke'yi yeniden başlat."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "无法打开“我的作品”，所以这次的新作品不会被保存。请释放一些空间后重新启动 Glowlit。"
+            "value" : "无法打开“我的作品”，所以这次的新作品不会被保存。请释放一些空间后重新启动 Aybuke。"
           }
         }
       }
@@ -68081,72 +68081,72 @@
         }
       }
     },
-    "Opens a photo in Glowlit's editor, or lets you pick one." : {
+    "Opens a photo in Aybuke's editor, or lets you pick one." : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Öffnet ein Foto im Editor von Glowlit oder lässt dich eins auswählen."
+            "value" : "Öffnet ein Foto im Editor von Aybuke oder lässt dich eins auswählen."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Abre una foto en el editor de Glowlit o te deja elegir una."
+            "value" : "Abre una foto en el editor de Aybuke o te deja elegir una."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ouvre une photo dans l’éditeur de Glowlit, ou te laisse en choisir une."
+            "value" : "Ouvre une photo dans l’éditeur de Aybuke, ou te laisse en choisir une."
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Membuka foto di editor Glowlit, atau memintamu memilih satu."
+            "value" : "Membuka foto di editor Aybuke, atau memintamu memilih satu."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Apre una foto nell'editor di Glowlit o ti fa sceglierne una."
+            "value" : "Apre una foto nell'editor di Aybuke o ti fa sceglierne una."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Glowlitのエディタで写真を開きます。写真を選ぶこともできます。"
+            "value" : "Aybukeのエディタで写真を開きます。写真を選ぶこともできます。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Glowlit 편집기에서 사진을 열거나, 사진을 고를 수 있게 해요."
+            "value" : "Aybuke 편집기에서 사진을 열거나, 사진을 고를 수 있게 해요."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Abre uma foto no editor do Glowlit ou deixa você escolher uma."
+            "value" : "Abre uma foto no editor do Aybuke ou deixa você escolher uma."
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Открывает фото в редакторе Glowlit или даёт выбрать его."
+            "value" : "Открывает фото в редакторе Aybuke или даёт выбрать его."
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bir fotoğrafı Glowlit'in düzenleyicisinde açar ya da bir tane seçmeni sağlar."
+            "value" : "Bir fotoğrafı Aybuke'nin düzenleyicisinde açar ya da bir tane seçmeni sağlar."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "在 Glowlit 的编辑器中打开照片，或让你选择一张照片。"
+            "value" : "在 Aybuke 的编辑器中打开照片，或让你选择一张照片。"
           }
         }
       }
@@ -69027,7 +69027,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Glowlitのルックは、あなたの顔立ち・肌の色・体型をそのままに保つよう作られています。"
+            "value" : "Aybukeのルックは、あなたの顔立ち・肌の色・体型をそのままに保つよう作られています。"
           }
         },
         "ko" : {
@@ -83032,72 +83032,72 @@
         }
       }
     },
-    "Scan to get Glowlit" : {
+    "Scan to get Aybuke" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Scannen für Glowlit"
+            "value" : "Scannen für Aybuke"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Escanea para descargar Glowlit"
+            "value" : "Escanea para descargar Aybuke"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Glowlit en un scan"
+            "value" : "Aybuke en un scan"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Scan untuk dapatkan Glowlit"
+            "value" : "Scan untuk dapatkan Aybuke"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Scansiona e scarica Glowlit"
+            "value" : "Scansiona e scarica Aybuke"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "スキャンしてGlowlitをゲット"
+            "value" : "スキャンしてAybukeをゲット"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "스캔해서 Glowlit 받기"
+            "value" : "스캔해서 Aybuke 받기"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Escaneie para baixar o Glowlit"
+            "value" : "Escaneie para baixar o Aybuke"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Скачай Glowlit по QR"
+            "value" : "Скачай Aybuke по QR"
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tara, Glowlit'i indir"
+            "value" : "Tara, Aybuke'yi indir"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "扫码获取 Glowlit"
+            "value" : "扫码获取 Aybuke"
           }
         }
       }
@@ -84507,72 +84507,72 @@
         }
       }
     },
-    "Share Glowlit with your besties: a story card with a QR code, or a message with the link." : {
+    "Share Aybuke with your besties: a story card with a QR code, or a message with the link." : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Teile Glowlit mit deinen Besties: als Story-Karte mit QR-Code oder als Nachricht mit Link."
+            "value" : "Teile Aybuke mit deinen Besties: als Story-Karte mit QR-Code oder als Nachricht mit Link."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Comparte Glowlit con tus besties: una tarjeta para historias con un código QR o un mensaje con el enlace."
+            "value" : "Comparte Aybuke con tus besties: una tarjeta para historias con un código QR o un mensaje con el enlace."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Partage Glowlit avec tes besties : une carte story avec QR code, ou un message avec le lien."
+            "value" : "Partage Aybuke avec tes besties : une carte story avec QR code, ou un message avec le lien."
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bagikan Glowlit ke bestie-mu: kartu cerita dengan kode QR, atau pesan berisi tautannya."
+            "value" : "Bagikan Aybuke ke bestie-mu: kartu cerita dengan kode QR, atau pesan berisi tautannya."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Condividi Glowlit con le tue amiche: una card per le Storie con codice QR o un messaggio con il link."
+            "value" : "Condividi Aybuke con le tue amiche: una card per le Storie con codice QR o un messaggio con il link."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Glowlitを親友にシェアしよう：QRコード付きのストーリーカードか、リンク付きのメッセージで。"
+            "value" : "Aybukeを親友にシェアしよう：QRコード付きのストーリーカードか、リンク付きのメッセージで。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "베프에게 Glowlit을 공유하세요. QR 코드가 담긴 스토리 카드나 링크가 담긴 메시지로 보낼 수 있어요."
+            "value" : "베프에게 Aybuke를 공유하세요. QR 코드가 담긴 스토리 카드나 링크가 담긴 메시지로 보낼 수 있어요."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Compartilhe o Glowlit com suas BFFs: um card de Stories com QR code ou uma mensagem com o link."
+            "value" : "Compartilhe o Aybuke com suas BFFs: um card de Stories com QR code ou uma mensagem com o link."
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Расскажи подружкам о Glowlit: карточка для Историй с QR-кодом или сообщение со ссылкой."
+            "value" : "Расскажи подружкам о Aybuke: карточка для Историй с QR-кодом или сообщение со ссылкой."
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Glowlit'i kankalarınla paylaş: QR kodlu bir hikâye kartı ya da link içeren bir mesaj."
+            "value" : "Aybuke'yi kankalarınla paylaş: QR kodlu bir hikâye kartı ya da link içeren bir mesaj."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "把 Glowlit 分享给你的闺蜜：发一张带二维码的快拍卡片，或发一条附带链接的消息。"
+            "value" : "把 Aybuke 分享给你的闺蜜：发一张带二维码的快拍卡片，或发一条附带链接的消息。"
           }
         }
       }
@@ -88591,142 +88591,142 @@
         }
       }
     },
-    "Speech recognition is off for Glowlit. Turn it on in Settings, or add captions yourself." : {
+    "Speech recognition is off for Aybuke. Turn it on in Settings, or add captions yourself." : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Die Spracherkennung ist für Glowlit aus. Aktiviere sie in den Einstellungen oder füge Untertitel selbst hinzu."
+            "value" : "Die Spracherkennung ist für Aybuke aus. Aktiviere sie in den Einstellungen oder füge Untertitel selbst hinzu."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "El reconocimiento de voz está desactivado para Glowlit. Actívalo en Ajustes o añade los subtítulos tú."
+            "value" : "El reconocimiento de voz está desactivado para Aybuke. Actívalo en Ajustes o añade los subtítulos tú."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "La reconnaissance vocale est désactivée pour Glowlit. Active-la dans Réglages, ou ajoute les sous-titres toi-même."
+            "value" : "La reconnaissance vocale est désactivée pour Aybuke. Active-la dans Réglages, ou ajoute les sous-titres toi-même."
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pengenalan ucapan untuk Glowlit mati. Nyalakan di Pengaturan, atau tambahkan subtitle sendiri."
+            "value" : "Pengenalan ucapan untuk Aybuke mati. Nyalakan di Pengaturan, atau tambahkan subtitle sendiri."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Il riconoscimento vocale è disattivato per Glowlit. Attivalo in Impostazioni o aggiungi tu i sottotitoli."
+            "value" : "Il riconoscimento vocale è disattivato per Aybuke. Attivalo in Impostazioni o aggiungi tu i sottotitoli."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Glowlitの音声認識がオフになっています。設定でオンにするか、字幕を自分で追加してください。"
+            "value" : "Aybukeの音声認識がオフになっています。設定でオンにするか、字幕を自分で追加してください。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Glowlit의 음성 인식이 꺼져 있어요. 설정에서 켜거나 자막을 직접 추가해 주세요."
+            "value" : "Aybuke의 음성 인식이 꺼져 있어요. 설정에서 켜거나 자막을 직접 추가해 주세요."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "O reconhecimento de fala está desativado para o Glowlit. Ative nos Ajustes ou adicione as legendas por conta própria."
+            "value" : "O reconhecimento de fala está desativado para o Aybuke. Ative nos Ajustes ou adicione as legendas por conta própria."
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Распознавание речи для Glowlit выключено. Включи его в Настройках или добавь субтитры вручную."
+            "value" : "Распознавание речи для Aybuke выключено. Включи его в Настройках или добавь субтитры вручную."
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Glowlit için konuşma tanıma kapalı. Ayarlar'dan aç ya da altyazıları kendin ekle."
+            "value" : "Aybuke için konuşma tanıma kapalı. Ayarlar'dan aç ya da altyazıları kendin ekle."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Glowlit 的语音识别已关闭。请在“设置”中开启，或手动添加字幕。"
+            "value" : "Aybuke 的语音识别已关闭。请在“设置”中开启，或手动添加字幕。"
           }
         }
       }
     },
-    "Speech recognition is off for Glowlit. Turn it on in System Settings, or add captions yourself." : {
+    "Speech recognition is off for Aybuke. Turn it on in System Settings, or add captions yourself." : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Die Spracherkennung ist für Glowlit aus. Aktiviere sie in den Systemeinstellungen oder füge Untertitel selbst hinzu."
+            "value" : "Die Spracherkennung ist für Aybuke aus. Aktiviere sie in den Systemeinstellungen oder füge Untertitel selbst hinzu."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "El reconocimiento de voz está desactivado para Glowlit. Actívalo en Ajustes del Sistema o añade los subtítulos tú."
+            "value" : "El reconocimiento de voz está desactivado para Aybuke. Actívalo en Ajustes del Sistema o añade los subtítulos tú."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "La reconnaissance vocale est désactivée pour Glowlit. Active-la dans Réglages Système, ou ajoute les sous-titres toi-même."
+            "value" : "La reconnaissance vocale est désactivée pour Aybuke. Active-la dans Réglages Système, ou ajoute les sous-titres toi-même."
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pengenalan ucapan untuk Glowlit mati. Nyalakan di Pengaturan Sistem, atau tambahkan subtitle sendiri."
+            "value" : "Pengenalan ucapan untuk Aybuke mati. Nyalakan di Pengaturan Sistem, atau tambahkan subtitle sendiri."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Il riconoscimento vocale è disattivato per Glowlit. Attivalo in Impostazioni di Sistema o aggiungi tu i sottotitoli."
+            "value" : "Il riconoscimento vocale è disattivato per Aybuke. Attivalo in Impostazioni di Sistema o aggiungi tu i sottotitoli."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Glowlitの音声認識がオフになっています。システム設定でオンにするか、字幕を自分で追加してください。"
+            "value" : "Aybukeの音声認識がオフになっています。システム設定でオンにするか、字幕を自分で追加してください。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Glowlit의 음성 인식이 꺼져 있어요. 시스템 설정에서 켜거나 자막을 직접 추가해 주세요."
+            "value" : "Aybuke의 음성 인식이 꺼져 있어요. 시스템 설정에서 켜거나 자막을 직접 추가해 주세요."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "O reconhecimento de fala está desativado para o Glowlit. Ative nos Ajustes do Sistema ou adicione as legendas por conta própria."
+            "value" : "O reconhecimento de fala está desativado para o Aybuke. Ative nos Ajustes do Sistema ou adicione as legendas por conta própria."
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Распознавание речи для Glowlit выключено. Включи его в Системных настройках или добавь субтитры вручную."
+            "value" : "Распознавание речи для Aybuke выключено. Включи его в Системных настройках или добавь субтитры вручную."
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Glowlit için konuşma tanıma kapalı. Sistem Ayarları'ndan aç ya da altyazıları kendin ekle."
+            "value" : "Aybuke için konuşma tanıma kapalı. Sistem Ayarları'ndan aç ya da altyazıları kendin ekle."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Glowlit 的语音识别已关闭。请在“系统设置”中开启，或手动添加字幕。"
+            "value" : "Aybuke 的语音识别已关闭。请在“系统设置”中开启，或手动添加字幕。"
           }
         }
       }
@@ -95482,72 +95482,72 @@
         }
       }
     },
-    "The camera pauses while another app is open next to Glowlit." : {
+    "The camera pauses while another app is open next to Aybuke." : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Die Kamera pausiert, solange eine andere App neben Glowlit geöffnet ist."
+            "value" : "Die Kamera pausiert, solange eine andere App neben Aybuke geöffnet ist."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "La cámara se pausa mientras haya otra app abierta junto a Glowlit."
+            "value" : "La cámara se pausa mientras haya otra app abierta junto a Aybuke."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "La caméra se met en pause quand une autre app est ouverte à côté de Glowlit."
+            "value" : "La caméra se met en pause quand une autre app est ouverte à côté de Aybuke."
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kamera berhenti sejenak selama ada aplikasi lain terbuka di samping Glowlit."
+            "value" : "Kamera berhenti sejenak selama ada aplikasi lain terbuka di samping Aybuke."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "La fotocamera va in pausa quando un'altra app è aperta accanto a Glowlit."
+            "value" : "La fotocamera va in pausa quando un'altra app è aperta accanto a Aybuke."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Glowlitの横でほかのアプリを開いている間は、カメラが一時停止します。"
+            "value" : "Aybukeの横でほかのアプリを開いている間は、カメラが一時停止します。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Glowlit 옆에 다른 앱이 열려 있는 동안에는 카메라가 잠시 멈춰요."
+            "value" : "Aybuke 옆에 다른 앱이 열려 있는 동안에는 카메라가 잠시 멈춰요."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "A câmera pausa enquanto outro app estiver aberto ao lado do Glowlit."
+            "value" : "A câmera pausa enquanto outro app estiver aberto ao lado do Aybuke."
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Камера ставится на паузу, пока рядом с Glowlit открыто другое приложение."
+            "value" : "Камера ставится на паузу, пока рядом с Aybuke открыто другое приложение."
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Glowlit'in yanında başka bir uygulama açıkken kamera durur."
+            "value" : "Aybuke'nin yanında başka bir uygulama açıkken kamera durur."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "当 Glowlit 旁边打开了其他应用时，相机会暂停。"
+            "value" : "当 Aybuke 旁边打开了其他应用时，相机会暂停。"
           }
         }
       }

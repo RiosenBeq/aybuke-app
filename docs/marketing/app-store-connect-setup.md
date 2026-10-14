@@ -1,6 +1,6 @@
-# App Store Connect setup — Glowlit 1.0
+# App Store Connect setup — Aybuke 1.0
 
-Every value needed to create Glowlit in App Store Connect, in the order the forms ask for it. Listing text for 13 locales: [`app-store-metadata.json`](app-store-metadata.json) (all limits checked). Screenshots: `docs/marketing/app-store/<lang>/` (iPhone 6.9", 1290×2796) and `…/<lang>/ipad/` (iPad 13", 2064×2752), plus `…/<lang>/mac/` (Mac, 2880×1800, see section 8), made by `scripts/marketing-images.py`.
+Every value needed to create Aybuke in App Store Connect, in the order the forms ask for it. Listing text for 13 locales: [`app-store-metadata.json`](app-store-metadata.json) (all limits checked). Screenshots: `docs/marketing/app-store/<lang>/` (iPhone 6.9", 1290×2796) and `…/<lang>/ipad/` (iPad 13", 2064×2752), plus `…/<lang>/mac/` (Mac, 2880×1800, see section 8), made by `scripts/marketing-images.py`.
 
 > Submit for review only after the backend is live ([`docs/SUPABASE-TODO.md`](../SUPABASE-TODO.md)); without it AI runs in demo mode.
 
@@ -9,7 +9,7 @@ Every value needed to create Glowlit in App Store Connect, in the order the form
 | Field | Value |
 |---|---|
 | Platform | iOS (add macOS to the same record later, see section 8) |
-| Name | `Glowlit: AI Photo Editor` |
+| Name | `Aybuke: AI Photo Editor` |
 | Primary language | English (U.S.) |
 | Bundle ID | `app.glowlit.ios` (register it first in Certificates, Identifiers & Profiles with **App Groups** `group.app.glowlit.shared` and **Sign in with Apple**; the widget extension is `app.glowlit.ios.widgets` with the same App Group). Team `CBTKNY3LFC` |
 | SKU | `glowlit-ios-001` |
@@ -33,7 +33,7 @@ Every value needed to create Glowlit in App Store Connect, in the order the form
 
 ## 4. In-app purchases
 
-**Subscription group** `Glowlit Pro` (display name "Glowlit Pro"). Both plans at the same level, so switching is a crossgrade.
+**Subscription group** `Aybuke Pro` (display name "Aybuke Pro"). Both plans at the same level, so switching is a crossgrade.
 
 | Product ID | Reference name | Duration | Price (USD) | Introductory offer |
 |---|---|---|---|---|
@@ -49,7 +49,7 @@ Localized description for both: "Monthly credits, every look, best-quality AI" (
 | `app.glowlit.credits.30` | 30 Credits | $2.99 | 30 credits that never expire |
 | `app.glowlit.credits.100` | 100 Credits | $7.99 | 100 credits that never expire |
 
-These IDs already exist in RevenueCat (project "Glowlit", entitlement `pro`, offering `default`) and in `ios/StoreKit/Products.storekit`. Set **App Store Server Notifications V2** later to the backend (see `backend/README.md`, "Before launch").
+These IDs already exist in RevenueCat (project "Aybuke", entitlement `pro`, offering `default`) and in `ios/StoreKit/Products.storekit`. Set **App Store Server Notifications V2** later to the backend (see `backend/README.md`, "Before launch").
 
 ## 5. App Privacy
 
@@ -82,7 +82,7 @@ Two notes for the form: Apple asks "linked to the user" once per data type, so *
 
 | Step | What to do |
 |---|---|
-| AdMob app | iOS app "Glowlit", app id `ca-app-pub-2292230772061554~5236020895` (in `Release.xcconfig` as `GL_ADMOB_APP_ID` and in `AppConfig.json` → `ads.appID`; a mismatch turns ads off) |
+| AdMob app | iOS app "Aybuke", app id `ca-app-pub-2292230772061554~5236020895` (in `Release.xcconfig` as `GL_ADMOB_APP_ID` and in `AppConfig.json` → `ads.appID`; a mismatch turns ads off) |
 | Rewarded unit | `ca-app-pub-2292230772061554/1406702504`, reward amount **1**, reward item **credit**. *Server-side verification*: callback URL `https://efapupjvidyqhqdevmcu.supabase.co/functions/v1/ad-reward` (no query string), then **Verify URL** (it answers 200 and grants nothing). Supabase secret `ADMOB_REWARDED_AD_UNIT` = the same unit id (`backend/README.md`, "Rewarded ads") |
 | Interstitial unit | Create one, then put its id in `AppConfig.json` → `ads.interstitialUnitID`. Empty: no interstitials |
 | Content | Blocking controls › Sensitive categories: block dating, gambling, alcohol, weight loss and the other sensitive categories, so adults' PG ads stay teen-friendly too. The app already sets G for teens and PG for adults |
@@ -97,7 +97,7 @@ Two notes for the form: Apple asks "linked to the user" once per data type, so *
 | Promotional text, description, keywords, What's New | `app-store-metadata.json` |
 | Support URL | `https://riosenbeq.github.io/aybuke-app/` (landing page with the support email) |
 | Marketing URL | same as Support URL |
-| Copyright | `2026 Glowlit` |
+| Copyright | `2026 Aybuke` |
 | App Review information | Contact name, phone and email of the owner; no demo account needed; notes from [`app-store-listing.md`](app-store-listing.md) ("App Review notes") |
 | Build | `ASC_KEY_ID=… ASC_ISSUER_ID=… scripts/upload-app-store.sh` (App Store Connect API key, automatic signing; `PLATFORM=mac` for the Mac build), or Xcode › Product › Archive › Distribute. The script first runs `scripts/check-release-config.py --online` and stops on release blockers: demo mode (no backend), `[bracketed]` legal placeholders, a missing or GitHub-blob `websiteURL`, a website or privacy page that doesn't answer, mail domains without MX records. For a deliberate TestFlight preview set `GL_PREVIEW_BUILD=1`; never submit such a build for review. Xcode archives skip the check, so run it by hand before submitting one. `ITSAppUsesNonExemptEncryption` is `NO` (HTTPS only), so no export-compliance documents are needed |
 | Release | Manual release after approval |

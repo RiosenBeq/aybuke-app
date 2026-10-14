@@ -6,8 +6,8 @@ import ImagePlayground
 
 #if canImport(ImagePlayground)
 /// "Create with Image Playground": Apple's own image maker, offered as an extra
-/// in Create on devices that support it. No Glowlit credits or cloud consent:
-/// Apple makes the picture under its own terms and limits, and Glowlit only
+/// in Create on devices that support it. No Aybuke credits or cloud consent:
+/// Apple makes the picture under its own terms and limits, and Aybuke only
 /// receives the finished image.
 ///
 /// iOS 18.4 is the floor because locking the styles and turning off people
@@ -38,7 +38,7 @@ struct ImagePlaygroundCreateButton: View {
                         .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(.secondary)
-                Text("Apple's image maker · no Glowlit credits. Style, size and count here don't apply.")
+                Text("Apple's image maker · no Aybuke credits. Style, size and count here don't apply.")
                     .font(.legibleCaption)
                     .foregroundStyle(Palette.textSecondary)
                     .fixedSize(horizontal: false, vertical: true)
@@ -60,7 +60,7 @@ struct ImagePlaygroundCreateButton: View {
                 }
                 Button("Not now", role: .cancel) {}
             } message: {
-                Text("Apple creates the image on its Private Cloud Compute servers, under Apple's terms and daily limits. Glowlit only gets the finished picture.")
+                Text("Apple creates the image on its Private Cloud Compute servers, under Apple's terms and daily limits. Aybuke only gets the finished picture.")
             }
         }
     }

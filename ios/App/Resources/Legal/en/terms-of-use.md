@@ -3,9 +3,9 @@
 Last updated: 14 October 2026
 
 > **The short version.** This summary helps you find your way around. It doesn't replace the full Terms below.
-> - These Terms are a contract between you and Okan Berk Manavoğlu (individual developer), the developer of Glowlit. They are not a contract with Apple.
+> - These Terms are a contract between you and Okan Berk Manavoğlu (individual developer), the developer of Aybuke. They are not a contract with Apple.
 > - You must be at least 13. If you're under 18 (or under the age of majority where you live), you need permission from a parent or legal guardian. Section 4 is written for you.
-> - We design Glowlit with teens in mind: no tracking, no public feeds, no personalised ads, and cloud AI only after you opt in.
+> - We design Aybuke with teens in mind: no tracking, no public feeds, no personalised ads, and cloud AI only after you opt in.
 > - On-device tools are always free. Free users get free credits every day, can watch an optional ad for 1 more credit a few times a day, and see an occasional ad after saving; the app shows the current numbers. Pro has no ads. Pro subscriptions renew automatically until you cancel them in your Apple Account settings. Purchased credit packs never expire.
 > - You keep the rights in your photos and, as far as the law allows, you own your results. Only upload photos you're allowed to use, and only edit people who agree to it.
 > - No sexual content, nothing sexual involving anyone under 18, no bullying or body-shaming edits, and no deep fakes meant to deceive. Our [Acceptable Use & AI Content Policy](glowlit-legal://acceptableUse) has the details.
@@ -13,11 +13,11 @@ Last updated: 14 October 2026
 
 ## 1. About these Terms
 
-These Terms of Use ("**Terms**") govern your use of the Glowlit iOS app and the related online services (together, the "**Service**"). The Service is provided by Okan Berk Manavoğlu (individual developer), Istanbul, Türkiye, Türkiye ("**we**", "**us**" or "**our**"). Our full contact details are in section 26.
+These Terms of Use ("**Terms**") govern your use of the Aybuke iOS app and the related online services (together, the "**Service**"). The Service is provided by Okan Berk Manavoğlu (individual developer), Istanbul, Türkiye, Türkiye ("**we**", "**us**" or "**our**"). Our full contact details are in section 26.
 
-By downloading, installing or using Glowlit, you agree to these Terms. If you don't agree, please don't use the Service.
+By downloading, installing or using Aybuke, you agree to these Terms. If you don't agree, please don't use the Service.
 
-These Terms are also the end-user licence agreement (EULA) for the Glowlit app. Section 24 contains additional terms that apply because you got the app from Apple's App Store.
+These Terms are also the end-user licence agreement (EULA) for the Aybuke app. Section 24 contains additional terms that apply because you got the app from Apple's App Store.
 
 The following documents form part of these Terms:
 
@@ -35,39 +35,39 @@ Your purchases are also subject to Apple's terms, such as the Apple Media Servic
 - **Inputs**: the photos, masks (the areas you brush over) and text prompts you submit to cloud AI features.
 - **Outputs** or **results**: the images the Service generates or edits for you.
 - **Credits**: units you use to pay for cloud AI outputs (section 8).
-- **Pro**: a paid Glowlit Pro subscription (section 9).
+- **Pro**: a paid Aybuke Pro subscription (section 9).
 - **Consumer**: an individual acting for purposes outside their trade, business, craft or profession.
 
-## 3. Who can use Glowlit
+## 3. Who can use Aybuke
 
 - You must be at least 13 years old to use cloud AI features, create an account or make purchases. Children under 13 can use only the free tools that run on their device, which send nothing to us.
-- If you're under 18, or under the age of majority where you live, you may use Glowlit only with the permission of a parent or legal guardian. Your parent or guardian must agree to these Terms on your behalf and is responsible for your use of the Service, including any purchases. Section 4 explains what this means in practice.
+- If you're under 18, or under the age of majority where you live, you may use Aybuke only with the permission of a parent or legal guardian. Your parent or guardian must agree to these Terms on your behalf and is responsible for your use of the Service, including any purchases. Section 4 explains what this means in practice.
 - You may not use the Service if the law where you live prohibits it, or if we have previously banned you for breaking these Terms.
-- If you use Glowlit on behalf of a business, you confirm that you're authorised to accept these Terms for that business.
+- If you use Aybuke on behalf of a business, you confirm that you're authorised to accept these Terms for that business.
 
-We design Glowlit with teen users in mind, and we apply high-privacy defaults to everyone, whatever their age: no tracking, no profiling, no personalised ads, no public profiles or feeds, no sharing of data for marketing, a creations library that stays on your device, and cloud processing only after you opt in. Free members aged 13 and over see a few ads (section 8); there are none under 13 or with Pro. Our [Privacy Policy](glowlit-legal://privacy) explains how.
+We design Aybuke with teen users in mind, and we apply high-privacy defaults to everyone, whatever their age: no tracking, no profiling, no personalised ads, no public profiles or feeds, no sharing of data for marketing, a creations library that stays on your device, and cloud processing only after you opt in. Free members aged 13 and over see a few ads (section 8); there are none under 13 or with Pro. Our [Privacy Policy](glowlit-legal://privacy) explains how.
 
 ## 4. If you're under 18
 
 This section is a plain-language summary for younger users. The rest of these Terms still applies to you.
 
-- **Talk to a parent or guardian first.** You need their permission to use Glowlit. Talk to them before you buy anything or switch on cloud AI processing.
+- **Talk to a parent or guardian first.** You need their permission to use Aybuke. Talk to them before you buy anything or switch on cloud AI processing.
 - **Cloud AI may need their consent too.** In the EU and EEA, if you're under the age of digital consent in your country (between 13 and 16, depending on the country), a parent or guardian must give or approve consent for cloud AI processing. In Türkiye, if you're under 18, your parent or guardian should give or approve this consent. Read the consent screen together.
 - **Purchases go through Apple.** Purchases are charged to the Apple Account on your device. If you have a child account in Family Sharing, your parent or guardian may need to approve each purchase with "Ask to Buy". Never buy anything without permission.
 - **Ads are optional and never personalised.** Without Pro, you may see a few ads suitable for everyone: one you can choose to watch for 1 credit when you've run out (a few a day, as the app shows), and sometimes one after you save. You never have to watch one, and they're never based on what you do in other apps.
 - **Only edit people who say yes.** Don't upload or edit photos of other people, especially other young people, without their permission. Never create anything sexual, humiliating or mean about anyone.
 - **Think before you share.** Your creations stay on your phone unless you share them. Once something is online, it can be hard to take back.
-- **Help is here.** If something goes wrong, or someone uses Glowlit to hurt you, tell a trusted adult and report it to us (see the [AUP](glowlit-legal://acceptableUse)). Parents and guardians can contact us at [hello@buaze.com](mailto:hello@buaze.com), including to delete their child's data.
+- **Help is here.** If something goes wrong, or someone uses Aybuke to hurt you, tell a trusted adult and report it to us (see the [AUP](glowlit-legal://acceptableUse)). Parents and guardians can contact us at [hello@buaze.com](mailto:hello@buaze.com), including to delete their child's data.
 
 ## 5. Your account
 
 ### No sign-up
 
-Glowlit doesn't ask you to sign up or give us your name, email address or a password. When you first use a cloud AI feature or your credit balance on our servers, the app automatically creates an anonymous account, identified by a random user ID, with our backend provider. The app stores the session tokens for this account in the iOS Keychain on your device.
+Aybuke doesn't ask you to sign up or give us your name, email address or a password. When you first use a cloud AI feature or your credit balance on our servers, the app automatically creates an anonymous account, identified by a random user ID, with our backend provider. The app stores the session tokens for this account in the iOS Keychain on your device.
 
 ### Optional Sign in with Apple
 
-Where the app offers it, you can choose to sign in with Apple, for example to keep your credits when you switch or add a device; an active subscription stays with the Apple Account that bought it. Not every version of the app offers signing in, and it is never required to use Glowlit. When you sign in, the anonymous account on that iPhone is merged into your account, including its purchased credits. Signing out returns that iPhone to a new anonymous account; your credits stay with your account, and an active subscription stays with the Apple Account that bought it. Your photos and library are not synced between devices.
+Where the app offers it, you can choose to sign in with Apple, for example to keep your credits when you switch or add a device; an active subscription stays with the Apple Account that bought it. Not every version of the app offers signing in, and it is never required to use Aybuke. When you sign in, the anonymous account on that iPhone is merged into your account, including its purchased credits. Signing out returns that iPhone to a new anonymous account; your credits stay with your account, and an active subscription stays with the Apple Account that bought it. Your photos and library are not synced between devices.
 
 ### Keep your device secure
 
@@ -79,13 +79,13 @@ If you haven't signed in with Apple, access to your account depends on your devi
 
 ### Deleting your account
 
-You can delete your account at any time in **Settings → Delete my data & account**. This permanently deletes your server account and all server-side records linked to it (credit wallet, credit ledger, job records, entitlement records, ad reward records and reports), as well as the creations library on your device. A one-way hash of your App Store download, with that day's free credits and any safety pause (section 8), isn't linked to your account after deletion and is kept for a limited time only to prevent abuse, as our [Privacy Policy](glowlit-legal://privacy) explains; so deleting your account doesn't reset free credits or a pause. If you signed in with Apple, we also revoke Glowlit's access to your Apple ID.
+You can delete your account at any time in **Settings → Delete my data & account**. This permanently deletes your server account and all server-side records linked to it (credit wallet, credit ledger, job records, entitlement records, ad reward records and reports), as well as the creations library on your device. A one-way hash of your App Store download, with that day's free credits and any safety pause (section 8), isn't linked to your account after deletion and is kept for a limited time only to prevent abuse, as our [Privacy Policy](glowlit-legal://privacy) explains; so deleting your account doesn't reset free credits or a pause. If you signed in with Apple, we also revoke Aybuke's access to your Apple ID.
 
 Any remaining credits, including purchased credits, are lost when you delete your account and cannot be restored or refunded. If you use a cloud AI feature again later, a new anonymous account is created.
 
 Deleting your account does **not** cancel an Apple subscription. To stop future charges, cancel the subscription in your Apple Account settings (section 9).
 
-## 6. What Glowlit does
+## 6. What Aybuke does
 
 ### Cloud AI features
 
@@ -111,7 +111,7 @@ Results you keep are stored only on your device, in the app's private storage. W
 
 ### No public profiles or feeds
 
-Glowlit has no public profiles or feeds and doesn't publish your creations. They are shared only if you choose to share them (section 13).
+Aybuke has no public profiles or feeds and doesn't publish your creations. They are shared only if you choose to share them (section 13).
 
 ### AI providers
 
@@ -119,7 +119,7 @@ Cloud AI features are powered by third-party AI models that we access through AI
 
 ### Changes and availability
 
-We keep improving Glowlit and may add, change or remove features, templates and styles. Where the law requires it, we'll keep the Service in conformity with these Terms and tell you about changes that negatively affect you.
+We keep improving Aybuke and may add, change or remove features, templates and styles. Where the law requires it, we'll keep the Service in conformity with these Terms and tell you about changes that negatively affect you.
 
 Cloud AI features need an internet connection. They may sometimes be unavailable, for example during maintenance or an outage at one of our providers.
 
@@ -145,7 +145,7 @@ We process your inputs only to provide the feature you request and to keep the S
 
 Without an active Pro subscription, you get the number of free credits per day that the app shows. They refill every day at 00:00 UTC. Unused daily credits don't carry over to the next day.
 
-Free daily credits belong to your download of Glowlit from the App Store, not to an account: every device and anonymous account used with the same Apple Account shares one daily allowance. They need the App Store to confirm your download (the app sends Apple's signed confirmation to our server). Without that confirmation, free credits can't be used, but purchased and subscription credits still can.
+Free daily credits belong to your download of Aybuke from the App Store, not to an account: every device and anonymous account used with the same Apple Account shares one daily allowance. They need the App Store to confirm your download (the app sends Apple's signed confirmation to our server). Without that confirmation, free credits can't be used, but purchased and subscription credits still can.
 
 ### Pro credits
 
@@ -178,24 +178,24 @@ To protect the Service, we limit how many cloud AI jobs an account, an App Store
 
 If our safety filters block 3 of your requests or results within 24 hours, cloud AI pauses for 24 hours for your account and your App Store download (or, without a verified download, your network address). After 3 pauses within 30 days, we switch cloud AI off for that download until we've reviewed it. On-device features keep working, and you can ask for a human review (our [AUP](glowlit-legal://acceptableUse), section 9).
 
-Credits are a licence to use cloud AI features in Glowlit. They are not money, property or a payment instrument, and they can only be used in the app.
+Credits are a licence to use cloud AI features in Aybuke. They are not money, property or a payment instrument, and they can only be used in the app.
 
 ### Changes to credit allowances
 
 We may change the free daily allowance or the monthly Pro allowance for future periods. We'll tell you in the app before such a change takes effect. A change never reduces credits already in your balance, and a change to the Pro allowance applies at the earliest from your next renewal, which you can cancel before it happens.
 
-## 9. Glowlit Pro and other purchases
+## 9. Aybuke Pro and other purchases
 
 ### Apple handles payments
 
-All purchases in Glowlit are made through Apple's in-app purchase system. Apple is the seller (merchant of record) and processes your payment. We never receive your card details, your name or your Apple Account email address.
+All purchases in Aybuke are made through Apple's in-app purchase system. Apple is the seller (merchant of record) and processes your payment. We never receive your card details, your name or your Apple Account email address.
 
 Purchases are charged to the Apple Account used on your device. If you're under 18, you need the permission of a parent or guardian before buying anything, and the Apple Account holder or family organiser may need to approve the purchase (for example with Family Sharing's "Ask to Buy").
 
 ### Plans and prices
 
-- **Glowlit Pro Yearly**: USD 39.99 per year, with a 7-day free trial for eligible new subscribers.
-- **Glowlit Pro Monthly**: USD 5.99 per month. Eligible new subscribers pay USD 1.99 for their first month, then USD 5.99 per month.
+- **Aybuke Pro Yearly**: USD 39.99 per year, with a 7-day free trial for eligible new subscribers.
+- **Aybuke Pro Monthly**: USD 5.99 per month. Eligible new subscribers pay USD 1.99 for their first month, then USD 5.99 per month.
 - **Credit packs**: 30 credits for USD 2.99, or 100 credits for USD 7.99.
 
 These are reference prices in US dollars. The app shows the price in your local currency before you buy. Prices can differ between countries and may include taxes. The price shown when you confirm your purchase is the price you pay.
@@ -205,7 +205,7 @@ These are reference prices in US dollars. The app shows the price in your local 
 - the monthly number of credits that the app shows, with rollover up to two months' worth (section 8);
 - up to 4 images per generation;
 - all templates and styles;
-- exports without the Glowlit watermark;
+- exports without the Aybuke watermark;
 - no ads; and
 - higher-quality AI processing than the free plan.
 
@@ -223,7 +223,7 @@ If you buy a subscription while you're in a free trial, any unused part of the t
 - Your subscription renews automatically for the same period at the then-current price unless you cancel at least 24 hours before the end of the current period.
 - Your Apple Account is charged for the renewal within the 24 hours before the current period ends.
 - You can manage or cancel your subscription at any time in your iPhone's **Settings → your name → Subscriptions**, or in the App Store. Cancellation takes effect at the end of the current billing period, and you keep Pro until then.
-- Deleting the app or your Glowlit account does not cancel your subscription.
+- Deleting the app or your Aybuke account does not cancel your subscription.
 
 ### Price changes
 
@@ -241,7 +241,7 @@ You can restore an active subscription, for example on a new device, with "Resto
 
 If you're a consumer in the European Union, the United Kingdom or Türkiye, you normally have a statutory right to withdraw from a contract concluded at a distance within 14 days.
 
-Glowlit supplies digital content and digital services immediately at your request: credits are added and Pro features are unlocked as soon as your purchase is confirmed.
+Aybuke supplies digital content and digital services immediately at your request: credits are added and Pro features are unlocked as soon as your purchase is confirmed.
 
 By making a purchase, you expressly request and consent to the immediate start of performance, and you acknowledge that you thereby lose your right of withdrawal, as permitted by:
 
@@ -279,7 +279,7 @@ You may use your outputs for any lawful purpose, including commercial purposes, 
 
 You're responsible for your inputs and for how you use your outputs. You confirm that:
 
-- you own your inputs or have all the rights and permissions needed to use them with Glowlit;
+- you own your inputs or have all the rights and permissions needed to use them with Aybuke;
 - every person shown in a photo you upload (or, for a child, their parent or guardian) has agreed to their image being uploaded and edited in the way you intend; and
 - your inputs and your use of outputs comply with the law, these Terms and the AUP, and don't infringe anyone's rights, including copyright, trademark, privacy, publicity and personality rights.
 
@@ -291,7 +291,7 @@ Every image you export that was generated or edited with AI carries machine-read
 
 ### Watermark on free exports
 
-On the free tier, exports of images made or edited with our cloud AI carry a small visible "Glowlit ✦" watermark in a corner. Pro exports don't, and neither do photos you have only changed with the free on-device tools.
+On the free tier, exports of images made or edited with our cloud AI carry a small visible "Aybuke ✦" watermark in a corner. Pro exports don't, and neither do photos you have only changed with the free on-device tools.
 
 ### Your obligations
 
@@ -301,13 +301,13 @@ On the free tier, exports of images made or edited with our cloud AI carry a sma
 
 ## 13. Sharing your results
 
-You can share results with the iOS share sheet (which also offers Instagram Stories), as a "Before / After" collage, or as a 9:16 story card or another card design. On the free tier, collages and cards of images made or edited with our cloud AI include a small "Made with Glowlit" mark; Pro removes it. The app can also suggest captions, with hashtags, for you to copy; captions are written on your device and nothing is sent anywhere to write them.
+You can share results with the iOS share sheet (which also offers Instagram Stories), as a "Before / After" collage, or as a 9:16 story card or another card design. On the free tier, collages and cards of images made or edited with our cloud AI include a small "Made with Aybuke" mark; Pro removes it. The app can also suggest captions, with hashtags, for you to copy; captions are written on your device and nothing is sent anywhere to write them.
 
 When you share, the receiving service's own terms and privacy policy apply, and you're responsible for what you publish. Make sure everyone shown in an image, including a before-and-after image, agrees to it being shared.
 
 ## 14. Acceptable use and safety
 
-You must follow the [AUP](glowlit-legal://acceptableUse). In particular, you must not use Glowlit to create, upload or share:
+You must follow the [AUP](glowlit-legal://acceptableUse). In particular, you must not use Aybuke to create, upload or share:
 
 - sexual content or nudity of any kind, including "nudify" or "undressing" edits and non-consensual intimate imagery;
 - any sexualised or suggestive content involving anyone under 18 (we have zero tolerance and report child sexual abuse material to the competent authorities where the law requires it);
@@ -323,7 +323,7 @@ Our safety systems may block a request or a result. Blocked requests are never c
 
 ## 15. Our intellectual property and your licence to use the app
 
-The app, the Glowlit name and brand, the design, the template and style recipes and the software belong to Okan Berk Manavoğlu (individual developer) or its licensors and are protected by intellectual property laws.
+The app, the Aybuke name and brand, the design, the template and style recipes and the software belong to Okan Berk Manavoğlu (individual developer) or its licensors and are protected by intellectual property laws.
 
 Subject to these Terms, we grant you a personal, limited, non-exclusive, non-transferable and revocable licence to download, install and use the app on Apple-branded devices that you own or control, as permitted by Apple's Usage Rules (see section 24).
 
@@ -341,7 +341,7 @@ If you send us ideas or feedback, we may use them without any obligation to you.
 
 ## 16. Copyright and other rights complaints
 
-If you believe that content generated or made available through Glowlit infringes your copyright or other rights, email us at [hello@buaze.com](mailto:hello@buaze.com) and include:
+If you believe that content generated or made available through Aybuke infringes your copyright or other rights, email us at [hello@buaze.com](mailto:hello@buaze.com) and include:
 
 1. your name and contact details (postal address, telephone number and email address);
 2. a description of the copyrighted work or other right you believe has been infringed;
@@ -356,7 +356,7 @@ Because we don't store your inputs or keep outputs after delivery, we usually ca
 
 ## 17. Third-party services
 
-Glowlit works with services operated by others, such as Apple (App Store, payments and iOS features), Instagram and other apps you share to, the AI providers listed in our Privacy Policy, and Google AdMob, which provides the ads free members see. Their own terms apply to your use of their services. We don't control the content of ads, but we ask Google for non-personalised ads only, and for general-audience ads for anyone under 18 or whose age we don't know.
+Aybuke works with services operated by others, such as Apple (App Store, payments and iOS features), Instagram and other apps you share to, the AI providers listed in our Privacy Policy, and Google AdMob, which provides the ads free members see. Their own terms apply to your use of their services. We don't control the content of ads, but we ask Google for non-personalised ads only, and for general-audience ads for anyone under 18 or whose age we don't know.
 
 When using the app, you must comply with any third-party terms that apply to you, for example your mobile data plan. We're not responsible for third-party services that we don't control.
 
@@ -390,7 +390,7 @@ Subject to the paragraph above and to the extent permitted by law:
 
 - we're not liable for indirect or consequential loss, loss of profits, revenue, business or goodwill, or loss of data, including creations stored only on your device;
 - we're not liable for how you or others use outputs, or for content you publish or share; and
-- our total liability arising out of or in connection with the Service is limited to the total amount you paid for Glowlit purchases in the 12 months before the event giving rise to the liability.
+- our total liability arising out of or in connection with the Service is limited to the total amount you paid for Aybuke purchases in the 12 months before the event giving rise to the liability.
 
 ### If you're a consumer in the EU, the UK or Türkiye
 
@@ -410,7 +410,7 @@ This section doesn't apply if you're a consumer and the law where you live doesn
 
 ### By you
 
-You can stop using Glowlit at any time and delete your account (section 5). Remember to cancel any subscription with Apple.
+You can stop using Aybuke at any time and delete your account (section 5). Remember to cancel any subscription with Apple.
 
 ### By us
 
@@ -426,7 +426,7 @@ If we close your account because of a serious breach, unused credits are forfeit
 
 ### If we discontinue the Service
 
-We may discontinue Glowlit or its cloud AI features. If we do, we'll give you reasonable advance notice in the app. You may be entitled to a refund from Apple for any prepaid period you can no longer use, under Apple's policies and applicable law.
+We may discontinue Aybuke or its cloud AI features. If we do, we'll give you reasonable advance notice in the app. You may be entitled to a refund from Apple for any prepaid period you can no longer use, under Apple's policies and applicable law.
 
 ### What continues to apply
 
@@ -456,7 +456,7 @@ Before starting formal proceedings, please contact us at [hello@buaze.com](mailt
 
 ## 24. Apple App Store additional terms
 
-These terms apply because you got Glowlit from Apple's App Store. If they conflict with other provisions of these Terms, this section prevails with respect to your use of the app. These Terms don't set usage rules for the app that conflict with the Apple Media Services Terms and Conditions.
+These terms apply because you got Aybuke from Apple's App Store. If they conflict with other provisions of these Terms, this section prevails with respect to your use of the app. These Terms don't set usage rules for the app that conflict with the Apple Media Services Terms and Conditions.
 
 1. **Parties.** These Terms are concluded between you and Okan Berk Manavoğlu (individual developer) only, and not with Apple Inc. ("**Apple**"). Okan Berk Manavoğlu (individual developer), not Apple, is solely responsible for the app and its content.
 2. **Scope of licence.** Your licence to use the app is limited to a non-transferable licence to use it on any Apple-branded products that you own or control, as permitted by the Usage Rules set out in the Apple Media Services Terms and Conditions, except that the app may be accessed and used by other accounts associated with you via Family Sharing or volume purchasing, where available.

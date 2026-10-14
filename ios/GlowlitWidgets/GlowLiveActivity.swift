@@ -94,7 +94,7 @@ private struct GlowLockScreenView: View {
                 Spacer()
                 HStack(spacing: 4) {
                     SparkleShape().fill(WidgetPalette.ink).frame(width: 10, height: 10)
-                    Text("Glowlit")
+                    Text("Aybuke")
                         .font(.system(size: 12, weight: .heavy, design: .rounded))
                         .foregroundStyle(WidgetPalette.ink)
                 }

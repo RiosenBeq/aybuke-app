@@ -145,7 +145,7 @@
   ],
   "mac": {
     "en": [
-      {"scene": "home", "title": "Glowlit, now on your *Mac*", "subtitle": "Looks, Magic Edit and free tools in one window"},
+      {"scene": "home", "title": "Aybuke, now on your *Mac*", "subtitle": "Looks, Magic Edit and free tools in one window"},
       {"scene": "makeup", "title": "Makeup is *play*", "subtitle": "Makeup Studio: 14 looks or your own mix. You stay you", "chip": "New"},
       {"scene": "result", "title": "Say it, watch it *glow*", "subtitle": "Type a change, then drag to compare before and after", "before": "Before", "after": "After"},
       {"scene": "create", "title": "Dream it, *create* it", "subtitle": "Pick one of 20 styles, or click Inspire\u00a0me for an idea"},
@@ -155,7 +155,7 @@
       {"scene": "hideFaces", "title": "Keep your friends *private*", "subtitle": "Blur, pixelate or cover faces before you share", "chip": "On your Mac"}
     ],
     "tr": [
-      {"scene": "home", "title": "Glowlit artık *Mac’te*", "subtitle": "Trendler, Sihirli Düzenleme ve ücretsiz araçlar bir arada"},
+      {"scene": "home", "title": "Aybuke artık *Mac’te*", "subtitle": "Trendler, Sihirli Düzenleme ve ücretsiz araçlar bir arada"},
       {"scene": "makeup", "title": "Makyaj bir *oyun*", "subtitle": "Makyaj Stüdyosu: 14 görünüm ya da kendi karışımın", "chip": "Yeni"},
       {"scene": "result", "title": "Söyle, *ışıldasın*", "subtitle": "Değişikliği yaz, sürükle, öncesini ve sonrasını gör", "before": "Öncesi", "after": "Sonrası"},
       {"scene": "create", "title": "Hayal et, *yarat*", "subtitle": "20 stilden birini seç ya da İlham\u00a0ver’e tıkla"},
@@ -165,7 +165,7 @@
       {"scene": "hideFaces", "title": "Arkadaşlarını *koru*", "subtitle": "Paylaşmadan önce yüzleri bulanıklaştır ya da kapat", "chip": "Mac’inde"}
     ],
     "es": [
-      {"scene": "home", "title": "Glowlit, ahora en tu *Mac*", "subtitle": "Looks, Edición mágica y herramientas gratis en una ventana"},
+      {"scene": "home", "title": "Aybuke, ahora en tu *Mac*", "subtitle": "Looks, Edición mágica y herramientas gratis en una ventana"},
       {"scene": "makeup", "title": "El maquillaje es un *juego*", "subtitle": "Estudio de maquillaje: 14 looks o tu propia mezcla", "chip": "Nuevo"},
       {"scene": "result", "title": "Pídelo y mira cómo *brilla*", "subtitle": "Escribe un cambio y arrastra para comparar antes y después", "before": "Antes", "after": "Después"},
       {"scene": "create", "title": "Imagínalo y *créalo*", "subtitle": "Elige uno de 20 estilos o haz clic en Inspírame"},
@@ -175,7 +175,7 @@
       {"scene": "hideFaces", "title": "Protege a tus *amigos*", "subtitle": "Difumina, pixela o tapa caras antes de compartir", "chip": "En tu Mac"}
     ],
     "pt-BR": [
-      {"scene": "home", "title": "Glowlit, agora no seu *Mac*", "subtitle": "Looks, Edição Mágica e ferramentas grátis numa só janela"},
+      {"scene": "home", "title": "Aybuke, agora no seu *Mac*", "subtitle": "Looks, Edição Mágica e ferramentas grátis numa só janela"},
       {"scene": "makeup", "title": "Maquiagem é *diversão*", "subtitle": "Estúdio de Maquiagem: 14 looks ou sua própria mistura", "chip": "Novo"},
       {"scene": "result", "title": "Peça e veja *brilhar*", "subtitle": "Escreva a mudança e arraste para comparar antes e depois", "before": "Antes", "after": "Depois"},
       {"scene": "create", "title": "Imagine e *crie*", "subtitle": "Escolha entre 20 estilos ou clique em Me\u00a0inspire"},
@@ -185,7 +185,7 @@
       {"scene": "hideFaces", "title": "Proteja seus *amigos*", "subtitle": "Desfoque, pixelize ou cubra rostos antes de compartilhar", "chip": "No seu Mac"}
     ],
     "fr": [
-      {"scene": "home", "title": "Glowlit arrive sur *Mac*", "subtitle": "Looks, Retouche magique et outils gratuits dans une fenêtre"},
+      {"scene": "home", "title": "Aybuke arrive sur *Mac*", "subtitle": "Looks, Retouche magique et outils gratuits dans une fenêtre"},
       {"scene": "makeup", "title": "Joue avec le *maquillage*", "subtitle": "Studio maquillage\u00a0: 14 looks ou ton mix, et tu restes toi", "chip": "Nouveau"},
       {"scene": "result", "title": "Dis-le, regarde-la *briller*", "subtitle": "Écris un changement, glisse pour comparer avant et après", "before": "Avant", "after": "Après"},
       {"scene": "create", "title": "Imagine-le, *crée-le*", "subtitle": "Choisis parmi 20 styles ou clique sur Inspire-moi"},
@@ -195,7 +195,7 @@
       {"scene": "hideFaces", "title": "Protège tes *amis*", "subtitle": "Floute, pixellise ou cache les visages avant de partager", "chip": "Sur ton Mac"}
     ],
     "de": [
-      {"scene": "home", "title": "Glowlit jetzt auf dem *Mac*", "subtitle": "Looks, Zauber-Edit und Gratis-Tools in einem Fenster"},
+      {"scene": "home", "title": "Aybuke jetzt auf dem *Mac*", "subtitle": "Looks, Zauber-Edit und Gratis-Tools in einem Fenster"},
       {"scene": "makeup", "title": "Make-up zum *Spielen*", "subtitle": "Make-up-Studio: 14 Looks oder dein Mix. Du bleibst du", "chip": "Neu"},
       {"scene": "result", "title": "Sag’s,\nsieh es *strahlen*", "subtitle": "Wunsch eintippen, Regler ziehen, vorher und nachher sehen", "before": "Vorher", "after": "Nachher"},
       {"scene": "create", "title": "Träum es, *erschaff* es", "subtitle": "Wähl einen von 20 Stilen oder klick auf Inspirier\u00a0mich"},
@@ -205,7 +205,7 @@
       {"scene": "hideFaces", "title": "Schütz deine *Freunde*", "subtitle": "Gesichter verpixeln, weichzeichnen oder abdecken", "chip": "Auf deinem Mac"}
     ],
     "it": [
-      {"scene": "home", "title": "Glowlit ora è su *Mac*", "subtitle": "Look, Modifica magica e strumenti gratis in una finestra"},
+      {"scene": "home", "title": "Aybuke ora è su *Mac*", "subtitle": "Look, Modifica magica e strumenti gratis in una finestra"},
       {"scene": "makeup", "title": "Il make-up è un *gioco*", "subtitle": "Studio make-up: 14 look o il tuo mix. E resti sempre tu", "chip": "Nuovo"},
       {"scene": "result", "title": "Dillo e guardala *brillare*", "subtitle": "Scrivi la modifica e trascina per confrontare prima e dopo", "before": "Prima", "after": "Dopo"},
       {"scene": "create", "title": "Sognalo e *crealo*", "subtitle": "Scegli tra 20 stili o fai clic su Ispirami"},
@@ -215,7 +215,7 @@
       {"scene": "hideFaces", "title": "Proteggi i tuoi *amici*", "subtitle": "Sfoca, pixela o copri i volti prima di condividere", "chip": "Sul tuo Mac"}
     ],
     "ru": [
-      {"scene": "home", "title": "Glowlit теперь на *Mac*", "subtitle": "Образы, Волшебная правка и бесплатные функции в одном окне"},
+      {"scene": "home", "title": "Aybuke теперь на *Mac*", "subtitle": "Образы, Волшебная правка и бесплатные функции в одном окне"},
       {"scene": "makeup", "title": "Макияж — это *игра*", "subtitle": "Студия макияжа: 14 образов или свой микс. Ты остаёшься собой", "chip": "Новое"},
       {"scene": "result", "title": "Скажи — и фото *засияет*", "subtitle": "Напиши, что изменить, и сравни «до» и «после» слайдером", "before": "До", "after": "После"},
       {"scene": "create", "title": "Придумай и *создай*", "subtitle": "Выбери один из 20 стилей или нажми «Вдохнови\u00a0меня»"},
@@ -235,7 +235,7 @@
       {"scene": "hideFaces", "title": "友だちの顔を*守ろう*", "subtitle": "シェアする前に顔をぼかし、モザイク、スタンプで隠せる", "chip": "Macの中で処理"}
     ],
     "ko": [
-      {"scene": "home", "title": "Glowlit, 이제 *Mac*에서", "subtitle": "룩, 매직 편집, 무료 도구를 한 창에서"},
+      {"scene": "home", "title": "Aybuke, 이제 *Mac*에서", "subtitle": "룩, 매직 편집, 무료 도구를 한 창에서"},
       {"scene": "makeup", "title": "메이크업은 *놀이*", "subtitle": "메이크업 스튜디오: 룩 14가지 또는 나만의 조합. 나는 그대로 나", "chip": "NEW"},
       {"scene": "result", "title": "말만 하면 *반짝* 변신", "subtitle": "바꾸고 싶은 걸 쓰고 드래그해서 비포·애프터 비교", "before": "비포", "after": "애프터"},
       {"scene": "create", "title": "상상한 대로 *만들기*", "subtitle": "스타일 20가지 중에 고르거나 ‘아이디어 추천’을 클릭하세요"},
@@ -245,7 +245,7 @@
       {"scene": "hideFaces", "title": "친구 얼굴은 *소중하니까*", "subtitle": "공유 전에 얼굴을 흐리게, 모자이크로, 스티커로 가려요", "chip": "Mac에서 처리"}
     ],
     "zh-Hans": [
-      {"scene": "home", "title": "Glowlit 现已登陆 *Mac*", "subtitle": "风格、魔法编辑和免费工具，一个窗口全搞定"},
+      {"scene": "home", "title": "Aybuke 现已登陆 *Mac*", "subtitle": "风格、魔法编辑和免费工具，一个窗口全搞定"},
       {"scene": "makeup", "title": "化妆就是*好玩*", "subtitle": "妆容工作室：14 种妆容或自由搭配，你还是你", "chip": "新"},
       {"scene": "result", "title": "说出改变，看它*焕发光彩*", "subtitle": "写下想要的改变，拖动滑块对比前后", "before": "之前", "after": "之后"},
       {"scene": "create", "title": "想到就能*创作*", "subtitle": "从 20 种风格中选一个，或点击“给我灵感”"},
@@ -255,7 +255,7 @@
       {"scene": "hideFaces", "title": "保护好*朋友*", "subtitle": "分享前给人脸打码、模糊或用贴纸遮住", "chip": "Mac 本机处理"}
     ],
     "id": [
-      {"scene": "home", "title": "Glowlit kini hadir di *Mac*", "subtitle": "Look, Edit Ajaib, dan alat gratis dalam satu jendela"},
+      {"scene": "home", "title": "Aybuke kini hadir di *Mac*", "subtitle": "Look, Edit Ajaib, dan alat gratis dalam satu jendela"},
       {"scene": "makeup", "title": "Makeup itu *seru*", "subtitle": "Studio Makeup: 14 look atau racikanmu. Kamu tetap kamu", "chip": "Baru"},
       {"scene": "result", "title": "Bilang maumu, jadi *glowing*", "subtitle": "Tulis perubahannya, lalu seret untuk melihat bedanya", "before": "Sebelum", "after": "Sesudah"},
       {"scene": "create", "title": "Bayangkan, lalu *ciptakan*", "subtitle": "Pilih satu dari 20 gaya, atau klik Beri\u00a0aku\u00a0ide"},

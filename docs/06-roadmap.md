@@ -7,7 +7,7 @@ Legend: ✅ done in this repository · ⏳ next · 🔭 later
 - ✅ Market & competitor research: 15 apps, user loves and pains, trends, monetization benchmarks → [01](01-market-research.md)
 - ✅ Brand & design research: hue map, palettes with WCAG checks, typography, naming, UX patterns, icon → [research](research/brand-and-design.md)
 - ✅ AI technology & compliance research: models, fal.ai, Supabase, Apple frameworks, App Review, EU AI Act → [research](research/tech-and-compliance.md)
-- ✅ Name decision: **Glowlit** (domain screen) · palette **Blush** (pink, replacing the original Golden Hour amber) with **Aura** accents · **Poppins** + New York Italic accents (Bricolage Grotesque until Oct 2026) · icon **Glow Gem** (Oct 2026; was Glow Print, before that Sunrise Split) → [02](02-brand-identity.md)
+- ✅ Name decision: **Aybuke** (domain screen) · palette **Blush** (pink, replacing the original Golden Hour amber) with **Aura** accents · **Poppins** + New York Italic accents (Bricolage Grotesque until Oct 2026) · icon **Glow Gem** (Oct 2026; was Glow Print, before that Sunrise Split) → [02](02-brand-identity.md)
 - ✅ Product spec: positioning, features, flows, pricing, unit economics, KPIs → [03](03-product-spec.md)
 
 ## Phase 1 — Foundation ✅
@@ -68,7 +68,7 @@ Legend: ✅ done in this repository · ⏳ next · 🔭 later
 ## Phase 4 — Launch readiness ⏳
 
 **Legal and brand**
-- ⏳ Clear the name **Glowlit**: App Store/Play search; USPTO/EUIPO classes 9 and 42; social handles
+- ⏳ Clear the name **Aybuke**: App Store/Play search; USPTO/EUIPO classes 9 and 42; social handles
 - ⏳ Register `glowlit.app`
 - ✅ Drafted Terms of Use (EULA), Privacy Policy, Acceptable Use Policy (EN/TR) and the KVKK notice, bundled in the app and published under `docs/legal/` → [legal/README.md](../legal/README.md)
 - ⏳ Lawyer review, fill in `legal/config.json`, publish at stable URLs, sign DPAs and KVKK standard contracts
@@ -189,7 +189,7 @@ Seven audits (code, UX and accessibility, platform, competitors, trends, wellbei
 |---|---|---|---|
 | `retro-camera-photo-booth` | ✅ Shipped in October 2026: Retro Cam with live effects, self-timer and flash + Photo Booth (4-shot countdown, strip and 2×2 four-cut prints) | Strongest teen trend that needs no server (Dazz Cam, 1998 Cam, Huji, Korean four-cut booths); first after this round | No |
 | `app-intents-shortcuts` | ✅ Shipped in October 2026: App Intents and App Shortcuts for the free tools (Apply a Retro Effect, Open Retro Cam, Start Photo Booth, Make a Collage, Edit a Photo) in Siri, Spotlight, Shortcuts and the Action button, plus Retro Cam and Photo Booth controls | Surfaces the free tools system-wide; today only the controls use App Intents | No |
-| `share-and-photos-extensions` | "Edit in Glowlit" share extension and a Photos editing extension | Meets her where her photos are; needs new targets and a shared image package | No |
+| `share-and-photos-extensions` | "Edit in Aybuke" share extension and a Photos editing extension | Meets her where her photos are; needs new targets and a shared image package | No |
 | `tipkit-and-short-tour` | Tips for Hold to compare, Retry free and the widget; a 3-step tour instead of 7 (TipKit tips for Retro Cam, collages, Text & Stickers, Surprise me and captions shipped in October 2026) | Hold to compare, Retry free and the widget are hard to discover | No |
 | `full-res-export-heic-hdr` | Full-resolution re-render on Save; HEIC; HDR-preserving Adjust | Photos open at 2048 px, so a 48 MP RAW exports at about 3 MP | No |
 | `cloud-erase-enhance-compositing` | Composite cloud Erase inside the mask; blend Enhance detail into the original | xAI returns a regenerated 1k frame, so areas outside the brush can change | Yes |
@@ -201,7 +201,7 @@ Seven audits (code, UX and accessibility, platform, competitors, trends, wellbei
 | `batch-and-recipes` | Batch effects, Auto and cut-out; shareable recipes | VSCO, EPIK, Hypic and Photoroom batch-edit | No |
 | `on-device-upscale-and-eraser` | On-device HD upscale (Real-ESRGAN) and LaMa eraser with tap-to-select | Free and private Enhance and Erase; large models need on-demand download | No |
 | `widgets-interactive-accented` | Interactive and configurable widgets; iOS 26 accented and clear rendering | Widgets are static; the photo vanishes in accented mode | No |
-| `spotlight-focus-album` | Spotlight indexing, a Focus filter, an optional Glowlit album | System integration for discovery and privacy | No |
+| `spotlight-focus-album` | Spotlight indexing, a Focus filter, an optional Aybuke album | System integration for discovery and privacy | No |
 | `live-photo-and-video-captions` | Live Photo effects, 9:16 reframe, speed, mute, Hide faces for video (✅ on-device automatic captions shipped: Pop, Bubble, Candy, Karaoke and Typewriter, burned into the export) | Video gaps against Edits, Wink and Meitu; captions were already planned | No |
 | `universal-links-try-this-look` | Universal links, a "Try this look" card with QR, in-app events | "Add Yours" chains spread the 80s trend; needs a live domain | No |
 | `store-retention-pricing-ops` | Win-back offers, Retention Messaging, regional prices, billing-issue banner | Mostly App Store Connect setup once the app record exists | No |

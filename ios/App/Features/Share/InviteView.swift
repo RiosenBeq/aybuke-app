@@ -1,7 +1,7 @@
 import SwiftUI
 import UniformTypeIdentifiers
 
-/// "Share Glowlit": a ready-made story card (app icon, what it does, a QR
+/// "Share Aybuke": a ready-made story card (app icon, what it does, a QR
 /// code) plus a message with the link. Made from brand art only — the
 /// user's photos are never included.
 struct InviteView: View {
@@ -21,7 +21,7 @@ struct InviteView: View {
                         Text(styled: "Glow *together*", size: 23)
                             .foregroundStyle(Palette.textPrimary)
                             .accessibilityAddTraits(.isHeader)
-                        Text("Share Glowlit with your besties: a story card with a QR code, or a message with the link.")
+                        Text("Share Aybuke with your besties: a story card with a QR code, or a message with the link.")
                             .font(.subheadline)
                             .foregroundStyle(Palette.textSecondary)
                             .multilineTextAlignment(.center)
@@ -64,7 +64,7 @@ struct InviteView: View {
                     .clipShape(.card)
                     .shadow(color: Palette.shadow, radius: 18, y: 10)
                     .transition(.scale(scale: 0.94).combined(with: .opacity))
-                    .accessibilityLabel("Glowlit invite card with a QR code")
+                    .accessibilityLabel("Aybuke invite card with a QR code")
             } else {
                 ProgressView().tint(Palette.accent)
             }
@@ -138,7 +138,7 @@ struct InviteView: View {
 
     private static func pngFile(_ image: UIImage) -> URL? {
         guard let data = image.pngData() else { return nil }
-        let url = FileManager.default.temporaryDirectory.appendingPathComponent("Glowlit-invite.png")
+        let url = FileManager.default.temporaryDirectory.appendingPathComponent("Aybuke-invite.png")
         do {
             try data.write(to: url, options: .atomic)
             return url

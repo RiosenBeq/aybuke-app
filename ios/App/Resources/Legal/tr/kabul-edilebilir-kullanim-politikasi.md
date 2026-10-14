@@ -12,23 +12,23 @@ Son güncelleme: 14 Ekim 2026
 
 ## 1. Bu politika hakkında
 
-Bu politika [Kullanım Koşulları](glowlit-legal://terms) metnimizin bir parçasıdır. Glowlit uygulamasına gönderdiğiniz her şeye (fotoğraflar, maskeler, istemler ve bildirimler) ve uygulamayla oluşturduğunuz her şeye, bu sonuçları nasıl paylaştığınız veya yayımladığınız dahil, uygulanır. Ayrıca içeriği nasıl denetlediğimizi, sorunları nasıl bildirebileceğinizi ve kararlarımıza nasıl itiraz edebileceğinizi açıklar.
+Bu politika [Kullanım Koşulları](glowlit-legal://terms) metnimizin bir parçasıdır. Aybuke uygulamasına gönderdiğiniz her şeye (fotoğraflar, maskeler, istemler ve bildirimler) ve uygulamayla oluşturduğunuz her şeye, bu sonuçları nasıl paylaştığınız veya yayımladığınız dahil, uygulanır. Ayrıca içeriği nasıl denetlediğimizi, sorunları nasıl bildirebileceğinizi ve kararlarımıza nasıl itiraz edebileceğinizi açıklar.
 
-Bu politikada "içerik", hem gönderdiklerinizi (girdiler) hem de Glowlit uygulamasının sizin için oluşturduklarını (çıktılar) ifade eder.
+Bu politikada "içerik", hem gönderdiklerinizi (girdiler) hem de Aybuke uygulamasının sizin için oluşturduklarını (çıktılar) ifade eder.
 
-Glowlit genç kullanıcılar düşünülerek tasarlanmıştır. Bu kurallar herkesi, özellikle de gençleri güvende tutmak için vardır.
+Aybuke genç kullanıcılar düşünülerek tasarlanmıştır. Bu kurallar herkesi, özellikle de gençleri güvende tutmak için vardır.
 
 ## 2. İlkelerimiz
 
 - **Rıza**: Kişiler kendi görüntülerinin nasıl kullanılacağına kendileri karar verir.
-- **Nezaket**: Glowlit yaratıcılık içindir; kimseyi incitmek veya utandırmak için değil.
+- **Nezaket**: Aybuke yaratıcılık içindir; kimseyi incitmek veya utandırmak için değil.
 - **Dürüstlük**: Yapay zekâ ile yapılmış içerik, insanları yanıltabilecek durumlarda gerçekmiş gibi sunulmamalıdır.
 - **Güvenlik**: Çocukları ve gençleri korumak önceliğimizdir.
 - **Kanuna ve başkalarının haklarına saygı.**
 
 ## 3. Yasak içerik ve kullanımlar
 
-Glowlit uygulamasını aşağıdakilerin hiçbirini oluşturmak, yüklemek, düzenlemek veya paylaşmak için kullanamazsınız.
+Aybuke uygulamasını aşağıdakilerin hiçbirini oluşturmak, yüklemek, düzenlemek veya paylaşmak için kullanamazsınız.
 
 ### Cinsel içerik ve çıplaklık
 
@@ -54,7 +54,7 @@ Bu konuda sıfır toleransımız vardır. Bu tür içeriği engeller, hesabı ka
 - Zorbalık veya aşağılama amaçlı düzenlemeler; örneğin birini çirkin, yaralı, hasta, tutuklanmış veya sarhoş göstermek, onu utanç verici ya da küçük düşürücü durumlara sokmak veya onunla alay etmek için görsel oluşturmak.
 - Utandırmaya veya aldatmaya yönelik beden değiştiren düzenlemeler; örneğin birinin vücut şeklini, kilosunu, ten rengini veya yüz hatlarını onunla alay etmek, onu utandırmak ya da başkalarını yanıltmak için değiştirmek (örneğin diyet, kozmetik veya tedaviler için sahte önce/sonra sonuçları).
 
-Glowlit vücut şeklini değiştiren veya cildi açan özellikler sunmaz. Magic Edit'i veya başka bir özelliği, utandıran ya da aldatan beden değiştirici düzenlemeler için kullanmak yasaktır.
+Aybuke vücut şeklini değiştiren veya cildi açan özellikler sunmaz. Magic Edit'i veya başka bir özelliği, utandıran ya da aldatan beden değiştirici düzenlemeler için kullanmak yasaktır.
 
 ### Deepfake, aldatma ve kimliğe bürünme
 
@@ -83,7 +83,7 @@ Glowlit vücut şeklini değiştiren veya cildi açan özellikler sunmaz. Magic 
 
 ## 4. Yapay zekâ etiketleri, filigranlar ve açıklama
 
-- Yapay zekâ ile oluşturulan veya düzenlenen ve dışa aktardığınız her görsel makinece okunabilir köken üst verisi içerir (IPTC "Digital Source Type" alanı); yapay zekâ sağlayıcıları ayrıca SynthID gibi görünmez filigranlar ekleyebilir. Bir görselin nasıl yapıldığı konusunda kimseyi aldatmak için bu etiketleri veya filigranları Glowlit ile ya da başka bir araçla kaldırmayın, değiştirmeyin veya taklit etmeyin.
+- Yapay zekâ ile oluşturulan veya düzenlenen ve dışa aktardığınız her görsel makinece okunabilir köken üst verisi içerir (IPTC "Digital Source Type" alanı); yapay zekâ sağlayıcıları ayrıca SynthID gibi görünmez filigranlar ekleyebilir. Bir görselin nasıl yapıldığı konusunda kimseyi aldatmak için bu etiketleri veya filigranları Aybuke ile ya da başka bir araçla kaldırmayın, değiştirmeyin veya taklit etmeyin.
 - Gerçek kişilerin veya olayların yapay zekâ ile üretilmiş ya da değiştirilmiş görsellerini, yanıltıcı olabileceği durumlarda gerçekmiş gibi sunmayın.
 - Yapay zekâ ile üretilmiş veya değiştirilmiş içeriği yayımlarken, kanunun veya platform kurallarının gerektirdiği her durumda bunu belirtin. Örnekler: AB Yapay Zekâ Tüzüğü md. 50(4) kapsamındaki deepfake'ler ve Instagram ile TikTok'taki yapay zekâ etiketleri.
 
@@ -139,7 +139,7 @@ Bir sonuçta menüyü açıp **Report this image** seçeneğini seçin (editörd
 
 ### E-postayla bildirme
 
-Yasa dışı içeriği, sizi etkileyen bir Glowlit kötüye kullanımını (örneğin sizin sahte veya aşağılayıcı bir görseliniz) veya haklarınızın ihlalini bildirmek için [hello@buaze.com](mailto:hello@buaze.com) adresine şunları içeren bir e-posta gönderin:
+Yasa dışı içeriği, sizi etkileyen bir Aybuke kötüye kullanımını (örneğin sizin sahte veya aşağılayıcı bir görseliniz) veya haklarınızın ihlalini bildirmek için [hello@buaze.com](mailto:hello@buaze.com) adresine şunları içeren bir e-posta gönderin:
 
 - içeriğin açıklaması ve neden yasa dışı olduğunu ya da bu politikayı ihlal ettiğini düşündüğünüz;
 - içeriği tespit etmemize yardımcı olacak bilgiler (ekran görüntüleri, tarih ve saat, kullanılan şablon veya yayımlandığı yer gibi);
@@ -150,7 +150,7 @@ Bildiriminizi aldığımızı teyit eder, hızlı ve özenle ele alır ve verdi�
 
 ### Başka yerlerde yayımlanan içerik
 
-Glowlit içinde herkese açık profil veya akış yoktur ve oluşturduklarınızı barındırmayız. Glowlit ile yapılmış bir görsel başka bir platformda yayımlandıysa, oradan kaldıramayacağımız için lütfen o platforma da bildirin.
+Aybuke içinde herkese açık profil veya akış yoktur ve oluşturduklarınızı barındırmayız. Aybuke ile yapılmış bir görsel başka bir platformda yayımlandıysa, oradan kaldıramayacağımız için lütfen o platforma da bildirin.
 
 ### Yardım almak
 
