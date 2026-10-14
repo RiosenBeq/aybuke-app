@@ -48,7 +48,7 @@ Everything you need to launch and run Glowlit's social channels, in English and 
 | White | `#FFFFFF` | Photo frames, sparkles |
 
 - **Signature look:** bold ink headline on blush, with one word in an elegant italic serif ("Make it *glow.*"). Photos sit in white rounded frames with a soft shadow.
-- **Hero device:** the before/after split with the compare handle (it's also the app icon).
+- **Hero device:** the before/after split with the compare handle.
 - **Motifs:** sparkles ✦ and small hearts, used sparingly.
 - **Type:** headlines in the app's display font (Poppins or Bricolage Grotesque), accents in New York Italic or Playfair Display Italic, body in SF Pro or Inter.
 - **Formats:** 1080×1350 for feed posts and carousels, 1080×1920 for Stories and Reels covers (keep text out of the top and bottom 250 px).
