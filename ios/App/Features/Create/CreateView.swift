@@ -47,6 +47,8 @@ struct CreateView: View {
                 }
             }
             .animation(.easeInOut(duration: 0.25), value: model.isGenerating)
+            .animation(.easeInOut(duration: 0.2), value: model.undoPrompt)
+            .onAppear { app.writer.prewarm() }
             #if DEBUG
             .onAppear {
                 guard let scene = ScreenshotScene.current, scene == .create || scene == .results, model.prompt.isEmpty else { return }
@@ -71,24 +73,39 @@ struct CreateView: View {
                 .font(.body)
                 .foregroundStyle(Palette.textPrimary)
 
-            HStack(spacing: 8) {
-                SelectableChip(title: "Inspire me", symbolName: "sparkles", isSelected: false) {
-                    model.surpriseMe()
+            HStack(alignment: .top, spacing: 8) {
+                ViewThatFits(in: .horizontal) {
+                    HStack(spacing: 8) { writerChips }
+                    VStack(alignment: .leading, spacing: 8) { writerChips }
                 }
-                SelectableChip(title: "Enhance prompt", symbolName: "wand.and.stars", isSelected: false) {
-                    model.enhancePrompt()
-                }
-                .disabled(model.prompt.isEmpty)
-                Spacer()
+                Spacer(minLength: 0)
                 if !model.prompt.isEmpty {
                     Button {
                         model.prompt = ""
                     } label: {
                         Image(systemName: "xmark.circle.fill")
                             .foregroundStyle(Palette.textTertiary)
+                            .frame(minWidth: 32, minHeight: 32)
                     }
                     .accessibilityLabel("Clear prompt")
                 }
+            }
+
+            if model.undoPrompt != nil || model.isPromptFromModel {
+                HStack(spacing: 8) {
+                    if model.isPromptFromModel {
+                        Label("Written on your device by Apple Intelligence", systemImage: "sparkles")
+                            .labelStyle(WriterCaptionLabelStyle())
+                    }
+                    Spacer(minLength: 0)
+                    if model.undoPrompt != nil {
+                        Button("Undo") { model.undoEnhance() }
+                            .font(.footnote.weight(.semibold))
+                            .foregroundStyle(Palette.accent)
+                            .accessibilityHint("Brings back what you wrote before")
+                    }
+                }
+                .transition(.opacity)
             }
         }
         .padding(16)
@@ -97,6 +114,33 @@ struct CreateView: View {
             RoundedRectangle(cornerRadius: Metrics.cardRadius, style: .continuous)
                 .strokeBorder(isPromptFocused ? Palette.accent : Color.clear, lineWidth: 1.5)
         )
+    }
+
+    /// "Inspire me" and the prompt upgrade. With Apple's on-device model the
+    /// upgrade is "Make it magic"; without it, the offline enhancer.
+    @ViewBuilder
+    private var writerChips: some View {
+        SelectableChip(title: "Inspire me", symbolName: "sparkles", isSelected: false) {
+            model.inspire(writer: app.writer)
+        }
+        .accessibilityHint("Fills in a new idea for your picture")
+        if app.writer.isAvailable {
+            SelectableChip(title: "Make it magic", symbolName: "wand.and.stars", isSelected: false) {
+                model.enhancePrompt(writer: app.writer)
+            }
+            .disabled(model.prompt.isEmpty)
+            .accessibilityHint("Rewrites your idea with more detail. You can undo it.")
+        } else {
+            SelectableChip(title: "Enhance prompt", symbolName: "wand.and.stars", isSelected: false) {
+                model.enhancePrompt(writer: app.writer)
+            }
+            .disabled(model.prompt.isEmpty)
+        }
+        if model.isWriting {
+            ProgressView()
+                .controlSize(.small)
+                .accessibilityLabel("Writing…")
+        }
     }
 
     private var styleSection: some View {
@@ -176,5 +220,17 @@ struct CreateView: View {
             LinearGradient(colors: [Palette.background.opacity(0), Palette.background], startPoint: .top, endPoint: .center)
                 .ignoresSafeArea()
         )
+    }
+}
+
+/// The small "written by Apple Intelligence" note under the prompt.
+private struct WriterCaptionLabelStyle: LabelStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        HStack(spacing: 4) {
+            configuration.icon
+            configuration.title
+        }
+        .font(.caption)
+        .foregroundStyle(Palette.textSecondary)
     }
 }

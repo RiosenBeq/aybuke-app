@@ -67,6 +67,8 @@ Glowlit uygulamasının büyük bölümü bize hiçbir şey göndermeden çalı�
 
 **Cihaz üzerindeki yüz kontrolleri.** Üç özellik, yalnızca iPhone'unuzda ve Apple'ın Vision çerçevesiyle yüzlere bakar: **Best shot**, seçtiğiniz selfie'leri ışık, netlik ve yüzün ne kadar net göründüğüne göre sıralar; **nezaket hatırlatması** bir fotoğrafta kaç kişi olduğunu sayar; **benzerlik kontrolü** ise sonuç sizden uzaklaşmışsa ücretsiz yeniden deneme sunabilmek için bir yapay zekâ düzenlemesini orijinal fotoğrafınızla karşılaştırır (yüz oranları ve cilt açıklığı). Hiçbir şey saklanmaz veya bize gönderilmez, kimse tanınmaz veya kimliği belirlenmez ve hiçbir şey kimsenin görünüşünü puanlamaz.
 
+**Cihaz üzerinde yazım yardımı.** Apple Intelligence destekli cihazlarda, Create bölümündeki fikir ve istem önerileri ("Inspire me" ve "Make it magic") Apple'ın cihaz üzerindeki dil modeli tarafından yazılabilir. Yazdıklarınız ve öneriler cihazınızda kalır; bize veya Apple'a gönderilmez.
+
 **Fotoğraf erişimi.** Fotoğrafları Apple'ın sistem fotoğraf seçicisiyle seçersiniz; bu nedenle Glowlit tüm kitaplığınızı değil, yalnızca seçtiğiniz fotoğrafları görebilir. Sonuçları Fotoğraflar kitaplığınıza kaydetmek için uygulama yalnızca ekleme izni ister; bu izin görsel eklemeye olanak tanır, kitaplığınızı okumaya değil.
 
 **Yedeklemeler.** Uygulamanın sakladığı veriler, ayarlarınıza bağlı olarak cihaz yedeklemelerinize (örneğin iCloud Yedekleme) dahil edilebilir. Yedeklemeler Apple'ın kendi koşullarına tabidir.

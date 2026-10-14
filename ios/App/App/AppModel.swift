@@ -104,6 +104,8 @@ final class AppModel {
     let notifier = GlowNotifier()
     /// The first-run tour ("Next, Next…" through every tab).
     let tour = TourGuide()
+    /// Prompt upgrades and ideas from Apple's on-device model (when available).
+    let writer = OnDeviceWriter()
 
     // MARK: Account (optional Sign in with Apple)
     /// Signed in with Apple: Pro and credits follow her to other iPhones.

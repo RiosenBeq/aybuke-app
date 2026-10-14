@@ -67,6 +67,8 @@ Much of {{APP_NAME}} works without sending anything to us. The following data is
 
 **On-device face checks.** Three features look at faces, only on your iPhone, with Apple's Vision framework: **Best shot** ranks the selfies you pick by light, focus and how clearly the face shows; the **kindness reminder** counts how many people are in a photo; and the **likeness check** compares an AI edit with your original photo (face proportions and skin lightness) so it can offer a free retry if the result drifted. Nothing is stored or sent to us, nobody is identified or recognised, and nothing rates anyone's looks.
 
+**On-device writing help.** On devices with Apple Intelligence, the idea and prompt suggestions in Create ("Inspire me" and "Make it magic") may be written by Apple's on-device language model. Your text and the suggestions stay on your device and are not sent to us or to Apple.
+
 **Photo access.** You pick photos with Apple's system photo picker, so {{APP_NAME}} can see only the photos you choose, not your whole library. To save results to your Photos library, the app asks for add-only permission, which lets it add images but not read your library.
 
 **Backups.** Data stored by the app may be included in your device backups (for example iCloud Backup), depending on your settings. Apple handles backups under its own terms.
