@@ -83,7 +83,7 @@
 **Ne değişti?**
 - **Hedef kitle:** Glowlit artık kızlar ve genç kadınlar için tasarlandı ("made for girls who glow").
 - **Renkler:** Talep üzerine tamamen pembe, açık tonlu "Blush" paleti kullanılıyor: blush `#F7C1D9`, petal `#F8E0EA`, ink `#121212`, antrasit `#24272A`, kırık beyaz `#F8F8F6` ve beyaz. Ana butonlar siyah üzerine pembe yazı. Ayarlar'dan Açık (varsayılan), Koyu veya Otomatik görünüm seçilebiliyor.
-- **Tasarım detayları:** Başlıklarda zarif italik serif vurgular ("Watch it *glow.*"), kalp ve parıltı motifleri, başarı anında parıltı animasyonu, gölgeli beyaz kartlar. Uygulama ikonunun (artık renkli "Aura" sürümü) koyu ve renklendirilmiş varyantları da var.
+- **Tasarım detayları:** Başlıklarda zarif italik serif vurgular ("watch it *glow*"), kalp ve parıltı motifleri, başarı anında parıltı animasyonu, gölgeli beyaz kartlar. Uygulama ikonunun (artık renkli "Aura" sürümü) koyu ve renklendirilmiş varyantları da var.
 - **Yeni şablonlar:** Yıl boyu 51 görünüm, ayrıca mevsimlik görünümler (Cadılar Bayramı, kış, Galentine's; Ana sayfada yalnızca mevsiminde öne çıkar, düzenleyicide her zaman vardır). Örneğin Doll Box, Pembe Saç, Soft Glam, Bouncy Curls, Clean Girl, Ballet Core, Kiraz Çiçeği, Kafe Buluşması, Paris Gezisi, Peri Prensesi, Doğum Günü Glam ve Witchy Glam. 20 stil var (Pastel Dream, Kawaii, Sticker, Storybook, Pop Art, Cozy Knit, Paper Craft ve Diorama eklendi).
   - Tüm şablonlar yüzü, ten rengini ve **vücut şeklini** korur.
   - Vücut inceltme veya cilt açma gibi özellikler bilinçli olarak yok.
@@ -137,7 +137,7 @@ Bu brief'i üç paralel araştırmayla (pazar, marka/tasarım, teknoloji/uyumlul
    - 2025–2026 viral trendleri ve fiyatlandırma kıyasları (RevenueCat, Adapty) derlendi.
    - Renk haritası, yazı tipi ve isim çalışması yapıldı.
    - AI modelleri, maliyetler, App Store kuralları ve AB Yapay Zeka Yasası incelendi.
-2. **Marka:** isim **Glowlit**, slogan *"Make it glow."*, pembe "Blush" paleti (Ekim 2026'dan beri; başlangıçta "Golden Hour" amberdi) ve renkli "Aura" vurguları, Poppins + New York Italic yazı tipleri (Ekim 2026'ya kadar Bricolage Grotesque), "Glow Gem" ikonu (mücevher gibi kesilmiş pembe bir kalp; 14 Ekim 2026'ya kadar "Glow Print").
+2. **Marka:** isim **Glowlit**, slogan *"Make it glow"*, pembe "Blush" paleti (Ekim 2026'dan beri; başlangıçta "Golden Hour" amberdi) ve renkli "Aura" vurguları, Poppins + New York Italic yazı tipleri (Ekim 2026'ya kadar Bricolage Grotesque), "Glow Gem" ikonu (mücevher gibi kesilmiş pembe bir kalp; 14 Ekim 2026'ya kadar "Glow Print").
 3. **iOS uygulaması (SwiftUI, iPhone ve iPad):**
    - Ekranlar: onboarding, rehberli tur, AI onayı, keşfet, metinden görsel oluşturma, editör (Magic Edit, stiller, efektler, iyileştirme, arka plan silme, nesne silme, ayarlar), video editörü, paylaşım, kütüphane, paywall, ayarlar.
    - 12 dil desteği.
@@ -180,7 +180,7 @@ Görüntüler, CI'daki Screenshots iş akışında iPhone Pro simülatöründe d
 - **Elenenler:** Space Grotesk ve Sora sıradan "AI/web3" görünümü veriyor (Sora ayrıca OpenAI ile karışıyor); Unbounded kripto çağrışımı taşıyor.
 
 ### İkon: "Glow Gem" (14 Ekim 2026)
-Lila-pembe bir "Aura" zemin üzerinde mücevher gibi kesilmiş pembe bir kalp: düz fasetler, sivri bir uç ve keskin bir çentik. Kalbin üst yüzü içten parlıyor; üzerinde beyaz bir ışıltı, yanında iki küçük ışıltı var. Kalp ve ışıltılar uygulamadaki başarı anının kalp ve ışıltı patlamasıyla aynı dili konuşuyor; ışığı yakalayan fasetler "Make it glow." demek. Proje sahibi daha cesur ve köşeleri daha keskin bir ikon istedi; üç konsept çizildi (A "Spark Cam", B "Heart Print", C "Glow Gem"; bkz. [brand/icon-concepts/concepts.png](brand/icon-concepts/concepts.png)) ve C seçildi: 29 punto boyutunda da kalp olarak okunuyor, açık ve koyu ana ekranlarda öne çıkıyor. Koyu ve renklendirilmiş (tinted) varyantları ve Mac boyutları var; `scripts/render-brand-assets.py --concept a` veya `--concept b` ile diğer konseptlere geçilebiliyor. Önceki ikonlar: "Glow Print" (eğik, beyaz bir baskı fotoğraf) ve ondan önce "Sunrise Split" (önce/sonra diski).
+Lila-pembe bir "Aura" zemin üzerinde mücevher gibi kesilmiş pembe bir kalp: düz fasetler, sivri bir uç ve keskin bir çentik. Kalbin üst yüzü içten parlıyor; üzerinde beyaz bir ışıltı, yanında iki küçük ışıltı var. Kalp ve ışıltılar uygulamadaki başarı anının kalp ve ışıltı patlamasıyla aynı dili konuşuyor; ışığı yakalayan fasetler "Make it glow" demek. Proje sahibi daha cesur ve köşeleri daha keskin bir ikon istedi; üç konsept çizildi (A "Spark Cam", B "Heart Print", C "Glow Gem"; bkz. [brand/icon-concepts/concepts.png](brand/icon-concepts/concepts.png)) ve C seçildi: 29 punto boyutunda da kalp olarak okunuyor, açık ve koyu ana ekranlarda öne çıkıyor. Koyu ve renklendirilmiş (tinted) varyantları ve Mac boyutları var; `scripts/render-brand-assets.py --concept a` veya `--concept b` ile diğer konseptlere geçilebiliyor. Önceki ikonlar: "Glow Print" (eğik, beyaz bir baskı fotoğraf) ve ondan önce "Sunrise Split" (önce/sonra diski).
 
 ### Fiyatlandırma: "Adil Fiyat Sözü"
 Araştırmanın en net bulgusu: kullanıcıların **1 numaralı şikâyeti haftalık deneme tuzakları ve sürpriz ücretler**. Yıllık plan ise kurulum başına yaklaşık **5 kat** daha fazla gelir getiriyor; haftalık abonelerin bir yıl sonra yalnızca %1–2'si kalıyor.

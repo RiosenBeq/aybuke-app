@@ -31,7 +31,7 @@ struct OnboardingView: View {
         ),
         OnboardingPage(
             symbol: "heart.text.square",
-            title: String(localized: "One tap.\nA whole new *aesthetic*"),
+            title: String(localized: "One tap,\na whole new *aesthetic*"),
             body: String(localized: "Doll box, Y2K, ballet core, fairy princess and more — one tap each."),
             tone: .ink
         ),

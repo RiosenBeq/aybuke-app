@@ -1397,7 +1397,7 @@ def social_post(captures: Path) -> Image.Image:
 def social_story(captures: Path) -> Image.Image:
     size = (1080, 1920)
     bg = aura_panorama(size, [(PEACH, PINK)])[0]
-    item = {"scene": "result", "title": "Say it. *See it.*", "subtitle": "“Give me pink hair.” Done."}
+    item = {"scene": "result", "title": "Say it, *see it*", "subtitle": "“Give me pink hair.” Done."}
     slide = Slide(size, bg, "en", item, LOOKS["result"])
     bottom = slide.headline(250, 900, [112, 104, 96], 42, 24)
     capture = Image.open(captures / "result.png")

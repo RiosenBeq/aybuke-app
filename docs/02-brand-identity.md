@@ -5,7 +5,7 @@
 | | |
 |---|---|
 | **Name** | **Glowlit** |
-| **Tagline** | *Make it glow.* |
+| **Tagline** | *Make it glow* |
 | **App Store title** | `Glowlit: AI Photo Editor` (24/30 characters) |
 | **Subtitle (draft)** | `AI Headshots & Photo Trends` (27/30) |
 | **Positioning** | The AI photo studio made for girls who glow: trend-ready, true-to-you photos, with honest pricing and private-by-default face data. |
@@ -110,7 +110,7 @@ The first brand used Golden Hour amber `#FF9A3D` (gradient `#FFC25C → #FF7A3D`
 | Wordmark, hero and screen titles | **Poppins** ExtraBold / Bold | Round, friendly geometric sans; reads well in all 12 app languages that use Latin or Cyrillic script |
 | Card titles, buttons | **Poppins** SemiBold / Medium | Calm, even forms at small sizes |
 | Everything else (body, prices, legal) | **SF Pro** | Dynamic Type, Bold Text, Apple legibility tuning |
-| Editorial accent (one word per headline: "Watch it *glow.*") | **New York Italic** (Apple system serif) | `Text(styled:size:)` sets `*words*` in the accent; scales with Dynamic Type |
+| Editorial accent (one word per headline: "watch it *glow*") | **New York Italic** (Apple system serif) | `Text(styled:size:)` sets `*words*` in the accent; scales with Dynamic Type |
 
 - **Licence:** SIL Open Font License 1.1, with no Reserved Font Name. The licence ships in the app (Settings → Acknowledgements).
 - **Implementation:** four static Poppins cuts (Medium, SemiBold, Bold, ExtraBold) ship in the app. Fonts are registered at launch and scale with Dynamic Type (`Font.custom(_:size:relativeTo:)`). Japanese, Korean and Chinese text falls back to the system fonts automatically. Poppins replaced Bricolage Grotesque in October 2026.
@@ -144,7 +144,7 @@ Round shapes stay round where roundness is the meaning: icon buttons, the shutte
 
 ![App icon](assets/brand/app-icon-1024.png)
 
-**The idea:** a pink heart cut like a gem, lit from the top left, with a white glint on its glowing table and two sparkles beside it, on a lilac-to-pink Aura tile. The heart and sparkles are the app's success moment (a burst of hearts and sparkles); facets catching the light say "Make it glow." It replaced "Glow Print" (a tilted white print with a sparkle on plum) on 14 October 2026, when the owner asked for a bolder icon with sharper, crisper corners. Before that it was "Sunrise Split" (a before/after disc).
+**The idea:** a pink heart cut like a gem, lit from the top left, with a white glint on its glowing table and two sparkles beside it, on a lilac-to-pink Aura tile. The heart and sparkles are the app's success moment (a burst of hearts and sparkles); facets catching the light say "Make it glow". It replaced "Glow Print" (a tilted white print with a sparkle on plum) on 14 October 2026, when the owner asked for a bolder icon with sharper, crisper corners. Before that it was "Sunrise Split" (a before/after disc).
 - **Crisp by construction:** straight facets, a needle-sharp tip and notch, and the app's four-point sparkle (`SparkleShape`). Every shape has a hard edge; soft light and shadow stay on the tile and inside the gem's table.
 - **One bold silhouette:** it still reads as a heart at 29 pt, at 16 px on the Mac and as a favicon.
 - **Stands out:** a light pastel tile with a pink jewel, among the dark icons common in AI photo apps, on light and dark Home Screens.
@@ -174,7 +174,9 @@ Early research concepts (amber era): [`assets/research/icon_concepts.png`](asset
 
 ## 5. Voice & tone
 
-**Warm, playful, confident, honest.** We talk like a best friend who is good with a camera, not like a tech company. Since the girls-first redesign: celebrate creativity and vibes ("Watch it *glow.*", "What are we glowing up today?"), never comment on bodies or faces, and never promise "flawless" or "slimmer".
+**Warm, playful, confident, honest.** We talk like a best friend who is good with a camera, not like a tech company. Since the girls-first redesign: celebrate creativity and vibes ("watch it *glow*", "What are we glowing up today?"), never comment on bodies or faces, and never promise "flawless" or "slimmer".
+
+Headlines, titles and taglines never end with a decorative full stop, in any language ("Make it glow", not "Make it glow."). A two-part headline takes a comma ("Say the change, watch it *glow*"); body sentences keep their periods.
 
 | Do | Don't |
 |---|---|

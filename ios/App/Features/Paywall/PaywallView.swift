@@ -214,7 +214,7 @@ struct PaywallView: View {
                          badge: "TRY IT", isSelected: false) {}
             }
             if purchases.yearly != nil || purchases.monthly != nil || isScreenshotPreview {
-                Label("No weekly plans, ever.", systemImage: "heart.fill")
+                Label("No weekly plans, ever", systemImage: "heart.fill")
                     .font(.footnote.weight(.semibold))
                     .foregroundStyle(Palette.textSecondary)
                     .multilineTextAlignment(.center)
