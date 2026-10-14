@@ -136,18 +136,20 @@ public enum LookSuggester {
     /// filter is too close to beauty retouching to suggest unasked. Tiny
     /// World's tilt-shift turns streets and wide views into a model, so it
     /// leads for cities by day and follows for landscapes and nights out.
+    /// Rainbow '17's prism light suits faces, pets and sunny rooms; Toy Cam
+    /// '09's cross-processed colour suits friends and streets.
     static func effectIDs(for kind: PhotoKind, theme: SeasonalTheme?) -> [String] {
         var ids: [String]
         switch kind {
-        case .selfie: ids = ["digicam", "instant", "disposable", "kira"]
-        case .group: ids = ["disposable", "instant", "throwback16", "camcorder06"]
-        case .pet: ids = ["instant", "kira", "throwback16", "disposable"]
+        case .selfie: ids = ["digicam", "instant", "disposable", "kira", "rainbow"]
+        case .group: ids = ["disposable", "instant", "throwback16", "camcorder06", "toyCam"]
+        case .pet: ids = ["instant", "kira", "throwback16", "disposable", "rainbow"]
         case .landscape: ids = ["filmStill", "tinyWorld", "instant", "vhs"]
-        case .city: ids = ["tinyWorld", "disposable", "filmStill", "throwback16"]
+        case .city: ids = ["tinyWorld", "disposable", "filmStill", "throwback16", "toyCam"]
         case .cityNight: ids = ["neon", "filmStill", "tinyWorld", "vhs"]
         case .food: ids = ["instant", "disposable", "throwback16", "filmStill"]
-        case .indoor: ids = ["camcorder06", "digicam", "vhs", "instant"]
-        case .other: ids = ["instant", "digicam", "vhs", "kira"]
+        case .indoor: ids = ["camcorder06", "digicam", "vhs", "instant", "rainbow"]
+        case .other: ids = ["instant", "digicam", "vhs", "kira", "toyCam"]
         }
         // A VHS tape feels like a horror-movie night in spooky season.
         if theme == .halloween, kind != .food, let index = ids.firstIndex(of: "vhs") {

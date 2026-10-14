@@ -13,7 +13,8 @@ final class LookSuggesterTests: XCTestCase {
     }
 
     /// The app's effect ids (RetroEffect raw values).
-    private let effects = ["vhs", "disposable", "kira", "digicam", "instant", "glamour", "neon", "throwback16", "camcorder06", "filmStill", "tinyWorld"]
+    private let effects = ["vhs", "disposable", "kira", "digicam", "instant", "glamour", "neon", "throwback16", "camcorder06", "toyCam", "rainbow",
+                           "filmStill", "tinyWorld"]
 
     private func suggest(_ insight: PhotoInsight, month: Int = 4, rotation: Int = 0) -> [LookSuggestion] {
         LookSuggester.suggest(for: insight, date: date(month: month), calendar: utc, freeEffects: effects, rotation: rotation)
@@ -67,6 +68,16 @@ final class LookSuggesterTests: XCTestCase {
                 XCTAssertFalse(LookSuggester.effectIDs(for: kind, theme: theme).contains("glamour"))
             }
         }
+    }
+
+    /// Every effect but Glamour '92 can come up in Ideas and Surprise me, and
+    /// every suggested id is a real effect.
+    func testEveryEffectButSoftFocusIsSuggestedSomewhere() {
+        var suggested: Set<String> = []
+        for kind in PhotoKind.allCases {
+            suggested.formUnion(LookSuggester.effectIDs(for: kind, theme: nil))
+        }
+        XCTAssertEqual(suggested, Set(effects).subtracting(["glamour"]))
     }
 
     func testPeopleNeverGetBeautyLooks() {

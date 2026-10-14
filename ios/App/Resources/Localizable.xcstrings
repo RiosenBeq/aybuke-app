@@ -61845,6 +61845,9 @@
         }
       }
     },
+    "Rainbow '17" : {
+      "shouldTranslate" : false
+    },
     "Ranks your selfies · free, on-device" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -80318,6 +80321,9 @@
           }
         }
       }
+    },
+    "Toy Cam '09" : {
+      "shouldTranslate" : false
     },
     "Transparent" : {
       "localizations" : {
