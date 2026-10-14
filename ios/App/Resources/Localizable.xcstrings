@@ -37220,13 +37220,13 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gratis · en tu iPhone"
+            "value" : "Gratis · en tu dispositivo"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gratuit · sur l’iPhone"
+            "value" : "Gratuit · sur l’appareil"
           }
         },
         "id" : {
@@ -87574,7 +87574,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "サインインしました ✨ これでProとクレジットをどのiPhoneでも使えます。"
+            "value" : "サインインしました ✨ これでProとクレジットをどの端末でも使えます。"
           }
         },
         "ko" : {
