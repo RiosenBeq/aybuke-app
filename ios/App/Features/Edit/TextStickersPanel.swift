@@ -12,11 +12,20 @@ struct TextStickersPanel: View {
 
     var body: some View {
         VStack(spacing: 12) {
-            HStack(spacing: 8) {
-                modeChip(.text, title: "Text", symbol: "textformat")
-                modeChip(.stickers, title: "Stickers", symbol: "face.smiling")
-                modeChip(.doodle, title: "Doodle", symbol: "scribble.variable")
-                Spacer(minLength: 0)
+            // Side by side where they fit; a scrolling row at the largest
+            // text sizes, so the chips never push the editor off the screen.
+            ViewThatFits(in: .horizontal) {
+                HStack(spacing: 8) {
+                    modeChips
+                    Spacer(minLength: 0)
+                }
+                ScrollView(.horizontal) {
+                    HStack(spacing: 8) {
+                        modeChips
+                    }
+                    .padding(.horizontal, 1)
+                }
+                .scrollIndicators(.hidden)
             }
 
             Group {
@@ -35,6 +44,13 @@ struct TextStickersPanel: View {
                 .buttonStyle(.primary)
                 .disabled(!session.hasContent)
         }
+    }
+
+    @ViewBuilder
+    private var modeChips: some View {
+        modeChip(.text, title: "Text", symbol: "textformat")
+        modeChip(.stickers, title: "Stickers", symbol: "face.smiling")
+        modeChip(.doodle, title: "Doodle", symbol: "scribble.variable")
     }
 
     private func modeChip(_ mode: OverlaySession.Mode, title: LocalizedStringKey, symbol: String) -> some View {
@@ -192,56 +208,95 @@ private struct ColorSwatches: View {
 
 // MARK: Stickers
 
-/// The sticker pack in two rows, after a Paste tile for a cut-out she copied
-/// as a sticker. Paste uses the system button, so there's no paste prompt.
+/// The sticker pack: its sections (All, Cute, Y2K, Glam, Love, Sky, Words)
+/// over one scrolling row of stickers, after a Paste tile for a cut-out she
+/// copied as a sticker. Paste uses the system button, so there's no paste
+/// prompt. Both rows fit the panel's one content height.
 private struct StickerTray: View {
     let session: OverlaySession
 
+    @State private var category: StickerCategory = .all
     @State private var thumbnails = StickerThumbnails.cached
     @Environment(\.displayScale) private var displayScale
 
-    private let rows = [GridItem(.fixed(52), spacing: 8), GridItem(.fixed(52), spacing: 8)]
+    private static let tileSide: CGFloat = 56
 
     var body: some View {
-        ScrollView(.horizontal) {
-            LazyHGrid(rows: rows, spacing: 8) {
-                PasteButton(supportedContentTypes: [.png, .image]) { providers in
-                    paste(providers)
-                }
-                .labelStyle(.iconOnly)
-                .buttonBorderShape(.roundedRectangle(radius: 14))
-                .tint(Palette.accent)
-                .frame(width: 52, height: 52)
-
-                ForEach(StickerKind.allCases) { kind in
-                    Button {
-                        session.addSticker(kind)
-                    } label: {
-                        ZStack {
-                            Palette.surface
-                            if let thumbnail = thumbnails[kind] {
-                                Image(uiImage: thumbnail)
-                                    .resizable()
-                                    .scaledToFit()
-                                    .padding(4)
-                            }
-                        }
-                        .frame(width: 52, height: 52)
-                        .clipShape(.control)
-                        .overlay(RoundedRectangle.control.strokeBorder(Palette.stroke, lineWidth: 1))
+        VStack(alignment: .leading, spacing: 8) {
+            categoryRow
+            ScrollView(.horizontal) {
+                LazyHStack(spacing: 8) {
+                    PasteButton(supportedContentTypes: [.png, .image]) { providers in
+                        paste(providers)
                     }
-                    .buttonStyle(.pressable)
-                    .accessibilityLabel(kind.title)
-                    .accessibilityHint("Adds it to the photo")
+                    .labelStyle(.iconOnly)
+                    .buttonBorderShape(.roundedRectangle(radius: Metrics.controlRadius))
+                    .tint(Palette.accent)
+                    .frame(width: Self.tileSide, height: Self.tileSide)
+
+                    ForEach(category.kinds) { kind in
+                        Button {
+                            session.addSticker(kind)
+                        } label: {
+                            tile(kind)
+                        }
+                        .buttonStyle(.pressable)
+                        .accessibilityLabel(kind.title)
+                        .accessibilityHint("Adds it to the photo")
+                    }
                 }
+                .padding(.horizontal, 1)
+                .padding(.vertical, 2)
             }
-            .padding(.horizontal, 1)
+            .scrollIndicators(.hidden)
+            // Another section starts at its first sticker.
+            .id(category)
         }
-        .scrollIndicators(.hidden)
         .task {
             guard thumbnails.count < StickerKind.allCases.count else { return }
             thumbnails = await StickerThumbnails.load(scale: displayScale)
         }
+    }
+
+    private var categoryRow: some View {
+        ScrollViewReader { proxy in
+            ScrollView(.horizontal) {
+                HStack(spacing: 8) {
+                    ForEach(StickerCategory.allCases) { item in
+                        SelectableChip(title: item.title, isSelected: category == item) {
+                            guard item != category else { return }
+                            Haptics.selection()
+                            category = item
+                        }
+                        .id(item)
+                    }
+                }
+                .padding(.horizontal, 1)
+            }
+            .scrollIndicators(.hidden)
+            .onChange(of: category) { _, item in
+                withAnimation(.snappy) { proxy.scrollTo(item) }
+            }
+        }
+        // The chips grow with Dynamic Type up to AX1, so the two rows keep
+        // the panel's height.
+        .dynamicTypeSize(...DynamicTypeSize.accessibility1)
+        .frame(height: 44)
+    }
+
+    private func tile(_ kind: StickerKind) -> some View {
+        ZStack {
+            Palette.surface
+            if let thumbnail = thumbnails[kind] {
+                Image(uiImage: thumbnail)
+                    .resizable()
+                    .scaledToFit()
+                    .padding(4)
+            }
+        }
+        .frame(width: Self.tileSide, height: Self.tileSide)
+        .clipShape(.control)
+        .overlay(RoundedRectangle.control.strokeBorder(Palette.stroke, lineWidth: 1))
     }
 
     private func paste(_ providers: [NSItemProvider]) {
@@ -270,7 +325,8 @@ enum StickerThumbnails {
             Dictionary(uniqueKeysWithValues: StickerKind.allCases.map { kind -> (StickerKind, UIImage) in
                 let content = OverlayContent.sticker(Sticker(kind))
                 let size = OverlayRenderer.artworkSize(of: content)
-                let pixelsPerUnit = 44 * scale / max(size.width, size.height)
+                // The tile's picture is 48 pt across.
+                let pixelsPerUnit = 48 * scale / max(size.width, size.height)
                 return (kind, OverlayRenderer.image(of: content, size: size, pixelsPerUnit: pixelsPerUnit))
             })
         }.value

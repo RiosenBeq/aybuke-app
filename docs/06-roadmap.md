@@ -179,6 +179,7 @@ Seven audits (code, UX and accessibility, platform, competitors, trends, wellbei
 
 **More to play with**
 - ✅ Twelve stickers drawn in code (sparkle burst, moon and stars, ribbon bow, crown, daisy, rainbow, cloud, music notes, camera, film strip and the "main character" and "yay" bubbles); the Toy Cam '09 and Rainbow '17 effects, live in Retro Cam, on video, in Shortcuts and in Ideas for this photo; the Candy caption style; all translated into the 11 other app languages
+- ✅ A bigger sticker sheet: thirty more stickers, among them (pearls, a gingham bow, a heart locket, a chrome star, a holo heart, a butterfly clip, a flip cell, a CD, strawberry, mushroom, bunny, kitty, teddy bear, a heart cloud, bubble tea, beauty objects such as lip gloss and nail polish, love letters, a rose, the sun, a shooting star, a planet and the "it girl", "vibes" and "core memory" bubbles), the older ones redrawn with gradients, shine and a keyline, and the tray sorted into sections
 
 ## Later backlog from the October 2026 audit
 
