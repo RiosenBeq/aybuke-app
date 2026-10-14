@@ -12,21 +12,21 @@ struct CaptionsCard: View {
     var body: some View {
         @Bindable var captions = model.captions
         VStack(alignment: .leading, spacing: 10) {
-            HStack(spacing: 12) {
-                VStack(alignment: .leading, spacing: 2) {
-                    Label("Captions", systemImage: "captions.bubble")
-                        .font(.subheadline.weight(.semibold))
-                        .foregroundStyle(Palette.textPrimary)
-                    detail
-                        .font(.caption)
-                        .foregroundStyle(Palette.textSecondary)
-                        .fixedSize(horizontal: false, vertical: true)
+            // Side by side while the words keep at least 150 pt; with long
+            // labels ("Untertitel hinzufügen") or large text the button goes
+            // under them instead of squeezing them into a narrow column.
+            ViewThatFits(in: .horizontal) {
+                HStack(spacing: 12) {
+                    header
+                        .frame(minWidth: 150, idealWidth: 150, maxWidth: .infinity, alignment: .leading)
+                    trailing
+                        .layoutPriority(1)
                 }
-                .frame(maxWidth: .infinity, alignment: .leading)
-                // The button keeps its whole label ("Untertitel hinzufügen");
-                // the text beside it wraps instead.
-                trailing
-                    .layoutPriority(1)
+                VStack(alignment: .leading, spacing: 10) {
+                    header
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                    trailing
+                }
             }
             if case .working(let progress) = captions.status {
                 ProgressView(value: fraction(progress))
@@ -42,6 +42,18 @@ struct CaptionsCard: View {
         .animation(.easeInOut(duration: 0.2), value: captions.status)
         .sheet(isPresented: $captions.isEditing, onDismiss: { captions.removeBlank() }) {
             CaptionsEditor(model: model)
+        }
+    }
+
+    private var header: some View {
+        VStack(alignment: .leading, spacing: 2) {
+            Label("Captions", systemImage: "captions.bubble")
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(Palette.textPrimary)
+            detail
+                .font(.caption)
+                .foregroundStyle(Palette.textSecondary)
+                .fixedSize(horizontal: false, vertical: true)
         }
     }
 

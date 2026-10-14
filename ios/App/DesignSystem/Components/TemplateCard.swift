@@ -28,12 +28,17 @@ struct TemplateCard: View, Equatable {
                 Text(L10n.core(template.title))
                     .font(.cardTitle)
                     .foregroundStyle(labelColor)
-                    .lineLimit(1)
+                    .lineLimit(2)
+                    .minimumScaleFactor(0.8)
                 Text(L10n.core(template.subtitle))
                     .font(.caption)
                     .foregroundStyle(labelColor.opacity(0.75))
                     .lineLimit(1)
+                    .minimumScaleFactor(0.8)
             }
+            // A fixed-size print: its words stop growing at the first
+            // accessibility size (VoiceOver reads the full label).
+            .dynamicTypeSize(...DynamicTypeSize.accessibility1)
             .padding(12)
         }
         .frame(width: width, height: height)

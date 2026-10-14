@@ -87,6 +87,28 @@ extension ButtonStyle where Self == IconButtonStyle {
     static var icon: IconButtonStyle { IconButtonStyle() }
 }
 
+/// Two buttons side by side, the primary action last; stacked, primary on
+/// top, when their labels don't fit in one row (long translations, large
+/// text), so no label is cut short or broken mid-word.
+struct ButtonRow<Secondary: View, Primary: View>: View {
+    var spacing: CGFloat = 12
+    @ViewBuilder var secondary: Secondary
+    @ViewBuilder var primary: Primary
+
+    var body: some View {
+        ViewThatFits(in: .horizontal) {
+            HStack(spacing: spacing) {
+                secondary
+                primary
+            }
+            VStack(spacing: 10) {
+                primary
+                secondary
+            }
+        }
+    }
+}
+
 /// Label for a primary action that costs credits, e.g. "Generate · 1 ⚡︎".
 struct CostLabel: View {
     let title: LocalizedStringKey
@@ -94,23 +116,44 @@ struct CostLabel: View {
     var isLoading = false
 
     var body: some View {
-        HStack(spacing: 10) {
-            if isLoading {
-                ProgressView().tint(Palette.onAccent)
-            } else {
-                Image(systemName: "sparkles")
+        // One line when it fits; with long translations or large text the
+        // title gets a line of its own, so no word breaks in the middle.
+        ViewThatFits(in: .horizontal) {
+            HStack(spacing: 10) {
+                icon
+                Text(title)
+                costBadge
             }
-            Text(title)
-            if cost > 0 && !isLoading {
-                HStack(spacing: 3) {
-                    Image(systemName: "bolt.fill").font(.caption)
-                    Text("\(cost)").monospacedDigit()
+            VStack(spacing: 4) {
+                Text(title)
+                HStack(spacing: 8) {
+                    icon
+                    costBadge
                 }
-                .font(.subheadline.weight(.bold))
-                .padding(.horizontal, 8)
-                .padding(.vertical, 3)
-                .background(Palette.onAccent.opacity(0.18), in: .tag)
             }
+        }
+    }
+
+    @ViewBuilder
+    private var icon: some View {
+        if isLoading {
+            ProgressView().tint(Palette.onAccent)
+        } else {
+            Image(systemName: "sparkles")
+        }
+    }
+
+    @ViewBuilder
+    private var costBadge: some View {
+        if cost > 0 && !isLoading {
+            HStack(spacing: 3) {
+                Image(systemName: "bolt.fill").font(.caption)
+                Text("\(cost)").monospacedDigit()
+            }
+            .font(.subheadline.weight(.bold))
+            .padding(.horizontal, 8)
+            .padding(.vertical, 3)
+            .background(Palette.onAccent.opacity(0.18), in: .tag)
         }
     }
 }
