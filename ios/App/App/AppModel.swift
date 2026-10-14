@@ -27,6 +27,9 @@ struct EditorLaunch: Identifiable {
     var previewResult: UIImage?
     /// An effect to preview right away (screenshots).
     var previewEffect: RetroEffect?
+    /// A crop shape and straighten angle to start from (screenshots).
+    var cropAspect: CropAspect?
+    var cropAngle: Double = 0
 }
 
 struct ConsentRequest: Identifiable {
@@ -879,6 +882,9 @@ extension AppModel {
             selectedTab = .home
             editorLaunch = EditorLaunch(image: ScreenshotFixtures.goldenLandscape, tool: .effects,
                                         previewEffect: UserDefaults.standard.string(forKey: "GLEffect").flatMap(RetroEffect.init(rawValue:)) ?? .vhs)
+        case .crop:
+            selectedTab = .home
+            editorLaunch = EditorLaunch(image: ScreenshotFixtures.goldenLandscape, tool: .crop, cropAspect: .story, cropAngle: 4)
         case .create, .results:
             selectedTab = .create
         case .edit:

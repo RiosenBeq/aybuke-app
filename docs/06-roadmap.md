@@ -15,7 +15,7 @@ Legend: ✅ done in this repository · ⏳ next · 🔭 later
 - ✅ Xcode 16+ project (synchronized folder), shared scheme, StoreKit test configuration
 - ✅ `AppCore` package
   - API contract, credit wallet, catalogs, prompt builder, content policy, polling
-  - 100 unit tests (incl. developer-mode AI providers with xAI, the legal Markdown parser, widget/deep-link helpers, notification and rating rules, accounts, the prompt policy in every app language, Auto adjust and silence cutting), run on Linux and macOS
+  - 110 unit tests (incl. crop geometry, developer-mode AI providers with xAI, the legal Markdown parser, widget/deep-link helpers, notification and rating rules, accounts, the prompt policy in every app language, Auto adjust and silence cutting), run on Linux and macOS
 - ✅ Design system
   - Tokens: palette, type, metrics
   - Components: buttons, chips, badges, cards, aurora background, generating overlay, before/after slider, template card, toast, share sheet
@@ -28,8 +28,9 @@ Legend: ✅ done in this repository · ⏳ next · 🔭 later
 - ✅ Explicit AI consent (5.1.2(i)), revocable
 - ✅ Explore: hero, quick tools, personalised template rows
 - ✅ Editor
-  - Tools: Magic Edit, Styles, Enhance, Remove BG (on-device), Erase (brush mask), Adjust (on-device)
-  - Undo/redo, hold-to-compare, before/after slider
+  - Tools: Magic Edit, Styles, Enhance, Remove BG (on-device), Erase (brush mask), Adjust (on-device), Crop (on-device: posting shapes, rotate, mirror, straighten)
+  - Undo/redo, hold-to-compare, before/after slider, pinch and double-tap zoom on the canvas
+  - 🔭 Zoom in Erase's brush canvas (two fingers pan and zoom, one finger paints)
   - Free "Retry" (Likeness Lock), save and share with provenance
 - ✅ Create: prompt, styles, aspect ratios, multi-image (Pro), "Surprise me", "Enhance prompt", results, report
 - ✅ My Works library (SwiftData + protected files)

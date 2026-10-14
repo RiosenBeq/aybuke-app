@@ -12,6 +12,8 @@ struct EditorView: View {
     @State private var showDiscardAlert = false
     @State private var showReport = false
     @State private var isSaving = false
+    @State private var zoom = CanvasZoom()
+    @State private var isZoomed = false
 
     init(launch: EditorLaunch) {
         self.launch = launch
@@ -51,7 +53,10 @@ struct EditorView: View {
         }
         .animation(.easeInOut(duration: 0.25), value: model.isProcessing)
         .animation(.snappy, value: model.activeTool)
-        .task { await model.checkForOtherPeople() }
+        .task {
+            model.stampsDemoResults = app.isDemoMode
+            await model.checkForOtherPeople()
+        }
         .animation(.snappy, value: model.showsKindnessNote)
         .task {
             // Launched from a template card: run it right away (one-tap).
@@ -73,14 +78,17 @@ struct EditorView: View {
 
     private var topBar: some View {
         HStack(spacing: 10) {
-            Button {
-                if model.hasChanges { showDiscardAlert = true } else { dismiss() }
-            } label: {
-                Image(systemName: "xmark")
+            if isCropPending {
+                closeButton.background {
+                    // Mac: Esc drops the crop first, then closes the editor.
+                    Button("Reset") { model.resetCrop() }
+                        .macKeyboardShortcut(.cancelAction)
+                        .opacity(0)
+                        .accessibilityHidden(true)
+                }
+            } else {
+                closeButton.macKeyboardShortcut(.cancelAction)
             }
-            .buttonStyle(.icon)
-            .accessibilityLabel("Close editor")
-            .macKeyboardShortcut(.cancelAction)
 
             Button { model.undo() } label: { Image(systemName: "arrow.uturn.backward") }
                 .buttonStyle(.icon)
@@ -96,8 +104,8 @@ struct EditorView: View {
                 Image(systemName: model.isComparing ? "square.split.2x1.fill" : "square.split.2x1")
             }
             .buttonStyle(.icon)
-            .disabled(!model.hasChanges)
-            .opacity(model.hasChanges ? 1 : 0.4)
+            .disabled(!canCompare)
+            .opacity(canCompare ? 1 : 0.4)
             .accessibilityLabel("Compare with original")
 
             Spacer(minLength: 0)
@@ -128,14 +136,36 @@ struct EditorView: View {
         .padding(.top, 6)
     }
 
+    private var closeButton: some View {
+        Button {
+            if model.hasUnsavedWork { showDiscardAlert = true } else { dismiss() }
+        } label: {
+            Image(systemName: "xmark")
+        }
+        .buttonStyle(.icon)
+        .accessibilityLabel("Close editor")
+    }
+
+    private var isCropPending: Bool {
+        if case .crop? = model.pendingPreview { return true }
+        return false
+    }
+
+    /// Crop shows the whole photo under its box, so there's nothing to compare.
+    private var canCompare: Bool { model.hasChanges && model.activeTool != .crop }
+
     // MARK: Canvas
 
     @ViewBuilder
     private var canvas: some View {
         if model.activeTool == .erase {
             MaskCanvas(image: model.current, strokes: $model.strokes, brushSize: model.brushSize)
-        } else if model.isComparing && model.hasChanges {
-            BeforeAfterSlider(before: model.original, after: model.current, showsTransparencyGrid: model.hasTransparency)
+        } else if model.activeTool == .crop, let proxy = model.cropProxy {
+            CropCanvas(image: proxy, geometry: $model.crop, aspect: model.cropAspect, sourceSize: model.cropSourceSize)
+                .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+                .shadow(color: Palette.shadow, radius: 16, y: 8)
+        } else if model.isComparing && canCompare {
+            BeforeAfterSlider(before: model.before, after: model.current, showsTransparencyGrid: model.hasTransparency)
                 .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
                 .shadow(color: Palette.shadow, radius: 16, y: 8)
         } else {
@@ -143,18 +173,23 @@ struct EditorView: View {
                 if model.hasTransparency && !model.isHoldingOriginal {
                     CheckerboardBackground()
                 }
-                Image(uiImage: model.displayImage)
-                    .resizable()
-                    .scaledToFit()
+                ZoomableImage(
+                    image: model.displayImage,
+                    zoom: zoom,
+                    onHold: { pressing in
+                        if model.hasChanges { model.isHoldingOriginal = pressing }
+                    },
+                    onZoomChange: { isZoomed = $0 }
+                )
+                // A fresh canvas (fit) for every tool and every step.
+                .id("\(model.activeTool?.rawValue ?? "")-\(model.historyVersion)")
+                .onDisappear { isZoomed = false }
             }
             .aspectRatio(model.displayImage.size.width / max(model.displayImage.size.height, 1), contentMode: .fit)
             .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
             .shadow(color: Palette.shadow, radius: 16, y: 8)
-            .onLongPressGesture(minimumDuration: 0.15, maximumDistance: 40, perform: {}, onPressingChanged: { pressing in
-                if model.hasChanges { model.isHoldingOriginal = pressing }
-            })
             .overlay(alignment: .bottom) {
-                if model.hasChanges && !model.isHoldingOriginal {
+                if model.hasChanges && !model.isHoldingOriginal && !isZoomed {
                     Text("Hold to see original")
                         .font(.caption2.weight(.semibold))
                         .foregroundStyle(.white.opacity(0.95))
@@ -164,7 +199,12 @@ struct EditorView: View {
                         .padding(10)
                 }
             }
+            .accessibilityElement(children: .ignore)
             .accessibilityLabel(model.isHoldingOriginal ? "Original photo" : "Edited photo")
+            .accessibilityAddTraits(.isImage)
+            .accessibilityZoomAction { action in
+                zoom.step(zoomIn: action.direction == .zoomIn)
+            }
         }
     }
 
@@ -330,6 +370,17 @@ struct EditorView: View {
                 onReset: { model.resetAdjustments() },
                 onApply: { Task { await model.applyAdjustments() } }
             )
+        case .crop?:
+            CropPanel(
+                aspect: model.cropAspect,
+                angle: $model.crop.angle,
+                canApply: !model.crop.isIdentity,
+                onAspect: { model.setCropAspect($0) },
+                onRotate: { model.rotateCropLeft() },
+                onFlip: { model.flipCrop() },
+                onReset: { withAnimation(.snappy) { model.resetCrop() } },
+                onApply: { Task { await model.applyCrop() } }
+            )
         case .effects?:
             EffectsPanel(
                 thumbnails: model.effectThumbnails,
@@ -379,7 +430,7 @@ struct EditorView: View {
                         Text(tool.shortTitle)
                             .font(.system(size: 10.5, weight: .semibold))
                             .lineLimit(1)
-                            .minimumScaleFactor(0.7)
+                            .minimumScaleFactor(0.6)
                     }
                     .foregroundStyle(isActive ? Palette.onPrimary : Palette.textSecondary)
                     .frame(maxWidth: .infinity)
@@ -404,9 +455,12 @@ struct EditorView: View {
     // MARK: Export
 
     private func save() {
+        // Cmd+S on the Mac fires even under the processing overlay.
+        guard !isSaving, !model.isProcessing else { return }
         isSaving = true
         Task {
             defer { isSaving = false }
+            await model.commitPending()
             do {
                 // Free tools never add a mark; free cloud AI results carry a small one.
                 let usedCloudAI = model.appliedOperation.map { !$0.runsOnDevice } ?? false
@@ -424,12 +478,16 @@ struct EditorView: View {
     }
 
     private func share() {
+        guard !model.isProcessing else { return }
         Haptics.tap()
-        app.share(SharePayload(
-            image: model.current,
-            original: model.hasChanges ? model.original : nil,
-            operation: model.appliedOperation,
-            prompt: nil
-        ))
+        Task {
+            await model.commitPending()
+            app.share(SharePayload(
+                image: model.current,
+                original: model.hasChanges ? model.before : nil,
+                operation: model.appliedOperation,
+                prompt: nil
+            ))
+        }
     }
 }

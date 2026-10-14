@@ -9,6 +9,7 @@ enum EditorTool: String, CaseIterable, Identifiable {
     case removeBackground
     case erase
     case adjust
+    case crop
 
     var id: String { rawValue }
 
@@ -21,6 +22,7 @@ enum EditorTool: String, CaseIterable, Identifiable {
         case .removeBackground: return String(localized: "Remove BG")
         case .erase: return String(localized: "Erase")
         case .adjust: return String(localized: "Adjust")
+        case .crop: return String(localized: "Crop")
         }
     }
 
@@ -34,6 +36,7 @@ enum EditorTool: String, CaseIterable, Identifiable {
         case .removeBackground: return String(localized: "Cut out")
         case .erase: return String(localized: "Erase")
         case .adjust: return String(localized: "Adjust")
+        case .crop: return String(localized: "Crop")
         }
     }
 
@@ -46,6 +49,7 @@ enum EditorTool: String, CaseIterable, Identifiable {
         case .removeBackground: return String(localized: "Free · on-device")
         case .erase: return String(localized: "Brush to remove")
         case .adjust: return String(localized: "Light & color")
+        case .crop: return String(localized: "Fit & straighten")
         }
     }
 
@@ -53,6 +57,7 @@ enum EditorTool: String, CaseIterable, Identifiable {
         switch self {
         case .adjust: return "slider.horizontal.3"
         case .effects: return "camera.filters"
+        case .crop: return "crop.rotate"
         default: return operation?.symbolName ?? "wand.and.stars"
         }
     }
@@ -64,7 +69,7 @@ enum EditorTool: String, CaseIterable, Identifiable {
         case .enhance: return .enhance
         case .removeBackground: return .removeBackground
         case .erase: return .eraseObject
-        case .adjust, .effects: return nil
+        case .adjust, .effects, .crop: return nil
         }
     }
 

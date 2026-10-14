@@ -171,7 +171,10 @@ async function createJob(db: SupabaseClient, userId: string, isPro: boolean, req
     })
     .select("id")
     .single();
-  if (insertError || !job) throw new HttpError(500, "internal", "Couldn't start the job.");
+  if (insertError || !job) {
+    if (body.retry_of) await reopenRetry(db, body.retry_of);
+    throw new HttpError(500, "internal", "Couldn't start the job.");
+  }
 
   const { data: remaining, error: reserveError } = await db.rpc("reserve_credits", {
     p_user: userId,
@@ -339,10 +342,17 @@ async function failJob(db: SupabaseClient, jobId: string, code: string, message:
     .update({ status: "failed", error_code: code, error_message: message, updated_at: new Date().toISOString() })
     .eq("id", jobId)
     .in("status", ["queued", "processing"])
-    .select("id");
+    .select("id, retry_of");
   if (data && data.length > 0) {
     await db.rpc("release_credits", { p_job: jobId });
+    const retryOf = (data[0] as { retry_of: string | null }).retry_of;
+    if (retryOf) await reopenRetry(db, retryOf);
   }
+}
+
+/** A free retry that failed doesn't count: the original result can be retried again. */
+async function reopenRetry(db: SupabaseClient, originalJobId: string): Promise<void> {
+  await db.from("jobs").update({ retried: false }).eq("id", originalJobId);
 }
 
 function present(job: JobRow): Record<string, unknown> {
