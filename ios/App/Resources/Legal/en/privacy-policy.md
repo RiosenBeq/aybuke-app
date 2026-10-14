@@ -71,6 +71,8 @@ Much of Glowlit works without sending anything to us. The following data is stor
 
 **On-device writing help.** On devices with Apple Intelligence, the idea and prompt suggestions in Create ("Inspire me" and "Make it magic") may be written by Apple's on-device language model. Your text and the suggestions stay on your device and are not sent to us or to Apple.
 
+**On-device video captions.** In the video editor, **Captions** turns what's said in your video into captions with Apple's speech recognition, on your device. From iOS 26 it uses Apple's on-device speech models; each language's model is downloaded once from Apple, and no audio or text is sent with that download. Otherwise it uses Apple's speech recognizer only for languages your device can recognise without the internet, and iOS first asks for your permission to use speech recognition. The sound of your video and the caption text stay on your device and are not sent to us or to Apple. Captions are kept only while you edit and in the videos you save or share.
+
 **Photo access.** You pick photos with Apple's system photo picker, so Glowlit can see only the photos you choose, not your whole library. To save results to your Photos library, the app asks for add-only permission, which lets it add images but not read your library.
 
 **Backups.** Data stored by the app may be included in your device backups (for example iCloud Backup), depending on your settings. Apple handles backups under its own terms.
