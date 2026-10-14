@@ -141,16 +141,135 @@ public struct APIErrorBody: Codable, Equatable, Sendable {
     public var code: String
     public var message: String
     public var creditsRemaining: Int?
+    /// Seconds until trying again makes sense (cool-downs, breakers, limits).
+    public var retryAfter: Int?
 
     enum CodingKeys: String, CodingKey {
         case code, message
         case creditsRemaining = "credits_remaining"
+        case retryAfter = "retry_after"
     }
 
-    public init(code: String, message: String, creditsRemaining: Int? = nil) {
+    public init(code: String, message: String, creditsRemaining: Int? = nil, retryAfter: Int? = nil) {
         self.code = code
         self.message = message
         self.creditsRemaining = creditsRemaining
+        self.retryAfter = retryAfter
+    }
+}
+
+/// The numbers the server enforces (`credit_policy()`), sent with every
+/// balance so the app's copy can say them. Any of them may be missing.
+public struct ServerCreditPolicy: Decodable, Equatable, Sendable {
+    public var freeDaily: Int?
+    public var proMonthly: Int?
+    public var rolloverCap: Int?
+    public var trialCredits: Int?
+    public var freeRetriesDaily: Int?
+
+    enum CodingKeys: String, CodingKey {
+        case freeDaily = "free_daily"
+        case proMonthly = "pro_monthly"
+        case rolloverCap = "rollover_cap"
+        case trialCredits = "trial_credits"
+        case freeRetriesDaily = "free_retries_daily"
+    }
+
+    public init(freeDaily: Int? = nil, proMonthly: Int? = nil, rolloverCap: Int? = nil, trialCredits: Int? = nil,
+                freeRetriesDaily: Int? = nil) {
+        self.freeDaily = freeDaily
+        self.proMonthly = proMonthly
+        self.rolloverCap = rolloverCap
+        self.trialCredits = trialCredits
+        self.freeRetriesDaily = freeRetriesDaily
+    }
+}
+
+/// `GET /ai-image` without a job id: the balance and what's behind it.
+public struct BalanceState: Decodable, Equatable, Sendable {
+    /// Whether the free part of the balance is known.
+    public enum FreeCredits: String, Decodable, Sendable {
+        /// Today's free credits on her verified App Store install are in the balance.
+        case ok
+        /// Pro: no free daily credits.
+        case pro
+        /// No App Store install could be verified (no AppTransaction yet, or
+        /// StoreKit couldn't supply one): the free part is unknown, so the
+        /// app lets the server decide instead of showing the paywall.
+        case unverified
+    }
+
+    /// Cloud AI for her account and install.
+    public enum AIStatus: String, Decodable, Sendable {
+        case ok
+        /// Resting after repeated safety blocks, until `cooldownSeconds` pass.
+        case cooldown
+        /// Off until the team lifts it.
+        case blocked
+    }
+
+    public var creditsRemaining: Int
+    public var isPro: Bool?
+    public var freeCredits: FreeCredits?
+    public var aiStatus: AIStatus?
+    public var cooldownSeconds: Int?
+    public var policy: ServerCreditPolicy?
+
+    enum CodingKeys: String, CodingKey {
+        case policy
+        case creditsRemaining = "credits_remaining"
+        case isPro = "is_pro"
+        case freeCredits = "free_credits"
+        case aiStatus = "ai_status"
+        case cooldownSeconds = "cooldown_seconds"
+    }
+
+    public init(creditsRemaining: Int, isPro: Bool? = nil, freeCredits: FreeCredits? = nil, aiStatus: AIStatus? = nil,
+                cooldownSeconds: Int? = nil, policy: ServerCreditPolicy? = nil) {
+        self.creditsRemaining = creditsRemaining
+        self.isPro = isPro
+        self.freeCredits = freeCredits
+        self.aiStatus = aiStatus
+        self.cooldownSeconds = cooldownSeconds
+        self.policy = policy
+    }
+
+    /// Values this version doesn't know read as unknown, never as an error.
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        creditsRemaining = try container.decode(Int.self, forKey: .creditsRemaining)
+        isPro = try? container.decodeIfPresent(Bool.self, forKey: .isPro)
+        freeCredits = (try? container.decodeIfPresent(String.self, forKey: .freeCredits)).flatMap { FreeCredits(rawValue: $0) }
+        aiStatus = (try? container.decodeIfPresent(String.self, forKey: .aiStatus)).flatMap { AIStatus(rawValue: $0) }
+        cooldownSeconds = try? container.decodeIfPresent(Int.self, forKey: .cooldownSeconds)
+        policy = try? container.decodeIfPresent(ServerCreditPolicy.self, forKey: .policy)
+    }
+}
+
+/// Why cloud AI is off for now. The free on-device tools always work.
+public enum CloudPause: Equatable, Sendable {
+    /// A short rest after repeated safety blocks, until the date.
+    case cooldown(until: Date)
+    /// Off for this install until the team lifts it.
+    case blocked
+
+    public func isActive(at date: Date = Date()) -> Bool {
+        switch self {
+        case .cooldown(let until): return until > date
+        case .blocked: return true
+        }
+    }
+
+    /// From a balance: nil when cloud AI is on.
+    public static func from(_ state: BalanceState, now: Date = Date()) -> CloudPause? {
+        switch state.aiStatus {
+        case .cooldown:
+            return .cooldown(until: now.addingTimeInterval(TimeInterval(max(60, state.cooldownSeconds ?? 24 * 3600))))
+        case .blocked:
+            return .blocked
+        case .ok, nil:
+            return nil
+        }
     }
 }
 
@@ -287,6 +406,19 @@ public enum AIServiceError: Error, Equatable, Sendable {
     case insecureConnection
     case invalidResponse
     case noSubjectFound
+    /// The server couldn't verify this install with the App Store (its
+    /// AppTransaction was missing or invalid), so no free credits.
+    case appStoreCheckFailed
+    /// Cloud AI rests for a while after repeated safety blocks.
+    case cooldown(retryAfter: TimeInterval?)
+    /// Cloud AI is off for this install until the team lifts it.
+    case cloudBlocked
+    /// The day's AI budget is used up (a circuit breaker), or the team paused AI.
+    case aiPaused(retryAfter: TimeInterval?)
+    /// Too many jobs this hour or today.
+    case usageLimit(retryAfter: TimeInterval?)
+    /// Today's free Likeness Lock retries are used.
+    case retryLimit
 }
 
 extension AIServiceError: LocalizedError {
@@ -320,6 +452,18 @@ extension AIServiceError: LocalizedError {
             return "Something went wrong. Please try again."
         case .noSubjectFound:
             return "We couldn't find a clear subject in this photo."
+        case .appStoreCheckFailed:
+            return "We couldn't confirm your download with the App Store, so free credits aren't available right now. Check that you're signed in to the App Store, then try again."
+        case .cooldown:
+            return "Cloud AI is taking a little break for now. Your free tools still work in the meantime."
+        case .cloudBlocked:
+            return "Cloud AI is turned off here for now. Your free tools still work. If you think this is a mistake, contact us."
+        case .aiPaused:
+            return "AI is taking a short break. Please try again later. Your free tools still work."
+        case .usageLimit:
+            return "You've made a lot in a short time. Take a little break and try again later."
+        case .retryLimit:
+            return "You've used today's free retries."
         }
     }
 }
@@ -342,12 +486,16 @@ public struct BackendConfiguration: Equatable, Sendable {
 
 public enum RequestFactory {
     public static let entitlementHeader = "X-Entitlement-JWS"
+    /// StoreKit's signed AppTransaction: free credits belong to a verified
+    /// App Store install (backend `_shared/apple.ts`).
+    public static let appTransactionHeader = "X-App-Transaction"
 
     public static func generation(
         _ body: GenerationRequest,
         config: BackendConfiguration,
         accessToken: String?,
         entitlementJWS: String? = nil,
+        appTransactionJWS: String? = nil,
         timeout: TimeInterval = 120
     ) throws -> URLRequest {
         var request = URLRequest(url: config.baseURL.appendingPathComponent(config.functionPath))
@@ -357,11 +505,18 @@ public enum RequestFactory {
         request.setValue("application/json", forHTTPHeaderField: "Accept")
         request.setValue(config.anonKey, forHTTPHeaderField: "apikey")
         request.setValue("Bearer \(accessToken ?? config.anonKey)", forHTTPHeaderField: "Authorization")
+        attach(entitlementJWS: entitlementJWS, appTransactionJWS: appTransactionJWS, to: &request)
+        request.httpBody = try JSONEncoder().encode(body)
+        return request
+    }
+
+    static func attach(entitlementJWS: String?, appTransactionJWS: String?, to request: inout URLRequest) {
         if let entitlementJWS, !entitlementJWS.isEmpty {
             request.setValue(entitlementJWS, forHTTPHeaderField: entitlementHeader)
         }
-        request.httpBody = try JSONEncoder().encode(body)
-        return request
+        if let appTransactionJWS, !appTransactionJWS.isEmpty {
+            request.setValue(appTransactionJWS, forHTTPHeaderField: appTransactionHeader)
+        }
     }
 
     public static func jobStatus(jobID: String, config: BackendConfiguration, accessToken: String?) throws -> URLRequest {
@@ -383,18 +538,21 @@ public enum RequestFactory {
                        query: [URLQueryItem(name: "job_id", value: jobID)], accessToken: accessToken)
     }
 
-    /// `GET` without a job id returns `{ "credits_remaining": n }`.
-    public static func balance(config: BackendConfiguration, accessToken: String?, entitlementJWS: String? = nil) throws -> URLRequest {
+    /// `GET` without a job id returns the balance (`BalanceState`).
+    public static func balance(
+        config: BackendConfiguration, accessToken: String?, entitlementJWS: String? = nil, appTransactionJWS: String? = nil
+    ) throws -> URLRequest {
         var request = try authorized(config: config, path: config.functionPath, method: "GET", query: [], accessToken: accessToken)
-        if let entitlementJWS, !entitlementJWS.isEmpty {
-            request.setValue(entitlementJWS, forHTTPHeaderField: entitlementHeader)
-        }
+        attach(entitlementJWS: entitlementJWS, appTransactionJWS: appTransactionJWS, to: &request)
         return request
     }
 
     /// Grants a consumable credit pack after the server verifies Apple's signed transaction.
-    public static func redeemCreditPack(signedTransaction: String, config: BackendConfiguration, accessToken: String?) throws -> URLRequest {
+    public static func redeemCreditPack(
+        signedTransaction: String, config: BackendConfiguration, accessToken: String?, appTransactionJWS: String? = nil
+    ) throws -> URLRequest {
         var request = try authorized(config: config, path: "functions/v1/credits-redeem", method: "POST", query: [], accessToken: accessToken)
+        attach(entitlementJWS: nil, appTransactionJWS: appTransactionJWS, to: &request)
         request.httpBody = try JSONEncoder().encode(["signed_transaction": signedTransaction])
         return request
     }
@@ -539,17 +697,18 @@ public enum ResponseDecoder {
     }
 
     public static func decodeBalance(data: Data, statusCode: Int) throws -> Int {
+        try decodeBalanceState(data: data, statusCode: statusCode).creditsRemaining
+    }
+
+    /// The balance with its policy numbers and status (`GET /ai-image`).
+    public static func decodeBalanceState(data: Data, statusCode: Int) throws -> BalanceState {
         guard (200..<300).contains(statusCode) else {
             throw error(from: data, statusCode: statusCode)
         }
-        struct Balance: Decodable {
-            let creditsRemaining: Int
-            enum CodingKeys: String, CodingKey { case creditsRemaining = "credits_remaining" }
-        }
-        guard let balance = try? JSONDecoder().decode(Balance.self, from: data) else {
+        guard let state = try? JSONDecoder().decode(BalanceState.self, from: data) else {
             throw AIServiceError.invalidResponse
         }
-        return balance.creditsRemaining
+        return state
     }
 
     public static func error(from data: Data, statusCode: Int, retryAfter: String? = nil) -> AIServiceError {
@@ -561,6 +720,27 @@ public enum ResponseDecoder {
     }
 
     static func mapped(_ body: APIErrorBody?, statusCode: Int, retryAfter: String?) -> AIServiceError? {
+        // The body's number, else the header's.
+        let wait = body?.retryAfter.map(TimeInterval.init) ?? retryAfter.flatMap(TimeInterval.init)
+        // Codes first: some share a status with older meanings (403, 429).
+        switch body?.code {
+        case "app_transaction_required", "app_transaction_invalid":
+            return .appStoreCheckFailed
+        case "cooldown":
+            return .cooldown(retryAfter: wait)
+        case "install_blocked":
+            return .cloudBlocked
+        case "ai_paused":
+            return .aiPaused(retryAfter: wait)
+        case "usage_limit":
+            return .usageLimit(retryAfter: wait)
+        case "rate_limited":
+            return .rateLimited(retryAfter: wait)
+        case "retry_limit":
+            return .retryLimit
+        default:
+            break
+        }
         switch (statusCode, body?.code) {
         case (402, _), (_, "insufficient_credits"):
             return .insufficientCredits(remaining: body?.creditsRemaining)
@@ -569,7 +749,7 @@ public enum ResponseDecoder {
         case (401, _), (403, _):
             return .unauthorized
         case (429, _):
-            return .rateLimited(retryAfter: retryAfter.flatMap(TimeInterval.init))
+            return .rateLimited(retryAfter: wait)
         default:
             if let body {
                 return .server(code: body.code, message: body.message)

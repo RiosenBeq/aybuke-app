@@ -60,11 +60,13 @@ struct PaywallView: View {
                     }
                     header
                     benefits
+                    cloudPauseNote
                     plans
                     if showsTrial, let yearly = purchases.yearly {
-                        TrialTimeline(days: yearly.freeTrialDays ?? 7, price: yearly.displayPrice)
+                        TrialTimeline(days: yearly.freeTrialDays ?? 7, price: yearly.displayPrice,
+                                      trialCredits: app.credits.policy.trialCredits)
                     } else if isScreenshotPreview {
-                        TrialTimeline(days: 7, price: "$39.99")
+                        TrialTimeline(days: 7, price: "$39.99", trialCredits: app.credits.policy.trialCredits)
                     }
                     if purchases.isSubscriptionPending {
                         PendingApprovalCard(text: "Waiting for approval. If it's approved, Pro turns on automatically.")
@@ -165,6 +167,20 @@ struct PaywallView: View {
         }
     }
 
+    /// Why cloud AI is off right now, as the credits sheet says it.
+    @ViewBuilder private var cloudPauseNote: some View {
+        if let pause = app.cloudPause, pause.isActive() {
+            Label {
+                Text(verbatim: app.message(for: pause))
+            } icon: {
+                Image(systemName: "moon.zzz.fill")
+            }
+            .font(.subheadline)
+            .foregroundStyle(Palette.textPrimary)
+            .fixedSize(horizontal: false, vertical: true)
+        }
+    }
+
     /// Why the paywall opened, when she didn't open it herself: said first,
     /// in one line, so it never feels like a surprise.
     private var reason: PaywallReason? {
@@ -176,7 +192,8 @@ struct PaywallView: View {
             Benefit(symbol: "bolt.fill", title: "\(app.credits.policy.proMonthlyAllowance) credits every month", detail: "Unused credits roll over to next month")
             Benefit(symbol: "sparkles", title: "Every look & style", detail: "Including the Pro-only looks and styles")
             Benefit(symbol: "photo.badge.checkmark", title: "Our best-quality AI, no watermark", detail: "Up to 4 images at once")
-            Benefit(symbol: "arrow.uturn.backward.circle", title: "Failed edits are always refunded", detail: "Plus a free retry if it doesn't look like you")
+            Benefit(symbol: "arrow.uturn.backward.circle", title: "Failed edits are always refunded",
+                    detail: "Plus a free retry if it doesn't look like you, up to \(app.credits.policy.freeRetriesPerDay) a day")
             // Only where free members see ads (not on the Mac).
             if app.ads.freeMembersSeeAds {
                 Benefit(symbol: "nosign", title: "No ads", detail: "Ad-free for as long as you're Pro")
@@ -280,15 +297,18 @@ struct PaywallView: View {
         }
     }
 
-    /// "7 days free, then **$39.99**/year": the trial or intro terms with the
-    /// billed price in bold, reusing the plan cards' sentences.
+    /// "7 days free with 20 credits, then **$39.99**/year with 80 credits
+    /// every month": the trial or intro terms with the billed price in bold
+    /// (the most prominent price, Guideline 3.1.2), and what the trial week
+    /// brings, since it isn't a full month's credits.
     private var billedTerms: AttributedString? {
+        let policy = app.credits.policy
         if isScreenshotPreview {
-            return Self.emphasizing("$39.99", in: String(localized: "\(7) days free, then \("$39.99")/year"))
+            return Self.emphasizing("$39.99", in: String(localized: "\(7) days free with \(policy.trialCredits) credits, then \("$39.99")/year with \(policy.proMonthlyAllowance) credits every month"))
         }
         guard let product = selectedProduct else { return nil }
         if showsTrial, let days = product.freeTrialDays {
-            return Self.emphasizing(product.displayPrice, in: String(localized: "\(days) days free, then \(product.displayPrice)/year"))
+            return Self.emphasizing(product.displayPrice, in: String(localized: "\(days) days free with \(policy.trialCredits) credits, then \(product.displayPrice)/year with \(policy.proMonthlyAllowance) credits every month"))
         }
         if product.id == StoreProducts.monthly, monthlyIntroEligible, let intro = product.introOfferText {
             return Self.emphasizing(product.displayPrice,
@@ -386,7 +406,7 @@ struct PaywallView: View {
         do {
             let token = await app.appAccountToken()
             guard try await purchases.purchase(product, appAccountToken: token) == .purchased else { return }
-            app.credits.refresh(isPro: purchases.isPro)
+            app.credits.refresh(isPro: purchases.isPro, isTrial: purchases.trial != nil)
             // Without a reminder (notifications off), the toast names the end date.
             var unremindedTrialEnd: Date?
             if startsTrial, let trialEnd = purchases.trial?.endsAt
@@ -422,7 +442,7 @@ struct PaywallView: View {
             return
         }
         if purchases.isPro {
-            app.credits.refresh(isPro: true)
+            app.credits.refresh(isPro: true, isTrial: purchases.trial != nil)
             dismiss()
         } else {
             errorTitle = String(localized: "Nothing to restore")
@@ -673,6 +693,8 @@ private struct PlanCard: View {
 private struct TrialTimeline: View {
     let days: Int
     let price: String
+    /// The trial's own credits (not a full month's).
+    let trialCredits: Int
 
     private var trialEnd: Date {
         Calendar.current.date(byAdding: .day, value: days, to: Date()) ?? Date()
@@ -697,7 +719,8 @@ private struct TrialTimeline: View {
                 .font(.cardTitle)
                 .foregroundStyle(Palette.textPrimary)
                 .padding(.bottom, 14)
-            Step(symbol: "lock.open.fill", title: "Today", detail: "Unlock everything. No charge today.", isLast: false)
+            Step(symbol: "lock.open.fill", title: "Today",
+                 detail: "Unlock everything, with \(trialCredits) credits for your free trial. No charge today.", isLast: false)
             if let reminderDay {
                 Step(symbol: "bell.fill", title: "Day \(max(1, reminderDay))", detail: "We'll remind you before your trial ends.", isLast: false)
             }

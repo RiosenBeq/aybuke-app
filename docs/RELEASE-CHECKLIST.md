@@ -37,7 +37,7 @@
   - Sorun olursa: Bant görünüyorsa derleme demo modundadır; bu derleme incelemeye asla gönderilmez.
 - [ ] **Sunucu gizli değerleri** (yalnızca adlarına bak, değerleri hiçbir yere yazma)
   - Yap: Supabase › Edge Functions › Secrets.
-  - Beklenen: `XAI_API_KEY`, `APPLE_BUNDLE_ID`, `APPLE_TEAM_ID`, `APPLE_APP_ID`, `OUTPUT_MODERATION` var. Ayrıca `APPLE_SIGNIN_KEY_ID` ve `APPLE_SIGNIN_PRIVATE_KEY` (hesap silmede Apple token iptali), `REVENUECAT_SECRET_KEY` ve `REVENUECAT_PROJECT_ID` (hesap silmede RevenueCat müşterisini silme) olmalı. `FAL_KEY` için karar ver (§12-5).
+  - Beklenen: `XAI_API_KEY`, `APPLE_BUNDLE_ID`, `APPLE_TEAM_ID`, `APPLE_APP_ID`, `OUTPUT_MODERATION` var. Ayrıca `APPLE_SIGNIN_KEY_ID` ve `APPLE_SIGNIN_PRIVATE_KEY` (hesap silmede Apple token iptali), `REVENUECAT_SECRET_KEY` ve `REVENUECAT_PROJECT_ID` (hesap silmede RevenueCat müşterisini silme) olmalı. `FAL_KEY` için karar ver (§12-5). İsteğe bağlı `XAI_SAFETY_MODEL` (bir xAI görme modeli) boşsa kapalıdır; ayarlanırsa denetim hata, zaman aşımı veya beklenmeyen bir yanıt verdiğinde iş engellenir ve kredi iade edilir.
   - Sorun olursa: Eksikleri listele. §9'daki ilgili maddeler eksik anahtarla başarısız olur.
 - [ ] **xAI Zero Data Retention açık** (sahibin işi, henüz doğrulanmadı)
   - Yap: console.x.ai › ekip ayarları.
@@ -109,7 +109,7 @@ Apple'ın güncel belgesine göre TestFlight'tan indirilen uygulama her zaman sa
   - Alternatifler: **Keep editing** ile editör Effects'te açılır ve paywall editör kapanınca gelir. **Skip for now** (*Şimdilik atla*) doğrudan paywall'a gider.
   - Sorun olursa: Paywall hiç gelmediyse ya da editör açıkken geldiyse not et.
 - [ ] **2.4 Explore ilk görünüm**
-  - Beklenen: Üstte "Glowlit", şimşek simgeli kredi hapında **3** ve dişli var. **Magic Edit** kartı (**Try it on your photo** / *Fotoğrafında dene*) ve **Quick tools** (*Hızlı araçlar*): Retro Cam, Effects, Enhance, Remove BG, Erase, Styles, Adjust, Collage, Video, Best shot. 1 Ekim–2 Kasım arasında **Spooky season** (*Halloween havası*) satırı görünür.
+  - Beklenen: Üstte "Glowlit", şimşek simgeli kredi hapında **2** ve dişli var. **Magic Edit** kartı (**Try it on your photo** / *Fotoğrafında dene*) ve **Quick tools** (*Hızlı araçlar*): Retro Cam, Effects, Enhance, Remove BG, Erase, Styles, Adjust, Collage, Video, Best shot. 1 Ekim–2 Kasım arasında **Spooky season** (*Halloween havası*) satırı görünür.
   - Sorun olursa: "Preview build" bandı görünüyorsa bu engelleyicidir.
 
 ---
@@ -118,7 +118,7 @@ Apple'ın güncel belgesine göre TestFlight'tan indirilen uygulama her zaman sa
 
 - [ ] **3.1 Günlük ücretsiz krediler**
   - Yap: Settings › **Credits** (*Krediler*).
-  - Beklenen: **Credits left** (*Kalan krediler*) 3. Altında "You get 3 free credits every day…" yazar. Sunucu günlük kredileri her gün 00:00 UTC'de (Türkiye saatiyle 03:00) 3'e tamamlar; krediler birikmez.
+  - Beklenen: **Credits left** (*Kalan krediler*) 2. Altında "You get 2 free credits every day…" yazar. Sunucu günlük kredileri her gün 00:00 UTC'de (Türkiye saatiyle 03:00) 2'ye tamamlar; krediler birikmez.
 - [ ] **3.2 Güvenlik filtresi** (onay ekranından ve krediden önce çalışır)
   - Yap: Explore › Magic Edit › bir fotoğraf → kutuya `make me thinner` (Türkçe: `beni daha zayıf yap`) yaz → yukarı ok.
   - Beklenen: Onay ekranı ya da paywall açılmadan hata çıkar: "Glowlit keeps you, you. Try hair color, makeup colors, outfits, light or backgrounds." (*Glowlit seni sen olarak tutar…*). Sunucuya istek gitmez, kredi düşmez.
@@ -130,8 +130,8 @@ Apple'ın güncel belgesine göre TestFlight'tan indirilen uygulama her zaman sa
   - Yap: Tekrar gönder → **Allow AI processing**.
 - [ ] **3.4 Magic Edit uçtan uca**
   - Beklenen: "Applying your edit…" (*Düzenlemen uygulanıyor…*) katmanında **Cancel** (*Vazgeç*) ve ilk seferde **Ping me when it's ready** (*Hazır olunca bana haber ver*) görünür. İş başlayınca Live Activity de başlar; uygulamadan çıkınca Dynamic Island'da görürsün (§7.2). Sonuç genellikle bir dakikadan kısa sürede gelir (3 dakikayı geçerse zaman aşımı ve iade). Önce/sonra karşılaştırma açık gelir; **Hold to see original** (*Orijinali görmek için basılı tut*); **Still you** (*Hâlâ sensin*) etiketi; **Retry free** (*Ücretsiz tekrar dene*) ya da **Doesn't look like you? Retry free** (*Benzemedi mi? Ücretsiz tekrar dene*); bayrak simgesi (Report).
-  - Sunucu: `jobs`'ta yeni satır `completed` ve `cost = 1`; `credit_ledger`'da −1 `hold`; `credit_wallets` toplamı 2. Uygulama sonucu indirince `outputs` alanı boşaltılır.
-  - Uygulamadaki bakiye: İş başlar başlamaz hap 2'ye düşer (sunucunun 202 yanıtındaki bakiye); iş bitince Settings › Credits left da 2'dir, widget iş bitince güncellenir. Uygulamayı kapatıp açınca da 2 kalmalı.
+  - Sunucu: `jobs`'ta yeni satır `completed` ve `cost = 1`; `credit_ledger`'da −1 `hold`; `credit_wallets` toplamı 1. Uygulama sonucu indirince `outputs` alanı boşaltılır.
+  - Uygulamadaki bakiye: İş başlar başlamaz hap 1'e düşer (sunucunun 202 yanıtındaki bakiye); iş bitince Settings › Credits left da 1'dir, widget iş bitince güncellenir. Uygulamayı kapatıp açınca da 1 kalmalı.
   - Yap: Üst çubukta **Save** (*Kaydet*).
   - Beklenen: İlk kayıtta Fotoğraflar için "yalnızca ekleme" izni sorulur, sonra "Saved to Photos" (*Fotoğraflar'a kaydedildi*). Ücretsiz kullanıcıda resmin köşesinde küçük Glowlit işareti bulunur; eser My Works'e de eklenir.
   - Sorun olursa: Hata metnini, saati ve `jobs.error_code` değerini yaz.
@@ -154,7 +154,7 @@ Apple'ın güncel belgesine göre TestFlight'tan indirilen uygulama her zaman sa
   - Yap: Sağ üstte **…** (More) → **Report this image** (*Bu görseli bildir*) → bir neden seç.
   - Beklenen: "Thanks — we'll review this image." (*Teşekkürler — bu görseli inceleyeceğiz.*) ve Supabase `reports` tablosunda yeni satır.
 - [ ] **3.8 Krediler bitince**
-  - Yap: Ücretsiz kullanıcıyken 3 krediyi bitir, bir iş daha dene.
+  - Yap: Ücretsiz kullanıcıyken 2 krediyi bitir, bir iş daha dene.
   - Beklenen: Sunucu "yetersiz kredi" der ve paywall açılır. Altında **Or wait for your free daily credits. Remind me when they're back** (*Ya da günlük ücretsiz kredilerini bekle. Geri gelince bana hatırlat*) bağlantısı var; dokununca bildirim izni sorulur, "We'll remind you when your free credits are back ✨" görünür ve paywall kapanır. Eski kalmış bakiye bu noktada 0'a düzelir.
   - Pro kullanıcıda aylık krediler bitince paywall yerine **You've used this month's credits** (*Bu ayın kredilerini kullandın*) sayfası ve kredi paketleri gelir (§4 sonrası dene).
 - [ ] **3.9 Çevrimdışı**
@@ -165,7 +165,7 @@ Apple'ın güncel belgesine göre TestFlight'tan indirilen uygulama her zaman sa
   - Beklenen: Onay ekranı yeniden açılır. Anahtarın altında aynı iki işleyen (Supabase ve xAI) listelenir; anahtarı açınca da aynı onay ekranı gelir.
 - [ ] **3.11 Ertesi gün yenilenme**
   - Yap: Ertesi gün Türkiye saatiyle 03:00'ten sonra uygulamayı aç.
-  - Beklenen: Ücretsiz kullanıcıda bakiye 3 olur (6 olmaz). Pro'da günlük kredi 0'dır, aylık krediler devam eder.
+  - Beklenen: Ücretsiz kullanıcıda bakiye 2 olur (4 olmaz). Pro'da günlük kredi 0'dır, aylık krediler devam eder.
 - [ ] **3.12 Ideas for this photo ve Surprise me** (ücretsiz)
   - Yap: Editörde fotoğrafın altındaki **Ideas for this photo** (*Bu fotoğraf için fikirler*) → **Surprise me** (*Şaşırt beni*).
   - Beklenen: Uygun bir ücretsiz efekt hemen uygulanır (kredi ve onay yok). Bir görünüm (look) önerisi seçersen önce "Try …?" onayı ve kredi bilgisi gelir.
@@ -201,7 +201,7 @@ Fiyatlar ABD mağazasında: Yıllık $39.99 (7 gün ücretsiz), Aylık $5.99 (il
 - [ ] **4.4 Pro Monthly ve ilk ay $1.99**
   - Ön koşul: Hesap Pro olmamalı ve bu grupta daha önce tanıtım teklifi kullanmamış olmalı. Sandbox hesabında **Clear Purchase History** ikisini birden sağlar (etkin aboneliği de siler, §1.4); kendi hesabında ikinci bir hesap gerekir. Yıllık denemeyi kullanmış bir hesapta Monthly kartında yalnızca "Cancel anytime" yazar, **TRY IT** rozeti olmaz ve düğme "Continue — …/month" olur. Bu doğru davranıştır.
   - Yap: Uygun hesapla Monthly'yi seç.
-  - Beklenen: Düğmede **Continue**, altında "First month $1.99, then **$5.99**/month · cancel anytime". Apple penceresinde ilk dönem $1.99. Satın almadan sonra Pro açılır ve +100 kredi gelir.
+  - Beklenen: Düğmede **Continue**, altında "First month $1.99, then **$5.99**/month · cancel anytime". Apple penceresinde ilk dönem $1.99. Satın almadan sonra Pro açılır ve +80 kredi gelir.
 - [ ] **4.5 Kredi paketleri (30 ve 100)**
   - Yap: Paywall › **Not ready to subscribe? Get a credit pack** (*Abone olmaya hazır değil misin? Kredi paketi al*) ya da Settings › Credits › **Buy a credit pack** (*Kredi paketi al*).
   - Beklenen: **Credit packs** (*Kredi paketleri*) sayfasında "Pay once. Credits never expire. 1 credit = 1 creation or edit." yazar. İki satırda App Store Connect'teki ad, açıklama ve "≈ … per credit" (*Kredi başına ≈ …*) görünür.
@@ -215,7 +215,7 @@ Fiyatlar ABD mağazasında: Yıllık $39.99 (7 gün ücretsiz), Aylık $5.99 (il
   - Beklenen: Aynı Apple Hesabında Pro, Restore'a basmadan da görünür. Bakiye Keychain'deki oturum sayesinde geri gelir (§1.5).
 - [ ] **4.7 Pro bitince**
   - Yap: Aboneliği iptal et ve dönemin bitmesini bekle (sandbox'ta dakikalar ya da saatler; ayrıca 12 yenilemeden sonra sandbox aboneliği kendiliğinden biter).
-  - Beklenen: Pro kapanır ve Settings'te **Upgrade to Glowlit Pro** (*Glowlit Pro'ya geç*) görünür. Sunucuda aylık krediler 0'lanır, günlük 3 kredi geri gelir, **paket kredileri kalır**.
+  - Beklenen: Pro kapanır ve Settings'te **Upgrade to Glowlit Pro** (*Glowlit Pro'ya geç*) görünür. Sunucuda aylık krediler 0'lanır, günlük 2 kredi geri gelir, **paket kredileri kalır**.
 - [ ] **4.8 Pro özellikleri ve filigran**
   - Beklenen: Pro'da kilitli görünümler ve stiller açılır; Create'te 2–4 görsel seçilebilir (görsel başına 1 kredi); dışa aktarımda Glowlit işareti olmaz. Ücretsiz kullanıcı kilitli bir şeye dokununca paywall açılır. Cihaz üstü düzenlemelerde hiçbir zaman işaret olmaz.
 - [ ] **4.9 Onay bekleyen satın alma (Ask to Buy)** (TestFlight'ta denenemez)
@@ -411,7 +411,7 @@ Fiyatlar ABD mağazasında: Yıllık $39.99 (7 gün ücretsiz), Aylık $5.99 (il
   - Yap: Settings › Privacy › **Delete my data & account** (*Verilerimi ve hesabımı sil*) → "Delete my data?" (*Verilerim silinsin mi?*) → **Delete my data** (*Verilerimi sil*).
   - Beklenen: Onay metni "Deletes your creations and your account with its credits from our servers, and resets every setting on this device. Subscriptions are managed by Apple and must be cancelled separately." İlerleme göstergesinden sonra "Your data has been deleted." (*Verilerin silindi.*) ve uygulama onboarding'in başına döner.
 - [ ] **9.3 Cihazda silinmesi gerekenler**
-  - Beklenen: My Works boş (Recently deleted dahil). Onay, yaş bandı, ilgi alanları, görünüm (Light'a döner), son istemler, bildirim tercihleri ve bekleyen bildirimler silinmiş (yalnızca Pro deneme hatırlatması kalır); Bildirim Merkezi'ndeki Glowlit bildirimleri de silinmiş. Live Activity kapanmış. Widget'lar "Make your first glow ✨" ve (Pro değilsen) 3 kredi gösterir. Settings'te Apple ile giriş yok; ipuçları ve tur sıfırlanmış.
+  - Beklenen: My Works boş (Recently deleted dahil). Onay, yaş bandı, ilgi alanları, görünüm (Light'a döner), son istemler, bildirim tercihleri ve bekleyen bildirimler silinmiş (yalnızca Pro deneme hatırlatması kalır); Bildirim Merkezi'ndeki Glowlit bildirimleri de silinmiş. Live Activity kapanmış. Widget'lar "Make your first glow ✨" ve (Pro değilsen) 2 kredi gösterir. Settings'te Apple ile giriş yok; ipuçları ve tur sıfırlanmış.
 - [ ] **9.4 Sunucuda silinmesi gerekenler**
   - Beklenen: Supabase › Users'ta kullanıcı yok. `credit_wallets`, `credit_ledger`, `jobs`, `entitlements`, `reports`, `apple_accounts` ve `merged_users` satırları silinmiş (cascade).
 - [ ] **9.5 RevenueCat**

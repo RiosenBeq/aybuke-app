@@ -205,7 +205,7 @@ Seven audits (code, UX and accessibility, platform, competitors, trends, wellbei
 | `live-photo-and-video-captions` | Live Photo effects, 9:16 reframe, speed, mute, Hide faces for video (✅ on-device automatic captions shipped: Pop, Bubble, Candy, Karaoke and Typewriter, burned into the export) | Video gaps against Edits, Wink and Meitu; captions were already planned | No |
 | `universal-links-try-this-look` | Universal links, a "Try this look" card with QR, in-app events | "Add Yours" chains spread the 80s trend; needs a live domain | No |
 | `store-retention-pricing-ops` | Win-back offers, Retention Messaging, regional prices, billing-issue banner | Mostly App Store Connect setup once the app record exists | No |
-| `trial-credit-cap-family-sharing` | Cap credits during the trial; Family Sharing with a smaller allowance | A trial grants 100 credits in the category with the highest refund rate | Yes |
+| `trial-credit-cap-family-sharing` | Cap credits during the trial; Family Sharing with a smaller allowance | A trial grants 20 credits in the category with the highest refund rate | Yes |
 | `funnel-measurement` | Private funnel measurement: paywall source, peer benchmarks, anonymous counters | The spec's KPIs can't be measured today | Yes |
 | `server-moderation-stack` | Fail-closed output moderation, input nudity screening, multilingual classifier | Output checks pass by default without `FAL_KEY`; must ship before launch | Yes |
 | `abuse-ops-reports-bans` | Ban list, reviewable reports, CSAM/NCII runbook with legal hold, App Attest, App Store Server Notifications, PermissionKit | Apple 1.2 and Texas consent revocation; reports have no image today | Yes |

@@ -13,7 +13,8 @@ if [ "$(id -u)" = "0" ]; then
   command -v sudo >/dev/null || RUN_AS=(su postgres -s /bin/bash -c)
 fi
 run() {
-  if [ "${RUN_AS[0]:-}" = "su" ]; then "${RUN_AS[@]}" "$*"; else "${RUN_AS[@]}" "$@"; fi
+  # ${RUN_AS[@]+...}: an empty array is unbound under set -u on Bash 4.3.
+  if [ "${RUN_AS[0]:-}" = "su" ]; then "${RUN_AS[@]+"${RUN_AS[@]}"}" "$*"; else "${RUN_AS[@]+"${RUN_AS[@]}"}" "$@"; fi
 }
 cleanup() { run "$PG_BIN/pg_ctl" -D "$DATA" -m immediate stop >/dev/null 2>&1 || true; rm -rf "$DATA"; }
 trap cleanup EXIT
@@ -31,7 +32,15 @@ for migration in "$ROOT"/supabase/migrations/*.sql; do
   "${PSQL[@]}" -f "$migration"
 done
 "${PSQL[@]}" -c "grant select on all tables in schema public to authenticated;"
-for test in credits reports accounts retry unclaimed revenuecat keepalive ad_rewards; do
-  test="$ROOT/supabase/tests/${test}_test.sql"
+# Every *_test.sql runs. Some suites share fixture ids and clean up after
+# themselves (unclaimed before ad_rewards), so the known ones keep this order
+# and any other *_test.sql runs after them.
+ORDER=(credits reports accounts retry unclaimed revenuecat keepalive ad_rewards abuse)
+for name in "${ORDER[@]}"; do
+  "${PSQL[@]}" -f "$ROOT/supabase/tests/${name}_test.sql"
+done
+for test in "$ROOT"/supabase/tests/*_test.sql; do
+  name="$(basename "$test" _test.sql)"
+  case " ${ORDER[*]} " in *" $name "*) continue ;; esac
   "${PSQL[@]}" -f "$test"
 done

@@ -150,7 +150,13 @@ struct ResultsView: View {
         ButtonRow(spacing: 10) {
             if regenerate != nil {
                 Button {
-                    confirmRegenerate = true
+                    // A cool-down or a block would refuse the job after she confirmed.
+                    if let pause = app.cloudPause, pause.isActive() {
+                        Haptics.error()
+                        app.explain(pause)
+                    } else {
+                        confirmRegenerate = true
+                    }
                 } label: {
                     Label("Regenerate", systemImage: "arrow.clockwise")
                 }

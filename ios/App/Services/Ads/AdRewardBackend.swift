@@ -4,17 +4,21 @@ import AppCore
 /// The server side of rewarded ads (`functions/v1/ad-reward`): a single-use
 /// token before each ad, and whether AdMob has confirmed it since. Uses the
 /// session she already has (she ran out of credits on it) and never signs up.
+/// Ad credits belong to the App Store install like the free ones, so the
+/// overview and the token carry StoreKit's AppTransaction.
 final class AdRewardBackend {
     private let config: BackendConfiguration
     private let auth: AuthSessionManager
     private let session: URLSession
+    private let appTransactions: AppTransactionProvider
     private let entitlementProvider: () async -> String?
 
     init(config: BackendConfiguration, auth: AuthSessionManager, session: URLSession = .shared,
-         entitlementProvider: @escaping () async -> String?) {
+         appTransactions: AppTransactionProvider, entitlementProvider: @escaping () async -> String?) {
         self.config = config
         self.auth = auth
         self.session = session
+        self.appTransactions = appTransactions
         self.entitlementProvider = entitlementProvider
     }
 
@@ -22,7 +26,8 @@ final class AdRewardBackend {
     func overview() async throws -> AdRewardStatus {
         let accessToken = try await token()
         let jws = await entitlementProvider()
-        let request = try RequestFactory.adRewardOverview(config: config, accessToken: accessToken, entitlementJWS: jws)
+        let request = try RequestFactory.adRewardOverview(config: config, accessToken: accessToken, entitlementJWS: jws,
+                                                          appTransactionJWS: await appTransactions.jws())
         let (data, response) = try await session.mappedData(for: request)
         return try ResponseDecoder.decodeAdRewardStatus(data: data, statusCode: (response as? HTTPURLResponse)?.statusCode ?? 0)
     }
@@ -31,7 +36,8 @@ final class AdRewardBackend {
     func issueToken() async throws -> AdRewardToken {
         let accessToken = try await token()
         let jws = await entitlementProvider()
-        let request = try RequestFactory.adRewardToken(config: config, accessToken: accessToken, entitlementJWS: jws)
+        let request = try RequestFactory.adRewardToken(config: config, accessToken: accessToken, entitlementJWS: jws,
+                                                       appTransactionJWS: await appTransactions.jws())
         let (data, response) = try await session.mappedData(for: request)
         return try ResponseDecoder.decodeAdRewardToken(data: data, statusCode: (response as? HTTPURLResponse)?.statusCode ?? 0)
     }

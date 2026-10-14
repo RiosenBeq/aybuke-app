@@ -4,7 +4,7 @@ import FoundationNetworking
 #endif
 
 // Ads for free members 13+ (Pro has none): an optional rewarded ad for one
-// credit when she's out of credits, at most three a day, and now and then an
+// credit when she's out of credits, at most two a day, and now and then an
 // interstitial after a finished save or share. The rules that decide who and
 // when live here so they're tested on Linux; the app only shows the ads.
 
@@ -37,12 +37,13 @@ extension AgeDefaults {
 
 /// One credit per rewarded ad, at most `dailyCap` a day (UTC), only for free
 /// members who are out of credits. The server enforces the same numbers
-/// (`ad_reward_policy()` in the backend); this decides what the app offers.
+/// (`ad_reward_policy()` in the backend, per user and per App Store
+/// install); this decides what the app offers.
 public struct AdRewardPolicy: Equatable, Sendable {
     public var dailyCap: Int
     public var creditsPerAd: Int
 
-    public init(dailyCap: Int = 3, creditsPerAd: Int = 1) {
+    public init(dailyCap: Int = 2, creditsPerAd: Int = 1) {
         self.dailyCap = dailyCap
         self.creditsPerAd = creditsPerAd
     }
@@ -246,35 +247,41 @@ public enum AdRewardError: Error, Equatable, Sendable {
 extension RequestFactory {
     static let adRewardPath = "functions/v1/ad-reward"
 
-    /// Today's ads: how many are left, and the balance.
-    public static func adRewardOverview(config: BackendConfiguration, accessToken: String?, entitlementJWS: String? = nil) throws -> URLRequest {
-        try adRewardRequest(method: "GET", query: [], config: config, accessToken: accessToken, entitlementJWS: entitlementJWS)
+    /// Today's ads: how many are left, and the balance. Like a job, it
+    /// carries the AppTransaction: ad credits belong to the App Store install.
+    public static func adRewardOverview(
+        config: BackendConfiguration, accessToken: String?, entitlementJWS: String? = nil, appTransactionJWS: String? = nil
+    ) throws -> URLRequest {
+        try adRewardRequest(method: "GET", query: [], config: config, accessToken: accessToken,
+                            entitlementJWS: entitlementJWS, appTransactionJWS: appTransactionJWS)
     }
 
     /// A single-use token for the next ad; the app passes only this to AdMob.
-    public static func adRewardToken(config: BackendConfiguration, accessToken: String?, entitlementJWS: String? = nil) throws -> URLRequest {
-        try adRewardRequest(method: "POST", query: [], config: config, accessToken: accessToken, entitlementJWS: entitlementJWS)
+    public static func adRewardToken(
+        config: BackendConfiguration, accessToken: String?, entitlementJWS: String? = nil, appTransactionJWS: String? = nil
+    ) throws -> URLRequest {
+        try adRewardRequest(method: "POST", query: [], config: config, accessToken: accessToken,
+                            entitlementJWS: entitlementJWS, appTransactionJWS: appTransactionJWS)
     }
 
     /// Whether AdMob has confirmed the ad that carried `token`.
     public static func adRewardStatus(token: String, config: BackendConfiguration, accessToken: String?, entitlementJWS: String? = nil) throws -> URLRequest {
         try adRewardRequest(method: "GET", query: [URLQueryItem(name: "token", value: token)], config: config,
-                            accessToken: accessToken, entitlementJWS: entitlementJWS)
+                            accessToken: accessToken, entitlementJWS: entitlementJWS, appTransactionJWS: nil)
     }
 
     /// The ad closed before its reward: gives the token's place back.
     public static func releaseAdRewardToken(token: String, config: BackendConfiguration, accessToken: String?) throws -> URLRequest {
         try adRewardRequest(method: "DELETE", query: [URLQueryItem(name: "token", value: token)], config: config,
-                            accessToken: accessToken, entitlementJWS: nil)
+                            accessToken: accessToken, entitlementJWS: nil, appTransactionJWS: nil)
     }
 
     private static func adRewardRequest(
-        method: String, query: [URLQueryItem], config: BackendConfiguration, accessToken: String?, entitlementJWS: String?
+        method: String, query: [URLQueryItem], config: BackendConfiguration, accessToken: String?,
+        entitlementJWS: String?, appTransactionJWS: String?
     ) throws -> URLRequest {
         var request = try authorized(config: config, path: adRewardPath, method: method, query: query, accessToken: accessToken)
-        if let entitlementJWS, !entitlementJWS.isEmpty {
-            request.setValue(entitlementJWS, forHTTPHeaderField: entitlementHeader)
-        }
+        attach(entitlementJWS: entitlementJWS, appTransactionJWS: appTransactionJWS, to: &request)
         return request
     }
 }

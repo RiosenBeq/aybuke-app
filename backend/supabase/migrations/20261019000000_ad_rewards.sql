@@ -1,4 +1,4 @@
--- Rewarded ads: one credit for a watched ad, at most 3 a day (UTC).
+-- Rewarded ads: one credit for a watched ad, at most 2 a day (UTC).
 -- ----------------------------------------------------------------------------
 -- The flow (functions/ad-reward):
 --   1. A free member who is out of credits asks for a reward token
@@ -27,8 +27,8 @@ alter table public.credit_ledger add constraint credit_ledger_kind_check
 -- Change these numbers to retune ads without an app update; the app's copy
 -- reads the cap from the server ("2 left today").
 create or replace function public.ad_reward_policy(out daily_cap int, out credits int, out token_ttl interval)
-language sql immutable as $$
-  select 3, 1, interval '30 minutes'
+language sql immutable set search_path = '' as $$
+  select 2, 1, interval '30 minutes'
 $$;
 
 create table public.ad_reward_tokens (
