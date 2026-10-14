@@ -222,30 +222,21 @@ struct TourOverlay: View {
                 .font(.subheadline)
                 .foregroundStyle(Palette.textSecondary)
                 .fixedSize(horizontal: false, vertical: true)
-            HStack {
-                if !app.tour.isLastStep {
-                    Button("Skip") { app.tour.finish() }
-                        .font(.subheadline.weight(.semibold))
-                        .foregroundStyle(Palette.textSecondary)
+            ViewThatFits(in: .horizontal) {
+                HStack {
+                    skipButton
+                    Spacer()
+                    nextButton
                 }
-                Spacer()
-                Button {
-                    advance()
-                } label: {
-                    HStack(spacing: 6) {
-                        Text(app.tour.isLastStep ? "Let's glow" : "Next")
-                        Image(systemName: app.tour.isLastStep ? "sparkles" : "arrow.right")
-                    }
-                    .font(.subheadline.weight(.bold))
-                    .foregroundStyle(Palette.onAccent)
-                    .padding(.horizontal, 18)
-                    .frame(height: 44)
-                    .background(Palette.accent, in: .chip)
+                VStack(alignment: .trailing, spacing: 8) {
+                    nextButton
+                    skipButton
                 }
-                .buttonStyle(.pressable)
+                .frame(maxWidth: .infinity, alignment: .trailing)
             }
             .padding(.top, 4)
         }
+        .dynamicTypeSize(...DynamicTypeSize.accessibility1)
         .padding(18)
         .background(Palette.surface, in: .card)
         .overlay(RoundedRectangle.card.strokeBorder(Palette.stroke, lineWidth: 1))
@@ -255,6 +246,32 @@ struct TourOverlay: View {
         .onTapGesture { advance() }
         .accessibilityElement(children: .contain)
         .accessibilityAction(.escape) { app.tour.finish() }
+    }
+
+    @ViewBuilder
+    private var skipButton: some View {
+        if !app.tour.isLastStep {
+            Button("Skip") { app.tour.finish() }
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(Palette.textSecondary)
+        }
+    }
+
+    private var nextButton: some View {
+        Button {
+            advance()
+        } label: {
+            HStack(spacing: 6) {
+                Text(app.tour.isLastStep ? "Let's glow" : "Next")
+                Image(systemName: app.tour.isLastStep ? "sparkles" : "arrow.right")
+            }
+            .font(.subheadline.weight(.bold))
+            .foregroundStyle(Palette.onAccent)
+            .padding(.horizontal, 18)
+            .frame(minHeight: 44)
+            .background(Palette.accent, in: .chip)
+        }
+        .buttonStyle(.pressable)
     }
 
     private func advance() {

@@ -418,7 +418,7 @@ struct CutoutPanel: View {
                 }
                 backdropRow
 
-                HStack(spacing: 12) {
+                ButtonRow {
                     Menu {
                         Button(action: onCopySticker) { Label("Copy as sticker", systemImage: "doc.on.doc") }
                         Button(action: onSaveSticker) { Label("Save sticker", systemImage: "square.and.arrow.down") }
@@ -427,10 +427,12 @@ struct CutoutPanel: View {
                             .font(.headline)
                             .foregroundStyle(Palette.textPrimary)
                             .lineLimit(1)
-                            .frame(maxWidth: .infinity, minHeight: 52)
+                            .padding(.horizontal, 18)
+                            .frame(maxWidth: .infinity, minHeight: Metrics.buttonHeight)
                             .background(Palette.surface, in: .button)
                             .overlay(RoundedRectangle.button.strokeBorder(Palette.stroke, lineWidth: 1))
                     }
+                } primary: {
                     Button("Apply", action: onApply)
                         .buttonStyle(.primary)
                 }

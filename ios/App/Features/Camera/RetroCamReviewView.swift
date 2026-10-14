@@ -120,19 +120,14 @@ struct RetroCamReviewView: View {
 
     private var boothOptions: some View {
         VStack(spacing: 10) {
-            HStack(spacing: 8) {
-                ForEach(BoothLayout.allCases) { option in
-                    SelectableChip(title: title(of: option),
-                                   symbolName: option == .strip ? "rectangle.split.1x2" : "square.grid.2x2",
-                                   isSelected: layout == option) {
-                        layout = option
-                        Haptics.selection()
-                    }
+            // One row when the chips fit; with large text it scrolls instead
+            // of pushing the screen wider than the window.
+            ViewThatFits(in: .horizontal) {
+                HStack(spacing: 8) { boothChips }
+                ScrollView(.horizontal) {
+                    HStack(spacing: 8) { boothChips }
                 }
-                SelectableChip(title: "Date", symbolName: "calendar", isSelected: showsDate) {
-                    showsDate.toggle()
-                    Haptics.selection()
-                }
+                .scrollIndicators(.hidden)
             }
             TextField(text: $caption) {
                 Text("Add a caption (optional)", comment: "Placeholder of the one-line caption printed under photo booth shots")
@@ -152,13 +147,30 @@ struct RetroCamReviewView: View {
         .readableWidth(Metrics.compactWidth, alignment: .center)
     }
 
+    @ViewBuilder
+    private var boothChips: some View {
+        ForEach(BoothLayout.allCases) { option in
+            SelectableChip(title: title(of: option),
+                           symbolName: option == .strip ? "rectangle.split.1x2" : "square.grid.2x2",
+                           isSelected: layout == option) {
+                layout = option
+                Haptics.selection()
+            }
+        }
+        SelectableChip(title: "Date", symbolName: "calendar", isSelected: showsDate) {
+            showsDate.toggle()
+            Haptics.selection()
+        }
+    }
+
     private var actions: some View {
         VStack(spacing: 10) {
-            HStack(spacing: 10) {
+            ButtonRow(spacing: 10) {
                 Button(action: edit) {
                     Label("Edit", systemImage: "slider.horizontal.3")
                 }
                 .buttonStyle(.secondary)
+            } primary: {
                 Button(action: share) {
                     Label("Share", systemImage: "paperplane.fill")
                 }

@@ -86,7 +86,7 @@ struct InviteView: View {
                 .buttonStyle(.primary)
             }
 
-            HStack(spacing: 12) {
+            ButtonRow {
                 Button {
                     shareMessage()
                 } label: {
@@ -94,7 +94,7 @@ struct InviteView: View {
                         .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(.secondary)
-
+            } primary: {
                 if link != nil {
                     Button {
                         copyLink()

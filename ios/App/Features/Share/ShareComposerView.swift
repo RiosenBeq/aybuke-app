@@ -447,11 +447,16 @@ private struct ShareTarget: View {
                 Text(title)
                     .font(.caption.weight(.semibold))
                     .foregroundStyle(Palette.textPrimary)
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.8)
+                    .multilineTextAlignment(.center)
+                    .lineLimit(2)
+                    .minimumScaleFactor(0.7)
+                    .dynamicTypeSize(...DynamicTypeSize.accessibility1)
             }
             .frame(maxWidth: .infinity)
         }
         .buttonStyle(.pressable)
+        .accessibilityShowsLargeContentViewer {
+            Label(title, systemImage: symbol)
+        }
     }
 }

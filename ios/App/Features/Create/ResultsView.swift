@@ -63,7 +63,10 @@ struct ResultsView: View {
                 Button {
                     share()
                 } label: {
+                    // One word in every language: it shrinks rather than breaks.
                     Label("Share", systemImage: "paperplane.fill")
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.6)
                 }
                 .buttonStyle(.primary)
 
@@ -144,7 +147,7 @@ struct ResultsView: View {
 
     /// Regenerate and, with more than one image, Save all.
     private var moreActions: some View {
-        HStack(spacing: 10) {
+        ButtonRow(spacing: 10) {
             if regenerate != nil {
                 Button {
                     confirmRegenerate = true
@@ -153,6 +156,7 @@ struct ResultsView: View {
                 }
                 .buttonStyle(.secondary)
             }
+        } primary: {
             if images.count > 1 {
                 Button {
                     saveAll()
@@ -170,8 +174,6 @@ struct ResultsView: View {
             }
         }
         .labelStyle(.titleAndIcon)
-        .lineLimit(1)
-        .minimumScaleFactor(0.8)
     }
 
     private func regenerateMessage(cost: Int) -> String {

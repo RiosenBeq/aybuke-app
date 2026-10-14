@@ -276,17 +276,28 @@ struct CreateView: View {
     private var countSection: some View {
         VStack(alignment: .leading, spacing: 12) {
             SectionHeader(title: "Images", subtitle: "Generate up to 4 variations with Pro")
-            HStack(spacing: 8) {
-                ForEach(1...4, id: \.self) { number in
-                    SelectableChip(
-                        title: "\(number)",
-                        isSelected: model.count == number,
-                        isLocked: number > 1 && !app.purchases.isPro
-                    ) {
-                        Haptics.selection()
-                        model.count = number
-                    }
+            // One row when the chips fit; with large text it scrolls instead
+            // of pushing the page wider than the screen.
+            ViewThatFits(in: .horizontal) {
+                HStack(spacing: 8) { countChips }
+                ScrollView(.horizontal) {
+                    HStack(spacing: 8) { countChips }
                 }
+                .scrollIndicators(.hidden)
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var countChips: some View {
+        ForEach(1...4, id: \.self) { number in
+            SelectableChip(
+                title: "\(number)",
+                isSelected: model.count == number,
+                isLocked: number > 1 && !app.purchases.isPro
+            ) {
+                Haptics.selection()
+                model.count = number
             }
         }
     }
@@ -308,7 +319,11 @@ struct CreateView: View {
         .padding(.top, 10)
         .readableWidth(Metrics.compactWidth, alignment: .center)
         .background(
-            LinearGradient(colors: [Palette.background.opacity(0), Palette.background], startPoint: .top, endPoint: .center)
+            // A short fade above the button, then solid behind it and the
+            // balance line, so nothing scrolled shows through either.
+            LinearGradient(stops: [.init(color: Palette.background.opacity(0), location: 0),
+                                   .init(color: Palette.background, location: 0.16)],
+                           startPoint: .top, endPoint: .bottom)
                 // Down to the tab bar too, so section titles don't peek
                 // through the gap between the button and the tabs.
                 .padding(.bottom, -32)

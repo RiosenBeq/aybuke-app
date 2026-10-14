@@ -226,10 +226,11 @@ struct HideFacesPanel: View {
             }
             .scrollIndicators(.hidden)
 
-            HStack(spacing: 12) {
+            ButtonRow {
                 Button("Reset") { withAnimation(.snappy) { hider.showAll() } }
                     .buttonStyle(.secondary)
                     .disabled(!hider.hasSelection)
+            } primary: {
                 Button("Apply", action: onApply)
                     .buttonStyle(.primary)
                     .disabled(!hider.hasSelection)
