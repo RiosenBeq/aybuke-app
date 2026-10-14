@@ -43,7 +43,8 @@ struct ConsentRequest: Identifiable {
 
 struct PhotosAccessRequest: Identifiable {
     let id = UUID()
-    let shareInstead: SharePayload?
+    /// Offers "Share instead" when the caller can share what she tried to save.
+    let shareInstead: (() -> Void)?
 
     /// Photos privacy settings: the app's own page on iPhone and iPad,
     /// Privacy & Security › Photos on the Mac.
@@ -1145,9 +1146,14 @@ final class AppModel {
     /// Saving to Photos without access: an alert that can open Settings, and
     /// share the image instead when the caller has it at hand.
     func handleSaveError(_ error: Error, shareInstead: SharePayload?) {
+        handleSaveError(error, onShareInstead: shareInstead.map { payload in { [weak self] in self?.share(payload) } })
+    }
+
+    /// The same for things that aren't an image, like a video export.
+    func handleSaveError(_ error: Error, onShareInstead: (() -> Void)?) {
         if case PhotoLibrarySaver.SaveError.denied = error {
             Haptics.error()
-            photosAccessRequest = PhotosAccessRequest(shareInstead: shareInstead)
+            photosAccessRequest = PhotosAccessRequest(shareInstead: onShareInstead)
             return
         }
         handle(error)

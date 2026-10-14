@@ -85,8 +85,8 @@ struct AppPresentations: ViewModifier {
                 Button("Open Settings") {
                     if let url = PhotosAccessRequest.settingsURL { openURL(url) }
                 }
-                if let payload = request.shareInstead {
-                    Button("Share instead") { app.share(payload) }
+                if let shareInstead = request.shareInstead {
+                    Button("Share instead", action: shareInstead)
                 }
                 Button("Cancel", role: .cancel) {}
             } message: { _ in

@@ -354,6 +354,8 @@ struct VideoEditorView: View {
             if let sharedFile { try? FileManager.default.removeItem(at: sharedFile) }
             sharedFile = nil
         }
+        // Toasts and the Photos-access alert: the root's copy is covered.
+        .modifier(AppPresentations(isActive: true))
     }
 
     private var editor: some View {
@@ -538,7 +540,8 @@ struct VideoEditorView: View {
             }
         } catch {
             // Cancelled or stopped by leaving the app: no error, no setback.
-            app.handle(error)
+            // No Photos access: offer Settings, or sharing the video instead.
+            app.handleSaveError(error, onShareInstead: action == .save ? { Task { await perform(.share) } } : nil)
             // Already back by the time the stop surfaced.
             restartInterruptedExport()
         }
@@ -568,13 +571,14 @@ struct VideoEditorView: View {
 
     #if DEBUG
     /// Screenshot scene `video`: `-GLEffect <effect>`, `-GLCutSilences YES`,
-    /// and `-GLVideoAction share|close` to export or ask before closing.
+    /// and `-GLVideoAction save|share|close` to export or ask before closing.
     private func applyScreenshotOptions() {
         guard ScreenshotScene.current == .video, !model.loadFailed else { return }
         let defaults = UserDefaults.standard
         if let effect = defaults.string(forKey: "GLEffect").flatMap(RetroEffect.init(rawValue:)) { model.effect = effect }
         if defaults.bool(forKey: "GLCutSilences") { model.cutSilences = true }
         switch defaults.string(forKey: "GLVideoAction") {
+        case "save"?: Task { await perform(.save) }
         case "share"?: Task { await perform(.share) }
         case "close"?: showDiscardAlert = model.hasUnsavedEdits
         default: break
