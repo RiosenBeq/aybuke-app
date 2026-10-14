@@ -69,7 +69,7 @@ final class RetroCamFixture: RetroCamSource, @unchecked Sendable {
 
     /// The cartoon friend and pet by the golden lake, 3:4 like a phone photo.
     private static func makeScene() -> CIImage? {
-        let art = ScreenshotFixtures.cutoutPhoto
+        let art = ScreenshotFixtures.sample("portrait-c") ?? ScreenshotFixtures.cutoutPhoto
         let size = CGSize(width: 1200, height: 1600)
         let image = ShareRenderer.renderer(size, opaque: true).image { _ in
             art.draw(in: ShareRenderer.fillRect(for: art.size, in: CGRect(origin: .zero, size: size), face: nil))

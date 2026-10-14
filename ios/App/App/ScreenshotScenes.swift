@@ -114,11 +114,49 @@ enum ScreenshotScene: String, CaseIterable {
 
 /// Synthetic images so screenshots never contain real people's photos.
 enum ScreenshotFixtures {
+    /// `-GLSamplePhotos <folder>`: marketing captures show the photos in that
+    /// folder (made with AI: fictional adults, landscapes, pets; see
+    /// docs/marketing/samples) instead of the drawings below. A missing file
+    /// falls back to its drawing.
+    static func sample(_ name: String) -> UIImage? {
+        guard let folder = UserDefaults.standard.string(forKey: "GLSamplePhotos") else { return nil }
+        for ext in ["jpg", "png"] {
+            if let image = UIImage(contentsOfFile: (folder as NSString).appendingPathComponent("\(name).\(ext)")) {
+                return image
+            }
+        }
+        return nil
+    }
+
     /// A flat, overcast lake landscape — the "before" photo.
-    static let overcastLandscape = landscape(golden: false)
+    static let overcastLandscape = sample("lake-overcast") ?? landscape(golden: false)
 
     /// The same scene at golden hour — what "Golden hour light" produces.
-    static let goldenLandscape = landscape(golden: true)
+    static let goldenLandscape = sample("lake-golden") ?? landscape(golden: true)
+
+    /// Her photo and what Magic Edit ("Give me pink hair") and Makeup Studio
+    /// (Soft Glam) made of it; the drawn lake without sample photos.
+    static let portraitBefore = sample("portrait-a") ?? overcastLandscape
+    static let portraitPinkHair = sample("portrait-a-pink-hair") ?? goldenLandscape
+    static let portraitSoftGlam = sample("portrait-a-soft-glam") ?? goldenLandscape
+    /// The Magic Edit editor ("Golden hour light") and the Effects strip.
+    static let editorPhoto = sample("portrait-b") ?? overcastLandscape
+    static let effectsPhoto = sample("portrait-c") ?? goldenLandscape
+    static let beachPhoto = sample("beach-sunset") ?? goldenLandscape
+
+    /// What My Works, the collage maker and Best shot show with sample photos.
+    static var samplePool: [UIImage]? {
+        let names = ["portrait-a-pink-hair", "create-1", "puppy", "friends", "latte-flowers", "portrait-b-golden",
+                     "beach-sunset", "create-2", "city-night", "portrait-c", "lake-golden", "create-3", "portrait-a-soft-glam"]
+        let images = names.compactMap(sample)
+        return images.count >= 6 ? images : nil
+    }
+
+    /// Create's results for `createPrompt`, or drawn art.
+    static var createResults: [UIImage] {
+        let images = ["create-1", "create-2", "create-3"].compactMap(sample)
+        return images.count == 3 ? images : generatedArt(count: 3)
+    }
 
     static let createPrompt = "A dreamy pastel bedroom with fairy lights and a canopy bed at sunset"
 
@@ -226,7 +264,7 @@ enum ScreenshotFixtures {
 
     /// Cartoon figures by the lake: Vision finds no real faces in them, so
     /// the scene uses `groupFaces` instead.
-    static let groupPhoto = figures(heads: groupHeads, pet: false)
+    static let groupPhoto = sample("friends") ?? figures(heads: groupHeads, pet: false)
 
     /// Face boxes for `groupPhoto`, normalized with a top-left origin.
     static var groupFaces: [CGRect] {

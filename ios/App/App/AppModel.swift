@@ -1370,14 +1370,14 @@ extension AppModel {
             isCollagePresented = true
         case .effects:
             selectedTab = .home
-            editorLaunch = EditorLaunch(image: ScreenshotFixtures.goldenLandscape, tool: .effects,
+            editorLaunch = EditorLaunch(image: ScreenshotFixtures.effectsPhoto, tool: .effects,
                                         previewEffect: UserDefaults.standard.string(forKey: "GLEffect").flatMap(RetroEffect.init(rawValue:)) ?? .vhs)
         case .ideas:
             selectedTab = .home
             editorLaunch = EditorLaunch(image: ScreenshotFixtures.overcastLandscape, tool: .magicEdit)
         case .crop:
             selectedTab = .home
-            editorLaunch = EditorLaunch(image: ScreenshotFixtures.goldenLandscape, tool: .crop, cropAspect: .story, cropAngle: 4)
+            editorLaunch = EditorLaunch(image: ScreenshotFixtures.beachPhoto, tool: .crop, cropAspect: .story, cropAngle: 4)
         case .hideFaces:
             selectedTab = .home
             editorLaunch = EditorLaunch(image: ScreenshotFixtures.groupPhoto, tool: .hideFaces)
@@ -1389,7 +1389,7 @@ extension AppModel {
             editorLaunch = EditorLaunch(image: ScreenshotFixtures.goldenLandscape, tool: .erase)
         case .textStickers:
             selectedTab = .home
-            editorLaunch = EditorLaunch(image: ScreenshotFixtures.goldenLandscape, tool: .textStickers)
+            editorLaunch = EditorLaunch(image: ScreenshotFixtures.beachPhoto, tool: .textStickers)
         case .video:
             selectedTab = .home
             let defaults = UserDefaults.standard
@@ -1419,15 +1419,21 @@ extension AppModel {
             selectedTab = .home
             // `-GLEditorTool <tool>` opens another tool's panel (layout QA).
             let tool = UserDefaults.standard.string(forKey: "GLEditorTool").flatMap(EditorTool.init(rawValue:)) ?? .magicEdit
-            editorLaunch = EditorLaunch(image: ScreenshotFixtures.overcastLandscape, tool: tool,
+            editorLaunch = EditorLaunch(image: tool == .makeup ? ScreenshotFixtures.portraitBefore : ScreenshotFixtures.editorPhoto,
+                                        tool: tool,
                                         prompt: tool == .magicEdit ? String(localized: "Golden hour light") : nil)
         case .result:
             selectedTab = .home
-            editorLaunch = EditorLaunch(
-                image: ScreenshotFixtures.overcastLandscape,
-                tool: .magicEdit,
-                previewResult: ScreenshotFixtures.goldenLandscape
-            )
+            // `-GLResultLook makeup`: Makeup Studio's Soft Glam instead of
+            // Magic Edit's pink hair.
+            if UserDefaults.standard.string(forKey: "GLResultLook") == "makeup" {
+                editorLaunch = EditorLaunch(image: ScreenshotFixtures.portraitBefore, tool: .makeup,
+                                            previewResult: ScreenshotFixtures.portraitSoftGlam)
+            } else {
+                editorLaunch = EditorLaunch(image: ScreenshotFixtures.portraitBefore, tool: .magicEdit,
+                                            prompt: String(localized: "Give me pink hair"),
+                                            previewResult: ScreenshotFixtures.portraitPinkHair)
+            }
         case .paywall:
             selectedTab = .home
             // `-GLPaywallSource out_of_credits|template_<id>|style_<id>|create_count|share_watermark`
@@ -1450,8 +1456,8 @@ extension AppModel {
         case .share:
             selectedTab = .home
             shareRequest = SharePayload(
-                image: ScreenshotFixtures.goldenLandscape,
-                original: ScreenshotFixtures.overcastLandscape,
+                image: ScreenshotFixtures.portraitPinkHair,
+                original: ScreenshotFixtures.portraitBefore,
                 // `-GLShareOnDevice YES`: an effects-only photo (no mark, no AI tags).
                 operation: UserDefaults.standard.bool(forKey: "GLShareOnDevice") ? nil : .magicEdit,
                 // A second look, so `-GLShareFormat pick` can show "Which vibe?".
@@ -1466,7 +1472,8 @@ extension AppModel {
         // `-GLKeepLibrary YES`: show the library already on disk (migration QA).
         if UserDefaults.standard.bool(forKey: "GLKeepLibrary") { return }
         deleteAllCreations()
-        let images = [ScreenshotFixtures.goldenLandscape] + ScreenshotFixtures.generatedArt(count: trash ? 13 : 8)
+        let images = ScreenshotFixtures.samplePool.map { Array($0.prefix(trash ? 14 : 9)) }
+            ?? [ScreenshotFixtures.goldenLandscape] + ScreenshotFixtures.generatedArt(count: trash ? 13 : 8)
         let context = container.mainContext
         let day: TimeInterval = 24 * 3600
         let deletedAgo: [Int: TimeInterval] = trash ? [9: 0.5 * day, 10: 11.5 * day, 11: 26.5 * day, 12: 29.5 * day, 13: 31 * day] : [:]

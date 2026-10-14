@@ -86,7 +86,7 @@ struct BestShotView: View {
         .onAppear {
             // Sample pictures (no real faces), already sorted, for screenshots.
             guard ScreenshotScene.current == .bestShot, shots.isEmpty else { return }
-            shots = ScreenshotFixtures.generatedArt(count: 6).enumerated().map { index, image in
+            shots = (ScreenshotFixtures.samplePool.map { Array($0.prefix(6)) } ?? ScreenshotFixtures.generatedArt(count: 6)).enumerated().map { index, image in
                 Shot(source: .image(image), thumbnail: image, quality: 1 - Float(index) / 10)
             }
         }

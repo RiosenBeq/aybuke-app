@@ -80,7 +80,7 @@ struct CreateView: View {
                 model.prompt = UserDefaults.standard.string(forKey: "GLPrompt") ?? ScreenshotFixtures.createPrompt
                 model.style = StyleCatalog.style(id: "pastel")
                 if scene == .results {
-                    model.showScreenshotResults(ScreenshotFixtures.generatedArt(count: 3))
+                    model.showScreenshotResults(ScreenshotFixtures.createResults)
                 }
                 // QA: `-GLWriterAction magic|inspire` runs a writer chip once.
                 switch UserDefaults.standard.string(forKey: "GLWriterAction") {

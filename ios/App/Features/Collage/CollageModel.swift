@@ -398,8 +398,8 @@ extension CollageModel {
         let requested = defaults.integer(forKey: "GLCollagePhotos")
         let count = min(max(requested == 0 ? 6 : requested, Self.minPhotos), Self.maxPhotos)
         let art = ScreenshotFixtures.generatedArt(count: 6)
-        let pool = [ScreenshotFixtures.goldenLandscape, art[0], ScreenshotFixtures.groupPhoto, art[1], art[2],
-                    ScreenshotFixtures.cutoutPhoto, art[3], art[4], art[5]]
+        let pool = ScreenshotFixtures.samplePool ?? [ScreenshotFixtures.goldenLandscape, art[0], ScreenshotFixtures.groupPhoto, art[1], art[2],
+                                                     ScreenshotFixtures.cutoutPhoto, art[3], art[4], art[5]]
         // `-GLCollageAI YES`: the first photo carries an AI marking, to check
         // that the export is marked as a composite with AI.
         let marked = defaults.bool(forKey: "GLCollageAI")

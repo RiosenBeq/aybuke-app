@@ -248,7 +248,7 @@ struct OnboardingView: View {
         // `interests` and `1` (the second value page) for layout QA.
         page = target == "interests" ? interestPage : Int(target) ?? tryItPage
         if target == "result" {
-            let image = ScreenshotFixtures.goldenLandscape
+            let image = ScreenshotFixtures.portraitBefore
             tryPhoto = TryItPhoto(original: image, result: TryItPhoto.effect.apply(to: image, options: TryItPhoto.options),
                                   sourceType: nil)
         }
