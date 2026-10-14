@@ -82,15 +82,27 @@ enum GlowTips {
     }
 
     /// The rules count to two at most, so a few dates are all that's kept.
+    /// Off the main thread: it reads TipKit's store.
     private static func donate(_ event: Tips.Event<Tips.EmptyDonation>) {
-        guard event.donations.count < 3 else { return }
-        event.sendDonation()
+        Task.detached(priority: .utility) {
+            guard event.donations.count < 3 else { return }
+            await event.donate()
+        }
     }
 
     #if DEBUG
     /// Screenshots use a fresh store of their own and show no tips, except
     /// the one `-GLTip <name>` asks for (the tips scene: Retro Cam).
+    /// `-GLTipRules YES` instead runs the real rules on a store kept between
+    /// launches (QA; add `-tour.seen.v1 YES`), without the daily limit.
     private static func configureForScreenshots(_ scene: ScreenshotScene) {
+        if UserDefaults.standard.bool(forKey: "GLTipRules") {
+            let store = FileManager.default.temporaryDirectory.appendingPathComponent("tips-rules", isDirectory: true)
+            try? FileManager.default.createDirectory(at: store, withIntermediateDirectories: true)
+            try? Tips.configure([.displayFrequency(.immediate), .datastoreLocation(.url(store))])
+            donate(appLaunched)
+            return
+        }
         let store = FileManager.default.temporaryDirectory.appendingPathComponent("tips-screenshots", isDirectory: true)
         try? FileManager.default.removeItem(at: store)
         try? FileManager.default.createDirectory(at: store, withIntermediateDirectories: true)
