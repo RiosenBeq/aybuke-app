@@ -123,6 +123,8 @@ final class AdCoordinator {
     /// "Watch a short ad · +1 credit" belongs on screen: a free member with a
     /// session and AI consent who's out of credits.
     var offersRewardedAd: Bool {
+        // Before the screenshot override, which would otherwise show it on the Mac.
+        guard !Platform.isMac else { return false }
         #if DEBUG
         if Self.screenshotState != nil { return true }
         #endif

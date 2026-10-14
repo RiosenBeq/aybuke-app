@@ -68,6 +68,7 @@ struct IconButtonStyle: ButtonStyle {
             // The circle can stay 40 pt; the touch target is never under 44.
             .frame(width: max(size, 44), height: max(size, 44))
             .contentShape(Circle())
+            .macHoverLift()
             .scaleEffect(configuration.isPressed ? 0.92 : 1)
             .animation(.spring(response: 0.25, dampingFraction: 0.7), value: configuration.isPressed)
     }
@@ -147,7 +148,7 @@ struct CostLabel: View {
     private var costBadge: some View {
         if cost > 0 && !isLoading {
             HStack(spacing: 3) {
-                Image(systemName: "bolt.fill").font(.caption)
+                Image(systemName: "bolt.fill").font(.legibleCaption)
                 Text("\(cost)").monospacedDigit()
             }
             .font(.subheadline.weight(.bold))

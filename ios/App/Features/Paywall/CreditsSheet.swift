@@ -83,6 +83,7 @@ struct CreditsSheet: View {
             .buttonStyle(.icon)
             .padding(Metrics.gutter)
             .accessibilityLabel("Close")
+            .macHelp("Close")
         }
         .task {
             // The day may have turned since the pill last counted.
@@ -154,7 +155,7 @@ struct CreditsSheet: View {
                     .accessibilityHidden(true)
             }
             Text(text)
-                .font(.footnote)
+                .font(.legibleFootnote)
                 .foregroundStyle(Palette.textSecondary)
                 .fixedSize(horizontal: false, vertical: true)
         }

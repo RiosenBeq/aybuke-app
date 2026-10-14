@@ -35,8 +35,24 @@ struct LibraryView: View {
     @State private var shareItems: ActivityItems?
     @State private var sharedFolder: URL?
     @State private var isWorking = false
+    /// Mac: the grid's width, for bigger tiles in a bigger window.
+    @State private var gridWidth: CGFloat = 0
 
-    private let columns = [GridItem(.adaptive(minimum: 108), spacing: 6)]
+    private static let phoneColumns = [GridItem(.adaptive(minimum: 108), spacing: 6)]
+
+    /// Three or more columns on iPhone and iPad; on the Mac the tiles grow
+    /// with the window, about seven to a row.
+    private var columns: [GridItem] {
+        guard Platform.isMac else { return Self.phoneColumns }
+        let minimum = min(max((gridWidth - Self.gridMargin * 2) / 7 - Self.tileSpacing, 150), 250)
+        return [GridItem(.adaptive(minimum: minimum), spacing: Self.tileSpacing)]
+    }
+
+    private static let tileSpacing: CGFloat = Platform.isMac ? 10 : 6
+    /// The grid's side margin; on the Mac, the page gutter the other sections use.
+    private static let gridMargin: CGFloat = Platform.isMac ? Metrics.pageGutter : 12
+    /// Mac: the grid stops widening here, about seven tiles a row, and centres.
+    private static let macMaxWidth: CGFloat = 1240
     /// The grid's coordinate space, shared by the tile frames and the drag.
     static let gridSpace = "libraryGrid"
 
@@ -103,7 +119,7 @@ struct LibraryView: View {
         .background(Palette.background.ignoresSafeArea())
         .navigationTitle(title)
         .toolbar { toolbar }
-        // Not on the Mac, where `hidesMacTabs` owns the tabs' visibility.
+        // The Mac has no tab bar: its sections are in the sidebar.
         #if !targetEnvironment(macCatalyst)
         .toolbar(hidesTabBar ? .hidden : .automatic, for: .tabBar)
         #endif
@@ -192,27 +208,47 @@ struct LibraryView: View {
             filterChips
             if filter == .recentlyDeleted, !items.isEmpty {
                 Text("Creations stay here for 30 days, then they're deleted for good.")
-                    .font(.footnote)
+                    .font(.legibleFootnote)
                     .foregroundStyle(Palette.textSecondary)
                     .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.horizontal, 16)
+                    .padding(.horizontal, Platform.isMac ? Self.gridMargin : 16)
                     .padding(.bottom, 6)
             }
             if items.isEmpty {
                 emptyFilterMessage
             }
-            LazyVGrid(columns: columns, spacing: 6) {
+            LazyVGrid(columns: columns, spacing: Self.tileSpacing) {
                 ForEach(Array(items.enumerated()), id: \.element.id) { index, creation in
                     tile(for: creation, position: index + 1, of: items.count)
                 }
             }
             .simultaneousGesture(dragToSelect, including: isSelecting ? .all : .subviews)
             .coordinateSpace(.named(Self.gridSpace))
-            .padding(.horizontal, 12)
+            .padding(.horizontal, Self.gridMargin)
             .padding(.bottom, 12)
         }
         .scrollDisabled(isDragSelecting)
         .animation(.snappy, value: filter)
+        // Read inside the cap, so the tiles size to the centred column.
+        .modifier(MacPageWidthReader(width: $gridWidth))
+        .frame(maxWidth: Platform.isMac ? Self.macMaxWidth : .infinity)
+        .frame(maxWidth: .infinity)
+        .background { deleteKeys }
+    }
+
+    /// Mac: ⌘Delete in select mode, like Delete on the bar's Delete button,
+    /// asks the same question: to Recently deleted, or for good from there.
+    @ViewBuilder
+    private var deleteKeys: some View {
+        if Platform.isMac && isSelecting && !selected.isEmpty {
+            let items = selected
+            let action: LibrarySelectionBar.Action = filter == .recentlyDeleted ? .deleteNow : .delete
+            Button("Delete") { handle(action, on: items) }
+                .keyboardShortcut(.delete, modifiers: .command)
+                .opacity(0)
+                .allowsHitTesting(false)
+                .accessibilityHidden(true)
+        }
     }
 
     private var filterChips: some View {
@@ -230,7 +266,7 @@ struct LibraryView: View {
                     }
                 }
             }
-            .padding(.horizontal, 12)
+            .padding(.horizontal, Self.gridMargin)
         }
         .scrollIndicators(.hidden)
         .padding(.bottom, 6)
@@ -264,7 +300,7 @@ struct LibraryView: View {
                     .frame(width: 72, height: 72)
                     .background(Palette.blush, in: Circle())
                     .floating(distance: 4)
-                Text("Tap ♡ on a creation to keep it here.")
+                Text(Platform.isMac ? "Click ♡ on a creation to keep it here." : "Tap ♡ on a creation to keep it here.")
                     .font(.subheadline)
                     .foregroundStyle(Palette.textSecondary)
             }
@@ -313,6 +349,9 @@ struct LibraryView: View {
                     tile
                 }
                 .buttonStyle(.pressable)
+                .macHoverLift(scale: 1.03)
+                // Mac: the name on hover, for a tile that is only a picture at this size.
+                .macHelp(Text(verbatim: L10n.core(creation.title)))
                 .accessibilityLabel(accessibilityLabel(for: creation, isMissing: isMissing))
                 // While she picks: where it is, "3 of 12" (and "Selected" from the trait).
                 .accessibilityValue(isSelecting ? Text("\(position) of \(total)") : Text(verbatim: ""))
@@ -456,7 +495,8 @@ struct LibraryView: View {
         )
         .padding(.horizontal, 12)
         .padding(.bottom, 8)
-        .readableWidth(Metrics.compactWidth, alignment: .center)
+        // Wider on the Mac, so the count beside the buttons stays on one line.
+        .readableWidth(Platform.isMac ? 780 : Metrics.compactWidth, alignment: .center)
     }
 
     private func handle(_ action: LibrarySelectionBar.Action, on items: [Creation]) {
@@ -980,7 +1020,7 @@ struct CreationDetailView: View {
                     .foregroundStyle(Palette.textPrimary)
                     .lineLimit(2)
                 Text("\(creation.kindTitle) · \(creation.createdAt.formatted(date: .abbreviated, time: .shortened))")
-                    .font(.caption)
+                    .font(.legibleCaption)
                     .foregroundStyle(Palette.textSecondary)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -1000,6 +1040,7 @@ struct CreationDetailView: View {
                 }
                 .buttonStyle(IconButtonStyle(size: 56))
                 .accessibilityLabel("Save to Photos")
+                .macHelp("Save to Photos")
                 Button {
                     if let image { app.openEditor(with: image, tool: .magicEdit, provenance: creation.provenance) }
                 } label: {
@@ -1007,6 +1048,7 @@ struct CreationDetailView: View {
                 }
                 .buttonStyle(IconButtonStyle(size: 56))
                 .accessibilityLabel("Edit")
+                .macHelp("Edit")
             }
             .padding(.horizontal, Metrics.gutter)
             .padding(.bottom, 12)
@@ -1022,12 +1064,14 @@ struct CreationDetailView: View {
                         .symbolEffect(.bounce, value: creation.isFavorite)
                 }
                 .accessibilityLabel(creation.isFavorite ? "Remove from favorites" : "Add to favorites")
+                .macHelp(creation.isFavorite ? "Remove from favorites" : "Add to favorites")
                 Button(role: .destructive) {
                     confirmDelete = true
                 } label: {
                     Image(systemName: "trash")
                 }
                 .accessibilityLabel("Delete")
+                .macHelp("Delete")
             }
         }
         .task {

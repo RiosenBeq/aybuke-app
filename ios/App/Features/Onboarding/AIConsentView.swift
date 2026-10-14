@@ -92,7 +92,7 @@ struct AIConsentView: View {
             Button("Not now", action: onDecline)
                 .buttonStyle(.secondaryFull)
             Text("You can change this anytime in Settings.")
-                .font(.caption)
+                .font(.legibleCaption)
                 .foregroundStyle(Palette.textTertiary)
                 .multilineTextAlignment(.center)
                 .frame(maxWidth: .infinity)
@@ -111,7 +111,7 @@ struct AIConsentView: View {
                         .font(.subheadline.weight(.semibold))
                         .foregroundStyle(Palette.textPrimary)
                     Text(processor.roleText)
-                        .font(.caption)
+                        .font(.legibleCaption)
                         .foregroundStyle(Palette.textSecondary)
                         .fixedSize(horizontal: false, vertical: true)
                 }

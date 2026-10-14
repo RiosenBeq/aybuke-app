@@ -130,9 +130,9 @@ struct SettingsView: View {
                         Text("\(Brand.name) Pro").font(.headline)
                         if let trial = app.purchases.trial {
                             Text("Free trial until \(trial.endsAt.formatted(date: .abbreviated, time: .shortened))")
-                                .font(.caption).foregroundStyle(Palette.textSecondary)
+                                .font(.legibleCaption).foregroundStyle(Palette.textSecondary)
                         } else {
-                            Text("Thank you for supporting us ✦").font(.caption).foregroundStyle(Palette.textSecondary)
+                            Text("Thank you for supporting us ✦").font(.legibleCaption).foregroundStyle(Palette.textSecondary)
                         }
                     }
                 } icon: {
@@ -186,7 +186,7 @@ struct SettingsView: View {
                     VStack(alignment: .leading, spacing: 2) {
                         Text("Signed in with Apple")
                         Text(app.accountEmail ?? String(localized: "Email hidden"))
-                            .font(.caption)
+                            .font(.legibleCaption)
                             .foregroundStyle(Palette.textSecondary)
                     }
                 } icon: {
@@ -284,7 +284,7 @@ struct SettingsView: View {
             VStack(alignment: .leading, spacing: 2) {
                 Text(title)
                 Text(detail)
-                    .font(.caption)
+                    .font(.legibleCaption)
                     .foregroundStyle(Palette.textSecondary)
             }
         }
@@ -357,7 +357,7 @@ struct SettingsView: View {
                         // The same list the consent sheet shows.
                         ForEach(app.config.consentProcessors, id: \.self) { processor in
                             Text("\(processor.name): \(processor.roleText)")
-                                .font(.caption)
+                                .font(.legibleCaption)
                                 .foregroundStyle(Palette.textSecondary)
                         }
                     }
@@ -472,7 +472,7 @@ struct SettingsView: View {
             }
             if let banner = app.modeBanner {
                 Label(banner, systemImage: "testtube.2")
-                    .font(.footnote)
+                    .font(.legibleFootnote)
                     .foregroundStyle(Palette.warning)
             }
         } header: {

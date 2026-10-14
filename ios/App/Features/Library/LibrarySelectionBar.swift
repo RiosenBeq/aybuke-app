@@ -90,7 +90,7 @@ struct LibrarySelectionBar: View {
                         .contentTransition(.numericText(value: Double(count)))
                     if let hint {
                         Text(hint)
-                            .font(.caption)
+                            .font(.legibleCaption)
                             .foregroundStyle(Palette.textSecondary)
                     }
                 }
@@ -134,7 +134,7 @@ struct LibrarySelectionBar: View {
                     perform(action)
                 }
                 .disabled(!isEnabled(action))
-                .keyboardShortcut(action.isDestructive ? KeyboardShortcut(.delete, modifiers: []) : nil)
+                .keyboardShortcut(action.isDestructive && Platform.isMac ? KeyboardShortcut(.delete, modifiers: []) : nil)
             }
         }
     }
@@ -249,11 +249,12 @@ private struct BarButton: View {
             .contentShape(Rectangle())
         }
         .buttonStyle(.pressable)
+        .macHoverLift(scale: 1.04)
         .accessibilityLabel(accessibilityLabel)
         .accessibilityShowsLargeContentViewer {
             Label(title, systemImage: systemImage)
         }
-        .help(accessibilityLabel)
+        .macHelp(Text(verbatim: accessibilityLabel))
     }
 
     /// "Ajouter aux favoris" → "Ajouter aux⏎favoris": two lines as even as

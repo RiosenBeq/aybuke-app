@@ -44,7 +44,9 @@ enum TourStep: Int, CaseIterable, Identifiable {
     func message(isPro: Bool, policy: CreditPolicy, cloudAI: Bool = true) -> String {
         switch self {
         case .hero:
-            return String(localized: "Describe any change, like pink hair, golden hour or soft glam, and watch your photo glow. Or tap a trend below.")
+            return Platform.isMac
+                ? String(localized: "Describe any change, like pink hair, golden hour or soft glam, and watch your photo glow. Or click a trend below.")
+                : String(localized: "Describe any change, like pink hair, golden hour or soft glam, and watch your photo glow. Or tap a trend below.")
         case .credits:
             return isPro
                 ? String(localized: "Pro gives you \(policy.proMonthlyAllowance) credits every month. Free tools never use credits, and failed edits are always refunded.")
@@ -137,12 +139,23 @@ extension View {
 private struct TourAnchorModifier: ViewModifier {
     let step: TourStep
     @Environment(AppModel.self) private var app
+    /// The frame this view last reported, so it clears only its own: on the
+    /// Mac, Explore and the sidebar both mark `.credits`.
+    @State private var frame: CGRect?
 
     func body(content: Content) -> some View {
         content.onGeometryChange(for: CGRect.self) { proxy in
             proxy.frame(in: .global)
-        } action: { frame in
-            app.tour.frames[step] = frame
+        } action: { newFrame in
+            frame = newFrame
+            app.tour.frames[step] = newFrame
+        }
+        // A view that's gone (a hidden sidebar, another section) has nothing
+        // to spotlight, so its frame must not outlive it.
+        .onDisappear {
+            if let frame, app.tour.frames[step] == frame {
+                app.tour.frames[step] = nil
+            }
         }
     }
 }

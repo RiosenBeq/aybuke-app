@@ -17,6 +17,7 @@ struct EditorIdeasRow: View {
     @State private var writerIdea: String?
     @State private var surpriseCount = 0
     @State private var confirmTemplate: PhotoTemplate?
+    @Environment(\.editorPanelPlacement) private var placement
 
     private static let freeEffects = RetroEffect.allCases.map(\.rawValue)
     /// Past this, a late model idea would swap a chip under her finger.
@@ -69,26 +70,38 @@ struct EditorIdeasRow: View {
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabel("Hide ideas")
+                .macHelp("Hide ideas")
             }
             .tipSlot(.editorIdeas, edge: .top, spacing: 8)
-            ScrollView(.horizontal) {
-                HStack(spacing: 8) {
-                    surpriseChip
-                    // Up to three ideas next to "Surprise me".
-                    ForEach(suggestions.prefix(3), id: \.self) { suggestion in
-                        chip(for: suggestion)
-                    }
+            if placement == .inspector {
+                FlowLayout {
+                    chips(suggestions)
                 }
-                .padding(.vertical, 2)
+            } else {
+                ScrollView(.horizontal) {
+                    HStack(spacing: 8) {
+                        chips(suggestions)
+                    }
+                    .padding(.vertical, 2)
+                }
+                .scrollIndicators(.hidden)
+                .scrollClipDisabled()
             }
-            .scrollIndicators(.hidden)
-            .scrollClipDisabled()
         }
         .disabled(model.isProcessing)
         .accessibilityElement(children: .contain)
     }
 
     // MARK: Chips
+
+    @ViewBuilder
+    private func chips(_ suggestions: [LookSuggestion]) -> some View {
+        surpriseChip
+        // Up to three ideas next to "Surprise me".
+        ForEach(suggestions.prefix(3), id: \.self) { suggestion in
+            chip(for: suggestion)
+        }
+    }
 
     private var surpriseChip: some View {
         IdeaChip(title: String(localized: "Surprise me"), symbolName: "sparkles", isPrimary: true) {
@@ -206,7 +219,7 @@ private struct IdeaChip: View {
                     .lineLimit(1)
                     .truncationMode(.tail)
                 if isLocked {
-                    Image(systemName: "lock.fill").font(.caption2).accessibilityLabel("Pro")
+                    Image(systemName: "lock.fill").font(.legibleCaption2).accessibilityLabel("Pro")
                 }
             }
             .frame(maxWidth: maxWidth)

@@ -18,6 +18,19 @@ enum Metrics {
     static let readableWidth: CGFloat = 820
     /// Narrower column for forms, panels and flows (onboarding, editor panels).
     static let compactWidth: CGFloat = 620
+
+    /// Widest a section page gets (Explore, Create, Edit, My Works): the
+    /// readable column on iPhone and iPad; on the Mac, pages that use the
+    /// window, up to this.
+    /// (1640 here is about 1260 points on the Mac's screen.)
+    static let pageWidth: CGFloat = Platform.isMac ? 1640 : readableWidth
+    /// A page's side margin: roomier on the Mac (about 30 points on screen).
+    static let pageGutter: CGFloat = Platform.isMac ? 40 : gutter
+    /// Longest comfortable line for a paragraph on a wide Mac page.
+    static let textWidth: CGFloat = 640
+    /// Mac: a page this wide or wider splits into columns (Create's form
+    /// and preview, the editor's canvas and inspector).
+    static let macColumnsWidth: CGFloat = 1000
 }
 
 /// The shapes behind `Metrics`' radii: `.background(Palette.surface, in: .chip)`,
@@ -70,10 +83,13 @@ extension View {
     }
 
     /// Roomier sheets on iPad for content-heavy flows (paywall, share
-    /// composer). iPhone sheets are unchanged.
+    /// composer). iPhone sheets are unchanged. The Mac gets a fixed size
+    /// rather than one that grows with the window.
     @ViewBuilder
     func pageSheetSizing() -> some View {
-        if #available(iOS 18.0, *) {
+        if Platform.isMac {
+            macSheet(.page)
+        } else if #available(iOS 18.0, *) {
             presentationSizing(.page)
         } else {
             self

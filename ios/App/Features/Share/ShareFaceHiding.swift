@@ -118,7 +118,7 @@ struct HideOtherFacesSection: View {
                     Text("Hide other faces")
                         .font(.subheadline.weight(.semibold))
                     Text("Keeps the biggest face and blurs the others, right on your device.")
-                        .font(.caption)
+                        .font(.legibleCaption)
                         .foregroundStyle(Palette.textSecondary)
                 }
             }
@@ -128,8 +128,10 @@ struct HideOtherFacesSection: View {
                 HideFacesCanvas(image: faces.hider.preview ?? proxy, hider: faces.hider)
                     .frame(maxWidth: .infinity, maxHeight: 240)
                     .transition(.opacity)
-                Label("Tap a face to blur or show it. Tap anywhere else to cover a face we missed.", systemImage: "hand.tap")
-                    .font(.caption)
+                Label(Platform.isMac ? "Click a face to blur or show it. Click anywhere else to cover a face we missed."
+                                     : "Tap a face to blur or show it. Tap anywhere else to cover a face we missed.",
+                      systemImage: Platform.isMac ? "cursorarrow.click" : "hand.tap")
+                    .font(.legibleCaption)
                     .foregroundStyle(Palette.textSecondary)
             }
         }

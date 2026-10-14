@@ -97,3 +97,17 @@ extension Text {
         self = text
     }
 }
+
+// MARK: - Small text on the Mac
+
+// The Mac app ("Scale Interface to Match iPad") keeps the iPad's text sizes
+// and draws them at 77%, and Dynamic Type doesn't reach it, so footnotes and
+// captions came out at 8.5 to 10 pt. These helpers give the Mac sizes that
+// read at about 11 and 10 pt. They are named apart from SwiftUI's own
+// `.caption` and `.footnote`, which keep their exact sizes everywhere else,
+// so iPhone and iPad never see a different font.
+extension Font {
+    static var legibleFootnote: Font { Platform.isMac ? .system(size: 14) : .system(.footnote) }
+    static var legibleCaption: Font { Platform.isMac ? .system(size: 13) : .system(.caption) }
+    static var legibleCaption2: Font { Platform.isMac ? .system(size: 13) : .system(.caption2) }
+}

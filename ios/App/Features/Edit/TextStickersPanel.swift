@@ -8,6 +8,8 @@ struct TextStickersPanel: View {
     let session: OverlaySession
     let onApply: () -> Void
 
+    @Environment(\.editorPanelPlacement) private var placement
+
     private static let contentHeight: CGFloat = 112
 
     var body: some View {
@@ -38,7 +40,8 @@ struct TextStickersPanel: View {
                     DoodleTools(session: session)
                 }
             }
-            .frame(height: Self.contentHeight, alignment: .top)
+            // The Mac's inspector scrolls, so its rows take the room they need.
+            .frame(height: placement == .inspector ? nil : Self.contentHeight, alignment: .top)
 
             Button("Apply", action: onApply)
                 .buttonStyle(.primary)
@@ -218,39 +221,33 @@ private struct StickerTray: View {
     @State private var category: StickerCategory = .all
     @State private var thumbnails = StickerThumbnails.cached
     @Environment(\.displayScale) private var displayScale
+    @Environment(\.editorPanelPlacement) private var placement
 
     private static let tileSide: CGFloat = 56
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            categoryRow
-            ScrollView(.horizontal) {
-                LazyHStack(spacing: 8) {
-                    PasteButton(supportedContentTypes: [.png, .image]) { providers in
-                        paste(providers)
-                    }
-                    .labelStyle(.iconOnly)
-                    .buttonBorderShape(.roundedRectangle(radius: Metrics.controlRadius))
-                    .tint(Palette.accent)
-                    .frame(width: Self.tileSide, height: Self.tileSide)
-
-                    ForEach(category.kinds) { kind in
-                        Button {
-                            session.addSticker(kind)
-                        } label: {
-                            tile(kind)
-                        }
-                        .buttonStyle(.pressable)
-                        .accessibilityLabel(kind.title)
-                        .accessibilityHint("Adds it to the photo")
-                    }
+            if placement == .inspector {
+                // The Mac's inspector: every section's chips and a sheet of stickers.
+                FlowLayout {
+                    categoryChips
                 }
-                .padding(.horizontal, 1)
-                .padding(.vertical, 2)
+                LazyVGrid(columns: [GridItem(.adaptive(minimum: Self.tileSide), spacing: 8)], spacing: 8) {
+                    stickerTiles
+                }
+            } else {
+                categoryRow
+                ScrollView(.horizontal) {
+                    LazyHStack(spacing: 8) {
+                        stickerTiles
+                    }
+                    .padding(.horizontal, 1)
+                    .padding(.vertical, 2)
+                }
+                .scrollIndicators(.hidden)
+                // Another section starts at its first sticker.
+                .id(category)
             }
-            .scrollIndicators(.hidden)
-            // Another section starts at its first sticker.
-            .id(category)
         }
         .task {
             guard thumbnails.count < StickerKind.allCases.count else { return }
@@ -258,18 +255,45 @@ private struct StickerTray: View {
         }
     }
 
+    @ViewBuilder
+    private var stickerTiles: some View {
+        PasteButton(supportedContentTypes: [.png, .image]) { providers in
+            paste(providers)
+        }
+        .labelStyle(.iconOnly)
+        .buttonBorderShape(.roundedRectangle(radius: Metrics.controlRadius))
+        .tint(Palette.accent)
+        .frame(width: Self.tileSide, height: Self.tileSide)
+
+        ForEach(category.kinds) { kind in
+            Button {
+                session.addSticker(kind)
+            } label: {
+                tile(kind)
+            }
+            .buttonStyle(.pressable)
+            .macHoverLift(scale: 1.06)
+            .accessibilityLabel(kind.title)
+            .accessibilityHint("Adds it to the photo")
+        }
+    }
+
+    private var categoryChips: some View {
+        ForEach(StickerCategory.allCases) { item in
+            SelectableChip(title: item.title, isSelected: category == item) {
+                guard item != category else { return }
+                Haptics.selection()
+                category = item
+            }
+            .id(item)
+        }
+    }
+
     private var categoryRow: some View {
         ScrollViewReader { proxy in
             ScrollView(.horizontal) {
                 HStack(spacing: 8) {
-                    ForEach(StickerCategory.allCases) { item in
-                        SelectableChip(title: item.title, isSelected: category == item) {
-                            guard item != category else { return }
-                            Haptics.selection()
-                            category = item
-                        }
-                        .id(item)
-                    }
+                    categoryChips
                 }
                 .padding(.horizontal, 1)
             }
@@ -370,11 +394,13 @@ private struct DoodleTools: View {
                     .disabled(!session.canUndoDoodle)
                     .opacity(session.canUndoDoodle ? 1 : 0.4)
                     .accessibilityLabel("Undo stroke")
+                    .macHelp("Undo stroke")
                 Button { session.clearDoodle() } label: { Image(systemName: "trash") }
                     .buttonStyle(.icon)
                     .disabled(session.doodle.strokes.isEmpty)
                     .opacity(session.doodle.strokes.isEmpty ? 0.4 : 1)
                     .accessibilityLabel("Clear drawing")
+                    .macHelp("Clear drawing")
             }
             ColorSwatches(selected: session.inkColor) { session.setInkColor($0) }
         }

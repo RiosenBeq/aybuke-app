@@ -61,7 +61,7 @@ struct ShareComposerView: View {
                                 Text("Add a visible “AI-edited” label")
                                     .font(.subheadline.weight(.semibold))
                                 Text("Be real with your followers. A small label goes in the corner.")
-                                    .font(.caption)
+                                    .font(.legibleCaption)
                                     .foregroundStyle(Palette.textSecondary)
                             }
                         }
@@ -139,20 +139,32 @@ struct ShareComposerView: View {
         .accessibilityLabel("Preview of the \(format.title.lowercased()) you're sharing")
     }
 
+    /// Every design in view on the Mac (wrapped), a sideways row elsewhere.
+    @ViewBuilder
     private var formatPicker: some View {
-        ScrollView(.horizontal) {
-            HStack(spacing: 8) {
-                ForEach(formats) { option in
-                    SelectableChip(title: LocalizedStringKey(option.title), symbolName: option.symbolName, isSelected: format == option) {
-                        Haptics.selection()
-                        withAnimation(.snappy) { format = option }
-                    }
-                }
+        if Platform.isMac {
+            FlowLayout {
+                formatChips
             }
-            .padding(.horizontal, Metrics.gutter)
+        } else {
+            ScrollView(.horizontal) {
+                HStack(spacing: 8) {
+                    formatChips
+                }
+                .padding(.horizontal, Metrics.gutter)
+            }
+            .scrollIndicators(.hidden)
+            .padding(.horizontal, -Metrics.gutter)
         }
-        .scrollIndicators(.hidden)
-        .padding(.horizontal, -Metrics.gutter)
+    }
+
+    private var formatChips: some View {
+        ForEach(formats) { option in
+            SelectableChip(title: LocalizedStringKey(option.title), symbolName: option.symbolName, isSelected: format == option) {
+                Haptics.selection()
+                withAnimation(.snappy) { format = option }
+            }
+        }
     }
 
     /// The Mac has no Instagram app, so there the share menu takes the
@@ -233,7 +245,7 @@ struct ShareComposerView: View {
             }
             if isLoadingIdeas {
                 Label("Writing new ideas on your device…", systemImage: "sparkles")
-                    .font(.caption)
+                    .font(.legibleCaption)
                     .foregroundStyle(Palette.textSecondary)
             }
             ForEach(captionIdeas, id: \.self) { idea in
@@ -257,8 +269,10 @@ struct ShareComposerView: View {
                 .buttonStyle(.pressable)
                 .accessibilityLabel(Text("Copy caption: \(idea)"))
             }
-            Text(ideasFromWriter ? "Written on your device. Tap one to copy it with the hashtags." : "Tap one to copy it with the hashtags.")
-                .font(.caption)
+            Text(ideasFromWriter
+                 ? (Platform.isMac ? "Written on your device. Click one to copy it with the hashtags." : "Written on your device. Tap one to copy it with the hashtags.")
+                 : (Platform.isMac ? "Click one to copy it with the hashtags." : "Tap one to copy it with the hashtags."))
+                .font(.legibleCaption)
                 .foregroundStyle(Palette.textTertiary)
         }
         .padding(16)
@@ -274,7 +288,7 @@ struct ShareComposerView: View {
                         .foregroundStyle(Palette.accent)
                     VStack(alignment: .leading, spacing: 4) {
                         Text("Free exports carry a small \(Brand.name) mark.")
-                            .font(.footnote)
+                            .font(.legibleFootnote)
                             .foregroundStyle(Palette.textSecondary)
                         Button("Remove it with Pro") {
                             dismiss()
@@ -290,7 +304,7 @@ struct ShareComposerView: View {
                     Image(systemName: "sparkles")
                         .foregroundStyle(Palette.accent)
                     Text("Posting publicly? Switch on the app's AI label (for example Instagram's “AI info”). Your file already carries an invisible “made with AI” tag.")
-                        .font(.footnote)
+                        .font(.legibleFootnote)
                         .foregroundStyle(Palette.textSecondary)
                 }
             }

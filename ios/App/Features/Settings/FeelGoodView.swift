@@ -31,7 +31,7 @@ struct FeelGoodView: View {
                             .font(.subheadline.weight(.semibold))
                             .foregroundStyle(Palette.textPrimary)
                         Text("A parent, a friend, a teacher or a school counselor can help.")
-                            .font(.footnote)
+                            .font(.legibleFootnote)
                             .foregroundStyle(Palette.textSecondary)
                     }
                 } icon: {

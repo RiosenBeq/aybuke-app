@@ -133,11 +133,12 @@ final class GlowNotifier {
         let content = UNMutableNotificationContent()
         let copy = success
             ? (title: isCreate ? String(localized: "Your images are ready ✨") : String(localized: "Your edit is ready ✨"),
-               body: String(localized: "Tap to see it."))
+               body: Platform.isMac ? String(localized: "Click to see it.") : String(localized: "Tap to see it."))
             : (title: String(localized: "That one didn't work"),
                // Not "no credit was used": a result lost with the connection is
                // refunded later, by the server.
-               body: String(localized: "Failed creations are refunded automatically. Tap to try again."))
+               body: Platform.isMac ? String(localized: "Failed creations are refunded automatically. Click to try again.")
+                                    : String(localized: "Failed creations are refunded automatically. Tap to try again."))
         content.title = copy.title
         content.body = copy.body
         content.sound = .default

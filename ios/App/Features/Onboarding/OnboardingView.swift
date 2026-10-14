@@ -31,8 +31,10 @@ struct OnboardingView: View {
         ),
         OnboardingPage(
             symbol: "heart.text.square",
-            title: String(localized: "One tap,\na whole new *aesthetic*"),
-            body: String(localized: "Doll box, Y2K, ballet core, fairy princess and more — one tap each."),
+            title: Platform.isMac ? String(localized: "One click,\na whole new *aesthetic*") : String(localized: "One tap,\na whole new *aesthetic*"),
+            body: Platform.isMac
+                ? String(localized: "Doll box, Y2K, ballet core, fairy princess and more — one click each.")
+                : String(localized: "Doll box, Y2K, ballet core, fairy princess and more — one tap each."),
             tone: .ink
         ),
     ]
@@ -131,7 +133,7 @@ struct OnboardingView: View {
 
     private var legalCaption: some View {
         Text(consentText)
-            .font(.caption2)
+            .font(.legibleCaption2)
             .foregroundStyle(Palette.textSecondary)
             .multilineTextAlignment(.center)
             .finePrintBacking()

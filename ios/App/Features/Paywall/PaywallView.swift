@@ -100,6 +100,7 @@ struct PaywallView: View {
             .buttonStyle(.icon)
             .padding(Metrics.gutter)
             .accessibilityLabel("Close")
+            .macHelp("Close")
             // VoiceOver reaches Close first, not after every plan.
             .accessibilitySortPriority(1)
         }
@@ -331,7 +332,7 @@ struct PaywallView: View {
             showPacks = true
         } label: {
             Text("Not ready to subscribe? **Get a credit pack**")
-                .font(.footnote)
+                .font(.legibleFootnote)
                 .foregroundStyle(Palette.textSecondary)
         }
     }
@@ -342,7 +343,7 @@ struct PaywallView: View {
         if source == "out_of_credits", !purchases.isPro {
             if app.notifier.preferences.creditsBack, app.notifier.isAllowedBySystem {
                 Label("We'll remind you when your free credits are back", systemImage: "bell.badge")
-                    .font(.footnote)
+                    .font(.legibleFootnote)
                     .foregroundStyle(Palette.textSecondary)
             } else {
                 Button {
@@ -360,7 +361,7 @@ struct PaywallView: View {
                     }
                 } label: {
                     Text("Or wait for your free daily credits. **Remind me when they're back**")
-                        .font(.footnote)
+                        .font(.legibleFootnote)
                         .foregroundStyle(Palette.textSecondary)
                         .multilineTextAlignment(.center)
                 }
@@ -391,7 +392,7 @@ struct PaywallView: View {
             .foregroundStyle(Palette.textSecondary)
 
             Text("Payment is charged to your Apple Account. Subscriptions renew automatically at the price shown unless cancelled at least 24 hours before the end of the current period. Manage or cancel anytime in Settings › Apple Account › Subscriptions.")
-                .font(.caption2)
+                .font(.legibleCaption2)
                 .foregroundStyle(Palette.textSecondary)
                 .multilineTextAlignment(.center)
                 .finePrintBacking()
@@ -523,7 +524,7 @@ private struct ReasonCard: View {
                     .foregroundStyle(Palette.textPrimary)
                 if reason == .outOfFreeCredits {
                     Text("Free credits are back in \(Text(refill, style: .relative))")
-                        .font(.caption)
+                        .font(.legibleCaption)
                         .foregroundStyle(Palette.textSecondary)
                 }
             }
@@ -589,7 +590,7 @@ struct StoreStatusView: View {
                 EmptyView()
             case .unreachable, .unavailable:
                 Text(purchases.loadState == .unreachable ? "Couldn't reach the App Store. Check your connection." : unavailableText)
-                    .font(.footnote)
+                    .font(.legibleFootnote)
                     .foregroundStyle(Palette.textSecondary)
                     .multilineTextAlignment(.center)
                 Button("Try again") {
@@ -625,7 +626,7 @@ private struct Benefit: View {
                     .font(.subheadline.weight(.semibold))
                     .foregroundStyle(Palette.textPrimary)
                 Text(detail)
-                    .font(.caption)
+                    .font(.legibleCaption)
                     .foregroundStyle(Palette.textSecondary)
             }
         }
@@ -670,7 +671,7 @@ private struct PlanCard: View {
                         .foregroundStyle(Palette.textPrimary)
                     if !detail.isEmpty {
                         Text(detail)
-                            .font(.caption)
+                            .font(.legibleCaption)
                             .foregroundStyle(Palette.textSecondary)
                     }
                 }
@@ -757,7 +758,7 @@ private struct TrialTimeline: View {
                         .font(.subheadline.weight(.semibold))
                         .foregroundStyle(Palette.textPrimary)
                     Text(detail)
-                        .font(.caption)
+                        .font(.legibleCaption)
                         .foregroundStyle(Palette.textSecondary)
                         .fixedSize(horizontal: false, vertical: true)
                 }
@@ -826,7 +827,7 @@ struct CreditPackList: View {
                             unavailableText: "Credit packs are unavailable right now.")
             if let errorMessage {
                 Text(errorMessage)
-                    .font(.footnote)
+                    .font(.legibleFootnote)
                     .foregroundStyle(Palette.danger)
             }
         }
@@ -844,11 +845,11 @@ struct CreditPackList: View {
                         .font(.subheadline.weight(.semibold))
                         .foregroundStyle(Palette.textPrimary)
                     Text(product.description)
-                        .font(.caption)
+                        .font(.legibleCaption)
                         .foregroundStyle(Palette.textSecondary)
                     if let perCredit = product.perCreditPrice {
                         Text("≈ \(perCredit) per credit")
-                            .font(.caption2)
+                            .font(.legibleCaption2)
                             .foregroundStyle(Palette.textTertiary)
                     }
                 }

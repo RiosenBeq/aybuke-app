@@ -48,6 +48,16 @@ struct CollageView: View {
             }
         }
         .task { await prepare() }
+        // File › Save (⌘S) and File › Close (⌘W) on the Mac use this maker's
+        // own save and discard prompt.
+        .onAppear {
+            app.saveActiveCover = { save() }
+            app.closeActiveCover = { requestClose() }
+        }
+        .onDisappear {
+            app.saveActiveCover = nil
+            app.closeActiveCover = nil
+        }
         .alert("Discard your collage?", isPresented: $showDiscardAlert) {
             Button("Discard", role: .destructive) { dismiss() }
             Button("Keep editing", role: .cancel) {}
@@ -126,7 +136,7 @@ struct CollageView: View {
                                 .font(.cardTitle)
                                 .foregroundStyle(Palette.textPrimary)
                             Text(Platform.isMac ? "Or drop photo files here" : "They appear in the order you pick them")
-                                .font(.footnote)
+                                .font(.legibleFootnote)
                                 .foregroundStyle(Palette.textSecondary)
                         }
                         .frame(maxWidth: .infinity)
@@ -208,6 +218,7 @@ struct CollageView: View {
             }
             .buttonStyle(.icon)
             .accessibilityLabel("Add or remove photos")
+            .macHelp("Add or remove photos")
 
             Spacer(minLength: 0)
 
@@ -215,10 +226,12 @@ struct CollageView: View {
                 Button { edit() } label: { Image(systemName: "slider.horizontal.3") }
                     .buttonStyle(.icon)
                     .accessibilityLabel("Open in the editor")
+                    .macHelp("Open in the editor")
             }
             Button { share() } label: { Image(systemName: "paperplane.fill") }
                 .buttonStyle(.icon)
                 .accessibilityLabel("Share")
+                .macHelp("Share")
                 .padKeyboardShortcut("e")
             Button { save() } label: {
                 ViewThatFits(in: .horizontal) {
@@ -230,7 +243,7 @@ struct CollageView: View {
             .layoutPriority(1)
             .accessibilityLabel("Save to Photos")
             .accessibilityInputLabels(["Save", "Save to Photos"])
-            .keyboardShortcut("s")
+            .padKeyboardShortcut("s")
         }
         .disabled(model.isExporting || model.isImporting)
         .padding(.horizontal, Metrics.gutter)
@@ -256,14 +269,20 @@ struct CollageView: View {
         .fixedSize()
     }
 
+    /// Closes the maker, or asks first when the collage isn't saved.
+    private func requestClose() {
+        if model.hasUnsavedChanges && model.isReady { showDiscardAlert = true } else { dismiss() }
+    }
+
     private var closeButton: some View {
         Button {
-            if model.hasUnsavedChanges && model.isReady { showDiscardAlert = true } else { dismiss() }
+            requestClose()
         } label: {
             Image(systemName: "xmark")
         }
         .buttonStyle(.icon)
         .accessibilityLabel("Close")
+        .macHelp("Close")
         .keyboardShortcut(.cancelAction)
     }
 
@@ -272,8 +291,8 @@ struct CollageView: View {
     private var hint: some View {
         if model.swapping != nil {
             HStack(spacing: 10) {
-                Label("Tap another photo to swap", systemImage: "arrow.left.arrow.right")
-                    .font(.footnote.weight(.semibold))
+                Label(Platform.isMac ? "Click another photo to swap" : "Tap another photo to swap", systemImage: "arrow.left.arrow.right")
+                    .font(.legibleFootnote.weight(.semibold))
                     .foregroundStyle(Palette.textPrimary)
                 Spacer(minLength: 0)
                 Button("Cancel") { model.clearSelection() }
@@ -294,7 +313,7 @@ struct CollageView: View {
         } else {
             Text(Platform.isMac ? "Drag to move · pinch to zoom · hold to swap · drop a file on a photo to replace it"
                                 : "Drag to move · pinch to zoom · hold to swap")
-                .font(.caption)
+                .font(.legibleCaption)
                 .foregroundStyle(Palette.textTertiary)
                 .multilineTextAlignment(.center)
                 .frame(maxWidth: .infinity)
@@ -327,7 +346,7 @@ struct CollageView: View {
     private func pill(_ title: LocalizedStringKey, symbol: String, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             Label(title, systemImage: symbol)
-                .font(.footnote.weight(.bold))
+                .font(.legibleFootnote.weight(.bold))
                 .foregroundStyle(Palette.textPrimary)
                 .padding(.horizontal, 14)
                 .frame(minWidth: 44, minHeight: 44)
@@ -413,7 +432,7 @@ struct CollageView: View {
                 .overlay(RoundedRectangle.control
                     .strokeBorder(isSelected ? Palette.ink : Palette.stroke, lineWidth: isSelected ? 1.5 : 1))
             Text(title)
-                .font(.caption.weight(isSelected ? .bold : .semibold))
+                .font(.legibleCaption.weight(isSelected ? .bold : .semibold))
                 .foregroundStyle(Palette.textPrimary)
                 .lineLimit(1)
                 .minimumScaleFactor(0.75)
@@ -468,7 +487,7 @@ struct CollageView: View {
             }
             if model.design.format.isCarousel {
                 Text("One wide picture, cut into 4:5 slides that swipe as one.")
-                    .font(.caption)
+                    .font(.legibleCaption)
                     .foregroundStyle(Palette.textSecondary)
             }
         }
@@ -525,7 +544,7 @@ struct CollageView: View {
     private func sliderRow(_ title: LocalizedStringKey, value: Binding<Double>) -> some View {
         HStack(spacing: 12) {
             Text(title)
-                .font(.footnote.weight(.semibold))
+                .font(.legibleFootnote.weight(.semibold))
                 .foregroundStyle(Palette.textSecondary)
                 .frame(minWidth: 64, alignment: .leading)
                 .fixedSize()
@@ -543,7 +562,7 @@ struct CollageView: View {
                         .font(.subheadline.weight(.semibold))
                         .foregroundStyle(Palette.textPrimary)
                     Text("A typewriter line under your photos")
-                        .font(.caption)
+                        .font(.legibleCaption)
                         .foregroundStyle(Palette.textSecondary)
                 }
             }
@@ -741,7 +760,7 @@ struct CollageHubCard: View {
                 VStack(alignment: .leading, spacing: 3) {
                     TitleWithNewBadge(title: "Make a collage")
                     Text("Photo dumps & carousels · free, on-device")
-                        .font(.footnote)
+                        .font(.legibleFootnote)
                         .foregroundStyle(Palette.textSecondary)
                         .fixedSize(horizontal: false, vertical: true)
                 }
@@ -749,9 +768,11 @@ struct CollageHubCard: View {
                 Image(systemName: "chevron.right")
                     .foregroundStyle(Palette.textTertiary)
             }
+            .macFillsCell()
             .padding(14)
             .cardStyle()
         }
         .buttonStyle(PressableButtonStyle(scale: 0.97))
+        .macHoverLift()
     }
 }

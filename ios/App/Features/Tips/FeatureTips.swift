@@ -178,7 +178,9 @@ struct IdeasTip: Tip {
     var id: String { GlowTips.id("editor-ideas") }
     var title: Text { Text("Stuck for ideas?") }
     var message: Text? {
-        Text("Tap Surprise me for a free effect that suits this photo. Tap again for another one.")
+        Platform.isMac
+            ? Text("Click Surprise me for a free effect that suits this photo. Click again for another one.")
+            : Text("Tap Surprise me for a free effect that suits this photo. Tap again for another one.")
     }
     var image: Image? { Image(systemName: "sparkles") }
     var rules: [Rule] {
@@ -191,9 +193,11 @@ struct IdeasTip: Tip {
 /// The video editor's Captions card, from her second video.
 struct CaptionsTip: Tip {
     var id: String { GlowTips.id("video-captions") }
-    var title: Text { Text("Captions in one tap") }
+    var title: Text { Platform.isMac ? Text("Captions in one click") : Text("Captions in one tap") }
     var message: Text? {
-        Text("Tap Add captions and the words you say appear on your video. Then fix a word or pick a style in Edit.")
+        Platform.isMac
+            ? Text("Click Add captions and the words you say appear on your video. Then fix a word or pick a style in Edit.")
+            : Text("Tap Add captions and the words you say appear on your video. Then fix a word or pick a style in Edit.")
     }
     var image: Image? { Image(systemName: "captions.bubble") }
     var rules: [Rule] {
@@ -336,7 +340,7 @@ private struct GlowTipStyle: TipViewStyle {
                     .foregroundStyle(Palette.textPrimary)
                     .accessibilityAddTraits(.isHeader)
                 configuration.message?
-                    .font(.footnote)
+                    .font(.legibleFootnote)
                     .foregroundStyle(Palette.textSecondary)
                     .fixedSize(horizontal: false, vertical: true)
                 ForEach(configuration.actions) { action in

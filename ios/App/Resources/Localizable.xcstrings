@@ -27015,6 +27015,76 @@
         }
       }
     },
+    "Captions in one click" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tek tıklamayla altyazı"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Subtítulos con un clic"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Legendas em um clique"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Des sous-titres en un clic"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Untertitel mit einem Klick"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sottotitoli con un clic"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Субтитры в один клик"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ワンクリックで字幕"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "클릭 한 번으로 자막"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "一键加字幕"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Subtitle sekali klik"
+          }
+        }
+      }
+    },
     "Carousel" : {
       "localizations" : {
         "de" : {
@@ -27293,6 +27363,76 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "调整时间"
+          }
+        }
+      }
+    },
+    "Check every face. Click to hide any we missed." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prüf jedes Gesicht. Klick, um übersehene zu verbergen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Revisa cada cara. Haz clic para ocultar las que se nos hayan pasado."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vérifie chaque visage. Clique pour masquer ceux qu’on a ratés."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cek setiap wajah. Klik untuk menyembunyikan yang terlewat."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Controlla ogni volto. Fai clic per nascondere quelli che ci sono sfuggiti."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "すべての顔を確認してね。見落としがあればクリックして隠せます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "모든 얼굴을 확인해 주세요. 놓친 얼굴은 클릭해서 가릴 수 있어요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Confira cada rosto. Clique para ocultar algum que tenha passado."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Проверь каждое лицо. Нажми, чтобы скрыть пропущенные."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Her yüzü kontrol et. Gözümüzden kaçanı gizlemek için tıkla."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "检查每张脸。如有遗漏，点击即可遮挡。"
           }
         }
       }
@@ -29133,6 +29273,356 @@
         }
       }
     },
+    "Click a face to blur or show it. Click anywhere else to cover a face we missed." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klicke auf ein Gesicht, um es unscharf zu machen oder zu zeigen. Klicke woanders hin, um ein Gesicht abzudecken, das wir übersehen haben."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Haz clic en una cara para desenfocarla o mostrarla. Haz clic en otro lugar para tapar una cara que se nos haya pasado."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clique sur un visage pour le flouter ou l’afficher. Clique ailleurs pour couvrir un visage qui nous a échappé."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klik wajah untuk mem-blur atau menampilkannya. Klik di tempat lain untuk menutupi wajah yang terlewat."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fai clic su un volto per sfocarlo o mostrarlo. Fai clic altrove per coprire un volto che ci è sfuggito."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "顔をクリックすると、ぼかしと表示を切り替えられます。見落とした顔は、その場所をクリックして隠せます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "얼굴을 클릭하면 흐리게 하거나 다시 보이게 할 수 있어요. 놓친 얼굴은 그 자리를 클릭해서 가려 주세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clique em um rosto para desfocar ou mostrar. Clique em outro lugar para cobrir um rosto que deixamos passar."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нажми на лицо, чтобы размыть или показать его. Нажми в другом месте, чтобы закрыть лицо, которое мы пропустили."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bulanıklaştırmak ya da göstermek için bir yüze tıkla. Gözden kaçırdığımız bir yüzü kapatmak için başka bir yere tıkla."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "点击人脸即可模糊或显示。点击其他位置，可遮挡漏掉的人脸。"
+          }
+        }
+      }
+    },
+    "Click a time to see that caption on the video." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klicke auf einen Zeitstempel, um den Untertitel im Video zu sehen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Haz clic en el tiempo de un subtítulo para verlo en el video."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clique sur un minutage pour voir ce sous-titre sur la vidéo."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klik waktu untuk melihat subtitle itu di video."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fai clic sui tempi di un sottotitolo per vederlo nel video."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "時間をクリックすると、その字幕を動画上で確認できます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "시간을 클릭하면 동영상에서 그 자막을 볼 수 있어요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clique no tempo de uma legenda para vê-la no vídeo."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нажми на время, чтобы увидеть этот субтитр на видео."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O altyazıyı videoda görmek için bir zamana tıkla."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "点击时间，即可在视频上查看对应字幕。"
+          }
+        }
+      }
+    },
+    "Click Add captions and the words you say appear on your video. Then fix a word or pick a style in Edit." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klicke auf „Untertitel hinzufügen“ und deine Worte erscheinen im Video. Dann korrigiere ein Wort oder wähle unter „Bearbeiten“ einen Stil."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Haz clic en Añadir subtítulos y lo que dices aparecerá en tu video. Luego corrige una palabra o elige un estilo en Editar."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clique sur Ajouter des sous-titres et tes paroles apparaissent sur ta vidéo. Ensuite, corrige un mot ou choisis un style dans Modifier."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klik Tambah subtitle dan kata-kata yang kamu ucapkan muncul di videomu. Lalu perbaiki kata atau pilih gaya di Edit."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fai clic su Aggiungi sottotitoli e le parole che dici appaiono nel video. Poi correggi una parola o scegli uno stile in Modifica."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "「字幕をつける」をクリックすると、話した言葉が動画に表示されます。言葉の修正やスタイル選びは「編集」から。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "‘자막 넣기’를 클릭하면 말한 내용이 동영상에 자막으로 나타나요. 단어를 고치거나 스타일을 고르려면 ‘편집’을 클릭하세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clique em Adicionar legendas e o que você fala aparece no vídeo. Depois, corrija uma palavra ou escolha um estilo em Editar."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нажми «Добавить субтитры» — и твои слова появятся на видео. Потом исправь слово или выбери стиль в «Изменить»."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“Altyazı ekle”ye tıkla, söylediğin sözler videonda belirsin. Sonra “Düzenle”de bir kelimeyi düzelt ya da bir stil seç."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "点击“生成字幕”，你说的话就会出现在视频上。之后可以在“编辑”里修改字词或选择样式。"
+          }
+        }
+      }
+    },
+    "Click another photo to swap" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klicke auf ein anderes Foto zum Tauschen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Haz clic en otra foto para cambiarlas de lugar"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clique sur une autre photo pour les inverser"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klik foto lain untuk menukar"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fai clic su un'altra foto per scambiarle"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "入れ替える写真をクリック"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "바꿀 사진을 클릭하세요"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clique em outra foto para trocar"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нажми на другое фото, чтобы поменять"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yer değiştirmek için başka bir fotoğrafa tıkla"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "点击另一张照片进行交换"
+          }
+        }
+      }
+    },
+    "Click one to copy it with the hashtags." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klick auf eine, um sie mit den Hashtags zu kopieren."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Haz clic en uno para copiarlo con los hashtags."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clique sur l’une d’elles pour la copier avec les hashtags."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klik salah satu untuk menyalinnya beserta hashtag."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fai clic su una per copiarla con gli hashtag."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "クリックするとハッシュタグごとコピーできます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "클릭하면 해시태그와 함께 복사돼요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clique em uma para copiar com as hashtags."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нажми на подпись, чтобы скопировать её с хештегами."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hashtag'lerle birlikte kopyalamak için birine tıkla."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "点击即可连同话题标签一起复制。"
+          }
+        }
+      }
+    },
     "Click or drag across creations to select them." : {
       "localizations" : {
         "de" : {
@@ -29199,6 +29689,356 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "点击作品或拖过它们即可选择。"
+          }
+        }
+      }
+    },
+    "Click Surprise me for a free effect that suits this photo. Click again for another one." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klicke auf „Überrasch mich“ für einen Gratis-Effekt, der zu diesem Foto passt. Nochmal klicken für einen anderen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Haz clic en Sorpréndeme para un efecto gratis que le quede a esta foto. Haz clic otra vez para ver otro."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clique sur Surprends-moi pour un effet gratuit adapté à cette photo. Clique encore pour en avoir un autre."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klik Kejutkan aku untuk efek gratis yang cocok dengan foto ini. Klik lagi untuk efek lain."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fai clic su Sorprendimi per un effetto gratis adatto a questa foto. Fai di nuovo clic per averne un altro."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "「サプライズ」をクリックすると、この写真に合う無料エフェクトをかけられます。もう一度クリックすると別のエフェクトに。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "‘깜짝 효과’를 클릭하면 이 사진에 어울리는 무료 효과가 적용돼요. 다시 클릭하면 다른 효과가 나와요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clique em Me surpreenda para ganhar um efeito grátis que combina com esta foto. Clique de novo para ver outro."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нажми «Удиви меня» — и получи бесплатный эффект под это фото. Нажми ещё раз, чтобы получить другой."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu fotoğrafa yakışan ücretsiz bir efekt için “Şaşırt beni”ye tıkla. Başka bir efekt için tekrar tıkla."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "点击“给我惊喜”，为这张照片套用一个合适的免费特效。再点一次换一个。"
+          }
+        }
+      }
+    },
+    "Click the photo to hide a spot" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klick aufs Foto, um eine Stelle zu verbergen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Haz clic en la foto para ocultar una zona"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clique sur la photo pour masquer une zone"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klik foto untuk menyembunyikan satu titik"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fai clic sulla foto per nascondere un punto"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "写真をクリックして、隠したい場所を指定"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "사진을 클릭해서 가릴 곳을 지정하세요"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clique na foto para ocultar uma área"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нажми на фото, чтобы скрыть участок"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bir alanı gizlemek için fotoğrafa tıkla"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "点击照片即可遮挡某处"
+          }
+        }
+      }
+    },
+    "Click to see it." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klicke, um es zu sehen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Haz clic para verlo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clique pour le voir."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klik untuk melihatnya."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fai clic per vederlo."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "クリックして見てみよう。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "클릭해서 확인해 보세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clique para ver."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нажми, чтобы посмотреть."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Görmek için tıkla."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "点击查看。"
+          }
+        }
+      }
+    },
+    "Click who or what to keep" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klick an, wen oder was du behalten willst"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Haz clic en quién o qué conservar"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clique sur qui ou quoi garder"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klik siapa atau apa yang mau dipertahankan"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fai clic su chi o cosa tenere"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "残したい人や物をクリック"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "남길 사람이나 사물을 클릭하세요"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clique em quem ou no que manter"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нажми, кого или что оставить"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kimi ya da neyi tutacağına tıkla"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "点击要保留的人或物"
+          }
+        }
+      }
+    },
+    "Click ♡ on a creation to keep it here." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klicke bei einer Kreation auf ♡, um sie hier zu sammeln."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Haz clic en ♡ en una creación para guardarla aquí."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clique sur le ♡ d’une création pour la garder ici."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klik ♡ pada kreasi untuk menyimpannya di sini."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fai clic su ♡ in una creazione per tenerla qui."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "作品の♡をクリックすると、ここに追加されます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "작품에서 ♡를 클릭하면 여기에 모아 둘 수 있어요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clique em ♡ numa criação para guardá-la aqui."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нажми ♡ на работе, чтобы сохранить её здесь."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buraya eklemek için bir eserdeki ♡ simgesine tıkla."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "点击作品上的 ♡，就能收藏到这里。"
           }
         }
       }
@@ -38118,6 +38958,76 @@
         }
       }
     },
+    "Describe any change, like pink hair, golden hour or soft glam, and watch your photo glow. Or click a trend below." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beschreib eine beliebige Änderung wie pinke Haare, Golden Hour oder Soft Glam und sieh dein Foto strahlen. Oder klicke unten auf einen Trend."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Describe cualquier cambio, como pelo rosa, hora dorada o soft glam, y mira cómo brilla tu foto. O haz clic en una tendencia aquí abajo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Décris n’importe quel changement, comme des cheveux roses, une lumière golden hour ou un maquillage soft glam, et regarde ta photo briller. Ou clique sur une tendance ci-dessous."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jelaskan perubahan apa pun, seperti rambut pink, golden hour, atau soft glam, lalu lihat fotomu jadi glowing. Atau klik tren di bawah."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Descrivi qualsiasi modifica, come capelli rosa, golden hour o soft glam, e guarda la tua foto brillare. Oppure fai clic su un trend qui sotto."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ピンクヘア、ゴールデンアワー、ソフトグラムなど、変えたいことを入力するだけで写真がキラキラに。下のトレンドをクリックしてもOK。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "핑크 헤어, 골든아워, 소프트 글램처럼 원하는 변화를 말하면 사진이 반짝 변신해요. 아래 트렌드를 클릭해도 좋아요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Descreva qualquer mudança, como cabelo rosa, golden hour ou soft glam, e veja sua foto brilhar. Ou clique em uma trend abaixo."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Опиши любое изменение — розовые волосы, золотой час или soft glam — и смотри, как фото засияет. Или выбери тренд ниже."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pembe saç, gün batımı ışığı ya da soft glam gibi istediğin değişikliği anlat, fotoğrafının ışıldamasını izle. Ya da aşağıdan bir trende tıkla."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "描述任何改变，比如粉色头发、黄金时刻光线或柔美妆容，看你的照片焕发光彩。也可以点击下方的潮流造型。"
+          }
+        }
+      }
+    },
     "Describe any change, like pink hair, golden hour or soft glam, and watch your photo glow. Or tap a trend below." : {
       "localizations" : {
         "de" : {
@@ -39457,6 +40367,76 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "盒装娃娃、Y2K、芭蕾风、精灵公主等——每种都只需轻点一下。"
+          }
+        }
+      }
+    },
+    "Doll box, Y2K, ballet core, fairy princess and more — one click each." : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Doll box, Y2K, ballet core, peri prenses ve daha fazlası — her biri tek tıklamayla."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Doll Box, Y2K, ballet core, princesa hada y más — con un clic cada uno."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Doll Box, Y2K, ballet core, princesa fada e muito mais — cada um com um clique."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Doll box, Y2K, ballet core, princesse féerique et plus encore — chacun en un clic."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Doll Box, Y2K, Ballet Core, Feenprinzessin und mehr — jeweils mit einem Klick."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Doll Box, Y2K, ballet core, principessa fatata e altro — ognuno con un clic."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Doll Box, Y2K, Ballet Core, принцесса-фея и не только — каждый в один клик."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ドールボックス、Y2K、バレエコア、妖精プリンセスなど — どれもワンクリック。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "인형 박스, Y2K, 발레코어, 페어리 프린세스 등 — 모두 클릭 한 번이면 끝."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "盒装娃娃、Y2K、芭蕾风、精灵公主等——每种都只需点一下。"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Doll box, Y2K, ballet core, putri peri, dan lainnya — masing-masing sekali klik."
           }
         }
       }
@@ -43249,6 +44229,76 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "面部亮钻"
+          }
+        }
+      }
+    },
+    "Failed creations are refunded automatically. Click to try again." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fehlgeschlagene Kreationen werden automatisch erstattet. Klicke für einen neuen Versuch."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Si una creación falla, te devolvemos el crédito automáticamente. Haz clic para intentarlo de nuevo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les créations qui échouent sont remboursées automatiquement. Clique pour réessayer."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kredit untuk kreasi yang gagal dikembalikan secara otomatis. Klik untuk mencoba lagi."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le creazioni non riuscite vengono rimborsate automaticamente. Fai clic per riprovare."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "失敗した作成のクレジットは自動で返却されます。クリックしてもう一度お試しください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "생성에 실패하면 크레딧이 자동으로 환불돼요. 클릭해서 다시 시도해 보세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Criações que falham têm o crédito devolvido automaticamente. Clique para tentar de novo."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "За неудачные создания кредит возвращается автоматически. Нажми, чтобы попробовать ещё раз."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Başarısız işlerde kredin otomatik olarak iade edilir. Tekrar denemek için tıkla."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "创作失败会自动退还点数。点击即可重试。"
           }
         }
       }
@@ -52159,6 +53209,77 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "遮挡其他人脸"
+          }
+        }
+      }
+    },
+    "Hide Sidebar" : {
+      "comment" : "Mac menu View › Hide Sidebar, and the sidebar button's tooltip",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seitenleiste ausblenden"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ocultar barra lateral"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Masquer la barre latérale"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sembunyikan Bar Samping"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nascondi barra laterale"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "サイドバーを非表示"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "사이드바 가리기"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ocultar Barra Lateral"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Скрыть боковое меню"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kenar Çubuğunu Gizle"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "隐藏边栏"
           }
         }
       }
@@ -66049,6 +67170,76 @@
         }
       }
     },
+    "One click,\na whole new *aesthetic*" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tek tıklama,\nbambaşka bir *hava*"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un clic,\nuna *estética* nueva"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Um clique,\numa *vibe* totalmente nova"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un clic,\nun tout nouveau *look*"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ein Klick,\neine ganz neue *Ästhetik*"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un clic,\nun'*estetica* tutta nuova"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Один клик —\nи совсем новая *эстетика*"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ワンクリックで、\nまったく新しい*世界観*"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "클릭 한 번으로\n완전히 새로운 *감성*"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "点一下，\n换上全新*氛围感*"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sekali klik,\nlangsung *estetik*"
+          }
+        }
+      }
+    },
     "One wide picture, cut into 4:5 slides that swipe as one." : {
       "localizations" : {
         "de" : {
@@ -66185,6 +67376,76 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "一键造型"
+          }
+        }
+      }
+    },
+    "One-click looks" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tek tıklamayla trend"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Looks en un clic"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Looks em um clique"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Looks instantanés"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Looks per Klick"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Look in un clic"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Образы в один клик"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ワンクリックルック"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "원클릭 룩"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "一键造型"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gaya sekali klik"
           }
         }
       }
@@ -66745,6 +68006,77 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "打开系统设置"
+          }
+        }
+      }
+    },
+    "Open Video…" : {
+      "comment" : "Mac menu File › Open Video…: picks a video for the video editor",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Video öffnen…"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir video…"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ouvrir une vidéo…"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buka Video…"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apri video…"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "動画を開く…"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "동영상 열기…"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir vídeo…"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Открыть видео…"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Video Aç…"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "打开视频…"
           }
         }
       }
@@ -73656,6 +74988,77 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "分享预览：%@"
+          }
+        }
+      }
+    },
+    "Previous" : {
+      "comment" : "Mac: the arrow that scrolls a row of looks back (VoiceOver label and tooltip); its partner is Next",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zurück"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anterior"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Précédent"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sebelumnya"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Indietro"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "前へ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이전"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anterior"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Назад"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geri"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "上一步"
           }
         }
       }
@@ -84082,6 +85485,77 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "在卡片上显示我的提示词"
+          }
+        }
+      }
+    },
+    "Show Sidebar" : {
+      "comment" : "Mac menu View › Show Sidebar, and the sidebar button's tooltip",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seitenleiste einblenden"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar barra lateral"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Afficher la barre latérale"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tampilkan Bar Samping"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostra barra laterale"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "サイドバーを表示"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "사이드바 보기"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar Barra Lateral"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Показать боковое меню"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kenar Çubuğunu Göster"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "显示边栏"
           }
         }
       }
@@ -97168,6 +98642,77 @@
         }
       }
     },
+    "Tools" : {
+      "comment" : "Mac sidebar: the heading over the quick tools (Retro Cam, Makeup Studio, Effects…)",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tools"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Herramientas"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Outils"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alat"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Strumenti"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ツール"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "도구"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ferramentas"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Инструменты"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Araçlar"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "工具"
+          }
+        }
+      }
+    },
     "Toy Cam '09" : {
       "shouldTranslate" : false
     },
@@ -100128,6 +101673,76 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "打字机"
+          }
+        }
+      }
+    },
+    "Unblur, sharpen details and restore faces in one click." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Entferne Unschärfe, schärfe Details und restauriere Gesichter mit einem Klick."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quita el desenfoque, define los detalles y restaura caras con un clic."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Supprime le flou, affine les détails et restaure les visages en un clic."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hilangkan blur, pertajam detail, dan perjelas wajah dengan sekali klik."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elimina la sfocatura, rendi nitidi i dettagli e restaura i volti con un clic."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ワンクリックでぼやけを補正し、細部をくっきりさせ、顔を復元します。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "클릭 한 번으로 흐릿함은 없애고, 디테일은 선명하게, 얼굴은 또렷하게 복원해요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tire o desfoque, realce detalhes e restaure rostos com um clique."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Убери размытие, подчеркни детали и восстанови лица в один клик."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tek tıkla bulanıklığı gider, detayları netleştir ve yüzleri onar."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "一键去模糊、锐化细节、修复面部。"
           }
         }
       }
@@ -104699,6 +106314,76 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "由 Apple Intelligence 在本机撰写"
+          }
+        }
+      }
+    },
+    "Written on your device. Click one to copy it with the hashtags." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Auf deinem Gerät geschrieben. Klick auf eine, um sie mit den Hashtags zu kopieren."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escrito en tu dispositivo. Haz clic en uno para copiarlo con los hashtags."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Écrites sur ton appareil. Clique sur l’une d’elles pour la copier avec les hashtags."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ditulis di perangkatmu. Klik salah satu untuk menyalinnya beserta hashtag."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scritte sul tuo dispositivo. Fai clic su una per copiarla con gli hashtag."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "端末内で作成しました。クリックするとハッシュタグごとコピーできます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "기기에서 작성했어요. 클릭하면 해시태그와 함께 복사돼요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escritas no seu aparelho. Clique em uma para copiar com as hashtags."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Написано на твоём устройстве. Нажми на подпись, чтобы скопировать её с хештегами."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cihazında yazıldı. Hashtag'lerle birlikte kopyalamak için birine tıkla."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在本机撰写。点击即可连同话题标签一起复制。"
           }
         }
       }
@@ -109386,6 +111071,77 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "你的照片，*你做主*"
+          }
+        }
+      }
+    },
+    "Your picture appears here" : {
+      "comment" : "Create on a wide Mac window: the empty frame where the generated picture will show",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hier erscheint dein Bild"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aquí aparecerá tu imagen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ton image apparaîtra ici"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gambarmu akan muncul di sini"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La tua immagine apparirà qui"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ここに画像が表示されます"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "여기에 이미지가 나타나요"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sua imagem aparece aqui"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Здесь появится твоя картинка"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Görselin burada görünecek"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "图片会显示在这里"
           }
         }
       }

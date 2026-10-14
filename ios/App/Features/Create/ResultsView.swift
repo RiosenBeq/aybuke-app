@@ -13,6 +13,9 @@ struct ResultsView: View {
     var source: String? = nil
     /// Create's results: run the same job again, after a confirm with its cost.
     var regenerate: Regenerate? = nil
+    /// In Create's preview column on a wide Mac window rather than pushed:
+    /// no title bar of its own, so the report menu sits with the actions.
+    var isEmbedded = false
 
     struct Regenerate {
         let cost: Int
@@ -34,23 +37,27 @@ struct ResultsView: View {
 
     var body: some View {
         VStack(spacing: 16) {
-            TabView(selection: $selection) {
-                ForEach(images.indices, id: \.self) { index in
-                    page(index)
+            if Platform.isMac {
+                macPager
+            } else {
+                TabView(selection: $selection) {
+                    ForEach(images.indices, id: \.self) { index in
+                        page(index)
+                    }
                 }
+                .tabViewStyle(.page(indexDisplayMode: images.count > 1 ? .always : .never))
             }
-            .tabViewStyle(.page(indexDisplayMode: images.count > 1 ? .always : .never))
 
             // One block, so the note doesn't take the picture's room twice.
             VStack(spacing: 0) {
                 if isFromImagePlayground {
                     Label("Made with Image Playground", systemImage: "apple.image.playground")
-                        .font(.footnote)
+                        .font(.legibleFootnote)
                         .foregroundStyle(Palette.textSecondary)
                         .padding(.horizontal, Metrics.gutter)
                 } else if let prompt, !prompt.isEmpty {
                     Text(prompt)
-                        .font(.footnote)
+                        .font(.legibleFootnote)
                         .foregroundStyle(Palette.textSecondary)
                         .lineLimit(2)
                         .padding(.horizontal, Metrics.gutter)
@@ -77,6 +84,7 @@ struct ResultsView: View {
                 }
                 .buttonStyle(IconButtonStyle(size: 56))
                 .accessibilityLabel("Save to Photos")
+                .macHelp("Save to Photos")
 
                 Button {
                     guard let current else { return }
@@ -86,6 +94,12 @@ struct ResultsView: View {
                 }
                 .buttonStyle(IconButtonStyle(size: 56))
                 .accessibilityLabel("Edit this image")
+                .macHelp("Edit this image")
+
+                if isEmbedded && !isFromImagePlayground {
+                    reportMenu
+                        .buttonStyle(IconButtonStyle(size: 56))
+                }
             }
             .padding(.horizontal, Metrics.gutter)
             .padding(.bottom, regenerate == nil && images.count < 2 ? 12 : 0)
@@ -100,12 +114,14 @@ struct ResultsView: View {
                     .reveal(3)
             }
         }
-        .background(AuroraBackground(intensity: 0.35))
+        .background {
+            if !isEmbedded { AuroraBackground(intensity: 0.35) }
+        }
         .navigationTitle("Your creation")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                if !isFromImagePlayground { reportMenu }
+                if !isFromImagePlayground && !isEmbedded { reportMenu }
             }
         }
         .reportDialog(isPresented: $showReport, requestID: requestID)
@@ -204,6 +220,41 @@ struct ResultsView: View {
             Image(systemName: "ellipsis.circle")
         }
         .accessibilityLabel("More")
+        .macHelp("More")
+    }
+
+    /// Mac: the picture with a row of thumbnails to pick from, since a mouse
+    /// can't swipe between pages.
+    private var macPager: some View {
+        VStack(spacing: 12) {
+            if images.indices.contains(selection) {
+                page(selection)
+                    .id(selection)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+            }
+            if images.count > 1 {
+                HStack(spacing: 10) {
+                    ForEach(images.indices, id: \.self) { index in
+                        Button {
+                            selection = index
+                        } label: {
+                            Image(uiImage: images[index])
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: 64, height: 64)
+                                .clipShape(.control)
+                                .overlay(RoundedRectangle.control.strokeBorder(selection == index ? Palette.accent : Palette.stroke,
+                                                                               lineWidth: selection == index ? 2.5 : 1))
+                        }
+                        .buttonStyle(.pressable)
+                        .macHoverLift(scale: 1.05)
+                        .accessibilityLabel("Generated image \(index + 1) of \(images.count)")
+                        .accessibilityAddTraits(selection == index ? .isSelected : [])
+                    }
+                }
+            }
+        }
+        .padding(.top, isEmbedded ? 0 : 12)
     }
 
     private func page(_ index: Int) -> some View {

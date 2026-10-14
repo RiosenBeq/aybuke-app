@@ -47,7 +47,7 @@ struct OutOfCreditsSheet: View {
                     // The whole free list, as in the credits sheet.
                     Label("Always free: effects, Retro Cam, Cut out, Adjust, Crop, Hide faces, Text & Stickers, collages and videos.",
                           systemImage: "gift.fill")
-                        .font(.footnote)
+                        .font(.legibleFootnote)
                         .foregroundStyle(Palette.textSecondary)
                 }
                 .padding(.horizontal, Metrics.gutter)
@@ -64,6 +64,7 @@ struct OutOfCreditsSheet: View {
             .buttonStyle(.icon)
             .padding(Metrics.gutter)
             .accessibilityLabel("Close")
+            .macHelp("Close")
         }
     }
 
