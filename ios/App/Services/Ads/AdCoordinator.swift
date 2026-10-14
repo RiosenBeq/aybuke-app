@@ -55,6 +55,11 @@ final class AdCoordinator {
     @ObservationIgnored private var breakTask: Task<Void, Never>?
     @ObservationIgnored private var preloadTask: Task<Void, Never>?
     @ObservationIgnored private var lastOverview: Date?
+    /// Google's SDKs have run on this device (consent checked or an ad asked
+    /// for): Settings may offer its privacy options, and Delete my data resets
+    /// its consent record. Held in memory too, since Delete my data clears
+    /// the stored flag before `reset()` runs.
+    @ObservationIgnored private var hasUsedAds: Bool
 
     /// Interstitial pacing (saves, last ads, today's count).
     nonisolated static let pacingKey = "ads.pacing.v1"
@@ -72,6 +77,7 @@ final class AdCoordinator {
         self.defaults = defaults
         self.provider = AdProviders.make()
         self.rewardPolicy = AdRewardPolicy(dailyCap: config.dailyCap)
+        self.hasUsedAds = defaults.bool(forKey: Self.usedKey)
         if let data = defaults.data(forKey: Self.pacingKey),
            let saved = try? JSONDecoder().decode(InterstitialPacing.self, from: data) {
             pacing = saved
@@ -180,7 +186,7 @@ final class AdCoordinator {
             return
         }
         rewardState = .loading
-        defaults.set(true, forKey: Self.usedKey)
+        markAdsUsed()
         guard await provider.gatherConsent(audience: audience) else {
             rewardState = .notice(.consent)
             return
@@ -338,6 +344,7 @@ final class AdCoordinator {
     private func preload(unitID: String, audience: AdAudience) async {
         // Quietly: consent information is refreshed, never asked for here.
         // Where a form is needed and she hasn't answered it, there's no ad.
+        markAdsUsed()
         guard await provider.refreshConsent(audience: audience) else { return }
         guard interstitialsPossible, self.audience == audience else { return }
         await provider.loadInterstitial(unitID: unitID, audience: audience)
@@ -357,8 +364,7 @@ final class AdCoordinator {
     /// if she has asked for an ad on this device before, and never for Pro
     /// (no ads, so nothing ad-related loads; Delete my data still resets it).
     func refreshPrivacyChoices() async {
-        guard defaults.bool(forKey: Self.usedKey), provider.isAvailable, let audience,
-              let app, !app.purchases.isPro else {
+        guard hasUsedAds, provider.isAvailable, let audience, let app, !app.purchases.isPro else {
             showsPrivacyChoices = false
             return
         }
@@ -376,7 +382,8 @@ final class AdCoordinator {
     func reset() {
         cancelPending()
         provider.discardAll()
-        if defaults.bool(forKey: Self.usedKey) { provider.resetConsent() }
+        if hasUsedAds { provider.resetConsent() }
+        hasUsedAds = false
         defaults.removeObject(forKey: Self.usedKey)
         defaults.removeObject(forKey: "gad_rdp")
         pacing = InterstitialPacing(firstLaunch: Date())
@@ -384,6 +391,12 @@ final class AdCoordinator {
         rewardState = .available(remaining: nil)
         showsPrivacyChoices = false
         lastOverview = nil
+    }
+
+    private func markAdsUsed() {
+        guard !hasUsedAds else { return }
+        hasUsedAds = true
+        defaults.set(true, forKey: Self.usedKey)
     }
 
     private func cancelPending() {
