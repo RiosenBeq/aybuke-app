@@ -96,6 +96,7 @@ function fold(text: string): string {
     if (cp === 0x0131) out += "i"; // ı
     else if (cp === 0x0307) continue; // the dot "İ" leaves behind when lowercased
     else if (cp === 0x0451) out += "е"; // ё → е
+    else if (cp === 0x03c2) out += "σ"; // ς → σ: JavaScript lowercases a word-final Σ to ς, Swift to σ
     else if ((cp >= 0x00c0 && cp <= 0x024f) || (cp >= 0x1e00 && cp <= 0x1eff)) {
       out += ch.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
     } else out += ch;
@@ -186,16 +187,34 @@ function joinSpelledOut(words: string[]): string[] {
  * read in the word's script, leetspeak undone in words that start with a
  * letter ("s3xy", but not "1990s" or "3d"), runs of three or more single
  * letters joined ("b i k i n i", "s.e.x"). Control characters are dropped
- * before the split ("bi\tkini"), or split on with splitControls ("remove\nher").
+ * before the split ("bi\tkini"), or split on with splitControls ("remove\nher");
+ * next to Chinese, Japanese or Korean they always split (dropControls).
  */
 export function words(text: string, splitControls = false): string[] {
   const cleaned = splitControls ? clean(text) : dropControls(clean(text));
   return joinSpelledOut(tokens(cleaned).map(foldConfusables).map(undoLeet));
 }
 
+/**
+ * Control characters removed, so they can't split a word ("bi\tkini"). Next
+ * to Chinese, Japanese or Korean a run of them becomes a space instead: with
+ * no spaces between words, dropping a line break would join two words into a
+ * term ("女性\n感谢你" holds "性感"). A term broken by one then passes, as it
+ * already does when broken by a space or 。.
+ */
 function dropControls(text: string): string {
+  const chars = [...text];
   let out = "";
-  for (const ch of text) if (!CONTROL.test(ch)) out += ch;
+  for (let i = 0; i < chars.length; i++) {
+    if (!CONTROL.test(chars[i])) {
+      out += chars[i];
+      continue;
+    }
+    let end = i;
+    while (end + 1 < chars.length && CONTROL.test(chars[end + 1])) end++;
+    if ([chars[i - 1], chars[end + 1]].some((c) => c !== undefined && isCJK(c.codePointAt(0)!))) out += " ";
+    i = end;
+  }
   return out;
 }
 
@@ -204,14 +223,13 @@ function dropControls(text: string): string {
  * joins the pieces ("na.ked", "se-xy"), @ $ ! read as a s i, and leetspeak is
  * undone in any word with a letter ("5exy"). Chunks with Chinese, Japanese or
  * Korean characters keep their usual words: joining across 。 could form a
- * term from two words. Control characters are dropped, or split on with
- * splitControls.
+ * term from two words. Control characters are dropped (dropControls), or
+ * split on with splitControls.
  */
 export function squeezedWords(text: string, splitControls = false): string[] {
   const chunks: string[] = [];
   let chunk = "";
-  for (const ch of clean(text)) {
-    if (CONTROL.test(ch) && !splitControls) continue;
+  for (const ch of splitControls ? clean(text) : dropControls(clean(text))) {
     if (BOUNDARY.test(ch)) {
       if (chunk) chunks.push(chunk);
       chunk = "";

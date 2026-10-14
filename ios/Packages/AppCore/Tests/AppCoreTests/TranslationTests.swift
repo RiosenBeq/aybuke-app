@@ -37,18 +37,8 @@ final class TranslationTests: XCTestCase {
         }
     }
 
-    private static let iosFolder = URL(fileURLWithPath: #filePath)
-        .deletingLastPathComponent() // → AppCoreTests/
-        .deletingLastPathComponent() // → Tests/
-        .deletingLastPathComponent() // → AppCore/
-        .deletingLastPathComponent() // → Packages/
-        .deletingLastPathComponent() // → ios/
-
     private func load(_ path: String) throws -> Catalog {
-        let url = Self.iosFolder.appendingPathComponent(path)
-        guard FileManager.default.fileExists(atPath: url.path) else {
-            throw XCTSkip("\(path) not found at \(url.path)")
-        }
+        let url = try RepositoryFile.url("ios/\(path)")
         return try JSONDecoder().decode(Catalog.self, from: Data(contentsOf: url))
     }
 

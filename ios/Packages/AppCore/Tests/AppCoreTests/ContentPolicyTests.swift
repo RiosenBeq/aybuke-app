@@ -12,7 +12,13 @@ final class ContentPolicyTests: XCTestCase {
             let expected: String?
         }
 
+        struct Words: Decodable {
+            let text: String
+            let words: [String]
+        }
+
         let vectors: [Vector]
+        let words: [Words]
     }
 
     private struct BackendTerms: Decodable {
@@ -21,20 +27,8 @@ final class ContentPolicyTests: XCTestCase {
         let terms: [String: [String]]
     }
 
-    private static let sharedFolder = URL(fileURLWithPath: #filePath)
-        .deletingLastPathComponent() // → AppCoreTests/
-        .deletingLastPathComponent() // → Tests/
-        .deletingLastPathComponent() // → AppCore/
-        .deletingLastPathComponent() // → Packages/
-        .deletingLastPathComponent() // → ios/
-        .deletingLastPathComponent() // → repository root
-        .appendingPathComponent("backend/supabase/functions/_shared")
-
     private func load<T: Decodable>(_ name: String, as type: T.Type) throws -> T {
-        let url = Self.sharedFolder.appendingPathComponent(name)
-        guard FileManager.default.fileExists(atPath: url.path) else {
-            throw XCTSkip("\(name) not found at \(url.path)")
-        }
+        let url = try RepositoryFile.url("backend/supabase/functions/_shared/\(name)")
         return try JSONDecoder().decode(T.self, from: Data(contentsOf: url))
     }
 
@@ -50,6 +44,14 @@ final class ContentPolicyTests: XCTestCase {
                 let guarded = PromptBuilder.editInstruction(vector.text)
                 XCTAssertTrue(ContentPolicy.evaluate(guarded, operation: .magicEdit).isAllowed, guarded)
             }
+        }
+    }
+
+    func testSharedNormalisationVectors() throws {
+        let file = try load("policy-vectors.json", as: Vectors.self)
+        XCTAssertFalse(file.words.isEmpty)
+        for vector in file.words {
+            XCTAssertEqual(ContentPolicy.words(in: vector.text), vector.words, vector.text)
         }
     }
 
@@ -140,6 +142,28 @@ final class ContentPolicyTests: XCTestCase {
         }
         XCTAssertFalse(ContentPolicy.evaluate("remove\nher\nclothes", operation: .magicEdit).isAllowed)
         XCTAssertTrue(ContentPolicy.evaluate("Give me pink hair\nand a cozy knit sweater", operation: .magicEdit).isAllowed)
+    }
+
+    /// Decision, mirrored in _shared/policy_test.ts: a line break next to CJK
+    /// splits words like a space, even inside a CJK term.
+    func testLineBreakNextToCJKSplitsLikeASpaceEvenInsideACJKTerm() {
+        // Without spaces, dropping the break would join two words into a term ("女性" + "感谢你" holds "性感").
+        for text in ["女性\n感谢你", "女性\r\n感谢你", "바나나\n체리 케이크 배경"] {
+            XCTAssertTrue(ContentPolicy.evaluate(text, operation: .magicEdit).isAllowed, text)
+        }
+        // So a broken CJK term passes, exactly as it already does with a space; the provider and output checks follow.
+        XCTAssertTrue(ContentPolicy.evaluate("生成裸\n照", operation: .magicEdit).isAllowed)
+        XCTAssertTrue(ContentPolicy.evaluate("生成裸 照", operation: .magicEdit).isAllowed)
+        XCTAssertFalse(ContentPolicy.evaluate("生成裸照", operation: .magicEdit).isAllowed)
+        // A break inside a Latin word still joins it, also in a CJK sentence.
+        XCTAssertFalse(ContentPolicy.evaluate("给她穿 b\nikini", operation: .magicEdit).isAllowed)
+    }
+
+    /// Mirrors "a final sigma folds to σ" in _shared/policy_test.ts: JavaScript
+    /// lowercases a word-final Σ to ς, Swift to σ.
+    func testFinalSigmaFoldsToSigma() {
+        XCTAssertEqual(ContentPolicy.clean("ΚΟΣΜΟΣ"), "κοσμοσ")
+        XCTAssertEqual(ContentPolicy.clean("κόσμος"), ContentPolicy.clean("ΚΌΣΜΟΣ"))
     }
 
     /// Mirrors "English sexual gaps are blocked" in _shared/policy_test.ts.

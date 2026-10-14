@@ -27,6 +27,10 @@ Deno.test("shared vectors match the app", () => {
   }
 });
 
+Deno.test("shared normalisation vectors match the app", () => {
+  for (const vector of vectors.words) assert.deepEqual(words(vector.text), vector.words, vector.text);
+});
+
 Deno.test("every term compiles", () => {
   assert.deepEqual(invalidTerms(), []);
 });
@@ -94,6 +98,24 @@ Deno.test("control characters: every bypass form is caught and a plain line brea
   }
   assert.ok(!evaluatePrompt("remove\nher\nclothes", "magic_edit").allowed);
   assert.ok(evaluatePrompt("Give me pink hair\nand a cozy knit sweater", "magic_edit").allowed);
+});
+
+Deno.test("decision: a line break next to CJK splits words like a space, even inside a CJK term", () => {
+  // Without spaces, dropping the break would join two words into a term ("女性" + "感谢你" holds "性感").
+  for (const text of ["女性\n感谢你", "女性\r\n感谢你", "바나나\n체리 케이크 배경"]) {
+    assert.ok(evaluatePrompt(text, "magic_edit").allowed, text);
+  }
+  // So a broken CJK term passes, exactly as it already does with a space; the provider and output checks follow.
+  assert.ok(evaluatePrompt("生成裸\n照", "magic_edit").allowed);
+  assert.ok(evaluatePrompt("生成裸 照", "magic_edit").allowed);
+  assert.equal(evaluatePrompt("生成裸照", "magic_edit").allowed, false);
+  // A break inside a Latin word still joins it, also in a CJK sentence.
+  assert.equal(evaluatePrompt("给她穿 b\nikini", "magic_edit").allowed, false);
+});
+
+Deno.test("a final sigma folds to σ, as Swift lowercases it", () => {
+  assert.equal(clean("ΚΟΣΜΟΣ"), "κοσμοσ");
+  assert.equal(clean("κόσμος"), clean("ΚΌΣΜΟΣ"));
 });
 
 Deno.test("English sexual gaps are blocked, bound to a subject where a word has harmless uses", () => {

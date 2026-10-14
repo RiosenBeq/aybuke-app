@@ -33,8 +33,10 @@ Rules for every item: read the code before you change a claim; grep each number 
    **Done (14 October 2026):** migration `20261025000001_sql_gaps.sql`: refunded, failed and cancelled retries give their daily slot back; `flag_job` adds no strike for a cancelled job; `wallet_state` takes the client address (a 5-argument form, the old form kept), and `GET /ai-image` passes it. New cases in `abuse_test.sql` (19–21) and `credits_test.sql` (13); `test-db.sh` passes.
 9. **Swift tests must not skip silently.** Tests skip with `XCTSkip` when `policy-vectors.json` is not found.
    *Settles:* `swift test --package-path ios/Packages/AppCore` reports zero skips on CI.
+   **Done (14 October 2026):** `RepositoryFile` (AppCore tests) fails a missing shared file when `CI` is set and skips only locally; every former `XCTSkip` goes through it. 323 tests, 0 skipped with `CI=true`.
 10. **Policy vectors:** a Greek final sigma (Swift and JavaScript lowercase it differently) and a CJK line break that can join two words into a blocked term (`ContentPolicy.swift` and `policy.ts`).
     *Settles:* both are in `_shared/policy-vectors.json`, `scripts/export-catalog.sh` has been run, and `swift test` and `deno test _shared/` pass.
+   **Done (14 October 2026):** both sides fold ς to σ, and a control character next to a CJK character splits words like a space (so '女性\n感谢你' passes; a CJK term broken by a line break passes too, as it already did with a space). New verdict vectors and a shared `words` section in `policy-vectors.json`; `deno test _shared/` and `swift test` pass.
 11. **Photo-check failure copy:** the likeness-check failure text says the result was not shown, which reads oddly for a photo check.
     *Settles:* the copy is reworded in every catalogue, and `TranslationTests` passes.
 12. **Translate the ~360 strings** added on 14 October 2026 (roadmap Phase 7, open). Catalogues are synced; the App Store locales follow the en-US text.
@@ -118,9 +120,9 @@ Each risk names its file or function and what would settle it.
 6. **xAI Zero Data Retention is unverified.** Owner console only. *Settles:* section 3, item 4.
 7. **Likeness retries count against the daily 3 when refunded or timed out.** `admit_job`, `free_retries_daily`. *Settles:* section 1, item 8, with a test. **Settled (14 October 2026):** migration `20261025000001`, `abuse_test.sql` case 19.
 8. **`flag_job` can count a cancelled job's strike.** `public.flag_job` (migration `20261022000000`). *Settles:* section 1, item 8, with a test. **Settled (14 October 2026):** migration `20261025000001`, `abuse_test.sql` case 20.
-9. **Swift tests skip silently** when `policy-vectors.json` is not found (`XCTSkip` in the AppCore tests). *Settles:* section 1, item 9.
-10. **Greek final sigma** may lowercase differently in Swift and JavaScript (`ContentPolicy.swift`, `policy.ts`). *Settles:* section 1, item 10.
-11. **CJK line break can join two words into a blocked term** (`ContentPolicy.swift`, `policy.ts`). *Settles:* section 1, item 10.
+9. **Swift tests skip silently** when `policy-vectors.json` is not found (`XCTSkip` in the AppCore tests). *Settles:* section 1, item 9. **Settled (14 October 2026):** `RepositoryFile`, section 1 item 9.
+10. **Greek final sigma** may lowercase differently in Swift and JavaScript (`ContentPolicy.swift`, `policy.ts`). *Settles:* section 1, item 10. **Settled (14 October 2026):** both sides fold ς to σ.
+11. **CJK line break can join two words into a blocked term** (`ContentPolicy.swift`, `policy.ts`). *Settles:* section 1, item 10. **Settled (14 October 2026):** a control character next to CJK splits words.
 12. **Shared test fixtures:** `ad_rewards_test.sql` and `unclaimed_test.sql` share a fixture user, so `backend/scripts/test-db.sh` keeps their order (`ORDER`). *Settles:* the tests use separate fixture ids.
 13. **Photo-check failure copy** says the result was not shown. *Settles:* section 1, item 11.
 14. **Mac type, menus, sections and ⌘W:** section 2, items 3 to 6.

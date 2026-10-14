@@ -24,7 +24,8 @@ public enum PolicyCategory: String, CaseIterable, Codable, Sendable {
 /// prompt go through `words(in:)` first, so diacritics, case, leetspeak,
 /// stretched letters, lookalike letters from another script, invisible
 /// characters, control characters inside a word and "b i k i n i" spacing
-/// don't matter (a line break between words still splits them); the prompt is also
+/// don't matter (a line break between words, or next to Chinese, Japanese or
+/// Korean, still splits them); the prompt is also
 /// matched squeezed (`squeezedWords(in:)`: "na.ked", "n@ked", "5exy").
 public enum ContentPolicy {
     public enum Verdict: Equatable, Sendable {
@@ -453,7 +454,8 @@ public enum ContentPolicy {
     /// of three or more single letters joined ("b i k i n i", "s.e.x").
     /// Invisible characters can't split a word ("bi\u{200B}kini"), and neither
     /// can control characters: they are dropped first, or split on with
-    /// `splitControls` ("remove\nher" keeps its line break as a word break).
+    /// `splitControls` ("remove\nher" keeps its line break as a word break);
+    /// next to Chinese, Japanese or Korean they always split (`dropControls`).
     static func words(in text: String, splitControls: Bool = false) -> [String] {
         let cleaned = splitControls ? clean(text) : dropControls(clean(text))
         return joinSpelledOut(tokens(in: cleaned).map(foldConfusables).map(undoLeet))
@@ -464,12 +466,11 @@ public enum ContentPolicy {
     /// and leetspeak is undone in any word with a letter ("5exy"). Chunks
     /// with Chinese, Japanese or Korean characters keep their usual words:
     /// joining across 。 could form a term from two words. Control characters
-    /// are dropped, or split on with `splitControls`.
+    /// are dropped (`dropControls`), or split on with `splitControls`.
     static func squeezedWords(in text: String, splitControls: Bool = false) -> [String] {
         var chunks: [String] = []
         var chunk = String.UnicodeScalarView()
-        for scalar in clean(text).unicodeScalars {
-            if !splitControls && scalar.properties.generalCategory == .control { continue }
+        for scalar in (splitControls ? clean(text) : dropControls(clean(text))).unicodeScalars {
             if scalar.properties.isWhitespace || scalar.properties.generalCategory == .control {
                 if !chunk.isEmpty { chunks.append(String(chunk)) }
                 chunk = String.UnicodeScalarView()
@@ -513,9 +514,29 @@ public enum ContentPolicy {
         return String(scalars)
     }
 
-    /// Control characters removed before the split (`clean` keeps tabs and line breaks).
+    /// Control characters removed before the split (`clean` keeps tabs and
+    /// line breaks), so they can't split a word ("bi\tkini"). Next to Chinese,
+    /// Japanese or Korean a run of them becomes a space instead: with no spaces
+    /// between words, dropping a line break would join two words into a term
+    /// ("女性\n感谢你" holds "性感"). A term broken by one then passes, as it
+    /// already does when broken by a space or 。.
     static func dropControls(_ text: String) -> String {
-        String(String.UnicodeScalarView(text.unicodeScalars.filter { $0.properties.generalCategory != .control }))
+        let scalars = Array(text.unicodeScalars)
+        var result = String.UnicodeScalarView()
+        var index = 0
+        while index < scalars.count {
+            guard scalars[index].properties.generalCategory == .control else {
+                result.append(scalars[index])
+                index += 1
+                continue
+            }
+            var end = index
+            while end + 1 < scalars.count, scalars[end + 1].properties.generalCategory == .control { end += 1 }
+            let neighbours = [index > 0 ? scalars[index - 1] : nil, end + 1 < scalars.count ? scalars[end + 1] : nil]
+            if neighbours.contains(where: { $0.map(isCJK) ?? false }) { result.append(" ") }
+            index = end + 1
+        }
+        return String(result)
     }
 
     static func tokens(in text: String) -> [String] {
@@ -584,6 +605,7 @@ public enum ContentPolicy {
             case 0x0131: scalars.append("i") // ı
             case 0x0307: continue // the dot "İ" leaves behind when lowercased
             case 0x0451: scalars.append("\u{0435}") // ё → е
+            case 0x03C2: scalars.append("\u{03C3}") // ς → σ: JavaScript lowercases a word-final Σ to ς, Swift to σ
             case 0x00C0...0x024F, 0x1E00...0x1EFF:
                 let decomposed = String(Character(scalar)).decomposedStringWithCanonicalMapping.unicodeScalars
                 scalars.append(contentsOf: decomposed.filter { !(0x0300...0x036F).contains($0.value) })

@@ -91,16 +91,12 @@ final class CreditsTests: XCTestCase {
     func testStandardPolicyMatchesTheServer() throws {
         XCTAssertEqual(policy, CreditPolicy(freeDailyAllowance: 2, proMonthlyAllowance: 80, proRolloverCap: 160,
                                             trialCredits: 20, freeRetriesPerDay: 3))
-        let root = URL(fileURLWithPath: #filePath)
-            .deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
-            .deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
-        let config = root.appendingPathComponent("ios/App/Resources/AppConfig.json")
-        guard FileManager.default.fileExists(atPath: config.path) else { throw XCTSkip("AppConfig.json not found") }
+        let config = try RepositoryFile.url("ios/App/Resources/AppConfig.json")
         struct Config: Decodable { let creditPolicy: CreditPolicy }
         XCTAssertEqual(try JSONDecoder().decode(Config.self, from: Data(contentsOf: config)).creditPolicy, policy,
                        "AppConfig.json's creditPolicy is the bundled default")
-        let migration = root.appendingPathComponent("backend/supabase/migrations/20261020000000_credit_policy_v2.sql")
-        guard let sql = try? String(contentsOf: migration, encoding: .utf8) else { throw XCTSkip("migration not found") }
+        let migration = try RepositoryFile.url("backend/supabase/migrations/20261020000000_credit_policy_v2.sql")
+        let sql = try String(contentsOf: migration, encoding: .utf8)
         for (number, name) in [(2, "free_daily"), (80, "pro_monthly"), (160, "pro_rollover_cap"), (20, "trial_credits"),
                                (3, "free_retries_daily")] {
             XCTAssertTrue(sql.contains("\(number),") && sql.contains("-- \(name)"), "credit_policy() says \(number) for \(name)")

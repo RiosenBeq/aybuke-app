@@ -17,17 +17,7 @@ final class CatalogSyncTests: XCTestCase {
     }
 
     func testBackendCatalogMatchesApp() throws {
-        let repoRoot = URL(fileURLWithPath: #filePath)
-            .deletingLastPathComponent() // → AppCoreTests/
-            .deletingLastPathComponent() // → Tests/
-            .deletingLastPathComponent() // → AppCore/
-            .deletingLastPathComponent() // → Packages/
-            .deletingLastPathComponent() // → ios/
-            .deletingLastPathComponent() // → repository root
-        let url = repoRoot.appendingPathComponent("backend/supabase/functions/_shared/catalog.json")
-        guard FileManager.default.fileExists(atPath: url.path) else {
-            throw XCTSkip("Backend catalog not found at \(url.path)")
-        }
+        let url = try RepositoryFile.url("backend/supabase/functions/_shared/catalog.json")
         let catalog = try JSONDecoder().decode(Catalog.self, from: Data(contentsOf: url))
 
         XCTAssertEqual(catalog.templates.map(\.id), TemplateCatalog.all.map(\.id), "Run scripts/export-catalog.sh")

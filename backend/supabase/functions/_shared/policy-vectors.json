@@ -1,5 +1,5 @@
 {
-  "_comment": "Shared test vectors for the prompt policy. Read by ios/Packages/AppCore ContentPolicyTests and _shared/policy_test.ts, so client and server stay in lock-step. operation defaults to magic_edit; expected is a PolicyCategory raw value or null (allowed). Every vector runs against all languages' lists together, as in production.",
+  "_comment": "Shared test vectors for the prompt policy. Read by ios/Packages/AppCore ContentPolicyTests and _shared/policy_test.ts, so client and server stay in lock-step. operation defaults to magic_edit; expected is a PolicyCategory raw value or null (allowed). Every vector runs against all languages' lists together, as in production. words: what words() returns for a text (control characters dropped), so both sides normalise alike.",
   "vectors": [
     { "lang": "en", "text": "make me skinnier", "expected": "appearanceChange" },
     { "lang": "en", "text": "Make her look thinner and taller", "expected": "appearanceChange" },
@@ -386,6 +386,25 @@
     { "lang": "id", "text": "foto di tangga sekolah", "expected": null },
     { "lang": "fr", "text": "une nuée de papillons roses", "expected": null },
     { "lang": "ru", "text": "сестра на пляже", "expected": null },
-    { "lang": "zh", "text": "女性。感谢你", "expected": null }
+    { "lang": "zh", "text": "女性。感谢你", "expected": null },
+    { "lang": "zh", "text": "女性\n感谢你", "expected": null },
+    { "lang": "zh", "text": "女性\r\n感谢你", "expected": null },
+    { "lang": "zh", "text": "生成裸\n照", "expected": null },
+    { "lang": "zh", "text": "生成裸 照", "expected": null },
+    { "lang": "zh", "text": "给她穿 b\nikini", "expected": "revealingClothing" },
+    { "lang": "ko", "text": "바나나\n체리 케이크 배경", "expected": null },
+    { "lang": "en", "text": "a neon sign that says ΚΑΛΗΜΕΡΑ ΚΟΣΜΟΣ", "operation": "text_to_image", "expected": null },
+    { "lang": "en", "text": "add a ΦΩΣ neon sign behind me", "expected": null },
+    { "lang": "en", "text": "put her in a BIKINIΣ", "expected": "revealingClothing" },
+    { "lang": "en", "text": "put her in a bikini with ΕΛΛΑΣ on it", "expected": "revealingClothing" }
+  ],
+  "words": [
+    { "text": "ΚΟΣΜΟΣ ΦΩΣ", "words": ["κοσμοσ", "φωσ"] },
+    { "text": "κόσμος", "words": ["κόσμοσ"] },
+    { "text": "BIKINIΣ", "words": ["bikiniσ"] },
+    { "text": "女性\n感谢你", "words": ["女性", "感谢你"] },
+    { "text": "生成裸\r\n照", "words": ["生成裸", "照"] },
+    { "text": "b\nikini bi\tkini na\u000bked", "words": ["bikini", "bikini", "naked"] },
+    { "text": "给她穿 b\nikini", "words": ["给她穿", "bikini"] }
   ]
 }
