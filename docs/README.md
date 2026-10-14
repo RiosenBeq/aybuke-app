@@ -21,6 +21,7 @@
 | [research/brand-and-design.md](research/brand-and-design.md) | Colour, type, naming, UX patterns, icon |
 | [research/brand-contrast-tables.md](research/brand-contrast-tables.md) | WCAG contrast tables |
 | [research/tech-and-compliance.md](research/tech-and-compliance.md) | Models and APIs, backend, Apple frameworks, App Review, regulation |
+| [research/2026-10-feature-audit.md](research/2026-10-feature-audit.md) | October 2026 audit: competitor matrix, trends, teen wellbeing and monetization research, compliance, what was built, deferred or rejected |
 
 **Visual assets:**
 - [`assets/brand/`](assets/brand/): icon and brand board

@@ -2,6 +2,37 @@
 
 > Bu belge, araştırmayla alınan tüm kararların Türkçe özetidir. Ayrıntılar ve kaynaklar İngilizce belgelerdedir ([docs/README.md](README.md)).
 
+## Ekim 2026 güncellemesi (3): özellik denetimi ve üç geliştirme dalgası (14 Ekim)
+
+**Nasıl yapıldı?** Uygulama yedi açıdan denetlendi: kodun eksikleri, kullanılabilirlik ve erişilebilirlik, Apple platform özellikleri, yaklaşık 25 rakip uygulama, 2025–2026 viral trendleri, gençlerin iyi oluşu / elde tutma / gelir araştırmaları ve hukuki uyum. Yaklaşık 205 bulgu 66 maddelik tek bir listeye indirildi: 26'sı "hemen yap", 32'si "sonra", 8'i "asla". "Hemen yap" maddelerinin hepsi aynı gün üç dalgada yapıldı. Ayrıntılar ve kaynaklar: [research/2026-10-feature-audit.md](research/2026-10-feature-audit.md); kalan işler: [06-roadmap.md](06-roadmap.md).
+
+**Ne değişti?**
+- **Genç güvenliği önce:** Magic Edit ve Create artık "beni zayıflat", "burnumu küçült", "cildimi aç", "bikini giydir" gibi istekleri ve küçük düşürücü düzenlemeleri 12 dilin hepsinde, hem uygulamada hem sunucuda engelliyor. Her Magic Edit'in sonuna yüzü, vücudu, ten rengini, cilt dokusunu ve yaşı koruyan bir koruma cümlesi ekleniyor (sunucu da ekliyor).
+- **Yaş adımı:** Onboarding'de tarafsız bir yaş sorusu var (iOS 26+'da Apple'ın Declared Age Range'i, değilse ay ve yıl menüsü). Yalnızca yaş aralığı, cihazda saklanıyor. 13 yaş altı yalnızca cihaz içi araçları görüyor (bulut AI, satın alma, hesap yok). 18 yaş altına paywall kendiliğinden açılmıyor; 13–15 yaş ve ülkenin dijital onay yaşının altındakiler için onay ekranında veli adımı var (Türkiye'de 18).
+- **Hesap yalnızca gerektiğinde:** Anonim hesap ve RevenueCat kimliği artık ilk açılışta değil, ilk onaylı bulut işinde veya satın almada oluşuyor. "Verilerimi sil" RevenueCat dahil her şeyi siliyor.
+- **Yeni ücretsiz araçlar (cihazda):**
+  - **Crop:** paylaşım oranları (1:1, 4:5, 9:16, 16:9), döndürme, aynalama, ±15° düzeltme; tuvalde 4 kata kadar yakınlaştırma.
+  - **Hide faces:** fotoğraftaki diğer kişilerin yüzlerini bulanıklaştırma, pikselleştirme veya kalp / yıldız / gülen yüzle kapatma; "Önce" görselinde de gizleniyor. Nezaket hatırlatmasında "Hide their faces" düğmesi var.
+  - **Cut out:** dokunarak özne seçme; renk, degrade, bulanık orijinal veya kendi fotoğrafı arka plan; kenarlıklı çıkartma (sticker) olarak kopyalama veya kaydetme.
+  - **Yeni efektler:** Throwback '16 (2016 filtreleri), Camcorder '06 (REC göstergesi, videoda işleyen zaman kodu) ve Film Still (sinema bantları ve içerik politikasından geçen tek satır altyazı). Toplam 10 efekt.
+- **Cihaz içi yapay zekâ:**
+  - **Ideas for this photo:** Editör fotoğrafa cihazda bakıp ona uyan bir efekt, bir görünüm ve bir Magic Edit fikri öneriyor (güzellik görünümleri asla). **Surprise me** ücretsiz efektleri deniyor.
+  - **Inspire me / Make it magic:** iOS 26+'da Apple'ın cihaz içi dil modeli Create için fikir ve daha iyi istem yazıyor; metin cihazdan çıkmıyor.
+  - **Create with Image Playground:** Destekleyen cihazlarda Apple'ın kendi görsel üreticisi (yalnızca Apple'ın çizgi stilleri, kişiselleştirme kapalı). Glowlit kredisi harcamıyor, backend olmadan da çalışıyor.
+  - **Altyazı fikirleri:** Paylaş ekranında görünüşe değil havaya dair üç kısa altyazı.
+  - Yeni AI sonuçları anlık fotoğraf gibi "banyo" oluyor.
+- **Yeni görünümler:** 80s Studio Portrait, Laser Yearbook '86, Disco '79, Plushie Me, Bag Charm Mini ve evcil hayvan portreleri (Royal Pet Portrait, Pet Figurine, Pet Astronaut). Mevsimlik görünümler tarih aralığıyla: Cadılar Bayramı 1 Ekim–2 Kasım, kış 1 Aralık–6 Ocak (Snow Globe Me, Cozy Sweater Digicam, New Year Confetti), Galentine's 1–14 Şubat (arkadaşlık temalı). Ana sayfada yalnızca mevsiminde öne çıkıyor; yıl boyu 36 görünüm var. Bunlar bulut AI şablonları, Supabase açılana kadar demo modunda.
+- **Karşılaştırmaya son:** "Help me pick" artık **Which vibe?**: yalnızca aynı yaratımın iki versiyonu, asla orijinal fotoğraf ile düzenlenmiş hali değil. Best shot'ta taç ve sıra numarası yok; en iyi fotoğrafa "Best light & focus" etiketi geliyor. Ayarlar'da küçük bir **Feel good** sayfası güvendiği birine ve findahelpline.com'a yönlendiriyor.
+- **Dürüst metin ve satın alma:** "Her hafta yeni trend", "daha yüksek çözünürlük" ve kaynaksız fiyat karşılaştırması kaldırıldı; CI'da `check-honest-copy.py` denetliyor. Pro kredileri gerçek bakiyeyle gösteriliyor; Pro'nun kredisi bitince "gece yarısı yenilenir" yerine bir sonraki aylık yenileme ve paketler çıkıyor. Ücretlendirilecek tutar deneme butonunun yanında. Aile onayı (Ask to Buy) "Onay bekleniyor" ekranıyla destekleniyor.
+- **Yapay zekâ etiketi korunuyor:** "Made with AI" (IPTC) bilgisi yeniden düzenlemelerden ve paylaşımdan sonra da kalıyor; yalnızca cihazda yapılan düzenlemelere filigran ve #MadeWithAI eklenmiyor. Başka bir fotoğrafa konan çıkartma "composite" olarak işaretleniyor.
+- **Sağlamlık ve erişilebilirlik:** İlk açılış Digicam '04 ile kendi fotoğrafında gerçek bir sonuçla bitiyor, ardından (yetişkinlere) paywall ve tur geliyor. Bildirimler gece ve okul saatlerinde gelmiyor, kilit ekranında istem görünmüyor; deneme hatırlatması bitişten en az 26 saat önce. Büyük fotoğraflar bellek dostu açılıyor, telefon kilitliyken biten işler artık kaybolmuyor, bozulan kütüphane kendini onarıyor, çevrimdışı durum önceden söyleniyor, iPad tek pencere. VoiceOver, klavye kısayolları, 44 pt dokunma alanları, çoğul biçimler ve video editörünün iptal / ilerleme / erişilebilir kırpma desteği eklendi.
+- **Bilerek yapılmayanlar:** ünlülerle fotoğraf, güzellik rötuşu ve vücut / yüz şekillendirme, akış / beğeni / seri (streak), kişilere puan verme, kıyafet deneme ve yapay zekâ dansı, evcil hayvanı insana çevirme, karanlık satış kalıpları.
+
+**Sizin yapmanız gerekenler:**
+- Bu dalgalarda eklenen ~360 metnin 11 dile çevrilmesi ve diğer App Store dillerinin yeni İngilizce metne uyarlanması.
+- Supabase'i açmadan önce bağımsız çıktı denetimi ve kötüye kullanım araçlarının (yasak listesi, incelenebilir bildirimler) yapılması gerekiyor; listede "sonra" bölümünde.
+- Hindistan / Kore görünür AI etiketi, Brezilya ECA Digital, Rusya mağazası ve veri koruma etki değerlendirmesi (DPIA) için avukat görüşü.
+
 ## Ekim 2026 güncellemesi (2): video, retro efektler, xAI ve 12 dil
 
 **Ne değişti?**
@@ -11,7 +42,7 @@
   - RAW (ProRAW, DNG) fotoğraflar açılırken en iyi ayarlarla otomatik banyo ediliyor.
 - **Yazı tipi:** Bricolage Grotesque'in yerini **Poppins** (SIL OFL) aldı; web sitesiyle aynı yazı tipi.
 - **iOS 26 ve iPad:** Sekme çubuğu ve editörün araç çubuğu iOS 26'da Liquid Glass; iOS 17–18'de buzlu cam görünümüne geçiyor. Uygulama artık iPhone ve iPad için evrensel (uyumlu ızgaralar, okunabilir genişlikler).
-- **Yeni fiyatlar:** Pro Yıllık $39.99 (7 gün ücretsiz deneme, ayda ≈ $3.33), Pro Aylık $5.99 (uygun kullanıcılara ilk ay $1.99), kredi paketleri 30 kredi $2.99 ve 100 kredi $7.99. Paywall'daki söz: çoğu AI fotoğraf uygulamasının yaklaşık yarı fiyatı, haftalık plan asla yok.
+- **Yeni fiyatlar:** Pro Yıllık $39.99 (7 gün ücretsiz deneme, ayda ≈ $3.33), Pro Aylık $5.99 (uygun kullanıcılara ilk ay $1.99), kredi paketleri 30 kredi $2.99 ve 100 kredi $7.99. Paywall'daki söz: haftalık plan asla yok (kaynaksız fiyat karşılaştırması Ekim 2026'da kaldırıldı).
 - **AI sağlayıcısı artık xAI Grok Imagine:**
   - Model `grok-imagine-image-2.0`, 1k çözünürlük: ücretsiz kullanıcılara düşük, Pro'ya orta kalite. Oluşturma başına yaklaşık $0.04, düzenleme başına $0.05–0.07; bulut işlemi başına ortalama ~$0.06.
   - fal.ai alternatif olarak duruyor (`AI_PROVIDER=fal`).
@@ -62,9 +93,9 @@
     - Uygulamadaki "24 saatte silinir" yazısı, politikadaki "1 saat" ile eşitlendi.
   - *Özellik (rakiplerde yok):*
     - Benzerlik kontrolü ("Still you" / cilt tonu değiştiyse ücretsiz tekrar).
-    - Best shot (selfie'leri ışık ve netliğe göre sıralar, asla görünüşe göre değil).
+    - Best shot (ışığı ve netliği en iyi selfie'yi bulur; sıra numarası ve taç yok, asla görünüşe göre değil).
     - Which vibe? (A mı B mi kartı; yalnızca aynı yaratımın iki versiyonu, asla orijinal fotoğraf ile düzenlenmiş hali değil).
-    - Arkadaş yüzü varsa nezaket hatırlatması ("Only edit me").
+    - Arkadaş yüzü varsa nezaket hatırlatması ("Only edit me", "Hide their faces").
     - İsteğe bağlı görünür "AI-edited" etiketi.
   - *Çıkarılanlar:*
     - Rakiplerde zaten olduğu için: "Steal the look", feed önizlemesi ve fotoğraf dökümü.
@@ -104,7 +135,7 @@ Bu brief'i üç paralel araştırmayla (pazar, marka/tasarım, teknoloji/uyumlul
 4. **Backend (Supabase + xAI; alternatif olarak fal.ai):**
    - Kimlik doğrulama, kredi defteri, Apple satın alma doğrulaması, güvenlik filtreleri ve asenkron AI iş kuyruğu.
 5. **Testler ve CI:**
-   - 100 Swift birim testi.
+   - 170 Swift birim testi.
    - AppCore metinlerinin çeviri için kayıtlı olduğunun kontrolü (`export-core-strings.py --check`).
    - Deno tip kontrolü ve lint.
    - Gerçek PostgreSQL üzerinde kredi defteri testleri.
@@ -146,14 +177,14 @@ Araştırmanın en net bulgusu: kullanıcıların **1 numaralı şikâyeti hafta
 
 | Plan | Fiyat | İçerik |
 |---|---|---|
-| Ücretsiz | 0 | Günde 3 kredi; cihaz içi araçlar (efektler, video düzenleme, arka plan silme, ayarlar, Best shot) sınırsız |
+| Ücretsiz | 0 | Günde 3 kredi; cihaz içi araçlar (efektler, video düzenleme, Crop, Cut out, Hide faces, ayarlar, Best shot) sınırsız |
 | **Pro Yıllık** (varsayılan) | **$39.99/yıl** (ayda ≈ $3.33), 7 gün ücretsiz deneme | Ayda 100 kredi (kullanılmayanlar 1 ay devreder, üst sınır 200), tüm şablonlar, en iyi kalitede AI, filigransız |
 | Pro Aylık | $5.99/ay (uygun kullanıcılara ilk ay $1.99) | Aynı içerik |
 | Kredi paketleri | 30 kredi $2.99 · 100 kredi $7.99 | **Süresiz** geçerli |
 
 Güven özellikleri:
-- **Haftalık plan asla yok.** Fiyatlar çoğu AI fotoğraf uygulamasının yaklaşık yarısı.
-- Paywall'da deneme takvimi gösteriliyor ve deneme bitmeden 24 saat önce hatırlatma bildirimi geliyor.
+- **Haftalık plan asla yok.**
+- Paywall'da deneme takvimi gösteriliyor ve deneme bitmeden en az 26 saat önce, gece ve okul saatleri dışında hatırlatma bildirimi geliyor.
 - Başarısız işlerin kredisi **otomatik iade ediliyor**.
 - Sahte geri sayım kullanılmıyor.
 
@@ -201,7 +232,7 @@ Güven özellikleri:
 2. Gizlilik politikası ve kullanım şartları sayfalarının yayınlanması.
 3. xAI Zero Data Retention'ın açılması, Supabase'in kurulup deploy edilmesi ve TestFlight'ta uçtan uca test.
 4. App Store Connect'te ürünlerin ve abonelik fiyatlarının tanımlanması ($39.99 yıllık, $5.99 aylık ve ilk ay $1.99 teklifi, $2.99 ve $7.99 paketler); uygulama içi satın alma anahtarının RevenueCat'e yüklenmesi.
-5. App Attest ile ücretsiz kredi suistimaline karşı koruma; yaş doğrulama (Declared Age Range API).
+5. App Attest ile ücretsiz kredi suistimaline karşı koruma, bağımsız çıktı denetimi ve kötüye kullanım araçları (yaş adımı ve Declared Age Range Ekim 2026'da eklendi).
 6. Şablon kartlarına gerçek önce/sonra görsellerinin eklenmesi (farklı ten renkleri ve yüz tiplerinden oluşan geniş bir oyuncu kadrosuyla).
 7. 11 çevirinin anadili konuşanlarca kontrolü; App Store metinlerinin ve ekran görüntülerinin bu dillere uyarlanması.
-8. Büyüme aşaması: selfie profilli Likeness Lock v2, şablonların video versiyonları, C2PA içerik kimlik bilgileri.
+8. Denetimin "sonra" listesi: önce retro kamera ve fotoğraf kabini, sonra App Shortcuts ve paylaşım uzantıları; büyüme aşamasında selfie profilli Likeness Lock v2, şablonların video versiyonları, C2PA içerik kimlik bilgileri.
