@@ -41,8 +41,11 @@ struct LatePurchase {
 final class PurchaseManager {
     enum LoadState: Equatable {
         case idle, loading, loaded
-        /// Already localized.
-        case failed(String)
+        /// No answer in time, or an error.
+        case unreachable
+        /// The App Store answered without some products (say, plans not
+        /// attached to this build yet).
+        case unavailable
     }
 
     private(set) var products: [Product] = []
@@ -90,11 +93,6 @@ final class PurchaseManager {
         products.filter { StoreProducts.creditPacks[$0.id] != nil }.sorted { $0.price < $1.price }
     }
 
-    var loadError: String? {
-        if case .failed(let message) = loadState { return message }
-        return nil
-    }
-
     /// The buy buttons work (Restore and Manage always do).
     var canBuy: Bool { canMakePayments && !isClosedForPreview }
 
@@ -111,7 +109,7 @@ final class PurchaseManager {
         loadTimeout = Task { [weak self] in
             try? await Task.sleep(for: .seconds(10))
             guard !Task.isCancelled, let self, self.loadState == .loading else { return }
-            self.loadState = .failed(String(localized: "Couldn't reach the App Store. Check your connection."))
+            self.loadState = .unreachable
         }
         // "Try again" during a slow request restarts the timer, not the request.
         guard !isRequestInFlight else { return }
@@ -124,10 +122,10 @@ final class PurchaseManager {
             // A partial answer (say, packs without the plans) counts as a failure, so it can be retried.
             loadState = Set(loaded.map(\.id)).isSuperset(of: StoreProducts.all)
                 ? .loaded
-                : .failed(String(localized: "Subscriptions are unavailable right now."))
+                : .unavailable
         } catch {
             loadTimeout?.cancel()
-            loadState = .failed(String(localized: "Couldn't reach the App Store. Check your connection."))
+            loadState = .unreachable
         }
     }
 

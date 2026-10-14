@@ -190,7 +190,8 @@ struct PaywallView: View {
                     .padding(.top, 2)
             }
             if !isScreenshotPreview {
-                StoreStatusView(purchases: purchases, showsSpinner: purchases.yearly == nil && purchases.monthly == nil)
+                StoreStatusView(purchases: purchases, showsSpinner: purchases.yearly == nil && purchases.monthly == nil,
+                                unavailableText: "Subscriptions are unavailable right now.")
             }
         }
     }
@@ -409,7 +410,10 @@ struct PendingApprovalCard: View {
 /// purchases (Screen Time or device management), shared by the paywall and the packs.
 struct StoreStatusView: View {
     let purchases: PurchaseManager
+    /// None of this view's products are on screen yet.
     var showsSpinner = true
+    /// What to say when the App Store answered without these products.
+    var unavailableText: LocalizedStringKey
 
     var body: some View {
         VStack(spacing: 10) {
@@ -430,8 +434,11 @@ struct StoreStatusView: View {
                     ProgressView().tint(Palette.textSecondary)
                         .frame(maxWidth: .infinity, minHeight: 80)
                 }
-            case .failed(let message):
-                Text(message)
+            case .unavailable where !showsSpinner:
+                // The products shown here did load; others are missing.
+                EmptyView()
+            case .unreachable, .unavailable:
+                Text(purchases.loadState == .unreachable ? "Couldn't reach the App Store. Check your connection." : unavailableText)
                     .font(.footnote)
                     .foregroundStyle(Palette.textSecondary)
                     .multilineTextAlignment(.center)
@@ -638,7 +645,8 @@ struct CreditPackList: View {
             ForEach(purchases.creditPacks, id: \.id) { product in
                 row(for: product)
             }
-            StoreStatusView(purchases: purchases, showsSpinner: purchases.creditPacks.isEmpty)
+            StoreStatusView(purchases: purchases, showsSpinner: purchases.creditPacks.isEmpty,
+                            unavailableText: "Credit packs are unavailable right now.")
             if let errorMessage {
                 Text(errorMessage)
                     .font(.footnote)
