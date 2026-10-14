@@ -21,6 +21,12 @@ struct HomeView: View {
                             .reveal(1)
                     }
 
+                    if app.allowsCloudAI && app.isCloudOffline {
+                        OfflineNotice()
+                            .padding(.horizontal, Metrics.gutter)
+                            .transition(.opacity)
+                    }
+
                     // Under 13 Explore shows only the free on-device tools.
                     if app.allowsCloudAI {
                         heroCard

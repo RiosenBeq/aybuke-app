@@ -19,6 +19,10 @@ struct CreateView: View {
                             .foregroundStyle(Palette.textSecondary)
                     }
 
+                    if app.isCloudOffline {
+                        OfflineNotice()
+                    }
+
                     promptCard
                         .tourAnchor(.create)
                     styleSection

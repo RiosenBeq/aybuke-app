@@ -4,6 +4,7 @@ import PhotosUI
 import Observation
 import AuthenticationServices
 import StoreKit
+import Network
 import AppCore
 
 enum AppTab: Hashable {
@@ -115,6 +116,8 @@ final class AppModel {
     /// Library saves that failed while the device was locked, retried after unlock.
     @ObservationIgnored private var deferredSaves: [DeferredSave] = []
     @ObservationIgnored private var unlockWatcher: Task<Void, Never>?
+    private(set) var isOnline = true
+    @ObservationIgnored private var pathMonitor: NWPathMonitor?
 
     // MARK: Services
     let config: AppConfig
@@ -275,6 +278,30 @@ final class AppModel {
 
     var isDemoMode: Bool { config.isDemoMode }
 
+    /// Cloud AI can't be reached. Demo mode runs without a network, so it
+    /// never counts as offline (nor do screenshot scenes).
+    var isCloudOffline: Bool {
+        #if DEBUG
+        if ScreenshotScene.current != nil { return UserDefaults.standard.bool(forKey: "GLOffline") }
+        #endif
+        return !isOnline && !isDemoMode
+    }
+
+    /// Starts once; the first update arrives within moments, so until then
+    /// she's assumed online rather than shown a false offline notice.
+    private func watchNetwork() {
+        guard pathMonitor == nil else { return }
+        let monitor = NWPathMonitor()
+        monitor.pathUpdateHandler = { [weak self] path in
+            let online = path.status == .satisfied
+            Task { @MainActor in
+                if self?.isOnline != online { self?.isOnline = online }
+            }
+        }
+        monitor.start(queue: DispatchQueue(label: "app.glowlit.network", qos: .utility))
+        pathMonitor = monitor
+    }
+
     /// Banner on Explore explaining simulated (demo) or developer-key results.
     var modeBanner: String? {
         #if DEBUG
@@ -293,6 +320,7 @@ final class AppModel {
 
     /// Called once from the root view's `.task`.
     func start() async {
+        watchNetwork()
         liveActivity.endLeftovers()
         switch libraryOutcome {
         case .opened: break
@@ -639,6 +667,10 @@ final class AppModel {
             noteUnavailable()
             return
         }
+        if !operation.runsOnDevice && isCloudOffline {
+            handle(AIServiceError.offline)
+            return
+        }
         if requiresPro && !purchases.isPro {
             presentPaywall(source: "pro_content")
             return
@@ -669,6 +701,8 @@ final class AppModel {
     /// background, so people can switch apps while they wait.
     func run(_ job: AIJob, saveToLibrary: Bool) async throws -> AIJobResult {
         let isCloud = !job.operation.runsOnDevice
+        // Also covers the free retry, which skips `requestAccess`.
+        if isCloud && isCloudOffline { throw AIServiceError.offline }
         let showsActivity = isCloud && liveActivity.start(
             title: job.title.shortened(to: 34),
             symbolName: job.template?.symbolName ?? job.operation.symbolName,

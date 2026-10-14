@@ -187,14 +187,8 @@ final class DirectAIImageService: AIImageService {
             let (data, response) = try await session.data(for: request)
             guard let http = response as? HTTPURLResponse else { throw AIServiceError.invalidResponse }
             return (data, http)
-        } catch let error as URLError where error.code == .cancelled {
-            throw CancellationError()
-        } catch is CancellationError {
-            throw CancellationError()
-        } catch let error as AIServiceError {
-            throw error
         } catch {
-            throw AIServiceError.network(String(localized: "Check your internet connection and try again."))
+            throw NetworkFailure.map(error)
         }
     }
 }
