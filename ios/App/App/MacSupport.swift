@@ -93,6 +93,16 @@ struct MacWindowSetup: UIViewRepresentable {
             guard let scene = window?.windowScene else { return }
             scene.titlebar?.titleVisibility = .hidden
             scene.sizeRestrictions?.minimumSize = CGSize(width: 900, height: 640)
+            #if DEBUG
+            // `-GLWindowSize 1280x800` pins the window to one size, so Mac App
+            // Store screenshots come out alike.
+            let parts = UserDefaults.standard.string(forKey: "GLWindowSize")?.split(separator: "x").compactMap { Double($0) }
+            if let parts, parts.count == 2 {
+                let size = CGSize(width: parts[0], height: parts[1])
+                scene.sizeRestrictions?.minimumSize = size
+                scene.sizeRestrictions?.maximumSize = size
+            }
+            #endif
         }
     }
 }

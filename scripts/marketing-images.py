@@ -8,17 +8,21 @@ screenshot scenes (home.png, result.png, share.png, …; see
 ios/App/App/ScreenshotScenes.swift and .github/workflows/screenshots.yml).
 Captures of the app in a given language go in <captures-dir>/<lang>/ and iPad
 captures in <captures-dir>/ipad/ (or ipad/<lang>/); the plain files are the
-fallback.
+fallback. Mac window captures (`screencapture -o -l <window id>` of the Mac
+Catalyst app launched with -GLWindowSize, so every shot has the same size) go
+in <captures-dir>/mac/<lang>/.
 
 Writes:
   docs/marketing/app-store/<lang>/NN-<scene>.jpg       1290×2796 (6.9-inch iPhone)
   docs/marketing/app-store/<lang>/ipad/NN-<scene>.jpg  2064×2752 (13-inch iPad)
+  docs/marketing/app-store/<lang>/mac/NN-<scene>.jpg   2880×1800 (Mac, 16:10)
   docs/marketing/social/post-launch.png              1080×1350 feed post
   docs/marketing/social/story-launch.png             1080×1920 Story
   web/assets/og-image.png                            1200×630 link preview
   web/assets/screens/<scene>.jpg                     screens for the landing page
 
-Headlines come from docs/marketing/screenshot-captions.json. Requires Pillow.
+Headlines come from docs/marketing/screenshot-captions.json (per language,
+and under "mac" for the Mac set). Requires Pillow.
 Uses the app's bundled display font (Poppins) and macOS's New York Italic for
 the accent word, if available.
 """
@@ -30,7 +34,7 @@ import math
 import sys
 from pathlib import Path
 
-from PIL import Image, ImageDraw, ImageFilter, ImageFont
+from PIL import Image, ImageChops, ImageDraw, ImageFilter, ImageFont
 
 ROOT = Path(__file__).resolve().parent.parent
 FONTS = ROOT / "ios" / "App" / "Resources" / "Fonts"
@@ -170,6 +174,43 @@ def tablet(screen: Image.Image, height: int) -> Image.Image:
     return canvas
 
 
+def desktop(window: Image.Image, height: int) -> Image.Image:
+    """A Mac window capture with rounded corners, a hairline edge and a soft shadow."""
+    scale = height / window.height
+    ww, wh = round(window.width * scale), height
+    window = window.convert("RGBA").resize((ww, wh), Image.LANCZOS)
+    radius = round(ww * 0.014)
+    pad = 110
+    canvas = Image.new("RGBA", (ww + pad * 2, wh + pad * 2), (0, 0, 0, 0))
+    shadow = Image.new("RGBA", canvas.size, (0, 0, 0, 0))
+    ImageDraw.Draw(shadow).rounded_rectangle((pad, pad + 36, pad + ww, pad + wh + 36), radius=radius, fill=INK + (64,))
+    canvas.alpha_composite(shadow.filter(ImageFilter.GaussianBlur(48)))
+    # Keep the window's own transparent corners, and round them evenly.
+    mask = Image.new("L", (ww * 2, wh * 2), 0)
+    ImageDraw.Draw(mask).rounded_rectangle((0, 0, ww * 2 - 1, wh * 2 - 1), radius=radius * 2, fill=255)
+    window.putalpha(ImageChops.darker(window.getchannel("A"), mask.resize((ww, wh), Image.LANCZOS)))
+    canvas.alpha_composite(window, (pad, pad))
+    ImageDraw.Draw(canvas).rounded_rectangle((pad, pad, pad + ww - 1, pad + wh - 1), radius=radius, outline=INK + (40,), width=2)
+    return canvas
+
+
+def mac_screenshot(capture: Path, title: str, subtitle: str, index: int) -> Image.Image:
+    """2880×1800 Mac App Store image: caption on top, the app's window below."""
+    size = (2880, 1800)
+    image = background(size, index)
+    draw = ImageDraw.Draw(image)
+    title_font = display_font(124)
+    subtitle_font = display_font(58, heavy=False)
+    y = centered_lines(draw, wrap(draw, title, title_font, size[0] - 500), title_font, 118, size[0], INK, 18)
+    y = centered_lines(draw, wrap(draw, subtitle, subtitle_font, size[0] - 600), subtitle_font, y + 22, size[0], INK_SOFT, 12)
+    sparkle(draw, (size[0] - 260, 150), 60, WHITE)
+    sparkle(draw, (size[0] - 170, 250), 24, INK)
+    sparkle(draw, (240, 190), 34, WHITE)
+    window = desktop(Image.open(capture), size[1] - (y + 70) - 70)
+    image.alpha_composite(window, ((size[0] - window.width) // 2, y + 70 - 110))
+    return image.convert("RGB")
+
+
 def headline(draw, x, y, plain: str, accent: str, size: int, fill=INK):
     """'Make it ' in the display font followed by an italic serif accent."""
     font = display_font(size)
@@ -244,6 +285,23 @@ def main() -> None:
         raise SystemExit(__doc__)
     captures = Path(sys.argv[1])
     captions = json.loads(CAPTIONS.read_text(encoding="utf-8"))
+    mac_captions = captions.pop("mac", {})
+    for lang, items in mac_captions.items():
+        base = captures / "mac"
+        if not base.exists():
+            break
+        folder = OUT_STORE / lang / "mac"
+        folder.mkdir(parents=True, exist_ok=True)
+        for old in folder.glob("[0-9][0-9]-*.jpg"):
+            old.unlink()
+        for index, item in enumerate(items, start=1):
+            capture = next((path for path in (base / lang / f"{item['scene']}.png", base / f"{item['scene']}.png") if path.exists()), None)
+            if capture is None:
+                print(f"skip {lang}/mac/{item['scene']}: no capture")
+                continue
+            mac_screenshot(capture, item["title"], item["subtitle"], index).save(
+                folder / f"{index:02d}-{item['scene']}.jpg", quality=92, subsampling=0
+            )
     for lang, items in captions.items():
         for ipad in (False, True):
             folder = OUT_STORE / lang / ("ipad" if ipad else "")

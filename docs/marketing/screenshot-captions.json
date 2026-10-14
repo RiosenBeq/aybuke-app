@@ -11,24 +11,24 @@
       "subtitle": "Doll Box, Y2K Digicam, Ballet Core and more"
     },
     {
+      "scene": "ideas",
+      "title": "Ideas for every photo",
+      "subtitle": "Tap a suggested look, or type the change you want"
+    },
+    {
       "scene": "effects",
       "title": "80s & 90s effects, free",
       "subtitle": "VHS, disposable, Y2K digicam — on your device, no credits"
     },
     {
-      "scene": "editor",
-      "title": "Just say what to change",
-      "subtitle": "Pink dress, soft glam, cherry blossoms — you name it"
+      "scene": "create",
+      "title": "Create anything from words",
+      "subtitle": "Pick a style and a size, or tap Inspire me for an idea"
     },
     {
       "scene": "share-cover",
       "title": "Be the cover star",
       "subtitle": "Magazine covers, photo strips and story cards to share"
-    },
-    {
-      "scene": "share",
-      "title": "Share-ready in one tap",
-      "subtitle": "Stories, before/after collages and 9:16 story cards"
     },
     {
       "scene": "library",
@@ -58,24 +58,24 @@
       "subtitle": "Doll Box, Y2K Digicam, Ballet Core ve daha fazlası"
     },
     {
+      "scene": "ideas",
+      "title": "Her fotoğrafa fikirler",
+      "subtitle": "Önerilen bir görünüme dokun ya da ne değişsin, yaz"
+    },
+    {
       "scene": "effects",
       "title": "80'ler, 90'lar efektleri ücretsiz",
       "subtitle": "VHS, tek kullanımlık, Y2K digicam: cihazında, kredisiz"
     },
     {
-      "scene": "editor",
-      "title": "Ne değişsin, sen söyle",
-      "subtitle": "Pembe elbise, soft glam, kiraz çiçekleri… ne istersen"
+      "scene": "create",
+      "title": "Kelimelerden görsel yarat",
+      "subtitle": "Bir stil ve boyut seç ya da fikir için İlham ver’e dokun"
     },
     {
       "scene": "share-cover",
       "title": "Kapak yıldızı sensin",
       "subtitle": "Dergi kapağı, fotoğraf şeridi ve hikâye kartları"
-    },
-    {
-      "scene": "share",
-      "title": "Paylaşmaya hazır",
-      "subtitle": "Hikâye, önce/sonra kolajı ve 9:16 kart tek dokunuşta"
     },
     {
       "scene": "library",
@@ -92,5 +92,91 @@
       "title": "Adil fiyat, sürpriz yok",
       "subtitle": "Haftalık plan yok, paketler süresiz, hata olursa kredi iade"
     }
-  ]
+  ],
+  "mac": {
+    "en": [
+      {
+        "scene": "home",
+        "title": "Glowlit, now on your Mac",
+        "subtitle": "Trend looks, Magic Edit and free tools in one window"
+      },
+      {
+        "scene": "editor",
+        "title": "Ideas for every photo",
+        "subtitle": "Tap a suggestion, or just type the change you want"
+      },
+      {
+        "scene": "result",
+        "title": "Type it. Watch it glow",
+        "subtitle": "Drag the slider to compare before and after"
+      },
+      {
+        "scene": "create",
+        "title": "Create anything from words",
+        "subtitle": "Pick a style and a size, or tap Inspire me"
+      },
+      {
+        "scene": "effects",
+        "title": "80s & 90s effects, free",
+        "subtitle": "VHS, disposable, Y2K digicam — on your Mac, no credits"
+      },
+      {
+        "scene": "share-cover",
+        "title": "Be the cover star",
+        "subtitle": "Magazine covers, photo strips and story cards to share"
+      },
+      {
+        "scene": "cutout",
+        "title": "Cut out, free and on-device",
+        "subtitle": "Lift people and pets, add a backdrop or make a sticker"
+      },
+      {
+        "scene": "hideFaces",
+        "title": "Keep your friends private",
+        "subtitle": "Blur, pixelate or cover faces before you share"
+      }
+    ],
+    "tr": [
+      {
+        "scene": "home",
+        "title": "Glowlit artık Mac’te",
+        "subtitle": "Trend görünümler, Sihirli Düzenleme ve ücretsiz araçlar tek pencerede"
+      },
+      {
+        "scene": "editor",
+        "title": "Her fotoğrafa fikirler",
+        "subtitle": "Bir öneriye dokun ya da ne değişsin, yaz"
+      },
+      {
+        "scene": "result",
+        "title": "Yaz, ışıldasın",
+        "subtitle": "Kaydır, öncesini ve sonrasını karşılaştır"
+      },
+      {
+        "scene": "create",
+        "title": "Kelimelerden görsel yarat",
+        "subtitle": "Bir stil ve boyut seç ya da İlham ver’e dokun"
+      },
+      {
+        "scene": "effects",
+        "title": "80'ler, 90'lar efektleri ücretsiz",
+        "subtitle": "VHS, tek kullanımlık, Y2K digicam: Mac’inde, kredisiz"
+      },
+      {
+        "scene": "share-cover",
+        "title": "Kapak yıldızı sensin",
+        "subtitle": "Dergi kapağı, fotoğraf şeridi ve hikâye kartları"
+      },
+      {
+        "scene": "cutout",
+        "title": "Ücretsiz dekupe, cihazında",
+        "subtitle": "Kişileri ve evcil dostları ayır, fon ekle ya da çıkartma yap"
+      },
+      {
+        "scene": "hideFaces",
+        "title": "Arkadaşlarının gizliliği",
+        "subtitle": "Paylaşmadan önce yüzleri bulanıklaştır, pikselleştir ya da kapat"
+      }
+    ]
+  }
 }

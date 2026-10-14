@@ -67,7 +67,8 @@ struct CreateView: View {
             #if DEBUG
             .onAppear {
                 guard let scene = ScreenshotScene.current, scene == .create || scene == .results, model.prompt.isEmpty else { return }
-                model.prompt = ScreenshotFixtures.createPrompt
+                // `-GLPrompt <text>`: the prompt in the screenshot's language.
+                model.prompt = UserDefaults.standard.string(forKey: "GLPrompt") ?? ScreenshotFixtures.createPrompt
                 model.style = StyleCatalog.style(id: "pastel")
                 if scene == .results {
                     model.results = ScreenshotFixtures.generatedArt(count: 3)
