@@ -452,7 +452,7 @@ struct LibraryView: View {
             guard let image = await loadImage(named: name) else { return couldNotOpen() }
             Haptics.tap()
             app.share(SharePayload(image: image, operation: provenance.operation, prompt: prompt,
-                                   inheritedSourceType: provenance.inheritedSourceType))
+                                   inheritedSourceType: provenance.inheritedSourceType, offersHidingFaces: true))
         }
     }
 
@@ -520,7 +520,7 @@ struct LibraryView: View {
                 } catch {
                     let shareInstead = entries.count == 1
                         ? SharePayload(image: image, operation: entry.provenance.operation, prompt: entry.prompt,
-                                       inheritedSourceType: entry.provenance.inheritedSourceType)
+                                       inheritedSourceType: entry.provenance.inheritedSourceType, offersHidingFaces: true)
                         : nil
                     app.handleSaveError(error, shareInstead: shareInstead)
                     return
@@ -887,7 +887,7 @@ struct CreationDetailView: View {
             } catch {
                 let provenance = creation.provenance
                 app.handleSaveError(error, shareInstead: SharePayload(image: image, operation: provenance.operation, prompt: creation.prompt,
-                                                                      inheritedSourceType: provenance.inheritedSourceType))
+                                                                      inheritedSourceType: provenance.inheritedSourceType, offersHidingFaces: true))
             }
         }
     }
@@ -907,7 +907,7 @@ struct CreationDetailView: View {
         Haptics.tap()
         let provenance = creation.provenance
         app.share(SharePayload(image: image, operation: provenance.operation, prompt: creation.prompt,
-                               inheritedSourceType: provenance.inheritedSourceType))
+                               inheritedSourceType: provenance.inheritedSourceType, offersHidingFaces: true))
     }
 
     /// To Recently deleted: the file stays for 30 days.

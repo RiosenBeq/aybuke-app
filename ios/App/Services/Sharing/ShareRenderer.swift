@@ -4,7 +4,7 @@ import AppCore
 /// What the user is sharing. `original` enables the Before / After collage.
 struct SharePayload: Identifiable {
     let id = UUID()
-    let image: UIImage
+    var image: UIImage
     var original: UIImage?
     let operation: AIOperation?
     var prompt: String?
@@ -14,6 +14,9 @@ struct SharePayload: Identifiable {
     var alternatives: [UIImage] = []
     /// The AI marking the source file already carried (see `Provenance`).
     var inheritedSourceType: DigitalSourceType? = nil
+    /// Shared straight from My Works or Create, not from the editor (which
+    /// has Hide faces): the composer offers "Hide other faces".
+    var offersHidingFaces = false
 
     /// Decides the IPTC field, the free-tier branding, the AI hashtags and
     /// the AI label.
