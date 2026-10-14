@@ -44,6 +44,11 @@ struct RetroCamView: View {
         .statusBarHidden()
         .animation(.easeInOut(duration: 0.25), value: model.shot?.id)
         .task {
+            // Photo Booth from Siri, Shortcuts or a control.
+            if app.retroCamStartsInBooth {
+                app.retroCamStartsInBooth = false
+                model.mode = .booth
+            }
             await model.prepare()
             #if DEBUG
             await model.applyScreenshotOptions(app: app)

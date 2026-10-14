@@ -106,7 +106,9 @@ final class AppModel {
     var outOfCredits: OutOfCreditsRequest?
     private(set) var paywallSource = "unknown"
     var isPhotoPickerPresented = false
-    var editorLaunch: EditorLaunch?
+    var editorLaunch: EditorLaunch? {
+        didSet { if editorLaunch?.tool == .textStickers { GlowTips.noteUsed(.textStickers) } }
+    }
     var consentRequest: ConsentRequest?
     var shareRequest: SharePayload?
     /// "Keep your glow on every iPhone": offered after a purchase.
@@ -114,12 +116,19 @@ final class AppModel {
     /// "Find your best shot" (on-device, by light and focus).
     var isBestShotPresented = false
     /// The collage and photo dump maker (full screen, on-device).
-    var isCollagePresented = false
+    var isCollagePresented = false {
+        didSet { if isCollagePresented { GlowTips.noteUsed(.collage) } }
+    }
     /// The simple video editor: picker, then the editor itself.
     var isVideoPickerPresented = false
     var videoSource: VideoSource?
     /// Retro Cam and Photo Booth (full screen, on the device).
-    var isRetroCamPresented = false
+    var isRetroCamPresented = false {
+        didSet { if isRetroCamPresented { GlowTips.noteUsed(.retroCam) } }
+    }
+    /// Retro Cam opens in Photo Booth mode (Siri, Shortcuts, a control);
+    /// the camera clears it when it starts.
+    @ObservationIgnored var retroCamStartsInBooth = false
     var toast: ToastMessage?
     /// "Photos access is off" with Open Settings (and Share instead).
     var photosAccessRequest: PhotosAccessRequest?
@@ -517,6 +526,7 @@ final class AppModel {
         isSignedIn = false
         accountEmail = nil
         tour.reset()
+        GlowTips.eraseAll()
         prompts.reset()
         credits.resetAll()
         credits.refresh(isPro: purchases.isPro)
@@ -651,6 +661,7 @@ final class AppModel {
 
     /// The editor's full-screen cover closed.
     func editorDidClose() {
+        GlowTips.noteEditorClosed()
         if defaults.bool(forKey: Keys.onboardingPaywallPending) {
             offerOnboardingPaywall()
         }
@@ -1130,7 +1141,7 @@ final class AppModel {
         }
     }
 
-    // MARK: Deep links (widgets, Live Activities)
+    // MARK: Deep links (widgets, controls, Live Activities, Siri and Shortcuts)
 
     func handle(_ link: GlowDeepLink) {
         guard hasCompletedOnboarding, !needsAgeStep, !isFullScreenCoverPresented else { return }
@@ -1169,6 +1180,18 @@ final class AppModel {
             isVideoPickerPresented = true
         case .library:
             selectedTab = .library
+        case .retroCam, .photoBooth:
+            // A Mac without a camera has no Retro Cam.
+            guard RetroCam.isAvailable else {
+                noteUnavailable()
+                return
+            }
+            selectedTab = .edit
+            retroCamStartsInBooth = link == .photoBooth
+            isRetroCamPresented = true
+        case .collage:
+            selectedTab = .edit
+            isCollagePresented = true
         }
     }
 
@@ -1315,7 +1338,7 @@ extension AppModel {
             ageRecord = AgeRecord(band: .adult, source: .apple, setAt: Date())
         }
         switch scene {
-        case .onboarding, .home, .settings, .legal, .invite, .tour, .collection, .feelGood, .age:
+        case .onboarding, .home, .settings, .legal, .invite, .tour, .collection, .feelGood, .age, .tips:
             selectedTab = .home
         case .bestShot:
             selectedTab = .home

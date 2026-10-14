@@ -417,6 +417,7 @@ struct SettingsView: View {
     private var aboutSection: some View {
         Section {
             Button {
+                GlowTips.reset()
                 dismiss()
                 Task {
                     // After the sheet is gone, so the tour can spotlight the screen.

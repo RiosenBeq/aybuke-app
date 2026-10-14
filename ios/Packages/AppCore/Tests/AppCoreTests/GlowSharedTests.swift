@@ -3,7 +3,8 @@ import XCTest
 
 final class GlowSharedTests: XCTestCase {
     func testDeepLinksRoundTrip() {
-        let links: [GlowDeepLink] = [.magicEdit, .create, .removeBackground, .effects, .video, .template("pink-hair"), .library]
+        let links: [GlowDeepLink] = [.magicEdit, .create, .removeBackground, .effects, .video, .template("pink-hair"), .library,
+                                     .retroCam, .photoBooth, .collage]
         for link in links {
             XCTAssertEqual(GlowDeepLink(url: link.url), link, link.url.absoluteString)
         }
@@ -13,6 +14,7 @@ final class GlowSharedTests: XCTestCase {
         XCTAssertNil(GlowDeepLink(url: URL(string: "glowlit://template/not-a-template")!))
         XCTAssertNil(GlowDeepLink(url: URL(string: "https://glowlit.app/create")!))
         XCTAssertNil(GlowDeepLink(url: URL(string: "glowlit://paywall")!))
+        XCTAssertNil(GlowDeepLink(url: URL(string: "glowlit://camera/selfie")!))
         XCTAssertEqual(GlowDeepLink(url: URL(string: "GLOWLIT://Create")!), .create)
     }
 

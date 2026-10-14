@@ -77,6 +77,10 @@ enum ScreenshotScene: String, CaseIterable {
     /// photos), `-GLCollageAI YES` (the first photo is marked as AI-made) and
     /// `-GLCollageExport YES` (writes the export to tmp/glowlit-collage-qa).
     case collage
+    /// Explore with the Retro Cam tip. Other scenes show no tips unless
+    /// `-GLTip retroCam|collage|textStickers|ideas|captions` asks for one
+    /// (`edit` for collage and textStickers, `ideas`, `video` for captions).
+    case tips
 
     static var current: ScreenshotScene? {
         UserDefaults.standard.string(forKey: "GLScreenshotScene").flatMap(ScreenshotScene.init(rawValue:))

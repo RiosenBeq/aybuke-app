@@ -509,6 +509,7 @@ struct VideoEditorView: View {
             }
             silenceCard
             CaptionsCard(model: model)
+                .tipSlot(.captions(inUse: model.captions.status != .idle), edge: .top)
             ScrollView(.horizontal) {
                 HStack(spacing: 10) {
                     EffectChoice(title: "None", image: model.thumbnail, isSelected: model.effect == nil) {

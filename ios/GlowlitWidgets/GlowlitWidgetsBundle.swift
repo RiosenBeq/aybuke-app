@@ -17,6 +17,8 @@ struct GlowlitWidgetsBundle: WidgetBundle {
             MagicEditControl()
             EffectsControl()
             VideoControl()
+            RetroCamControl()
+            PhotoBoothControl()
         }
         #endif
     }
