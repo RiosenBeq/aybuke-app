@@ -52,8 +52,8 @@ Son güncelleme: 14 Ekim 2026. Çalışma durduruldu; aşağıdaki "Açık işle
 6. **Ekran görüntüleri:** iPhone 6.9" (1290×2796) `docs/marketing/app-store/en/` ve `tr/` ve diğer dillerde; iPad 13" (2064×2752) `…/ipad/`; Mac (2880×1800) `…/mac/`. Yeni `09-library` gibi yanlış/boş dosyaların olmadığını kontrol et.
 7. **Abonelik ve kredi paketlerini sürüme ekle:** App Store Connect'te ilk abonelik, uygulama sürümüyle birlikte incelemeye gönderilmek zorundadır. Her paketi "Add for Review" ile sürüme bağla.
 8. **Paid Apps Agreement:** Business → "View and Agree to Terms" (sahibin işi). Bu olmadan ücretli ürün satılamaz.
-9. **Sandbox testi (gerçek iPhone):** satın alma, geri yükleme, deneme, kredi paketi, hesap silme. Bu adım gerçek cihaz gerektirir.
-10. **Gerçek AI testi:** uygulamada Magic Edit ya da Create ile bir fotoğraf; sunucu yanıtı ve kredi düşümü kontrol edilir.
+9. **Sandbox testi (gerçek iPhone):** satın alma, geri yükleme, deneme, kredi paketi, hesap silme. Bu adım gerçek cihaz gerektirir. Adım adım liste: [`RELEASE-CHECKLIST.md`](RELEASE-CHECKLIST.md) (§1, §4–§10).
+10. **Gerçek AI testi:** uygulamada Magic Edit ya da Create ile bir fotoğraf; sunucu yanıtı ve kredi düşümü kontrol edilir ([`RELEASE-CHECKLIST.md`](RELEASE-CHECKLIST.md) §3; bilinen riskler §12).
 11. **Son kontroller:** App Review notları, telefon (sahip doğrulayacak), yasal metinler (avukat/uzman incelemesi önerilir), çeviri kontrolü (anadil konuşanı).
 12. **Gönderim:** SADECE sahibin açık onayıyla "Submit for Review".
 
@@ -116,8 +116,8 @@ Gönderim (Submit for Review) yapma. Sonunda: yüklenen derleme numaraları, ba�
 ### Prompt 3 — son kontrol ve onay hazırlığı
 ```text
 Çalışma klasörü: /Users/okanberkmanavoglu/Downloads/fotoai. Prompt 1 ve 2 tamamlanmış olmalı.
-1. Gerçek cihaz kontrol listesi hazırla (docs/NEXT-STEPS.md §4, madde 9–10): satın alma sandbox'ta, geri yükleme, deneme, kredi paketi, hesap silme, AI işi ve kredi düşümü, konuşma altyazısı, kamera (Retro Cam, izin akışı).
-2. Yukarıdakileri sahibin cihazında yapabileceği bir adım adım liste olarak yaz (dosya: docs/RELEASE-CHECKLIST.md) ve GitHub'a gönder.
+1. Gerçek cihaz kontrol listesi hazır: docs/RELEASE-CHECKLIST.md (sahip kendi iPhone ve Mac'inde uygular). Boş kalan kutuları ve §12'deki koddan görülen riskleri oku, kararları rapora yaz.
+2. Kodda etiket ya da akış değiştiyse önce docs/RELEASE-CHECKLIST.md'yi güncelle.
 3. App Store Connect'te sürüm sayfasını tara: her alan dolu mu (açıklama, anahtar kelimeler, destek URL'si, gizlilik URL'si, App Review notları, telefon, ekran görüntüleri, derleme, fiyat, ülkeler, yaş derecelendirmesi). Eksik olanları raporla.
 4. Hiçbir şeyi "Submit for Review" ile gönderme. Sahibe şu soruyu sor: "Her şey hazır. Gönderelim mi?" ve onay gelmeden dur.
 Sonunda: eksik alanlar listesi ve sahibin yapması gereken adımlar.
