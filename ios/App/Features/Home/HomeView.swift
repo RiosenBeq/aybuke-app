@@ -70,6 +70,9 @@ struct HomeView: View {
                     .pageSheetSizing()
             }
             .legalSheet($legalDocument)
+            #if DEBUG || GL_PERF
+            .onAppear { PerfProbe.homeAppeared() }
+            #endif
             #if DEBUG
             .onAppear {
                 if ScreenshotScene.current == .settings || ScreenshotScene.current == .feelGood { app.isSettingsPresented = true }
