@@ -74,7 +74,7 @@ struct EditorView: View {
     private var topBar: some View {
         HStack(spacing: 10) {
             Button {
-                if model.hasChanges { showDiscardAlert = true } else { dismiss() }
+                if model.hasUnsavedWork { showDiscardAlert = true } else { dismiss() }
             } label: {
                 Image(systemName: "xmark")
             }
@@ -394,9 +394,12 @@ struct EditorView: View {
     // MARK: Export
 
     private func save() {
+        // Cmd+S on the Mac fires even under the processing overlay.
+        guard !isSaving, !model.isProcessing else { return }
         isSaving = true
         Task {
             defer { isSaving = false }
+            await model.commitPending()
             do {
                 // Free tools never add a mark; free cloud AI results carry a small one.
                 let usedCloudAI = model.appliedOperation.map { !$0.runsOnDevice } ?? false
@@ -414,12 +417,16 @@ struct EditorView: View {
     }
 
     private func share() {
+        guard !model.isProcessing else { return }
         Haptics.tap()
-        app.share(SharePayload(
-            image: model.current,
-            original: model.hasChanges ? model.original : nil,
-            operation: model.appliedOperation,
-            prompt: nil
-        ))
+        Task {
+            await model.commitPending()
+            app.share(SharePayload(
+                image: model.current,
+                original: model.hasChanges ? model.original : nil,
+                operation: model.appliedOperation,
+                prompt: nil
+            ))
+        }
     }
 }

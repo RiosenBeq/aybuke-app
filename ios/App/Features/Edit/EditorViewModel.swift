@@ -29,6 +29,8 @@ final class EditorViewModel {
     private(set) var isProcessingInCloud = false
     /// Request id of the latest people edit that can still be re-rolled for free.
     private(set) var retryRequestID: String?
+    /// The server honours a free retry for 15 minutes (FREE_RETRY_WINDOW_MINUTES).
+    @ObservationIgnored private var retryDeadline = Date.distantPast
     /// Request id of the cloud result on screen, attached to reports.
     private(set) var lastRequestID: String?
     /// Title of the latest AI step, used when saving to the library.
@@ -76,7 +78,31 @@ final class EditorViewModel {
     var canRedo: Bool { historyVersion >= 0 && !redoStack.isEmpty }
     var hasChanges: Bool { canUndo }
     var hasTransparency: Bool { ImageUtilities.hasAlpha(current) }
-    var canRetryFree: Bool { retryRequestID != nil && !isProcessing }
+    var canRetryFree: Bool { retryRequestID != nil && !isProcessing && Date.now < retryDeadline }
+
+    /// On-device work shown on the canvas but not applied yet.
+    enum PendingPreview {
+        case effect(RetroEffect, dateStamp: Bool)
+        case adjust(AdjustmentSettings)
+    }
+
+    /// Read from the settings rather than the preview images: the first effect
+    /// render may still be running, and sliders moved back to zero leave a
+    /// preview behind that changes nothing.
+    var pendingPreview: PendingPreview? {
+        switch activeTool {
+        case .effects?:
+            guard let effect else { return nil }
+            return .effect(effect, dateStamp: effectDateStamp)
+        case .adjust?:
+            return adjustments.isNeutral ? nil : .adjust(adjustments)
+        default:
+            return nil
+        }
+    }
+
+    /// Anything Close would throw away.
+    var hasUnsavedWork: Bool { canUndo || pendingPreview != nil }
 
     /// Library title: the latest AI step, or the tool that was used.
     var libraryTitle: String {
@@ -93,7 +119,21 @@ final class EditorViewModel {
 
     // MARK: Tool selection
 
+    /// Leaving Effects or Adjust applies what's on the canvas (one Undo takes
+    /// it back), so switching tools never silently drops work.
     func select(_ tool: EditorTool) {
+        guard tool != activeTool, !isProcessing else { return }
+        if pendingPreview != nil {
+            Task {
+                await commitPending()
+                switchTool(to: tool)
+            }
+        } else {
+            switchTool(to: tool)
+        }
+    }
+
+    private func switchTool(to tool: EditorTool) {
         guard tool != activeTool else { return }
         if activeTool == .adjust { resetAdjustments() }
         if activeTool == .effects { clearEffect() }
@@ -143,6 +183,11 @@ final class EditorViewModel {
         adjustments = .neutral
         adjustPreview = nil
         previewSource = nil
+        // A chosen effect follows the photo it will be applied to (after Undo, say).
+        if let effect {
+            effectPreview = nil
+            previewEffect(effect, haptic: false)
+        }
     }
 
     private static func stronger(_ lhs: AIOperation?, _ rhs: AIOperation) -> AIOperation {
@@ -213,11 +258,21 @@ final class EditorViewModel {
                 if job.retryOf == nil, job.operation == .restyle || job.operation == .magicEdit {
                     lastJob = job
                     retryRequestID = result.requestID ?? UUID().uuidString
+                    retryDeadline = .now.addingTimeInterval(15 * 60)
                 }
             } catch {
+                if job.retryOf != nil, endsFreeRetry(error, app: app) { retryRequestID = nil }
                 app.handle(error)
             }
         }
+    }
+
+    /// A failed retry keeps the paid result and its Retry button, except when
+    /// the server has used the retry up: it said so, or the user cancelled a
+    /// retry it had already started.
+    private func endsFreeRetry(_ error: Error, app: AppModel) -> Bool {
+        if case AIServiceError.server(code: "retry_unavailable", _) = error { return true }
+        return AppModel.isCancellation(error) && app.config.backend != nil
     }
 
     func cancelProcessing() {
@@ -259,12 +314,11 @@ final class EditorViewModel {
         }
     }
 
-    /// Reverts the unsatisfying result and runs the same job again at no cost.
+    /// Runs the same job again at no cost, on the photo the first try started
+    /// from. The paid result stays on the canvas until the retry succeeds and
+    /// stays one Undo away afterwards.
     func retryFree(app: AppModel) {
-        guard var job = lastJob, let requestID = retryRequestID, !isProcessing else { return }
-        undo()
-        redoStack.removeAll()
-        job.sourceImage = current
+        guard var job = lastJob, let requestID = retryRequestID, canRetryFree else { return }
         job.retryOf = requestID
         Haptics.tap()
         execute(job, app: app)
@@ -330,12 +384,12 @@ final class EditorViewModel {
         effectThumbnails = thumbnails
     }
 
-    func previewEffect(_ effect: RetroEffect) {
+    func previewEffect(_ effect: RetroEffect, haptic: Bool = true) {
         self.effect = effect
         effectTask?.cancel()
         let proxy = adjustProxy()
         let stamp = effectDateStamp
-        Haptics.selection()
+        if haptic { Haptics.selection() }
         effectTask = Task {
             let rendered = await Task.detached(priority: .userInitiated) { effect.apply(to: proxy, dateStamp: stamp) }.value
             guard !Task.isCancelled else { return }
@@ -377,6 +431,7 @@ final class EditorViewModel {
         let settings = adjustments
         let source = current
         processingTitle = String(localized: "Applying adjustments…")
+        isProcessingInCloud = false
         isProcessing = true
         let output = await Task.detached(priority: .userInitiated) {
             OnDeviceImageService.adjust(source, with: settings)
@@ -384,6 +439,17 @@ final class EditorViewModel {
         isProcessing = false
         commit(output, operation: nil)
         Haptics.success()
+    }
+
+    /// Applies the effect or adjustments on the canvas at full size, so Save
+    /// and Share export what the user sees. Both apply paths clear the pending
+    /// state, so nothing is applied twice.
+    func commitPending() async {
+        switch pendingPreview {
+        case .effect?: await applyEffect()
+        case .adjust?: await applyAdjustments()
+        case nil: break
+        }
     }
 
     /// Downscaled copy of the current image for live slider previews.
