@@ -2,7 +2,7 @@
 
 > **Amaç:** App Review'a göndermeden önce Aybuke'yi kendi iPhone'unda (ve Mac'inde), TestFlight derlemesiyle ve canlı backend'e (Supabase + xAI, Claude güvenlik denetimiyle) karşı uçtan uca denemek. Liste koddan çıkarıldı: ekran adları, düğmeler ve beklenen davranış uygulamadaki gibidir. **Submit for Review** yalnızca sahibin açık onayıyla yapılır (§14).
 >
-> **Durum (15 Ekim 2026, akşam):** iOS 1.0 (derleme `20261015.1225`) abonelik grubu, iki abonelik ve iki paketle, macOS 1.0 (derleme `20261015.1233`) ile birlikte App Review'a gönderildi; ikisi de WAITING_FOR_REVIEW, yayın türü AFTER_APPROVAL. Backend canlı (migrasyonlar `20261029000002`'ye kadar, yedi fonksiyon), Apple ile giriş açık, xAI Zero Data Retention açık, App Privacy yayında. Bu liste artık onaydan önce ya da sonra TestFlight derlemesiyle yapılacak isteğe bağlı cihaz testidir; TestFlight iç grubu "Aybuke Team" hazır. Açık sahip işleri: [`SAHIP-YAPILACAKLAR.md`](SAHIP-YAPILACAKLAR.md).
+> **Durum (15 Ekim 2026, akşam):** iOS 1.0 (derleme `20261015.1225`) abonelik grubu, iki abonelik ve iki paketle, macOS 1.0 (derleme `20261015.1233`) ile birlikte App Review'a gönderildi; ikisi de WAITING_FOR_REVIEW, yayın türü AFTER_APPROVAL. Backend canlı (migrasyonlar `20261030000000`'ye kadar, yedi fonksiyon), Apple ile giriş açık, xAI Zero Data Retention açık, App Privacy yayında. Bu liste artık onaydan önce ya da sonra TestFlight derlemesiyle yapılacak isteğe bağlı cihaz testidir; TestFlight iç grubu "Aybuke Team" hazır. Açık sahip işleri: [`SAHIP-YAPILACAKLAR.md`](SAHIP-YAPILACAKLAR.md).
 
 **Nasıl kullanılır**
 
@@ -35,7 +35,7 @@
   - Yap: App Store Connect › Aybuke › Subscriptions (grup **Aybuke Pro**: `app.glowlit.pro.yearly`, `app.glowlit.pro.monthly`) ve In-App Purchases (`app.glowlit.credits.30`, `app.glowlit.credits.100`).
   - Beklenen: Yıllıkta 1 hafta ücretsiz deneme, aylıkta 1 ay $1.99 tanıtım fiyatı; en-US ve tr metinleri ve fiyatlar dolu. Yerel ürün dosyası (`ios/StoreKit/Products.storekit`) aynı kimlikleri ve fiyatları taşır: yıllık $39.99 (deneme P1W), aylık $5.99 (ilk dönem $1.99), 30 kredi $2.99, 100 kredi $7.99. Ürün bilgisindeki değişikliklerin sandbox'a yansıması bir saati bulabilir.
   - Sorun olursa: "Missing Metadata" olanı not et. Uygulama dört ürünün hepsini bekler: eksik ürün listede görünmez; hiç plan ya da hiç paket yüklenmezse "unavailable" yazısı ve **Try again** çıkar.
-- [x] **Backend canlı, derleme demo modunda değil** *[yapıldı 15 Ekim 2026: migrasyonlar `20261029000002`'ye kadar, yedi fonksiyon (`owner-digest` dahil), üç cron işi; gerçek bir Magic Edit uçtan uca 12 sn'de geçti. TestFlight bandı kontrolü sahipte]*
+- [x] **Backend canlı, derleme demo modunda değil** *[yapıldı 15 Ekim 2026: migrasyonlar `20261030000000`'ye kadar, yedi fonksiyon (`owner-digest` dahil), üç cron işi; gerçek bir Magic Edit uçtan uca 12 sn'de geçti. TestFlight bandı kontrolü sahipte]*
   - Yap: Supabase projesi `efapupjvidyqhqdevmcu` › Edge Functions: `ai-image`, `credits-redeem`, `account`, `report`, `ad-reward` yayında (aşağıdaki iki madde). SQL Editor'da `select jobname, schedule from cron.job;` → `sweep-jobs` `*/5 * * * *`, `sweep-ad-rewards` `17 * * * *`, `revenuecat-deletions` `17 * * * *`. `revenuecat-deletions` zamanlaması Vault'taki `project_url` ve `service_role_key` adlarını kullanır; değerleri hiçbir yere yazma.
   - Beklenen: TestFlight derlemesinde Explore'da **Preview build: AI results are samples** bandı **yok**, sonuçlarda "DEMO PREVIEW" damgası yok.
   - Sorun olursa: Bant görünüyorsa derleme demo modundadır; bu derleme incelemeye asla gönderilmez.
@@ -47,7 +47,7 @@
   - Yap: console.x.ai › ekip ayarları.
   - Beklenen: Açık. Onay ekranı ve gizlilik politikası "1 saat içinde silinir" diyor.
   - Doğrulanamadı: Zero Data Retention durumu bu depodan kanıtlanamaz (`docs/SUPABASE-TODO.md` §7).
-- [x] **Veritabanı geçişleri (sırayla)** *[yapıldı 15 Ekim 2026: 20261019000000–20261025000003, on iki dosya, her biri kendi transaction'ında, hatasız; MAC-YAYIN 5.2 sorgusu 19/19; ardından 20261026000000–20261029000002 de uygulandı]*
+- [x] **Veritabanı geçişleri (sırayla)** *[yapıldı 15 Ekim 2026: 20261019000000–20261025000003, on iki dosya, her biri kendi transaction'ında, hatasız; MAC-YAYIN 5.2 sorgusu 19/19; ardından 20261026000000–20261030000000 de uygulandı]*
   - Yap: Önce iki eski geçişin durumuna bak. SQL Editor'da:
     ```sql
     select to_regclass('public.pending_revenuecat_deletions');
@@ -591,7 +591,7 @@ Değerlerin hepsi: [`marketing/app-store-connect-setup.md`](marketing/app-store-
 
 ## 12. Koddan görülen riskler (testte özellikle bak)
 
-Bu sürümde düzeltilenler ve açık kalanlar. Canlıya alma 15 Ekim 2026'da tamamlandı: migrasyonlar `20261029000002`'ye kadar, yedi fonksiyon yayında.
+Bu sürümde düzeltilenler ve açık kalanlar. Canlıya alma 15 Ekim 2026'da tamamlandı: migrasyonlar `20261030000000`'ye kadar, yedi fonksiyon yayında.
 
 1. **İşten sonra bakiye — tamam (kodda).** Bitmiş işlerin (başarılı, başarısız, iptal) yanıtı bakiyeyi taşır ve bakiye iş başlarken hemen gösterilir (`ai-image`, `job_balance`). Kontrol: §3.4, §3.6.
 2. **Live Activity metinleri — tamam (kodda).** Başlık ve alt satır widget kataloğundan (`ios/GlowlitWidgets/Localizable.xcstrings`) gelir. Doğrulanamadı: 12 dilin tamamının çevirisi ve Türkçe cihazda görünüm. Kontrol: Türkçe cihazda Dynamic Island (§7.2).
