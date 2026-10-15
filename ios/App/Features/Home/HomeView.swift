@@ -50,6 +50,9 @@ struct HomeView: View {
                                 .padding(.horizontal, Metrics.pageGutter)
                                 .reveal(1)
                         }
+
+                        seasonBanner
+                            .reveal(2)
                     }
 
                     quickTools
@@ -335,27 +338,32 @@ struct HomeView: View {
     /// Bigger cards on the Mac, where the grid has the room.
     private static let macCardSize = CGSize(width: 176, height: 234)
 
-    /// The seasonal row's place: the season's banner over its row while it's
-    /// on, a Coming soon card in the two weeks before it starts. Hidden with
-    /// every look under 13.
+    /// Right under the hero, so it's seen without scrolling: the season's
+    /// banner while it's on, a Coming soon card in the two weeks before it
+    /// starts, nothing otherwise. Hidden with every look under 13.
     @ViewBuilder
-    private var seasonalArea: some View {
+    private var seasonBanner: some View {
         let now = AppClock.now
         if let theme = SeasonalTheme.current(on: now) {
-            VStack(alignment: .leading, spacing: 18) {
-                SeasonHeroBanner(theme: theme) {
-                    Haptics.tap()
-                    openCategory = .seasonal
-                }
-                .padding(.horizontal, Metrics.pageGutter)
-                templateRow(.seasonal)
+            SeasonHeroBanner(theme: theme) {
+                Haptics.tap()
+                openCategory = .seasonal
             }
+            .padding(.horizontal, Metrics.pageGutter)
         } else if let upcoming = SeasonalTheme.upcoming(on: now) {
             SeasonTeaserCard(upcoming: upcoming) {
                 Haptics.tap()
                 previewSeason = upcoming.theme
             }
             .padding(.horizontal, Metrics.pageGutter)
+        }
+    }
+
+    /// The seasonal row keeps its place among the categories while the season is on.
+    @ViewBuilder
+    private var seasonalArea: some View {
+        if SeasonalTheme.current(on: AppClock.now) != nil {
+            templateRow(.seasonal)
         }
     }
 
