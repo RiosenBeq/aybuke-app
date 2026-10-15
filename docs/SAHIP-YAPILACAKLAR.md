@@ -91,6 +91,12 @@ supabase functions deploy app-store-notifications --project-ref efapupjvidyqhqde
   - **Nerede:** platform.claude.com, Settings altında Billing ve Limits (menü adları konsolun güncel arayüzüne göre değişebilir); Supabase > Edge Functions > Secrets (yalnızca adı kontrol et).
   - **Sıra:** 1) Bakiye ya da ödeme yöntemi olsun. 2) Aylık harcama limiti koy (örneğin 10–20 USD; denetimin payı küçük). 3) Yayımdan (1.6) sonra Supabase > Edge Functions > Logs'ta `ai-image` için `output check in force: xai + anthropic:claude-haiku-5-5` satırını gör. 4) Bir Magic Edit dene; sonuç gelmeli. Anahtarı hiçbir dosyaya, commit'e ya da sohbete yazma.
 
+### 1.12 Sahip e-postaları (Resend): yeni Pro üye ve günlük özet
+- [ ] **Ne:** `RESEND_API_KEY`, `DIGEST_SECRET` ve `OWNER_ALERT_TO` Supabase'de, `DIGEST_SECRET` GitHub'da ayarlı. Kalan: fonksiyonları yayımla ve bir kez dene.
+  - **Neden:** İlk kez kaydedilen her Pro abonelik ve her kredi paketi için anında e-posta (sandbox satın almalar `[TEST]` diye işaretli), her sabah 06:00 UTC'de (İstanbul 09:00) dünün özeti. E-postalarda kullanıcı kimliği, e-posta, token ya da istem yok; yalnızca sayılar, plan ve saat.
+  - **Nerede:** `backend/README.md` "Owner alerts"; Resend > Domains; GitHub > Actions > Owner digest.
+  - **Sıra:** 1) `supabase functions deploy owner-digest`, sonra `supabase functions deploy ai-image credits-redeem ad-reward` (yeni Pro uyarısı bu üçünde). 2) GitHub > Actions > Owner digest > Run workflow; e-posta gelmeli. 3) Varsayılan gönderen `onboarding@resend.dev` yalnızca Resend hesabının kendi adresine teslim eder: `hello@buaze.com` Resend hesabının adresi değilse Resend'de `buaze.com` alan adını doğrula, sonra `OWNER_ALERT_FROM='Aybuke <alerts@buaze.com>'` ayarla. Anahtarı hiçbir dosyaya, commit'e ya da sohbete yazma.
+
 ## 2) Uygulama yayını (App Store Connect ve Mac)
 
 ### 2.1 Bağlantı adreslerini tarayıcıdan doğrula

@@ -1,0 +1,48 @@
+name: Owner digest
+
+# Once a day this asks the owner-digest Edge Function
+# (backend/supabase/functions/owner-digest) to mail yesterday's numbers to the
+# owner through Resend. pg_net is off on the project, so GitHub schedules it.
+# The anon key (public by design, already in AppConfig.json) passes the
+# function's JWT check; the repository secret DIGEST_SECRET, equal to the
+# function's DIGEST_SECRET, is the real check. GitHub runs schedules from the
+# default branch only and pauses them in a public repo after 60 days without
+# commits: re-enable it under Actions if that happens.
+on:
+  schedule:
+    - cron: "0 6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  digest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: ios/App/Resources/AppConfig.json
+          sparse-checkout-cone-mode: false
+      - name: Send the digest
+        env:
+          DIGEST_SECRET: ${{ secrets.DIGEST_SECRET }}
+        run: |
+          if [ -z "$DIGEST_SECRET" ]; then
+            echo "::error::Set the repository secret DIGEST_SECRET (the same value as the Supabase secret)."
+            exit 1
+          fi
+          base=$(jq -r .backendBaseURL ios/App/Resources/AppConfig.json)
+          key=$(jq -r .supabaseAnonKey ios/App/Resources/AppConfig.json)
+          for attempt in 1 2 3; do
+            if curl -fsS -X POST "$base/functions/v1/owner-digest" \
+                -H "apikey: $key" -H "Authorization: Bearer $key" \
+                -H "x-digest-secret: $DIGEST_SECRET" \
+                -H "Content-Type: application/json" -d '{}'; then
+              echo
+              exit 0
+            fi
+            sleep 30
+          done
+          exit 1

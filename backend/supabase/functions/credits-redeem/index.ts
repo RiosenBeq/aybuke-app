@@ -2,9 +2,11 @@
 //   POST /credits-redeem { "signed_transaction": "<JWS>" } → { credits_remaining }
 // Idempotent per Apple transaction id, so StoreKit redeliveries are safe. With
 // X-App-Transaction the balance includes today's free credits on the install.
+// The first grant of a transaction mails the owner (_shared/owner-alerts.ts).
 import { CREDIT_PACKS, verifyInstall, verifyTransaction } from "../_shared/apple.ts";
 import { requireUser, serviceClient } from "../_shared/auth.ts";
 import { corsHeaders, errorResponse, HttpError, json } from "../_shared/http.ts";
+import { alertPurchase, ownerAlertsEnabled, packGranted } from "../_shared/owner-alerts.ts";
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -25,6 +27,8 @@ Deno.serve(async (req) => {
     if (transaction.revocationDate) throw new HttpError(409, "refunded", "This purchase was refunded.");
 
     const install = await verifyInstall(req.headers.get("x-app-transaction"));
+    const transactionId = transaction.transactionId;
+    const firstSeen = ownerAlertsEnabled() && !(await packGranted(db, transactionId));
     const { data, error } = await db.rpc("grant_pack", {
       p_user: user.id,
       p_credits: credits,
@@ -34,6 +38,15 @@ Deno.serve(async (req) => {
       p_install_environment: install.status === "verified" ? install.environment : null,
     });
     if (error) throw new HttpError(500, "internal", "Couldn't add your credits. We'll retry.");
+    if (firstSeen) {
+      // Only when this call granted it (not refunded before it arrived): checked after the response.
+      alertPurchase(db, {
+        kind: "pack",
+        productId: transaction.productId ?? "",
+        environment: String(transaction.environment ?? ""),
+        credits,
+      }, { onlyIf: () => packGranted(db, transactionId) });
+    }
     return json({ credits_remaining: data });
   } catch (error) {
     return errorResponse(error);

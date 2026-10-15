@@ -38,3 +38,9 @@ verify_jwt = false
 # Deploy with: supabase functions deploy app-store-notifications --no-verify-jwt
 [functions.app-store-notifications]
 verify_jwt = false
+
+# The owner's daily digest mail. JWT verification stays on (the GitHub workflow
+# sends the anon key); the x-digest-secret header must equal DIGEST_SECRET.
+# Deploy with: supabase functions deploy owner-digest
+[functions.owner-digest]
+verify_jwt = true

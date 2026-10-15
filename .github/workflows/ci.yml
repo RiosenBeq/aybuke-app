@@ -36,10 +36,10 @@ jobs:
         run: |
           deno fmt --check
           deno lint
-          deno check ai-image/index.ts credits-redeem/index.ts account/index.ts report/index.ts ad-reward/index.ts app-store-notifications/index.ts
+          deno check ai-image/index.ts credits-redeem/index.ts account/index.ts report/index.ts ad-reward/index.ts app-store-notifications/index.ts owner-digest/index.ts
       - name: Prompt policy tests (shared vectors with the app)
         working-directory: backend/supabase/functions
-        run: deno test _shared/ ad-reward/ app-store-notifications/ account/
+        run: deno test _shared/ ad-reward/ app-store-notifications/ account/ owner-digest/
       - name: Credit ledger tests on PostgreSQL
         run: backend/scripts/test-db.sh
 

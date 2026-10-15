@@ -86,6 +86,8 @@ Prices, latency and alternatives: [`docs/research/tech-and-compliance.md`](../do
    supabase functions deploy ad-reward --no-verify-jwt
    # Apple's notifications have no JWT either: the function checks Apple's signature itself.
    supabase functions deploy app-store-notifications --no-verify-jwt
+   # The owner's daily digest: JWT check on, plus its own secret (see "Owner alerts").
+   supabase functions deploy owner-digest
    ```
    Then send Apple's notifications to it. App Store Connect takes one URL per environment, and this app's Production and Sandbox URLs (App Store Connect › App Information › App Store Server Notifications, Version 2) already point at RevenueCat. Leave them there and, in RevenueCat › Apps › Glowlit (App Store), set **Apple Server Notification Forwarding URL** to `https://<project-ref>.supabase.co/functions/v1/app-store-notifications`: RevenueCat passes each signed notification on unchanged, so both receive it, and the function checks Apple's signature as usual. Without RevenueCat, set that URL as the Production and Sandbox URLs in App Store Connect instead.
 6. **Schedule the sweepers** (`sweep_jobs` fails and refunds stuck jobs, refunds results the app never received, clears job outputs after 1 hour, deletes job rows after 30 days and reports after 12 months, App Store download hashes 30 days after last use (unless blocked), strikes and cool-downs after 30 days, IP counters after a day and usage counters after 90 days; `sweep_ad_rewards` deletes reward tokens a day after they expire and reward records after 30 days): enable the `pg_cron` extension, then run
@@ -122,6 +124,25 @@ Everyone starts anonymous, so nobody has to sign up. Signing in is optional, and
 The app creates the anonymous user only when it's first needed (a cloud AI job after consent, or a purchase), never at launch, and configures RevenueCat only for people who buy. Deleting the account never signs up first: without a stored session there is nothing on the server to delete.
 
 Photos are not synced: the library stays on each iPhone.
+
+## Owner alerts
+
+Mails to the owner, sent with [Resend](https://resend.com) (`_shared/owner-mail.ts`): counts, plans and times only, never a user id, email, token, transaction id or prompt.
+
+- **New Pro member:** the first time the backend stores a subscription (`resolveEntitlement` in `_shared/apple.ts`, an `original_transaction_id` it had never seen), and **Credit pack sold** the first time `credits-redeem` grants a transaction. Plan, Production or Sandbox (a sandbox purchase is marked `[TEST]`), the time in UTC and Istanbul, and the totals from `ops_members_summary()`. The mail goes out after the database work, in the background (`EdgeRuntime.waitUntil`), so it never delays or fails a purchase; a renewal, a restore or a subscription moving to another account sends nothing. Two requests racing on the very first purchase can rarely mail twice.
+- **Daily digest:** `functions/owner-digest` mails yesterday's `ops_daily_summary()` (jobs, failures, cost, breakers, strikes, reports) with `ops_members_summary()`. The GitHub workflow `.github/workflows/owner-digest.yml` calls it at 06:00 UTC (pg_net is off here), and it can be run by hand under Actions › Owner digest › Run workflow. The anon key passes the JWT check; the `x-digest-secret` header must equal `DIGEST_SECRET` (compared in constant time). Without `DIGEST_SECRET` every call gets a 503.
+
+Secrets (without `RESEND_API_KEY` every alert is skipped with one log line, never an error):
+
+```bash
+cd backend
+read -s RESEND_API_KEY && supabase secrets set RESEND_API_KEY="$RESEND_API_KEY" && unset RESEND_API_KEY
+read -s DIGEST_SECRET && supabase secrets set DIGEST_SECRET="$DIGEST_SECRET" && unset DIGEST_SECRET   # e.g. from: openssl rand -hex 32
+supabase secrets set OWNER_ALERT_TO=hello@buaze.com                    # optional; comma-separated for more
+supabase secrets set OWNER_ALERT_FROM='Aybuke <alerts@buaze.com>'      # optional; only after buaze.com is verified
+```
+
+Then add the same `DIGEST_SECRET` as a repository secret on GitHub (Settings › Secrets and variables › Actions, or `gh secret set DIGEST_SECRET`). Resend's default sender `onboarding@resend.dev` only delivers to the address of the Resend account itself; to send to another address or from your own, verify `buaze.com` under Resend › Domains and set `OWNER_ALERT_FROM`.
 
 ## Reports
 
@@ -190,7 +211,7 @@ Owner tools run in the SQL editor (the service role). Clients have no access to 
 
 ```bash
 # Type-check, lint and format-check the Edge Functions (Deno 2)
-cd backend/supabase/functions && deno check ai-image/index.ts credits-redeem/index.ts account/index.ts report/index.ts ad-reward/index.ts app-store-notifications/index.ts && deno lint && deno fmt --check && deno test _shared/ ad-reward/ app-store-notifications/
+cd backend/supabase/functions && deno check ai-image/index.ts credits-redeem/index.ts account/index.ts report/index.ts ad-reward/index.ts app-store-notifications/index.ts owner-digest/index.ts && deno lint && deno fmt --check && deno test _shared/ ad-reward/ app-store-notifications/ account/ owner-digest/
 
 # Run the migration + ledger tests on a throwaway PostgreSQL 14+
 backend/scripts/test-db.sh

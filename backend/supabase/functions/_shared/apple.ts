@@ -26,6 +26,7 @@ import {
   VerificationStatus,
 } from "npm:@apple/app-store-server-library@3.1.0";
 import type { SupabaseClient } from "npm:@supabase/supabase-js@2.117.3";
+import { type AlertDeps, alertPurchase, entitlementKnown, ownerAlertsEnabled } from "./owner-alerts.ts";
 
 export const PRO_PRODUCTS = new Set(["app.glowlit.pro.monthly", "app.glowlit.pro.yearly"]);
 export const YEARLY_PRODUCT = "app.glowlit.pro.yearly";
@@ -129,10 +130,18 @@ export interface EntitlementStatus {
  * entitlement expires when the trial ends, and the paid renewal read then is
  * no longer a trial.
  */
+export interface EntitlementOptions {
+  /** Tests only: decodes the JWS in place of Apple's verifiers. */
+  verify?: (jws: string) => Promise<JWSTransactionDecodedPayload>;
+  /** The owner's "new Pro member" mail (owner-alerts.ts). */
+  alerts?: AlertDeps;
+}
+
 export async function resolveEntitlement(
   db: SupabaseClient,
   userId: string,
   jws: string | null,
+  options: EntitlementOptions = {},
 ): Promise<EntitlementStatus> {
   const now = new Date().toISOString();
   const { data: active } = await db
@@ -149,13 +158,17 @@ export async function resolveEntitlement(
   if (!jws) return { isPro: false, isTrial: false };
 
   try {
-    const transaction = await verifyTransaction(jws);
+    const transaction = await (options.verify ?? verifyTransaction)(jws);
     if (!transaction.productId || !PRO_PRODUCTS.has(transaction.productId) || !transaction.originalTransactionId) {
       return { isPro: false, isTrial: false };
     }
     const expiresAt = transaction.expiresDate ? new Date(transaction.expiresDate) : undefined;
     const revoked = Boolean(transaction.revocationDate);
     const isTrial = isFreeTrial(transaction);
+    // Only asked when alerts are on: a subscription this server has never stored is a new member.
+    const alerts = options.alerts ?? {};
+    const firstSeen = ownerAlertsEnabled(alerts.env) &&
+      !(await entitlementKnown(db, transaction.originalTransactionId));
     const { data: saved, error: saveError } = await db.rpc("record_entitlement", {
       p_user: userId,
       p_original_transaction_id: transaction.originalTransactionId,
@@ -169,6 +182,14 @@ export async function resolveEntitlement(
     // The stored transaction is newer than this one: it grants nothing here.
     if (!saveError && saved === false) return { isPro: false, isTrial: false };
     const isPro = !revoked && !!expiresAt && expiresAt.getTime() > Date.now();
+    if (firstSeen && !saveError && isPro) {
+      alertPurchase(db, {
+        kind: "pro",
+        productId: transaction.productId,
+        environment: String(transaction.environment ?? ""),
+        trial: isTrial,
+      }, alerts);
+    }
     return { isPro, isTrial: isPro && isTrial };
   } catch (error) {
     console.warn("entitlement verification failed", error instanceof Error ? error.message : error);
