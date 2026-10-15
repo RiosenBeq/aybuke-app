@@ -181,6 +181,13 @@ Seven audits (code, UX and accessibility, platform, competitors, trends, wellbei
 - ✅ Twelve stickers drawn in code (sparkle burst, moon and stars, ribbon bow, crown, daisy, rainbow, cloud, music notes, camera, film strip and the "main character" and "yay" bubbles); the Toy Cam '09 and Rainbow '17 effects, live in Retro Cam, on video, in Shortcuts and in Ideas for this photo; the Candy caption style; all translated into the 11 other app languages
 - ✅ A bigger sticker sheet: thirty more stickers, among them (pearls, a gingham bow, a heart locket, a chrome star, a holo heart, a butterfly clip, a flip cell, a CD, strawberry, mushroom, bunny, kitty, teddy bear, a heart cloud, bubble tea, beauty objects such as lip gloss and nail polish, love letters, a rose, the sun, a shooting star, a planet and the "it girl", "vibes" and "core memory" bubbles), the older ones redrawn with gradients, shine and a keyline, and the tray sorted into sections
 
+## Next after 1.0 approval (owner requests, 15 October 2026)
+
+- **Claude sticker maker:** "draw a cat with a heart" → Claude (text only, no photo) writes a small SVG, drawn on the device and saved as a sticker in Text & Stickers. Far cheaper than an image model. Needs: Anthropic listed for a new purpose in `aiProcessors` (new consent version), the privacy policies and KVKK updated, `ContentPolicy` on the request and an SVG sanitizer (no scripts, external refs or text outside an allow-list), credits pricing.
+- **Claude caption and hashtag ideas** (text only) as a cloud fallback where Apple Intelligence isn't available; same consent and policy steps.
+- **App Store In-App Events** for each season (Halloween, winter, Galentine's) once the app is live: event card 1920×1080 and details art drawn in code, deep link into the season's collection, published 14 days before the start like the in-app teaser.
+- Not planned: sending her photos to Claude for style advice. The on-device "Ideas for this photo" covers it without a new processor purpose.
+
 ## Later backlog from the October 2026 audit
 
 🔭 Ranked "later" items from the audit. Backend = needs the live Supabase backend.
