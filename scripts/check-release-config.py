@@ -145,7 +145,10 @@ def has_mx(domain):
 def check_online(app_config, legal_config, findings):
     website = (app_config.get("websiteURL") or "").strip().rstrip("/")
     if website.startswith("https://"):
-        for url in (website, website + "/legal/en/privacy-policy.html"):
+        # The URLs the app opens, so a redirect (Vercel's clean URLs answer
+        # 308, which urllib before Python 3.11 doesn't follow) can't fail it.
+        legal = [(app_config.get(key) or "").strip() for key in ("privacyPolicyURL", "termsURL")]
+        for url in [website] + [u for u in legal if u.startswith("https://")]:
             if not http_ok(url):
                 findings.append(f"{url} doesn't answer 200.")
     emails = {app_config.get("supportEmail", "")}
