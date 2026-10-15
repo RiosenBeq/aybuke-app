@@ -190,7 +190,7 @@ Değerleri sahip girer. Yer: Supabase panelinde Edge Functions › Secrets; ya d
 Sahibin işi. console.x.ai üzerinde. (Doğrulanamadı: konsolun arayüz adları.)
 
 - [ ] **Kredi ve aylık limit.** Ekip faturalandırmasında kredi yüklü ve aylık harcama limiti tanımlı. Kredi bitince her AI işi başarısız olur ve kredi iade edilir. SAHIP 1.1.
-- [ ] **Zero Data Retention.** Ekip ayarlarında açık ve bu anahtar için geçerli. Gizlilik metinleri (`legal/tr/gizlilik-politikasi.md`, 5. madde) bunu söyler; depo bunu kanıtlayamaz. Açılamıyorsa metinler yanlış olur; karar için SAHIP 1.3 ve 6.1.
+- [x] **Zero Data Retention** (15 Ekim 2026'da açıldı, ekip düzeyinde). Ekip ayarlarında açık ve bu anahtar için geçerli. Gizlilik metinleri (`legal/tr/gizlilik-politikasi.md`, 5. madde) bunu söyler; depo bunu kanıtlayamaz. Açılamıyorsa metinler yanlış olur; karar için SAHIP 1.3 ve 6.1.
 - [ ] **Anahtar döndürme.** `XAI_API_KEY` bir sohbete, dosyaya ya da bilete yazıldıysa: yeni anahtar üret, Supabase'de değiştir, bir AI işi dene, eskisini iptal et. SAHIP 1.2.
 - [ ] **Anthropic (Claude Console, platform.claude.com).** Bakiye var ve aylık harcama limiti tanımlı; denetim başına yaklaşık 0,0002 USD. Bakiye biterse güvenlik denetimi çalışamaz ve her düzenleme ile sonuç engellenip iade edilir. SAHIP 1.11.
 

@@ -23,6 +23,7 @@ Bu liste yalnızca sahibin yapabileceği işleri içerir: Supabase, xAI, Anthrop
   - **Sıra:** 1) xAI'de yeni anahtar oluştur. 2) Supabase'de `XAI_API_KEY` değerini yenisiyle değiştir. 3) Bir AI işi dene (1.1 adım 3). 4) Çalıştığını gördükten sonra eski anahtarı xAI'de iptal et. Anahtarı hiçbir dosyaya, commit'e ya da sohbete yazma.
 
 ### 1.3 xAI Zero Data Retention'ı doğrula
+- [x] **Yapıldı (15 Ekim 2026):** xAI konsolunda Team › Zero Data Retention "Active" (ekip düzeyinde, bütün anahtarlar için; Files and Collections, istek günlükleri ve stateful Responses API kapandı, uygulama bunları kullanmıyor).
 - [ ] **Ne:** xAI konsolunda ekip için Zero Data Retention açık mı, bu anahtar için de geçerli mi, kontrol et.
   - **Neden:** Gizlilik metinleri, xAI'nin Zero Data Retention seçeneğini kullandıklarını yazıyor (`legal/en/privacy-policy.md` ve `legal/tr/gizlilik-politikasi.md`, girdilerin saklanmadığı bölüm). Depo bunu kanıtlayamaz (`docs/SUPABASE-TODO.md` §7).
   - **Nerede:** console.x.ai, ekip ayarları.

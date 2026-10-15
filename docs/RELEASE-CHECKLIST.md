@@ -44,7 +44,7 @@
   - Yap: Supabase › Edge Functions › Secrets.
   - Beklenen: `XAI_API_KEY`, `APPLE_BUNDLE_ID` (`app.glowlit.ios`), `APPLE_TEAM_ID` (`CBTKNY3LFC`), `APPLE_APP_ID` (`6822716008`) ve `ADMOB_REWARDED_AD_UNIT` var. `APPLE_SIGNIN_KEY_ID` ve `APPLE_SIGNIN_PRIVATE_KEY` yalnızca girişi açarken (§5), `REVENUECAT_SECRET_KEY` ve `REVENUECAT_PROJECT_ID` ise hesap silmede RevenueCat müşterisini silmek için (§9.5) gerekir. `ANTHROPIC_API_KEY` de var (Claude güvenlik denetimi; `ANTHROPIC_SAFETY_MODEL` boş kalabilir, varsayılan `claude-haiku-5-5`). `FAL_KEY` ve `XAI_SAFETY_MODEL` yok (karar: Claude, §12-5). `OUTPUT_MODERATION` artık okunmuyor: ekleme, varsa sil. `GLOWLIT_ALLOW_XCODE_APP_TRANSACTIONS` üretimde olmamalı; varsa sil (hosted projede yok sayılır ve log'a yazılır).
   - Sorun olursa: Eksikleri listele. `APPLE_APP_ID` yoksa App Store kurulumlarında ücretsiz krediler kapalı kalır (kurulum kanıtı maddesi). §9'daki ilgili maddeler eksik anahtarla başarısız olur.
-- [ ] **xAI Zero Data Retention açık** *[yalnızca sahip; açık: depo kanıtlayamaz]*
+- [x] **xAI Zero Data Retention açık** (15 Ekim 2026'da xAI konsolunda Team › Zero Data Retention: Active)
   - Yap: console.x.ai › ekip ayarları.
   - Beklenen: Açık. Onay ekranı ve gizlilik politikası "1 saat içinde silinir" diyor.
   - Doğrulanamadı: Zero Data Retention durumu bu depodan kanıtlanamaz (`docs/SUPABASE-TODO.md` §7).
