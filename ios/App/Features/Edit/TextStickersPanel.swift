@@ -211,8 +211,8 @@ private struct ColorSwatches: View {
 
 // MARK: Stickers
 
-/// The sticker pack: its sections (All, Cute, Y2K, Glam, Love, Sky, Words)
-/// over one scrolling row of stickers, after a Paste tile for a cut-out she
+/// The sticker pack: its sections (All, Cute, Y2K, Glam, Love, Sky, Words,
+/// and Spooky around Halloween) over one scrolling row of stickers, after a Paste tile for a cut-out she
 /// copied as a sticker. Paste uses the system button, so there's no paste
 /// prompt. Both rows fit the panel's one content height.
 private struct StickerTray: View {
@@ -265,7 +265,7 @@ private struct StickerTray: View {
         .tint(Palette.accent)
         .frame(width: Self.tileSide, height: Self.tileSide)
 
-        ForEach(category.kinds) { kind in
+        ForEach(category.kinds(on: AppClock.now)) { kind in
             Button {
                 session.addSticker(kind)
             } label: {
@@ -279,7 +279,7 @@ private struct StickerTray: View {
     }
 
     private var categoryChips: some View {
-        ForEach(StickerCategory.allCases) { item in
+        ForEach(StickerCategory.shown(on: AppClock.now)) { item in
             SelectableChip(title: item.title, isSelected: category == item) {
                 guard item != category else { return }
                 Haptics.selection()

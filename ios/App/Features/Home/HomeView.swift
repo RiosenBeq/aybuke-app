@@ -6,6 +6,8 @@ struct HomeView: View {
     @Environment(\.dynamicTypeSize) private var typeSize
     @State private var legalDocument: LegalDocument?
     @State private var openCategory: TemplateCategory?
+    /// A season's looks before it starts (the Coming soon card).
+    @State private var previewSeason: SeasonalTheme?
     @State private var showInvite = false
     /// Mac: the page's width, for a hero row with Create beside Magic Edit.
     @State private var pageWidth: CGFloat = 0
@@ -56,8 +58,14 @@ struct HomeView: View {
 
                     if app.allowsCloudAI {
                         ForEach(Array(orderedCategories.enumerated()), id: \.element) { index, category in
-                            templateRow(category)
-                                .reveal(3 + index)
+                            Group {
+                                if category == .seasonal {
+                                    seasonalArea
+                                } else {
+                                    templateRow(category)
+                                }
+                            }
+                            .reveal(3 + index)
                         }
 
                         if !Platform.isMac {
@@ -86,6 +94,10 @@ struct HomeView: View {
             .modifier(MacPageWidthReader(width: $pageWidth))
             .navigationDestination(item: $openCategory) { category in
                 CategoryView(category: category)
+                    .environment(app)
+            }
+            .navigationDestination(item: $previewSeason) { season in
+                CategoryView(category: .seasonal, season: season)
                     .environment(app)
             }
             .sheet(isPresented: $showInvite) {
@@ -323,6 +335,30 @@ struct HomeView: View {
     /// Bigger cards on the Mac, where the grid has the room.
     private static let macCardSize = CGSize(width: 176, height: 234)
 
+    /// The seasonal row's place: the season's banner over its row while it's
+    /// on, a Coming soon card in the two weeks before it starts. Hidden with
+    /// every look under 13.
+    @ViewBuilder
+    private var seasonalArea: some View {
+        let now = AppClock.now
+        if let theme = SeasonalTheme.current(on: now) {
+            VStack(alignment: .leading, spacing: 18) {
+                SeasonHeroBanner(theme: theme) {
+                    Haptics.tap()
+                    openCategory = .seasonal
+                }
+                .padding(.horizontal, Metrics.pageGutter)
+                templateRow(.seasonal)
+            }
+        } else if let upcoming = SeasonalTheme.upcoming(on: now) {
+            SeasonTeaserCard(upcoming: upcoming) {
+                Haptics.tap()
+                previewSeason = upcoming.theme
+            }
+            .padding(.horizontal, Metrics.pageGutter)
+        }
+    }
+
     private func templateButton(_ template: PhotoTemplate, size: CGSize) -> some View {
         Button {
             Haptics.tap()
@@ -495,7 +531,12 @@ struct HomeView: View {
         ]
         let boosted = app.interests.compactMap { preferred[$0] }
         let order = TemplateCategory.allCases
-        return TemplateCatalog.categories(on: AppClock.now).sorted { lhs, rhs in
+        var categories = TemplateCatalog.categories(on: AppClock.now)
+        // Before a season starts, its place holds the Coming soon card.
+        if !categories.contains(.seasonal), SeasonalTheme.upcoming(on: AppClock.now) != nil {
+            categories.append(.seasonal)
+        }
+        return categories.sorted { lhs, rhs in
             let lhsScore = (lhs == .trending ? 2 : 0) + (boosted.contains(lhs) ? 1 : 0)
             let rhsScore = (rhs == .trending ? 2 : 0) + (boosted.contains(rhs) ? 1 : 0)
             if lhsScore != rhsScore { return lhsScore > rhsScore }

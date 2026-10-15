@@ -13,9 +13,7 @@ struct TemplateCard: View, Equatable {
     /// Lookbook number ("N°03") shown on collection pages.
     var number: Int?
 
-    private var palette: AuraPalette {
-        AuraPalette.at(TemplateCatalog.all.firstIndex(of: template) ?? 0)
-    }
+    private var palette: AuraPalette { template.cardPalette }
 
     /// Photo thumbnails get a dark scrim, so their labels are always light.
     private var isOnDark: Bool { template.thumbnailURL != nil || palette.isDark }
@@ -95,5 +93,12 @@ struct TemplateCard: View, Equatable {
         } else {
             TemplateArt(symbolName: template.symbolName, palette: palette, seed: template.id)
         }
+    }
+}
+
+extension PhotoTemplate {
+    /// The card's aura: neighbours in the catalog never share one.
+    var cardPalette: AuraPalette {
+        AuraPalette.at(TemplateCatalog.all.firstIndex(of: self) ?? 0)
     }
 }

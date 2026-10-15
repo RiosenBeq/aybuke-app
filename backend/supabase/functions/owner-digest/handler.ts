@@ -1,5 +1,6 @@
-// The owner's daily digest mail: members, Pro, packs (ops_members_summary)
-// and yesterday's AI jobs, cost, breakers and safety (ops_daily_summary).
+// The owner's daily digest mail: members, Pro, packs (ops_members_summary),
+// yesterday's AI jobs, cost, breakers and safety (ops_daily_summary) and the
+// image provider's estimated balance (ops_provider_budget).
 //
 //   POST /owner-digest  x-digest-secret: <DIGEST_SECRET>   [{ "day": "2026-10-14" }]
 //     → 200 { ok, sent }     sent false with reason "no_key" when RESEND_API_KEY isn't set
@@ -10,6 +11,7 @@
 // Counts only: no user ids, emails, tokens, prompts or hashed install keys.
 import { json } from "../_shared/http.ts";
 import { count, summaryStats, totalsSection } from "../_shared/owner-alerts.ts";
+import { budgetSection } from "../_shared/provider-alerts.ts";
 import {
   type Env,
   formatWhen,
@@ -28,6 +30,8 @@ export interface DigestDeps {
   members(): Promise<unknown>;
   /** public.ops_daily_summary(day) */
   daily(day: string): Promise<unknown>;
+  /** public.ops_provider_budget(): optional, the digest goes out without it. */
+  budget?(): Promise<unknown>;
   send(mail: RenderedMail): Promise<SendResult>;
   now?: () => Date;
 }
@@ -57,7 +61,7 @@ function capRow(label: string, used: number | undefined, cap: number | undefined
   return { label, value: joined(" / ", used, cap) };
 }
 
-export function digestMail(day: string, members: unknown, daily: unknown, at: Date): OwnerMail {
+export function digestMail(day: string, members: unknown, daily: unknown, at: Date, budget?: unknown): OwnerMail {
   const jobs = record(daily, "jobs");
   const failures = Object.entries(record(daily, "failures_by_code"))
     .map(([code, n]) => ({ code, n: count({ n }, "n") ?? 0 }))
@@ -102,6 +106,7 @@ export function digestMail(day: string, members: unknown, daily: unknown, at: Da
         { label: "Reports new · open", value: joined(" · ", reports("new"), reports("open")) },
       ],
     },
+    budgetSection(budget),
     {
       title: "Members",
       rows: [
@@ -155,6 +160,11 @@ export async function handleDigest(req: Request, deps: DigestDeps): Promise<Resp
   const body = await req.json().catch(() => ({})) as { day?: unknown };
   const day = typeof body.day === "string" && DAY_PATTERN.test(body.day) ? body.day : yesterday(now);
 
+  // The balance is an extra: without it the digest shows dashes there.
+  const budget = deps.budget?.().catch((error) => {
+    console.warn("owner-digest: provider budget unavailable", error instanceof Error ? error.message : error);
+    return undefined;
+  });
   let members: unknown;
   let daily: unknown;
   try {
@@ -164,7 +174,7 @@ export async function handleDigest(req: Request, deps: DigestDeps): Promise<Resp
     return failure(500, "summary_unavailable");
   }
 
-  const result = await deps.send(renderOwnerMail(digestMail(day, members, daily, now)));
+  const result = await deps.send(renderOwnerMail(digestMail(day, members, daily, now, await budget)));
   if (!result.sent) return failure(502, result.reason);
   return json({ ok: true, sent: true, day });
 }

@@ -5,10 +5,16 @@ import AppCore
 /// editorial, lookbook-style grid of numbered, sharp-edged cards.
 struct CategoryView: View {
     let category: TemplateCategory
+    /// A season's looks before it starts, from Explore's Coming soon card:
+    /// they already work (the editor keeps them all year). Nil: the
+    /// collection as it is today.
+    var season: SeasonalTheme?
 
     @Environment(AppModel.self) private var app
 
-    private var templates: [PhotoTemplate] { TemplateCatalog.templates(in: category, on: AppClock.now) }
+    private var templates: [PhotoTemplate] {
+        season?.looks ?? TemplateCatalog.templates(in: category, on: AppClock.now)
+    }
     /// Two columns on iPhone, up to eight on a big iPad in landscape; on
     /// the Mac, cards about as big as on Explore.
     private let columns = [GridItem(.adaptive(minimum: Platform.isMac ? 176 : 136), spacing: Platform.isMac ? 14 : 12)]
@@ -56,10 +62,10 @@ struct CategoryView: View {
         VStack(alignment: .leading, spacing: 8) {
             Text("Collection · \(templates.count) looks")
                 .eyebrowStyle()
-            Text(styled: category.styledTitle, size: 31)
+            Text(styled: season?.styledTitle ?? category.styledTitle, size: 31)
                 .foregroundStyle(Palette.textPrimary)
                 .accessibilityAddTraits(.isHeader)
-            Text(category.blurb)
+            Text(season?.blurb ?? category.blurb)
                 .font(.subheadline)
                 .foregroundStyle(Palette.textSecondary)
             // A tap on a look runs it on her photo right away, so the price
@@ -102,8 +108,9 @@ extension PhotoTemplate {
 
 extension TemplateCategory {
     /// "Glow-up *looks*": the last word in the italic accent.
-    var styledTitle: String {
-        let title = L10n.core(self.title(on: AppClock.now))
+    var styledTitle: String { Self.accentingLastWord(L10n.core(title(on: AppClock.now))) }
+
+    static func accentingLastWord(_ title: String) -> String {
         var words = title.split(separator: " ").map(String.init)
         // Languages written without spaces (Japanese, Chinese) keep it plain.
         guard words.count > 1, let last = words.popLast() else { return title }
@@ -118,16 +125,27 @@ extension TemplateCategory {
         case .besties: return String(localized: "Sleepovers, concerts and matching fits with your besties.")
         case .dreamy: return String(localized: "Soft, magical portraits.")
         case .seasonal:
-            // No scarcity talk: seasonal looks stay in the editor all year.
-            switch SeasonalTheme.current(on: AppClock.now) {
-            case .halloween: return String(localized: "Cute and a little spooky.")
-            case .winter: return String(localized: "Snow, sweaters and New Year sparkle.")
-            case .galentines: return String(localized: "Pink brunches and photo booths with your besties.")
-            case nil: return String(localized: "Looks for this time of year.")
-            }
+            return SeasonalTheme.current(on: AppClock.now)?.blurb ?? String(localized: "Looks for this time of year.")
         case .art: return String(localized: "Turn any photo into art.")
         case .pets: return String(localized: "Your pet, starring in their own photoshoot.")
         case .business: return String(localized: "Polished photos for work and your shop.")
+        }
+    }
+}
+
+extension SeasonalTheme {
+    /// Every look of the season, in catalog order.
+    var looks: [PhotoTemplate] { TemplateCatalog.all.filter { $0.season == self } }
+
+    /// "Cozy *winter*": its row's heading, styled like a collection's.
+    var styledTitle: String { TemplateCategory.accentingLastWord(L10n.core(rowTitle)) }
+
+    /// No scarcity talk: seasonal looks stay in the editor all year.
+    var blurb: String {
+        switch self {
+        case .halloween: return String(localized: "Cute and a little spooky.")
+        case .winter: return String(localized: "Snow, sweaters and New Year sparkle.")
+        case .galentines: return String(localized: "Pink brunches and photo booths with your besties.")
         }
     }
 }

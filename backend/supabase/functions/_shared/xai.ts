@@ -88,6 +88,13 @@ const BLOCKED: Outcome = {
   message: "This result was blocked by our safety filters. Your credit was refunded.",
 };
 
+/** Her side of it is a busy service: the app already translates this sentence. */
+const BILLING: Outcome = {
+  ok: false,
+  code: "provider_billing",
+  message: "The AI service is busy. Your credit was refunded.",
+};
+
 /** Runs one request. Never throws: failures come back as an outcome to refund. */
 export async function generate(input: JobInput, userTag?: string, timeoutMs = 150_000): Promise<Outcome> {
   const { path, body } = buildRequest(input, userTag);
@@ -146,9 +153,20 @@ export function parseOutputs(text: string, expected = 1): Outcome {
   };
 }
 
+/**
+ * The xAI team is out of credit or over its spending limit: 402, or a 403 or
+ * 429 that says so. ai-image refunds the job like any provider failure, then
+ * pauses AI (later jobs stop at admit_job) and mails the owner once.
+ */
+export function isBillingError(status: number, text: string): boolean {
+  return status === 402 || ((status === 403 || status === 429) && /credit|balance|billing|spending.?limit/i.test(text));
+}
+
 export function mapError(status: number, text: string): Outcome {
+  if (status === 402) return BILLING;
   // "imagine:content-moderated" and friends.
   if (/safety|nsfw|content.?policy|moderat|flagged|prohibited/i.test(text)) return BLOCKED;
+  if (isBillingError(status, text)) return BILLING;
   if (status === 429) {
     return {
       ok: false,

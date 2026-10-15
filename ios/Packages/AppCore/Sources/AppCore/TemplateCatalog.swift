@@ -94,6 +94,32 @@ public enum SeasonalTheme: String, Hashable, Codable, Sendable, CaseIterable {
     public static func current(on date: Date, calendar: Calendar = .current) -> SeasonalTheme? {
         allCases.first { $0.isActive(on: date, calendar: calendar) }
     }
+
+    /// The season that starts within `days` days, while no season is on: Home
+    /// teases it ("Coming soon") until its first day, when the season's own
+    /// row takes over. Nil during a season and further from the next one.
+    public static func upcoming(on date: Date, within days: Int = 14, calendar: Calendar = .current) -> UpcomingSeason? {
+        guard days >= 1, current(on: date, calendar: calendar) == nil else { return nil }
+        for ahead in 1...days {
+            guard let day = calendar.date(byAdding: .day, value: ahead, to: date) else { return nil }
+            // No season is on today, so the first day one is on is its first day.
+            if let theme = current(on: day, calendar: calendar) {
+                return UpcomingSeason(theme: theme, daysLeft: ahead)
+            }
+        }
+        return nil
+    }
+}
+
+/// A season starting soon, and how many days until its first day (1: tomorrow).
+public struct UpcomingSeason: Hashable, Sendable {
+    public let theme: SeasonalTheme
+    public let daysLeft: Int
+
+    public init(theme: SeasonalTheme, daysLeft: Int) {
+        self.theme = theme
+        self.daysLeft = daysLeft
+    }
 }
 
 /// A one-tap transformation: the user picks a photo, we send it to the edit

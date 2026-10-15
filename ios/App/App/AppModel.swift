@@ -204,6 +204,11 @@ final class AppModel {
     @ObservationIgnored private var lastInterruption: Date?
     /// One paywall a session is enough: no onboarding one after another.
     @ObservationIgnored private var paywallShownThisSession = false
+    /// When the last full balance read answered, and reads on their way: the
+    /// app's own reads at launch and in the foreground wait 15 minutes after
+    /// one (`BalanceRefreshPolicy`).
+    @ObservationIgnored private var lastBalanceRead: Date?
+    @ObservationIgnored private var balanceReadsInFlight = 0
 
     private enum Keys {
         static let onboarding = "onboarding.completed"
@@ -434,7 +439,7 @@ final class AppModel {
         watchAppleCredentialRevocation()
         await purchases.refreshEntitlements()
         credits.refresh(isPro: purchases.isPro, isTrial: purchases.trial != nil)
-        await refreshServerBalance()
+        await refreshServerBalanceIfDue()
         syncWidgets()
         syncReminders()
         #if !DEBUG
@@ -452,9 +457,10 @@ final class AppModel {
         syncReminders()
         // A trial cancelled in Settings › Subscriptions loses its reminder.
         Task { await purchases.refreshEntitlements() }
-        // Refunds can land while she's away (a result that never reached the app).
+        // Refunds can land while she's away (a result that never reached the
+        // app); the credits sheet still reads at once when she opens it.
         Task {
-            await refreshServerBalance()
+            await refreshServerBalanceIfDue()
             syncWidgets()
         }
     }
@@ -727,12 +733,24 @@ final class AppModel {
     /// account to read it (the local free allowance shows until one exists),
     /// and never under 13, when the app sends nothing to us.
     func refreshServerBalance() async {
-        guard let remote, allowsCloudAI || allowsPurchases, await remote.existingUserID() != nil else { return }
+        guard let remote, allowsCloudAI || allowsPurchases else { return }
+        balanceReadsInFlight += 1
+        defer { balanceReadsInFlight -= 1 }
+        guard await remote.existingUserID() != nil else { return }
         let sent = Date()
         if let state = try? await remote.fetchBalance() {
             credits.apply(state, asOf: sent)
             cloudPause = CloudPause.from(state)
+            lastBalanceRead = Date()
         }
+    }
+
+    /// The app's own reads, at launch and back in the foreground: each one is
+    /// a server request, so none while one is on its way or within 15 minutes
+    /// of the last that answered. Jobs report the balance as they go.
+    func refreshServerBalanceIfDue() async {
+        guard balanceReadsInFlight == 0, BalanceRefreshPolicy.standard.isDue(lastRead: lastBalanceRead) else { return }
+        await refreshServerBalance()
     }
 
     // MARK: Onboarding & consent

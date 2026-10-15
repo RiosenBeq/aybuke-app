@@ -273,16 +273,40 @@ public enum CloudPause: Equatable, Sendable {
     }
 }
 
+/// When the app reads the balance on its own (at launch, back in the
+/// foreground): each read is a server request, so at most once every
+/// `interval` after the last read that answered. A purchase, a sign-in, the
+/// credits sheet and every job still read or report it at once.
+public struct BalanceRefreshPolicy: Equatable, Sendable {
+    public var interval: TimeInterval
+
+    public init(interval: TimeInterval = 15 * 60) {
+        self.interval = interval
+    }
+
+    public static let standard = BalanceRefreshPolicy()
+
+    /// Due without a read yet, once `interval` has passed, or when the clock went back.
+    public func isDue(lastRead: Date?, now: Date = Date()) -> Bool {
+        guard let lastRead else { return true }
+        let age = now.timeIntervalSince(lastRead)
+        return age >= interval || age < 0
+    }
+}
+
 struct APIErrorEnvelope: Decodable {
     let error: APIErrorBody
 }
 
-/// How often to poll a job: quick at first (most edits finish in 5–15 s),
-/// then backing off, with an overall deadline. A poll that can't reach the
-/// server (a lift, a tunnel, a busy gateway) doesn't end the wait: the job and
-/// its credit are still on the server, so the app retries with growing gaps
-/// and stops only after `offlineGrace` without an answer. The server refunds a
-/// result that never reached the app (backend `sweep_jobs()`).
+/// How often to poll a job. The server holds each poll while the job runs, up
+/// to 20 s (backend `ai-image/long-poll.ts`), and answers the moment it ends,
+/// so a short gap between polls is enough: most edits (5–15 s) take one or two
+/// polls, each one Edge Function invocation. There is an overall deadline. A
+/// poll that can't reach the server (a lift, a tunnel, a busy gateway) doesn't
+/// end the wait: the job and its credit are still on the server, so the app
+/// retries with growing gaps and stops only after `offlineGrace` without an
+/// answer. The server refunds a result that never reached the app (backend
+/// `sweep_jobs()`).
 public struct PollingSchedule: Equatable, Sendable {
     public var delays: [TimeInterval]
     public var maxDelay: TimeInterval
@@ -294,7 +318,7 @@ public struct PollingSchedule: Equatable, Sendable {
     public var offlineGrace: TimeInterval
 
     public init(
-        delays: [TimeInterval] = [1, 1, 1.5, 1.5, 2, 2, 2.5], maxDelay: TimeInterval = 3, timeout: TimeInterval = 180,
+        delays: [TimeInterval] = [2, 2, 3], maxDelay: TimeInterval = 3, timeout: TimeInterval = 180,
         retryDelays: [TimeInterval] = [2, 3, 5, 8, 13], offlineGrace: TimeInterval = 120
     ) {
         self.delays = delays
@@ -519,9 +543,15 @@ public enum RequestFactory {
         }
     }
 
+    /// How long a poll may take: the server holds it up to 20 s while the job
+    /// runs (backend `ai-image/long-poll.ts`), so well over that.
+    public static let pollTimeout: TimeInterval = 45
+
     public static func jobStatus(jobID: String, config: BackendConfiguration, accessToken: String?) throws -> URLRequest {
-        try authorized(config: config, path: config.functionPath, method: "GET",
-                       query: [URLQueryItem(name: "job_id", value: jobID)], accessToken: accessToken)
+        var request = try authorized(config: config, path: config.functionPath, method: "GET",
+                                     query: [URLQueryItem(name: "job_id", value: jobID)], accessToken: accessToken)
+        request.timeoutInterval = pollTimeout
+        return request
     }
 
     /// Stops a job she cancelled or stopped waiting for. The server refunds

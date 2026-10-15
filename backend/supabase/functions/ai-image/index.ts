@@ -2,7 +2,8 @@
 //
 //   POST   /ai-image            enqueue a job        → 202 { job_id, status: "queued", credits_remaining }
 //   GET    /ai-image?job_id=ID  poll a job            → { job_id, status, outputs?, error?, credits_remaining? }
-//                               (credits_remaining once the job is finished)
+//          [&wait=S]            (credits_remaining once the job is finished). Held while the job runs,
+//                               until it finishes or S seconds pass (0–20, default 20; long-poll.ts)
 //   DELETE /ai-image?job_id=ID  cancel + refund a job → { job_id, status: "cancelled", credits_remaining }
 //          [&intent=cancel]     (on a completed job the app received: a plain DELETE is the "got it" that
 //                               clears the results; intent=cancel means the app gave up waiting)
@@ -22,10 +23,12 @@
 // the charge, in one transaction. Providers: xAI (default when XAI_API_KEY is
 // set) or fal (AI_PROVIDER=fal). fal jobs are queued at fal and advanced while
 // the app polls; xAI answers in one request, which runs in the background
-// after the 202. Every result passes the output check (moderation.ts) and,
-// when it's on, the independent check (safety.ts: Claude with
-// ANTHROPIC_API_KEY, or an xAI model with XAI_SAFETY_MODEL; it also checks the
-// photo before an edit), or is blocked and refunded, and a flagged result
+// after the 202. When xAI refuses a job for billing, AI pauses for everyone
+// and the owner gets a mail; each billed job checks the estimated balance
+// (_shared/provider-alerts.ts). Every result passes the output check
+// (moderation.ts) and, when it's on, the independent check (safety.ts: Claude
+// with ANTHROPIC_API_KEY, or an xAI model with XAI_SAFETY_MODEL; it also checks
+// the photo before an edit), or is blocked and refunded, and a flagged result
 // counts as a strike. The poll that returns the results records the delivery;
 // a DELETE on a delivered job confirms the app has the images and clears them
 // right away. Results the app never received are refunded (cancel_job(),
@@ -45,7 +48,9 @@ import {
   sanitizePrompt,
 } from "../_shared/input.ts";
 import { checkOutputs, outputCheck } from "../_shared/moderation.ts";
+import { runInBackground } from "../_shared/owner-mail.ts";
 import { EDIT_GUARD, evaluatePrompt, type Verdict } from "../_shared/policy.ts";
+import { checkProviderBudget, pauseForProviderBilling } from "../_shared/provider-alerts.ts";
 import {
   API_KEY_SECRET,
   classifyImages,
@@ -55,6 +60,7 @@ import {
 } from "../_shared/safety.ts";
 import { PRO_STYLES, templateRecipe } from "../_shared/templates.ts";
 import * as xai from "../_shared/xai.ts";
+import { holdWhilePending, isPending, waitSeconds } from "./long-poll.ts";
 
 // An erase sends a photo and a mask, each at MAX_IMAGE_BYTES (6 MiB), which is
 // 8 MiB as base64 (4/3). Plus about 256 KiB of JSON: the app's prompt is at most
@@ -113,7 +119,7 @@ Deno.serve(async (req) => {
         return await createJob(db, user.id, entitlement, install, clientIp(req.headers), req);
       }
       case "GET": {
-        if (jobId) return await pollJob(db, user.id, jobId);
+        if (jobId) return await pollJob(db, user.id, jobId, waitSeconds(url.searchParams.get("wait")), req.signal);
         await resolveEntitlement(db, user.id, req.headers.get("x-entitlement-jws"));
         const install = await verifyInstall(req.headers.get("x-app-transaction"));
         return json(await walletState(db, user.id, install, clientIp(req.headers)));
@@ -370,13 +376,25 @@ async function photoPassesSafetyCheck(db: SupabaseClient, jobId: string, input: 
 
 // MARK: - Poll
 
-async function pollJob(db: SupabaseClient, userId: string, jobId: string): Promise<Response> {
+async function pollJob(
+  db: SupabaseClient,
+  userId: string,
+  jobId: string,
+  wait: number,
+  signal: AbortSignal,
+): Promise<Response> {
   if (!UUID_PATTERN.test(jobId)) throw new HttpError(404, "not_found", "That job doesn't exist.");
-  const job = await loadJob(db, userId, jobId);
-  if (job.status === "queued" || job.status === "processing") {
-    await advance(db, job);
-  }
-  const fresh = await loadJob(db, userId, jobId);
+  // One request for the whole wait instead of one every second or two.
+  const fresh = await holdWhilePending(
+    async () => {
+      const job = await loadJob(db, userId, jobId);
+      if (!isPending(job)) return job;
+      await advance(db, job);
+      return await loadJob(db, userId, jobId);
+    },
+    wait,
+    { signal },
+  );
   if (fresh.status === "completed") {
     // Handing the results over is what counts as delivered: results the app
     // never received are refunded (sweep_jobs()).
@@ -415,8 +433,19 @@ const BLOCKED_RESULT = "This result was blocked by our safety filters. Your cred
 const SAFETY_CHECK_FAILED = "Our safety check couldn't run, so this result wasn't shown. Your credit was refunded.";
 const PHOTO_CHECK_FAILED = "We couldn't check this photo, so we didn't edit it. Your credit was refunded.";
 
-/** Stores a provider's outcome: results (after the output safety checks) or a refund. */
+/**
+ * Stores a provider's outcome, then looks after the provider's credit
+ * (provider-alerts.ts): a billing refusal pauses AI and tells the owner, and
+ * a job the provider billed checks the estimated balance in the background.
+ */
 async function finish(db: SupabaseClient, jobId: string, outcome: fal.ResultOutcome): Promise<void> {
+  await store(db, jobId, outcome);
+  if (!outcome.ok && outcome.code === "provider_billing") await pauseForProviderBilling(db);
+  else if (outcome.ok || outcome.code === "content_blocked") runInBackground(checkProviderBudget(db));
+}
+
+/** Stores a provider's outcome: results (after the output safety checks) or a refund. */
+async function store(db: SupabaseClient, jobId: string, outcome: fal.ResultOutcome): Promise<void> {
   if (!outcome.ok) {
     // The provider's own moderation withheld it: a strike, like a flag below.
     if (outcome.code === "content_blocked") await flagJob(db, jobId, outcome.message, "provider_moderation");

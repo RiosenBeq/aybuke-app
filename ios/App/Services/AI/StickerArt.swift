@@ -1,15 +1,19 @@
 import UIKit
 import SwiftUI
+import AppCore
 
 /// The sticker tray's sections. Each sticker sits in one; All shows them all.
+/// Spooky is in the tray only in the Halloween window (`SeasonalTheme`), so
+/// the tray is back to normal after it; stickers already placed stay drawable.
 enum StickerCategory: String, CaseIterable, Identifiable, Sendable {
-    case all, cute, y2k, glam, love, sky, words
+    case all, spooky, cute, y2k, glam, love, sky, words
 
     var id: String { rawValue }
 
     var title: LocalizedStringKey {
         switch self {
         case .all: return "All"
+        case .spooky: return "Spooky"
         case .cute: return "Cute"
         // Like the effects' era tags, Y2K reads the same in every language.
         case .y2k: return "Y2K"
@@ -20,14 +24,23 @@ enum StickerCategory: String, CaseIterable, Identifiable, Sendable {
         }
     }
 
-    /// The stickers in this section, in tray order.
-    var kinds: [StickerKind] {
-        self == .all ? StickerKind.allCases : StickerKind.allCases.filter { $0.category == self }
+    /// The sections the tray offers on `date`.
+    static func shown(on date: Date) -> [StickerCategory] {
+        allCases.filter { $0 != .spooky || SeasonalTheme.halloween.isActive(on: date) }
+    }
+
+    /// The stickers in this section on `date`, in tray order (in season, the
+    /// Spooky ones lead All).
+    func kinds(on date: Date) -> [StickerKind] {
+        guard self == .all else { return StickerKind.allCases.filter { $0.category == self } }
+        let inSeason = SeasonalTheme.halloween.isActive(on: date)
+        return StickerKind.allCases.filter { inSeason || $0.category != .spooky }
     }
 }
 
 enum StickerKind: String, CaseIterable, Identifiable, Sendable {
-    // Tray order for All: favourites first, then the rest by section.
+    // Tray order for All: Halloween's first while it's on, favourites, then the rest by section.
+    case pumpkin, ghost, bat, candy, witchHat, spiderWeb
     case heart, sparkles, bow, butterfly, star, cherries, flower, smiley, chromeHeart
     case puffyHeart, strawberry, ribbonBow, crown, moon, rainbow, cloud, bunny, kitty, bear
     case mushroom, heartCloud, boba, daisy, musicNotes
@@ -40,6 +53,8 @@ enum StickerKind: String, CaseIterable, Identifiable, Sendable {
 
     var category: StickerCategory {
         switch self {
+        case .pumpkin, .ghost, .bat, .candy, .witchHat, .spiderWeb:
+            return .spooky
         case .cherries, .flower, .smiley, .butterfly, .strawberry, .cloud, .bunny, .kitty, .bear, .mushroom, .heartCloud,
              .boba, .daisy, .musicNotes:
             return .cute
@@ -59,6 +74,13 @@ enum StickerKind: String, CaseIterable, Identifiable, Sendable {
     /// The sticker's name for VoiceOver and the sticker tray.
     var title: String {
         switch self {
+        case .pumpkin: return String(localized: "Pumpkin", comment: "A sticker of a smiling jack-o'-lantern (a carved Halloween pumpkin)")
+        case .ghost: return String(localized: "Ghost", comment: "A sticker of a cute little ghost")
+        case .bat: return String(localized: "Bat", comment: "A sticker of a cute little bat (the animal) with its wings spread")
+        case .candy: return String(localized: "Wrapped candy", comment: "A sticker of a round sweet in a twisted wrapper")
+        case .witchHat: return String(localized: "Witch hat", comment: "A sticker of a pointy witch's hat with a pink band")
+        case .spiderWeb:
+            return String(localized: "Spider web", comment: "A sticker of a spider web for a photo's corner, with a tiny friendly spider")
         case .heart: return String(localized: "Heart")
         case .chromeHeart: return String(localized: "Chrome heart", comment: "A shiny metallic Y2K-style heart sticker")
         case .sparkles: return String(localized: "Sparkles")
@@ -159,6 +181,12 @@ enum StickerArt {
     static func size(of sticker: Sticker) -> CGSize {
         let art: CGSize
         switch sticker.kind {
+        case .pumpkin: art = CGSize(width: 236, height: 212)
+        case .ghost: art = CGSize(width: 206, height: 236)
+        case .bat: art = CGSize(width: 256, height: 170)
+        case .candy: art = CGSize(width: 256, height: 150)
+        case .witchHat: art = CGSize(width: 236, height: 226)
+        case .spiderWeb: art = CGSize(width: 230, height: 230)
         case .heart: art = CGSize(width: 210, height: 200)
         case .chromeHeart: art = CGSize(width: 220, height: 208)
         case .sparkles: art = CGSize(width: 220, height: 220)
@@ -227,6 +255,12 @@ enum StickerArt {
         cg.beginTransparencyLayer(in: rect, auxiliaryInfo: nil)
         let art = rect.insetBy(dx: margin, dy: margin)
         switch sticker.kind {
+        case .pumpkin: drawPumpkin(in: art, context: cg)
+        case .ghost: drawGhost(in: art, context: cg)
+        case .bat: drawBat(in: art, context: cg)
+        case .candy: drawCandy(in: art, context: cg)
+        case .witchHat: drawWitchHat(in: art, context: cg)
+        case .spiderWeb: drawSpiderWeb(in: art, context: cg)
         case .heart: drawHeart(in: art, context: cg)
         case .chromeHeart: drawChromeHeart(in: art, context: cg)
         case .sparkles: drawSparkles(in: art, context: cg)

@@ -201,9 +201,13 @@ final class BackendAPITests: XCTestCase {
         XCTAssertEqual(status.httpMethod, "GET")
         XCTAssertEqual(status.url?.absoluteString, "https://demo.supabase.co/functions/v1/ai-image?job_id=j%201")
         XCTAssertEqual(status.value(forHTTPHeaderField: "Authorization"), "Bearer t")
+        // The server holds a poll up to 20 s (ai-image/long-poll.ts): the request outlasts that by 10 s or more.
+        XCTAssertEqual(status.timeoutInterval, RequestFactory.pollTimeout)
+        XCTAssertGreaterThanOrEqual(RequestFactory.pollTimeout - 20, 10)
 
         let cancel = try RequestFactory.cancelJob(jobID: "j1", config: config, accessToken: "t")
         XCTAssertEqual(cancel.httpMethod, "DELETE")
+        XCTAssertEqual(cancel.timeoutInterval, 30)
 
         let balance = try RequestFactory.balance(config: config, accessToken: "t", entitlementJWS: "jws")
         XCTAssertEqual(balance.url?.absoluteString, "https://demo.supabase.co/functions/v1/ai-image")
@@ -233,10 +237,13 @@ final class BackendAPITests: XCTestCase {
     }
 
     func testPollingScheduleBacksOff() {
+        // The server holds each poll while the job runs, so a few seconds between polls is plenty.
         let schedule = PollingSchedule.standard
-        XCTAssertEqual(schedule.delay(forAttempt: 0), 1)
-        XCTAssertEqual(schedule.delay(forAttempt: 6), 2.5)
+        XCTAssertEqual(schedule.delay(forAttempt: 0), 2)
+        XCTAssertEqual(schedule.delay(forAttempt: 1), 2)
+        XCTAssertEqual(schedule.delay(forAttempt: 2), 3)
         XCTAssertEqual(schedule.delay(forAttempt: 50), 3)
+        XCTAssertEqual(schedule.timeout, 180)
         let total = (0..<80).map(schedule.delay(forAttempt:)).reduce(0, +)
         XCTAssertGreaterThan(total, schedule.timeout, "the deadline, not the attempt count, ends polling")
     }
@@ -253,7 +260,7 @@ final class BackendAPITests: XCTestCase {
 
     func testPollingRidesOutDroppedConnections() {
         let schedule = PollingSchedule.standard
-        XCTAssertEqual(schedule.next(elapsed: 5, attempt: 0, failures: 0), .poll(after: 1))
+        XCTAssertEqual(schedule.next(elapsed: 5, attempt: 0, failures: 0), .poll(after: 2))
         XCTAssertEqual(schedule.next(elapsed: 60, attempt: 30, failures: 0), .poll(after: 3))
         // A drop backs off instead of abandoning a job whose credit is reserved.
         XCTAssertEqual(schedule.next(elapsed: 20, attempt: 5, failures: 1, outage: 0), .poll(after: 2))
@@ -278,6 +285,16 @@ final class BackendAPITests: XCTestCase {
         }
         XCTAssertGreaterThanOrEqual(failures, 10)
         XCTAssertGreaterThanOrEqual(outage, schedule.offlineGrace)
+    }
+
+    func testAutomaticBalanceReadsWaitFifteenMinutes() {
+        let policy = BalanceRefreshPolicy.standard
+        let read = Date(timeIntervalSince1970: 1_800_000_000)
+        XCTAssertTrue(policy.isDue(lastRead: nil, now: read), "the first read after launch")
+        XCTAssertFalse(policy.isDue(lastRead: read, now: read.addingTimeInterval(60)))
+        XCTAssertFalse(policy.isDue(lastRead: read, now: read.addingTimeInterval(15 * 60 - 1)))
+        XCTAssertTrue(policy.isDue(lastRead: read, now: read.addingTimeInterval(15 * 60)))
+        XCTAssertTrue(policy.isDue(lastRead: read, now: read.addingTimeInterval(-60)), "a clock set back reads again")
     }
 
     func testOnlyPassingFailuresAreRetried() {

@@ -94,3 +94,32 @@ Deno.test("a summary or Resend failure fails the call, so the workflow shows it"
   refused.value.send = () => Promise.resolve({ sent: false, reason: "failed" });
   assert.equal((await handleDigest(call({ "x-digest-secret": SECRET }), refused.value)).status, 502);
 });
+
+Deno.test("the digest shows xAI's estimated balance, and dashes when it can't be read", async () => {
+  const { value, sent } = deps({ RESEND_API_KEY: "re_test", DIGEST_SECRET: SECRET });
+  value.budget = () =>
+    Promise.resolve({
+      provider: "xai",
+      balance_cents: 1000,
+      as_of: "2026-10-15T08:00:00+00:00",
+      spent_cents: 804,
+      remaining_cents: 196,
+      low_alert_sent_at: "2026-10-15T09:00:00+00:00",
+    });
+  assert.equal((await handleDigest(call({ "x-digest-secret": SECRET }), value)).status, 200);
+  for (const line of ["XAI BALANCE (ESTIMATE, NOW)", "Recorded balance: $10.00 on 2026-10-15", "Left: $1.96"]) {
+    assert.ok(sent[0].text.includes(line), line);
+  }
+  assert.ok(sent[0].text.includes("Low-balance mail sent: Yes"));
+
+  const unknown = deps({ RESEND_API_KEY: "re_test", DIGEST_SECRET: SECRET });
+  unknown.value.budget = () => Promise.reject(new Error("db down"));
+  const warn = console.warn;
+  console.warn = () => {};
+  try {
+    assert.equal((await handleDigest(call({ "x-digest-secret": SECRET }), unknown.value)).status, 200);
+  } finally {
+    console.warn = warn;
+  }
+  assert.ok(unknown.sent[0].text.includes("Left: –"));
+});

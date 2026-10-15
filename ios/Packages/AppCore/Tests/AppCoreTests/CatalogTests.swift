@@ -61,6 +61,36 @@ final class CatalogTests: XCTestCase {
         XCTAssertNil(season(7, 4))
     }
 
+    private func upcoming(_ month: Int, _ day: Int, year: Int = 2026, within days: Int = 14) -> UpcomingSeason? {
+        SeasonalTheme.upcoming(on: Self.date(month, day, year: year), within: days, calendar: Self.utc)
+    }
+
+    func testUpcomingSeasonIsTeasedTwoWeeksAhead() {
+        // Between seasons: the next one, in days to its first day.
+        XCTAssertEqual(upcoming(11, 20), UpcomingSeason(theme: .winter, daysLeft: 11))
+        XCTAssertEqual(upcoming(1, 20, year: 2027), UpcomingSeason(theme: .galentines, daysLeft: 12))
+        XCTAssertEqual(upcoming(9, 17), UpcomingSeason(theme: .halloween, daysLeft: 14))
+        XCTAssertEqual(upcoming(9, 30), UpcomingSeason(theme: .halloween, daysLeft: 1), "tomorrow")
+        XCTAssertEqual(upcoming(11, 30), UpcomingSeason(theme: .winter, daysLeft: 1))
+        XCTAssertEqual(upcoming(1, 31, year: 2027), UpcomingSeason(theme: .galentines, daysLeft: 1))
+        // More than two weeks away: nothing yet.
+        XCTAssertNil(upcoming(9, 16))
+        XCTAssertNil(upcoming(11, 16))
+        XCTAssertNil(upcoming(1, 7, year: 2027))
+        XCTAssertNil(upcoming(3, 3))
+        // During a season Home shows that season, never a teaser for the next.
+        XCTAssertNil(upcoming(10, 15))
+        XCTAssertNil(upcoming(11, 2), "Halloween's last day")
+        XCTAssertNil(upcoming(12, 1), "the first day belongs to the season's own row")
+        XCTAssertNil(upcoming(12, 25), "winter is on, and Galentine's is weeks away")
+        XCTAssertNil(upcoming(12, 25, within: 60), "even looking further ahead")
+        // Across the new year, a leap year, and a long look ahead.
+        XCTAssertEqual(upcoming(1, 7, year: 2027, within: 30), UpcomingSeason(theme: .galentines, daysLeft: 25))
+        XCTAssertEqual(upcoming(1, 18, year: 2028), UpcomingSeason(theme: .galentines, daysLeft: 14))
+        XCTAssertEqual(upcoming(2, 15, within: 365), UpcomingSeason(theme: .halloween, daysLeft: 228))
+        XCTAssertNil(upcoming(11, 20, within: 0))
+    }
+
     func testSeasonalRowFollowsTheSeason() {
         let halloween = Self.date(10, 20)
         XCTAssertTrue(TemplateCatalog.categories(on: halloween, calendar: Self.utc).contains(.seasonal))

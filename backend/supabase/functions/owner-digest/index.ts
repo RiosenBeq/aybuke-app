@@ -16,6 +16,7 @@ Deno.serve((req) =>
     env: Deno.env,
     members: () => rpc("ops_members_summary"),
     daily: (day) => rpc("ops_daily_summary", { p_day: day }),
+    budget: () => rpc("ops_provider_budget", { p_provider: "xai" }),
     send: (mail) => sendOwnerMail(mail),
   })
 );
