@@ -11,7 +11,7 @@
   "instagramAppID": "",
   "revenueCatAPIKey": "appl_nMgLjPGSrACLwsGJMMoDmMXUvwS",
   "signInWithApple": true,
-  "consentVersion": 2,
+  "consentVersion": 3,
   "creditPolicy": {
     "freeDaily": 2,
     "proMonthly": 80,
@@ -30,7 +30,7 @@
     },
     {
       "name": "Anthropic (Claude)",
-      "role": "safety"
+      "role": "safetyAndWriting"
     }
   ],
   "ads": {

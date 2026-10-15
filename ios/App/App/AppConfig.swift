@@ -19,6 +19,12 @@ enum AIMode {
 struct AIProcessor: Codable, Equatable, Hashable {
     enum Role: String, Codable {
         case servers, images, safety
+        /// The safety check that also writes prompts, captions and makeup
+        /// picks from text (`assist`, `CloudWriter`): Anthropic since consent version 3.
+        case safetyAndWriting
+
+        /// Checks photos and results: the consent sheet says how long it keeps them.
+        var checksSafety: Bool { self == .safety || self == .safetyAndWriting }
     }
 
     let name: String
@@ -31,6 +37,10 @@ struct AIProcessor: Codable, Equatable, Hashable {
         // The independent check sees the photo before an edit and every
         // result; Create sends text only, so "photos you edit", not "your photo".
         case .safety: return String(localized: "Checks photos you edit and every result for safety")
+        // Writing help gets her words, never a photo.
+        case .safetyAndWriting:
+            return String(localized: "Checks photos and results for safety, and helps write prompts and captions (text only)",
+                          comment: "A company's role on the AI consent sheet and in Settings: Anthropic (Claude) checks photos and results for safety and writes ideas, prompts and captions from text")
         }
     }
 }
@@ -138,9 +148,11 @@ struct AppConfig: Decodable {
     var signInWithApple = false
     /// Bump to ask everyone for consent again (the processor list changing
     /// asks again by itself). 2: Anthropic joined as the safety check.
-    var consentVersion = 2
+    /// 3: Anthropic also helps write prompts and captions (`assist`).
+    var consentVersion = 3
     /// Who processes cloud AI requests. Must match the backend: Anthropic
-    /// (role `.safety`) is the independent check in `_shared/safety.ts`
+    /// (role `.safetyAndWriting`) is the independent check in
+    /// `_shared/safety.ts` and the writing help in `functions/assist`
     /// (ANTHROPIC_API_KEY). A new provider, or setting FAL_KEY (fal.ai), needs
     /// an app update that lists it first; without FAL_KEY fal.ai sees nothing,
     /// so it isn't listed.
@@ -154,7 +166,7 @@ struct AppConfig: Decodable {
     static let defaultProcessors = [
         AIProcessor(name: "Supabase", role: .servers),
         AIProcessor(name: "xAI (Grok Imagine)", role: .images),
-        AIProcessor(name: "Anthropic (Claude)", role: .safety),
+        AIProcessor(name: "Anthropic (Claude)", role: .safetyAndWriting),
     ]
 
     static let current: AppConfig = load()

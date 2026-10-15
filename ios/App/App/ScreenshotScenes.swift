@@ -4,6 +4,12 @@ import AppCore
 
 /// Deterministic app states for App Store / QA screenshots (DEBUG builds only).
 /// Launch with `-GLScreenshotScene <scene>`; see .github/workflows/screenshots.yml.
+///
+/// With any scene, `-GLAssistStub YES` answers the server's writing help
+/// (Create's "Inspire me" and "Make it magic", caption ideas, "Describe your
+/// vibe") with canned text and no server or session (`fail`: an outage,
+/// `blocked`: the server's policy); `-GLWriterAction inspire|magic` runs a
+/// Create writer chip once; `-GLPro YES` makes her Pro.
 enum ScreenshotScene: String, CaseIterable {
     case onboarding
     case home
@@ -12,7 +18,9 @@ enum ScreenshotScene: String, CaseIterable {
     case edit
     /// Magic Edit with a prompt; `-GLEditorTool <tool>` opens another panel.
     /// Makeup Studio (`-GLEditorTool makeup`) takes `-GLMakeupPreset <id>`
-    /// (a `MakeupStudio.presets` id) and `-GLMakeupCustomize lips|eyes|cheeks|extras|hair`.
+    /// (a `MakeupStudio.presets` id) and `-GLMakeupCustomize lips|eyes|cheeks|extras|hair`;
+    /// with `-GLAssistStub YES` it has "Describe your vibe", and
+    /// `-GLMakeupVibe "<words>"` asks it once.
     case editor
     case effects
     /// The editor's "Ideas for this photo" row on the demo landscape.
@@ -40,6 +48,8 @@ enum ScreenshotScene: String, CaseIterable {
     /// scene, `-GLAdPacing off` lets an interstitial follow every save (QA).
     case paywall
     case consent
+    /// Settings for a free member who never bought anything; `-GLPro YES`
+    /// for a Pro member, `-GLPurchased YES` for one who bought credits.
     case settings
     /// The share composer; `-GLShareFormat <format>`, `-GLShareOnDevice YES`,
     /// and `-GLShareHideFaces YES` for a group from My Works with "Hide

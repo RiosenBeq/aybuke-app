@@ -112,6 +112,75 @@ private struct AccountPoint: View {
     }
 }
 
+/// Apple's sign-in sheet without a button on screen, for Settings' "Bought
+/// Pro or credits on another device? Sign in" row: the same email scope,
+/// nonce and `AppModel.signInWithApple` as `AppleSignInButton`, one tap
+/// sooner.
+final class AppleSignInPrompt: NSObject {
+    private enum Outcome {
+        case signedIn(ASAuthorizationAppleIDCredential)
+        case canceled
+        case failed
+    }
+
+    /// Kept alive while Apple's sheet is up: the controller holds its delegate weakly.
+    @MainActor private static var current: AppleSignInPrompt?
+    private var continuation: CheckedContinuation<Outcome, Never>?
+
+    @MainActor
+    static func signIn(_ app: AppModel) async {
+        guard current == nil else { return }
+        let nonce = AppleSignInNonce.make()
+        let prompt = AppleSignInPrompt()
+        current = prompt
+        let outcome = await withCheckedContinuation { continuation in
+            prompt.continuation = continuation
+            let request = ASAuthorizationAppleIDProvider().createRequest()
+            request.requestedScopes = [.email]
+            request.nonce = AppleSignInNonce.sha256(nonce)
+            let controller = ASAuthorizationController(authorizationRequests: [request])
+            controller.delegate = prompt
+            controller.presentationContextProvider = prompt
+            controller.performRequests()
+        }
+        current = nil
+        switch outcome {
+        case .signedIn(let credential):
+            await app.signInWithApple(credential, nonce: nonce)
+        case .canceled:
+            break
+        case .failed:
+            app.showToast("Couldn't sign in with Apple. Please try again.", style: .error)
+        }
+    }
+
+    private func finish(_ outcome: Outcome) {
+        continuation?.resume(returning: outcome)
+        continuation = nil
+    }
+}
+
+extension AppleSignInPrompt: ASAuthorizationControllerDelegate, ASAuthorizationControllerPresentationContextProviding {
+    func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
+        if let credential = authorization.credential as? ASAuthorizationAppleIDCredential {
+            finish(.signedIn(credential))
+        } else {
+            finish(.failed)
+        }
+    }
+
+    func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: Error) {
+        finish((error as? ASAuthorizationError)?.code == .canceled ? .canceled : .failed)
+    }
+
+    func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
+        MainActor.assumeIsolated {
+            let scenes = UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }
+            return scenes.flatMap(\.windows).first(where: \.isKeyWindow) ?? scenes.first?.windows.first ?? ASPresentationAnchor()
+        }
+    }
+}
+
 /// The nonce Apple signs into the identity token; the server checks it.
 enum AppleSignInNonce {
     static func make(length: Int = 32) -> String {

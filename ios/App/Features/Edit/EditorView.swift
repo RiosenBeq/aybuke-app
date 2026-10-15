@@ -627,8 +627,13 @@ struct EditorView: View {
                 model.run(.magicEdit, app: app)
             }
         case .makeup?:
-            // A Magic Edit underneath, so it costs what one does.
-            MakeupPanel(recipe: $model.makeup, cost: app.credits.cost(of: .magicEdit)) {
+            // A Magic Edit underneath, so it costs what one does. "Describe
+            // your vibe" only while the server's writing help is on for her.
+            MakeupPanel(
+                recipe: $model.makeup,
+                cost: app.credits.cost(of: .magicEdit),
+                describeVibe: app.usesCloudWriter ? { [model] vibe in await app.suggestMakeup(for: vibe, current: model.makeup) } : nil
+            ) {
                 model.run(.makeup, app: app)
             }
         case .styles?:

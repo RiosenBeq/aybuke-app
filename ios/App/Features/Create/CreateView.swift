@@ -79,12 +79,13 @@ struct CreateView: View {
                         model.showScreenshotResults(ScreenshotFixtures.createResults)
                     }
                 }
-                // QA: `-GLWriterAction magic|inspire` runs a writer chip once.
+                // QA: `-GLWriterAction magic|inspire` runs a writer chip once
+                // (with `-GLAssistStub YES`, the server's writing help answers).
                 switch UserDefaults.standard.string(forKey: "GLWriterAction") {
                 case "magic":
                     model.prompt = "a cat in the snow"
-                    model.enhancePrompt(writer: app.writer)
-                case "inspire": model.inspire(writer: app.writer)
+                    model.enhancePrompt(app: app)
+                case "inspire": model.inspire(app: app)
                 default: break
                 }
             }
@@ -259,9 +260,15 @@ struct CreateView: View {
 
             if model.undoPrompt != nil || model.isPromptFromModel {
                 HStack(spacing: 8) {
-                    if model.isPromptFromModel {
+                    switch model.promptWriter {
+                    case .cloud?:
+                        Label("Written by Claude, an AI helper", systemImage: "sparkles")
+                            .labelStyle(WriterCaptionLabelStyle())
+                    case .device?:
                         Label("Written on your device by Apple Intelligence", systemImage: "sparkles")
                             .labelStyle(WriterCaptionLabelStyle())
+                    case nil:
+                        EmptyView()
                     }
                     Spacer(minLength: 0)
                     if model.undoPrompt != nil {
@@ -324,23 +331,24 @@ struct CreateView: View {
         }
     }
 
-    /// "Inspire me" and the prompt upgrade. With Apple's on-device model the
-    /// upgrade is "Make it magic"; without it, the offline enhancer.
+    /// "Inspire me" and the prompt upgrade. With a model to write it (the
+    /// server's writing help, or Apple's on-device model) the upgrade is
+    /// "Make it magic"; without one, the offline enhancer.
     @ViewBuilder
     private var writerChips: some View {
         SelectableChip(title: "Inspire me", symbolName: "sparkles", isSelected: false) {
-            model.inspire(writer: app.writer)
+            model.inspire(app: app)
         }
         .accessibilityHint("Fills in a new idea for your picture")
-        if app.writer.isAvailable {
+        if app.usesCloudWriter || app.writer.isAvailable {
             SelectableChip(title: "Make it magic", symbolName: "wand.and.stars", isSelected: false) {
-                model.enhancePrompt(writer: app.writer)
+                model.enhancePrompt(app: app)
             }
             .disabled(model.prompt.isEmpty)
             .accessibilityHint("Rewrites your idea with more detail. You can undo it.")
         } else {
             SelectableChip(title: "Enhance prompt", symbolName: "wand.and.stars", isSelected: false) {
-                model.enhancePrompt(writer: app.writer)
+                model.enhancePrompt(app: app)
             }
             .disabled(model.prompt.isEmpty)
         }
@@ -579,7 +587,7 @@ private struct RecentPromptChip: View {
     }
 }
 
-/// The small "written by Apple Intelligence" note under the prompt.
+/// The small "written by" note under the prompt (Claude or Apple Intelligence).
 private struct WriterCaptionLabelStyle: LabelStyle {
     func makeBody(configuration: Configuration) -> some View {
         HStack(spacing: 4) {

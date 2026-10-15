@@ -18,7 +18,10 @@ struct ShareComposerView: View {
     @State private var isWorking = false
     @State private var activityItems: ActivityItems?
     @State private var captionIdeas: [String] = []
-    @State private var ideasFromWriter = false
+    /// Who wrote the ideas on screen; nil for the hand-written ones.
+    @State private var ideasWriter: WrittenBy?
+    /// The writer working on new ones, while `isLoadingIdeas`.
+    @State private var loadingWriter: WrittenBy = .device
     @State private var isLoadingIdeas = false
     @State private var faces = ShareFaceHiding()
 
@@ -234,8 +237,9 @@ struct ShareComposerView: View {
     }
 
     /// Three short captions about the vibe, never about how anyone looks:
-    /// from Apple's on-device writer when it's available, otherwise
-    /// hand-written ones. Instagram can't prefill text, so a tap copies one.
+    /// from the server's writing help or Apple's on-device writer when one
+    /// answers, otherwise hand-written ones. Instagram can't prefill text, so
+    /// a tap copies one.
     private var captionIdeasCard: some View {
         VStack(alignment: .leading, spacing: 10) {
             HStack {
@@ -255,7 +259,7 @@ struct ShareComposerView: View {
                 .accessibilityLabel("New caption ideas")
             }
             if isLoadingIdeas {
-                Label("Writing new ideas on your device…", systemImage: "sparkles")
+                Label(loadingWriter == .cloud ? "Writing new ideas…" : "Writing new ideas on your device…", systemImage: "sparkles")
                     .font(.legibleCaption)
                     .foregroundStyle(Palette.textSecondary)
             }
@@ -280,15 +284,27 @@ struct ShareComposerView: View {
                 .buttonStyle(.pressable)
                 .accessibilityLabel(Text("Copy caption: \(idea)"))
             }
-            Text(ideasFromWriter
-                 ? (Platform.isMac ? "Written on your device. Click one to copy it with the hashtags." : "Written on your device. Tap one to copy it with the hashtags.")
-                 : (Platform.isMac ? "Click one to copy it with the hashtags." : "Tap one to copy it with the hashtags."))
+            ideasFootnote
                 .font(.legibleCaption)
                 .foregroundStyle(Palette.textTertiary)
         }
         .padding(16)
         .cardStyle()
         .animation(.snappy, value: captionIdeas)
+    }
+
+    /// Says who wrote the ideas, and how to copy one.
+    private var ideasFootnote: Text {
+        switch ideasWriter {
+        case .cloud?:
+            return Text(Platform.isMac ? "Written by Claude, an AI helper. Click one to copy it with the hashtags."
+                                       : "Written by Claude, an AI helper. Tap one to copy it with the hashtags.")
+        case .device?:
+            return Text(Platform.isMac ? "Written on your device. Click one to copy it with the hashtags."
+                                       : "Written on your device. Tap one to copy it with the hashtags.")
+        case nil:
+            return Text(Platform.isMac ? "Click one to copy it with the hashtags." : "Tap one to copy it with the hashtags.")
+        }
     }
 
     private var notes: some View {
@@ -355,27 +371,45 @@ struct ShareComposerView: View {
 
     // MARK: Caption ideas
 
+    /// The server's writing help first (with the design she picked), then
+    /// Apple's on-device writer; the hand-written ideas stay when neither answers.
     private func loadCaptionIdeas() async {
         guard !isLoadingIdeas else { return }
         let context = OnDeviceWriter.IdeaContext.caption(look: nil, madeWithAI: madeWithAI)
-        // Hand-written ones show at once (the model can take a few seconds),
+        // Hand-written ones show at once (a writer can take a few seconds),
         // different from the last set where possible.
         let pool = CuratedIdeas.for(context)
         let unseen = pool.filter { !captionIdeas.contains($0) }
         captionIdeas = Array((unseen.count >= 3 ? unseen : pool).shuffled().prefix(3))
-        ideasFromWriter = false
-        guard app.writer.isAvailable else { return }
+        ideasWriter = nil
+        let usesCloud = app.usesCloudWriter
+        guard usesCloud || app.writer.isAvailable else { return }
         isLoadingIdeas = true
         defer { isLoadingIdeas = false }
+        if usesCloud {
+            loadingWriter = .cloud
+            let fresh = await app.cloudCaptions(prompt: payload.shareablePrompt, madeWithAI: madeWithAI, format: format.rawValue)
+            if !fresh.isEmpty {
+                captionIdeas = fresh
+                ideasWriter = .cloud
+                return
+            }
+        }
+        guard app.writer.isAvailable else { return }
+        loadingWriter = .device
         let fresh = await app.writer.ideas(context)
         if !fresh.isEmpty {
             captionIdeas = fresh
-            ideasFromWriter = true
+            ideasWriter = .device
         }
     }
 
     private func copyCaptionIdea(_ idea: String) {
+        // The server's captions may end with a hashtag or two: each tag once.
         let tags = ShareCaption.hashtagLine(app.config.shareHashtags, aiHashtags: app.config.aiShareHashtags, madeWithAI: madeWithAI)
+            .split(separator: " ")
+            .filter { !idea.localizedCaseInsensitiveContains($0) }
+            .joined(separator: " ")
         UIPasteboard.general.string = tags.isEmpty ? idea : idea + "\n" + tags
         Haptics.success()
         app.showToast("Caption copied", style: .success)

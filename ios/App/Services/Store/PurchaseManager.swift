@@ -75,6 +75,12 @@ final class PurchaseManager {
     private(set) var entitlementJWS: String?
     /// The running free trial, if any (Settings › Membership, the reminder).
     private(set) var trial: TrialStatus?
+    /// She has bought Pro or a credit pack: on this Apple Account (StoreKit's
+    /// history, `refreshPurchaseHistory()`) or on this device (a pack's
+    /// transaction is finished once redeemed, so StoreKit forgets it; kept
+    /// here). Settings › Account offers Sign in with Apple in full only then.
+    /// Delete my data forgets it (`forgetPurchases()`).
+    private(set) var hasPurchased: Bool
 
     /// Grants credits for a verified consumable transaction (locally in demo
     /// mode, via the backend in production). Return `true` once granted; the
@@ -92,8 +98,16 @@ final class PurchaseManager {
     @ObservationIgnored private var hasCheckedEntitlements = false
     @ObservationIgnored private var isRequestInFlight = false
     @ObservationIgnored private var loadTimeout: Task<Void, Never>?
+    private let defaults: UserDefaults
+    nonisolated static let purchasedKey = "purchases.hasPurchased.v1"
 
-    init() {
+    init(defaults: UserDefaults = .standard) {
+        self.defaults = defaults
+        hasPurchased = defaults.bool(forKey: Self.purchasedKey)
+        #if DEBUG
+        if Self.debugPro { isPro = true }
+        if Self.debugPro || UserDefaults.standard.bool(forKey: "GLPurchased") { hasPurchased = true }
+        #endif
         updatesTask = Task { [weak self] in
             for await update in Transaction.updates {
                 await self?.handle(update, isUpdate: true)
@@ -195,14 +209,50 @@ final class PurchaseManager {
                 jws = entitlement.jwsRepresentation
             }
         }
+        #if DEBUG
+        if Self.debugPro { active = true }
+        #endif
         let changed = active != isPro
         isPro = active
         entitlementJWS = jws
-        if active { pendingProductIDs.subtract(StoreProducts.subscriptions) }
+        if active {
+            pendingProductIDs.subtract(StoreProducts.subscriptions)
+            notePurchase()
+        }
         hasCheckedEntitlements = true
         if changed { onProStatusChange?(active) }
         await refreshTrial()
     }
+
+    /// Once at launch: anything bought on this Apple Account that StoreKit
+    /// still lists (a subscription, even expired, or a pack not redeemed yet).
+    func refreshPurchaseHistory() async {
+        guard !hasPurchased else { return }
+        for await result in Transaction.all {
+            guard case .verified(let transaction) = result, StoreProducts.all.contains(transaction.productID),
+                  transaction.revocationDate == nil else { continue }
+            notePurchase()
+            return
+        }
+    }
+
+    /// "Delete my data": her account and its credits are gone, so she's
+    /// asked like someone who never bought (Pro still counts while it lasts).
+    func forgetPurchases() {
+        hasPurchased = false
+        defaults.removeObject(forKey: Self.purchasedKey)
+    }
+
+    private func notePurchase() {
+        guard !hasPurchased else { return }
+        hasPurchased = true
+        defaults.set(true, forKey: Self.purchasedKey)
+    }
+
+    #if DEBUG
+    /// `-GLPro YES`: Pro without a purchase, for screenshots and QA (DEBUG only).
+    static var debugPro: Bool { UserDefaults.standard.bool(forKey: "GLPro") }
+    #endif
 
     private func refreshTrial() async {
         var found: TrialStatus?
@@ -247,6 +297,7 @@ final class PurchaseManager {
             }
             let granted = await creditPackHandler?(credits, verification.jwsRepresentation) ?? false
             if granted {
+                notePurchase()
                 await transaction.finish()
                 if isUpdate, wasPending {
                     onLatePurchase?(LatePurchase(productID: transaction.productID, trialEndsAt: nil))

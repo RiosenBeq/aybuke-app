@@ -19,7 +19,10 @@ import FoundationModels
 ///
 /// Calls never throw: errors, guardrail refusals, unsupported languages and
 /// the 8-second timeout all come back as `nil` / `[]`, and every line passes
-/// `ContentPolicy` before it's returned.
+/// the same screen as the server's writing help (`Assist.screened`:
+/// `ContentPolicy`, length, no repeats) before it's returned. Where the
+/// server's writing help is on (`AppModel.usesCloudWriter`), it's asked
+/// first and this is the fallback.
 @MainActor
 @Observable
 final class OnDeviceWriter {
@@ -94,7 +97,7 @@ final class OnDeviceWriter {
             }
             request += "\nIdea: \(idea)"
             guard let output = await respond(request, generating: EnhancedPrompt.self) else { return nil }
-            return Self.screened([output.prompt], for: .textToImage).first
+            return Assist.screened([output.prompt], for: .textToImage, limit: 1).first
         }
         #endif
         return nil
@@ -107,7 +110,7 @@ final class OnDeviceWriter {
         #if canImport(FoundationModels)
         if #available(iOS 26.0, *) {
             guard let output = await respond(Self.request(for: context), generating: Ideas.self) else { return [] }
-            return Array(Self.screened(output.items, for: context.operation).prefix(count))
+            return Assist.screened(output.items, for: context.operation, limit: count)
         }
         #endif
         return []
@@ -136,13 +139,6 @@ final class OnDeviceWriter {
             text += " Talk about the mood, the moment or the colours, never about how anyone looks."
             return text
         }
-    }
-
-    /// Keeps lines that are non-empty, short enough and allowed by the policy.
-    private static func screened(_ lines: [String], for operation: AIOperation) -> [String] {
-        lines
-            .map { PromptBuilder.sanitize($0.trimmingCharacters(in: CharacterSet(charactersIn: "\"“”«»"))) }
-            .filter { !$0.isEmpty && $0.count <= 400 && ContentPolicy.evaluate($0, operation: operation).isAllowed }
     }
 
     /// The writer's rules, in English; it answers in the app's language.

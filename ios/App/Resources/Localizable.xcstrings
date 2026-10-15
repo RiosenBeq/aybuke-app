@@ -693,6 +693,148 @@
         }
       }
     },
+    "Bought Pro or credits on another device?" : {
+      "comment" : "Settings › Account for people who haven't bought anything on this device; a \"Sign in\" button follows it on the same row",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pro oder Credits auf einem anderen Gerät gekauft?"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿Compraste Pro o créditos en otro dispositivo?"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tu as acheté Pro ou des crédits sur un autre appareil ?"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beli Pro atau kredit di perangkat lain?"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hai acquistato Pro o crediti su un altro dispositivo?"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "別の端末でProやクレジットを購入しましたか？"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "다른 기기에서 Pro나 크레딧을 구매했나요?"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comprou o Pro ou créditos em outro aparelho?"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pro или кредиты куплены на другом устройстве?"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pro'yu ya da kredileri başka bir cihazda mı aldın?"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在其他设备上买过 Pro 或点数？"
+          }
+        }
+      }
+    },
+    "Checks photos and results for safety, and helps write prompts and captions (text only)" : {
+      "comment" : "A company's role on the AI consent sheet and in Settings: Anthropic (Claude) checks photos and results for safety and writes ideas, prompts and captions from text",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prüft Fotos und Ergebnisse auf Sicherheit und hilft beim Schreiben von Prompts und Bildunterschriften (nur Text)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Revisa la seguridad de las fotos y los resultados, y ayuda a escribir prompts y pies de foto (solo texto)"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vérifie la sécurité des photos et des résultats, et aide à écrire des prompts et des légendes (texte uniquement)"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Memeriksa keamanan foto dan hasil, serta membantu menulis prompt dan keterangan (teks saja)"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Controlla la sicurezza di foto e risultati e aiuta a scrivere prompt e didascalie (solo testo)"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "写真と結果の安全性をチェックし、プロンプトやキャプションの作成をサポート（テキストのみ）"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "사진과 결과의 안전성 확인, 프롬프트와 캡션 작성 지원(텍스트만)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verifica a segurança das fotos e dos resultados e ajuda a escrever prompts e legendas (só texto)"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Проверяет фото и результаты на безопасность и помогает писать запросы и подписи (только текст)"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fotoğrafları ve sonuçları güvenlik açısından denetler, komut ve açıklama yazmana yardım eder (yalnızca metin)"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "检查照片和结果的安全性，并协助撰写提示词和配文（仅文字）"
+          }
+        }
+      }
+    },
     "Cloud AI is taking a little break for now. Your free tools still work in the meantime." : {
       "comment" : "Error message",
       "localizations" : {
@@ -1047,6 +1189,219 @@
         }
       }
     },
+    "Couldn't find a look for that just now. Pick one below or try other words." : {
+      "comment" : "Makeup Studio: the vibe she described brought back no look (or the writing help couldn't answer)",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dafür haben wir gerade keinen Look gefunden. Wähl unten einen aus oder versuch es mit anderen Worten."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ahora mismo no encontramos un look para eso. Elige uno abajo o prueba con otras palabras."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impossible de trouver un look pour ça pour l’instant. Choisis-en un ci-dessous ou essaie d’autres mots."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Belum bisa menemukan gaya untuk itu. Pilih salah satu di bawah atau coba kata lain."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Al momento non troviamo un look per questo. Scegline uno qui sotto o prova con altre parole."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "今はぴったりのルックが見つかりませんでした。下から選ぶか、別の言葉で試してみてください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "지금은 어울리는 룩을 찾지 못했어요. 아래에서 고르거나 다른 말로 다시 적어 보세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não encontramos um look para isso agora. Escolha um abaixo ou tente outras palavras."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сейчас не получилось подобрать образ. Выбери один ниже или попробуй другие слова."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Şu an buna uygun bir stil bulamadık. Aşağıdan birini seç ya da başka kelimeler dene."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "暂时没找到合适的妆容。从下方选一个，或换个说法试试。"
+          }
+        }
+      }
+    },
+    "Describe your vibe, like “soft winter party glam”" : {
+      "comment" : "Placeholder of Makeup Studio's text field: she describes the makeup vibe she wants and AI picks the looks and colors. Translate the example too.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beschreib deinen Vibe, z. B. „sanfter Winterparty-Glam“"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Describe tu vibe, como «glam suave de fiesta de invierno»"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Décris ta vibe, par ex. « glam doux de soirée d’hiver »"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jelaskan vibe-mu, misalnya “glam lembut pesta musim dingin”"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Descrivi il tuo mood, tipo “glam delicato da festa invernale”"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "どんな雰囲気？ 例：「冬のパーティーのやわらかグラム」"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "원하는 분위기를 적어 보세요. 예: “은은한 겨울 파티 글램”"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Descreva sua vibe, tipo “glam suave de festa de inverno”"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Опиши свой вайб, например «нежный глэм для зимней вечеринки»"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vibe'ını anlat, örneğin “yumuşak kış partisi ışıltısı”"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "描述你想要的氛围，比如“柔和的冬日派对闪耀妆”"
+          }
+        }
+      }
+    },
+    "Find a look for my vibe" : {
+      "comment" : "Makeup Studio: the sparkle button next to the vibe field (accessibility label and tooltip)",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Einen Look für meinen Vibe finden"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buscar un look para mi vibe"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trouver un look pour ma vibe"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cari gaya untuk vibe-ku"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trova un look per il mio mood"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "この雰囲気に合うルックを探す"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "내 분위기에 맞는 룩 찾기"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Encontrar um look para minha vibe"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Подобрать образ под мой вайб"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vibe'ıma uygun bir stil bul"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "为我的氛围找一个妆容"
+          }
+        }
+      }
+    },
     "Free AI credits are taking a short break. Your free tools still work." : {
       "comment" : "Note on the paywall and the credits sheet while the server pauses AI on free daily credits",
       "localizations" : {
@@ -1185,6 +1540,148 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "如果不像你，还能免费重试（每天最多 %lld 次）"
+          }
+        }
+      }
+    },
+    "Signs in with Apple, so credits you bought come back" : {
+      "comment" : "VoiceOver hint of Settings' \"Bought Pro or credits on another device? Sign in\" row",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Meldet dich mit Apple an, damit gekaufte Credits zurückkommen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inicia sesión con Apple para recuperar los créditos que compraste"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Te connecte avec Apple pour récupérer les crédits que tu as achetés"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Masuk dengan Apple agar kredit yang kamu beli kembali"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Accede con Apple per riavere i crediti che hai acquistato"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Appleでサインインして、購入したクレジットを取り戻します"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple로 로그인해서 구매한 크레딧을 다시 가져와요"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Entra com a Apple para recuperar os créditos que você comprou"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вход через Apple, чтобы вернуть купленные кредиты"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Satın aldığın kredileri geri getirmek için Apple ile giriş yapar"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "通过 Apple 登录，找回你购买的点数"
+          }
+        }
+      }
+    },
+    "Suggested by Claude, an AI helper. Change anything, then try it." : {
+      "comment" : "Makeup Studio: under the looks and colors that the server's writing help (Claude) picked from her words. Keep the name Claude.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vorgeschlagen von Claude, einem KI-Helfer. Ändere, was du magst, dann probier es aus."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sugerido por Claude, un asistente de IA. Cambia lo que quieras y luego pruébalo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suggéré par Claude, un assistant IA. Change ce que tu veux, puis essaie."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Disarankan oleh Claude, asisten AI. Ubah apa saja, lalu coba."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suggerito da Claude, un assistente IA. Cambia quello che vuoi, poi provalo."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIアシスタントのClaudeからの提案です。好きなように変えてから試してみてください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI 도우미 Claude가 추천했어요. 원하는 대로 바꾼 다음 사용해 보세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sugerido pelo Claude, um assistente de IA. Mude o que quiser e depois experimente."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Предложено Claude — ИИ-помощником. Измени что хочешь, а потом попробуй."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bir yapay zekâ yardımcısı olan Claude önerdi. İstediğini değiştir, sonra dene."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "由 AI 助手 Claude 推荐。随意调整，然后试一试。"
           }
         }
       }
@@ -1395,6 +1892,77 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "无法读取这张照片，换一张试试吧。"
+          }
+        }
+      }
+    },
+    "To create and edit images with AI and to help you write prompts and captions, we send the photo and text you choose to our servers and to the companies listed below, who process them for us." : {
+      "comment" : "Lead sentence of the AI consent sheet, above the list of companies",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Um Bilder mit KI zu erstellen und zu bearbeiten und dir beim Schreiben von Prompts und Bildunterschriften zu helfen, senden wir das Foto und den Text, die du auswählst, an unsere Server und an die unten aufgeführten Unternehmen, die sie für uns verarbeiten."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Para crear y editar imágenes con IA y ayudarte a escribir prompts y pies de foto, enviamos la foto y el texto que elijas a nuestros servidores y a las empresas que aparecen abajo, que los procesan en nuestro nombre."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pour créer et retoucher des images avec l’IA et t’aider à écrire des prompts et des légendes, nous envoyons la photo et le texte que tu choisis à nos serveurs et aux entreprises indiquées ci-dessous, qui les traitent pour notre compte."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Untuk membuat dan mengedit gambar dengan AI serta membantumu menulis prompt dan keterangan, kami mengirim foto dan teks yang kamu pilih ke server kami dan ke perusahaan yang tercantum di bawah, yang memprosesnya untuk kami."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Per creare e modificare immagini con l'IA e aiutarti a scrivere prompt e didascalie, la foto e il testo che scegli vengono inviati ai nostri server e alle aziende elencate qui sotto, che li elaborano per nostro conto."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIで画像を作成・編集し、プロンプトやキャプションの作成をサポートするために、あなたが選んだ写真とテキストを当社のサーバー、および当社に代わって処理を行う下記の企業に送信します。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI로 이미지를 만들고 편집하며 프롬프트와 캡션 작성을 도울 수 있도록, 선택한 사진과 텍스트를 저희 서버와 아래에 나온 업체들에 보내요. 이 업체들은 저희를 대신해 이를 처리해요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Para criar e editar imagens com IA e ajudar você a escrever prompts e legendas, enviamos a foto e o texto que você escolher para nossos servidores e para as empresas listadas abaixo, que os processam em nosso nome."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Чтобы создавать и редактировать изображения с помощью ИИ и помогать тебе писать запросы и подписи, мы отправляем выбранные тобой фото и текст на наши серверы и компаниям из списка ниже, которые обрабатывают их по нашему поручению."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yapay zekâ ile görsel oluşturmak ve düzenlemek, komut ve açıklama yazmana yardım etmek için seçtiğin fotoğrafı ve metni sunucularımıza ve aşağıda listelenen şirketlere göndeririz; bu şirketler onları bizim adımıza işler."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "为了用 AI 创建和编辑图片，并帮你撰写提示词和配文，我们会将你选择的照片和文字发送到我们的服务器以及下方列出的公司，由它们代表我们进行处理。"
           }
         }
       }
@@ -1651,6 +2219,290 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "无法通过 App Store 确认你的下载，所以暂时无法使用免费点数。请确认已登录 App Store，然后再试一次。"
+          }
+        }
+      }
+    },
+    "Writing new ideas…" : {
+      "comment" : "Caption ideas in the share composer while the server's writing help writes new ones",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Neue Ideen werden geschrieben…"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escribiendo nuevas ideas…"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Écriture de nouvelles idées…"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Menulis ide baru…"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scrivo nuove idee…"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "新しいアイデアを作成中…"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "새 아이디어를 쓰는 중…"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escrevendo novas ideias…"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Придумываем новые идеи…"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yeni fikirler yazılıyor…"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在生成新灵感…"
+          }
+        }
+      }
+    },
+    "Written by Claude, an AI helper" : {
+      "comment" : "Small note under Create's prompt when the idea or upgraded prompt came from the server's writing help (Claude, Anthropic's AI). Keep the name Claude.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geschrieben von Claude, einem KI-Helfer"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escrito por Claude, un asistente de IA"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Écrit par Claude, un assistant IA"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ditulis oleh Claude, asisten AI"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scritto da Claude, un assistente IA"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIアシスタントのClaudeが作成"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI 도우미 Claude가 작성함"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escrito pelo Claude, um assistente de IA"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Написано Claude — ИИ-помощником"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bir yapay zekâ yardımcısı olan Claude yazdı"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "由 AI 助手 Claude 撰写"
+          }
+        }
+      }
+    },
+    "Written by Claude, an AI helper. Click one to copy it with the hashtags." : {
+      "comment" : "Mac: under the share composer's caption ideas when the server's writing help (Claude) wrote them. Keep the name Claude.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geschrieben von Claude, einem KI-Helfer. Klick auf eine, um sie mit den Hashtags zu kopieren."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escrito por Claude, un asistente de IA. Haz clic en uno para copiarlo con los hashtags."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Écrites par Claude, un assistant IA. Clique sur l’une d’elles pour la copier avec les hashtags."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ditulis oleh Claude, asisten AI. Klik salah satu untuk menyalinnya beserta hashtag."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scritte da Claude, un assistente IA. Fai clic su una per copiarla con gli hashtag."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIアシスタントのClaudeが作成しました。クリックするとハッシュタグごとコピーできます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI 도우미 Claude가 작성했어요. 클릭하면 해시태그와 함께 복사돼요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escritas pelo Claude, um assistente de IA. Clique em uma para copiar com as hashtags."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Написано Claude — ИИ-помощником. Нажми на подпись, чтобы скопировать её с хештегами."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bir yapay zekâ yardımcısı olan Claude yazdı. Hashtag'lerle birlikte kopyalamak için birine tıkla."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "由 AI 助手 Claude 撰写。点击即可连同话题标签一起复制。"
+          }
+        }
+      }
+    },
+    "Written by Claude, an AI helper. Tap one to copy it with the hashtags." : {
+      "comment" : "Under the share composer's caption ideas when the server's writing help (Claude) wrote them. Keep the name Claude.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geschrieben von Claude, einem KI-Helfer. Tipp auf eine, um sie mit den Hashtags zu kopieren."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escrito por Claude, un asistente de IA. Toca uno para copiarlo con los hashtags."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Écrites par Claude, un assistant IA. Touche-en une pour la copier avec les hashtags."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ditulis oleh Claude, asisten AI. Ketuk salah satu untuk menyalinnya beserta hashtag."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scritte da Claude, un assistente IA. Toccane una per copiarla con gli hashtag."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIアシスタントのClaudeが作成しました。タップするとハッシュタグごとコピーできます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI 도우미 Claude가 작성했어요. 탭하면 해시태그와 함께 복사돼요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escritas pelo Claude, um assistente de IA. Toque em uma para copiar com as hashtags."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Написано Claude — ИИ-помощником. Нажми на подпись, чтобы скопировать её с хештегами."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bir yapay zekâ yardımcısı olan Claude yazdı. Hashtag'lerle birlikte kopyalamak için birine dokun."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "由 AI 助手 Claude 撰写。轻点即可连同话题标签一起复制。"
           }
         }
       }
@@ -99755,6 +100607,7 @@
       }
     },
     "To create and edit images with AI, we send the photo and text you choose to our servers and to the companies listed below, who process them for us." : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {

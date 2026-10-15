@@ -47,7 +47,7 @@ final class ConsentTests: XCTestCase {
         }.joined()
         let companies = [
             "XAI_SAFETY_MODEL": Processor(name: "xAI (Grok Imagine)", role: "images"),
-            "ANTHROPIC_API_KEY": Processor(name: "Anthropic (Claude)", role: "safety"),
+            "ANTHROPIC_API_KEY": Processor(name: "Anthropic (Claude)", role: "safetyAndWriting"),
         ]
         for (secret, processor) in companies where safety.contains(secret) {
             XCTAssertTrue(config.aiProcessors.contains(processor), "the backend reads \(secret): list \(processor.name)")
@@ -57,5 +57,21 @@ final class ConsentTests: XCTestCase {
         XCTAssertGreaterThanOrEqual(config.consentVersion, 2)
         XCTAssertFalse(before.isValid(currentVersion: config.consentVersion,
                                       currentProcessors: config.aiProcessors.map(\.name)))
+    }
+
+    /// Writing help (backend `functions/assist`) sends the words she writes
+    /// to Anthropic too: Anthropic's role says so, and whoever said yes to the
+    /// safety check alone (consent version 2) is asked again, although the
+    /// names didn't change.
+    func testTheConsentSheetNamesTheWritingHelp() throws {
+        struct Processor: Decodable, Equatable { let name, role: String }
+        struct Config: Decodable { let consentVersion: Int; let aiProcessors: [Processor] }
+        let config = try JSONDecoder().decode(
+            Config.self, from: Data(contentsOf: RepositoryFile.url("ios/App/Resources/AppConfig.json")))
+        XCTAssertTrue(config.aiProcessors.contains(Processor(name: "Anthropic (Claude)", role: "safetyAndWriting")))
+        XCTAssertGreaterThanOrEqual(config.consentVersion, 3)
+        let safetyOnly = AIConsentRecord(version: 2, acceptedAt: Date(), processors: config.aiProcessors.map(\.name))
+        XCTAssertFalse(safetyOnly.isValid(currentVersion: config.consentVersion,
+                                          currentProcessors: config.aiProcessors.map(\.name)))
     }
 }

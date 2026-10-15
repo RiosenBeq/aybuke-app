@@ -7,7 +7,18 @@ import AppCore
 actor AuthSessionManager {
     private let config: BackendConfiguration
     private let session: URLSession
-    private var current: AuthSession?
+    private var current: AuthSession? {
+        didSet {
+            if (oldValue == nil) != (current == nil) { sessionContinuation.yield(current != nil) }
+        }
+    }
+    /// Whether a session exists, each time that changes: her first consented
+    /// cloud job or purchase makes one, signing out or deleting her data ends
+    /// it. Writing help waits for one and never makes it (`AppModel.hasSession`).
+    nonisolated let sessionChanges: AsyncStream<Bool>
+    private let sessionContinuation: AsyncStream<Bool>.Continuation
+    /// A session was in the Keychain at launch.
+    nonisolated let hadSessionAtLaunch: Bool
     /// The anonymous session from before Sign in with Apple, kept until its
     /// credits have been merged into the account (so a failed merge can retry).
     private var pendingMerge: AuthSession?
@@ -24,7 +35,10 @@ actor AuthSessionManager {
     init(config: BackendConfiguration, session: URLSession = .shared) {
         self.config = config
         self.session = session
-        self.current = Keychain.load(AuthSession.self, key: Self.keychainKey)
+        let stored = Keychain.load(AuthSession.self, key: Self.keychainKey)
+        self.current = stored
+        self.hadSessionAtLaunch = stored != nil
+        (sessionChanges, sessionContinuation) = AsyncStream.makeStream(of: Bool.self, bufferingPolicy: .bufferingNewest(1))
         self.pendingMerge = Keychain.load(AuthSession.self, key: Self.pendingMergeKey)
         self.pendingAppleCode = Keychain.load(String.self, key: Self.pendingAppleCodeKey)
     }

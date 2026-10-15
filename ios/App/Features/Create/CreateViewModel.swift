@@ -28,60 +28,89 @@ final class CreateViewModel {
     private(set) var isWriting = false
     /// The prompt before the last upgrade, offered as "Undo" for a few seconds.
     private(set) var undoPrompt: String?
-    /// Text Apple's on-device model wrote, so the field can say so.
+    /// Text a model wrote, and which one, so the field can say so.
     private(set) var modelWrittenPrompt: String?
+    private(set) var modelWriter: WrittenBy?
     /// Unused model ideas from the last request, served before asking again.
     @ObservationIgnored private var queuedIdeas: [String] = []
+    @ObservationIgnored private var queuedWriter: WrittenBy = .device
     @ObservationIgnored private var lastIdea: String?
     @ObservationIgnored private var undoTask: Task<Void, Never>?
 
     var isPromptFromModel: Bool { modelWrittenPrompt != nil && modelWrittenPrompt == prompt }
 
-    /// "Inspire me": model ideas when the on-device writer is available,
-    /// otherwise hand-written seasonal ones; never the same idea twice in a row.
-    func inspire(writer: OnDeviceWriter) {
+    /// The writer of the text in the field, while it's unchanged.
+    var promptWriter: WrittenBy? { isPromptFromModel ? modelWriter : nil }
+
+    /// "Inspire me": the server's writing help when it's on for her (see
+    /// `AppModel.usesCloudWriter`), else Apple's on-device model when
+    /// available, else hand-written seasonal ideas; never the same idea
+    /// twice in a row.
+    func inspire(app: AppModel) {
         guard !isWriting else { return }
         Haptics.selection()
         if let next = queuedIdeas.popLast() {
-            show(idea: next, fromModel: true)
+            show(idea: next, writtenBy: queuedWriter)
             return
         }
         let context = OnDeviceWriter.IdeaContext.create(season: .current)
-        guard writer.isAvailable else {
+        let writer = app.writer
+        let usesCloud = app.usesCloudWriter
+        guard usesCloud || writer.isAvailable else {
             showCurated(context)
             return
         }
         isWriting = true
+        let picked = style
         Task {
             defer { isWriting = false }
-            let ideas = await writer.ideas(context).filter { $0 != lastIdea }
-            if let first = ideas.first {
-                queuedIdeas = Array(ideas.dropFirst())
-                show(idea: first, fromModel: true)
-            } else {
-                showCurated(context)
+            if usesCloud {
+                let ideas = await app.cloudIdeas(style: picked).filter { $0 != lastIdea }
+                if let first = ideas.first {
+                    queue(Array(ideas.dropFirst()), writtenBy: .cloud)
+                    show(idea: first, writtenBy: .cloud)
+                    return
+                }
             }
+            if writer.isAvailable {
+                let ideas = await writer.ideas(context).filter { $0 != lastIdea }
+                if let first = ideas.first {
+                    queue(Array(ideas.dropFirst()), writtenBy: .device)
+                    show(idea: first, writtenBy: .device)
+                    return
+                }
+            }
+            showCurated(context)
         }
     }
 
-    /// "Make it magic" with the on-device model, or the offline enhancer.
-    func enhancePrompt(writer: OnDeviceWriter) {
+    /// "Make it magic": the server's writing help, else Apple's on-device
+    /// model, else the offline enhancer.
+    func enhancePrompt(app: AppModel) {
         guard !isWriting, !PromptBuilder.sanitize(prompt).isEmpty else { return }
         let original = prompt
-        guard writer.isAvailable else {
-            apply(PromptBuilder.enhance(original), replacing: original, fromModel: false)
+        let writer = app.writer
+        let usesCloud = app.usesCloudWriter
+        guard usesCloud || writer.isAvailable else {
+            apply(PromptBuilder.enhance(original), replacing: original, writtenBy: nil)
             return
         }
         isWriting = true
+        let picked = style
         Task {
             defer { isWriting = false }
-            let upgraded = await writer.enhance(prompt: original, style: style)
+            var upgraded: (text: String, writer: WrittenBy)?
+            if usesCloud, let text = await app.cloudPromptUpgrade(original, style: picked) {
+                upgraded = (text, .cloud)
+            } else if writer.isAvailable, let text = await writer.enhance(prompt: original, style: picked) {
+                upgraded = (text, .device)
+            }
             // She may have kept typing while the model worked.
             guard prompt == original else { return }
             if let upgraded {
-                apply(upgraded, replacing: original, fromModel: true)
+                apply(upgraded.text, replacing: original, writtenBy: upgraded.writer)
             } else {
-                apply(PromptBuilder.enhance(original), replacing: original, fromModel: false)
+                apply(PromptBuilder.enhance(original), replacing: original, writtenBy: nil)
             }
         }
     }
@@ -91,6 +120,7 @@ final class CreateViewModel {
         Haptics.selection()
         prompt = recent
         modelWrittenPrompt = nil
+        modelWriter = nil
         undoPrompt = nil
     }
 
@@ -105,21 +135,29 @@ final class CreateViewModel {
     private func showCurated(_ context: OnDeviceWriter.IdeaContext) {
         var generator = SystemRandomNumberGenerator()
         if let idea = PromptBuilder.pickIdea(from: CuratedIdeas.for(context), avoiding: lastIdea, using: &generator) {
-            show(idea: idea, fromModel: false)
+            show(idea: idea, writtenBy: nil)
         }
     }
 
-    private func show(idea: String, fromModel: Bool) {
+    private func queue(_ ideas: [String], writtenBy writer: WrittenBy) {
+        queuedIdeas = ideas
+        queuedWriter = writer
+    }
+
+    /// `writtenBy`: the model that wrote it; nil for hand-written ideas.
+    private func show(idea: String, writtenBy writer: WrittenBy?) {
         lastIdea = idea
         prompt = idea
-        modelWrittenPrompt = fromModel ? idea : nil
+        modelWrittenPrompt = writer == nil ? nil : idea
+        modelWriter = writer
         undoPrompt = nil
     }
 
-    private func apply(_ upgraded: String, replacing original: String, fromModel: Bool) {
+    private func apply(_ upgraded: String, replacing original: String, writtenBy writer: WrittenBy?) {
         guard upgraded != original else { return }
         prompt = upgraded
-        modelWrittenPrompt = fromModel ? upgraded : nil
+        modelWrittenPrompt = writer == nil ? nil : upgraded
+        modelWriter = writer
         undoPrompt = original
         Haptics.success()
         undoTask?.cancel()

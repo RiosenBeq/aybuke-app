@@ -35,7 +35,8 @@ struct AIConsentView: View {
                 Text(styled: "Your photos, *your call*", size: 25)
                     .foregroundStyle(Palette.textPrimary)
 
-                Text("To create and edit images with AI, we send the photo and text you choose to our servers and to the companies listed below, who process them for us.")
+                // Writing help (ideas, prompts, captions, makeup picks) sends text too.
+                Text("To create and edit images with AI and to help you write prompts and captions, we send the photo and text you choose to our servers and to the companies listed below, who process them for us.")
                     .font(.body)
                     .foregroundStyle(Palette.textSecondary)
                     .fixedSize(horizontal: false, vertical: true)
@@ -44,7 +45,7 @@ struct AIConsentView: View {
                     ConsentPoint(symbol: "trash", text: "Deleted from our servers within \(retention)")
                     // Anthropic's API terms: deleted within 30 days, longer
                     // only for content its systems flag (privacy policy §14).
-                    if processors.contains(where: { $0.role == .safety }) {
+                    if processors.contains(where: { $0.role.checksSafety }) {
                         ConsentPoint(symbol: "checkmark.shield",
                                      text: "Deleted by our safety-check provider within 30 days, unless flagged for breaking its rules")
                     }

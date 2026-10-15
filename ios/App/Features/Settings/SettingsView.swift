@@ -15,6 +15,7 @@ struct SettingsView: View {
     @State private var showPacks = false
     @State private var showConsent = false
     @State private var showAgeUpdate = false
+    @State private var isSigningIn = false
     #if DEBUG
     @State private var showsFeelGoodScene = ScreenshotScene.current == .feelGood
     #endif
@@ -178,9 +179,43 @@ struct SettingsView: View {
         .listRowBackground(Palette.surface)
     }
 
+    /// The account card's place for people who haven't bought anything:
+    /// Apple's sign-in sheet right away, with no pitch.
+    private var signInRow: some View {
+        Button {
+            isSigningIn = true
+            Task {
+                await AppleSignInPrompt.signIn(app)
+                isSigningIn = false
+            }
+        } label: {
+            HStack(spacing: 12) {
+                Text("Bought Pro or credits on another device?")
+                    .foregroundStyle(Palette.textSecondary)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                if isSigningIn {
+                    ProgressView()
+                } else {
+                    Text("Sign in")
+                        .fontWeight(.semibold)
+                        .foregroundStyle(Palette.accent)
+                }
+            }
+            .font(.subheadline)
+        }
+        .disabled(isSigningIn)
+        .accessibilityHint("Signs in with Apple, so credits you bought come back")
+    }
+
+    /// Signed in: who with, and Sign out. Not yet: the Sign in with Apple card
+    /// for people who bought Pro or credits, one small row for everyone else
+    /// (free use needs no account; the row brings back what she bought on
+    /// another device).
     private var accountSection: some View {
         Section {
-            if app.isSignedIn {
+            if !app.isSignedIn && !app.hasPurchased {
+                signInRow
+            } else if app.isSignedIn {
                 Label {
                     VStack(alignment: .leading, spacing: 2) {
                         Text("Signed in with Apple")
@@ -206,7 +241,7 @@ struct SettingsView: View {
         } footer: {
             if !app.canUseAccounts {
                 Text("Accounts need the \(Brand.name) server, which isn't connected in this demo build.")
-            } else {
+            } else if app.isSignedIn || app.hasPurchased {
                 Text("Your photos stay on each device and are never uploaded to sync. We only learn your Apple ID email if you share it, and you can hide it.")
             }
         }

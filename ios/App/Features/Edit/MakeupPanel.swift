@@ -6,18 +6,28 @@ import AppCore
 /// Edit with the same gates, credits, Likeness Lock and free retry
 /// (`EditorViewModel.run(.makeup, …)`). Makeup is play: a look only adds
 /// color, shine and sparkle, and her face, skin and features stay hers.
+///
+/// "Describe your vibe" turns her words into these choices with the
+/// server's writing help (`AppModel.suggestMakeup`); she checks them on the
+/// chips before Try it. It's there only while that help is on for her
+/// (`describeVibe` is nil otherwise, and the panel is as before).
 struct MakeupPanel: View {
     @Binding var recipe: MakeupRecipe
     let cost: Int
+    var describeVibe: ((String) async -> MakeupVibeOutcome)?
     let onTry: () -> Void
 
     @State private var isCustomizing: Bool
     @State private var area: Area
+    /// Counts the looks set from her words, so the row scrolls to each.
+    @State private var suggestions = 0
     @Environment(\.editorPanelPlacement) private var placement
 
-    init(recipe: Binding<MakeupRecipe>, cost: Int, onTry: @escaping () -> Void) {
+    init(recipe: Binding<MakeupRecipe>, cost: Int, describeVibe: ((String) async -> MakeupVibeOutcome)? = nil,
+         onTry: @escaping () -> Void) {
         _recipe = recipe
         self.cost = cost
+        self.describeVibe = describeVibe
         self.onTry = onTry
         var customizing = false
         var startArea = Area.lips
@@ -57,6 +67,15 @@ struct MakeupPanel: View {
             case .hair: return "paintpalette"
             }
         }
+
+        /// The first row a suggested look sets, to open Customize on it.
+        static func first(changedIn recipe: MakeupRecipe) -> Area? {
+            if recipe.lips != .none { return .lips }
+            if recipe.eyes != .none { return .eyes }
+            if recipe.cheeks != .none { return .cheeks }
+            if !recipe.extras.isEmpty { return .extras }
+            return recipe.hair != .none ? .hair : nil
+        }
     }
 
     /// The look she picked, unless she has changed it since.
@@ -64,6 +83,18 @@ struct MakeupPanel: View {
 
     var body: some View {
         VStack(spacing: 12) {
+            if let describeVibe {
+                MakeupVibeField(describe: describeVibe) { suggested in
+                    withAnimation(.snappy) {
+                        recipe = suggested
+                        isCustomizing = true
+                        area = Area.first(changedIn: suggested) ?? area
+                    }
+                    suggestions += 1
+                }
+                .transition(.opacity)
+            }
+
             looksRow
 
             DisclosureGroup(isExpanded: $isCustomizing.animation(.snappy)) {
@@ -114,6 +145,10 @@ struct MakeupPanel: View {
                     .scrollIndicators(.hidden)
                     .onAppear {
                         if let look { proxy.scrollTo(look.id, anchor: .center) }
+                    }
+                    // A look picked from her words comes into view.
+                    .onChange(of: suggestions) { _, _ in
+                        if let look { withAnimation(.snappy) { proxy.scrollTo(look.id, anchor: .center) } }
                     }
                 }
             }
@@ -228,6 +263,189 @@ struct MakeupPanel: View {
         }
         .pickerStyle(.segmented)
         .labelsHidden()
+    }
+}
+
+/// "Describe your vibe": a field with a small sparkle button. Her words pass
+/// the content policy on the device first (`AppModel.suggestMakeup`), then
+/// the picks land on the chips below with the writer's note; nothing is
+/// tried, and no credit used, until she taps Try it.
+private struct MakeupVibeField: View {
+    let describe: (String) async -> MakeupVibeOutcome
+    let onSuggested: (MakeupRecipe) -> Void
+
+    @State private var text = ""
+    @State private var isWorking = false
+    @State private var status: Status?
+    @FocusState private var isFocused: Bool
+
+    private enum Status: Equatable {
+        /// Picks are on the chips; the writer's line about them, if it passed.
+        case suggested(note: String?)
+        /// Why nothing changed, in her language.
+        case message(String)
+    }
+
+    /// Long enough for a vibe, short of the server's limit.
+    private static let maxLength = 200
+
+    private var canSubmit: Bool {
+        !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty && !isWorking
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            field
+            if let status {
+                statusLine(status)
+                    .transition(.opacity)
+            }
+        }
+        .animation(.snappy, value: status)
+        #if DEBUG
+        // Screenshot QA: -GLMakeupVibe "<words>" types them and asks once.
+        .task {
+            guard ScreenshotScene.current != nil, text.isEmpty, status == nil,
+                  let vibe = UserDefaults.standard.string(forKey: "GLMakeupVibe") else { return }
+            text = vibe
+            try? await Task.sleep(for: .milliseconds(300))
+            submit()
+        }
+        #endif
+    }
+
+    private static let placeholder: LocalizedStringKey = "Describe your vibe, like “soft winter party glam”"
+
+    private var field: some View {
+        HStack(alignment: .center, spacing: 6) {
+            ZStack(alignment: .topLeading) {
+                // A field's own placeholder stays on one line and cuts the
+                // example short in longer languages; this one wraps.
+                if text.isEmpty {
+                    Text(Self.placeholder)
+                        .font(.subheadline)
+                        .foregroundStyle(Color(uiColor: .placeholderText))
+                        .lineLimit(2)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .allowsHitTesting(false)
+                        .accessibilityHidden(true)
+                }
+                textField
+            }
+            .padding(.leading, 14)
+            .padding(.vertical, 11)
+            sparkleButton
+                .padding(.trailing, 2)
+        }
+        .background(Palette.surface, in: .card)
+        .overlay(
+            RoundedRectangle.card
+                .strokeBorder(isFocused ? Palette.accent : Palette.strokeStrong, lineWidth: isFocused ? 1.5 : 1)
+        )
+    }
+
+    private var textField: some View {
+        TextField("", text: $text, axis: .vertical)
+            .lineLimit(1...2)
+            .font(.subheadline)
+            .foregroundStyle(Palette.textPrimary)
+            .focused($isFocused)
+            .submitLabel(.go)
+            .accessibilityLabel(Text(Self.placeholder))
+            // A multi-line field turns Go (Return) into a newline instead of
+            // submitting (see MagicEditPanel), so a trailing one sends.
+            .onChange(of: text) { _, newText in
+                var cleaned = newText
+                let pressedGo = cleaned.hasSuffix("\n")
+                if cleaned.contains("\n") {
+                    cleaned = cleaned.replacingOccurrences(of: "\n", with: " ").trimmingCharacters(in: .whitespaces)
+                }
+                if cleaned.count > Self.maxLength { cleaned = String(cleaned.prefix(Self.maxLength)) }
+                if cleaned != newText { text = cleaned }
+                if pressedGo { submit() }
+            }
+            .onSubmit(submit)
+    }
+
+    private var sparkleButton: some View {
+        Button(action: submit) {
+            ZStack {
+                if isWorking {
+                    ProgressView()
+                        .controlSize(.small)
+                        .tint(Palette.onAccent)
+                } else {
+                    Image(systemName: "sparkles")
+                        .font(.subheadline.weight(.bold))
+                }
+            }
+            .foregroundStyle(canSubmit || isWorking ? Palette.onAccent : Palette.textTertiary)
+            .frame(width: 34, height: 34)
+            .background(canSubmit || isWorking ? Palette.accent : Palette.strokeStrong, in: Circle())
+            .frame(width: 44, height: 44)
+            .contentShape(Circle())
+        }
+        .buttonStyle(.pressable)
+        .disabled(!canSubmit)
+        .accessibilityLabel("Find a look for my vibe")
+        .macHelp("Find a look for my vibe")
+    }
+
+    @ViewBuilder
+    private func statusLine(_ status: Status) -> some View {
+        switch status {
+        case .suggested(let note):
+            HStack(alignment: .top, spacing: 8) {
+                Image(systemName: "sparkles")
+                    .font(.legibleFootnote.weight(.semibold))
+                    .foregroundStyle(Palette.accent)
+                    .accessibilityHidden(true)
+                VStack(alignment: .leading, spacing: 2) {
+                    if let note {
+                        Text(verbatim: note)
+                            .font(.legibleFootnote.weight(.semibold))
+                            .foregroundStyle(Palette.textPrimary)
+                    }
+                    Text("Suggested by Claude, an AI helper. Change anything, then try it.")
+                        .font(.legibleCaption)
+                        .foregroundStyle(Palette.textSecondary)
+                }
+                .fixedSize(horizontal: false, vertical: true)
+            }
+            .accessibilityElement(children: .combine)
+        case .message(let message):
+            Label {
+                Text(verbatim: message)
+                    .fixedSize(horizontal: false, vertical: true)
+            } icon: {
+                Image(systemName: "exclamationmark.circle")
+            }
+            .font(.legibleFootnote)
+            .foregroundStyle(Palette.textSecondary)
+        }
+    }
+
+    private func submit() {
+        guard canSubmit else { return }
+        isFocused = false
+        isWorking = true
+        Haptics.tap()
+        let words = text
+        Task {
+            let outcome = await describe(words)
+            isWorking = false
+            switch outcome {
+            case .suggested(let suggested, let note):
+                onSuggested(suggested)
+                status = .suggested(note: note)
+                Haptics.success()
+            case .blocked(let reason):
+                status = .message(reason)
+                Haptics.error()
+            case .notFound:
+                status = .message(String(localized: "Couldn't find a look for that just now. Pick one below or try other words."))
+            }
+        }
     }
 }
 

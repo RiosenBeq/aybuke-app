@@ -192,12 +192,19 @@ final class AppModel {
     let tour = TourGuide()
     /// Prompt upgrades and ideas from Apple's on-device model (when available).
     let writer = OnDeviceWriter()
+    /// Writing help from the server (Claude), when a backend is configured;
+    /// asked first while `usesCloudWriter`, with `writer` as the fallback.
+    let cloudWriter: CloudWriter?
     /// Create's recent prompts and draft, kept only on this device.
     let prompts: PromptHistory
     /// Rewarded and interstitial ads for free members 13+ (see `AdCoordinator`).
     let ads: AdCoordinator
 
     // MARK: Account (optional Sign in with Apple)
+    /// A server session exists on this device, anonymous or signed in. Her
+    /// first consented cloud job or a purchase makes one; writing help waits
+    /// for it and never makes one (`usesCloudWriter`).
+    private(set) var hasSession = false
     /// Signed in with Apple: Pro and credits follow her to other iPhones.
     private(set) var isSignedIn = false
     /// The Apple ID email or its private relay address, if she shared it.
@@ -239,6 +246,7 @@ final class AppModel {
             onboarding, onboardingPaywallPending, consent, ageRecord, interests, successfulSaves, reviewPolicy, appearance, deletionRequested,
             "credits.wallet.v2", "notifications.preferences.v1", "notifications.readyPingDeclined", "tour.seen.v1",
             PromptHistory.recentKey, PromptHistory.draftKey, AdCoordinator.pacingKey, AdCoordinator.usedKey,
+            PurchaseManager.purchasedKey,
         ] + legacyConsent
         static let wipedKeychain = [appleUserID, "auth.session", "auth.pendingMerge", "auth.pendingAppleCode"]
     }
@@ -270,7 +278,7 @@ final class AppModel {
             self.reviewPolicy = fresh
         }
 
-        let purchases = PurchaseManager()
+        let purchases = PurchaseManager(defaults: defaults)
         self.purchases = purchases
         let credits = CreditsManager(policy: config.creditPolicy, isServerAuthoritative: config.backend != nil)
         self.credits = credits
@@ -279,9 +287,14 @@ final class AppModel {
 
         // Rewarded ads need the backend (and its session) to confirm the credit.
         var adRewards: AdRewardBackend?
+        var cloudWriter: CloudWriter?
+        var sessionChanges: AsyncStream<Bool>?
         switch config.aiMode {
         case .backend(let backend):
             let auth = AuthSessionManager(config: backend)
+            cloudWriter = CloudWriter(config: backend, auth: auth)
+            hasSession = auth.hadSessionAtLaunch
+            sessionChanges = auth.sessionChanges
             adRewards = AdRewardBackend(config: backend, auth: auth, appTransactions: appTransactions) { [weak purchases] in
                 purchases?.entitlementJWS
             }
@@ -306,8 +319,18 @@ final class AppModel {
             self.remote = nil
             self.ai = AIServiceRouter(cloud: DemoAIImageService(), onDevice: OnDeviceImageService())
         }
+        #if DEBUG
+        // -GLAssistStub YES|fail|blocked: canned writing help, no server (QA, screenshots).
+        if CloudWriter.isStubbed { cloudWriter = CloudWriter.stub() }
+        #endif
+        self.cloudWriter = cloudWriter
         self.ads = AdCoordinator(config: config.ads, backend: adRewards)
         ads.app = self
+        if let sessionChanges {
+            Task { [weak self] in
+                for await present in sessionChanges { self?.hasSession = present }
+            }
+        }
 
         purchases.creditPackHandler = { [weak self] credits, signedTransaction in
             await self?.grantCreditPack(credits, signedTransaction: signedTransaction) ?? false
@@ -378,6 +401,17 @@ final class AppModel {
 
     var isDemoMode: Bool { config.isDemoMode }
 
+    /// Screenshot scenes never read the server (a session left on the
+    /// simulator would put its balance and account in the picture): their
+    /// numbers and states are the fixtures'. Always false in Release.
+    static var staysOffServer: Bool {
+        #if DEBUG
+        return ScreenshotScene.current != nil
+        #else
+        return false
+        #endif
+    }
+
     /// Cloud AI can't be reached. Demo mode runs without a network, so it
     /// never counts as offline (nor do screenshot scenes).
     var isCloudOffline: Bool {
@@ -445,6 +479,8 @@ final class AppModel {
         await refreshAccount()
         watchAppleCredentialRevocation()
         await purchases.refreshEntitlements()
+        // Settings › Account: who bought something gets the sign-in card.
+        if allowsPurchases { await purchases.refreshPurchaseHistory() }
         credits.refresh(isPro: purchases.isPro, isTrial: purchases.trial != nil)
         await refreshServerBalanceIfDue()
         syncWidgets()
@@ -627,6 +663,7 @@ final class AppModel {
         prompts.reset()
         ads.reset()
         credits.resetAll()
+        purchases.forgetPurchases()
         cloudPause = nil
         await appTransactions.reset()
         credits.refresh(isPro: purchases.isPro, isTrial: purchases.trial != nil)
@@ -655,10 +692,17 @@ final class AppModel {
     /// someone already signed in still sees the account and can sign out).
     var offersSignIn: Bool { remote != nil && config.signInWithApple }
 
+    /// She bought Pro or credits (`PurchaseManager.hasPurchased`): Settings ›
+    /// Account offers her the Sign in with Apple card. Everyone else uses the
+    /// app without any sign-up and sees one small row for purchases made on
+    /// another device; the paywall's Sign in and the prompt after a purchase
+    /// stay for all.
+    var hasPurchased: Bool { purchases.isPro || purchases.hasPurchased }
+
     /// Reads the session, finishes a credit merge or code hand-over that failed
     /// earlier, and signs out if the Apple ID stopped using Aybuke.
     func refreshAccount() async {
-        guard let remote else { return }
+        guard let remote, !Self.staysOffServer else { return }
         let account = await remote.account()
         isSignedIn = account != nil
         accountEmail = account?.email
@@ -740,7 +784,7 @@ final class AppModel {
     /// account to read it (the local free allowance shows until one exists),
     /// and never under 13, when the app sends nothing to us.
     func refreshServerBalance() async {
-        guard let remote, allowsCloudAI || allowsPurchases else { return }
+        guard let remote, allowsCloudAI || allowsPurchases, !Self.staysOffServer else { return }
         balanceReadsInFlight += 1
         defer { balanceReadsInFlight -= 1 }
         guard await remote.existingUserID() != nil else { return }
@@ -773,7 +817,7 @@ final class AppModel {
             return
         }
         #endif
-        guard let remote, allowsCloudAI || allowsPurchases, !isCloudOffline else { return }
+        guard let remote, allowsCloudAI || allowsPurchases, !isCloudOffline, !Self.staysOffServer else { return }
         if !force, let lastAIPauseRead, abs(lastAIPauseRead.timeIntervalSinceNow) < 60 { return }
         lastAIPauseRead = Date()
         do {
