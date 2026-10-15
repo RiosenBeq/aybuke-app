@@ -38596,7 +38596,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ içinde sunucularımızdan silinir"
+            "value" : "Sunucularımızdan %@ içinde silinir"
           }
         },
         "zh-Hans" : {

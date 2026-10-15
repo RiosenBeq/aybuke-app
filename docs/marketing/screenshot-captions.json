@@ -20,8 +20,8 @@
     {"scene": "create", "title": "Hayal et, *yarat*", "subtitle": "20 stilden birini seç ya da fikir için İlham\u00a0ver’e dokun"},
     {"scene": "share-cover", "title": "Kapak *yıldızı* sensin", "subtitle": "Dergi kapakları, fotoğraf şeritleri ve hikâye kartları"},
     {"scene": "collage", "title": "Photo\u00a0dump *zamanı*", "subtitle": "2–9 fotoğraftan kolaj ya da kesintisiz kaydırmalı gönderi", "chip": "Ücretsiz"},
-    {"scene": "consent", "title": "Fotoğrafların, senin *kararın*", "subtitle": "Onayın olmadan buluta gitmez, AI eğitiminde kullanılmaz"},
-    {"scene": "paywall", "title": "Adil fiyat, *sürpriz* yok", "subtitle": "Haftalık plan yok, paketler süresiz, hata olursa kredi iade", "chip": "Pro'da reklam yok"}
+    {"scene": "consent", "title": "Fotoğrafların, senin *kararın*", "subtitle": "Onayın olmadan buluta gitmez, yapay zekâ eğitimine girmez"},
+    {"scene": "paywall", "title": "Adil fiyat, *sürpriz* yok", "subtitle": "Haftalık plan yok, süresiz paketler, hatada kredi iadesi", "chip": "Pro'da reklam yok"}
   ],
   "es": [
     {"scene": "result", "title": "Pídelo y mira cómo *brilla*", "subtitle": "Edición mágica: escribe un cambio y desliza para comparar", "before": "Antes", "after": "Después"},
@@ -33,7 +33,7 @@
     {"scene": "share-cover", "title": "Sé la *estrella* de portada", "subtitle": "Portadas, tiras de fotos y tarjetas para historias"},
     {"scene": "collage", "title": "Tu photo\u00a0dump, *listo*", "subtitle": "Collages de 2 a 9 fotos o un carrusel continuo", "chip": "Gratis"},
     {"scene": "consent", "title": "Tus fotos, tú *decides*", "subtitle": "Tú das permiso y tus fotos nunca entrenan a la IA"},
-    {"scene": "paywall", "title": "Un precio que juega *limpio*", "subtitle": "Sin plan semanal, packs sin caducidad, fallos reembolsados", "chip": "Sin anuncios con Pro"}
+    {"scene": "paywall", "title": "Un precio que juega *limpio*", "subtitle": "Sin plan semanal, packs sin caducidad, reembolso si falla", "chip": "Sin anuncios con Pro"}
   ],
   "pt-BR": [
     {"scene": "result", "title": "Peça e veja *brilhar*", "subtitle": "Edição Mágica: escreva a mudança e deslize para comparar", "before": "Antes", "after": "Depois"},
@@ -57,7 +57,7 @@
     {"scene": "share-cover", "title": "Fais la *couverture*", "subtitle": "Couvertures de magazine, photomatons et cartes story"},
     {"scene": "collage", "title": "Ton photo\u00a0dump, *réussi*", "subtitle": "Collages de 2 à 9 photos ou carrousel sans coupure", "chip": "Gratuit"},
     {"scene": "consent", "title": "Tes photos, ton *choix*", "subtitle": "Ton accord d’abord, et tes photos n’entraînent jamais l’IA"},
-    {"scene": "paywall", "title": "Des prix *honnêtes*", "subtitle": "Pas d’hebdo, packs sans expiration, échecs remboursés", "chip": "Sans pub avec Pro"}
+    {"scene": "paywall", "title": "Des prix *honnêtes*", "subtitle": "Pas de formule hebdo, packs sans fin, échecs remboursés", "chip": "Sans pub avec Pro"}
   ],
   "de": [
     {"scene": "result", "title": "Sag’s,\nsieh es *strahlen*", "subtitle": "Zauber-Edit: Wunsch eintippen, schieben und vergleichen", "before": "Vorher", "after": "Nachher"},
@@ -81,7 +81,7 @@
     {"scene": "share-cover", "title": "Sii la star in *copertina*", "subtitle": "Copertine di riviste, strisce di foto e card per le Storie"},
     {"scene": "collage", "title": "Il tuo photo\u00a0dump, *fatto*", "subtitle": "Collage da 2 a 9 foto o un carosello senza interruzioni", "chip": "Gratis"},
     {"scene": "consent", "title": "Le tue foto, *decidi* tu", "subtitle": "Prima il tuo consenso, e le tue foto non addestrano l’IA"},
-    {"scene": "paywall", "title": "Prezzi *onesti*, sempre", "subtitle": "Zero piani settimanali, pacchetti eterni, errori rimborsati", "chip": "Senza pubblicità con Pro"}
+    {"scene": "paywall", "title": "Prezzi *onesti*, sempre", "subtitle": "Zero piani settimanali, pacchetti senza scadenza, rimborsi", "chip": "Senza pubblicità con Pro"}
   ],
   "ru": [
     {"scene": "result", "title": "Скажи — и фото *засияет*", "subtitle": "Волшебная правка: напиши, что изменить, и сравни до и после", "before": "До", "after": "После"},
@@ -93,7 +93,7 @@
     {"scene": "share-cover", "title": "Стань звездой *обложки*", "subtitle": "Обложки журналов, фотополоски и карточки для Историй"},
     {"scene": "collage", "title": "Собери *фотодамп*", "subtitle": "Коллажи из 2–9 фото или бесшовная карусель", "chip": "Бесплатно"},
     {"scene": "consent", "title": "Твои фото — твоё *решение*", "subtitle": "Только с твоего согласия, и фото не обучают ИИ"},
-    {"scene": "paywall", "title": "Честные *цены*", "subtitle": "Без недельных планов, пакеты бессрочные, сбои возмещаем", "chip": "Без рекламы с Pro"}
+    {"scene": "paywall", "title": "Честные *цены*", "subtitle": "Без недельных планов, вечные пакеты, сбой — вернём кредит", "chip": "Без рекламы с Pro"}
   ],
   "ja": [
     {"scene": "result", "title": "伝えるだけで、*キラッと*変身", "subtitle": "マジック編集：変えたいことを書いて、スライドで比較", "before": "ビフォー", "after": "アフター"},
@@ -105,7 +105,7 @@
     {"scene": "share-cover", "title": "あなたが*表紙*の主役", "subtitle": "雑誌の表紙、フォトストリップ、ストーリーカードでシェア"},
     {"scene": "collage", "title": "*フォトダンプ*をつくろう", "subtitle": "2〜9枚の写真でコラージュ、つながるカルーセルも", "chip": "無料"},
     {"scene": "consent", "title": "あなたの写真、*決めるのはあなた*", "subtitle": "同意してから送信。写真がAIの学習に使われることはありません"},
-    {"scene": "paywall", "title": "*フェア*な料金", "subtitle": "週額プランなし、パックは無期限、失敗した編集は返却", "chip": "Proなら広告なし"}
+    {"scene": "paywall", "title": "*フェア*な料金", "subtitle": "週額プランなし、パックは無期限、失敗した編集はクレジット返却", "chip": "Proなら広告なし"}
   ],
   "ko": [
     {"scene": "result", "title": "말만 하면 *반짝* 변신", "subtitle": "매직 편집: 바꾸고 싶은 걸 쓰고, 밀어서 비교해 보세요", "before": "비포", "after": "애프터"},
@@ -122,7 +122,7 @@
   "zh-Hans": [
     {"scene": "result", "title": "说出改变，看它*焕发光彩*", "subtitle": "魔法编辑：写下想要的改变，滑动对比前后", "before": "之前", "after": "之后"},
     {"scene": "makeup", "title": "化妆就是*好玩*", "subtitle": "妆容工作室：14 种妆容或自由搭配，你还是你", "chip": "新"},
-    {"scene": "home", "title": "50+ 种风格，*一键*搞定", "subtitle": "盒装娃娃、Y2K CCD、宠物肖像等等"},
+    {"scene": "home", "title": "50+ 种造型，*一键*搞定", "subtitle": "盒装娃娃、Y2K CCD、宠物肖像等等"},
     {"scene": "effects", "title": "12 款复古特效，*免费*", "subtitle": "VHS\u00a0'86、Disposable\u00a0'98、Digicam\u00a0'04 等，不耗点数", "chip": "本机处理"},
     {"scene": "textStickers", "title": "贴纸、文字和*涂鸦*", "subtitle": "55 款可爱贴纸、6 种字体，还有涂鸦笔", "chip": "免费"},
     {"scene": "create", "title": "想到就能*创作*", "subtitle": "从 20 种风格中选一个，或点“给我灵感”"},
@@ -141,7 +141,7 @@
     {"scene": "share-cover", "title": "Jadi bintang *sampul*", "subtitle": "Sampul majalah, strip foto, dan kartu cerita untuk dibagikan"},
     {"scene": "collage", "title": "Bikin *photo\u00a0dump*", "subtitle": "Kolase dari 2–9 foto atau carousel yang menyambung", "chip": "Gratis"},
     {"scene": "consent", "title": "Fotomu, *keputusanmu*", "subtitle": "Hanya dengan izinmu, dan fotomu tak pernah melatih AI"},
-    {"scene": "paywall", "title": "Harga yang *jujur*", "subtitle": "Tanpa paket mingguan, paket abadi, kredit kembali jika gagal", "chip": "Tanpa iklan dengan Pro"}
+    {"scene": "paywall", "title": "Harga yang *jujur*", "subtitle": "Tak ada langganan mingguan, paket kredit tanpa kedaluwarsa", "chip": "Tanpa iklan dengan Pro"}
   ],
   "mac": {
     "en": [

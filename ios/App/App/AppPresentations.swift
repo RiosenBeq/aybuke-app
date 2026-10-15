@@ -64,7 +64,7 @@ struct AppPresentations: ViewModifier {
                 .presentationDetents([.large])
                 .presentationDragIndicator(.visible)
                 .presentationBackground(Palette.background)
-                .macSheet(.form)
+                .formSheetOnMacPageOnPad()
             }
             .sheet(item: Binding(
                 get: { isActive ? app.shareRequest : nil },

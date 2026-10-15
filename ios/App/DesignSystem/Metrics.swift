@@ -96,6 +96,20 @@ extension View {
         }
     }
 
+    /// A page sheet on iPad, where the form sheet is too short to show a
+    /// tall sheet's content without scrolling (the consent sheet's list of
+    /// processors), and the Mac's form sheet, where it already fits.
+    @ViewBuilder
+    func formSheetOnMacPageOnPad() -> some View {
+        if Platform.isMac {
+            macSheet(.form)
+        } else if #available(iOS 18.0, *) {
+            presentationSizing(.page)
+        } else {
+            self
+        }
+    }
+
     /// Small uppercase label above a headline ("MAGIC EDIT").
     func eyebrowStyle(_ color: Color = Palette.textSecondary) -> some View {
         font(.legibleCaption.weight(.heavy))
