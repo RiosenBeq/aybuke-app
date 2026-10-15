@@ -1,5 +1,332 @@
 {
-  "_comment" : "Generated from ios/Packages/AppCore (TemplateCatalog/StyleCatalog). Do not edit by hand: run scripts/export-catalog.sh.",
+  "_comment" : "Generated from ios/Packages/AppCore (TemplateCatalog/StyleCatalog/MakeupStudio). Do not edit by hand: run scripts/export-catalog.sh.",
+  "makeup" : {
+    "cheeks" : [
+      {
+        "id" : "none",
+        "name" : "As is"
+      },
+      {
+        "id" : "softBlush",
+        "name" : "Soft blush"
+      },
+      {
+        "id" : "drapedBlush",
+        "name" : "Draped blush"
+      },
+      {
+        "id" : "sunKissed",
+        "name" : "Sun-kissed"
+      },
+      {
+        "id" : "rosyFlush",
+        "name" : "Rosy flush"
+      }
+    ],
+    "extras" : [
+      {
+        "id" : "faceGems",
+        "name" : "Face gems"
+      },
+      {
+        "id" : "fauxFreckles",
+        "name" : "Faux freckles"
+      },
+      {
+        "id" : "starStickers",
+        "name" : "Star stickers"
+      },
+      {
+        "id" : "glitter",
+        "name" : "Glitter"
+      }
+    ],
+    "eyes" : [
+      {
+        "id" : "none",
+        "name" : "As is"
+      },
+      {
+        "id" : "softShimmer",
+        "name" : "Soft shimmer"
+      },
+      {
+        "id" : "smokyBrown",
+        "name" : "Smoky brown"
+      },
+      {
+        "id" : "pastelWash",
+        "name" : "Pastel wash"
+      },
+      {
+        "id" : "glitterLid",
+        "name" : "Glitter lid"
+      },
+      {
+        "id" : "sunset",
+        "name" : "Sunset"
+      },
+      {
+        "id" : "wingedLiner",
+        "name" : "Winged liner"
+      },
+      {
+        "id" : "colorLiner",
+        "name" : "Color liner"
+      }
+    ],
+    "hair" : [
+      {
+        "id" : "none",
+        "name" : "As is"
+      },
+      {
+        "id" : "pastelPink",
+        "name" : "Pastel pink"
+      },
+      {
+        "id" : "lilac",
+        "name" : "Lilac"
+      },
+      {
+        "id" : "copper",
+        "name" : "Copper"
+      },
+      {
+        "id" : "honeyBlonde",
+        "name" : "Honey blonde"
+      },
+      {
+        "id" : "blue",
+        "name" : "Blue"
+      }
+    ],
+    "intensity" : [
+      {
+        "id" : "soft",
+        "name" : "Soft"
+      },
+      {
+        "id" : "medium",
+        "name" : "Medium"
+      },
+      {
+        "id" : "bold",
+        "name" : "Vivid"
+      }
+    ],
+    "lips" : [
+      {
+        "id" : "none",
+        "name" : "As is"
+      },
+      {
+        "id" : "clearGloss",
+        "name" : "Clear gloss"
+      },
+      {
+        "id" : "softPink",
+        "name" : "Soft pink"
+      },
+      {
+        "id" : "rosy",
+        "name" : "Rosy"
+      },
+      {
+        "id" : "cherryRed",
+        "name" : "Cherry red"
+      },
+      {
+        "id" : "berry",
+        "name" : "Berry"
+      },
+      {
+        "id" : "coral",
+        "name" : "Coral"
+      },
+      {
+        "id" : "plum",
+        "name" : "Plum"
+      },
+      {
+        "id" : "mocha",
+        "name" : "Mocha"
+      }
+    ],
+    "looks" : [
+      {
+        "cheeks" : "softBlush",
+        "extras" : [
+
+        ],
+        "eyes" : "smokyBrown",
+        "hair" : "none",
+        "id" : "softGlam",
+        "intensity" : "soft",
+        "lips" : "softPink",
+        "name" : "Soft Glam"
+      },
+      {
+        "cheeks" : "rosyFlush",
+        "extras" : [
+          "fauxFreckles"
+        ],
+        "eyes" : "softShimmer",
+        "hair" : "none",
+        "id" : "strawberryGirl",
+        "intensity" : "medium",
+        "lips" : "cherryRed",
+        "name" : "Strawberry Girl"
+      },
+      {
+        "cheeks" : "softBlush",
+        "extras" : [
+
+        ],
+        "eyes" : "none",
+        "hair" : "none",
+        "id" : "cherryLips",
+        "intensity" : "bold",
+        "lips" : "cherryRed",
+        "name" : "Cherry Lips"
+      },
+      {
+        "cheeks" : "none",
+        "extras" : [
+
+        ],
+        "eyes" : "smokyBrown",
+        "hair" : "none",
+        "id" : "latte",
+        "intensity" : "medium",
+        "lips" : "mocha",
+        "name" : "Latte"
+      },
+      {
+        "cheeks" : "rosyFlush",
+        "extras" : [
+
+        ],
+        "eyes" : "softShimmer",
+        "hair" : "none",
+        "id" : "coldGirl",
+        "intensity" : "medium",
+        "lips" : "clearGloss",
+        "name" : "Cold Girl"
+      },
+      {
+        "cheeks" : "softBlush",
+        "extras" : [
+          "glitter"
+        ],
+        "eyes" : "glitterLid",
+        "hair" : "none",
+        "id" : "glitterPop",
+        "intensity" : "bold",
+        "lips" : "rosy",
+        "name" : "Glitter Pop"
+      },
+      {
+        "cheeks" : "none",
+        "extras" : [
+          "starStickers",
+          "glitter"
+        ],
+        "eyes" : "pastelWash",
+        "hair" : "none",
+        "id" : "y2kFrost",
+        "intensity" : "medium",
+        "lips" : "clearGloss",
+        "name" : "Y2K Frost"
+      },
+      {
+        "cheeks" : "none",
+        "extras" : [
+
+        ],
+        "eyes" : "wingedLiner",
+        "hair" : "none",
+        "id" : "graphicLiner",
+        "intensity" : "bold",
+        "lips" : "softPink",
+        "name" : "Graphic Liner"
+      },
+      {
+        "cheeks" : "softBlush",
+        "extras" : [
+
+        ],
+        "eyes" : "softShimmer",
+        "hair" : "none",
+        "id" : "peachyDoll",
+        "intensity" : "soft",
+        "lips" : "coral",
+        "name" : "Peachy Doll"
+      },
+      {
+        "cheeks" : "none",
+        "extras" : [
+          "faceGems",
+          "glitter"
+        ],
+        "eyes" : "colorLiner",
+        "hair" : "none",
+        "id" : "festivalGems",
+        "intensity" : "bold",
+        "lips" : "clearGloss",
+        "name" : "Festival Gems"
+      },
+      {
+        "cheeks" : "drapedBlush",
+        "extras" : [
+
+        ],
+        "eyes" : "softShimmer",
+        "hair" : "none",
+        "id" : "balletBlush",
+        "intensity" : "soft",
+        "lips" : "softPink",
+        "name" : "Ballet Blush"
+      },
+      {
+        "cheeks" : "none",
+        "extras" : [
+
+        ],
+        "eyes" : "smokyBrown",
+        "hair" : "none",
+        "id" : "gothGlam",
+        "intensity" : "bold",
+        "lips" : "plum",
+        "name" : "Goth Glam"
+      },
+      {
+        "cheeks" : "softBlush",
+        "extras" : [
+          "starStickers"
+        ],
+        "eyes" : "colorLiner",
+        "hair" : "none",
+        "id" : "rainbowLiner",
+        "intensity" : "medium",
+        "lips" : "clearGloss",
+        "name" : "Rainbow Liner"
+      },
+      {
+        "cheeks" : "sunKissed",
+        "extras" : [
+
+        ],
+        "eyes" : "sunset",
+        "hair" : "none",
+        "id" : "sunsetShimmer",
+        "intensity" : "medium",
+        "lips" : "clearGloss",
+        "name" : "Sunset Shimmer"
+      }
+    ],
+    "skinGuard" : "Keep the same expression and every freckle, pore and mark of the real skin, with no smoothing, contouring or reshaping."
+  },
   "proStyles" : [
     "fantasy",
     "oil",

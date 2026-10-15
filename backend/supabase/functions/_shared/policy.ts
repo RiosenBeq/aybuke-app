@@ -367,7 +367,8 @@ class MatchText {
   }
 }
 
-function blocked(category: Category): Verdict {
+/** The policy's refusal for a category, with its message (also for Claude's prompt check in ai-image). */
+export function blocked(category: Category): Verdict {
   return { allowed: false, reason: MESSAGES[category], category };
 }
 

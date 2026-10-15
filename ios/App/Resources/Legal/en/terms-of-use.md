@@ -30,7 +30,7 @@ Your purchases are also subject to Apple's terms, such as the Apple Media Servic
 
 ## 2. Key definitions
 
-- **Cloud AI features**: features that send content from your device to our servers and AI providers for processing. These are Magic Edit, Styles, AI Enhance, Erase and Create from text.
+- **Cloud AI features**: features that send content from your device to our servers and AI providers for processing. These are Magic Edit, Styles, AI Enhance, Erase and Create from text, and our cloud writing help (section 6).
 - **On-device features**: features that run entirely on your device and never send your photos to us. These are Remove background, Adjust and Effects (including the Digicam '04 look offered during onboarding).
 - **Inputs**: the photos, masks (the areas you brush over) and text prompts you submit to cloud AI features.
 - **Outputs** or **results**: the images the Service generates or edits for you.
@@ -94,6 +94,7 @@ Deleting your account does **not** cancel an Apple subscription. To stop future 
 - **AI Enhance**: sharpen, upscale and restore a photo.
 - **Erase**: brush over an object to remove it.
 - **Create from text**: generate images from a text description, with a choice of styles and aspect ratios. With Pro, you can create up to 4 images at once.
+- **Writing help**: ideas for a new picture ("Inspire me"), a richer prompt ("Make it magic"), caption ideas and makeup picks for a vibe you describe, written by AI from the words you type, never from your photos. It's free and doesn't use credits. Suggestions are only ideas, and on devices with Apple Intelligence some may be written on your device instead.
 
 Some templates and styles are available only with Pro. We don't offer templates based on celebrities or other real people, and we don't offer body-reshaping or skin-lightening features.
 
@@ -309,7 +310,7 @@ On the free tier, exports of images made or edited with our cloud AI carry a sma
 
 ## 13. Sharing your results
 
-You can share results with the share sheet (which on iPhone and iPad also offers Instagram Stories), as a "Before / After" collage, or as a 9:16 story card or another card design. On the free tier, collages and cards of images made or edited with our cloud AI include a small "Made with Aybuke" mark; Pro removes it. The app can also suggest captions, with hashtags, for you to copy; captions are written on your device and nothing is sent anywhere to write them.
+You can share results with the share sheet (which on iPhone and iPad also offers Instagram Stories), as a "Before / After" collage, or as a 9:16 story card or another card design. On the free tier, collages and cards of images made or edited with our cloud AI include a small "Made with Aybuke" mark; Pro removes it. The app can also suggest captions, with hashtags, for you to copy: written on your device or, if you've opted in to cloud AI processing, by our cloud writing help (section 6), which gets only the words they're based on, never your image.
 
 When you share, the receiving service's own terms and privacy policy apply, and you're responsible for what you publish. Make sure everyone shown in an image, including a before-and-after image, agrees to it being shared.
 

@@ -20,7 +20,12 @@
 //
 // Every job goes through admit_job() (20261022): blocks, cool-downs, the
 // prompt policy's strikes, circuit breakers, rate limits, free retries and
-// the charge, in one transaction. Providers: xAI (default when XAI_API_KEY is
+// the charge, in one transaction. Before it, a Magic Edit's or a creation's
+// words go to Claude once, text only (polish.ts, with ANTHROPIC_API_KEY): a
+// request it turns down is refused like a keyword block (a strike only in the
+// keyword policy's own categories), and an allowed one goes on as Claude's
+// clear English instruction, the edit guard after it. A polish that can't run
+// leaves her words as they are. Providers: xAI (default when XAI_API_KEY is
 // set) or fal (AI_PROVIDER=fal). fal jobs are queued at fal and advanced while
 // the app polls; xAI answers in one request, which runs in the background
 // after the 202. When xAI refuses a job for billing, AI pauses for everyone
@@ -40,6 +45,7 @@ import type { SupabaseClient } from "npm:@supabase/supabase-js@2.117.3";
 import { admissionError, type AdmitResult } from "../_shared/admission.ts";
 import { type EntitlementStatus, type InstallProof, resolveEntitlement, verifyInstall } from "../_shared/apple.ts";
 import { requireUser, serviceClient } from "../_shared/auth.ts";
+import { askForJson, textHelperConfig } from "../_shared/claude-text.ts";
 import * as fal from "../_shared/fal.ts";
 import { corsHeaders, errorResponse, HttpError, json } from "../_shared/http.ts";
 import {
@@ -52,7 +58,7 @@ import {
 } from "../_shared/input.ts";
 import { checkOutputs, outputCheck } from "../_shared/moderation.ts";
 import { runInBackground } from "../_shared/owner-mail.ts";
-import { EDIT_GUARD, evaluatePrompt, type Verdict } from "../_shared/policy.ts";
+import { blocked, EDIT_GUARD, evaluatePrompt, type Verdict } from "../_shared/policy.ts";
 import { checkProviderBudget, pauseForProviderBilling } from "../_shared/provider-alerts.ts";
 import {
   API_KEY_SECRET,
@@ -67,6 +73,14 @@ import { noteSafetyCheckError } from "../_shared/safety-breaker.ts";
 import { PRO_STYLES, templateRecipe } from "../_shared/templates.ts";
 import * as xai from "../_shared/xai.ts";
 import { holdWhilePending, isPending, waitSeconds } from "./long-poll.ts";
+import {
+  describeOutcome,
+  NOT_ALLOWED,
+  POLISH_DEADLINE_MS,
+  type PolishOperation,
+  type PolishOutcome,
+  polishPrompt,
+} from "./polish.ts";
 
 // An erase sends a photo and a mask, each at MAX_IMAGE_BYTES (6 MiB), which is
 // 8 MiB as base64 (4/3). Plus about 256 KiB of JSON: the app's prompt is at most
@@ -109,6 +123,8 @@ interface JobRow {
 
 const safety = safetyConfig();
 console.info(`output check in force: ${outputCheck()}${safety ? ` + ${safety.provider}:${safety.model}` : ""}`);
+const textHelper = polishOn() ? textHelperConfig() : undefined;
+console.info(`prompt polish: ${textHelper ? `anthropic:${textHelper.model}` : "off"}`);
 
 Deno.serve(async (req) => {
   // The wall clock that ends the function (background work included) runs from here.
@@ -262,6 +278,17 @@ async function createJob(
     // away in the first, the cleaned-up words show in the second.
     const first = evaluatePrompt(raw, op);
     verdict = first.allowed ? evaluatePrompt(prompt, op) : first;
+    if (verdict.allowed && (op === "magic_edit" || op === "text_to_image")) {
+      const polished = await polish(db, userId, ip, op, prompt);
+      if (polished.kind === "polished") {
+        prompt = polished.prompt;
+      } else if (polished.kind === "blocked") {
+        // In a keyword category: a strike through admit_job, as a keyword block.
+        // Otherwise refused here, before anything is booked or charged.
+        if (!polished.strike) throw new HttpError(422, "content_blocked", NOT_ALLOWED);
+        verdict = blocked(polished.strike);
+      }
+    }
   }
   // The app already appends the guard; this holds even for a modified client.
   // Restyle recipes carry their own identity clause, and enhance ignores the prompt.
@@ -358,6 +385,36 @@ function background(work: Promise<void>): void {
   } else {
     work.catch((error) => console.error("background work failed", error));
   }
+}
+
+// MARK: - Prompt polish (Claude, text only; polish.ts)
+
+/** On with ANTHROPIC_API_KEY, unless PROMPT_POLISH=off. */
+function polishOn(): boolean {
+  return Deno.env.get("PROMPT_POLISH")?.trim().toLowerCase() !== "off";
+}
+
+/** Claude's look at her words before admission; any failure leaves them as they are. Logs no text. */
+async function polish(
+  db: SupabaseClient,
+  userId: string,
+  ip: string | undefined,
+  op: PolishOperation,
+  prompt: string,
+): Promise<PolishOutcome> {
+  const config = polishOn() ? textHelperConfig() : undefined;
+  if (!config) return { kind: "skipped", reason: "off" };
+  const started = Date.now();
+  const outcome = await polishPrompt(prompt, op, {
+    admit: async () => {
+      const { data, error } = await db.rpc("admit_assist", { p_user: userId, p_ip: ip ?? null, p_kind: "polish" });
+      if (error) console.error("admit_assist failed", error.message);
+      return !error && (data as { ok?: unknown } | null)?.ok === true;
+    },
+    ask: (task) => askForJson(config, task, { deadlineMs: POLISH_DEADLINE_MS }),
+  });
+  console.info(`prompt polish (${op}): ${describeOutcome(outcome)} in ${Date.now() - started} ms`);
+  return outcome;
 }
 
 /** "xai" (the default when XAI_API_KEY is set) or "fal". */

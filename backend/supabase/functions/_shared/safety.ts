@@ -313,8 +313,11 @@ export function parseAnthropicVerdict(
   return readVerdict(texts[0].text, subject);
 }
 
-/** A short, safe description: never the key, the request or the API's message. */
-function anthropicFailure(error: unknown): string {
+/**
+ * A short, safe description: never the key, the request or the API's message.
+ * Also used by Claude's text help (claude-text.ts).
+ */
+export function anthropicFailure(error: unknown): string {
   if (error instanceof Anthropic.APIConnectionTimeoutError) return "timeout";
   if (error instanceof Anthropic.APIUserAbortError) return "deadline";
   if (error instanceof Anthropic.APIConnectionError) return "connection failed";
@@ -322,18 +325,22 @@ function anthropicFailure(error: unknown): string {
   return error instanceof Error ? error.name : "error";
 }
 
-function anthropicClient(options: SafetyOptions): Anthropic {
+/** The one Claude client setup, shared with Claude's text help (claude-text.ts). */
+export function anthropicClient(
+  options: Pick<SafetyOptions, "apiKey" | "fetcher" | "timeoutMs" | "maxRetries">,
+): Anthropic {
   return new Anthropic({
     apiKey: options.apiKey,
     // Every credential and the host are named here, so no environment variable
-    // or config profile can sign these requests or send the photos elsewhere.
+    // or config profile can sign these requests or send the photos (or her
+    // text) elsewhere.
     authToken: null,
     webhookKey: null,
     baseURL: ANTHROPIC_BASE_URL,
     timeout: options.timeoutMs ?? TIMEOUT_MS,
     maxRetries: options.maxRetries ?? 1,
-    // At debug level the SDK logs requests, images included: off, whatever
-    // ANTHROPIC_LOG says. A failed check logs its own short detail.
+    // At debug level the SDK logs requests, images and text included: off,
+    // whatever ANTHROPIC_LOG says. A failed check logs its own short detail.
     logLevel: "off",
     fetch: options.fetcher,
   });

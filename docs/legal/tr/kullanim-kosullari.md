@@ -32,7 +32,7 @@ Satın alımlarınıza ayrıca sizinle Apple arasında geçerli olan Apple koşu
 
 ## 2. Tanımlar
 
-- **Bulut yapay zekâ özellikleri**: İçeriği cihazınızdan sunucularımıza ve yapay zekâ sağlayıcılarımıza göndererek işleyen özellikler. Bunlar Magic Edit, Styles, AI Enhance, Erase ve Create from text özellikleridir.
+- **Bulut yapay zekâ özellikleri**: İçeriği cihazınızdan sunucularımıza ve yapay zekâ sağlayıcılarımıza göndererek işleyen özellikler. Bunlar Magic Edit, Styles, AI Enhance, Erase ve Create from text özellikleri ile bulut yazım yardımımızdır (6. bölüm).
 - **Cihaz üzerindeki özellikler**: Tamamen cihazınızda çalışan ve fotoğraflarınızı bize hiçbir zaman göndermeyen özellikler. Bunlar Remove background, Adjust ve Effects'tir (tanıtım (onboarding) sırasında sunulan Digicam '04 görünümü dahil).
 - **Girdiler**: Bulut yapay zekâ özelliklerine gönderdiğiniz fotoğraflar, maskeler (fırçayla işaretlediğiniz alanlar) ve metin istemleri (prompt).
 - **Çıktılar** veya **sonuçlar**: Hizmetin sizin için ürettiği veya düzenlediği görseller.
@@ -96,6 +96,7 @@ Hesabınızı silmek Apple aboneliğinizi **iptal etmez**. Sonraki ödemeleri du
 - **AI Enhance**: Fotoğrafı netleştirme, büyütme ve restore etme.
 - **Erase**: Fırçayla üzerinden geçtiğiniz bir nesneyi kaldırma.
 - **Create from text**: Stil ve en-boy oranı seçenekleriyle, metin açıklamasından görsel üretme. Pro ile tek seferde 4 görsele kadar üretebilirsiniz.
+- **Yazım yardımı**: Yeni bir görsel için fikirler ("Inspire me"), daha zengin bir istem ("Make it magic"), açıklama metni önerileri ve anlattığınız havaya uygun makyaj önerileri; yapay zekâ bunları fotoğraflarınızdan değil, yazdığınız sözlerden yazar. Ücretsizdir ve kredi harcamaz. Öneriler yalnızca fikirdir; Apple Intelligence destekli cihazlarda bazıları bunun yerine cihazınızda yazılabilir.
 
 Bazı şablon ve stiller yalnızca Pro ile kullanılabilir. Ünlülere veya başka gerçek kişilere dayanan şablonlar sunmuyoruz; vücut şekillendirme (body reshaping) veya cilt rengini açma (skin lightening) özellikleri de sunmuyoruz.
 
@@ -311,7 +312,7 @@ Yapay zekâ ile üretilmiş veya düzenlenmiş olup dışa aktardığınız her 
 
 ## 13. Sonuçlarınızı paylaşma
 
-Sonuçlarınızı paylaşım menüsüyle (iPhone ve iPad'de Instagram Stories (Hikâyeler) seçeneği de buradadır), "Before / After" (önce / sonra) kolajı olarak veya 9:16 oranlı hikâye kartı ya da başka bir kart tasarımı olarak paylaşabilirsiniz. Ücretsiz kullanımda, bulut yapay zekâmızla üretilen veya düzenlenen görsellerin kolajlarında ve kartlarında küçük bir "Made with Aybuke" işareti bulunur; Pro bu işareti kaldırır. Uygulama ayrıca kopyalayabileceğiniz, hashtag içeren açıklama metinleri önerebilir; bu metinler cihazınızda yazılır ve bunun için hiçbir yere veri gönderilmez.
+Sonuçlarınızı paylaşım menüsüyle (iPhone ve iPad'de Instagram Stories (Hikâyeler) seçeneği de buradadır), "Before / After" (önce / sonra) kolajı olarak veya 9:16 oranlı hikâye kartı ya da başka bir kart tasarımı olarak paylaşabilirsiniz. Ücretsiz kullanımda, bulut yapay zekâmızla üretilen veya düzenlenen görsellerin kolajlarında ve kartlarında küçük bir "Made with Aybuke" işareti bulunur; Pro bu işareti kaldırır. Uygulama ayrıca kopyalayabileceğiniz, hashtag içeren açıklama metinleri önerebilir: bunlar cihazınızda ya da bulut yapay zekâ işlemeye onay verdiyseniz bulut yazım yardımımızla (6. bölüm) yazılır; yazım yardımı görselinizi değil, yalnızca metinlerin dayandığı sözleri alır.
 
 Paylaştığınızda içeriği alan hizmetin kendi koşulları ve gizlilik politikası geçerli olur ve yayımladığınız içerikten siz sorumlusunuz. Önce/sonra görselleri dahil, bir görselde yer alan herkesin paylaşıma onay verdiğinden emin olun.
 
