@@ -118,7 +118,7 @@ With `AI_PROVIDER=fal`, the job goes to fal's queue instead (`queue.fal.run`), e
 
 **Failure modes**
 - Provider error, safety block, timeout (3 min for xAI, 10 min for fal, server-side) or user cancel → `release_credits(job)`: an exact, idempotent refund.
-- `sweep_jobs()` (pg_cron) refunds jobs whose client disappeared and clears any outputs still stored after an hour. A finished job whose results were never handed to the app is refunded then (or at once if the app cancels it); a delivered one the app never confirmed is refunded at most once a day per user.
+- `sweep_jobs()` (pg_cron) refunds jobs whose client disappeared and clears any outputs still stored after an hour. A finished job whose results were never handed to the app is refunded then (or at once if the app cancels it); a delivered one the app never confirmed is refunded at most once a day per user and per App Store install. Clients read no job rows through the Data API, so results reach the app only through the poll that records the delivery.
 - A 401 triggers one token refresh and retry.
 - Network errors surface as friendly toasts. When the app stops waiting through a lost connection, it says the result didn't arrive and that an undelivered one is refunded automatically, and it sends no DELETE (one could read as "got it" if the results had been handed over in an answer that never arrived).
 
