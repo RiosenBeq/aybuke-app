@@ -2,22 +2,32 @@
 //
 // The independent check (safety.ts) fails closed, so while Anthropic is down
 // every job is refunded, and a creation is refunded only after xAI made and
-// billed its image. ai-image reports each check that couldn't run here; three
-// within ten minutes turn the 'all' pause on for five minutes (longer when it
-// trips again soon after), so admit_job() refuses new jobs with ai_paused
-// before anything is charged or sent to xAI. A verdict, a refusal or an image
-// the model can't take is no outage and isn't reported.
+// billed its image. ai-image reports each result check that couldn't run
+// here; three within ten minutes turn the 'all' pause on for five minutes
+// (longer when it trips again soon after), so admit_job() refuses new jobs
+// with ai_paused before anything is charged or sent to xAI. A verdict, a
+// refusal or an image the model can't take is no outage and isn't reported.
+//
+// The photo check is never reported: the photo is whatever the sender
+// uploads, so a few broken files (a JPEG header over bytes Claude can't
+// decode is an HTTP 400) would let one person pause AI for everyone. A photo
+// check that fails already stops its edit before xAI, so nothing is billed.
 import type { SupabaseClient } from "npm:@supabase/supabase-js@2.117.3";
-import { isServiceFailure, type SafetyVerdict } from "./safety.ts";
+import { isServiceFailure, type SafetySubject, type SafetyVerdict } from "./safety.ts";
 
 type Db = Pick<SupabaseClient, "rpc">;
 
 /**
- * Reports a check that couldn't run. Returns when the pause it started ends,
- * or undefined (no pause started, nothing to report, or the report failed:
- * logged, never thrown, and the job is refunded either way).
+ * Reports a result check that couldn't run. Returns when the pause it started
+ * ends, or undefined (no pause started, nothing to report, a photo check, or
+ * the report failed: logged, never thrown, and the job is refunded either way).
  */
-export async function noteSafetyCheckError(db: Db, verdict: SafetyVerdict): Promise<string | undefined> {
+export async function noteSafetyCheckError(
+  db: Db,
+  verdict: SafetyVerdict,
+  subject: SafetySubject,
+): Promise<string | undefined> {
+  if (subject !== "result") return undefined;
   if (!isServiceFailure(verdict) || verdict.ok || verdict.reason !== "check_failed") return undefined;
   try {
     const { data, error } = await db.rpc("note_safety_check_error", { p_detail: verdict.detail })

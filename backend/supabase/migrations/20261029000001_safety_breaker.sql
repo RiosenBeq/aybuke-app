@@ -5,12 +5,15 @@
 -- no photo: xAI makes (and bills) the image, then the result check fails and
 -- the job is refunded. A long outage would drain the xAI balance for nothing.
 --
--- So ai-image reports every safety check that couldn't run (an error, a
+-- So ai-image reports every result check that couldn't run (an error, a
 -- timeout, an answer we can't read; never a verdict, a refusal or an image the
 -- model can't take) with note_safety_check_error(). Three of them within ten
 -- minutes turn the 'all' pause on (private.ai_switches, as ops_pause_ai()
 -- sets it, note 'safety_check_errors'), so admit_job() refuses new jobs with
--- ai_paused before anything is charged or sent to xAI. The pause lasts five
+-- ai_paused before anything is charged or sent to xAI. Photo checks aren't
+-- reported: the sender picks the photo, so a few broken files would let one
+-- person pause AI for everyone, and a failed photo check stops its edit
+-- before xAI anyway. The pause lasts five
 -- minutes; when the breaker trips again within 15 minutes of the last pause
 -- ending, it doubles, up to an hour. After a pause the next jobs run normally
 -- (and three more errors trip it again). Errors reported while AI is paused

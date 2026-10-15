@@ -36,14 +36,14 @@ async function quietly<T>(run: () => Promise<T>): Promise<T> {
 
 Deno.test("a check that couldn't run is reported, with its short reason", async () => {
   const { db, calls } = database(() => Promise.resolve({ data: null, error: null }));
-  assert.equal(await noteSafetyCheckError(db, failed("HTTP 529 overloaded_error")), undefined);
+  assert.equal(await noteSafetyCheckError(db, failed("HTTP 529 overloaded_error"), "result"), undefined);
   assert.deepEqual(calls, [{ name: "note_safety_check_error", args: { p_detail: "HTTP 529 overloaded_error" } }]);
 });
 
 Deno.test("the report that trips the breaker returns when the pause ends", async () => {
   const until = "2026-10-15T12:05:00+00:00";
   const { db } = database(() => Promise.resolve({ data: until, error: null }));
-  assert.equal(await quietly(() => noteSafetyCheckError(db, failed("timeout"))), until);
+  assert.equal(await quietly(() => noteSafetyCheckError(db, failed("timeout"), "result")), until);
 });
 
 Deno.test("verdicts, refusals and images the model can't take are no outage", async () => {
@@ -57,14 +57,22 @@ Deno.test("verdicts, refusals and images the model can't take are no outage", as
       failed("image too large"),
     ] as SafetyVerdict[]
   ) {
-    assert.equal(await noteSafetyCheckError(db, verdict), undefined);
+    assert.equal(await noteSafetyCheckError(db, verdict, "result"), undefined);
+  }
+  assert.equal(calls.length, 0);
+});
+
+Deno.test("a photo check that couldn't run is never reported: one sender's broken files can't pause AI", async () => {
+  const { db, calls } = database(() => Promise.resolve({ data: "2026-10-15T12:05:00+00:00", error: null }));
+  for (const detail of ["HTTP 400 invalid_request_error", "timeout", "deadline", "HTTP 529 overloaded_error"]) {
+    assert.equal(await noteSafetyCheckError(db, failed(detail), "photo"), undefined, detail);
   }
   assert.equal(calls.length, 0);
 });
 
 Deno.test("a report that fails is logged, never thrown", async () => {
   const refused = database(() => Promise.resolve({ data: null, error: { message: "permission denied" } }));
-  assert.equal(await quietly(() => noteSafetyCheckError(refused.db, failed("timeout"))), undefined);
+  assert.equal(await quietly(() => noteSafetyCheckError(refused.db, failed("timeout"), "result")), undefined);
   const down = database(() => Promise.reject(new Error("db down")));
-  assert.equal(await quietly(() => noteSafetyCheckError(down.db, failed("timeout"))), undefined);
+  assert.equal(await quietly(() => noteSafetyCheckError(down.db, failed("timeout"), "result")), undefined);
 });

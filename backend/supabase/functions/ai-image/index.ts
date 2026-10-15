@@ -30,12 +30,12 @@
 // with ANTHROPIC_API_KEY, or an xAI model with XAI_SAFETY_MODEL; it also checks
 // the photo before an edit, and results for alcohol, tobacco, vaping, drugs and
 // weapons too), or is blocked and refunded, and a flagged result counts as a
-// strike. Checks that can't run trip a circuit breaker that pauses AI for a few
-// minutes (safety-breaker.ts), and an xAI job's work ends within Supabase's
-// 150 s wall clock (xai.requestTimeout()). The poll that returns the results
-// records the delivery; a DELETE on a delivered job confirms the app has the
-// images and clears them right away. Results the app never received are
-// refunded (cancel_job(), settle_unconfirmed(), sweep_jobs()).
+// strike. Result checks that can't run trip a circuit breaker that pauses AI
+// for a few minutes (safety-breaker.ts), and an xAI job's work ends within
+// Supabase's 150 s wall clock (xai.requestTimeout()). The poll that returns
+// the results records the delivery; a DELETE on a delivered job confirms the
+// app has the images and clears them right away. Results the app never
+// received are refunded (cancel_job(), settle_unconfirmed(), sweep_jobs()).
 import type { SupabaseClient } from "npm:@supabase/supabase-js@2.117.3";
 import { admissionError, type AdmitResult } from "../_shared/admission.ts";
 import { type EntitlementStatus, type InstallProof, resolveEntitlement, verifyInstall } from "../_shared/apple.ts";
@@ -391,7 +391,8 @@ async function photoPassesSafetyCheck(db: SupabaseClient, jobId: string, input: 
     // Its own code: no result exists yet, so the output check's "this result
     // wasn't shown" (safety_check_failed) would be the wrong thing to tell her.
     await failJob(db, jobId, "photo_check_failed", PHOTO_CHECK_FAILED);
-    await noteSafetyCheckError(db, verdict);
+    // Not reported to the circuit breaker (safety-breaker.ts): the sender
+    // chooses the photo, and this edit stopped before xAI billed anything.
   }
   return false;
 }
@@ -497,7 +498,7 @@ async function store(db: SupabaseClient, jobId: string, outcome: fal.ResultOutco
     console.warn(`safety model blocked job ${jobId}:`, second.reason === "flagged" ? second.categories : second.detail);
     if (second.reason !== "flagged") {
       await failJob(db, jobId, "safety_check_failed", SAFETY_CHECK_FAILED);
-      await noteSafetyCheckError(db, second);
+      await noteSafetyCheckError(db, second, "result");
     } else if (resultCountsAsStrike(second.categories, fromPhoto)) {
       await flagJob(db, jobId, BLOCKED_RESULT, second.categories.join(",") || "safety_model");
     } else {
