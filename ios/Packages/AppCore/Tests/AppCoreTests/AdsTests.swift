@@ -54,6 +54,23 @@ final class AdsTests: XCTestCase {
         XCTAssertNil(AdMobID.publisher(of: "nope"))
     }
 
+    /// A unit from another account, or a typo, quietly turns that format off
+    /// in Release builds (`AdsConfig`; check-release-config.py says the same).
+    /// An empty interstitial unit is allowed: it means no interstitials.
+    func testBundledAdUnitsBelongToTheApp() throws {
+        struct Ads: Decodable { let enabled: Bool; let appID, rewardedUnitID, interstitialUnitID: String }
+        struct Config: Decodable { let ads: Ads }
+        let ads = try JSONDecoder().decode(
+            Config.self, from: Data(contentsOf: RepositoryFile.url("ios/App/Resources/AppConfig.json"))).ads
+        guard ads.enabled else { return }
+        XCTAssertTrue(AdMobID.isAppID(ads.appID), ads.appID)
+        let units = [ads.rewardedUnitID] + (ads.interstitialUnitID.isEmpty ? [] : [ads.interstitialUnitID])
+        for unit in units {
+            XCTAssertTrue(AdMobID.isUnitID(unit), "not an ad unit: \(unit)")
+            XCTAssertEqual(AdMobID.publisher(of: unit), AdMobID.publisher(of: ads.appID), "another account's unit: \(unit)")
+        }
+    }
+
     // MARK: Interstitial pacing
 
     func testNoInterstitialsInTheFirstDayOrBeforeTheThirdSave() {

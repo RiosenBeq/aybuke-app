@@ -30,12 +30,16 @@
 │                       ├─ credits-redeem: Apple JWS → pack      credit_ledger (append-only) │
 │                       ├─ report: "Report this image"           jobs · entitlements         │
 │                       └─ account: link (merge) · delete user   reports · apple_accounts    │
-└───────────────┬────────────────────────────────┬────────────────────────────────┬──────────┘
-                │ api.x.ai (Bearer key)          │ queue.fal.run, NSFW check      │ JWS verification
-          ┌─────▼──────┐                   ┌─────▼──────┐                   ┌─────▼──────┐
-          │    xAI     │  Grok Imagine     │   fal.ai   │  Nano Banana 2,   │   Apple    │
-          │ (default)  │  image 2.0, 1k    │ (optional) │  SeedVR2, object  │  root CAs  │
-          └────────────┘                   └────────────┘  removal          └────────────┘
+└───────────┬──────────────────────┬──────────────────────┬──────────────────────┬───────────┘
+            │ api.x.ai             │ api.anthropic.com    │ queue.fal.run,       │ JWS
+            │ (Bearer key)         │ (safety check)       │ NSFW check           │ verification
+      ┌─────▼──────┐         ┌─────▼──────┐         ┌─────▼──────┐         ┌─────▼──────┐
+      │    xAI     │         │ Anthropic  │         │   fal.ai   │         │   Apple    │
+      │ (default)  │         │  Claude    │         │ (optional) │         │  root CAs  │
+      └────────────┘         └────────────┘         └────────────┘         └────────────┘
+      Grok Imagine           Haiku 5.5 checks       Nano Banana 2,
+      image 2.0, 1k          photos to edit         SeedVR2, object
+                             and every result       removal
 ```
 
 ## Repository layout
@@ -79,6 +83,7 @@ docs/                       research, brand, spec, architecture, compliance, roa
 | **Server-authoritative credits** | The client mirrors the rules for instant UI and demo mode. In production the server reserves, captures and refunds credits atomically in SQL. |
 | **Operations, not models** | The app sends `operation` + `template_id`; the server picks the provider, model and prompt (`_shared/xai.ts`, `_shared/fal.ts`). Models can be hot-swapped without an app update, and provider keys can't be misused. |
 | **xAI by default, fal.ai as the alternative** | Grok Imagine (`grok-imagine-image-2.0` at 1k; low quality for free users, medium for Pro) is the best quality for the price, about $0.06 per cloud operation. `AI_PROVIDER=fal` switches back without an app release. |
+| **Claude as the independent safety check** | A second vendor's model catches what the image model's own filter misses, and checks the photo before an edit is paid for at the image model. Claude can't make or edit images, so it only classifies: Haiku 5.5 (`claude-haiku-5-5`) at $0.10 / $0.50 per million tokens, about $0.0002 a check, through the official TypeScript SDK with structured JSON output and thinking off. It replaced the plan to use fal.ai's classifier (no third image vendor, no `FAL_KEY`). |
 | **On-device first** | Background removal (Vision), adjustments and Auto, the 80s/90s/Y2K effects and RAW development (Core Image), Best shot (Vision) and video editing (AVFoundation) are free, instant and private. They need neither consent nor credits. |
 | **On-device video** | `VideoEngine` reads loudness in 50 ms windows from a 16 kHz mono copy of the sound; `SilenceCutter` (AppCore, unit-tested) picks the parts to keep with a threshold that adapts to each clip and keeps short pauses. The kept ranges are stitched into an `AVMutableComposition`, every frame gets the retro effect through Core Image, and the result is exported as .mp4. Clips up to 5 minutes; no watermark, no ending clip. |
 | **Liquid Glass with a fallback** | `liquidGlass(in:)`, `GlassGroup` and `minimizingTabBar()` use the iOS 26 APIs only when built with the iOS 26 SDK (Swift 6.2) and running on iOS 26; otherwise a frosted material, so iOS 17–18 look right too. |
@@ -91,15 +96,17 @@ docs/                       research, brand, spec, architecture, compliance, roa
 ## AI job lifecycle
 
 ```
-App                          ai-image (Edge)                         Postgres                 xAI
+App                          ai-image (Edge)                         Postgres                 xAI · Anthropic
  │ POST {operation,…}  ──────► validate · policy · rate limit
  │                             insert job ──────────────────────────► jobs(queued)
  │                             reserve_credits ─────────────────────► wallet −cost, ledger hold
  │ ◄──── 202 {job_id, queued, credits_remaining}
  │                             in the background (waitUntil) ───────► jobs(processing)
+ │                             edits: Claude checks the photo (fails closed) ───────────────► Anthropic
  │                             POST /v1/images/{generations|edits} ─────────────────────────► Grok Imagine
  │                             b64 results, moderated by xAI ◄──────────────────────────────┘
- │                             output check (fails closed) ─────────► jobs(completed, outputs)
+ │                             output check, then Claude on every result ───────────────────► Anthropic
+ │                             both pass (each fails closed) ───────► jobs(completed, outputs)
  │ GET ?job_id (1s, 1s, 1.5s…) ► read job
  │ ◄──── {completed, outputs:[base64], credits_remaining} ─ deliver_outputs() ─► delivered_at
  │                                                       (failure → jobs(failed) + release_credits)
@@ -129,6 +136,7 @@ With `AI_PROVIDER=fal`, the job goes to fal's queue instead (`queue.fal.run`), e
 **Data**
 - Photos are uploaded as data URIs (≤ 1536 px, JPEG re-encode, which strips GPS EXIF). They are never stored by us.
 - xAI results come back as base64 and stay on the job row only until the app confirms the download (`DELETE` on the completed job), then they're cleared; `sweep_jobs()` clears any left after an hour. xAI doesn't train on API data without permission. **Before launch, switch on Zero Data Retention in the xAI console** (selfies are personal data). Each request carries a one-way user tag (a shortened SHA-256 of the user id), so xAI can flag abuse without learning who the user is.
+- With `ANTHROPIC_API_KEY` set, the photo of an edit and every result also go to Anthropic for the safety check, base64 or as the provider's link, and nothing else (no prompt, no user id). Anthropic deletes API inputs and outputs within 30 days, may keep content its systems flag for a usage-policy violation up to 2 years, and doesn't train on API data by default.
 - fal outputs expire after 1 hour, and fal's request history is disabled.
 - Effects, Auto, RAW development, Best shot and video editing never leave the device.
 - RevenueCat receives purchase records, our account ID and basic device and app information, never photos, prompts or results.
@@ -139,8 +147,9 @@ With `AI_PROVIDER=fal`, the job goes to fal's queue instead (`queue.fal.run`), e
 2. Server prompt policy (`_shared/policy.ts`, the same terms via the generated `_shared/policy-terms.json`; shared test vectors in `_shared/policy-vectors.json`). The server also appends the edit guard (`PromptBuilder.editGuard`: keep faces, body shapes, skin tone, skin texture and age; clothing at least as modest) to every Magic Edit.
 3. Server-side template recipes (prompt tampering is impossible).
 4. Provider moderation: xAI withholds the image data of anything it filters (`respect_moderation: false`); fal runs with `safety_tolerance: "2"`.
-5. One output check on every result, failing closed (`_shared/moderation.ts`, no off switch): fal.ai's NSFW classifier when `FAL_KEY` is set, otherwise xAI's own verdict, where a filtered or missing image blocks the whole job. A flag, an error, a timeout or an unreadable answer blocks the result and refunds it. Setting `FAL_KEY` sends results to fal.ai, so it must be listed in the consent sheet (`aiProcessors`) first.
-6. "Report this image".
+5. One output check on every result, failing closed (`_shared/moderation.ts`, no off switch): xAI's own verdict, where a filtered or missing image blocks the whole job (fal.ai's NSFW classifier instead only if `FAL_KEY` is set; it stays unset, and fal.ai isn't in the consent sheet). A flag, an error, a timeout or an unreadable answer blocks the result and refunds it.
+6. An independent safety model on top of it, never instead (`_shared/safety.ts`): Claude when `ANTHROPIC_API_KEY` is set (`ANTHROPIC_SAFETY_MODEL`, default `claude-haiku-5-5`), else an xAI vision model when `XAI_SAFETY_MODEL` is set, else off; `ai-image` logs which checks are in force when it starts (`output check in force: xai + anthropic:claude-haiku-5-5`). It looks at the photo before an edit reaches the image model, and at every result after the output check, for nudity, sexual content, sexualised minors, graphic violence, self-harm and hate (text inside an image is part of the image, never an instruction). It fails closed: an error, a timeout (one retry, 20 s at most for a check, its retry included), a refusal, a cut-off answer, JSON that doesn't match the schema, or an image Claude isn't sent (only JPEG, PNG and WebP up to 10 MB as base64, the type read from the bytes; a HEIC photo, say) blocks the job and refunds it (`photo_check_failed` for the photo, `safety_check_failed` for results). A flagged photo is refunded without a strike (`input_blocked`: it can be an ordinary holiday snap); a flagged result is a strike.
+7. "Report this image".
 
 ## Performance
 
@@ -190,4 +199,6 @@ What didn't improve, or wasn't changed: launch time is dominated by loading syst
 
 ## Configuration
 
-`ios/App/Resources/AppConfig.json` holds the backend URL and anon key, the provider name shown in the consent sheet (`aiProviderName`, now "xAI (Grok Imagine)"), the retention hours, the legal URLs, the support email, the App Store ID and `websiteURL` (the invite card's QR code and share captions link to the App Store page, or to the website until it exists), the optional Meta App ID for direct Instagram Stories (`instagramAppID`), the share hashtags and RevenueCat's public SDK key (`revenueCatAPIKey`; empty turns RevenueCat off). With an empty `backendBaseURL` the app runs in **demo mode**.
+`ios/App/Resources/AppConfig.json` holds the backend URL and anon key, the processors the consent sheet names (`aiProcessors`: Supabase, xAI (Grok Imagine) and Anthropic (Claude), with `consentVersion` 2), the retention hours, the legal URLs, the support email, the App Store ID and `websiteURL` (the invite card's QR code and share captions link to the App Store page, or to the website until it exists), the optional Meta App ID for direct Instagram Stories (`instagramAppID`), the share hashtags, RevenueCat's public SDK key (`revenueCatAPIKey`; empty turns RevenueCat off) and the AdMob ids (`ads`: the app id, the rewarded unit and the "After save interstitial" unit `ca-app-pub-2292230772061554/6797438012`, which the app shows at most 3 times a day (`InterstitialPacing`); an empty `interstitialUnitID` turns interstitials off). With an empty `backendBaseURL` the app runs in **demo mode**.
+
+The consent sheet (`AIConsentView`) names no single company in its lead sentence: "we send the photo and text you choose to our servers and to the companies listed below, who process them for us", followed by the points (deleted from our servers within the retention hours; with a `safety` processor listed, deleted by our safety-check provider within 30 days unless flagged for breaking its rules; never used to train AI; never sold or shared for advertising; the on-device tools) and the list of the three processors with their roles: Supabase (our servers: AI jobs and credits), xAI (Grok Imagine) (creates and edits the images) and Anthropic (Claude) (checks photos she edits and every result for safety). A DEBUG developer key lists only its own provider.

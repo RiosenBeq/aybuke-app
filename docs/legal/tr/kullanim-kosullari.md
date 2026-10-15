@@ -2,7 +2,7 @@
 
 # Kullanım Koşulları
 
-Son güncelleme: 14 Ekim 2026
+Son güncelleme: 15 Ekim 2026
 
 > **Kısaca.** Bu özet, metinde yolunuzu bulmanıza yardımcı olur; aşağıdaki Koşulların yerine geçmez.
 > - Bu Koşullar, sizinle Aybuke uygulamasının geliştiricisi Okan Berk Manavoğlu (bireysel geliştirici) arasında yapılan bir sözleşmedir. Apple bu sözleşmenin tarafı değildir.
@@ -271,7 +271,7 @@ Girdilerinizi barındırmamız, çoğaltmamız, iletmemiz, değiştirmemiz ve ba
 
 - girdilerinizi yapay zekâ modellerini eğitmek için kullanmamıza izin vermez;
 - girdilerinizi satmamıza veya reklam amacıyla kullanmamıza izin vermez; ve
-- talebinizin işlenmesi tamamlandığında sona erer; ancak bize gönderdiğiniz bir rapora eklediğiniz bilgiler, Gizlilik Politikası'nda açıklandığı şekilde saklanır.
+- talebinizin işlenmesi tamamlandığında sona erer; ancak bize gönderdiğiniz bir rapora eklediğiniz bilgiler ile güvenlik kontrolü sağlayıcımızın sınırlı bir süre sakladığı kopyalar, Gizlilik Politikası'nda açıklandığı şekilde saklanır.
 
 ### Sonuçlarınız
 

@@ -22,12 +22,14 @@
 // the charge, in one transaction. Providers: xAI (default when XAI_API_KEY is
 // set) or fal (AI_PROVIDER=fal). fal jobs are queued at fal and advanced while
 // the app polls; xAI answers in one request, which runs in the background
-// after the 202. Every result passes the output check (moderation.ts, plus
-// safety.ts when XAI_SAFETY_MODEL is set) or is blocked and refunded, and a
-// flagged result counts as a strike. The poll that returns the results
-// records the delivery; a DELETE on a delivered job confirms the app has the
-// images and clears them right away. Results the app never received are
-// refunded (cancel_job(), settle_unconfirmed(), sweep_jobs()).
+// after the 202. Every result passes the output check (moderation.ts) and,
+// when it's on, the independent check (safety.ts: Claude with
+// ANTHROPIC_API_KEY, or an xAI model with XAI_SAFETY_MODEL; it also checks the
+// photo before an edit), or is blocked and refunded, and a flagged result
+// counts as a strike. The poll that returns the results records the delivery;
+// a DELETE on a delivered job confirms the app has the images and clears them
+// right away. Results the app never received are refunded (cancel_job(),
+// settle_unconfirmed(), sweep_jobs()).
 import type { SupabaseClient } from "npm:@supabase/supabase-js@2.117.3";
 import { admissionError, type AdmitResult } from "../_shared/admission.ts";
 import { type EntitlementStatus, type InstallProof, resolveEntitlement, verifyInstall } from "../_shared/apple.ts";
@@ -44,7 +46,13 @@ import {
 } from "../_shared/input.ts";
 import { checkOutputs, outputCheck } from "../_shared/moderation.ts";
 import { EDIT_GUARD, evaluatePrompt, type Verdict } from "../_shared/policy.ts";
-import { classifyImages, safetyModel, type SafetySubject, type SafetyVerdict } from "../_shared/safety.ts";
+import {
+  API_KEY_SECRET,
+  classifyImages,
+  safetyConfig,
+  type SafetySubject,
+  type SafetyVerdict,
+} from "../_shared/safety.ts";
 import { PRO_STYLES, templateRecipe } from "../_shared/templates.ts";
 import * as xai from "../_shared/xai.ts";
 
@@ -87,7 +95,8 @@ interface JobRow {
   created_at: string;
 }
 
-console.info(`output check in force: ${outputCheck()}${safetyModel() ? ` + ${safetyModel()}` : ""}`);
+const safety = safetyConfig();
+console.info(`output check in force: ${outputCheck()}${safety ? ` + ${safety.provider}:${safety.model}` : ""}`);
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -331,14 +340,15 @@ function provider(): "xai" | "fal" {
   return Deno.env.get("XAI_API_KEY") ? "xai" : "fal";
 }
 
-// MARK: - Safety model (XAI_SAFETY_MODEL, off by default)
+// MARK: - Safety model (ANTHROPIC_API_KEY, else XAI_SAFETY_MODEL; off without either)
 
 async function classify(images: string[], subject: SafetySubject): Promise<SafetyVerdict | undefined> {
-  const model = safetyModel();
-  if (!model) return undefined;
-  const apiKey = Deno.env.get("XAI_API_KEY");
-  if (!apiKey) return { ok: false, reason: "check_failed", detail: "XAI_API_KEY is not set" };
-  return await classifyImages(images, subject, { model, apiKey });
+  const config = safetyConfig();
+  if (!config) return undefined;
+  const secret = API_KEY_SECRET[config.provider];
+  const apiKey = Deno.env.get(secret);
+  if (!apiKey) return { ok: false, reason: "check_failed", detail: `${secret} is not set` };
+  return await classifyImages(images, subject, { ...config, apiKey });
 }
 
 /** The photo, before an edit spends anything at the image model. False when the job was stopped. */

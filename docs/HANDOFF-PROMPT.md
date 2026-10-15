@@ -38,7 +38,7 @@ Live backend (Supabase project `efapupjvidyqhqdevmcu`, Frankfurt, Free plan):
 - **Applied migrations:** `20261011…` through `20261018…`, plus `20261019500000_keepalive`.
 - **Deployed functions:** `ai-image`, `account`, `credits-redeem` and `report` (from commit 47b5c6f).
 - **Auth:** anonymous sign-ins are limited to 15 an hour per IP; the Email provider is off; Apple and anonymous sign-in stay on.
-- **Secrets set:** `XAI_API_KEY`, `APPLE_APP_ID`, `APPLE_BUNDLE_ID`, `APPLE_TEAM_ID`.
+- **Secrets set:** `XAI_API_KEY`, `APPLE_APP_ID`, `APPLE_BUNDLE_ID`, `APPLE_TEAM_ID`, and since 15 October `ANTHROPIC_API_KEY` (the Claude safety check, `docs/AI-TODO.md` §1.5).
 - **Not deployed yet:** migration `20261019000000_ad_rewards.sql`, the security/credits migrations, and the `ad-reward` function.
 - **The project isn't `supabase link`ed:** migrations go through the dashboard SQL Editor (wrap each in `begin; … commit;`), and functions through `supabase functions deploy <name> --project-ref efapupjvidyqhqdevmcu --use-api`.
 
@@ -64,7 +64,7 @@ Other services:
 
 - **AdMob:**
   - App `ca-app-pub-2292230772061554~5236020895`, rewarded unit `…/1406702504` ("Out of credits reward").
-  - The interstitial unit doesn't exist yet, so `ads.interstitialUnitID` in `ios/App/Resources/AppConfig.json` is empty.
+  - The interstitial unit exists since 15 October 2026: "After save interstitial" `ca-app-pub-2292230772061554/6797438012`, capped at 3 a day, in `ads.interstitialUnitID` (`ios/App/Resources/AppConfig.json`).
   - The AdSense payment account shows "action required"; that's the owner's step.
 - **RevenueCat:** project `3e7e4f4a`, observer mode only, `pro` entitlement, `default` offering. Nothing is required for release.
 - **Website:**
@@ -143,7 +143,7 @@ Other services:
    - Schedule `select cron.schedule('sweep-ad-rewards', '17 * * * *', 'select public.sweep_ad_rewards()')`.
    - Smoke-test with a throwaway anonymous user (sign up with the public anon key, `GET /functions/v1/ai-image` for the balance, `DELETE /functions/v1/account`), and check the Security Advisor.
 7. **AdMob** (owner's browser; ask the owner to approve each change by name if a safety check blocks it):
-   - Create the interstitial unit "After save interstitial", frequency cap 3 a day per user, and put its id in `ads.interstitialUnitID`.
+   - Done on 15 October 2026: the interstitial unit "After save interstitial" (frequency cap 3 a day per user) is created and its id is in `ads.interstitialUnitID`.
    - On the rewarded unit, set server-side verification to `https://efapupjvidyqhqdevmcu.supabase.co/functions/v1/ad-reward` and press Verify URL.
    - Block sensitive ad categories.
    - Set up a GDPR message for the EEA, UK and CH.
@@ -172,13 +172,13 @@ Other services:
     - Update the App Review notes in `docs/marketing/app-store-listing.md` and in App Store Connect. They must cover:
       - the Aybuke name;
       - no login, an anonymous account at the first cloud job;
-      - consent first, naming Supabase and xAI;
+      - consent first, naming Supabase, xAI and Anthropic;
       - Makeup Studio;
       - ads: free members 13+ only, the optional rewarded ad and occasional interstitials, non-personalised, none for Pro, under 13 or the Mac;
       - free credits tied to the App Store install (Sandbox accepted);
       - Sign in with Apple hidden;
       - the purchases and the sandbox note;
-      - the safety layers and reporting;
+      - the safety layers (including the independent Claude check of the photo and every result) and reporting;
       - Delete my data;
       - Mac differences (no Live Activity, no Instagram Stories).
     - Add both subscriptions and both packs to the 1.0 version.

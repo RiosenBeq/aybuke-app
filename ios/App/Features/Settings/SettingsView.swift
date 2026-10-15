@@ -59,7 +59,6 @@ struct SettingsView: View {
             // Its own sheets: the app-wide ones can't show over Settings.
             .sheet(isPresented: $showConsent) {
                 AIConsentView(
-                    providerName: app.config.processorName,
                     processors: app.config.consentProcessors,
                     retention: app.config.retentionPhrase,
                     asksGuardian: app.ageDefaults.requiresGuardianStep,

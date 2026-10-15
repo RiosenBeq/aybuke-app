@@ -12,11 +12,12 @@ setopt interactivecomments
 
 ## 0) Başlamadan önce (yalnızca sen)
 
-1. **xAI.** Kredi yüklendi (14 Ekim, 10 USD); console.x.ai'de aylık harcama limiti koy. Sohbete bir kez yapıştırılmış eski anahtar güvenli değil: yeni bir anahtar oluştur, Supabase panelinde (proje `efapupjvidyqhqdevmcu` › Edge Functions › Secrets) `XAI_API_KEY` değerini yenisiyle değiştir. Eski anahtarı, ilk gerçek AI işi çalıştıktan sonra (12. bölüm) xAI'de iptal et. Ekip ayarlarında Zero Data Retention'ın açık olduğunu doğrula; gizlilik metinleri bunu söylüyor.
-2. **Supabase.** Projenin sahibi olan hesapla giriş yapabildiğini ve veritabanı şifresini bildiğini kontrol et (bilmiyorsan Project Settings › Database'den sıfırlanabilir; Edge Functions bu şifreyi kullanmaz).
-3. **App Store Connect.** Agreements, Tax, and Banking'de Paid Apps sözleşmesi, banka ve vergi bilgileri "Active" olmalı; yoksa satın almalar incelemeye giremez. Users and Access › Integrations › App Store Connect API'de **Admin** rolünde bir anahtar oluştur (otomatik imzalama için gerekir), `.p8` dosyasını indir.
-4. **AdMob (isteğe bağlı).** Geçiş reklamı istiyorsan "After save interstitial" adında bir geçiş birimi oluştur (sıklık sınırı kullanıcı başına günde 3) ve kimliğini hazır tut. Boş kalırsa 1.0'da geçiş reklamı olmaz; bu da geçerli bir karar.
-5. **Mac.** En az 15 GB boş disk, Xcode 26 veya daha yenisi, Homebrew. Mac penceresi yakalamak için Terminal'e (ya da kullandığın terminale) ekran kaydı izni ver: System Settings › Privacy & Security › Screen & System Audio Recording.
+1. **xAI.** Kredi yüklendi (14 Ekim, 10 USD); console.x.ai'de aylık harcama limiti koy. Sohbete bir kez yapıştırılmış eski anahtar güvenli değil: yeni bir anahtar oluştur, Supabase panelinde (proje `efapupjvidyqhqdevmcu` › Edge Functions › Secrets) `XAI_API_KEY` değerini yenisiyle değiştir. Eski anahtarı, ilk gerçek AI işi çalıştıktan sonra (12. bölüm) xAI'de iptal et. Ekip ayarlarında Zero Data Retention'ın açık olduğunu doğrula; gizlilik metinleri bunu söylüyor. 10 USD yalnızca yaklaşık 150–250 düzenlemeye yeter; lansmandan önce bütçeyi [`SAHIP-YAPILACAKLAR.md`](SAHIP-YAPILACAKLAR.md) 1.1'deki nota göre yükselt.
+2. **Anthropic.** `ANTHROPIC_API_KEY` Supabase panelinde (Edge Functions › Secrets) ayarlı; Claude, düzenlenecek fotoğrafı ve her sonucu denetler. Claude Console'da (platform.claude.com) bakiye olduğunu kontrol et ve aylık harcama limiti koy. Denetim fail-closed çalışır: bakiye biterse her düzenleme engellenir ve kredi iade edilir (SAHIP 1.11).
+3. **Supabase.** Projenin sahibi olan hesapla giriş yapabildiğini ve veritabanı şifresini bildiğini kontrol et (bilmiyorsan Project Settings › Database'den sıfırlanabilir; Edge Functions bu şifreyi kullanmaz).
+4. **App Store Connect.** Agreements, Tax, and Banking'de Paid Apps sözleşmesi, banka ve vergi bilgileri "Active" olmalı; yoksa satın almalar incelemeye giremez. Users and Access › Integrations › App Store Connect API'de **Admin** rolünde bir anahtar oluştur (otomatik imzalama için gerekir), `.p8` dosyasını indir.
+5. **AdMob.** Yapıldı (15 Ekim): "After save interstitial" geçiş birimi `ca-app-pub-2292230772061554/6797438012` (sıklık sınırı kullanıcı başına günde 3) `ads.interstitialUnitID` alanında; ödüllü birimin sunucu doğrulaması doğrulandı ve kaydedildi; hassas kategoriler engellendi. Kalan tek iş senin: "Aybuke GDPR" mesajı taslakta, yayımla (6. bölüm, 2. madde).
+6. **Mac.** En az 15 GB boş disk, Xcode 26 veya daha yenisi, Homebrew. Mac penceresi yakalamak için Terminal'e (ya da kullandığın terminale) ekran kaydı izni ver: System Settings › Privacy & Security › Screen & System Audio Recording.
 
 ## 1) Depoyu Downloads klasörüne indir
 
@@ -93,7 +94,7 @@ python3 scripts/check-release-config.py --report
 git status --short               # boş olmalı
 ```
 
-**Beklenen:** `Executed N tests, with 0 failures`; Deno `ok | N passed | 0 failed`; SQL'de her grup "tests passed" ve sonunda "SQL tests OK"; Python kontrolleri "up to date", "passed", "Credit numbers agree". `--report` yalnızca geçiş reklamı birimi boş notunu verebilir.
+**Beklenen:** `Executed N tests, with 0 failures`; Deno `ok | N passed | 0 failed`; SQL'de her grup "tests passed" ve sonunda "SQL tests OK"; Python kontrolleri "up to date", "passed", "Credit numbers agree". `--report` not vermez: geçiş reklamı birimi artık dolu (boş not çıkarsa `ads.interstitialUnitID` silinmiştir).
 
 **Hata olursa:** port doluysa `PGPORT_TEST=55433` ekleyip yeniden çalıştır. Kod hatası çıkarsa çıktıyı Claude Code'a ver; testleri ya da uygulanmış migrasyonları elle değiştirme.
 
@@ -219,7 +220,7 @@ supabase secrets set --project-ref efapupjvidyqhqdevmcu \
   APPLE_TEAM_ID=CBTKNY3LFC
 
 secrets=$(supabase secrets list --project-ref efapupjvidyqhqdevmcu)
-for n in XAI_API_KEY APPLE_APP_ID APPLE_BUNDLE_ID APPLE_TEAM_ID ADMOB_REWARDED_AD_UNIT; do
+for n in XAI_API_KEY ANTHROPIC_API_KEY APPLE_APP_ID APPLE_BUNDLE_ID APPLE_TEAM_ID ADMOB_REWARDED_AD_UNIT; do
   printf '%s\n' "$secrets" | grep -qw "$n" && echo "var    $n" || echo "EKSİK  $n"
 done
 for n in GLOWLIT_ALLOW_XCODE_APP_TRANSACTIONS OUTPUT_MODERATION FAL_KEY XAI_SAFETY_MODEL; do
@@ -230,7 +231,7 @@ unset secrets
 # supabase secrets unset --project-ref efapupjvidyqhqdevmcu GLOWLIT_ALLOW_XCODE_APP_TRANSACTIONS
 ```
 
-`XAI_API_KEY` panelden girilir (0. bölüm). `FAL_KEY` ve `XAI_SAFETY_MODEL` bu sürümde girilmez.
+`XAI_API_KEY` ve `ANTHROPIC_API_KEY` panelden girilir (0. bölüm); `ANTHROPIC_API_KEY` için `EKSİK` görürsen dur ve sahibe sor, çünkü o olmadan bağımsız güvenlik denetimi çalışmaz. `ANTHROPIC_SAFETY_MODEL` boş kalabilir (varsayılan `claude-haiku-5-5`). `FAL_KEY` ve `XAI_SAFETY_MODEL` bu sürümde girilmez.
 
 ### 5.5 Altı fonksiyonu yayımla
 
@@ -255,6 +256,8 @@ curl -sS "$BASE/functions/v1/ad-reward" | jq -c .
 **Beklenen:** altı fonksiyon ACTIVE; ilk `curl` 400, ikincisi fonksiyonun kendi `{"error":{"code":"unauthorized",…}}` yanıtı.
 
 **Hata olursa:** `--use-api` yoksa `brew upgrade supabase`; hâlâ yoksa Docker Desktop'ı açıp aynı komutları `--use-api` olmadan çalıştır. 401 alırsan o fonksiyonu `--no-verify-jwt` ile yeniden yayımla.
+
+**Hukuk sayfaları:** yeni `ai-image` her düzenlenecek fotoğrafı ve her sonucu Anthropic'e gönderir. Onay ekranı ve bu depodaki metinler Anthropic'i yazıyor, aybuke.org'daki canlı sayfalar henüz yazmıyor. Henüz herkese açık bir derleme olmadığı için yayım bundan önce yapılabilir; ama senin dışında birinin kuracağı bir derleme test kullanıcılarına ulaşmadan ve 13. bölümdeki gönderimden önce 11.1'deki senkron yapılmış olmalı.
 
 ### 5.6 Zamanlanmış işler
 
@@ -305,20 +308,20 @@ psql "$SUPABASE_DB_URL" -X -v ON_ERROR_STOP=1 -v uid="$USER_ID" -c "select count
 unset TOKEN USER_ID
 ```
 
-**Beklenen:** bakiye yanıtı `credits_remaining: 0`, `free_credits: "unverified"` (App Store kurulumu kanıtı olmadan ücretsiz kredi yok; TestFlight'ta 2 görünür), `ai_status: "ok"`; silme `{"deleted":true}`; `kalan_kullanici` 0.
+**Beklenen:** bakiye yanıtı `credits_remaining: 0`, `free_credits: "unverified"` (App Store kurulumu kanıtı olmadan ücretsiz kredi yok; TestFlight'ta 2 görünür), `ai_status: "ok"`; silme `{"deleted":true}`; `kalan_kullanici` 0. Panelde Edge Functions › `ai-image` › Logs: fonksiyon ilk istekte başlarken `output check in force: xai + anthropic:claude-haiku-5-5` yazar. Yalnızca `xai` görünüyorsa `ANTHROPIC_API_KEY` eksik demektir (5.4).
 
-## 6) Konsollar: AdMob ve App Store bildirimleri (yalnızca panel)
+## 6) Konsollar: AdMob ve iade bildirimleri (yalnızca panel)
 
-1. **AdMob** › Apps › Aybuke › Ad units › ödüllü birim `ca-app-pub-2292230772061554/1406702504` (ödül 1, öğe `credit`) › Server-side verification: `https://efapupjvidyqhqdevmcu.supabase.co/functions/v1/ad-reward` (sorgu dizesi yok) › **Verify URL**. Beklenen: başarılı (test çağrısı kredi vermez).
-2. **AdMob** › Blocking controls › Sensitive categories: flört, kumar, alkol, kilo verme ve diğer hassas kategorileri engelle. Privacy & messaging: AB, Birleşik Krallık ve İsviçre için GDPR mesajı. Uygulama adı "Aybuke" olsun.
-3. **Geçiş reklamı birimi** oluşturduysan kimliğini Claude Code'a ver: `ios/App/Resources/AppConfig.json` › `ads.interstitialUnitID` alanına yazılır, kontroller yeniden çalışır, commit'lenir.
-4. **App Store Connect** › Apps › Aybuke › App Information › App Store Server Notifications: **Version 2**; Production Server URL ve Sandbox Server URL: `https://efapupjvidyqhqdevmcu.supabase.co/functions/v1/app-store-notifications`. Kaydet; varsa "Send Test Notification". Kontrol:
+1. **AdMob ödüllü birim:** yapıldı (15 Ekim). `ca-app-pub-2292230772061554/1406702504` (ödül 1, öğe `credit`) › Server-side verification: `https://efapupjvidyqhqdevmcu.supabase.co/functions/v1/ad-reward` (sorgu dizesi yok), Verify URL başarılı ve kaydedildi. Yeniden kurman gerekirse aynı adres; test çağrısı kredi vermez.
+2. **AdMob gizlilik ve içerik:** standart 11 hassas kategori ve kısıtlı kategoriler engellendi (15 Ekim; hesap düzeyinde, Baby Bloom'u da etkiler). "Aybuke GDPR" mesajı (yalnızca Aybuke, gizlilik politikası adresi, her ülkede "Do not consent" düğmesi, 9 ek dil) **taslak**: Privacy & messaging › European regulations › "Aybuke GDPR" › **Publish** anahtarını aç. Uygulama adı "Aybuke" olsun (SAHIP 3.4).
+3. **Geçiş reklamı birimi:** yapıldı (15 Ekim). "After save interstitial" `ca-app-pub-2292230772061554/6797438012`, sıklık sınırı kullanıcı başına günde 3; kimlik `ios/App/Resources/AppConfig.json` › `ads.interstitialUnitID` alanında. Sahibin 1.0 kararı (kaydettikten sonra ara sıra geçiş reklamı) böylece uygulandı.
+4. **İade bildirimleri, RevenueCat üzerinden (yalnızca sen; bir ajanın denemesi engellendi):** App Store Connect her ortam için tek adres kabul eder ve App Store Connect › Apps › Aybuke › App Information › App Store Server Notifications'taki Production ve Sandbox adresleri RevenueCat'i gösterir; onlara dokunma. Adresi RevenueCat'e gir: RevenueCat › Project Glowlit › Apps › Glowlit (App Store) › **Apple Server Notification Forwarding URL** = `https://efapupjvidyqhqdevmcu.supabase.co/functions/v1/app-store-notifications`; kaydet. RevenueCat her imzalı bildirimi değiştirmeden iletir, fonksiyon Apple'ın imzasını kendisi denetler. Sonra bir Sandbox satın alması yap (ya da App Store Connect'te "Send Test Notification"; RevenueCat iletirse o da gelir). Kontrol:
 
 ```zsh
 psql "$SUPABASE_DB_URL" -X -v ON_ERROR_STOP=1 -c "select notification_type, environment, action, outcome, received_at from private.app_store_notifications order by received_at desc limit 5;"
 ```
 
-**Beklenen:** `TEST` türünde bir satır, `outcome` `ignored`.
+**Beklenen:** en az bir yeni `Sandbox` satırı (test bildirimi geldiyse `TEST` türünde, `outcome` `ignored`). Satır yoksa RevenueCat'teki adresi ve Edge Functions › `app-store-notifications` › Logs'u kontrol et.
 
 ## 7) Mac penceresi ve büyük metin kontrolü
 
@@ -539,13 +542,19 @@ PY
 | Satın almalar sürüme | iOS 1.0 sayfası › In-App Purchases and Subscriptions | `app.glowlit.pro.yearly`, `app.glowlit.pro.monthly`, `app.glowlit.credits.30`, `app.glowlit.credits.100`; her birinde inceleme ekran görüntüsü (`docs/marketing/app-store/en/09-paywall.jpg`) ve not |
 | App Privacy | App Privacy | [`RELEASE-CHECKLIST.md`](RELEASE-CHECKLIST.md) §11 ve [`SAHIP-YAPILACAKLAR.md`](SAHIP-YAPILACAKLAR.md) 2.7: kurulum hash'i ve e-posta kararını ver; reklam için "Third-Party Advertising" (izleme yok) |
 | Yaş derecelendirmesi | App Information › Age Rating | 13+; Advertising işaretli; Age Assurance kararı (SAHIP 2.8) |
-| İade bildirimleri | App Information › App Store Server Notifications | 6. bölüm, 4. madde |
-| İnceleme bilgisi | Sürüm sayfası › App Review Information | Giriş gerekmez; iletişim bilgileri; not metni [`marketing/app-store-listing.md`](marketing/app-store-listing.md) ve [`marketing/app-store-connect-setup.md`](marketing/app-store-connect-setup.md): ilk bulut işinde anonim hesap, önce onay ekranı (Supabase ve xAI), Makeup Studio, reklam yalnızca 13+ ücretsiz üyeler (kişiselleştirilmemiş; Pro, 13 yaş altı ve Mac'te yok), ücretsiz kredi App Store kurulumuna bağlı (Sandbox kabul edilir), Apple ile giriş bu sürümde gizli, satın almalar ve sandbox notu, güvenlik katmanları ve bildirme, Verilerimi sil, Mac farkları |
+| İade bildirimleri | RevenueCat › Project Glowlit › Apps › Glowlit (App Store) › Apple Server Notification Forwarding URL (App Store Connect RevenueCat'i göstermeye devam eder) | 6. bölüm, 4. madde |
+| İnceleme bilgisi | Sürüm sayfası › App Review Information | Giriş gerekmez; iletişim bilgileri; not metni [`marketing/app-store-listing.md`](marketing/app-store-listing.md) ve [`marketing/app-store-connect-setup.md`](marketing/app-store-connect-setup.md): ilk bulut işinde anonim hesap, önce onay ekranı (Supabase, xAI ve Anthropic), Makeup Studio, reklam yalnızca 13+ ücretsiz üyeler (kişiselleştirilmemiş; Pro, 13 yaş altı ve Mac'te yok), ücretsiz kredi App Store kurulumuna bağlı (Sandbox kabul edilir), Apple ile giriş bu sürümde gizli, satın almalar ve sandbox notu, güvenlik katmanları (fotoğraf ve her sonuç için bağımsız Claude denetimi dahil) ve bildirme, Verilerimi sil, Mac farkları |
 | Ülkeler | Pricing and Availability | Çin anakarası hariç |
 | Mac | macOS 1.0 sayfası | Mac ekran görüntüleri ve Mac açıklaması |
 | Abonelik açıklaması | Abonelik grubu "Aybuke Pro" | "80 kredi" sayısı kalsın mı kararı (SAHIP 2.6) |
 
 ## 11) Web sitesi ve arama
+
+### 11.1 Hukuk metinlerini web sitesine taşı (gönderimden önce şart)
+
+Onay ekranı Anthropic'i listelediği için aybuke.org'daki gizlilik politikası, KVKK aydınlatma metni, kullanım koşulları ve kabul edilebilir kullanım politikası da onu yazmalı. Bu, senin dışında birinin kuracağı bir derleme test kullanıcılarına ulaşmadan ve 13. bölümdeki gönderimden önce yapılır; 5.5'ten sonra yapılabilir, çünkü henüz herkese açık bir derleme yok. Bu depodaki `legal/en/*.md` ve `legal/tr/*.md` dosyalarını `RiosenBeq/aybuke` deposuna kopyala, orada `python3 scripts/build.py` çalıştır, commit'le ve push'la (`web/README.md`); Vercel yayınlayınca aşağıdaki kontrolü çalıştır.
+
+### 11.2 Kontroller
 
 ```zsh
 for u in https://aybuke.org https://aybuke.org/support https://aybuke.org/legal/en/privacy-policy https://aybuke.org/legal/en/terms-of-use https://aybuke.org/legal/tr/gizlilik-politikasi https://aybuke.org/legal/en/privacy-policy.html; do
@@ -553,15 +562,21 @@ for u in https://aybuke.org https://aybuke.org/support https://aybuke.org/legal/
 done
 curl -s https://aybuke.org/app-ads.txt | grep -F 'google.com, pub-2292230772061554, DIRECT, f08c47fec0942fa0' && echo "app-ads.txt ok"
 python3 ~/Downloads/aybuke-app/scripts/check-release-config.py --online
+# Yayındaki gizlilik metinleri Claude güvenlik denetimini (Anthropic) yazıyor mu
+for u in https://aybuke.org/legal/en/privacy-policy https://aybuke.org/legal/tr/gizlilik-politikasi https://aybuke.org/legal/tr/kvkk-aydinlatma-metni; do
+  curl -s -L "$u" | grep -q 'Anthropic' && echo "Anthropic var  $u" || echo "ESKİ METİN     $u"
+done
 ```
 
-**Beklenen:** hepsi 200 ve "app-ads.txt ok". Sonra Google Search Console › aybuke.org › Sitemaps'te site haritasını yeniden gönder. IndexNow bildirimi web sitesi deposundaki (`RiosenBeq/aybuke`, `public/`) anahtar dosyasıyla yapılır; Claude Code bunu yapabilir.
+**Beklenen:** hepsi 200, "app-ads.txt ok" ve üç sayfada "Anthropic var". "ESKİ METİN" görürsen 11.1 yapılmamış ya da Vercel henüz yayınlamamış demektir; 11.1'i yap, kontrolü tekrarla. Üç sayfada "Anthropic var" görmeden dış test kullanıcısı ekleme ve gönderme. Sonra Google Search Console › aybuke.org › Sitemaps'te site haritasını yeniden gönder. IndexNow bildirimi web sitesi deposundaki (`RiosenBeq/aybuke`, `public/`) anahtar dosyasıyla yapılır; Claude Code bunu yapabilir.
 
 ## 12) TestFlight'ta son kontrol
 
+Bu derlemeyi yalnızca sen kur. Dış test kullanıcısı (senin dışında biri) eklemeden önce 11.1 bitmiş ve üç sayfada "Anthropic var" görünmüş olmalı.
+
 TestFlight'tan iPhone'a kur (temiz kurulum):
 - Bakiye ilk denemeden önce **2 ücretsiz kredi** gösterir.
-- Bir Magic Edit gerçek sonuç verir, "DEMO PREVIEW" damgası ve "Preview build" bandı yoktur.
+- Bir Magic Edit gerçek sonuç verir, "DEMO PREVIEW" damgası ve "Preview build" bandı yoktur. Sonucun gelmesi, Claude denetiminin fotoğrafı ve sonucu geçirdiğini de gösterir.
 - Sandbox hesabıyla bir kredi paketi alınır; bakiye artar (`select kind, purchased, created_at from public.credit_ledger order by created_at desc limit 5;`).
 - Ödüllü reklam (kredin bitince) izlenir; kredi yalnızca AdMob'un geri çağrısından sonra gelir.
 - Mümkünse sandbox iadesi: Pro ya da paket hemen kalkar (`private.app_store_notifications` tablosunda `REFUND`, `applied`).
@@ -570,7 +585,7 @@ Ardından eski xAI anahtarını iptal et (0. bölüm). Ayrıntılı test listesi
 
 ## 13) Gönder ve yayınla (sen)
 
-1. App Store Connect › Aybuke › iOS 1.0: derleme bağlı, satın almalar ekli, metinler ve görseller tamam → **Add for Review** → **Submit for Review**. İlk abonelikler ve paketler sürümle birlikte incelemeye gider.
+1. Önkoşul: 11.1 bitti ve 11.2'de üç sayfada "Anthropic var". App Store Connect › Aybuke › iOS 1.0: derleme bağlı, satın almalar ekli, metinler ve görseller tamam → **Add for Review** → **Submit for Review**. İlk abonelikler ve paketler sürümle birlikte incelemeye gider.
 2. macOS 1.0 için aynısı.
 3. Onay gelince (yayın türü manuel) **Release This Version**.
 4. Ret gelirse App Review'un Resolution Center mesajını Claude Code'a ver; düzeltme yeni bir derleme ve yükleme ister.
@@ -585,6 +600,7 @@ Ardından eski xAI anahtarını iptal et (0. bölüm). Ayrıntılı test listesi
 | AdMob doğrulaması 503 | `ADMOB_REWARDED_AD_UNIT` eksik (5.4) |
 | Apple bildirimi 400 / 503 | `APPLE_APP_ID` ve `APPLE_BUNDLE_ID` (5.4) |
 | Her AI işi başarısız ve iade | xAI kredisi ya da `XAI_API_KEY` (0. bölüm) |
+| Her düzenleme ya da sonuç "denetlenemedi" diye iade (`jobs.error_code`: `photo_check_failed` ya da `safety_check_failed`) | Anthropic bakiyesi, harcama limiti ya da `ANTHROPIC_API_KEY` (0. bölüm, 5.4); `ai-image` Logs'taki uyarı kısa nedeni yazar |
 | Yükleme "release blocker" | `check-release-config.py --online` çıktısı; demo modu, yasal yer tutucu ya da açılmayan adres |
 | Disk dolu | `rm -rf ~/Library/Developer/Xcode/DerivedData/Glowlit-*(N) build/DerivedData build/app-store build/app-store-mac` ve `xcrun simctl delete unavailable` |
 
@@ -626,11 +642,11 @@ You are finishing Aybuke 1.0 (codename Glowlit) on the owner's Mac and preparing
 Read first: AGENTS.md, docs/MAC-YAYIN.md (the runbook: every command you need, in order), docs/SAHIP-YAPILACAKLAR.md, docs/SUPABASE-TODO.md, docs/RELEASE-CHECKLIST.md, docs/AI-TODO.md, scripts/asc/README.md, backend/README.md (the Abuse runbook).
 
 GUARDRAILS
-1. Never print, log, paste or commit a secret: the App Store Connect key (.p8), SUPABASE_DB_URL or its password, any Supabase token, the service role key, the xAI key. Read them only from the environment or the files the owner prepared. Never echo them; never use set -x around commands that read them. When a secret must be typed, ask the owner to type it into a read -s prompt in the terminal, never into the chat.
+1. Never print, log, paste or commit a secret: the App Store Connect key (.p8), SUPABASE_DB_URL or its password, any Supabase token, the service role key, the xAI key, the Anthropic key. Read them only from the environment or the files the owner prepared. Never echo them; never use set -x around commands that read them. When a secret must be typed, ask the owner to type it into a read -s prompt in the terminal, never into the chat.
 2. Never submit for review. At the very end ask the owner exactly "Her şey hazır. Gönderelim mi?" with a short Turkish summary, and wait for a clear "evet". Only then submit, iOS and macOS.
 3. On the live Supabase project never delete a project, user, table or row, never run db reset, drop or truncate, never edit a published migration, never use supabase db push. Apply only the files in backend/supabase/migrations that the check in docs/MAC-YAYIN.md 5.2 shows missing, each in its own transaction (psql -1 -v ON_ERROR_STOP=1), in order, and stop at the first error. The only delete allowed is the smoke-test user through DELETE /functions/v1/account.
 4. Never force-push or rewrite history. Work on pink-girls-redesign, push after every finished step, and fast-forward main only when CI is green on that commit (gh run list / gh run view).
-5. Stop and ask the owner in Turkish when a step needs an open decision from docs/SAHIP-YAPILACAKLAR.md section 5, or a console only the owner can use: AdMob, App Privacy, age rating, the App Store Server Notifications URL, In-App Purchases on the version page, Search Console, AdSense. Give the exact menu path and what to enter, then wait until the owner says it is done.
+5. Stop and ask the owner in Turkish when a step needs an open decision from docs/SAHIP-YAPILACAKLAR.md section 5, or a console only the owner can use: AdMob (publishing the "Aybuke GDPR" draft), App Privacy, age rating, the Apple Server Notification Forwarding URL in RevenueCat (App Store Connect keeps pointing at RevenueCat), In-App Purchases on the version page, Search Console, AdSense. Give the exact menu path and what to enter, then wait until the owner says it is done.
 6. Commit messages: imperative summary, short body, and the trailer
    Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 
@@ -645,15 +661,15 @@ THEN, IN ORDER (each step is a section of docs/MAC-YAYIN.md; run its commands, r
 1. Section 1 and 3: sync and every check. Fix failures in code (never weaken a test), commit, push.
 2. Section 4: the three builds. Fix every error and every new warning, commit, push. Then check CI on GitHub for that commit.
 3. Section 5: backend live (5.1 to 5.8). Report in Turkish which migrations were missing, what you applied, the function list, cron jobs, the security checks and the smoke test.
-4. Section 6: ask the owner to do the console steps and to give you the interstitial unit id if they want one. If given, put it in ads.interstitialUnitID in ios/App/Resources/AppConfig.json (it must stay consistent with the checks), run section 3 again, commit, push. Check the App Store notification test row.
+4. Section 6: the AdMob units are done (rewarded SSV verified; interstitial ca-app-pub-2292230772061554/6797438012, 3 a day). Confirm ads.interstitialUnitID in ios/App/Resources/AppConfig.json holds that id (if it is empty, put it there, run section 3 again, commit, push). Ask the owner to publish the "Aybuke GDPR" draft in AdMob and to set the RevenueCat Apple Server Notification Forwarding URL (section 6, item 4); never change the App Store Connect notification URLs. Then check for the new notification row.
 5. Section 7: Mac window and large-text checks. Look at every capture yourself. Fix clipped or overlapping text and layout problems in the app, rebuild, recapture, commit, push.
 6. Section 8: the screenshots in 12 languages for iPhone, iPad and Mac. Look at every final image (no credit numbers, no clipped text, the right language, no placeholder). Commit and push docs/marketing/app-store.
 7. Section 9: upload iOS and macOS builds. Never use GL_PREVIEW_BUILD. Wait for processing.
 8. Section 10.1: metadata, screenshots, build, copyright, manual release and URLs through the API (check every URL answers 200 first, section 11). Update the App Review notes text in docs/marketing/app-store-listing.md so it covers every point in the 10.2 table, and give the owner the final notes text to paste. Then walk the owner through every row of the 10.2 table and wait until each is done.
-9. Section 11: website checks; ping IndexNow with the key file from the website repository RiosenBeq/aybuke (public/); remind the owner to resubmit the sitemap in Search Console.
+9. Section 11: sync the legal texts into RiosenBeq/aybuke as web/README.md says (11.1), push, and run the checks (11.2) until all three pages name Anthropic. This must be done before any build reaches a tester other than the owner and before submission; ping IndexNow with the key file from the website repository RiosenBeq/aybuke (public/); remind the owner to resubmit the sitemap in Search Console.
 10. Section 12: ask the owner to run the TestFlight checks and report back; fix what fails (new build if needed).
 11. Docs: tick what is done in docs/RELEASE-CHECKLIST.md, docs/SAHIP-YAPILACAKLAR.md and docs/NEXT-STEPS.md; update AGENTS.md section 6. Commit, push, fast-forward main after CI is green.
 12. Ask: send the owner a short Turkish summary (what is live, what was checked, open owner items and open decisions), then ask exactly "Her şey hazır. Gönderelim mi?". Submit iOS and macOS for review only after a clear "evet" (or, if the owner prefers to press the button, tell them section 13).
 
-Open work you may also do when the owner agrees (each needs tests and a green CI): docs/AI-TODO.md section 1 item 5 (independent output check, a draft only; FAL_KEY stays unset) and the residual risks listed in docs/AI-TODO.md section 5.
+Open work you may also do when the owner agrees (each needs tests and a green CI): the residual risks listed in docs/AI-TODO.md section 5. The independent safety check (docs/AI-TODO.md section 1 item 5) is done with Claude: after section 5, confirm the ai-image log line from 5.8 and one real Magic Edit (risk 20); FAL_KEY and XAI_SAFETY_MODEL stay unset.
 ```

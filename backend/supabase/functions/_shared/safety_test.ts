@@ -1,6 +1,6 @@
 // deno test _shared/
 import assert from "node:assert/strict";
-import { buildRequest, classifyImages, parseVerdict, safetyModel, XAI_CHAT_URL } from "./safety.ts";
+import { buildRequest, classifyImages, parseVerdict, safetyModel, safetyProvider, XAI_CHAT_URL } from "./safety.ts";
 
 const env = (values: Record<string, string>) => ({ get: (name: string) => values[name] });
 const answer = (content: unknown, extra: Record<string, unknown> = {}) => ({
@@ -17,13 +17,19 @@ function fetcher(respond: (body: Record<string, unknown>) => Response | Promise<
   return { fn, calls };
 }
 
-const options = (fn: typeof fetch) => ({ model: "grok-vision-test", apiKey: "test-key", fetcher: fn });
+const options = (fn: typeof fetch) => ({
+  provider: "xai" as const,
+  model: "grok-vision-test",
+  apiKey: "test-key",
+  fetcher: fn,
+});
 const image = "data:image/jpeg;base64,AAAA";
 
-Deno.test("off unless XAI_SAFETY_MODEL is set", () => {
+Deno.test("without ANTHROPIC_API_KEY, the xAI check is off unless XAI_SAFETY_MODEL is set", () => {
   assert.equal(safetyModel(env({})), undefined);
   assert.equal(safetyModel(env({ XAI_SAFETY_MODEL: "  " })), undefined);
   assert.equal(safetyModel(env({ XAI_SAFETY_MODEL: "grok-4-fast" })), "grok-4-fast");
+  assert.equal(safetyProvider(env({ XAI_SAFETY_MODEL: "grok-4-fast" })), "xai");
 });
 
 Deno.test("the request: one image, low detail, a strict JSON schema", () => {
@@ -70,6 +76,26 @@ Deno.test("clean images pass; a flag or a category blocks", async () => {
   });
 });
 
+Deno.test("categories are read case-insensitively and come back lowercase", () => {
+  assert.deepEqual(parseVerdict(answer({ flagged: true, categories: ["Nudity"] })), {
+    ok: false,
+    reason: "flagged",
+    categories: ["nudity"],
+  });
+  // A category alone still flags, whatever its case, and one name is one category.
+  assert.deepEqual(parseVerdict(answer({ flagged: false, categories: ["SELF_HARM", "self_harm", "Hate"] })), {
+    ok: false,
+    reason: "flagged",
+    categories: ["self_harm", "hate"],
+  });
+  // An unknown name fails closed in any case.
+  assert.deepEqual(parseVerdict(answer({ flagged: true, categories: ["Nudity", "Bogus"] })), {
+    ok: false,
+    reason: "check_failed",
+    detail: "unexpected category",
+  });
+});
+
 Deno.test("fails closed: errors, timeouts, refusals and odd answers block", async () => {
   const failed = async (fn: typeof fetch) => {
     const verdict = await classifyImages([image], "photo", { ...options(fn), timeoutMs: 50 });
@@ -91,6 +117,12 @@ Deno.test("fails closed: errors, timeouts, refusals and odd answers block", asyn
   );
   const none = await classifyImages([], "result", options(fetcher(() => Response.json(answer({}))).fn));
   assert.ok(!none.ok && none.reason === "check_failed", "nothing to check isn't a pass");
+  // A refusal is a failed check (refunded, no strike), logged as exactly "refused".
+  assert.deepEqual(parseVerdict(answer(null, { content: null, refusal: "I can't look at this." })), {
+    ok: false,
+    reason: "check_failed",
+    detail: "refused",
+  });
 });
 
 Deno.test("an answer outside the schema fails closed, whatever flagged says", () => {

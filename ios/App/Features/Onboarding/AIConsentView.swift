@@ -4,8 +4,8 @@ import SwiftUI
 /// third-party AI processing (App Store Review Guideline 5.1.2(i), GDPR).
 /// "Allow" and "Not now" carry the same weight: no nudge either way.
 struct AIConsentView: View {
-    let providerName: String
-    /// Everyone who processes what she sends, named on the sheet.
+    /// Everyone who processes what she sends, named on the sheet. The lead
+    /// sentence points at this list rather than naming one company.
     let processors: [AIProcessor]
     /// "an hour", "24 hours"…
     let retention: String
@@ -35,13 +35,19 @@ struct AIConsentView: View {
                 Text(styled: "Your photos, *your call*", size: 25)
                     .foregroundStyle(Palette.textPrimary)
 
-                Text("To create and edit images with AI, we send the photo and text you choose to our servers and to \(providerName), who process them on our behalf.")
+                Text("To create and edit images with AI, we send the photo and text you choose to our servers and to the companies listed below, who process them for us.")
                     .font(.body)
                     .foregroundStyle(Palette.textSecondary)
                     .fixedSize(horizontal: false, vertical: true)
 
                 VStack(alignment: .leading, spacing: 14) {
                     ConsentPoint(symbol: "trash", text: "Deleted from our servers within \(retention)")
+                    // Anthropic's API terms: deleted within 30 days, longer
+                    // only for content its systems flag (privacy policy §14).
+                    if processors.contains(where: { $0.role == .safety }) {
+                        ConsentPoint(symbol: "checkmark.shield",
+                                     text: "Deleted by our safety-check provider within 30 days, unless flagged for breaking its rules")
+                    }
                     ConsentPoint(symbol: "brain", text: "Never used to train AI models")
                     ConsentPoint(symbol: "eye.slash", text: "Never sold or shared for advertising")
                     ConsentPoint(symbol: Platform.isMac ? "laptopcomputer" : "lock.shield",

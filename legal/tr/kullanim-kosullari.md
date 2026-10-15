@@ -269,7 +269,7 @@ Girdilerinizi barındırmamız, çoğaltmamız, iletmemiz, değiştirmemiz ve ba
 
 - girdilerinizi yapay zekâ modellerini eğitmek için kullanmamıza izin vermez;
 - girdilerinizi satmamıza veya reklam amacıyla kullanmamıza izin vermez; ve
-- talebinizin işlenmesi tamamlandığında sona erer; ancak bize gönderdiğiniz bir rapora eklediğiniz bilgiler, Gizlilik Politikası'nda açıklandığı şekilde saklanır.
+- talebinizin işlenmesi tamamlandığında sona erer; ancak bize gönderdiğiniz bir rapora eklediğiniz bilgiler ile güvenlik kontrolü sağlayıcımızın sınırlı bir süre sakladığı kopyalar, Gizlilik Politikası'nda açıklandığı şekilde saklanır.
 
 ### Sonuçlarınız
 

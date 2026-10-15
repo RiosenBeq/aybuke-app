@@ -22,19 +22,19 @@ Son güncelleme: 14 Ekim 2026. Ajan işlerinin sıralı ve tam listesi [`AI-TODO
   - Abonelik grubu "Aybuke Pro": `app.glowlit.pro.yearly` ($39.99) ve `app.glowlit.pro.monthly` ($5.99, ilk ay $1.99).
   - Kredi paketleri: `app.glowlit.credits.30` ($2.99) ve `app.glowlit.credits.100` ($7.99).
   - Fiyatlar ve ürün kimlikleri `ios/StoreKit/Products.storekit` ile eşleşiyor.
-- **AdMob:** uygulama kimliği `ca-app-pub-2292230772061554~5236020895`; ödüllü birim `ca-app-pub-2292230772061554/1406702504`. Geçiş birimi tanımlı değil (`ads.interstitialUnitID` boş): geçiş reklamları kapalı.
+- **AdMob:** uygulama kimliği `ca-app-pub-2292230772061554~5236020895`; ödüllü birim `ca-app-pub-2292230772061554/1406702504`. Geçiş birimi "After save interstitial" `ca-app-pub-2292230772061554/6797438012` (günde 3), 15 Ekim 2026'da oluşturuldu ve `ads.interstitialUnitID` alanına girer (SAHIP 3.1).
 
 ## 2. Hesaplar ve gizli bilgiler (repoda OLMAZ)
 
 - **App Store Connect API anahtarı:** `~/.appstoreconnect/private_keys/AuthKey_<KEY_ID>.p8`. Yeni makinede sahibin dosyayı güvenli biçimde kopyalaması gerekir. Dosyayı asla commit etme, yazdırma veya bir yere yapıştırma. Dosya adındaki anahtar kimliği ile issuer kimliği, App Store Connect → Users and Access → Integrations sayfasındaki liste ile yüklemeden önce karşılaştırılmalı.
 - **Supabase CLI:** yeni makinede `supabase login` gerekir. Fonksiyon dağıtım komutları 4.2, adım 5'te.
 - **Supabase Secrets** (Edge Functions → Secrets): değerler bu dosyada ve repoda yok. Durum:
-  - HANDOFF-PROMPT.md'ye göre ayarlı: `XAI_API_KEY`, `APPLE_APP_ID`, `APPLE_BUNDLE_ID`, `APPLE_TEAM_ID`. `APPLE_APP_ID` değeri `6822716008` olmalı.
+  - HANDOFF-PROMPT.md'ye göre ayarlı: `XAI_API_KEY`, `APPLE_APP_ID`, `APPLE_BUNDLE_ID`, `APPLE_TEAM_ID`. `APPLE_APP_ID` değeri `6822716008` olmalı. Sahip 15 Ekim 2026'da `ANTHROPIC_API_KEY` ekledi (Claude güvenlik denetimi, SAHIP-YAPILACAKLAR.md 5.8).
     - Doğrulanamadı: Secrets bu ortamdan görülemedi.
   - Eksik: `ADMOB_REWARDED_AD_UNIT`. `ad-reward/index.ts` bu değeri okur; boşsa her ödülü reddeder.
   - Olmamalı: `GLOWLIT_ALLOW_XCODE_APP_TRANSACTIONS`. `_shared/apple.ts` yalnızca yerel projede kabul eder; barındırılan projede yok sayar ve günlüğe yazar.
   - Hiçbir fonksiyon `OUTPUT_MODERATION` okumuyor (yalnızca `_shared/moderation_test.ts` bunun yok sayıldığını test eder).
-  - Eklenmez (sahip kararı, SAHIP-YAPILACAKLAR.md 5.8): `FAL_KEY`, `XAI_SAFETY_MODEL`.
+  - Eklenmez (sahip kararı, SAHIP-YAPILACAKLAR.md 5.8: bağımsız denetim Claude): `FAL_KEY`, `XAI_SAFETY_MODEL`. `ANTHROPIC_SAFETY_MODEL` boş kalabilir (varsayılan `claude-haiku-5-5`).
   - Henüz yok: `REVENUECAT_SECRET_KEY`, `APPLE_SIGNIN_KEY_ID`, `APPLE_SIGNIN_PRIVATE_KEY`. Hesap silme RevenueCat kaydını `pending_revenuecat_deletions` tablosunda bekletir. Apple ile giriş bu sürümde kapalı (`signInWithApple: false`).
 - **xAI konsolu:** kredi ya da aylık harcama limiti bitmiş (HANDOFF-PROMPT.md). Sohbete yapıştırılmış API anahtarı döndürülmeli (SAHIP-YAPILACAKLAR.md 1.2). Zero Data Retention durumu sahibin işi (4.3, madde 4).
 - **Apple sahibi:** App Store Connect "Account Holder" sahibin Apple kimliğidir. Sözleşmeleri kabul etmek (Paid Apps Agreement dahil) ve gönderimi onaylamak yalnızca sahibin işidir.
@@ -43,7 +43,7 @@ Son güncelleme: 14 Ekim 2026. Ajan işlerinin sıralı ve tam listesi [`AI-TODO
 ## 3. Tamamlananlar (özet)
 
 - **Ana dal ve CI:** PR #1 `main`'de (`d007a8b`). `main` için CI çalıştırması (38625838738) yeşil. Yeniden adlandırma `6f2959d` için CI çalıştırması (38626550552, elle başlatıldı) dört işte yeşil: belgelerin senkronu, AppCore testleri (Linux), backend (Deno ve PostgreSQL) ve iOS derlemesi (iOS ve Mac Catalyst adımları dahil). `31f8817` ve `28c16eb` için çalıştırma yok (bkz. 4.1, adım 1).
-- **Yerelde geçen kontroller:** bu oturumda `build-legal.py --check`, `export-core-strings.py --check`, `check-honest-copy.py` ve `check-release-config.py --report` geçti. `--report` yalnızca geçiş birimi boş uyarısı veriyor. Ajanın bildirip bu dosyada yeniden çalıştırmadığı kontroller: AppCore `swift test` 319 testi geçti (yeniden adlandırmadan sonra); Deno fmt, lint, check ve 50 test geçti; `backend/scripts/test-db.sh` PostgreSQL 16'da geçti; 206 Swift dosyasının sözdizimi denetlendi. Sayılar koda karşı kontrol edildi: 319 `func test` bildirimi ve 50 `Deno.test`.
+- **Yerelde geçen kontroller:** bu oturumda `build-legal.py --check`, `export-core-strings.py --check`, `check-honest-copy.py` ve `check-release-config.py --report` geçti. `--report` o gün yalnızca geçiş birimi boş uyarısını veriyordu (15 Ekim'de birim eklendi, uyarı kalktı). Ajanın bildirip bu dosyada yeniden çalıştırmadığı kontroller: AppCore `swift test` 319 testi geçti (yeniden adlandırmadan sonra); Deno fmt, lint, check ve 50 test geçti; `backend/scripts/test-db.sh` PostgreSQL 16'da geçti; 206 Swift dosyasının sözdizimi denetlendi. Sayılar koda karşı kontrol edildi: 319 `func test` bildirimi ve 50 `Deno.test`.
 - **Uygulama yapılandırması** (`28c16eb`): `websiteURL` `https://aybuke.org`; `privacyPolicyURL` ve `termsURL` aybuke.org'daki uzantısız yasal adresler. GitHub Pages adresleri kaldırıldı. `appStoreID` ayarlı, `forceDemoMode` false, `signInWithApple` false.
 - **Kredi ve kötüye kullanım** (`main`'de, canlı değil): 2 ücretsiz kredi/gün, yalnızca doğrulanmış App Store kurulumuna; Pro 80/ay ve 160 üst sınır; deneme 20 kredi; Likeness Lock 3/gün; 1500 ücretsiz iş/gün ve 8000 iş/gün devre kesiciler; 24 saat içinde 3 strike, 24 saatlik cool-down. Sayılar `public.credit_policy()` içinde (`20261020000000_credit_policy_v2.sql`).
 - **Reklam** (`main`'de, canlı değil): `ad-reward` fonksiyonu, `20261019000000_ad_rewards.sql` ve `20261023000000_ad_rewards_per_install.sql` migrasyonları, ödüllü birim kimliği. `web/app-ads.txt` AdMob satırını içeriyor. Canlı site doğrulanamadı.
@@ -92,6 +92,7 @@ Sırayla yapılır. Her adımın "Kontrol" satırı tamamlanmadan bir sonrakine 
     - `web/README.md` hâlâ GitHub Pages yayınını anlatıyor; tek kaynak kararı yazılmalı.
     - fal.ai `aiProcessors` listesinde yok (`AppConfig.json`: yalnızca Supabase ve xAI). `FAL_KEY` ayarlanmadan önce bu liste ve gizlilik metinleri güncellenmeli. Taslak sahibe gider; `FAL_KEY` ayarlanmaz.
     *Kontrol:* `scripts/build-legal.py --check` geçer; `moderation_test.ts` fal yolunu kapsar.
+    **Yapıldı (15 Ekim 2026), fal.ai yerine Claude ile:** bağımsız denetim `_shared/safety.ts` içinde Anthropic'in Claude modeli (`ANTHROPIC_API_KEY`); onay ekranı Supabase, xAI ve Anthropic'i listeler (`consentVersion` 2), gizlilik metinleri Anthropic'i yazar. `FAL_KEY` ayarlanmaz. Ayrıntı: AI-TODO.md §1.5.
 11. **Belgeleri aynı işte güncelle** (AGENTS.md §6). Bir sayı ya da rota değişirse `RELEASE-CHECKLIST.md`, `SUPABASE-TODO.md`, `marketing/app-store-connect-setup.md` ve `AGENTS.md` aynı değişiklikte düzeltilir.
 
 Kalan kod işleri (AI-TODO.md §1.7, §1.11–1.13 ve §2) sıradadır; §2 Mac ya da cihaz gerektirir.
@@ -117,7 +118,7 @@ Sahibin tam listesi [`SAHIP-YAPILACAKLAR.md`](SAHIP-YAPILACAKLAR.md) dosyasında
    Sonuç `null` olan dosya uygulanmamış demektir. Uygulanmışları atla. Uygulanmamış dokuz dosya bu sırayla, her biri kendi `begin;` … `commit;` bloğunda çalışır: `20261019000000_ad_rewards.sql`, `20261019500000_keepalive.sql`, `20261020000000_credit_policy_v2.sql`, `20261021000000_install_and_subscription_credits.sql`, `20261022000000_abuse_controls.sql`, `20261023000000_ad_rewards_per_install.sql`, `20261024000000_private_rls.sql`, `20261024000001_abuse_fixes.sql`, `20261024000002_entitlement_order.sql`. Bir dosya hata verirse dur ve hata metnini ajana ver.
    *Kontrol:* bittiğinde `select to_regprocedure('public.record_entitlement(uuid,text,text,timestamptz,boolean,text,boolean)'), to_regprocedure('public.sweep_ad_rewards()');` iki sütunda da `null` olmayan değer döndürür.
 4. **Gizli değerleri kontrol et ve eksiği ekle** (SAHIP 1.5). `ADMOB_REWARDED_AD_UNIT` = `ca-app-pub-2292230772061554/1406702504`. `APPLE_APP_ID` = `6822716008` olduğunu doğrula. `GLOWLIT_ALLOW_XCODE_APP_TRANSACTIONS` varsa sil. `FAL_KEY` ve `XAI_SAFETY_MODEL` eklenmez.
-   *Kontrol:* `XAI_API_KEY`, `APPLE_APP_ID`, `APPLE_BUNDLE_ID`, `APPLE_TEAM_ID` ve `ADMOB_REWARDED_AD_UNIT` adları var. Değerleri hiçbir yere yazma.
+   *Kontrol:* `XAI_API_KEY`, `ANTHROPIC_API_KEY`, `APPLE_APP_ID`, `APPLE_BUNDLE_ID`, `APPLE_TEAM_ID` ve `ADMOB_REWARDED_AD_UNIT` adları var. Değerleri hiçbir yere yazma.
 5. **Edge Functions'ı yayımla** (SAHIP 1.6). 3. ve 4. adımdan sonra. `ad-reward` ilk kez yayımlanıyor ve JWT doğrulaması kapalı olmalı; AdMob geri çağrısında JWT yok.
 
    ```bash
@@ -142,7 +143,7 @@ Ajan gerekli bilgiyi ve kodu hazırlar; karar sahibindedir. Her madde SAHIP-YAPI
 4. **xAI Zero Data Retention.** Gizlilik metinleri (`legal/en/privacy-policy.md` ve `legal/tr/gizlilik-politikasi.md`, madde 5) xAI'nin Zero Data Retention seçeneğini kullandığını yazıyor. Bu depo bunu kanıtlayamaz. Sahip xAI konsolunda ekip ayarında açık olduğunu doğrulamalı (SAHIP 1.3). Açık değilse açılır; açılamıyorsa metinler değişir ve avukatla birlikte karar verilir.
 5. **MERSİS satırı.** `legal/config.json` › `COMPANY_REGISTRY`: İngilizcede "None (individual developer)", Türkçede "Yok (bireysel geliştirici)". Bilgi doğruysa kalır. Kaldırılacaksa değer boş bırakılır ve `python3 scripts/build-legal.py` çalıştırılır (SAHIP 5.4). Avukat incelemesi (SAHIP 6.1) bu satırı da kapsamalı.
 
-Diğer karar maddeleri (destek adresi, Apple ile giriş ve RevenueCat anahtarları, `FAL_KEY` ve `XAI_SAFETY_MODEL`, KVKK başvuru adresi, yurt dışı aktarım dayanağı) SAHIP-YAPILACAKLAR.md §5–§6'da; AI-TODO.md §3'te ek olarak e-posta beyanı ve marka araması var.
+Diğer karar maddeleri (destek adresi, Apple ile giriş ve RevenueCat anahtarları, KVKK başvuru adresi, yurt dışı aktarım dayanağı) SAHIP-YAPILACAKLAR.md §5–§6'da; AI-TODO.md §3'te ek olarak e-posta beyanı ve marka araması var.
 
 ## 5. Doğrulama komutları
 
@@ -167,7 +168,7 @@ Ağır derlemelerde disk alanını kontrol et (`df -h /System/Volumes/Data`). Ö
 ## 6. Bilinen sorunlar ve riskler
 
 - **Arka uç canlı değil:** migrasyonlar ve fonksiyonlar bekliyor (4.2). xAI kredisi bitmiş; her AI işi başarısız oluyor ve iade ediliyor. App Review'a gönderilmeden önce ikisi de çözülmeli.
-- **Çıktı denetimi:** `FAL_KEY` yokken kontrol xAI'nin kendi moderasyon kararıdır. Kontrol başarısız olursa sonuç engellenir (fail-closed, `_shared/moderation.ts`).
+- **Çıktı denetimi:** `FAL_KEY` yokken kontrol xAI'nin kendi moderasyon kararıdır. Kontrol başarısız olursa sonuç engellenir (fail-closed, `_shared/moderation.ts`). Bunun üstüne Claude düzenlenecek fotoğrafı ve her sonucu denetler (`_shared/safety.ts`, o da fail-closed); yalnızca sahte yanıtlarla test edildi, yayımdan sonra canlıda doğrulanmalı (AI-TODO.md §5, risk 20). Anthropic bakiyesi biterse her düzenleme engellenir ve iade edilir (SAHIP-YAPILACAKLAR.md 1.11).
 - **Apple ile giriş kapalı** (`signInWithApple: false`). Açmadan önce `APPLE_SIGNIN_KEY_ID` ve `APPLE_SIGNIN_PRIVATE_KEY` eklenmeli, App Privacy'de e-posta beyan edilmeli ve giriş satırları App Store metinlerine geri konmalı. `check-honest-copy.py` giriş satırlarını kapalıyken reddeder.
 - **Mac'te Eserlerim:** Mac derlemesinde `ImageStore` dosyaları `completeFileProtectionUntilFirstUserAuthentication` ile yazıyor (`ImageStore.swift`, `#if targetEnvironment(macCatalyst)`). Gerçek Mac'te kutuların boş kalmadığı doğrulanmalı.
   - Doğrulanamadı: bu ortamda Mac yok.

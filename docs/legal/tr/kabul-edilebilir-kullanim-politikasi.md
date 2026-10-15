@@ -2,7 +2,7 @@
 
 # Kabul Edilebilir Kullanım ve Yapay Zekâ İçerik Politikası
 
-Son güncelleme: 14 Ekim 2026
+Son güncelleme: 15 Ekim 2026
 
 > **Kısaca**
 > - Yalnızca kullanma hakkınız olan fotoğrafları yükleyin ve yalnızca buna onay veren kişileri düzenleyin. Çocuklar için onayı velisi veya vasisi vermelidir.
@@ -109,14 +109,15 @@ Birden çok katmanlı güvenlik önlemi kullanırız:
 1. **İstem filtreleri**, uygulamada ve sunucularımızda çıplaklık veya cinsel içerik, "soyma" ya da çıplaklaştırma, küçükleri içeren cinsel içerik ve mayo ya da iç çamaşırı gibi açık kıyafet taleplerini engeller. Fotoğraf düzenlemelerinde ayrıca bir yüzü veya vücudu yeniden şekillendirme, ten rengini değiştirme, cildi rötuşlama veya birinin görünüşünü puanlama taleplerini ve birini alaya alan ya da aşağılayan düzenlemeleri de engeller. Her Magic Edit ayrıca yapay zekâya yüzleri, vücut şekillerini, ten rengini, cilt dokusunu ve yaşı olduğu gibi korumasını söyler.
 2. **Sağlayıcı güvenlik ayarları**, yapay zekâ modellerinin güvenli olmayan içeriği reddetmesini sağlar.
 3. **Otomatik çıktı kontrolü**, her sonucu teslim edilmeden önce çıplaklık veya cinsel içerik bakımından tarar.
-4. **Tasarımdan güvenli özellikler**: şablonlarımız kimliği koruyacak şekilde tasarlanır, ünlülere veya gerçek kişilere dayalı şablonlar sunmayız ve vücut şeklini değiştiren ya da cildi açan özellikler sunmayız.
-5. Kullanıcılardan gelen **bildirimler** bir insan tarafından incelenir.
+4. **Bağımsız güvenlik kontrolü**: ikinci bir şirketin yapay zekâ modeli (Anthropic'in Claude modeli) düzenlemeden önce fotoğrafı ve her sonucu çıplaklık, cinsel içerik, küçükleri cinselleştiren her şey, ağır şiddet, kendine zarar verme ve nefret bakımından kontrol eder. İşaretlediği fotoğraf düzenlenmez, işaretlediği sonuç teslim edilmez; kontrolünü tamamlayamazsa da hiçbir şey teslim edilmez. Geri çevirdiği bir fotoğraf, molaya yol açan engellemeler arasında sayılmaz (aşağıda).
+5. **Tasarımdan güvenli özellikler**: şablonlarımız kimliği koruyacak şekilde tasarlanır, ünlülere veya gerçek kişilere dayalı şablonlar sunmayız ve vücut şeklini değiştiren ya da cildi açan özellikler sunmayız.
+6. Kullanıcılardan gelen **bildirimler** bir insan tarafından incelenir.
 
 Otomatik filtreler kusursuz değildir: zararsız talepleri engelleyebilir, zararlı olanları kaçırabilir. Engellenen veya başarısız olan üretimlerden asla ücret alınmaz.
 
 Sunucularımızdaki filtreler 24 saat içinde isteklerinizden veya sonuçlarınızdan 3'ünü engellerse bulut yapay zekâ, hesabınız ve App Store indirmeniz (doğrulanmış bir indirme yoksa ağ adresiniz) için 24 saat ara verir. 30 gün içinde 3 mola olursa, inceleyene kadar o indirme için bulut yapay zekâyı kapatırız. Cihaz üzerindeki özellikler çalışmaya devam eder. Bir molaya veya kapatmaya itiraz edebilirsiniz (9. bölüm).
 
-Girdilerinizi saklamadığımız ve sonuçları bir saat içinde buluttan sildiğimiz için oluşturduklarınıza rutin olarak bakmayız. İnsan incelemesi, içerik bize bildirildiğinde veya bir karara itiraz ettiğinizde yapılır.
+Girdilerinizi saklamadığımız ve sonuçları bir saat içinde sunucularımızdan sildiğimiz için oluşturduklarınıza rutin olarak bakmayız. İnsan incelemesi, içerik bize bildirildiğinde veya bir karara itiraz ettiğinizde yapılır.
 
 ## 7. Yaptırımlar
 

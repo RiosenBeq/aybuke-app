@@ -4,16 +4,19 @@
 // timeout or an answer we can't read blocks the result, and the job is
 // refunded. There is no setting that turns it off.
 //
-//   "fal"  fal.ai's NSFW classifier, independent of the image model. Used
-//          whenever FAL_KEY is set; AI_PROVIDER=fal alone doesn't switch it on.
 //   "xai"  xAI's own moderation of each generated image (the default with
 //          xAI and no FAL_KEY): xAI withholds the image data of any image it
 //          filters, and xai.parseOutputs() blocks the whole job when it does.
+//   "fal"  fal.ai's NSFW classifier, an alternative that is off unless FAL_KEY
+//          is set; AI_PROVIDER=fal alone doesn't switch it on.
 //
-// fal.ai sees results only with FAL_KEY set, so setting it needs fal.ai listed
-// in the app's consent sheet (ios/App/Resources/AppConfig.json aiProcessors)
-// and the privacy policies first. Part of the documented safeguards for EU AI
-// Act Art. 5(1)(ba) (from 2 Dec 2026).
+// The independent check is safety.ts, not this one: with ANTHROPIC_API_KEY set,
+// Claude also looks at the photo before an edit and at every result, after
+// this check has passed and with the same fail-closed rules. FAL_KEY stays
+// unset: fal.ai would see results, so setting it needs fal.ai listed in the
+// app's consent sheet (ios/App/Resources/AppConfig.json aiProcessors) and the
+// privacy policies first. Part of the documented safeguards for EU AI Act
+// Art. 5(1)(ba) (from 2 Dec 2026).
 import type { Output } from "./fal.ts";
 
 export type OutputCheck = "fal" | "xai";

@@ -50,7 +50,6 @@ struct AppPresentations: ViewModifier {
                 set: { app.consentRequest = $0 }
             )) { request in
                 AIConsentView(
-                    providerName: app.config.processorName,
                     processors: app.config.consentProcessors,
                     retention: app.config.retentionPhrase,
                     asksGuardian: app.ageDefaults.requiresGuardianStep,

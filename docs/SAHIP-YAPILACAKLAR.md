@@ -1,10 +1,10 @@
 # Sahip yapılacaklar
 
-Bu liste yalnızca sahibin yapabileceği işleri içerir: Supabase, xAI, AdMob, AdSense, App Store Connect, Search Console, Vercel ve Mac'te Xcode. Ajan (bu depoda kod ve belge değiştiren asistan) bu hesaplara giremez, anahtar giremez ve gönderme kararı veremez. "Öneri" satırları yalnızca yardımcı görüştür; karar sahibindedir.
+Bu liste yalnızca sahibin yapabileceği işleri içerir: Supabase, xAI, Anthropic (Claude Console), AdMob, AdSense, App Store Connect, Search Console, Vercel ve Mac'te Xcode. Ajan (bu depoda kod ve belge değiştiren asistan) bu hesaplara giremez, anahtar giremez ve gönderme kararı veremez. "Öneri" satırları yalnızca yardımcı görüştür; karar sahibindedir.
 
-**Durum.** 14 Ekim 2026. `pink-girls-redesign` ve `main` aynı commit'te; CI yeşil olunca `main` ileri alınır. Yeniden adlandırma, aybuke.org adresleri, kredi kontrolü (`scripts/check-credit-policy.py`) ve App Store iade bildirimleri uç noktası (`functions/app-store-notifications`) depoda. Canlıda henüz hiçbir şey yok: Supabase, AdMob, App Store Connect ve ekran görüntüleri sahibin hesaplarında ya da Mac'te yapılır. Bu ortamdan dış sitelere çıkılamadı (proxy 403); aybuke.org burada kontrol edilemedi. Mac'te hepsini bir ajana yaptırmak için tek prompt: [`docs/MAC-YAYIN.md`](MAC-YAYIN.md) (tüm komutlar ve Claude Code promptu).
+**Durum.** 14 Ekim 2026. `pink-girls-redesign` ve `main` aynı commit'te; CI yeşil olunca `main` ileri alınır. Yeniden adlandırma, aybuke.org adresleri, kredi kontrolü (`scripts/check-credit-policy.py`) ve App Store iade bildirimleri uç noktası (`functions/app-store-notifications`) depoda. Canlıda henüz hiçbir şey yok: Supabase, App Store Connect ve ekran görüntüleri sahibin hesaplarında ya da Mac'te yapılır. AdMob'da 15 Ekim 2026'da geçiş birimi, ödüllü birimin sunucu doğrulaması, hassas kategoriler ve GDPR mesajı taslağı tamamlandı (3.1–3.3); GDPR mesajını yayımlamak sahipte. Bu ortamdan dış sitelere çıkılamadı (proxy 403); aybuke.org burada kontrol edilemedi. Mac'te hepsini bir ajana yaptırmak için tek prompt: [`docs/MAC-YAYIN.md`](MAC-YAYIN.md) (tüm komutlar ve Claude Code promptu).
 
-**Önerilen sıra.** 1.1 ve 1.3 (xAI), 1.4 (migrasyon), 1.5 (gizli değer), 1.6 (fonksiyon), 1.7 ve 1.8 (zamanlama, kimlik), 1.9 (kontrol), 3.1–3.4 (AdMob), 2.1 (URL), 2.2–2.12 (derleme ve testler), 2.14 (iade bildirimleri adresi), 4 (arama), 5 ve 6 (kararlar), en son 2.13 (gönderme kararı).
+**Önerilen sıra.** 1.1 ve 1.3 (xAI), 1.11 (Anthropic), 1.4 (migrasyon), 1.5 (gizli değer), 1.6 (fonksiyon), 1.7 ve 1.8 (zamanlama, kimlik), 1.9 (kontrol), 3.3–3.4 (AdMob: GDPR mesajını yayımla, uygulama adı), 2.1 (URL), 2.2–2.12 (derleme ve testler), 2.14 (iade bildirimleri: RevenueCat yönlendirme adresi), 4 (arama), 5 ve 6 (kararlar), en son 2.13 (gönderme kararı).
 
 ## 1) Önce bunlar (acil)
 
@@ -14,6 +14,7 @@ Bu liste yalnızca sahibin yapabileceği işleri içerir: Supabase, xAI, AdMob, 
   - **Neden:** `docs/HANDOFF-PROMPT.md`, "xAI" bölümü. Faturalandırma ve harcama limiti: `docs/SUPABASE-TODO.md` §7.
   - **Nerede:** console.x.ai, ekip faturalandırma ve harcama limiti. Menü adları konsolun güncel arayüzüne göre değişebilir.
   - **Sıra:** 1) Kredi yükle. 2) Aylık harcama limiti belirle. 3) Uygulamada bir Magic Edit dene; sonuç gelmeli (`docs/RELEASE-CHECKLIST.md` §3.4).
+- [ ] **Bütçe notu:** Bir bulut işi xAI'de yaklaşık 0,04–0,07 USD tutar (oluşturma 0,04, düzenleme 0,05–0,07; `docs/03-product-spec.md`, "AI provider"). Yüklenen 10 USD yalnızca yaklaşık 150–250 düzenlemeye yeter; test ve inceleme için yeterli, lansman için değil. Sunucunun günlük sigortaları (`credit_policy()`) ücretsiz işleri günde 1.500'de, tüm işleri 8.000'de durdurur: yalnızca ücretsiz işlerin sınırı bile günde yaklaşık 60–100 USD, tüm işlerinki yaklaşık 320–560 USD eder. Bu tavan her işin tek görsel ürettiğini varsayar: Pro üyelerin Create işleri 4 görsele kadar üretebildiği için tüm işlerin tavanı günde 1.000 USD'yi aşabilir (8.000 işin hepsi 4 görselli Create olsa yaklaşık 1.280 USD). Sigortalar işleri sayar, görselleri değil; bu yüzden asıl bütçe sınırı xAI'deki aylık harcama limitidir. Limiti bunu hesaba katarak seç; limit dolunca işler başarısız olur ve kredi iade edilir. Claude'un güvenlik denetimi bunun yanında küçüktür: denetim başına yaklaşık 0,0002 USD (Haiku 5.5: milyon token başına 0,10 USD girdi, 0,50 USD çıktı), bir Magic Edit'te iki denetim (fotoğraf ve sonuç); günde 1.500 iş yaklaşık 1 USD'nin altında kalır (1.11).
 
 ### 1.2 Sohbete yapıştırılmış xAI anahtarını döndür
 - [ ] **Ne:** Sohbete bir kez yapıştırılmış xAI anahtarı güvenli sayılmaz. Yeni anahtar üret, Supabase'e yaz, sonra eskisini iptal et.
@@ -35,9 +36,9 @@ Bu liste yalnızca sahibin yapabileceği işleri içerir: Supabase, xAI, AdMob, 
 
 ### 1.5 Gizli değerleri kontrol et ve eksiği ekle
 - [ ] **Ne:** Adları kontrol et, `ADMOB_REWARDED_AD_UNIT` değerini ekle. Değerleri hiçbir yere yazma.
-  - **Neden:** `docs/HANDOFF-PROMPT.md`'ye göre ayarlı: `XAI_API_KEY`, `APPLE_APP_ID` (6822716008; yoksa ücretsiz krediler App Store kurulumları için kapalı kalır, taslak §6), `APPLE_BUNDLE_ID`, `APPLE_TEAM_ID`. Eksik: `ADMOB_REWARDED_AD_UNIT` (boşsa her ödül reddedilir; `backend/README.md`, "Rewarded ads"). `OUTPUT_MODERATION` artık okunmuyor (`docs/SUPABASE-TODO.md` §6); `docs/RELEASE-CHECKLIST.md` §1.1 bu adı bekliyor. Ekleme.
+  - **Neden:** `docs/HANDOFF-PROMPT.md`'ye göre ayarlı: `XAI_API_KEY`, `ANTHROPIC_API_KEY` (15 Ekim 2026'da girildi; Claude güvenlik denetimi, 5.8), `APPLE_APP_ID` (6822716008; yoksa ücretsiz krediler App Store kurulumları için kapalı kalır, taslak §6), `APPLE_BUNDLE_ID`, `APPLE_TEAM_ID`. Eksik: `ADMOB_REWARDED_AD_UNIT` (boşsa her ödül reddedilir; `backend/README.md`, "Rewarded ads"). `OUTPUT_MODERATION` artık okunmuyor (`docs/SUPABASE-TODO.md` §6); `docs/RELEASE-CHECKLIST.md` §1.1 bu adı bekliyor. Ekleme.
   - **Nerede:** Supabase > Edge Functions > Secrets.
-  - **Sıra:** 1) `ADMOB_REWARDED_AD_UNIT` = `ca-app-pub-2292230772061554/1406702504`. 2) `FAL_KEY` ve `XAI_SAFETY_MODEL` şimdilik eklenmez (bkz. 5.8). 3) `GLOWLIT_ALLOW_XCODE_APP_TRANSACTIONS` üretimde olmamalı; varsa sil. 4) Apple ile giriş ve RevenueCat anahtarları isteğe bağlı (bkz. 5.6, 5.7).
+  - **Sıra:** 1) `ADMOB_REWARDED_AD_UNIT` = `ca-app-pub-2292230772061554/1406702504`. 2) `FAL_KEY` ve `XAI_SAFETY_MODEL` eklenmez; `ANTHROPIC_SAFETY_MODEL` boş kalabilir (varsayılan `claude-haiku-5-5`; bkz. 5.8). 3) `GLOWLIT_ALLOW_XCODE_APP_TRANSACTIONS` üretimde olmamalı; varsa sil. 4) Apple ile giriş ve RevenueCat anahtarları isteğe bağlı (bkz. 5.6, 5.7).
 
 ### 1.6 Edge Functions'ı yayımla
 - [ ] **Ne:** Migrasyon ve gizli değerlerden sonra altı fonksiyonu yayımla. `ad-reward` ve `app-store-notifications` ilk kez yayımlanıyor; ikisinde de JWT doğrulaması kapalı olmalı (AdMob ve Apple JWT göndermez; fonksiyonlar imzayı kendileri denetler).
@@ -77,6 +78,12 @@ supabase functions deploy app-store-notifications --project-ref efapupjvidyqhqde
   - **Neden:** `docs/SUPABASE-TODO.md` §9: bu depoya ait değil; karar sahibin.
   - **Nerede:** Supabase > proje listesi > proje ayarları (General).
   - **Sıra:** 1) Proje adını ve içeriğini kontrol et. 2) Bu uygulamayla ilgisi kanıtlanmadıkça silme. 3) Silinecekse yalnızca sahip yapar. Ajan silmeye dokunmaz.
+
+### 1.11 Anthropic (Claude) hesabı: bakiye ve harcama limiti
+- [ ] **Ne:** `ANTHROPIC_API_KEY` Supabase'de ayarlı. Claude Console'da (platform.claude.com) hesabın bakiyesi olduğunu kontrol et ve aylık harcama limiti koy.
+  - **Neden:** Claude, düzenlenecek fotoğrafı ve her sonucu denetleyen bağımsız güvenlik denetimi (`backend/supabase/functions/_shared/safety.ts`, model `claude-haiku-5-5`). Denetim fail-closed çalışır: bakiye biterse, anahtar geçersizse ya da istek reddedilirse her düzenleme ve her sonuç engellenir ve kredi iade edilir. Maliyet denetim başına yaklaşık 0,0002 USD (1.1, bütçe notu).
+  - **Nerede:** platform.claude.com, Settings altında Billing ve Limits (menü adları konsolun güncel arayüzüne göre değişebilir); Supabase > Edge Functions > Secrets (yalnızca adı kontrol et).
+  - **Sıra:** 1) Bakiye ya da ödeme yöntemi olsun. 2) Aylık harcama limiti koy (örneğin 10–20 USD; denetimin payı küçük). 3) Yayımdan (1.6) sonra Supabase > Edge Functions > Logs'ta `ai-image` için `output check in force: xai + anthropic:claude-haiku-5-5` satırını gör. 4) Bir Magic Edit dene; sonuç gelmeli. Anahtarı hiçbir dosyaya, commit'e ya da sohbete yazma.
 
 ## 2) Uygulama yayını (App Store Connect ve Mac)
 
@@ -161,31 +168,32 @@ supabase functions deploy app-store-notifications --project-ref efapupjvidyqhqde
   - **Nerede:** App Store Connect > iOS 1.0 ve macOS 1.0 sürüm sayfaları.
   - **Sıra:** 1) `docs/RELEASE-CHECKLIST.md` §1.1 ve §11 maddelerini işaretle. 2) Backend canlı ve derleme demo modunda değil (§1.1). 3) Ajan "Her şey hazır. Gönderelim mi?" diye kısa bir özetle sorar; açık "evet" gelirse gönderilir.
 
-### 2.14 App Store Server Notifications V2 adresi
-- [ ] **Ne:** İade ve iptal bildirimlerinin Supabase'e gelmesi için adresi gir.
-  - **Neden:** Uç nokta yazıldı (`backend/supabase/functions/app-store-notifications`). İade ya da iptal edilen Pro abonelik hemen kapanır; iade edilen kredi paketi geri alınır (bakiye sıfırın altına inmez). Adres girilmezse iade edilen Pro, süresi dolana kadar açık kalır.
-  - **Nerede:** App Store Connect > Aybuke > App Information > App Store Server Notifications.
-  - **Sıra:** 1) Önce 1.4 (1.10 dahil) ve 1.6 (`app-store-notifications` yayımlandı). 2) Version 2 seç. 3) Production Server URL ve Sandbox Server URL: `https://efapupjvidyqhqdevmcu.supabase.co/functions/v1/app-store-notifications`. 4) Test bildirimi gönder ya da bir Sandbox satın alması yap; Supabase > Edge Functions > Logs'ta 200 görünmeli. 5) `APPLE_APP_ID` secret'ı ayarlı olmalı (1.5), yoksa üretim bildirimleri reddedilir.
+### 2.14 App Store Server Notifications V2: RevenueCat yönlendirme adresi
+- [ ] **Ne:** İade ve iptal bildirimlerinin Supabase'e de gelmesi için adresi RevenueCat'e gir. App Store Connect'teki adresleri değiştirme.
+  - **Neden:** Uç nokta yazıldı (`backend/supabase/functions/app-store-notifications`). İade ya da iptal edilen Pro abonelik hemen kapanır; iade edilen kredi paketi geri alınır (bakiye sıfırın altına inmez). App Store Connect her ortam için tek adres kabul eder ve Production ile Sandbox adresleri şu an RevenueCat'i gösteriyor; öyle kalmalı. RevenueCat her imzalı bildirimi değiştirmeden yönlendirme adresine iletir, fonksiyon Apple'ın imzasını yine kendisi denetler (`backend/README.md`, "Setup" 5). Bir ajanın bu ayarı yapma denemesi engellendi; bu adımı sahip yapar. Adres girilmezse iade edilen Pro, süresi dolana kadar açık kalır.
+  - **Nerede:** RevenueCat › Project Glowlit › Apps › Glowlit (App Store) › "Apple Server Notification Forwarding URL". App Store Connect › Aybuke › App Information › App Store Server Notifications yalnızca kontrol edilir.
+  - **Sıra:** 1) Önce 1.4 (1.10 dahil) ve 1.6 (`app-store-notifications` yayımlandı). 2) RevenueCat'te Apple Server Notification Forwarding URL: `https://efapupjvidyqhqdevmcu.supabase.co/functions/v1/app-store-notifications`; kaydet. 3) App Store Connect'te Production ve Sandbox adreslerinin hâlâ RevenueCat'i gösterdiğini kontrol et; değiştirme. 4) Bir Sandbox satın alması yap (ya da App Store Connect'ten test bildirimi gönder; RevenueCat iletirse o da gelir); Supabase > Edge Functions > Logs'ta `app-store-notifications` 200 görünmeli. 5) `APPLE_APP_ID` secret'ı ayarlı olmalı (1.5), yoksa üretim bildirimleri reddedilir.
 
 ## 3) Reklam (AdMob ve AdSense)
 
 ### 3.1 Geçiş reklamı birimi
-- [ ] **Ne:** "After save interstitial" adında geçiş birimi oluştur; sıklık sınırı kullanıcı başına günde 3.
-  - **Neden:** `ios/App/Resources/AppConfig.json` içinde `ads.interstitialUnitID` boş; geçiş reklamı şu an kapalı (`docs/HANDOFF-PROMPT.md` adım 7). Uygulamada zaten en çok 3/gün sınırı var (`AGENTS.md`, "Ads"). AdMob sınırı ek güvence.
+- [x] **Yapıldı (15 Ekim 2026):** "After save interstitial" geçiş birimi oluşturuldu: `ca-app-pub-2292230772061554/6797438012`, sıklık sınırı kullanıcı başına günde 3. Kimlik `ios/App/Resources/AppConfig.json` › `ads.interstitialUnitID` alanına yazıldı. Böylece sahibin 1.0 kararı (kaydettikten sonra ara sıra geçiş reklamı) uygulanmış oldu.
+  - **Neden:** Birim kimliği boşken geçiş reklamı kapalıydı (`docs/HANDOFF-PROMPT.md` adım 7). Uygulamada zaten en çok 3/gün sınırı var (`AGENTS.md`, "Ads"); AdMob sınırı ek güvence.
   - **Nerede:** AdMob > Aybuke uygulaması > Ad units.
-  - **Sıra:** 1) Birimi oluştur; sıklık sınırını 3/gün yap. 2) Birim kimliğini ajana ver; ajan `ads.interstitialUnitID` alanına yazar ve yeni derleme hazırlar. 3) Boş bırakılırsa geçiş reklamı olmaz; bu da geçerli bir karardır.
+  - **Kalan:** Kimliği içeren Release derlemesinin yüklenmesi (2.2). DEBUG derlemeleri her zaman Google'ın test birimlerini kullanır.
 
 ### 3.2 Ödüllü birimde sunucu doğrulaması
-- [ ] **Ne:** Ödüllü birimin sunucu doğrulamasını ayarla ve Verify URL'yi çalıştır.
+- [x] **Yapıldı (15 Ekim 2026):** Ödüllü birimin sunucu doğrulaması (SSV) ayarlandı: geri çağrı adresi Verify URL ile doğrulandı ve kaydedildi. Aşağıdaki adımlar kayıt ve gerekirse yeniden kurulum içindir.
   - **Neden:** `backend/README.md`, "Rewarded ads" ve kurulum dokümanı §5. Önkoşullar: 1.5 (gizli değer) ve 1.6 (`ad-reward` yayında). Gizli değer yoksa doğrulama 503 döner.
   - **Nerede:** AdMob > ödüllü birim (`ca-app-pub-2292230772061554/1406702504`, ödül miktarı 1, öğe `credit`) > Server-side verification.
   - **Sıra:** 1) Adres: `https://efapupjvidyqhqdevmcu.supabase.co/functions/v1/ad-reward` (sorgu dizesi yok). 2) Verify URL. Test çağrısı token taşımadığı için 200 döner ve kredi vermez. 3) Hata alınırsa Supabase Logs'a bak; önce 1.5 ve 1.6'yı kontrol et.
 
 ### 3.3 Hassas kategoriler ve GDPR mesajı
-- [ ] **Ne:** Hassas reklam kategorilerini engelle; AB, Birleşik Krallık ve İsviçre için GDPR mesajı oluştur.
-  - **Neden:** `docs/marketing/app-store-connect-setup.md`, "Ads (AdMob)" bölümü. Uygulama genç ve yaşı bilinmeyen kullanıcılar için G, yetişkinler için PG isteği gönderir (`AGENTS.md`).
-  - **Nerede:** AdMob > Blocking controls > Sensitive categories; AdMob > Privacy & messaging.
-  - **Sıra:** 1) Dating, gambling, alcohol, weight loss ve diğer hassas kategorileri engelle. 2) GDPR mesajını oluştur (EEA, UK, Switzerland). 3) ABD eyaletleri mesajı isteğe bağlı; kararını ver.
+- [x] **Hassas kategoriler engellendi (15 Ekim 2026):** standart 11 hassas kategorinin tamamı ve kısıtlı kategoriler. Engelleme hesap düzeyindedir, bu yüzden sahibin Baby Bloom uygulamasını da etkiler; Baby Bloom için uygun olup olmadığını kontrol et.
+- [ ] **GDPR mesajını yayımla (sahip):** "Aybuke GDPR" mesajı oluşturuldu ve **taslak** olarak kaydedildi: yalnızca Aybuke uygulaması, gizlilik politikası adresi, her ülkede "Do not consent" düğmesi, 9 ek dil. Taslak yayımlanana kadar AEA, Birleşik Krallık ve İsviçre'de rıza formu gösterilmez.
+  - **Neden:** `docs/marketing/app-store-connect-setup.md`, "Ads (AdMob)" bölümü. Uygulama genç ve yaşı bilinmeyen kullanıcılar için G, yetişkinler için PG isteği gönderir (`AGENTS.md`). Google'ın formu yalnızca AEA, Birleşik Krallık ve İsviçre'deki yetişkinlere, reklam istediklerinde açılır.
+  - **Nerede:** AdMob > Privacy & messaging > European regulations > "Aybuke GDPR" > Publish anahtarı. Hassas kategoriler: AdMob > Blocking controls > Sensitive categories.
+  - **Sıra:** 1) Taslağı aç, ayarları gözden geçir (yalnızca Aybuke uygulaması seçili, gizlilik politikası adresi doğru). 2) Publish anahtarını aç. 3) ABD eyaletleri mesajı isteğe bağlı; kararını ver.
 
 ### 3.4 AdMob uygulama adı
 - [ ] **Ne:** AdMob'daki uygulama adını "Aybuke" yap.
@@ -227,7 +235,7 @@ supabase functions deploy app-store-notifications --project-ref efapupjvidyqhqde
   - **Öneri:** Mevcut davranışı koru; paywall ve hukuki metinler bunu açıkça söylesin. Böylece kullanıcı kredisini kaybetmez.
 
 ### 5.2 App Store Server Notifications V2
-- [x] **Karar verildi ve yapıldı:** uç nokta lansmandan önce kuruldu (`functions/app-store-notifications`, migrasyon `20261025000000`). Kalan sahip işi: yayımlama (1.6) ve adresi girmek (2.14).
+- [x] **Karar verildi ve yapıldı:** uç nokta lansmandan önce kuruldu (`functions/app-store-notifications`, migrasyon `20261025000000`). Kalan sahip işi: yayımlama (1.6) ve adresi RevenueCat'in yönlendirme alanına girmek (2.14).
 
 ### 5.3 Paylaşılan IP adresleri
 - [ ] **Karar:** Doğrulanmamış bir adresten üç strike, o adresteki herkesi cool-down'a sokuyor. Adres anahtarları için daha yüksek bir eşik uygulansın mı?
@@ -254,16 +262,17 @@ supabase functions deploy app-store-notifications --project-ref efapupjvidyqhqde
   - **Neden:** `backend/.env.example`; `backend/README.md`, "Accounts" 4. madde. Anahtar yoksa hesap silme, RevenueCat kaydını `pending_revenuecat_deletions` tablosunda bekletir.
   - **Öneri:** Lansman için şart değil. Eklenirse hesap silme anında RevenueCat'e gider. Anahtar türü: RevenueCat > Project settings > API keys; yalnızca `customer_information:customers:read_write` izinli v2 gizli anahtar.
 
-### 5.8 FAL_KEY ve XAI_SAFETY_MODEL (isteğe bağlı)
-- [ ] **Karar:** Bağımsız çıktı denetimi için `FAL_KEY` eklensin mi?
-  - **Neden:** `docs/SUPABASE-TODO.md` §6; `backend/.env.example`. `FAL_KEY` eklenirse sonuçlar fal.ai'ye gider; bu, onay ekranında listelenmeden yapılmamalı (`AGENTS.md`, "Consent record").
-  - **Öneri:** Bu sürümde ekleme. Eklenecekse önce fal.ai'yi `aiProcessors` listesine ve gizlilik metinlerine ekleyen bir sürüm çıkmalı. `XAI_SAFETY_MODEL` de kapalı kalsın: taslak §6 onu canlı API'de test edilmemiş sayıyor; açılırsa hata, zaman aşımı veya belirsiz yanıt işi engelleyip krediyi iade ediyor.
+### 5.8 Bağımsız güvenlik denetimi: Claude (fal.ai yerine)
+- [x] **Karar verildi (15 Ekim 2026):** Bağımsız denetim Claude'dur (Anthropic, `claude-haiku-5-5`); `FAL_KEY` ve `XAI_SAFETY_MODEL` eklenmez.
+  - **Neden:** Lansmandan önce bağımsız bir denetim gerekiyordu (`docs/AI-TODO.md` §1.5; yol haritası `server-moderation-stack`). Claude görsel üretemez ya da düzenleyemez; bu yüzden görseller xAI'de (Grok Imagine) kalır, Claude yalnızca denetler: düzenlenecek fotoğrafı görsel modele gitmeden önce ve her sonucu, xAI'nin kendi denetiminin üstüne (`_shared/safety.ts`, `_shared/moderation.ts`). Denetim fail-closed: hata, zaman aşımı, ret ya da beklenmeyen yanıt işi engeller ve krediyi iade eder. `ANTHROPIC_API_KEY` ayarlıyken `XAI_SAFETY_MODEL` okunmaz.
+  - **Yapılanlar:** Onay ekranı artık Supabase, xAI (Grok Imagine) ve Anthropic (Claude) listeler (`aiProcessors`, `consentVersion` 2; daha önce onay verenlere ekran bir kez daha açılır). Gizlilik politikası (EN, TR) ve KVKK aydınlatma metni Anthropic, PBC'yi (ABD) alt işleyen olarak yazar: API girdi ve çıktılarını 30 gün içinde siler, kullanım politikası ihlali olarak işaretlenen içeriği 2 yıla kadar saklayabilir, varsayılan olarak model eğitiminde kullanmaz. fal.ai yalnızca kullanılmayan bir alternatif olarak anılır.
+  - **Kalan (sahip):** 1.11 (bakiye, harcama limiti, yayından sonra log satırı); aybuke.org'daki hukuk sayfalarının yeni metinle güncellenmesi (`RiosenBeq/aybuke` deposuna kopyalanır, `web/README.md`; ajan yapabilir, kontrol `docs/MAC-YAYIN.md` 11. bölüm), senin dışında birinin kuracağı bir derleme test kullanıcılarına ulaşmadan ve incelemeye gönderilmeden önce; Anthropic'in veri işleme sözleşmesi (DPA) ve ABD'ye aktarım dayanağı avukatla (6.1, 6.3).
 
 ## 6) Hukuk
 
 ### 6.1 Avukat incelemesi
 - [ ] **Ne:** `legal/` altındaki metinleri (İngilizce, Türkçe, KVKK) bir avukat incelesin.
-  - **Neden:** `docs/HANDOFF-PROMPT.md`, "Owner-only items" ("A lawyer's review"). Konular: xAI Zero Data Retention iddiası (1.3); kurulum anahtarı hash'i (2.7); "Atanmış temsilci yok" satırları (GDPR md. 27 ve UK GDPR); 13–15 yaş için vasi adımı; MERSİS satırı (5.4).
+  - **Neden:** `docs/HANDOFF-PROMPT.md`, "Owner-only items" ("A lawyer's review"). Konular: xAI Zero Data Retention iddiası (1.3); Anthropic'in saklama süreleri (30 gün; işaretlenen içerik 2 yıla kadar), işaretlediği içerik için bağımsız veri sorumlusu rolü ve DPA'sı (5.8, 6.3); kurulum anahtarı hash'i (2.7); "Atanmış temsilci yok" satırları (GDPR md. 27 ve UK GDPR); 13–15 yaş için vasi adımı; MERSİS satırı (5.4).
   - **Nerede:** Kaynak `legal/en` ve `legal/tr`. Kopyalar `docs/legal`, `ios/App/Resources/Legal` ve `web/legal` içinde.
   - **Sıra:** 1) Metinleri avukata gönder. 2) Değişiklik çıkarsa `legal/` içinde düzelt; `python3 scripts/build-legal.py` ile kopyaları yenile.
 
@@ -272,26 +281,28 @@ supabase functions deploy app-store-notifications --project-ref efapupjvidyqhqde
   - **Neden:** `legal/config.json` içinde `KEP_ADDRESS` boş (boş değerli satır gizlenir). `docs/HANDOFF-PROMPT.md`: ev adresi DSA gereği AB mağazalarında zaten görünür; sahibin onayı olmadan yayımlanmaz.
   - **Öneri:** Avukatın görüşüne göre karar ver. Ev adresi yerine ayrı bir adres kullanılabiliyorsa onu tercih et.
 
-### 6.3 Yurt dışı aktarım dayanağı
-- [ ] **Ne:** Google (reklam) ve diğer işleyiciler için KVKK yurt dışı aktarım dayanağını avukat belirlesin.
-  - **Neden:** `docs/HANDOFF-PROMPT.md`, "Owner-only items" ("The KVKK basis for transfers abroad").
-  - **Nerede:** `legal/tr/kvkk-aydinlatma-metni.md` (kaynak).
-  - **Sıra:** Avukat dayanağı yazdıktan sonra metni `legal/` içinde güncelle ve `python3 scripts/build-legal.py` çalıştır.
+### 6.3 Sözleşmeler ve yurt dışı aktarım dayanağı (önce Anthropic ve xAI)
+- [ ] **Ne:** Anthropic ve xAI için: 1) veri işleme sözleşmesini (DPA) imzala; 2) ABD'ye aktarım dayanağını belirle (Data Privacy Framework sertifikası ya da Standart Sözleşme Hükümleri, SCC, Birleşik Krallık eki ile); 3) KVKK Kurulu'nun standart sözleşmesini imzala ve imzadan sonra 5 iş günü içinde Kişisel Verileri Koruma Kurumu'na bildir; 4) metinleri avukata onaylat. Google (reklam) ve diğer işleyiciler için dayanağı da avukat belirlesin.
+  - **Neden:** Gizlilik politikası (§13) ve KVKK aydınlatma metni (§5), aktarımların standart sözleşmelere dayandığını ve imzadan sonra 5 iş günü içinde bildirildiğini yazıyor; Anthropic ve xAI ile bunlar henüz imzalanmamış olabilir. İmzalanana kadar bu ifade karşılıksızdır. Metinlerdeki dayanak ifadesi olduğu gibi bırakıldı ve yeni bir güvence yazılmadı: bu iş bitince metin doğru olur. Ayrıntı: `docs/05-compliance.md` (GDPR / privacy, "Contracts and transfers"); `docs/HANDOFF-PROMPT.md`, "Owner-only items".
+  - **Ayrıca:** Anthropic'in reşit olmayanların kullandığı ürünlere ilişkin yönergesi: arka uçta çalışan ve kullanıcıyla hiç konuşmayan bir sınıflandırıcıya (fotoğraf ve sonuç denetimi) uygulanıp uygulanmadığını avukatla ve Anthropic'le netleştir.
+  - **Nerede:** Anthropic ve xAI'nin ticari koşulları ve veri işleme ekleri (gerekirse destek ekipleri); KVKK standart sözleşme metni ve bildirim: kvkk.gov.tr. Kaynak metinler: `legal/en/privacy-policy.md`, `legal/tr/gizlilik-politikasi.md`, `legal/tr/kvkk-aydinlatma-metni.md`.
+  - **Sıra:** 1) DPA'ları imzala (Anthropic, xAI). 2) Her biri için DPF sertifikasını kontrol et; yoksa SCC. 3) KVKK standart sözleşmesini imzala; 5 iş günü içinde Kurum'a bildir. 4) Avukat metinleri imzalananlarla karşılaştırsın; değişiklik gerekirse `legal/` içinde düzelt ve `python3 scripts/build-legal.py` çalıştır.
 
 ## 7) Sahibin kendi hesaplarında yapacakları (özet)
 
 | Hesap | Madde |
 |---|---|
-| xAI | 1.1, 1.2, 1.3 |
+| xAI | 1.1, 1.2, 1.3, 6.3 (DPA) |
+| Anthropic (Claude Console) | 1.11, 6.3 (DPA) |
 | Supabase (proje `efapupjvidyqhqdevmcu`) | 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 1.10 |
 | GitHub (Actions) | 1.7 |
-| AdMob | 2.12 (test cihazı), 3.1–3.4 |
+| AdMob | 2.12 (test cihazı), 3.3 (GDPR mesajını yayımla), 3.4 |
 | AdSense | 3.6 |
-| App Store Connect | 2.2–2.8, 2.12 (sandbox), 2.13, 2.14 |
+| App Store Connect | 2.2–2.8, 2.12 (sandbox), 2.13, 2.14 (yalnızca kontrol) |
 | Search Console ve IndexNow | 4.1, 4.2 |
 | Vercel ve alan adı | 2.1, 3.5 |
 | Apple Developer | 5.6 (isteğe bağlı) |
-| RevenueCat | 5.7 (isteğe bağlı) |
+| RevenueCat | 2.14 (bildirim yönlendirme adresi), 5.7 (isteğe bağlı) |
 | Mac (Xcode, simülatör) | 2.9, 2.10, 2.11, 2.12 (Ask to Buy) |
 
 ## Şu an tamamlananlar
@@ -303,6 +314,8 @@ supabase functions deploy app-store-notifications --project-ref efapupjvidyqhqde
 - Yeniden adlandırma (`6f2959d`, Glowlit → Aybuke) ve `31f8817` (ad-reward Deno testleri CI'da). CI, `6f2959d` için `workflow_dispatch` ile çalıştırıldı ve tamamen yeşil (iOS derlemesi iPhone ve Mac Catalyst için dahil). AppCore testleri yeniden adlandırmadan sonra 319 geçti (yerel Linux Swift 6.1).
 - App Store Server Notifications V2 uç noktası, iade edilen paketlerin geri alınması ve SQL düzeltmeleri (tekrar sayımı, iptal edilen işe uyarı yok, bakiyede adres beklemesi) yazıldı; Deno ve PostgreSQL testleri yerelde geçti. Uygulama: fotoğraf kontrolü çalışamadığında ayrı ve doğru bir mesaj; Mac'te ⌘W editörü ve Retro Cam'i kapatır; şablon kartlarında sağ tık menüsü; Mac'te küçük kalan yazılar büyütüldü.
 - `scripts/check-credit-policy.py`: sunucu, `AppConfig.json` ve AppCore'daki kredi sayıları ayrışırsa CI kırmızı olur.
+- Bağımsız güvenlik denetimi Claude ile (15 Ekim 2026): `_shared/safety.ts` (Anthropic yolu, sahte yanıtlarla testli), onay ekranında Anthropic (`consentVersion` 2) ve hukuk metinlerinde Anthropic, PBC. Canlıda değil: `ai-image` yeniden yayımlanınca çalışır (1.6, 1.11).
+- AdMob (15 Ekim 2026): geçiş birimi `ca-app-pub-2292230772061554/6797438012` (günde 3) `ads.interstitialUnitID`'de; ödüllü birimin SSV adresi doğrulandı ve kaydedildi; 11 standart hassas kategori ve kısıtlı kategoriler engellendi (hesap düzeyinde); "Aybuke GDPR" mesajı taslakta (3.3).
 - Bu oturumda yerelde geçen kontroller: `build-legal.py --check`, `export-core-strings.py --check`, `check-honest-copy.py`, `check-release-config.py --report`. `--online` iki github.io adresini doğrulayamadı (2.1).
 
 ## Belgelerde kalan düzeltmeler

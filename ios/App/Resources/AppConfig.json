@@ -2,7 +2,6 @@
   "backendBaseURL": "https://efapupjvidyqhqdevmcu.supabase.co",
   "supabaseAnonKey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVmYXB1cGp2aWR5cWhxZGV2bWN1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE5NzI0OTIsImV4cCI6MjEwNzU0ODQ5Mn0.iad_XFp5CR64q-15GQwRJGPiY93oOkF_uXzV9XdoeyA",
   "forceDemoMode": false,
-  "aiProviderName": "xAI (Grok Imagine)",
   "dataRetentionHours": 1,
   "privacyPolicyURL": "https://aybuke.org/legal/en/privacy-policy",
   "termsURL": "https://aybuke.org/legal/en/terms-of-use",
@@ -12,7 +11,7 @@
   "instagramAppID": "",
   "revenueCatAPIKey": "appl_nMgLjPGSrACLwsGJMMoDmMXUvwS",
   "signInWithApple": false,
-  "consentVersion": 1,
+  "consentVersion": 2,
   "creditPolicy": {
     "freeDaily": 2,
     "proMonthly": 80,
@@ -28,13 +27,17 @@
     {
       "name": "xAI (Grok Imagine)",
       "role": "images"
+    },
+    {
+      "name": "Anthropic (Claude)",
+      "role": "safety"
     }
   ],
   "ads": {
     "enabled": true,
     "appID": "ca-app-pub-2292230772061554~5236020895",
     "rewardedUnitID": "ca-app-pub-2292230772061554/1406702504",
-    "interstitialUnitID": "",
+    "interstitialUnitID": "ca-app-pub-2292230772061554/6797438012",
     "dailyCap": 2
   },
   "shareHashtags": [

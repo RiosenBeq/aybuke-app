@@ -2,6 +2,16 @@
 
 > Bu belge, araştırmayla alınan tüm kararların Türkçe özetidir. Ayrıntılar ve kaynaklar İngilizce belgelerdedir ([docs/README.md](README.md)).
 
+## Ekim 2026 güncellemesi (5): Claude ile bağımsız güvenlik denetimi (15 Ekim)
+
+**Ne değişti?**
+- **Bağımsız denetim Claude:** Lansmandan önce şart olan bağımsız denetim fal.ai yerine Anthropic'in Claude modeliyle (Haiku 5.5) yapıldı. Claude görsel üretemez ya da düzenleyemez; görseller yine xAI Grok Imagine'de. Claude yalnızca denetler: düzenlenecek fotoğrafı görsel modele gitmeden önce ve her sonucu, xAI'nin kendi denetiminin üstüne. Çıplaklık, cinsellik, küçükleri cinselleştirme, ağır şiddet, kendine zarar ve nefret arar. Denetim çalışamazsa iş engellenir ve kredi iade edilir (fail-closed).
+- **Onay ekranı:** Artık Supabase, xAI ve Anthropic'i listeliyor (onay sürümü 2); daha önce onay verenlere ekran bir kez daha açılıyor.
+- **Hukuk metinleri:** Gizlilik politikası (İngilizce, Türkçe) ve KVKK aydınlatma metni Anthropic, PBC'yi (ABD) alt işleyen olarak yazıyor: girdileri ve çıktıları 30 gün içinde siler, ihlal şüphesiyle işaretlenen içeriği 2 yıla kadar saklayabilir, varsayılan olarak model eğitiminde kullanmaz.
+- **Maliyet:** Denetim başına yaklaşık $0.0002; bir Magic Edit'te iki denetim.
+
+**Sizin yapmanız gerekenler:** Claude Console'da bakiye ve aylık harcama limiti; `ai-image` yayımlandıktan sonra log satırını ve bir gerçek düzenlemeyi kontrol etmek ([SAHIP-YAPILACAKLAR.md](SAHIP-YAPILACAKLAR.md) 1.11); Anthropic'in veri işleme sözleşmesi ve ABD'ye aktarım dayanağı için avukat görüşü.
+
 ## Ekim 2026 güncellemesi (4): daha fazla eğlence (14 Ekim)
 
 **Ne değişti?** Cihaz içi, ücretsiz içerik çoğaldı:
@@ -39,7 +49,7 @@
 
 **Sizin yapmanız gerekenler:**
 - Bu dalgalarda eklenen ~360 metnin 11 dile çevrilmesi ve diğer App Store dillerinin yeni İngilizce metne uyarlanması.
-- Supabase'i açmadan önce bağımsız çıktı denetimi ve kötüye kullanım araçlarının (yasak listesi, incelenebilir bildirimler) yapılması gerekiyor; listede "sonra" bölümünde.
+- Supabase'i açmadan önce bağımsız çıktı denetimi ve kötüye kullanım araçlarının (yasak listesi, incelenebilir bildirimler) yapılması gerekiyor; listede "sonra" bölümünde. (Bağımsız denetim 15 Ekim 2026'da Claude ile eklendi; yukarıdaki 5. güncelleme.)
 - Hindistan / Kore görünür AI etiketi, Brezilya ECA Digital, Rusya mağazası ve veri koruma etki değerlendirmesi (DPIA) için avukat görüşü.
 
 ## Ekim 2026 güncellemesi (2): video, retro efektler, xAI ve 12 dil
@@ -117,7 +127,7 @@
   - **Bunlar avukat incelemesi gereken taslaklardır.** Şirket bilgilerini `legal/config.json` dosyasına girin ve `legal/README.md` kontrol listesini uygulayın.
 - **AI API anahtarı yeri:**
   - **Denemek için:** `ios/Config/Secrets.xcconfig` dosyasına `GL_AI_PROVIDER` (xai, fal, openai veya gemini) ve `GL_AI_API_KEY` yazılır. Bu dosya git'e girmez ve yalnızca geliştirme derlemelerinde okunur.
-  - **Canlı sürüm için:** Anahtar backend'de `XAI_API_KEY` olarak saklanır (fal.ai kullanılacaksa `FAL_KEY` ve `AI_PROVIDER=fal`).
+  - **Canlı sürüm için:** Anahtar backend'de `XAI_API_KEY` olarak saklanır (fal.ai kullanılacaksa `FAL_KEY` ve `AI_PROVIDER=fal`). Claude güvenlik denetiminin anahtarı `ANTHROPIC_API_KEY`.
 - **Tanıtım kiti (`docs/marketing/`):** App Store metinleri (İngilizce ve Türkçe, karakter sayılı), sosyal medya kiti (biyografiler, hashtag'ler, 20 gönderi, 10 video senaryosu, influencer şablonları), 30 günlük lansman planı, 8'er App Store ekran görüntüsü ve sosyal medya görselleri.
 - **Web sitesi (`web/`):** Tanıtım sayfası ve yasal sayfalar hazır. GitHub Pages ile yayınlanabilir (`.github/workflows/website.yml`).
 
@@ -221,6 +231,7 @@ Güven özellikleri:
     - Metinden görsel ve düzenleme: Nano Banana 2
     - İyileştirme: SeedVR2
     - Nesne silme: object-removal
+  - Bağımsız güvenlik denetimi: Anthropic'in Claude modeli (Haiku 5.5) düzenlenecek fotoğrafı ve her sonucu denetler; görsel üretmez.
   - Uygulama yalnızca "işlem" adını gönderiyor; modeli sunucu seçiyor. Böylece model değiştirmek için uygulama güncellemesi gerekmiyor ve API anahtarı uygulamada hiç bulunmuyor.
 - **Maliyet:**
   - xAI'da oluşturma başına yaklaşık $0.04, düzenleme başına $0.05–0.07; bulut işlemi başına ortalama yaklaşık $0.06.
@@ -231,7 +242,7 @@ Güven özellikleri:
 1. Mac'te **Xcode 16 veya üzeri** ile `ios/Glowlit.xcodeproj` dosyasını açın ve bir iPhone veya iPad simülatörü seçip ▶︎ ile çalıştırın. Liquid Glass görünümü için Xcode 26 gerekir; eski sürümler buzlu cam görünümünü derler.
 2. Backend tanımlı değilse uygulama **demo modunda** açılır. AI sonuçları cihazda simüle edilir ve "DEMO PREVIEW" etiketi taşır.
 3. Gerçek AI için `backend/README.md` adımlarını izleyin:
-   - Supabase projesi oluşturun ve `XAI_API_KEY` gizli anahtarını tanımlayın (fal.ai için `FAL_KEY` ve `AI_PROVIDER=fal`).
+   - Supabase projesi oluşturun ve `XAI_API_KEY` ile `ANTHROPIC_API_KEY` (Claude güvenlik denetimi) gizli anahtarlarını tanımlayın (fal.ai için `FAL_KEY` ve `AI_PROVIDER=fal`).
    - xAI konsolunda Zero Data Retention'ı açın.
    - Fonksiyonları deploy edin.
    - `AppConfig.json` dosyasına Supabase adresini ve anahtarını yazın.
@@ -242,7 +253,7 @@ Güven özellikleri:
 2. Gizlilik politikası ve kullanım şartları sayfalarının yayınlanması.
 3. xAI Zero Data Retention'ın açılması, Supabase'in kurulup deploy edilmesi ve TestFlight'ta uçtan uca test.
 4. App Store Connect'te ürünlerin ve abonelik fiyatlarının tanımlanması ($39.99 yıllık, $5.99 aylık ve ilk ay $1.99 teklifi, $2.99 ve $7.99 paketler); uygulama içi satın alma anahtarının RevenueCat'e yüklenmesi.
-5. App Attest ile ücretsiz kredi suistimaline karşı koruma, bağımsız çıktı denetimi ve kötüye kullanım araçları (yaş adımı ve Declared Age Range Ekim 2026'da eklendi).
+5. App Attest ile ücretsiz kredi suistimaline karşı koruma ve kötüye kullanım araçları (yaş adımı ve Declared Age Range Ekim 2026'da, Claude ile bağımsız güvenlik denetimi 15 Ekim 2026'da eklendi).
 6. Şablon kartlarına gerçek önce/sonra görsellerinin eklenmesi (farklı ten renkleri ve yüz tiplerinden oluşan geniş bir oyuncu kadrosuyla).
 7. 11 çevirinin anadili konuşanlarca kontrolü; App Store metinlerinin ve ekran görüntülerinin bu dillere uyarlanması.
 8. Denetimin "sonra" listesi (retro kamera, fotoğraf kabini, Siri ve Kestirmeler Ekim 2026'da eklendi): önce paylaşım uzantıları; büyüme aşamasında selfie profilli Likeness Lock v2, şablonların video versiyonları, C2PA içerik kimlik bilgileri.

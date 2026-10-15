@@ -7,7 +7,7 @@ Last updated: {{EFFECTIVE_DATE}}
 > - Free members see a few ads from Google AdMob: a short ad you can choose to watch for 1 credit when you're out of credits (a few a day), and now and then an ad after you save. Ads are never personalised and never use your photos. Pro has no ads, and there are none under 13.
 > - We don't ask for your name, email address or a password. Your account is an anonymous, random ID.
 > - Your library stays on your iPhone. Background removal and manual adjustments never leave your device.
-> - Photos and prompts go to the cloud only after you opt in, and only to create the result you asked for. We don't store them, and results are deleted from the cloud within 1 hour.
+> - Photos and prompts go to the cloud only after you opt in, and only to create the result you asked for and check that it's safe. We don't store them, results are deleted from our servers and our image provider within 1 hour, and Anthropic, which runs our independent safety check, deletes the photos and results it checks within 30 days (section 14).
 > - We never use your photos, prompts or results to train AI models, and we never sell them or use them for advertising or marketing.
 > - You can switch off cloud AI processing or delete your data and account in the app at any time. If you're under 18, start with section 3.
 
@@ -47,7 +47,7 @@ We follow the standards of the UK Age Appropriate Design Code (the "Children's C
 This section is for you if you're under 18. The rest of this policy applies to you too, but these are the most important points in plain words.
 
 - **What we know about you.** Very little. We don't have your name, email address, phone number, password or location. Your account is just a random ID.
-- **Your photos.** Your creations stay on your phone. If you use a cloud AI feature, the photo and text you choose are sent to our servers and AI partners only to make your image. We don't keep them, and the result is deleted from the cloud within an hour at the latest. We never use your photos to train AI, sell them or use them for ads.
+- **Your photos.** Your creations stay on your phone. If you use a cloud AI feature, the photo and text you choose are sent to our servers and AI partners only to make your image and check that it's safe. We don't keep them, and the result is deleted from our servers within an hour at the latest. Anthropic, the company that runs our safety check, deletes the photos and results it checks within 30 days, unless its systems flag one as breaking its rules, in which case it may keep it for up to 2 years. We never use your photos to train AI, sell them or use them for ads.
 - **Ask first.** Talk to your parent or guardian before you switch on cloud AI processing or buy anything. In some places they must give or approve consent for cloud AI processing: in the EU and EEA if you're under the age of digital consent in your country (between 13 and 16, depending on the country), and in Türkiye if you're under 18.
 - **Your age range.** When you start, the app asks for your age range: from Apple, if your device offers it and you choose to share it, or with a month-and-year question. It keeps only the range (under 13, 13 to 15, 16 to 17, or 18 and over), where it came from and when it was set, on your device. Your birthday is never kept or sent to us. Under 18, the paywall never opens by itself. If you're under 13, you can use the free tools that run on your device, and the app sends nothing to us.
 - **A parent or guardian step.** If you're 13 to 15, or under the age of digital consent where you live, the cloud AI consent screen asks you to read it with a parent or guardian and to confirm that they said yes. We can't check this answer, so please be honest.
@@ -95,7 +95,7 @@ Signing in is optional, and not every version of the app offers it. If you sign 
 
 ### Content you send to cloud AI features
 
-When you use Magic Edit, Styles, AI Enhance, Erase or Create from text, the app sends the content needed for that request to our backend, which forwards it to our AI provider. This means your photo, the mask you brushed (for Erase) and your text prompt (for Create from text and Magic Edit). Section 6 explains what happens to it.
+When you use Magic Edit, Styles, AI Enhance, Erase or Create from text, the app sends the content needed for that request to our backend, which forwards it to our AI provider. This means your photo, the mask you brushed (for Erase) and your text prompt (for Create from text and Magic Edit). Our independent safety check also looks at the photo before an edit and at every result. Section 6 explains what happens to it.
 
 ### Job records
 
@@ -159,10 +159,10 @@ If you email us, we receive your email address, the content of your message and 
 
 1. **Your consent comes first.** Before any photo or prompt leaves your device for one of our cloud AI features, the app shows an opt-in screen that names the companies that process it. Nothing is sent until you agree. If you're under the age required by law, a parent or guardian must give or approve this consent (sections 3, 17 and 19). You can withdraw consent at any time in **Settings → Cloud AI processing**, and on-device features keep working.
 2. **Upload.** The app sends your input over an encrypted connection to our backend (Supabase Edge Functions; hosting region: {{HOSTING_REGION}}).
-3. **Safety checks.** Your prompt is checked by our safety filters before the request is processed (section 9).
+3. **Safety checks.** Your prompt is checked by our safety filters before the request is processed. If you're editing a photo, our independent safety check also looks at the photo before the image model receives it: our backend sends the photo, never your prompt or mask, to Anthropic (Anthropic, PBC, USA), whose Claude model checks it. A photo it flags, or can't check, isn't edited, and your credit is refunded (section 9).
 4. **AI processing.** Our backend passes your input to our AI inference provider for that request only. By default, this is xAI (X.AI LLC and its affiliates, USA), which runs its Grok Imagine image models. If we change providers, jobs may instead go to fal.ai (Features & Labels, Inc., USA), which runs third-party models (where fal.ai uses a model developer's own service to run a model, for example Google for its Gemini image models, that developer also processes the request), or directly to Google (Gemini API) or OpenAI (Images API). The current list is in section 12.
-5. **No storage of inputs.** We don't store your photo, mask or prompt. We use xAI's Zero Data Retention option, under which xAI deletes requests and results within 1 hour and keeps no stored copies. When fal.ai is used, we instruct it not to keep request history, which means no storage of inputs or outputs.
-6. **Delivery.** The result is checked by automated safety filters and held temporarily in our database or on the provider's content delivery network, only so the app can download it. It is deleted as soon as the app confirms the download, and after 1 hour at the latest.
+5. **We don't store your inputs.** We don't store your photo, mask or prompt. We use xAI's Zero Data Retention option, under which xAI deletes requests and results within 1 hour and keeps no stored copies. Anthropic deletes the photos and results it checks within 30 days of receipt, unless its automated systems flag them for a breach of its Usage Policy, in which case it may keep them for up to 2 years, or the law requires it to keep them longer. For content it flags, it may keep its trust and safety classification scores (not the content itself) for up to 7 years. When fal.ai is used, we instruct it not to keep request history, which means no storage of inputs or outputs.
+6. **Delivery.** The result is checked by automated safety filters, including our independent safety check, and held temporarily in our database or on the provider's content delivery network, only so the app can download it. It is deleted as soon as the app confirms the download, and after 1 hour at the latest.
 7. **On your device.** If you keep the result, it's saved to your library on your iPhone.
 
 We use only provider plans whose terms don't allow using customer content to train their models without our permission, and we never give that permission. We never use your photos, prompts or results to train AI models, sell them, or use them for advertising, marketing or data mining.
@@ -178,9 +178,9 @@ The GDPR and the UK GDPR require us to tell you the legal basis for each purpose
 - **Job records, credits, purchases and subscriptions** (tracking jobs, charging and refunding credits, verifying Apple purchases, providing Pro benefits and credit packs, and keeping them correct when Apple refunds or revokes a purchase). Legal basis: performance of our contract with you (Art. 6(1)(b) GDPR).
 - **Rewarded ads** (giving you the credit you chose to watch an ad for, once, within the daily limit). Data: reward code, reward record, anonymous user ID. Legal basis: performance of our contract with you (Art. 6(1)(b) GDPR).
 - **Ads for free members** (showing a few non-personalised ads that keep the free tier free, and keeping them rare). Data: the device, app and ad-interaction data described in section 5, processed by Google, and the ad counts kept on your device. Legal basis: our legitimate interest in funding a free tier with a small number of non-personalised ads (Art. 6(1)(f) GDPR). Where the law requires consent for storing or reading information on your device, as in the EEA, the UK and Switzerland, Google's consent form asks for it (Art. 6(1)(a) GDPR and the ePrivacy rules); users under the age of consent aren't asked and get only limited ads.
-- **Safety and abuse prevention** (prompt filters, provider safety settings, automated checks of outputs, rate limits, preventing misuse of free credits with the hashed App Store download and network address counts, pausing cloud AI after repeated blocks, reviewing reports and enforcing our AUP). Legal basis: our legitimate interests in keeping {{APP_NAME}} safe and lawful and in protecting our users, especially young users, and the people shown in images (Art. 6(1)(f) GDPR); and compliance with legal obligations where the law requires us to act, for example to report child sexual abuse material (Art. 6(1)(c) GDPR).
+- **Safety and abuse prevention** (prompt filters, provider safety settings, automated checks of outputs, the independent automated check of the photo before an edit and of every result, rate limits, preventing misuse of free credits with the hashed App Store download and network address counts, pausing cloud AI after repeated blocks, reviewing reports and enforcing our AUP). Legal basis: our legitimate interests in keeping {{APP_NAME}} safe and lawful and in protecting our users, especially young users, and the people shown in images (Art. 6(1)(f) GDPR); and compliance with legal obligations where the law requires us to act, for example to report child sexual abuse material (Art. 6(1)(c) GDPR).
 - **Security and reliability** (server logs and investigating errors and attacks). Legal basis: our legitimate interests in running a secure and reliable service (Art. 6(1)(f) GDPR).
-- **Images of other people shown in your photos.** Legal basis: our legitimate interest in performing the edit our user requested (Art. 6(1)(f) GDPR). The processing is short-lived, limited to the edit and never used to identify anyone, and users must have the consent of the people they photograph.
+- **Images of other people shown in your photos.** Legal basis: our legitimate interest in performing the edit our user requested (Art. 6(1)(f) GDPR). The processing is limited to the edit and its safety checks, lasts only for the periods in section 14 and is never used to identify anyone, and users must have the consent of the people they photograph.
 - **Support** (answering your messages). Legal basis: performance of our contract where your message concerns the Service; otherwise our legitimate interest in responding to you (Art. 6(1)(b) or (f) GDPR).
 - **Legal compliance and your rights** (handling privacy requests, keeping records the law requires and responding to lawful requests from authorities). Legal basis: compliance with legal obligations (Art. 6(1)(c) GDPR).
 - **Legal claims** (establishing, exercising or defending legal claims). Legal basis: our legitimate interests (Art. 6(1)(f) GDPR).
@@ -191,23 +191,24 @@ You don't have to give us any personal data. Without consent to cloud processing
 
 ## 8. Sensitive information and people in your photos
 
-We don't intend to process special categories of personal data, such as information about health, religious beliefs or racial or ethnic origin. Photos can sometimes reveal such information. We process photos only to perform the edit you request, never to identify anyone or to infer characteristics about them. To the extent a photo reveals special category data, we process it on the basis of the explicit consent given on the cloud AI opt-in screen (Art. 9(2)(a) GDPR; Article 6 KVKK).
+We don't intend to process special categories of personal data, such as information about health, religious beliefs or racial or ethnic origin. Photos can sometimes reveal such information. We process photos only to perform the edit you request and to check that it's safe, never to identify anyone or to infer characteristics about them. To the extent a photo reveals special category data, we process it on the basis of the explicit consent given on the cloud AI opt-in screen (Art. 9(2)(a) GDPR; Article 6 KVKK).
 
 We don't create biometric data: we don't perform face recognition or create face templates or embeddings.
 
 Please don't upload photos or prompts containing sensitive information you don't want processed.
 
-**Other people in your photos.** Your photos may show other people. We process their images in the same way as yours: only to perform the edit, briefly, and never to identify them. Only upload photos of other people with their consent, and photos of children only if you're their parent or guardian or have their parent's or guardian's permission. If you appear in a photo someone else edited with {{APP_NAME}}, you can contact us at [{{PRIVACY_EMAIL}}](mailto:{{PRIVACY_EMAIL}}).
+**Other people in your photos.** Your photos may show other people. We process their images in the same way as yours: only to perform the edit and its safety checks, for the periods in section 14, and never to identify them. Only upload photos of other people with their consent, and photos of children only if you're their parent or guardian or have their parent's or guardian's permission. If you appear in a photo someone else edited with {{APP_NAME}}, you can contact us at [{{PRIVACY_EMAIL}}](mailto:{{PRIVACY_EMAIL}}).
 
 ## 9. Safety filters and automated decisions
 
 To keep {{APP_NAME}} safe, we use automated safety measures:
 
 - prompt filters in the app and on our servers that block, for example, nudity and sexual content, "undressing" or nudification requests, and any sexual content involving minors;
-- our AI providers' safety settings; and
-- an automated check of every output for nudity or sexual content, and, where we switch it on, a second automated check of the photo and the results by our AI provider's vision model.
+- our AI providers' safety settings;
+- an automated check of every output for nudity or sexual content; and
+- an independent automated check by a second company, Anthropic, whose Claude model looks at the photo before an edit and at every result for nudity, sexual content, anything that sexualises minors, graphic violence, self-harm and hate. If it flags a result, or can't complete its check, the result isn't delivered.
 
-If a filter blocks a request or a result, you aren't charged, and any credits are refunded. We record that it happened (the filter's category and the time, never the content), linked to your anonymous account and the hash of your App Store download (or, without a verified download, a salted hash of your network address). If our servers' filters block 3 of your requests or results within 24 hours, cloud AI pauses for 24 hours for that account and download; after 3 pauses within 30 days, we switch cloud AI off for that download until a human has reviewed it. On-device features keep working.
+If a filter blocks a request or a result, or a check can't be completed, you aren't charged, and any credits are refunded. When a filter blocks a request or a result, we record that it happened (the filter's category and the time, never the content), linked to your anonymous account and the hash of your App Store download (or, without a verified download, a salted hash of your network address). If our servers' filters block 3 of your requests or results within 24 hours, cloud AI pauses for 24 hours for that account and download; after 3 pauses within 30 days, we switch cloud AI off for that download until a human has reviewed it. A photo that the independent check turns down before an edit doesn't count towards a pause. On-device features keep working.
 
 These filters and pauses are the only automated decisions we make about your requests. They affect only access to cloud AI features for a limited time, don't have legal or similarly significant effects on you within the meaning of Article 22 GDPR, and we don't profile you. If you think a filter blocked something by mistake, or a pause shouldn't apply to you, contact us at [{{CONTACT_EMAIL}}](mailto:{{CONTACT_EMAIL}}) and a human will review it.
 
@@ -221,7 +222,8 @@ These filters and pauses are the only automated decisions we make about your req
 
 We share personal data only as described below. We require every service provider that receives your data to protect it at least as well as described in this policy, under written contracts (data processing agreements) that allow them to use your data only to provide services to us.
 
-- **Service providers (processors)**: our backend and hosting provider and our AI inference providers, listed in section 12. They process data only on our instructions.
+- **Service providers (processors)**: our backend and hosting provider, our AI inference providers and the provider of our independent safety check, listed in section 12. They process data only on our instructions, except as described for Anthropic below.
+- **Anthropic**: processes the photos and results it checks on our instructions, to run our independent safety check. In addition, to enforce its own Usage Policy and to meet its legal duties, including reporting child sexual abuse material to the authorities, Anthropic may keep content its systems flag for up to 2 years, and it acts as an independent controller for that processing.
 - **Google (AdMob)**: if you're a free member aged {{MIN_AGE}} or over, Google receives the device, app and ad-interaction data described in section 5 to show and measure ads and to prevent fraud. Google processes some of it as an independent controller under [Google's Privacy Policy](https://policies.google.com/privacy). Google never receives your photos, prompts, results or user ID from us.
 - **Apple**: Apple processes your payments and subscriptions as the seller and as an independent controller, under [Apple's Privacy Policy](https://www.apple.com/legal/privacy/). We don't send your content to Apple, except your description when you choose **Create with Image Playground** (section 6). We receive Apple-signed transaction data to verify purchases, and Apple's signed notifications when Apple refunds or revokes a purchase or reverses a refund (section 5). If you sign in with Apple, Apple verifies your sign-in, and we contact Apple to revoke that sign-in when you delete your account.
 - **Authorities**: we disclose data to courts, law enforcement or other authorities where the law requires it, for example in response to a valid legal order, or where necessary to protect someone's safety. We report child sexual abuse material to the competent authorities (such as NCMEC in the United States) where the law requires it.
@@ -236,7 +238,8 @@ These companies process personal data on our behalf. We keep this list up to dat
 
 - **Supabase Inc.** (USA): backend hosting, database, anonymous authentication and Sign in with Apple where the app offers it, server functions and server logs. Hosting region: {{HOSTING_REGION}}. Data: anonymous user ID or account (Apple user identifier, email or relay address if shared), session data, job records, credits, entitlements, App Store notification records, reports and server logs. Your inputs pass through in transit only.
 - **xAI (X.AI LLC and its affiliates)** (USA): AI inference, meaning it runs the Grok Imagine models for cloud AI features and checks their results with its own moderation. Data: photos, masks, prompts and results, for the duration of the request. Zero Data Retention is on: requests and results are deleted within 1 hour, and nothing is used to train models.
-- **Features & Labels, Inc. (fal.ai)** (USA): the automated output safety check where we use it, and an alternative AI provider. Data: results (and, if we route jobs to fal.ai, photos, masks and prompts), for the duration of the request. Request history is disabled, and results are deleted within 1 hour.
+- **Anthropic, PBC** (USA): the independent automated safety check, meaning its Claude model checks the photo before an edit and every result. Data: the photos and results it checks during the request (never prompts or masks). Anthropic deletes them within 30 days of receipt, unless its automated systems flag them for a breach of its Usage Policy, in which case it may keep them for up to 2 years, or the law requires it to keep them longer. For content it flags, it may keep its trust and safety classification scores (not the content itself) for up to 7 years. By default, Anthropic doesn't use them to train its models, and we never allow it. For the content it keeps to enforce its Usage Policy and meet its legal duties, Anthropic acts as an independent controller (section 11).
+- **Features & Labels, Inc. (fal.ai)** (USA): an alternative AI provider and an alternative automated output check, used only if we switch them on. Data: results (and, if we route jobs to fal.ai, photos, masks and prompts), for the duration of the request. Request history is disabled, and results are deleted within 1 hour.
 - **Developers of the models that fal.ai runs**, for example **Google LLC** (USA) for Gemini image models: where fal.ai uses the developer's own service to run a model, that developer processes the inputs and results of the request on fal.ai's behalf.
 - **RevenueCat, Inc.** (USA): subscription analytics. Data: anonymous user ID, purchase and subscription records (product, price, dates, status, transaction IDs) and basic device and app information. No photos, prompts or results.
 - **Google LLC (AdMob)** (USA): the ads free members see and the confirmation of rewarded ads. Data: device and app information, IP address (general location), identifiers used only within this app, ad interactions and the single-use reward code. No photos, prompts, results or user ID. Google also acts as an independent controller for part of this processing (section 11).
@@ -246,7 +249,7 @@ These companies process personal data on our behalf. We keep this list up to dat
 
 ## 13. International data transfers
 
-We're based in {{COMPANY_COUNTRY}}. Our backend is hosted in {{HOSTING_REGION}}. Our AI providers and Google, which provides the ads free members see, are based in the United States and may process data there or in other countries where they or their sub-processors operate. This means your data may be processed outside your country, including in countries that don't offer the same level of data protection.
+We're based in {{COMPANY_COUNTRY}}. Our backend is hosted in {{HOSTING_REGION}}. Our AI providers (including Anthropic, which runs our independent safety check) and Google, which provides the ads free members see, are based in the United States and may process data there or in other countries where they or their sub-processors operate. This means your data may be processed outside your country, including in countries that don't offer the same level of data protection.
 
 ### From the EEA, the UK and Switzerland
 
@@ -266,8 +269,9 @@ You can ask for a copy of the safeguards we use by emailing [{{PRIVACY_EMAIL}}](
 
 ## 14. How long we keep data
 
-- **Photos, masks and prompts sent to cloud AI features**: not stored by us. They are passed to the AI provider for that request only.
+- **Photos, masks and prompts sent to cloud AI features**: not stored by us. They are passed to our AI providers for that request only (for the copies Anthropic keeps, see below).
 - **Generated results in the cloud**: only until the app confirms the download, and at most 1 hour, in our database or on the provider's content delivery network. Then they are deleted.
+- **Photos and results checked by Anthropic** (our independent safety check): deleted by Anthropic within 30 days of receipt, unless its automated systems flag them for a breach of its Usage Policy, in which case it may keep them for up to 2 years, or the law requires it to keep them longer. For content it flags, it may keep its trust and safety classification scores (not the content itself) for up to 7 years.
 - **Job records**: 30 days, then deleted.
 - **Credit wallet and credit ledger**: as long as your account exists. Deleted when you delete your account.
 - **Entitlement records**: as long as your account exists. Deleted when you delete your account.
@@ -294,7 +298,7 @@ We may keep data for longer where the law requires it or where it's needed for l
 - Session tokens stored in the iOS Keychain, and your library protected by iOS Data Protection.
 - AI provider keys and other secrets kept only on our servers, never in the app.
 - Least-privilege access to our systems and data.
-- Data minimisation: we don't store your inputs, and we delete results from the cloud within an hour.
+- Data minimisation: we don't store your inputs, we delete results from our servers within an hour, and our safety-check provider receives only the images it checks.
 
 No system is completely secure. If a personal data breach occurs, we'll notify the authorities and you where the law requires it.
 
@@ -304,7 +308,7 @@ No system is completely secure. If a personal data breach occurs, we'll notify t
 
 - **Cloud AI processing**: switch it off at any time in **Settings → Cloud AI processing** to withdraw your consent. Withdrawal doesn't affect processing that has already happened.
 - **Delete all creations**: removes your library from your device.
-- **Delete my data & account**: in Settings. Deletes your server account and all server-side records linked to it (credit wallet, credit ledger, job records, entitlement records, ad reward records and reports), asks RevenueCat to delete its subscription analytics records about you, and resets the app on your device: your library, settings, recent prompts, reminders, AI consent, ad counts and Google's record of your ad consent choices. Apple subscriptions must be cancelled separately in your Apple Account settings. The hashed App Store download, safety and network address records (section 14) aren't linked to your account after deletion and stay for those periods, so deleting doesn't reset free credits or a safety pause.
+- **Delete my data & account**: in Settings. Deletes your server account and all server-side records linked to it (credit wallet, credit ledger, job records, entitlement records, ad reward records and reports), asks RevenueCat to delete its subscription analytics records about you, and resets the app on your device: your library, settings, recent prompts, reminders, AI consent, ad counts and Google's record of your ad consent choices. Apple subscriptions must be cancelled separately in your Apple Account settings. The hashed App Store download, safety and network address records (section 14) aren't linked to your account after deletion and stay for those periods, so deleting doesn't reset free credits or a safety pause. The photos and results our safety-check provider checked aren't linked to your account either, so we can't have them deleted on request; Anthropic deletes them on its own schedule (section 14).
 - **Ads**: watching an ad for a credit is always optional, and Pro has no ads. In the EEA, the UK and Switzerland, once you've made a choice in Google's consent form, **Settings → Ad privacy choices** opens it again, so you can change or withdraw your consent at any time.
 - **Camera, photos, speech recognition and notifications**: manage these permissions in your device's Settings (System Settings on a Mac). Speech recognition is only asked for when you make video captions on iOS versions before 26.
 
@@ -363,7 +367,7 @@ The UK Age Appropriate Design Code (the "Children's Code") sets 15 standards for
 
 ## 19. Türkiye (KVKK)
 
-We process personal data in accordance with the Law on the Protection of Personal Data No. 6698 ("**KVKK**"). We are the data controller (*veri sorumlusu*), and our service providers act as data processors (*veri işleyen*). Our [KVKK Information Notice]({{LINK_KVKK}}) (*Aydınlatma Metni*) sets out the full details in Turkish.
+We process personal data in accordance with the Law on the Protection of Personal Data No. 6698 ("**KVKK**"). We are the data controller (*veri sorumlusu*), and our service providers act as data processors (*veri işleyen*), except where section 11 says one also acts as an independent controller. Our [KVKK Information Notice]({{LINK_KVKK}}) (*Aydınlatma Metni*) sets out the full details in Turkish.
 
 **Processing conditions.** Under KVKK, we rely on:
 
@@ -410,13 +414,13 @@ This section applies to California residents and supplements the rest of this po
 **Categories of personal information we have collected in the last 12 months:**
 
 - **Identifiers**: collected. Anonymous user ID, Apple transaction IDs and app account token, a one-way hash of Apple's app transaction ID for your download, AI provider request IDs, ad reward transaction IDs and IP address (and a one-way hash of it for rate limits); for free members, Google's ad software also uses identifiers that work only within this app (never the device's advertising identifier).
-- **Personal information described in Cal. Civ. Code § 1798.80(e)**: collected only to a limited extent: the physical characteristics visible in photos you submit (processed briefly, not stored) and your name, if you include it in an email to us.
+- **Personal information described in Cal. Civ. Code § 1798.80(e)**: collected only to a limited extent: the physical characteristics visible in photos you submit (not stored by us; for the copies our safety-check provider keeps, see section 14) and your name, if you include it in an email to us.
 - **Characteristics of protected classifications**: not collected intentionally. Photos may incidentally show characteristics such as apparent age or sex, but we don't infer, record or use them.
 - **Commercial information**: collected. Records of your in-app purchases and subscriptions (product, dates and status), credit balances, credit usage, credits earned by watching ads, and refunds and revocations of your purchases.
 - **Biometric information**: not collected. We don't extract face geometry or identify anyone.
 - **Internet or other electronic network activity**: collected. Server logs (IP address, request metadata and timestamps), job records (feature used, status and timestamps) and, for free members, interactions with ads (which ads were shown, taps and completed rewarded ads). We don't collect browsing history.
 - **Geolocation data**: not collected by us. Server logs contain IP addresses, but we don't use them to determine your location. For free members, Google's ad software estimates a general location (such as the country or city) from the IP address to serve ads; no precise geolocation is collected.
-- **Audio, electronic, visual or similar information**: collected. Photos, masks and generated images you process with cloud AI features. We don't store them, and results are held for at most 1 hour.
+- **Audio, electronic, visual or similar information**: collected. Photos, masks and generated images you process with cloud AI features. We don't store them, and we hold results for at most 1 hour; Anthropic, which checks photos and results for us, deletes them within 30 days, except in the cases in section 14.
 - **Professional, employment or education information**: not collected.
 - **Inferences used to create a profile**: not collected. We don't build profiles.
 - **Other personal information**: text prompts (not stored on our servers), report details and the content of emails you send us.

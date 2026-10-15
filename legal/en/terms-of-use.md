@@ -269,7 +269,7 @@ You grant us a limited, worldwide, non-exclusive, royalty-free licence to host, 
 
 - does not allow us to use your inputs to train AI models;
 - does not allow us to sell your inputs or use them for advertising; and
-- ends when the processing of your request is complete, except for information you include in a report you send us, which we keep as described in our Privacy Policy.
+- ends when the processing of your request is complete, except for information you include in a report you send us, and for the copies our safety-check provider keeps for a limited time, both as described in our Privacy Policy.
 
 ### Your results
 

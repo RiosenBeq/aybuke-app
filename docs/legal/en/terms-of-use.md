@@ -2,7 +2,7 @@
 
 # Terms of Use
 
-Last updated: 14 October 2026
+Last updated: 15 October 2026
 
 > **The short version.** This summary helps you find your way around. It doesn't replace the full Terms below.
 > - These Terms are a contract between you and Okan Berk Manavoğlu (individual developer), the developer of Aybuke. They are not a contract with Apple.
@@ -271,7 +271,7 @@ You grant us a limited, worldwide, non-exclusive, royalty-free licence to host, 
 
 - does not allow us to use your inputs to train AI models;
 - does not allow us to sell your inputs or use them for advertising; and
-- ends when the processing of your request is complete, except for information you include in a report you send us, which we keep as described in our Privacy Policy.
+- ends when the processing of your request is complete, except for information you include in a report you send us, and for the copies our safety-check provider keeps for a limited time, both as described in our Privacy Policy.
 
 ### Your results
 

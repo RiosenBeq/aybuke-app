@@ -96,7 +96,7 @@ Legend: ✅ done in this repository · ⏳ next · 🔭 later
 - ⏳ Replace the template card art with real before/after thumbnails (diverse casting)
 - ✅ Backend `report` endpoint + `reports` table (12-month retention) wired to "Report this image"
 - ⏳ Ban list and an abuse inbox/review routine (1.2) (backlog `abuse-ops-reports-bans`)
-- ⏳ Independent, fail-closed output moderation before the backend goes live (backlog `server-moderation-stack`)
+- ✅ Independent, fail-closed safety check before the backend goes live (backlog `server-moderation-stack`): Anthropic's Claude checks the photo before an edit and every result, on top of xAI's own moderation (`_shared/safety.ts`; consent version 2 names Anthropic). ⏳ Confirm it on the live API after the deploy
 - ✅ Release guard: `scripts/check-release-config.py` stops demo-mode and placeholder builds; `scripts/check-honest-copy.py` in CI
 
 ## Phase 5 — Growth 🔭
@@ -207,7 +207,7 @@ Seven audits (code, UX and accessibility, platform, competitors, trends, wellbei
 | `store-retention-pricing-ops` | Win-back offers, Retention Messaging, regional prices, billing-issue banner | Mostly App Store Connect setup once the app record exists | No |
 | `trial-credit-cap-family-sharing` | Cap credits during the trial; Family Sharing with a smaller allowance | A trial grants 20 credits in the category with the highest refund rate | Yes |
 | `funnel-measurement` | Private funnel measurement: paywall source, peer benchmarks, anonymous counters | The spec's KPIs can't be measured today | Yes |
-| `server-moderation-stack` | Fail-closed output moderation, input nudity screening, multilingual classifier | Output checks pass by default without `FAL_KEY`; must ship before launch | Yes |
+| `server-moderation-stack` | Fail-closed output moderation, input nudity screening, multilingual classifier | ✅ Shipped (15 October 2026) with Claude as the independent check of the photo and every result, instead of fal.ai; left: confirm it on the live API | Yes |
 | `abuse-ops-reports-bans` | Ban list, reviewable reports, CSAM/NCII runbook with legal hold, App Attest, App Store Server Notifications, PermissionKit | Apple 1.2 and Texas consent revocation; reports have no image today | Yes |
 | `c2pa-trustmark` | Signed C2PA manifests, imperceptible watermark, a free verify page | The EU Code of Practice expects signed metadata plus a watermark | Yes |
 | `storefront-compliance` | India and Korea visible labels, Brazil ECA Digital, Russia decision, DPIA, red-team safety case, BIPA review | Legal decisions that need counsel and the owner | No |

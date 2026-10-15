@@ -28,7 +28,9 @@ struct AIProcessor: Codable, Equatable, Hashable {
         switch role {
         case .servers: return String(localized: "Our servers: your AI jobs and credits")
         case .images: return String(localized: "Creates and edits the images")
-        case .safety: return String(localized: "Checks results for safety")
+        // The independent check sees the photo before an edit and every
+        // result; Create sends text only, so "photos you edit", not "your photo".
+        case .safety: return String(localized: "Checks photos you edit and every result for safety")
         }
     }
 }
@@ -112,7 +114,6 @@ struct AppConfig: Decodable {
     var backendBaseURL: String
     var supabaseAnonKey: String
     var forceDemoMode: Bool
-    var aiProviderName: String
     var dataRetentionHours: Int
     var privacyPolicyURL: URL
     var termsURL: URL
@@ -135,12 +136,13 @@ struct AppConfig: Decodable {
     /// anonymous accounts, purchases, credits and Delete my data work either way.
     var signInWithApple = false
     /// Bump to ask everyone for consent again (the processor list changing
-    /// asks again by itself).
-    var consentVersion = 1
-    /// Who processes cloud AI requests. Must match the backend: a new
-    /// provider or FAL_KEY (fal.ai's output check, role `.safety`) needs an
-    /// app update that lists it first. Without FAL_KEY, xAI's own moderation
-    /// is the output check, so fal.ai sees nothing and isn't listed.
+    /// asks again by itself). 2: Anthropic joined as the safety check.
+    var consentVersion = 2
+    /// Who processes cloud AI requests. Must match the backend: Anthropic
+    /// (role `.safety`) is the independent check in `_shared/safety.ts`
+    /// (ANTHROPIC_API_KEY). A new provider, or setting FAL_KEY (fal.ai), needs
+    /// an app update that lists it first; without FAL_KEY fal.ai sees nothing,
+    /// so it isn't listed.
     var aiProcessors: [AIProcessor] = AppConfig.defaultProcessors
     /// Ads for free members (not an AI processor, so not on the consent sheet).
     var ads = AdsConfig()
@@ -151,6 +153,7 @@ struct AppConfig: Decodable {
     static let defaultProcessors = [
         AIProcessor(name: "Supabase", role: .servers),
         AIProcessor(name: "xAI (Grok Imagine)", role: .images),
+        AIProcessor(name: "Anthropic (Claude)", role: .safety),
     ]
 
     static let current: AppConfig = load()
@@ -170,7 +173,6 @@ struct AppConfig: Decodable {
         backendBaseURL: "",
         supabaseAnonKey: "",
         forceDemoMode: true,
-        aiProviderName: String(localized: "our AI processing partners"),
         dataRetentionHours: 1,
         privacyPolicyURL: URL(string: "https://github.com/RiosenBeq/aybuke-app/blob/main/docs/legal/en/privacy-policy.md")!,
         termsURL: URL(string: "https://github.com/RiosenBeq/aybuke-app/blob/main/docs/legal/en/terms-of-use.md")!,
@@ -183,20 +185,19 @@ struct AppConfig: Decodable {
     )
 
     private enum CodingKeys: String, CodingKey {
-        case backendBaseURL, supabaseAnonKey, forceDemoMode, aiProviderName, dataRetentionHours
+        case backendBaseURL, supabaseAnonKey, forceDemoMode, dataRetentionHours
         case privacyPolicyURL, termsURL, supportEmail, appStoreID, websiteURL, instagramAppID, shareHashtags
         case aiShareHashtags, revenueCatAPIKey, consentVersion, aiProcessors, signInWithApple, ads, creditPolicy
     }
 
     init(
-        backendBaseURL: String, supabaseAnonKey: String, forceDemoMode: Bool, aiProviderName: String,
+        backendBaseURL: String, supabaseAnonKey: String, forceDemoMode: Bool,
         dataRetentionHours: Int, privacyPolicyURL: URL, termsURL: URL, supportEmail: String, appStoreID: String,
         websiteURL: String, instagramAppID: String, shareHashtags: [String], revenueCatAPIKey: String = ""
     ) {
         self.backendBaseURL = backendBaseURL
         self.supabaseAnonKey = supabaseAnonKey
         self.forceDemoMode = forceDemoMode
-        self.aiProviderName = aiProviderName
         self.dataRetentionHours = dataRetentionHours
         self.privacyPolicyURL = privacyPolicyURL
         self.termsURL = termsURL
@@ -215,7 +216,6 @@ struct AppConfig: Decodable {
         backendBaseURL = try container.decodeIfPresent(String.self, forKey: .backendBaseURL) ?? ""
         supabaseAnonKey = try container.decodeIfPresent(String.self, forKey: .supabaseAnonKey) ?? ""
         forceDemoMode = try container.decodeIfPresent(Bool.self, forKey: .forceDemoMode) ?? false
-        aiProviderName = try container.decodeIfPresent(String.self, forKey: .aiProviderName) ?? fallback.aiProviderName
         dataRetentionHours = try container.decodeIfPresent(Int.self, forKey: .dataRetentionHours) ?? fallback.dataRetentionHours
         privacyPolicyURL = try container.decodeIfPresent(URL.self, forKey: .privacyPolicyURL) ?? fallback.privacyPolicyURL
         termsURL = try container.decodeIfPresent(URL.self, forKey: .termsURL) ?? fallback.termsURL
@@ -277,12 +277,6 @@ struct AppConfig: Decodable {
     /// "an hour" or "N hours", matching the privacy policy's 1-hour promise.
     var retentionPhrase: String {
         dataRetentionHours <= 1 ? String(localized: "an hour") : String(localized: "\(dataRetentionHours) hours")
-    }
-
-    /// Who processes photos, as named on the consent screen and in Settings.
-    var processorName: String {
-        if case .direct(let direct) = aiMode { return direct.provider.processorName }
-        return aiProviderName
     }
 
     /// The processors the consent sheet names; a developer key goes straight

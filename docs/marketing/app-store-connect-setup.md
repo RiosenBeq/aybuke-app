@@ -24,7 +24,7 @@ Every value needed to create Aybuke in App Store Connect, in the order the forms
 | Privacy Policy URL | English: `https://aybuke.org/legal/en/privacy-policy`; Turkish localization: `https://aybuke.org/legal/tr/gizlilik-politikasi`. The site is the `RiosenBeq/aybuke` repository on Vercel; confirm both pages answer before submitting |
 | Localizations | Add every locale in `app-store-metadata.json`: en-US, tr, es-ES, es-MX, pt-BR, fr-FR, de-DE, it, ru, ja, ko, zh-Hans, id |
 
-**Age rating:** answer honestly — no violence, sexual content, profanity, gambling, horror, drugs, medical content or unrestricted web access; no chat between users. Generated images are filtered (prompt policy in all languages, provider moderation, output check) and can be reported. Set the rating to **13+** to match the Terms (cloud AI, accounts and purchases from 13) with **Override to Higher Age Rating**, which is needed while the Terms keep a minimum age above the calculated rating. Under In-App Controls, tick **Age Assurance** only once a build with the age step is live. Under Capabilities, tick **Advertising**: free members see ads (section "Ads (AdMob)" below). The app uses the **Declared Age Range** capability (`com.apple.developer.declared-age-range`; no approval needed): turn it on for the app id `app.glowlit.ios` if automatic signing doesn't.
+**Age rating:** answer honestly — no violence, sexual content, profanity, gambling, horror, drugs, medical content or unrestricted web access; no chat between users. Generated images are filtered (prompt policy in all languages, provider moderation, output check, and an independent Claude safety check of the photo before an edit and of every result) and can be reported. Set the rating to **13+** to match the Terms (cloud AI, accounts and purchases from 13) with **Override to Higher Age Rating**, which is needed while the Terms keep a minimum age above the calculated rating. Under In-App Controls, tick **Age Assurance** only once a build with the age step is live. Under Capabilities, tick **Advertising**: free members see ads (section "Ads (AdMob)" below). The app uses the **Declared Age Range** capability (`com.apple.developer.declared-age-range`; no approval needed): turn it on for the app id `app.glowlit.ios` if automatic signing doesn't.
 
 ## 3. Pricing and availability
 
@@ -49,7 +49,7 @@ Localized description for both: "Monthly credits, every look, best-quality AI" (
 | `app.glowlit.credits.30` | 30 Credits | $2.99 | 30 credits that never expire |
 | `app.glowlit.credits.100` | 100 Credits | $7.99 | 100 credits that never expire |
 
-These IDs already exist in RevenueCat (project "Aybuke", entitlement `pro`, offering `default`) and in `ios/StoreKit/Products.storekit`. Set **App Store Server Notifications V2** later to the backend (see `backend/README.md`, "Before launch").
+These IDs already exist in RevenueCat (project "Glowlit", entitlement `pro`, offering `default`) and in `ios/StoreKit/Products.storekit`. Leave **App Store Server Notifications V2** (Production and Sandbox, App Information) pointing at RevenueCat: App Store Connect takes one URL per environment. The backend gets each notification through RevenueCat › Project Glowlit › Apps › Glowlit (App Store) › **Apple Server Notification Forwarding URL** = `https://efapupjvidyqhqdevmcu.supabase.co/functions/v1/app-store-notifications`, which the owner sets (`backend/README.md`, "Setup" 5; `docs/SAHIP-YAPILACAKLAR.md` 2.14).
 
 ## 5. App Privacy
 
@@ -59,7 +59,7 @@ These IDs already exist in RevenueCat (project "Aybuke", entitlement `pro`, offe
 
 | Data type | Linked to the user | Purposes |
 |---|---|---|
-| Photos or Videos | Yes | App Functionality (only photos the user sends to cloud AI; results are kept under the user ID until download, ≤ 1 hour) |
+| Photos or Videos | Yes | App Functionality (only photos the user sends to cloud AI, which xAI edits and Anthropic's Claude checks for safety; results are kept under the user ID until download, ≤ 1 hour) |
 | Other User Content (prompts, reports) | Yes | App Functionality (prompts reach the AI provider with a hashed user tag we can link back; reports are keyed to the user ID) |
 | User ID (anonymous account ID) | Yes | App Functionality, Analytics (RevenueCat) |
 | Purchase History | Yes | App Functionality, Analytics (RevenueCat) |
@@ -83,10 +83,10 @@ Two notes for the form: Apple asks "linked to the user" once per data type, so *
 | Step | What to do |
 |---|---|
 | AdMob app | iOS app "Aybuke", app id `ca-app-pub-2292230772061554~5236020895` (in `Release.xcconfig` as `GL_ADMOB_APP_ID` and in `AppConfig.json` → `ads.appID`; a mismatch turns ads off) |
-| Rewarded unit | `ca-app-pub-2292230772061554/1406702504`, reward amount **1**, reward item **credit**. *Server-side verification*: callback URL `https://efapupjvidyqhqdevmcu.supabase.co/functions/v1/ad-reward` (no query string), then **Verify URL** (it answers 200 and grants nothing). Supabase secret `ADMOB_REWARDED_AD_UNIT` = the same unit id (`backend/README.md`, "Rewarded ads") |
-| Interstitial unit | Create one, then put its id in `AppConfig.json` → `ads.interstitialUnitID`. Empty: no interstitials |
-| Content | Blocking controls › Sensitive categories: block dating, gambling, alcohol, weight loss and the other sensitive categories, so adults' PG ads stay teen-friendly too. The app already sets G for teens and PG for adults |
-| Privacy & messaging | Create a **GDPR** message (EEA, UK, Switzerland) and, optionally, a **US states** message. Teens are tagged as under the age of consent and never see them |
+| Rewarded unit | `ca-app-pub-2292230772061554/1406702504`, reward amount **1**, reward item **credit**. *Server-side verification*: callback URL `https://efapupjvidyqhqdevmcu.supabase.co/functions/v1/ad-reward` (no query string), then **Verify URL** (it answers 200 and grants nothing); verified and saved on 15 October 2026. Supabase secret `ADMOB_REWARDED_AD_UNIT` = the same unit id (`backend/README.md`, "Rewarded ads") |
+| Interstitial unit | "After save interstitial" `ca-app-pub-2292230772061554/6797438012`, frequency cap 3 per user a day (created 15 October 2026), in `AppConfig.json` → `ads.interstitialUnitID`. Empty: no interstitials |
+| Content | Blocking controls › Sensitive categories: all 11 standard sensitive categories (dating, gambling, alcohol, weight loss and the rest) and the restricted ones are blocked (15 October 2026), so adults' PG ads stay teen-friendly too. The block is account-wide, so it also applies to the owner's other apps in the same AdMob account. The app already sets G for teens and PG for adults |
+| Privacy & messaging | The **GDPR** message "Aybuke GDPR" (EEA, UK, Switzerland; Aybuke only, the privacy policy URL, a "Do not consent" button in every country, 9 extra languages) is saved as a **draft**: the owner publishes it in Privacy & messaging › European regulations. A **US states** message is optional. Teens are tagged as under the age of consent and never see them |
 | app-ads.txt | AdMob reads `https://aybuke.org/app-ads.txt`. The line is in the website repository (`RiosenBeq/aybuke`) and in `web/app-ads.txt` here; the live file was not checked from the build sandbox, so confirm it answers at the domain root |
 | Age rating | Under Capabilities, tick **Advertising** (free members see ads; they're never personalised or targeted). It doesn't raise the 13+ rating |
 
@@ -98,13 +98,13 @@ Two notes for the form: Apple asks "linked to the user" once per data type, so *
 | Support URL | `https://aybuke.org` (landing page with the support email) |
 | Marketing URL | same as Support URL |
 | Copyright | `2026 Okan Berk Manavoğlu` |
-| App Review information | Contact name, phone and email of the owner; no demo account needed; notes from [`app-store-listing.md`](app-store-listing.md) ("App Review notes") |
+| App Review information | Contact name, phone and email of the owner; no demo account needed; notes from [`app-store-listing.md`](app-store-listing.md) ("App Review notes"), which say the consent screen names Supabase, xAI and Anthropic, and that the layered safety includes an independent Claude check of the photo and every result |
 | Build | `ASC_KEY_ID=… ASC_ISSUER_ID=… scripts/upload-app-store.sh` (App Store Connect API key, automatic signing; `PLATFORM=mac` for the Mac build), or Xcode › Product › Archive › Distribute. The script first runs `scripts/check-release-config.py --online` and stops on release blockers: demo mode (no backend), `[bracketed]` legal placeholders, a missing or GitHub-blob `websiteURL`, a website or privacy page that doesn't answer, mail domains without MX records. For a deliberate TestFlight preview set `GL_PREVIEW_BUILD=1`; never submit such a build for review. Xcode archives skip the check, so run it by hand before submitting one. `ITSAppUsesNonExemptEncryption` is `NO` (HTTPS only), so no export-compliance documents are needed |
 | Release | Manual release after approval |
 
 ## 7. Before pressing "Submit for Review"
 
-- [ ] Backend live and AppConfig.json pointing to it (real AI results in TestFlight)
+- [ ] Backend live and AppConfig.json pointing to it (real AI results in TestFlight, with `ANTHROPIC_API_KEY` set so the Claude safety check runs)
 - [ ] GitHub Pages on, so the Privacy Policy and Support URLs open
 - [ ] Paid Apps Agreement, tax and banking complete (Business section)
 - [ ] All in-app purchases "Ready to Submit" and attached to the version

@@ -107,14 +107,15 @@ We use several layers of safety measures:
 1. **Prompt filters** in the app and on our servers block requests for nudity or sexual content, "undressing" or nudification, sexual content involving minors, and revealing clothing such as swimwear or underwear. For photo edits they also block requests to reshape a face or body, change skin tone, retouch skin or rate someone's looks, and edits that mock or degrade someone. Every Magic Edit also tells the AI to keep faces, body shapes, skin tone, skin texture and age as they are.
 2. **Provider safety settings** make the AI models refuse unsafe content.
 3. **An automated output check** scans every result for nudity or sexual content before it's delivered.
-4. **Safe-by-design features**: our templates are designed to preserve identity, we don't offer templates based on celebrities or real people, and we don't offer body-reshaping or skin-lightening features.
-5. **Reports** from users are reviewed by a human.
+4. **An independent safety check**: an AI model from a second company (Anthropic's Claude) checks the photo before an edit and every result for nudity, sexual content, anything that sexualises minors, graphic violence, self-harm and hate. A photo it flags isn't edited, and a result it flags isn't delivered; if it can't complete its check, nothing is delivered either. A photo it turns down doesn't count towards a pause (below).
+5. **Safe-by-design features**: our templates are designed to preserve identity, we don't offer templates based on celebrities or real people, and we don't offer body-reshaping or skin-lightening features.
+6. **Reports** from users are reviewed by a human.
 
 Automated filters aren't perfect. They can block harmless requests and miss harmful ones. Blocked or failed generations are never charged.
 
 When our servers' filters block 3 of your requests or results within 24 hours, cloud AI pauses for 24 hours for your account and your App Store download (or, without a verified download, your network address). After 3 pauses within 30 days, we switch cloud AI off for that download until we've reviewed it. On-device features keep working. You can appeal a pause or a switch-off (section 9).
 
-We don't store your inputs, and results are deleted from the cloud within an hour, so we don't routinely look at your creations. Human review happens when content is reported to us or when you appeal a decision.
+We don't store your inputs, and results are deleted from our servers within an hour, so we don't routinely look at your creations. Human review happens when content is reported to us or when you appeal a decision.
 
 ## 7. Enforcement
 

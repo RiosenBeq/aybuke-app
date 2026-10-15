@@ -155,7 +155,7 @@ supabase functions deploy app-store-notifications --project-ref efapupjvidyqhqde
 - [ ] `ad-reward` ve `app-store-notifications` `--no-verify-jwt` ile yayımlandı. Bu bayrak olmazsa AdMob'un ve Apple'ın çağrıları reddedilir.
 - [ ] Edge Functions › Logs'ta her fonksiyonun ilk istekten sonra başlatma hatası yok.
 - [ ] Yayımlanacak commit'te CI yeşil: `.github/workflows/ci.yml` `deno check` ve `deno test` çalıştırır.
-- [ ] **App Store Server Notifications V2 adresi (sahip).** App Store Connect › Aybuke › App Information › App Store Server Notifications: Version 2; Production Server URL ve Sandbox Server URL `https://efapupjvidyqhqdevmcu.supabase.co/functions/v1/app-store-notifications`. Ardından App Store Connect'in test bildirimi gönderme düğmesi (varsa) ya da bir Sandbox satın alması; Edge Functions › Logs'ta `app-store-notifications` 200 döner. Fonksiyon üretim bildirimlerini yalnızca `APPLE_APP_ID` ayarlıyken kabul eder. SAHIP 2.14.
+- [ ] **App Store Server Notifications V2 adresi (sahip, RevenueCat üzerinden).** App Store Connect her ortam için tek adres kabul eder ve App Store Connect › Aybuke › App Information › App Store Server Notifications'taki Production ve Sandbox adresleri RevenueCat'i gösterir; öyle kalır. Adres RevenueCat'e girilir: RevenueCat › Project Glowlit › Apps › Glowlit (App Store) › "Apple Server Notification Forwarding URL" = `https://efapupjvidyqhqdevmcu.supabase.co/functions/v1/app-store-notifications`. RevenueCat her imzalı bildirimi değiştirmeden iletir; fonksiyon Apple'ın imzasını kendisi denetler. Bu ayarı sahip yapar (bir ajanın denemesi engellendi). Ardından bir Sandbox satın alması (ya da App Store Connect'in test bildirimi, RevenueCat iletirse); Edge Functions › Logs'ta `app-store-notifications` 200 döner. Fonksiyon üretim bildirimlerini yalnızca `APPLE_APP_ID` ayarlıyken kabul eder. SAHIP 2.14.
 - [ ] **AdMob doğrulama adresi.** Server-side verification: `https://efapupjvidyqhqdevmcu.supabase.co/functions/v1/ad-reward` (sorgu dizesi yok), ardından **Verify URL**. Test geri çağrısı 200 döner ve kredi vermez. Ayrıntı: `backend/README.md` "Rewarded ads"; SAHIP 3.2.
 
 ## §6 Gizli değerler (secrets)
@@ -165,6 +165,7 @@ Değerleri sahip girer. Yer: Supabase panelinde Edge Functions › Secrets; ya d
 **Zorunlu**
 
 - [ ] `XAI_API_KEY`: xAI anahtarı. Canlıda ayarlı olup olmadığı doğrulanamadı (HANDOFF'a göre ayarlı). Döndürme: SAHIP 1.2.
+- [ ] `ANTHROPIC_API_KEY`: Anthropic (Claude) anahtarı; bağımsız güvenlik denetimi (`_shared/safety.ts`). Sahip 15 Ekim 2026'da girdi; değerini okuma ya da yazdırma, yalnızca adına bak. Ayarlıyken düzenlenecek her fotoğraf ve her sonuç Claude'a gider ve denetim fail-closed çalışır: Anthropic bakiyesi biterse ya da anahtar geçersizse her düzenleme ve sonuç engellenir, kredi iade edilir (SAHIP 1.11). Onay ekranı (`consentVersion` 2) ve gizlilik metinleri Anthropic'i bu depoda yazıyor; aybuke.org'daki canlı hukuk sayfaları ise ayrı depodan (`RiosenBeq/aybuke`) yayınlanır ve yeni metni henüz taşımıyor. Henüz herkese açık bir derleme olmadığı için `ai-image` bundan önce yayımlanabilir (§5; MAC-YAYIN 5.5). Ama senin dışında birinin kuracağı bir derleme test kullanıcılarına ulaşmadan ve incelemeye gönderilmeden önce canlı sayfalar Anthropic'i yazmalı: hukuk metinlerini web sitesi deposuna kopyala, orada derle ve yayınla (`web/README.md`; kontrol MAC-YAYIN 11. bölüm). Yayımdan sonra Edge Functions › Logs'ta `ai-image` başlarken `output check in force: xai + anthropic:claude-haiku-5-5` yazar. SAHIP 5.8.
 - [ ] `APPLE_APP_ID` = `6822716008`. Üretim (App Store) satın almalarını doğrulamak için şart; yoksa üretim AppTransaction reddedilir ve ücretsiz krediler kapalı kalır. Sandbox bu olmadan da çalışır.
 - [ ] `ADMOB_REWARDED_AD_UNIT` = `ca-app-pub-2292230772061554/1406702504`. Boş kalırsa hiçbir reklam ödülü verilmez.
 - [ ] `APPLE_BUNDLE_ID` = `app.glowlit.ios`. Kodda bu varsayılan; yine de gir.
@@ -174,8 +175,9 @@ Değerleri sahip girer. Yer: Supabase panelinde Edge Functions › Secrets; ya d
 
 - [ ] `REVENUECAT_SECRET_KEY` ve `REVENUECAT_PROJECT_ID` = `3e7e4f4a`: hesap silinince RevenueCat müşterisini de siler. Anahtar yalnızca `customer_information:customers:read_write` izinli bir v2 gizli anahtar olmalı. Yoksa silmeler `pending_revenuecat_deletions` tablosunda bekler. SAHIP 5.7.
 - [ ] `APPLE_SIGNIN_KEY_ID` ve `APPLE_SIGNIN_PRIVATE_KEY`: yalnızca Apple ile giriş açılacaksa; hesap silinince token iptali için. Bu sürümde girilmez. SAHIP 5.6.
-- [ ] `FAL_KEY`: **girilmez.** Girilirse her çıktı fal.ai'ye gider; önce fal.ai uygulama onay ekranına (`aiProcessors`) ve gizlilik metinlerine eklenmeli. Boşken çıktı denetimi xAI'nin kendi kararıdır. SAHIP 5.8.
-- [ ] `XAI_SAFETY_MODEL`: **boş bırakılır.** Ayarlanırsa her fotoğraf ve sonuç ek bir xAI görme modeliyle denetlenir. Canlı API'de test edilmedi. SAHIP 5.8.
+- [ ] `ANTHROPIC_SAFETY_MODEL`: boş bırakılabilir; boşken `claude-haiku-5-5`. Yalnızca denetim modelini değiştirmek için.
+- [ ] `FAL_KEY`: **girilmez.** Girilirse her çıktı fal.ai'ye gider; fal.ai onay ekranında (`aiProcessors`) yok ve gizlilik metinleri onu yalnızca kullanılmayan bir alternatif olarak anar. Boşken çıktı denetimi xAI'nin kendi kararıdır; bağımsız denetim Claude'dur. SAHIP 5.8.
+- [ ] `XAI_SAFETY_MODEL`: **boş bırakılır.** `ANTHROPIC_API_KEY` ayarlıyken zaten okunmaz (Claude önceliklidir). Canlı API'de test edilmedi. SAHIP 5.8.
 - [ ] `AI_PROVIDER`, `XAI_IMAGE_MODEL`, `XAI_EDIT_MODEL`: boş bırakılır. `AI_PROVIDER` boşken `XAI_API_KEY` varsa xAI, yoksa fal kullanılır.
 
 **Girilmez**
@@ -190,6 +192,7 @@ Sahibin işi. console.x.ai üzerinde. (Doğrulanamadı: konsolun arayüz adları
 - [ ] **Kredi ve aylık limit.** Ekip faturalandırmasında kredi yüklü ve aylık harcama limiti tanımlı. Kredi bitince her AI işi başarısız olur ve kredi iade edilir. SAHIP 1.1.
 - [ ] **Zero Data Retention.** Ekip ayarlarında açık ve bu anahtar için geçerli. Gizlilik metinleri (`legal/tr/gizlilik-politikasi.md`, 5. madde) bunu söyler; depo bunu kanıtlayamaz. Açılamıyorsa metinler yanlış olur; karar için SAHIP 1.3 ve 6.1.
 - [ ] **Anahtar döndürme.** `XAI_API_KEY` bir sohbete, dosyaya ya da bilete yazıldıysa: yeni anahtar üret, Supabase'de değiştir, bir AI işi dene, eskisini iptal et. SAHIP 1.2.
+- [ ] **Anthropic (Claude Console, platform.claude.com).** Bakiye var ve aylık harcama limiti tanımlı; denetim başına yaklaşık 0,0002 USD. Bakiye biterse güvenlik denetimi çalışamaz ve her düzenleme ile sonuç engellenip iade edilir. SAHIP 1.11.
 
 ## §8 Yükleme sonrası kontroller (TestFlight)
 
@@ -206,6 +209,6 @@ TestFlight derlemesi Sandbox ile çalışır; sunucu Sandbox işlemlerini her za
 Bu bölümdeki işleri ajan yapmaz; karar sahibindedir.
 
 - [ ] **Eski "envanter" Supabase projesi.** Bu depoya ait değildir. Silme kalıcıdır; yalnızca sahip yapar. Ajan silmez ve silme komutu yazmaz.
-- [x] **İade ve iptal bildirimleri (App Store Server Notifications V2).** Uç nokta yazıldı (`functions/app-store-notifications`, migrasyon 1.10). Kalan: yayımlama (§5) ve adresin App Store Connect'e girilmesi (SAHIP 2.14).
+- [x] **İade ve iptal bildirimleri (App Store Server Notifications V2).** Uç nokta yazıldı (`functions/app-store-notifications`, migrasyon 1.10). Kalan: yayımlama (§5) ve adresin RevenueCat'in "Apple Server Notification Forwarding URL" alanına girilmesi (App Store Connect RevenueCat'i göstermeye devam eder; SAHIP 2.14).
 - [ ] **Paylaşılan adres eşiği.** Doğrulanmamış bir adresten üç uyarı, o adresteki herkesi bekletir. Adres anahtarları için eşik yükseltilecek mi? Karar: SAHIP 5.3.
 - [ ] **Deneme kredilerinin devri (trial roll-in).** Yıllık planın 7 günlük denemesinde kullanılmayan 20 kredi ilk ücretli aya eklensin mi? Karar: SAHIP 5.1.

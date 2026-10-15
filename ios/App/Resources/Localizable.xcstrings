@@ -27577,72 +27577,72 @@
         }
       }
     },
-    "Checks results for safety" : {
+    "Checks photos you edit and every result for safety" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Prüft Ergebnisse auf Sicherheit"
+            "value" : "Prüft Fotos, die du bearbeitest, und jedes Ergebnis auf Sicherheit"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Revisa la seguridad de los resultados"
+            "value" : "Revisa la seguridad de las fotos que editas y de cada resultado"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vérifie la sécurité des résultats"
+            "value" : "Vérifie la sécurité des photos que tu retouches et de chaque résultat"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Memeriksa keamanan hasil"
+            "value" : "Memeriksa keamanan foto yang kamu edit dan setiap hasil"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Controlla la sicurezza dei risultati"
+            "value" : "Controlla la sicurezza delle foto che modifichi e di ogni risultato"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "結果の安全性をチェック"
+            "value" : "編集する写真とすべての結果の安全性をチェック"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "결과의 안전성 확인"
+            "value" : "편집하는 사진과 모든 결과의 안전성 확인"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Verifica a segurança dos resultados"
+            "value" : "Verifica a segurança das fotos que você edita e de cada resultado"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Проверяет результаты на безопасность"
+            "value" : "Проверяет на безопасность фото, которые ты редактируешь, и каждый результат"
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sonuçları güvenlik için denetler"
+            "value" : "Düzenlediğin fotoğrafları ve her sonucu güvenlik açısından denetler"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "检查结果的安全性"
+            "value" : "检查你编辑的照片和每个结果的安全性"
           }
         }
       }
@@ -38393,6 +38393,76 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "要删除这个作品吗？"
+          }
+        }
+      }
+    },
+    "Deleted by our safety-check provider within 30 days, unless flagged for breaking its rules" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Innerhalb von 30 Tagen von unserem Anbieter der Sicherheitsprüfung gelöscht, außer wenn er einen Verstoß gegen seine Regeln feststellt"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nuestro proveedor de la revisión de seguridad las elimina en un plazo de 30 días, salvo que las marque por incumplir sus normas"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Supprimées par notre prestataire de contrôle de sécurité sous 30 jours, sauf si elles sont signalées comme contraires à ses règles"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dihapus oleh penyedia pemeriksaan keamanan kami dalam 30 hari, kecuali ditandai melanggar aturannya"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eliminate dal nostro fornitore del controllo di sicurezza entro 30 giorni, salvo se segnalate come contrarie alle sue regole"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "安全チェックの委託先が30日以内に削除（規約違反として検出されたものを除く）"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "안전 검사 업체가 30일 이내에 삭제해요(규칙 위반으로 표시된 경우 제외)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Excluídas pelo fornecedor da nossa verificação de segurança em até 30 dias, salvo se sinalizadas por violar as regras dele"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Удаляются компанией, которая проводит нашу проверку безопасности, в течение 30 дней, если их не отметили как нарушающие её правила"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Güvenlik denetimi sağlayıcımız tarafından 30 gün içinde silinir (kurallarına aykırı diye işaretlenenler hariç)"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "安全检查服务商会在 30 天内删除（被标记为违反其规则的内容除外）"
           }
         }
       }
@@ -68852,76 +68922,6 @@
         }
       }
     },
-    "our AI processing partners" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "unsere KI-Verarbeitungspartner"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "nuestros proveedores de IA"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "nos prestataires IA"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "mitra pemrosesan AI kami"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "nostri partner IA"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "提携しているAI処理パートナー"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "AI 처리 파트너사"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "nossos parceiros de processamento de IA"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "наших ИИ-партнёров"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "yapay zekâ hizmet ortaklarımız"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "我们的 AI 处理合作伙伴"
-          }
-        }
-      }
-    },
     "Our best-quality AI, no watermark" : {
       "localizations" : {
         "de" : {
@@ -98219,72 +98219,72 @@
         }
       }
     },
-    "To create and edit images with AI, we send the photo and text you choose to our servers and to %@, who process them on our behalf." : {
+    "To create and edit images with AI, we send the photo and text you choose to our servers and to the companies listed below, who process them for us." : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Um Bilder mit KI zu erstellen und zu bearbeiten, senden wir das Foto und den Text, die du auswählst, an unsere Server und an %@, wo sie in unserem Auftrag verarbeitet werden."
+            "value" : "Um Bilder mit KI zu erstellen und zu bearbeiten, senden wir das Foto und den Text, die du auswählst, an unsere Server und an die unten aufgeführten Unternehmen, die sie für uns verarbeiten."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Para crear y editar imágenes con IA, enviamos la foto y el texto que elijas a nuestros servidores y a %@, donde se procesan en nuestro nombre."
+            "value" : "Para crear y editar imágenes con IA, enviamos la foto y el texto que elijas a nuestros servidores y a las empresas que aparecen abajo, que los procesan en nuestro nombre."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pour créer et retoucher des images avec l’IA, nous envoyons la photo et le texte que tu choisis à nos serveurs et à %@, pour un traitement effectué en notre nom."
+            "value" : "Pour créer et retoucher des images avec l’IA, nous envoyons la photo et le texte que tu choisis à nos serveurs et aux entreprises indiquées ci-dessous, qui les traitent pour notre compte."
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Untuk membuat dan mengedit gambar dengan AI, kami mengirim foto dan teks yang kamu pilih ke server kami dan ke %@, yang memprosesnya atas nama kami."
+            "value" : "Untuk membuat dan mengedit gambar dengan AI, kami mengirim foto dan teks yang kamu pilih ke server kami dan ke perusahaan yang tercantum di bawah, yang memprosesnya untuk kami."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Per creare e modificare immagini con l'IA, la foto e il testo che scegli vengono inviati ai nostri server e a %@ ed elaborati per nostro conto."
+            "value" : "Per creare e modificare immagini con l'IA, la foto e il testo che scegli vengono inviati ai nostri server e alle aziende elencate qui sotto, che li elaborano per nostro conto."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "AIで画像を作成・編集するために、あなたが選んだ写真とテキストを当社のサーバー、および当社に代わって処理を行う%@に送信します。"
+            "value" : "AIで画像を作成・編集するために、あなたが選んだ写真とテキストを当社のサーバー、および当社に代わって処理を行う下記の企業に送信します。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "AI로 이미지를 만들고 편집할 수 있도록, 선택한 사진과 텍스트를 저희 서버와 %@에 보내요. 해당 업체는 저희를 대신해 이를 처리해요."
+            "value" : "AI로 이미지를 만들고 편집할 수 있도록, 선택한 사진과 텍스트를 저희 서버와 아래에 나온 업체들에 보내요. 이 업체들은 저희를 대신해 이를 처리해요."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Para criar e editar imagens com IA, enviamos a foto e o texto que você escolher para nossos servidores e para %@, que os processam em nosso nome."
+            "value" : "Para criar e editar imagens com IA, enviamos a foto e o texto que você escolher para nossos servidores e para as empresas listadas abaixo, que os processam em nosso nome."
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Чтобы создавать и редактировать изображения с помощью ИИ, мы отправляем выбранные тобой фото и текст на наши серверы и серверы %@, где их обрабатывают по нашему поручению."
+            "value" : "Чтобы создавать и редактировать изображения с помощью ИИ, мы отправляем выбранные тобой фото и текст на наши серверы и компаниям из списка ниже, которые обрабатывают их по нашему поручению."
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Yapay zekâ ile görsel oluşturmak ve düzenlemek için seçtiğin fotoğrafı ve metni sunucularımıza gönderir, bizim adımıza işlenmeleri için %@ ile paylaşırız."
+            "value" : "Yapay zekâ ile görsel oluşturmak ve düzenlemek için seçtiğin fotoğrafı ve metni sunucularımıza ve aşağıda listelenen şirketlere göndeririz; bu şirketler onları bizim adımıza işler."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "为了用 AI 创建和编辑图片，我们会将你选择的照片和文字发送到我们的服务器以及%@，由其代表我们进行处理。"
+            "value" : "为了用 AI 创建和编辑图片，我们会将你选择的照片和文字发送到我们的服务器以及下方列出的公司，由它们代表我们进行处理。"
           }
         }
       }
