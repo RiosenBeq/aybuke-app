@@ -4,12 +4,12 @@ Bu liste yalnızca sahibin yapabileceği işleri içerir: Supabase, xAI, Anthrop
 
 **Durum.** 15 Ekim 2026, akşam. **Aybuke 1.0 incelemede:** iOS (derleme 20261015.1225) abonelik grubu, iki abonelik ve iki kredi paketiyle, macOS (derleme 20261015.1233) ile birlikte gönderildi; ikisi de WAITING_FOR_REVIEW, yayın türü AFTER_APPROVAL (onaylanınca kendiliğinden yayına girer). Derlemeler manuel imzalama ve altool ile yüklendi. Backend canlı: migrasyonlar `20261029000002`'ye kadar uygulandı, yedi fonksiyon yayında (`owner-digest` dahil), gizli değerler tamam (Apple ile giriş, Resend ve özet anahtarları dahil), üç cron işi çalışıyor; günlük sigortalar 60 ücretsiz, 10 doğrulanmamış, toplam 400 iş; sahip uyarı e-postaları ve günlük özet geliyor. Apple ile giriş 1.0'da açık (anahtar `36Q32XU57F`, Apple'a karşı doğrulandı). xAI Zero Data Retention "Active". App Privacy 10 veri türüyle yayımlandı. RevenueCat projesi ve uygulaması Aybuke adını aldı, Apple bildirim yönlendirme adresi girildi; Supabase organizasyonu ve projesi de Aybuke oldu. AdMob GDPR mesajı yayında. Yeni ikon Aura Lens (Holo Heart, Ürün Sayfası Optimizasyonu testleri için alternatif ikon olarak derlemede). 364 ekran görüntüsü ve en-US iPhone uygulama önizlemesi yüklendi. TestFlight iç grubu "Aybuke Team" var.
 
-**Kalan (yalnızca sen).** 1.1 ve 1.11 (xAI ve Anthropic harcama limitleri ve bakiye yükleme), 1.2 (xAI anahtarını döndür), 6.1–6.3 (Anthropic ve xAI DPA'ları, KVKK adımları, avukat), 3.7 (onaydan sonra AdMob uygulamasını mağaza kaydına bağla; ana oturum bunu izliyor), 2.12 (TestFlight'ta cihaz testi, artık isteğe bağlı), 3.4 ve 3.6 (AdMob adı, AdSense), 5.1, 5.3–5.5 ve 5.7 (kararlar).
+**Kalan (yalnızca sen).** 1.1 ve 1.11 (xAI ve Anthropic harcama limitleri ve bakiye yükleme), 1.2 (xAI anahtarını döndür), 6.1–6.3 (Anthropic ve xAI DPA'ları, KVKK adımları, avukat), 3.7 (onaydan sonra AdMob uygulamasını mağaza kaydına bağla), 2.12 (TestFlight'ta cihaz testi, artık isteğe bağlı), 2.11 (büyük metin taraması), 3.4 ve 3.6 (AdMob adı, AdSense), 5.1, 5.3–5.5 ve 5.7 (kararlar).
 
 ## 1) Önce bunlar (acil)
 
 ### 1.1 xAI kredisini yükle ya da aylık limiti artır
-- [x] **Kredi yüklendi:** 14 Ekim 2026, 10 USD. Kalan: aylık harcama limitini belirle ve ilk gerçek Magic Edit'i dene (aşağıdaki sıra, adım 2 ve 3).
+- [x] **Kredi yüklendi:** 14 Ekim 2026, 10 USD. İlk gerçek Magic Edit 15 Ekim 2026'da geçti (adım 3). Kalan: aylık harcama limiti (adım 2) ve lansman için yeni yükleme (bütçe notu).
 - [ ] **Ne:** xAI ekip kredisi ya da aylık harcama limiti bitmişti. Bu yüzden her AI işi başarısız oluyor ve kredi iade ediliyordu.
   - **Neden:** `docs/HANDOFF-PROMPT.md`, "xAI" bölümü. Faturalandırma ve harcama limiti: `docs/SUPABASE-TODO.md` §7.
   - **Nerede:** console.x.ai, ekip faturalandırma ve harcama limiti. Menü adları konsolun güncel arayüzüne göre değişebilir.
@@ -208,7 +208,7 @@ supabase functions deploy app-store-notifications --project-ref efapupjvidyqhqde
 - [x] **Yapıldı (15 Ekim 2026):** "After save interstitial" geçiş birimi oluşturuldu: `ca-app-pub-2292230772061554/6797438012`, sıklık sınırı kullanıcı başına günde 3. Kimlik `ios/App/Resources/AppConfig.json` › `ads.interstitialUnitID` alanına yazıldı. Böylece sahibin 1.0 kararı (kaydettikten sonra ara sıra geçiş reklamı) uygulanmış oldu.
   - **Neden:** Birim kimliği boşken geçiş reklamı kapalıydı (`docs/HANDOFF-PROMPT.md` adım 7). Uygulamada zaten en çok 3/gün sınırı var (`AGENTS.md`, "Ads"); AdMob sınırı ek güvence.
   - **Nerede:** AdMob > Aybuke uygulaması > Ad units.
-  - **Kalan:** Kimliği içeren Release derlemesinin yüklenmesi (2.2). DEBUG derlemeleri her zaman Google'ın test birimlerini kullanır.
+  - **Yapıldı (15 Ekim 2026):** kimlik, yüklenen iOS 1.0 derlemesinde (20261015.1225; 2.2). DEBUG derlemeleri her zaman Google'ın test birimlerini kullanır.
 
 ### 3.2 Ödüllü birimde sunucu doğrulaması
 - [x] **Yapıldı (15 Ekim 2026):** Ödüllü birimin sunucu doğrulaması (SSV) ayarlandı: geri çağrı adresi Verify URL ile doğrulandı ve kaydedildi. Aşağıdaki adımlar kayıt ve gerekirse yeniden kurulum içindir.
@@ -243,7 +243,7 @@ supabase functions deploy app-store-notifications --project-ref efapupjvidyqhqde
   - **Sıra:** 1) Ekranda istenen eksik adımı oku. 2) Kimlik, adres ve vergi bilgilerini gir. 3) Onay bekleniyorsa not al.
 
 ### 3.7 AdMob uygulamasını mağaza kaydına bağla (onaydan sonra)
-- [ ] **Ne:** Aybuke App Store'da yayına girince AdMob'daki iOS uygulamasını mağaza kaydına (App Store kimliği `6822716008`) bağla. Ana oturum yayını izliyor ve zamanı gelince hatırlatır.
+- [ ] **Ne:** Aybuke App Store'da yayına girince AdMob'daki iOS uygulamasını mağaza kaydına (App Store kimliği `6822716008`) bağla.
   - **Neden:** AdMob app-ads.txt dosyasını mağaza kaydındaki geliştirici web sitesinden (aybuke.org) bulur; mağazaya bağlanmamış uygulamada reklam sunumu sınırlı kalabilir. Uygulama yayında olmadan bağlanamaz.
   - **Nerede:** AdMob > Apps > Aybuke > App settings (menü adları konsolun güncel arayüzüne göre değişebilir).
   - **Sıra:** 1) Uygulama App Store'da görünür olsun. 2) AdMob'da uygulamayı mağaza kaydıyla bağla. 3) app-ads.txt durumunun doğrulandığını kontrol et (birkaç gün sürebilir).
@@ -272,7 +272,7 @@ supabase functions deploy app-store-notifications --project-ref efapupjvidyqhqde
   - **Öneri:** Mevcut davranışı koru; paywall ve hukuki metinler bunu açıkça söylesin. Böylece kullanıcı kredisini kaybetmez.
 
 ### 5.2 App Store Server Notifications V2
-- [x] **Karar verildi ve yapıldı:** uç nokta lansmandan önce kuruldu (`functions/app-store-notifications`, migrasyon `20261025000000`). Kalan sahip işi: yayımlama (1.6) ve adresi RevenueCat'in yönlendirme alanına girmek (2.14).
+- [x] **Karar verildi ve yapıldı:** uç nokta lansmandan önce kuruldu (`functions/app-store-notifications`, migrasyon `20261025000000`). Yayımlandı (1.6) ve adres RevenueCat'in yönlendirme alanına girildi (2.14), ikisi de 15 Ekim 2026'da.
 
 ### 5.3 Paylaşılan IP adresleri
 - [ ] **Karar:** Doğrulanmamış bir adresten üç strike, o adresteki herkesi cool-down'a sokuyor. Adres anahtarları için daha yüksek bir eşik uygulansın mı?

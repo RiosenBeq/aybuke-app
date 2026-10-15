@@ -65,8 +65,10 @@
     supabase functions deploy account --project-ref efapupjvidyqhqdevmcu --use-api
     supabase functions deploy report --project-ref efapupjvidyqhqdevmcu --use-api
     supabase functions deploy ad-reward --project-ref efapupjvidyqhqdevmcu --use-api --no-verify-jwt
+    supabase functions deploy app-store-notifications --project-ref efapupjvidyqhqdevmcu --use-api --no-verify-jwt
+    supabase functions deploy owner-digest --project-ref efapupjvidyqhqdevmcu --use-api
     ```
-  - Beklenen: Beş fonksiyon yayımlanır. `ad-reward` JWT doğrulaması kapalı olmalı; AdMob'un geri çağrısında JWT yoktur, fonksiyon Google'ın imzasını kendisi doğrular.
+  - Beklenen: Yedi fonksiyon yayımlanır. `ad-reward` ve `app-store-notifications` JWT doğrulaması kapalı olmalı; AdMob'un ve Apple'ın çağrısında JWT yoktur, fonksiyonlar imzayı kendileri doğrular. `owner-digest`te JWT doğrulaması açık kalır (kendi `DIGEST_SECRET`'ı da var).
   - Sorun olursa: Komutun çıktısını not et. `ai-image` ve `account`, yukarıdaki geçişler uygulanmadan yayımlanmaz.
   - Doğrulanamadı: `--use-api` bayrağı bu ortamda Supabase CLI kurulu olmadığı için denenmedi; komutlar sahibin notundan (`docs/SAHIP-YAPILACAKLAR.md` §1.6) alındı.
 - [ ] **Kurulum kanıtı** (ücretsiz krediler doğrulanmış bir App Store kurulumuna bağlı) *[yalnızca sahip; yerelde doğrulandı]*

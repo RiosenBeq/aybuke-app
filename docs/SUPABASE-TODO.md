@@ -169,12 +169,13 @@ Değerleri sahip girer. Yer: Supabase panelinde Edge Functions › Secrets; ya d
 - [ ] `APPLE_APP_ID` = `6822716008`. Üretim (App Store) satın almalarını doğrulamak için şart; yoksa üretim AppTransaction reddedilir ve ücretsiz krediler kapalı kalır. Sandbox bu olmadan da çalışır.
 - [ ] `ADMOB_REWARDED_AD_UNIT` = `ca-app-pub-2292230772061554/1406702504`. Boş kalırsa hiçbir reklam ödülü verilmez.
 - [ ] `APPLE_BUNDLE_ID` = `app.glowlit.ios`. Kodda bu varsayılan; yine de gir.
-- [ ] `APPLE_TEAM_ID` = `CBTKNY3LFC`. Kodda yalnızca Apple ile giriş yolu okur (`_shared/apple-signin.ts`); Apple ile giriş kapalıyken gerekmez (açık soru).
+- [ ] `APPLE_TEAM_ID` = `CBTKNY3LFC`. Kodda yalnızca Apple ile giriş yolu okur (`_shared/apple-signin.ts`); giriş 1.0'da açık olduğu için gerekli.
+- [ ] `APPLE_SIGNIN_KEY_ID` ve `APPLE_SIGNIN_PRIVATE_KEY`: Apple ile giriş 1.0'da açık; Apple'ın kodunu takas etmek ve hesap silinince token'ı iptal etmek için gerekli. 15 Ekim 2026'da girildi (Key ID `36Q32XU57F`) ve Apple'a karşı denendi. SAHIP 5.6.
 
 **İsteğe bağlı (varsayılan kapalı)**
 
 - [ ] `REVENUECAT_SECRET_KEY` ve `REVENUECAT_PROJECT_ID` = `3e7e4f4a`: hesap silinince RevenueCat müşterisini de siler. Anahtar yalnızca `customer_information:customers:read_write` izinli bir v2 gizli anahtar olmalı. Yoksa silmeler `pending_revenuecat_deletions` tablosunda bekler. SAHIP 5.7.
-- [ ] `APPLE_SIGNIN_KEY_ID` ve `APPLE_SIGNIN_PRIVATE_KEY`: yalnızca Apple ile giriş açılacaksa; hesap silinince token iptali için. Bu sürümde girilmez. SAHIP 5.6.
+- [ ] `RESEND_API_KEY`, `DIGEST_SECRET` ve `OWNER_ALERT_TO`: sahibe giden uyarı e-postaları ve günlük özet (`backend/README.md`, "Owner alerts"). `RESEND_API_KEY` yoksa uyarılar log satırıyla atlanır. 15 Ekim 2026'da girildi. SAHIP 1.12.
 - [ ] `ANTHROPIC_SAFETY_MODEL`: boş bırakılabilir; boşken `claude-haiku-5-5`. Yalnızca denetim modelini değiştirmek için.
 - [ ] `FAL_KEY`: **girilmez.** Girilirse her çıktı fal.ai'ye gider; fal.ai onay ekranında (`aiProcessors`) yok ve gizlilik metinleri onu yalnızca kullanılmayan bir alternatif olarak anar. Boşken çıktı denetimi xAI'nin kendi kararıdır; bağımsız denetim Claude'dur. SAHIP 5.8.
 - [ ] `XAI_SAFETY_MODEL`: **boş bırakılır.** `ANTHROPIC_API_KEY` ayarlıyken zaten okunmaz (Claude önceliklidir). Canlı API'de test edilmedi. SAHIP 5.8.
