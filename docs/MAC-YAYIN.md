@@ -266,9 +266,9 @@ psql "$SUPABASE_DB_URL" -X -v ON_ERROR_STOP=1 -c "select jobname, schedule, acti
 # Yalnızca listede OLMAYANLARI ekle (aynı adla eklemek mevcut işi değiştirir):
 psql "$SUPABASE_DB_URL" -X -v ON_ERROR_STOP=1 -c "select cron.schedule('sweep-jobs', '*/5 * * * *', 'select public.sweep_jobs()');"
 psql "$SUPABASE_DB_URL" -X -v ON_ERROR_STOP=1 -c "select cron.schedule('sweep-ad-rewards', '17 * * * *', 'select public.sweep_ad_rewards()');"
-# App Store bildirim kayıtları 30 günden sonra silinir (gizlilik metni bunu söyler)
+# App Store bildirim kayıtları 30 günden sonra, iade kayıtları gizlilik metninin 14. bölümündeki sürelerde silinir (migration 20261030000000)
 psql "$SUPABASE_DB_URL" -X -v ON_ERROR_STOP=1 <<'SQL'
-select cron.schedule('sweep-app-store-notifications', '23 3 * * *', $$delete from private.app_store_notifications where received_at < now() - interval '30 days'$$);
+select cron.schedule('sweep-app-store-notifications', '23 3 * * *', 'select public.sweep_app_store_notifications()');
 SQL
 ```
 

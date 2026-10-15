@@ -100,10 +100,10 @@ select cron.schedule('sweep-jobs', '*/5 * * * *', 'select public.sweep_jobs()');
 select cron.schedule('sweep-ad-rewards', '17 * * * *', 'select public.sweep_ad_rewards()');
 ```
 
-- [ ] **`sweep-app-store-notifications`** (her gün 03:23 UTC): App Store bildirim kayıtlarını 30 gün sonra siler; gizlilik metinleri bu süreyi söyler.
+- [ ] **`sweep-app-store-notifications`** (her gün 03:23 UTC): App Store bildirim kayıtlarını 30 gün sonra, iade kayıtlarını (`private.refunded_transactions`) gizlilik politikasının 14. bölümündeki sürelerde siler (`public.sweep_app_store_notifications()`, migration `20261030000000`; pg_cron açıksa migration işi bu fonksiyona yönlendirir).
 
 ```sql
-select cron.schedule('sweep-app-store-notifications', '23 3 * * *', $$delete from private.app_store_notifications where received_at < now() - interval '30 days'$$);
+select cron.schedule('sweep-app-store-notifications', '23 3 * * *', 'select public.sweep_app_store_notifications()');
 ```
 
 - [ ] **`revenuecat-deletions`** (her saat :17): bekleyen RevenueCat silmelerini gönderir. RevenueCat anahtarı yokken de çalışır; istekler kuyrukta bekler. Önce Vault'a iki sır eklenir, bir kez: `project_url` ve `service_role_key`. Değeri sahip girer; dosyaya, commit'e ya da sohbete yazılmaz. Ad zaten varsa `select name from vault.decrypted_secrets;` ile görüp yeniden ekleme.
