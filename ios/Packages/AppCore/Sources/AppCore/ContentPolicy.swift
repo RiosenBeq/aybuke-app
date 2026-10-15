@@ -88,9 +88,15 @@ public enum ContentPolicy {
         "remove clothes", "remove her|his|their|my clothes", "take off clothes", "take off her|his|their|my clothes",
         "without clothes", "no clothes", "see through clothes", "x ray clothes",
         "shirtless", "unclothed", "bare chested", "strip her|him|them|me down", "boobs", "her|his|my|their|your|me|big|bare tits",
+        "remove her|his|their|my top|shirt|tshirt|blouse|dress|skirt|pants|jeans|bra|clothing", "remove her|his|their|my t shirt",
+        "unbutton|lift her|his|their|my shirt|tshirt|blouse|dress|skirt|bra",
+        "take|pull off|down her|his|their|my top|shirt|tshirt|blouse|dress|skirt|pants|jeans|bra|clothes|clothing",
+        "take|pull off|down her|his|their|my t shirt", "remove clothing", "take off clothing", "bare chest",
         // tr
         "çıplak", "çırılçıplak", "seks", "seksi", "erotik", "üstsüz", "müstehcen", "soyunuk", "soyunmuş",
         "iç çamaşırı", "kıyafetsiz", "kıyafetlerini çıkar", "elbisesini çıkar", "soyundur*",
+        "tişörtünü|üstünü|elbisesini|gömleğini|pantolonunu|eteğini|sütyenini|tişörtümü|üstümü|elbisemi|gömleğimi|pantolonumu|eteğimi|sütyenimi çıkar*",
+        "onu|beni|onları soy", "soyun*",
         // es
         "desnuda", "desnudo", "desnudas", "desnudos", "desnudez", "sexo", "pornografía", "erótica", "erótico",
         "lencería", "tetas", "sin ropa", "quitar la ropa", "quítale la ropa", "ropa interior",
@@ -222,6 +228,7 @@ public enum ContentPolicy {
         "flat stomach|belly|tummy", "hourglass figure|body|shape", "double eyelid|eyelids",
         "lip filler|fillers|injection|injections", "botox", "nose job", "rhinoplasty", "bbl", "liposuction",
         "breast implants", "facelift", "face lift", "plastic surgery",
+        "smooth|soften my|her|his|their skin|face", "give me|her|him|them abs|sixpack", "give me|her|him|them a six pack",
         "lighter|whiter|darker|paler|fairer|tanner|brighter skin|complexion|skintone",
         "lighter|whiter|darker|paler|fairer skin tone", "skin whitening|lightening|bleaching|brightening",
         "whiten|lighten|bleach|darken my|her|his|their skin|complexion",
@@ -235,7 +242,7 @@ public enum ContentPolicy {
         // tr
         "zayıflat*", "beni|onu daha zayıf|ince|güzel|çekici|seksi|beyaz|esmer|uzun|kilolu|şişman|genç|yaşlı yap*|göster*",
         "beni|onu|yüzümü|yüzünü güzelleştir*|incelt*|beyazlat*|esmerleştir*",
-        "yüzümü|yüzünü|burnumu|burnunu|dudaklarımı|dudaklarını|gözlerimi|gözlerini|belimi|belini|bacaklarımı|bacaklarını|kollarımı|kollarını|vücudumu|vücudunu|çenemi|çenesini incelt*|küçült*|büyüt*|zayıflat*|dolgunlaştır*|şişir*|uzat*",
+        "yüzümü|yüzünü|göğsümü|göğsünü|göğüslerimi|göğüslerini|kalçamı|kalçasını|popomu|poposunu|burnumu|burnunu|dudaklarımı|dudaklarını|gözlerimi|gözlerini|belimi|belini|bacaklarımı|bacaklarını|kollarımı|kollarını|vücudumu|vücudunu|çenemi|çenesini incelt*|küçült*|büyüt*|zayıflat*|dolgunlaştır*|şişir*|uzat*",
         "kilo ver*", "tenimi|cildimi|tenini|cildini beyazlat*|açıklaştır*|aydınlat*|pürüzsüzleştir*|koyulaştır*|esmerleştir*",
         "pürüzsüz|kusursuz|mükemmel cilt|ten", "sivilce*|akne*|kırışık* sil*|kaldır*|gider*|temizle*|yok",
         "dudak dolgu*", "burun estetiğ*", "estetik ameliyat*",
@@ -247,6 +254,7 @@ public enum ContentPolicy {
         "piel perfecta|impecable|lisa|blanca|clara", "aclarar|aclárame|blanquear|blanquéame mi|la|su|tu piel",
         "quita|quítame|quitar|elimina|elimíname|eliminar|borra|bórrame|borrar mis|los|sus|el|tus? granos|acné|espinillas|imperfecciones|arrugas",
         "relleno de labios", "cirugía estética",
+        "senos|pechos|busto más grandes|grande", "aumentar|agrandar mis|sus|los senos|pechos|glúteos",
         // pt
         "me deixe|deixa mais magra|magro|alta|alto|bonita|bonito|linda|lindo|gostosa|gostoso|atraente|branca|branco|clara|nova",
         "deixe|deixa me|ela|ele mais magra|magro|alta|alto|bonita|bonito|linda|lindo|gostosa|gostoso|atraente|branca|branco|clara",
@@ -269,6 +277,7 @@ public enum ContentPolicy {
         "größere augen", "hellere|weißere|dunklere|glattere|makellose|perfekte haut", "haut aufhellen|bleichen|glätten",
         "pickel|akne|falten|hautunreinheiten entfernen|wegmachen|weg", "entferne|entfern meine|ihre|die pickel|akne|falten|hautunreinheiten",
         "lippen aufspritzen", "schönheitsoperation", "nasen op",
+        "größere|größeren|vollere brüste|busen|oberweite", "brust|brüste vergrößern",
         // it
         "rendimi|fammi|rendila|falla|rendilo|fallo più? magra|magro|snella|snello|alta|alto|bella|bello|carina|carino|attraente|bianca|chiara|sexy",
         "dimagr*", "perdere peso", "naso più piccolo|fino|sottile", "labbra più grandi|carnose|piene", "occhi più grandi",
