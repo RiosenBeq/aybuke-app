@@ -147,8 +147,6 @@ struct ShareComposerView: View {
                 formatChips
             }
         } else {
-            // Opens on the chosen design even when it sits off the edge of
-            // the row (the composer can open on Cover star, say).
             ScrollViewReader { proxy in
                 ScrollView(.horizontal) {
                     HStack(spacing: 8) {
@@ -158,7 +156,15 @@ struct ShareComposerView: View {
                 }
                 .scrollIndicators(.hidden)
                 .padding(.horizontal, -Metrics.gutter)
-                .onAppear { proxy.scrollTo(format.id, anchor: .center) }
+                // Keeps the chosen design in view, also one chosen as the
+                // composer opens (Cover star, say). Not from onAppear or
+                // onChange: that choice lands in the composer's onAppear,
+                // after this row's, while the sheet is still being laid
+                // out, and a scroll asked for then is lost. The task runs a
+                // turn later, once the row has its size.
+                .task(id: format) {
+                    withAnimation(.snappy) { proxy.scrollTo(format.id, anchor: .center) }
+                }
             }
         }
     }
@@ -169,7 +175,6 @@ struct ShareComposerView: View {
                 Haptics.selection()
                 withAnimation(.snappy) { format = option }
             }
-            .id(option.id)
         }
     }
 
