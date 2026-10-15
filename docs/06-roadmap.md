@@ -186,6 +186,8 @@ Seven audits (code, UX and accessibility, platform, competitors, trends, wellbei
 - **Claude sticker maker:** "draw a cat with a heart" → Claude (text only, no photo) writes a small SVG, drawn on the device and saved as a sticker in Text & Stickers. Far cheaper than an image model. Needs: Anthropic listed for a new purpose in `aiProcessors` (new consent version), the privacy policies and KVKK updated, `ContentPolicy` on the request and an SVG sanitizer (no scripts, external refs or text outside an allow-list), credits pricing.
 - **Claude caption and hashtag ideas** (text only) as a cloud fallback where Apple Intelligence isn't available; same consent and policy steps.
 - **App Store In-App Events** for each season (Halloween, winter, Galentine's) once the app is live: event card 1920×1080 and details art drawn in code, deep link into the season's collection, published 14 days before the start like the in-app teaser.
+- **Ask Aybuke (Claude help, text only):** answers questions about the app, credits, Pro and privacy from a fixed knowledge base, hands billing problems to Apple's refund page and hello@buaze.com, never sees photos. Same consent and policy steps; a teen-safe system prompt and the content policy on both sides.
+- **Birthday glow (opt-in, on the device):** she may add a birth day and month (never the year; the age band stays separate) to get a free birthday frame, confetti and stickers on the day. No birthday discounts or marketing to minors.
 - Not planned: sending her photos to Claude for style advice. The on-device "Ideas for this photo" covers it without a new processor purpose.
 
 ## Later backlog from the October 2026 audit
