@@ -5,10 +5,11 @@ import AppCore
 
 /// On-device "special effects" with an era: VHS tapes, disposable cameras,
 /// Y2K digicams, instant film, 90s glamour shots, glitter, 2016 phone
-/// photos, a 2006 camcorder, a 2009 toy camera, 2017's rainbow prism light
-/// and film stills, plus a tilt-shift "tiny world". Pure Core Image plus a
-/// little UIKit drawing (date stamps, frames, sparkles, camera chrome), so
-/// they're instant, free for everyone and never leave the device.
+/// photos, a 2006 camcorder, a 2009 toy camera, 2017's rainbow prism light,
+/// 2012's DSLR portrait blur and film stills, plus a tilt-shift "tiny
+/// world". Pure Core Image plus a little UIKit drawing (date stamps, frames,
+/// sparkles, camera chrome) and, for DSLR '12, Vision's subject masks, so
+/// they're free for everyone and never leave the device.
 enum RetroEffect: String, CaseIterable, Identifiable {
     case vhs
     case disposable
@@ -21,6 +22,7 @@ enum RetroEffect: String, CaseIterable, Identifiable {
     case camcorder06
     case toyCam
     case rainbow
+    case dslr12
     case filmStill
     case tinyWorld
 
@@ -40,6 +42,7 @@ enum RetroEffect: String, CaseIterable, Identifiable {
         case .camcorder06: return "Camcorder '06"
         case .toyCam: return "Toy Cam '09"
         case .rainbow: return "Rainbow '17"
+        case .dslr12: return "DSLR '12"
         case .filmStill: return "Film Still"
         case .tinyWorld: return "Tiny World"
         }
@@ -50,7 +53,7 @@ enum RetroEffect: String, CaseIterable, Identifiable {
         case .vhs, .instant, .neon: return "80s"
         case .disposable, .glamour: return "90s"
         case .digicam, .camcorder06, .toyCam: return "Y2K"
-        case .throwback16, .rainbow: return "2010s"
+        case .throwback16, .rainbow, .dslr12: return "2010s"
         case .kira: return String(localized: "Sparkle")
         case .filmStill: return String(localized: "Film", comment: "Era tag of the Film Still effect: the look of a movie frame")
         case .tinyWorld: return String(localized: "Mini", comment: "Tag of the Tiny World effect: a tilt-shift photo that looks like a miniature model")
@@ -103,22 +106,45 @@ enum RetroEffect: String, CaseIterable, Identifiable {
     /// Film Still can carry one line of subtitle (photos only).
     var takesSubtitle: Bool { self == .filmStill }
 
-    /// What she chose under the strip: the effect's switch and, for Film
-    /// Still, a subtitle that has already passed the content policy.
+    /// DSLR '12 offers three lenses (85, 50 and 35 mm).
+    var takesLens: Bool { self == .dslr12 }
+
+    /// What she chose under the strip: the effect's switch, Film Still's
+    /// subtitle (already through the content policy) and DSLR '12's lens.
     struct Options: Equatable, Sendable {
         var extra = true
         var subtitle = ""
+        var lens = DSLRLens.standard
 
         static let plain = Options(extra: false)
+    }
+
+    /// Where DSLR '12 gets the photo's subjects: found here with Vision, or
+    /// already known (the editor finds them once per step; nil: none).
+    enum Subjects {
+        case find
+        case known(SubjectMasks?)
     }
 
     // MARK: Rendering
 
     /// Renders the effect at the image's own size (the instant frame and the
-    /// 2016 border add a canvas around it).
-    func apply(to image: UIImage, options: Options = Options(), date: Date = Date()) -> UIImage {
+    /// 2016 border add a canvas around it). DSLR '12 uses `subjects` when the
+    /// editor has them for this photo, and finds them itself otherwise (in
+    /// Shortcuts, say); a photo without any gets a centre-weighted blur.
+    func apply(to image: UIImage, options: Options = Options(), date: Date = Date(), subjects: Subjects = .find) -> UIImage {
         let source = ImageUtilities.normalized(image, maxLongEdge: 4096)
-        guard let input = ImageFilters.ciImage(source) else { return image }
+        guard var input = ImageFilters.ciImage(source) else { return image }
+        // A cut-out has no background left to blur: it only gets the grade.
+        if self == .dslr12, !ImageUtilities.hasTransparentPixels(source) {
+            let masks: SubjectMasks?
+            switch subjects {
+            case .find: masks = try? SubjectMasks.analyze(source)
+            case .known(let known): masks = known
+            }
+            let matte = masks.flatMap { $0.allIDs.isEmpty ? nil : $0.matte(for: $0.allIDs) }
+            input = LensBlur.render(input, matte: matte, lens: options.lens)
+        }
         var graded = grade(input)
         // A photo comes out opaque (a JPEG when saved); a cut-out keeps its
         // transparency.
@@ -141,23 +167,24 @@ enum RetroEffect: String, CaseIterable, Identifiable {
         return output
     }
 
-    /// Every effect, each with its switch at its default, on a small copy of
+    /// `effects`, each with its switch at its default, on a small copy of
     /// `image` for the Effects strip. At this size each one is mostly fixed
     /// overhead, so they render side by side. Call it off the main actor.
-    static func thumbnails(of image: UIImage, maxLongEdge: Int = 240) -> [RetroEffect: UIImage] {
+    static func thumbnails(of image: UIImage, maxLongEdge: Int = 240, effects: [RetroEffect] = allCases,
+                           subjects: Subjects = .find) -> [RetroEffect: UIImage] {
         let source = ImageUtilities.normalized(image, maxLongEdge: maxLongEdge)
-        let effects = allCases
         var rendered = [UIImage?](repeating: nil, count: effects.count)
         rendered.withUnsafeMutableBufferPointer { slots in
             DispatchQueue.concurrentPerform(iterations: effects.count) { index in
                 let effect = effects[index]
-                slots[index] = effect.apply(to: source, options: Options(extra: effect.option?.isOnByDefault ?? true))
+                slots[index] = effect.apply(to: source, options: Options(extra: effect.option?.isOnByDefault ?? true), subjects: subjects)
             }
         }
         return Dictionary(uniqueKeysWithValues: zip(effects, rendered).compactMap { effect, image in image.map { (effect, $0) } })
     }
 
-    /// Effects that also work on video frames (no frames or per-frame sparkles).
+    /// Effects that also work on video frames (no frames or per-frame sparkles;
+    /// DSLR '12 needs Vision's subject masks, too slow for every frame).
     static let videoEffects: [RetroEffect] = [.vhs, .disposable, .digicam, .glamour, .neon, .throwback16, .camcorder06, .toyCam, .rainbow,
                                               .filmStill, .tinyWorld]
 
@@ -309,8 +336,25 @@ enum RetroEffect: String, CaseIterable, Identifiable {
             // tilt-shift blur.
             let lifted = input.applyingFilter("CIColorControls", parameters: [kCIInputSaturationKey: 1.22, kCIInputContrastKey: 1.07])
             return RetroEffect.tiltShift(lifted, unit: unit)
+        case .dslr12:
+            // A clean full-frame look over the lens blur (`apply`): a gentle
+            // S-curve, warm highlights, slightly cool shadows, fine grain and
+            // a mild vignette. Colour and light only; skin keeps its texture.
+            let cube = CIFilter.colorCubeWithColorSpace()
+            cube.inputImage = input
+            cube.cubeDimension = Float(RetroEffect.dslrCubeDimension)
+            cube.cubeData = RetroEffect.dslrCube
+            cube.colorSpace = CGColorSpace(name: CGColorSpace.sRGB)
+            let graded = RetroEffect.grain(over: (cube.outputImage ?? input).cropped(to: extent), amount: CGFloat(DSLRGrade.grainAmount), scale: unit * 0.8)
+            return graded.applyingFilter("CIVignette", parameters: [
+                kCIInputIntensityKey: DSLRGrade.vignetteIntensity, kCIInputRadiusKey: DSLRGrade.vignetteRadius,
+            ])
         }
     }
+
+    private static let dslrCubeDimension = 32
+    /// Made once: every preview and render of DSLR '12 uses the same cube.
+    private static let dslrCube: Data = DSLRGrade.cube(dimension: dslrCubeDimension).withUnsafeBufferPointer { Data(buffer: $0) }
 
     // MARK: Overlays
 

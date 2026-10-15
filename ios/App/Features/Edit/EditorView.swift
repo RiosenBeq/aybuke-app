@@ -57,6 +57,16 @@ struct EditorView: View {
             model.stampsDemoResults = app.isDemoMode
             #if DEBUG
             if ScreenshotScene.current == .cutout { model.startCutout(app: app) }
+            // Screenshot QA of "Pick a person": -GLErasePick x,y (normalized).
+            if ScreenshotScene.current == .erase, let pick = UserDefaults.standard.string(forKey: "GLErasePick") {
+                let parts = pick.split(separator: ",").compactMap { Double($0) }
+                model.clearMask()
+                model.toggleErasePicking(app: app)
+                for _ in 0..<100 where model.eraseSubjects == nil && model.isPickingToErase {
+                    try? await Task.sleep(for: .milliseconds(100))
+                }
+                if parts.count == 2 { model.pickToErase(at: CGPoint(x: parts[0], y: parts[1]), app: app) }
+            }
             // Screenshot QA of the full-size render: -GLOverlayApply YES.
             if ScreenshotScene.current == .textStickers, UserDefaults.standard.bool(forKey: "GLOverlayApply") {
                 try? await Task.sleep(for: .seconds(1.5))
@@ -413,7 +423,14 @@ struct EditorView: View {
     @ViewBuilder
     private var canvas: some View {
         if model.activeTool == .erase {
-            MaskCanvas(image: model.current, strokes: $model.strokes, brushSize: model.brushSize)
+            MaskCanvas(
+                image: model.current, strokes: model.strokes, regions: model.eraseRegions, brushSize: model.brushSize,
+                subjects: model.eraseSubjects?.subjects ?? [],
+                onPick: model.isPickingToErase ? { point in model.pickToErase(at: point, app: app) } : nil,
+                onPickSubject: { model.pickToErase(subject: $0) }
+            ) { stroke in
+                model.addEraseStroke(stroke)
+            }
         } else if model.activeTool == .hideFaces {
             HideFacesCanvas(image: model.displayImage, hider: model.faceHider)
         } else if model.activeTool == .removeBackground && model.cutout.isActive {
@@ -668,8 +685,11 @@ struct EditorView: View {
         case .erase?:
             ErasePanel(
                 brushSize: $model.brushSize,
-                hasStrokes: !model.strokes.isEmpty,
+                hasStrokes: model.hasEraseMask,
+                isPicking: model.isPickingToErase,
+                isFindingSubjects: model.isFindingSubjects,
                 cost: app.credits.cost(of: .eraseObject),
+                onTogglePicking: { model.toggleErasePicking(app: app) },
                 onUndoStroke: { model.undoStroke() },
                 onClear: { model.clearMask() },
                 onErase: { model.run(.erase, app: app) }
@@ -711,6 +731,13 @@ struct EditorView: View {
                     set: { value in
                         model.effectSubtitle = String(value.prefix(FilmSubtitle.maxLength))
                         model.subtitleChanged(app: app)
+                    }
+                ),
+                lens: Binding(
+                    get: { model.effectLens },
+                    set: { lens in
+                        model.effectLens = lens
+                        if let effect = model.effect { model.previewEffect(effect) }
                     }
                 ),
                 onSelect: { model.previewEffect($0) },

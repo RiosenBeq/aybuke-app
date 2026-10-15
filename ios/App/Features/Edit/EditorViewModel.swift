@@ -43,7 +43,17 @@ final class EditorViewModel {
     /// The vibe picked above the sliders, if any (its values are on them).
     private(set) var adjustVibe: AdjustVibe?
     private(set) var adjustPreview: UIImage?
-    var strokes: [MaskStroke] = []
+    private(set) var strokes: [MaskStroke] = []
+    /// People and things she picked to erase ("Pick a person").
+    private(set) var eraseRegions: [EraseRegion] = []
+    /// What she added to the erase area, in order, so Undo takes the last off.
+    @ObservationIgnored private var eraseMarks: [EraseMark] = []
+    private enum EraseMark: Equatable { case stroke, region(Int) }
+    /// "Pick a person": a tap on the canvas picks instead of painting.
+    private(set) var isPickingToErase = false
+    private(set) var isFindingSubjects = false
+    /// What she can pick in Erase, once Vision has looked.
+    private(set) var eraseSubjects: SubjectMasks?
     var brushSize: CGFloat = 0.07
     var isComparing = false
     var isHoldingOriginal = false
@@ -75,6 +85,8 @@ final class EditorViewModel {
     var effectExtra = true
     /// Film Still's subtitle as she types it.
     var effectSubtitle = ""
+    /// DSLR '12's lens; it stays as she left it for the next photo step.
+    var effectLens = DSLRLens.standard
     /// The subtitle that passed the content policy; only this one is drawn.
     @ObservationIgnored private var approvedSubtitle = ""
     @ObservationIgnored private var subtitleTask: Task<Void, Never>?
@@ -104,6 +116,9 @@ final class EditorViewModel {
     /// The preview copy being made in the background, and for which image.
     @ObservationIgnored private var proxyJob: (source: UIImage, task: Task<UIImage, Never>)?
     @ObservationIgnored private var lastJob: AIJob?
+    /// Vision's subjects of the photo on the canvas, found once per step and
+    /// shared by DSLR '12, Cut out and Erase's "Pick a person".
+    @ObservationIgnored private var subjectJob: (version: Int, task: Task<Result<SubjectMasks, Error>, Never>)?
     @ObservationIgnored private var memoryWatcher: Task<Void, Never>?
     private(set) var historyVersion = 0
     static let historyLimit = 8
@@ -144,7 +159,15 @@ final class EditorViewModel {
             let mode = UserDefaults.standard.string(forKey: "GLOverlayMode").flatMap(OverlaySession.Mode.init(rawValue:))
             overlays.loadScreenshotFixture(mode: mode ?? .stickers)
         }
-        if ScreenshotScene.current == .erase { strokes = ScreenshotFixtures.eraseStrokes }
+        if ScreenshotScene.current == .erase {
+            strokes = ScreenshotFixtures.eraseStrokes
+            eraseMarks = strokes.map { _ in .stroke }
+        }
+        // Screenshot QA: -GLDSLRLens portrait85|standard50|wide35 picks DSLR '12's lens.
+        if ScreenshotScene.current != nil, let lens = UserDefaults.standard.string(forKey: "GLDSLRLens").flatMap(DSLRLens.init(rawValue:)) {
+            effectLens = lens
+            if let effect { previewEffect(effect, haptic: false) }
+        }
         // Screenshot QA: -GLMakeupPreset <id> picks a Makeup Studio look.
         if ScreenshotScene.current != nil, let id = UserDefaults.standard.string(forKey: "GLMakeupPreset"),
            let preset = MakeupStudio.preset(id: id) {
@@ -261,7 +284,10 @@ final class EditorViewModel {
         guard tool != activeTool else { return }
         if activeTool == .adjust { resetAdjustments() }
         if activeTool == .effects { clearEffect() }
-        if activeTool == .erase { strokes.removeAll() }
+        if activeTool == .erase {
+            clearMask()
+            isPickingToErase = false
+        }
         if activeTool == .crop {
             crop = CropGeometry()
             cropAspect = .original
@@ -328,7 +354,10 @@ final class EditorViewModel {
         effectThumbnails = [:]
         retryRequestID = nil
         lastRequestID = nil
-        strokes.removeAll()
+        clearMask()
+        eraseSubjects = nil
+        isPickingToErase = false
+        subjectJob = nil
         adjustments = .neutral
         adjustVibe = nil
         adjustPreview = nil
@@ -395,12 +424,12 @@ final class EditorViewModel {
             guard let template else { return }
             job.template = template
         case .erase:
-            guard !strokes.isEmpty else {
+            guard hasEraseMask else {
                 app.showToast("Brush over what you want to remove.")
                 return
             }
             let size = ImageUtilities.pixelSize(of: current)
-            job.mask = MaskRenderer.render(strokes, size: CGSize(width: size.width, height: size.height))
+            job.mask = MaskRenderer.render(strokes, regions: eraseRegions, size: CGSize(width: size.width, height: size.height))
         case .enhance, .removeBackground, .adjust, .effects, .textStickers, .crop, .hideFaces:
             break
         }
@@ -551,14 +580,98 @@ final class EditorViewModel {
         }
     }
 
+    // MARK: Subjects (on-device, Vision)
+
+    /// The photo's subjects, found once per step off the main actor.
+    private func subjectAnalysis() async -> Result<SubjectMasks, Error> {
+        if let subjectJob, subjectJob.version == historyVersion { return await subjectJob.task.value }
+        let source = current
+        let task = Task.detached(priority: .userInitiated) { () -> Result<SubjectMasks, Error> in
+            #if DEBUG
+            // The Cut out scene's cartoon stands in for Vision unless -GLCutoutPhoto picks a sample.
+            if ScreenshotScene.current == .cutout, UserDefaults.standard.string(forKey: "GLCutoutPhoto") == nil,
+               let fixture = ScreenshotFixtures.cutoutAnalysis(for: source) {
+                return .success(fixture)
+            }
+            #endif
+            return Result { try SubjectMasks.analyze(source) }
+        }
+        subjectJob = (historyVersion, task)
+        return await task.value
+    }
+
     // MARK: Erase
 
+    var hasEraseMask: Bool { !strokes.isEmpty || !eraseRegions.isEmpty }
+
+    func addEraseStroke(_ stroke: MaskStroke) {
+        strokes.append(stroke)
+        eraseMarks.append(.stroke)
+    }
+
+    /// Takes off what she added last: a stroke or a picked person or thing.
     func undoStroke() {
-        _ = strokes.popLast()
+        switch eraseMarks.popLast() {
+        case .region(let id)?: eraseRegions.removeAll { $0.id == id }
+        case .stroke?, nil: _ = strokes.popLast()
+        }
     }
 
     func clearMask() {
         strokes.removeAll()
+        eraseRegions.removeAll()
+        eraseMarks.removeAll()
+    }
+
+    /// "Pick a person" on or off. The first time on a step, Vision looks
+    /// for people and things (on the device, free).
+    func toggleErasePicking(app: AppModel) {
+        isPickingToErase.toggle()
+        Haptics.selection()
+        guard isPickingToErase, eraseSubjects == nil, !isFindingSubjects else { return }
+        let version = historyVersion
+        isFindingSubjects = true
+        Task {
+            let result = await subjectAnalysis()
+            guard version == historyVersion else { return }
+            isFindingSubjects = false
+            if case .success(let masks) = result, !masks.subjects.isEmpty {
+                eraseSubjects = masks
+            } else {
+                isPickingToErase = false
+                app.showToast(LocalizedStringResource("No people or things found. Brush over what to remove.",
+                                                      comment: "Erase: Pick a person found nobody and nothing to pick in this photo"))
+            }
+        }
+    }
+
+    /// A tap while picking: adds the person or thing under it to the erase
+    /// area, or takes it off again.
+    func pickToErase(at point: CGPoint, app: AppModel) {
+        guard let masks = eraseSubjects, isPickingToErase else { return }
+        guard let id = masks.subject(atNormalized: point) else {
+            app.showToast(LocalizedStringResource("Nothing to pick there.", comment: "Erase: she tapped the background while picking people and things to remove"))
+            return
+        }
+        pickToErase(subject: id)
+    }
+
+    func pickToErase(subject id: Int) {
+        guard let masks = eraseSubjects, isPickingToErase else { return }
+        if eraseRegions.contains(where: { $0.id == id }) {
+            eraseRegions.removeAll { $0.id == id }
+            eraseMarks.removeAll { $0 == .region(id) }
+            Haptics.selection()
+            return
+        }
+        let version = historyVersion
+        Task {
+            let region = await Task.detached(priority: .userInitiated) { EraseRegion.make(id: id, from: masks) }.value
+            guard version == historyVersion, let region, !eraseRegions.contains(region) else { return }
+            eraseRegions.append(region)
+            eraseMarks.append(.region(id))
+            Haptics.tap()
+        }
     }
 
     // MARK: Adjust (on-device, free)
@@ -609,17 +722,34 @@ final class EditorViewModel {
     // MARK: Effects (on-device)
 
     func loadEffectThumbnails() async {
-        guard effectThumbnails.isEmpty else { return }
         let image = current
         let version = historyVersion
-        let thumbnails = await Task.detached(priority: .userInitiated) { RetroEffect.thumbnails(of: image) }.value
-        // A step taken meanwhile brings its own thumbnails.
+        if effectThumbnails.isEmpty {
+            let quick = RetroEffect.allCases.filter { $0 != .dslr12 }
+            let thumbnails = await Task.detached(priority: .userInitiated) { RetroEffect.thumbnails(of: image, effects: quick) }.value
+            // A step taken meanwhile brings its own thumbnails.
+            guard version == historyVersion else { return }
+            effectThumbnails = thumbnails
+        }
+        // DSLR '12 waits for Vision's subjects, so its tile fills in a moment later.
+        guard effectThumbnails[.dslr12] == nil else { return }
+        let subjects = try? await subjectAnalysis().get()
         guard version == historyVersion else { return }
-        effectThumbnails = thumbnails
+        let dslr = await Task.detached(priority: .userInitiated) {
+            RetroEffect.thumbnails(of: image, effects: [.dslr12], subjects: .known(subjects))
+        }.value
+        guard version == historyVersion else { return }
+        effectThumbnails.merge(dslr) { _, new in new }
     }
 
     private var effectOptions: RetroEffect.Options {
-        RetroEffect.Options(extra: effectExtra, subtitle: effect?.takesSubtitle == true ? approvedSubtitle : "")
+        RetroEffect.Options(extra: effectExtra, subtitle: effect?.takesSubtitle == true ? approvedSubtitle : "", lens: effectLens)
+    }
+
+    /// What DSLR '12 needs from Vision; nothing for the other effects.
+    private func subjects(for effect: RetroEffect) async -> RetroEffect.Subjects {
+        guard effect == .dslr12 else { return .known(nil) }
+        return .known(try? await subjectAnalysis().get())
     }
 
     /// `haptic: false` re-renders quietly, as after Undo or Redo.
@@ -634,8 +764,9 @@ final class EditorViewModel {
         let options = effectOptions
         effectTask = Task {
             let proxy = await previewProxy()
+            let subjects = await subjects(for: effect)
             guard !Task.isCancelled else { return }
-            let rendered = await Task.detached(priority: .userInitiated) { effect.apply(to: proxy, options: options) }.value
+            let rendered = await Task.detached(priority: .userInitiated) { effect.apply(to: proxy, options: options, subjects: subjects) }.value
             guard !Task.isCancelled else { return }
             effectPreview = rendered
         }
@@ -687,7 +818,8 @@ final class EditorViewModel {
         processingTitle = String(localized: "Adding \(effect.title)…")
         isProcessingInCloud = false
         isProcessing = true
-        let output = await Task.detached(priority: .userInitiated) { effect.apply(to: source, options: options) }.value
+        let subjects = await subjects(for: effect)
+        let output = await Task.detached(priority: .userInitiated) { effect.apply(to: source, options: options, subjects: subjects) }.value
         isProcessing = false
         clearEffect()
         commit(output, operation: nil)
@@ -871,7 +1003,7 @@ final class EditorViewModel {
         Task {
             defer { isProcessing = false }
             do {
-                let analysis = try await Self.analyzeCutout(source)
+                let analysis = try await subjectAnalysis().get()
                 guard version == historyVersion, activeTool == .removeBackground else { return }
                 // "Only edit me": start with the subject under her face.
                 var keep: Int?
@@ -901,6 +1033,7 @@ final class EditorViewModel {
                         if cutout.refineMode != mode { cutout.setRefineMode(mode) }
                     }
                     if defaults.bool(forKey: "GLCutoutShadow") { cutout.toggleShadow() }
+                    if defaults.object(forKey: "GLCutoutEdge") != nil { cutout.setEdge(defaults.double(forKey: "GLCutoutEdge")) }
                 }
                 #endif
                 Haptics.success()
@@ -908,15 +1041,6 @@ final class EditorViewModel {
                 app.handle(error)
             }
         }
-    }
-
-    private static func analyzeCutout(_ source: UIImage) async throws -> CutoutAnalysis {
-        #if DEBUG
-        if ScreenshotScene.current == .cutout, let fixture = ScreenshotFixtures.cutoutAnalysis(for: source) {
-            return fixture
-        }
-        #endif
-        return try await Task.detached(priority: .userInitiated) { try CutoutAnalysis.analyze(source) }.value
     }
 
     func applyCutout() async {

@@ -1,5 +1,6 @@
 #if DEBUG
 import UIKit
+import ImageIO
 import AppCore
 
 /// Deterministic app states for App Store / QA screenshots (DEBUG builds only).
@@ -75,9 +76,13 @@ enum ScreenshotScene: String, CaseIterable {
     case hideFaces
     /// Cut out with a fixture subject mask and a backdrop; `-GLCutoutRefine
     /// more|less` picks a refine brush (with two fixture strokes) and
-    /// `-GLCutoutShadow YES` switches the shadow on.
+    /// `-GLCutoutShadow YES` switches the shadow on. `-GLCutoutPhoto <sample>`
+    /// cuts out a sample photo instead (Vision's masks from
+    /// `-GLVisionFixtures`), and `-GLCutoutEdge <0…1>` sets the Edge slider.
     case cutout
     /// Erase with two brush strokes; `-GLBrushZoom <scale>` zooms the canvas.
+    /// `-GLErasePhoto <sample>` erases a sample photo, and `-GLErasePick x,y`
+    /// (normalized) turns on "Pick a person" and picks what's there instead.
     case erase
     /// Text & Stickers with text, stickers and a doodle on the demo photo;
     /// `-GLOverlayMode text|stickers|doodle` picks the panel (default stickers),
@@ -139,10 +144,40 @@ enum ScreenshotFixtures {
         guard let folder = UserDefaults.standard.string(forKey: "GLSamplePhotos") else { return nil }
         for ext in ["jpg", "png"] {
             if let image = UIImage(contentsOfFile: (folder as NSString).appendingPathComponent("\(name).\(ext)")) {
+                sampleLock.withLock { sampleNames[ObjectIdentifier(image)] = (name, image) }
                 return image
             }
         }
         return nil
+    }
+
+    private static let sampleLock = NSLock()
+    nonisolated(unsafe) private static var sampleNames: [ObjectIdentifier: (name: String, image: UIImage)] = [:]
+
+    /// `-GLVisionFixtures <folder>`: Vision's masks for the sample photos,
+    /// saved on a Mac (`<folder>/<sample>/person.png`, `people-1.png`…,
+    /// `things-1.png`…, `humans.json`), because the Simulator can't run the
+    /// segmentation models. `SubjectMasks` builds from them as it would from
+    /// Vision's own.
+    static func visionMasks(for image: UIImage, size: CGSize) -> VisionMasks? {
+        guard let folder = UserDefaults.standard.string(forKey: "GLVisionFixtures"),
+              let name = sampleLock.withLock({ sampleNames[ObjectIdentifier(image)]?.name }) else { return nil }
+        let directory = URL(fileURLWithPath: folder).appendingPathComponent(name, isDirectory: true)
+        let extent = CGRect(origin: .zero, size: size)
+        func mask(_ file: String) -> CIImage? {
+            guard let source = CGImageSourceCreateWithURL(directory.appendingPathComponent(file) as CFURL, nil),
+                  let cgImage = CGImageSourceCreateImageAtIndex(source, 0, nil) else { return nil }
+            return Matte.scaled(CIImage(cgImage: cgImage, options: [.colorSpace: NSNull()]), to: extent)
+        }
+        var masks = VisionMasks()
+        masks.person = mask("person.png")
+        masks.people = (1...4).compactMap { mask("people-\($0).png") }
+        masks.things = (1...8).compactMap { mask("things-\($0).png") }
+        if let data = try? Data(contentsOf: directory.appendingPathComponent("humans.json")),
+           let boxes = try? JSONDecoder().decode([[Double]].self, from: data) {
+            masks.humans = boxes.filter { $0.count == 4 }.map { CGRect(x: $0[0], y: $0[1], width: $0[2], height: $0[3]) }
+        }
+        return masks.person == nil && masks.things.isEmpty ? nil : masks
     }
 
     /// A flat, overcast lake landscape — the "before" photo.
@@ -313,7 +348,7 @@ enum ScreenshotFixtures {
 
     /// A stand-in for Vision's subject lifting on `cutoutPhoto`: the same
     /// shapes as label map and masks.
-    static func cutoutAnalysis(for image: UIImage) -> CutoutAnalysis? {
+    static func cutoutAnalysis(for image: UIImage) -> SubjectMasks? {
         guard let source = image.cgImage else { return nil }
         let size = CGSize(width: source.width, height: source.height)
         let labelWidth = 240, labelHeight = Int((240 * size.height / size.width).rounded())
@@ -336,7 +371,7 @@ enum ScreenshotFixtures {
         }
         guard let data = labelContext.data else { return nil }
         let labels = Array(UnsafeBufferPointer(start: data.assumingMemoryBound(to: UInt8.self), count: labelWidth * labelHeight))
-        return CutoutAnalysis(source: source, labels: labels, labelWidth: labelWidth, labelHeight: labelHeight) { ids in
+        return SubjectMasks(source: source, labels: labels, labelWidth: labelWidth, labelHeight: labelHeight) { ids in
             let format = UIGraphicsImageRendererFormat()
             format.scale = 1
             format.opaque = true

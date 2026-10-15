@@ -23,6 +23,15 @@
 
 **Sizin yapmanız gerekenler:** Claude Console'da bakiye ve aylık harcama limiti ([SAHIP-YAPILACAKLAR.md](SAHIP-YAPILACAKLAR.md) 1.11); Anthropic'in veri işleme sözleşmesi ve ABD'ye aktarım dayanağı için avukat görüşü. Log satırı ve gerçek bir düzenleme 15 Ekim'de canlıda doğrulandı.
 
+## 1.1 için: DSLR '12, DSLR Portrait, daha temiz Kes ve "Kişi seç" (15 Ekim)
+
+**Ne değişti?**
+- **Ortak temel:** Vision fotoğraftaki kişileri (saç telleri dahil, ayrıntılı insan maskesiyle) ve evcil hayvan/eşyaları bir kez bulur; DSLR '12, Kes (Cut out) ve Sil (Erase) aynı maskeyi kullanır. Önizleme ile tam boy aynı sonucu verir.
+- **DSLR '12 (yeni ücretsiz efekt, 2010s):** kişi net kalır, arka plan gerçek bir objektif bulanıklığı ve yuvarlak bokeh alır; 85 / 50 / 35 mm seçimi (85'te en çok bulanıklık), hafif S-eğrisi, sıcak ışıklar, hafif soğuk gölgeler, ince gren ve hafif vinyet. Kişi yoksa ortası net bir bulanıklık. Kestirmeler'de de var; Retro Cam'de canlı ve videoda yok. Toplam 13 retro efekt, ayrıca Tiny World.
+- **DSLR Portrait (yeni AI görünümü, herkese açık, Pro değil):** Dreamy portraits koleksiyonunda; fotoğrafı 85 mm f/1.4 ile çekilmiş gibi yeniden üretir, yüz, ten rengi, beden, yaş ve kıyafet aynı kalır. Her görünüm gibi 1 kredi (ödüllü reklamla kredi kazanılabilir). Sunucudaki `ai-image` yeniden yüklenmeli (catalog.json).
+- **Kes:** saç tellerinde daha temiz, haresiz kenarlar ve "Kenar" kaydırıcısı (keskin ↔ yumuşak).
+- **Sil › Kişi seç:** bir kişiye ya da nesneye dokununca maskesi (biraz genişletilmiş) kırmızı alana eklenir; fırçayla düzeltilebilir. Silme işlemi, kredi ve tüm kurallar aynı.
+
 ## Ekim 2026 güncellemesi (4): daha fazla eğlence (14 Ekim)
 
 **Ne değişti?** Cihaz içi, ücretsiz içerik çoğaldı:

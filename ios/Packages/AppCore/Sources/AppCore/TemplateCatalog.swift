@@ -551,6 +551,13 @@ public enum TemplateCatalog {
             prompt: "Make this look like a dreamy 35mm film snapshot: soft window light, a pastel color grade, gentle halation around the highlights, a faint light leak at the edge and fine grain. Keep the scene and the outfit unchanged. Keep natural skin texture, no skin smoothing. \(identityClause)",
             symbolName: "film", isNew: true
         ),
+        // MARK: 1.1
+        PhotoTemplate(
+            id: "dslr-portrait", title: "DSLR Portrait", subtitle: "85mm lens, creamy bokeh",
+            category: .dreamy,
+            prompt: "Re-render this photo as if it was taken with a full-frame DSLR camera and an 85mm f/1.4 portrait lens: a creamy, softly blurred background with round bokeh, soft natural window light or gentle studio light, crisp focus on the eyes and natural skin texture, no skin smoothing. Keep the pose, framing, age and outfit unchanged. \(modestyClause) \(identityClause)",
+            symbolName: "camera.fill", isNew: true
+        ),
     ]
 
     public static func templates(in category: TemplateCategory) -> [PhotoTemplate] {

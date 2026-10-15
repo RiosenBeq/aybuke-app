@@ -1665,7 +1665,9 @@ extension AppModel {
             isCollagePresented = true
         case .effects:
             selectedTab = .home
-            editorLaunch = EditorLaunch(image: ScreenshotFixtures.effectsPhoto, tool: .effects,
+            // `-GLEffectsPhoto <sample>` picks another sample photo.
+            let photo = UserDefaults.standard.string(forKey: "GLEffectsPhoto").flatMap(ScreenshotFixtures.sample)
+            editorLaunch = EditorLaunch(image: photo ?? ScreenshotFixtures.effectsPhoto, tool: .effects,
                                         previewEffect: UserDefaults.standard.string(forKey: "GLEffect").flatMap(RetroEffect.init(rawValue:)) ?? .vhs)
         case .ideas:
             selectedTab = .home
@@ -1678,10 +1680,14 @@ extension AppModel {
             editorLaunch = EditorLaunch(image: ScreenshotFixtures.groupPhoto, tool: .hideFaces)
         case .cutout:
             selectedTab = .home
-            editorLaunch = EditorLaunch(image: ScreenshotFixtures.cutoutPhoto, tool: .removeBackground)
+            // `-GLCutoutPhoto <sample>`: a sample photo (with `-GLVisionFixtures`) instead of the cartoon.
+            let photo = UserDefaults.standard.string(forKey: "GLCutoutPhoto").flatMap(ScreenshotFixtures.sample)
+            editorLaunch = EditorLaunch(image: photo ?? ScreenshotFixtures.cutoutPhoto, tool: .removeBackground)
         case .erase:
             selectedTab = .home
-            editorLaunch = EditorLaunch(image: ScreenshotFixtures.goldenLandscape, tool: .erase)
+            // `-GLErasePhoto <sample>` erases on a sample photo instead.
+            let photo = UserDefaults.standard.string(forKey: "GLErasePhoto").flatMap(ScreenshotFixtures.sample)
+            editorLaunch = EditorLaunch(image: photo ?? ScreenshotFixtures.goldenLandscape, tool: .erase)
         case .textStickers:
             selectedTab = .home
             editorLaunch = EditorLaunch(image: ScreenshotFixtures.beachPhoto, tool: .textStickers)

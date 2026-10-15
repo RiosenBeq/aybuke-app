@@ -184,13 +184,39 @@ struct OneTapPanel: View {
 struct ErasePanel: View {
     @Binding var brushSize: CGFloat
     let hasStrokes: Bool
+    /// "Pick a person": a tap adds a person or thing to the erase area.
+    let isPicking: Bool
+    /// Vision is still looking for people and things.
+    let isFindingSubjects: Bool
     let cost: Int
+    let onTogglePicking: () -> Void
     let onUndoStroke: () -> Void
     let onClear: () -> Void
     let onErase: () -> Void
 
     var body: some View {
         VStack(spacing: 12) {
+            HStack(spacing: 8) {
+                SelectableChip(title: "Pick a person", symbolName: "person.crop.circle.badge.minus", isSelected: isPicking,
+                               action: onTogglePicking)
+                if isPicking {
+                    Image(systemName: isFindingSubjects ? "hourglass" : "hand.tap")
+                        .foregroundStyle(Palette.accent)
+                        .accessibilityHidden(true)
+                    Group {
+                        if isFindingSubjects {
+                            Text("Finding people and things…", comment: "Erase: shown while the device looks for people and things she can tap to remove")
+                        } else {
+                            Text(MaskCanvas.pickHint)
+                        }
+                    }
+                    .font(.legibleFootnote.weight(.semibold))
+                    .foregroundStyle(Palette.textSecondary)
+                    .fixedSize(horizontal: false, vertical: true)
+                }
+                Spacer(minLength: 0)
+            }
+            .animation(.snappy, value: isPicking)
             HStack(spacing: 12) {
                 Image(systemName: "circle.fill").font(.system(size: 8))
                     .foregroundStyle(Palette.textSecondary)
@@ -415,12 +441,13 @@ private extension AdjustmentParameter {
 
 /// Retro effects: live thumbnails of her own photo, the effect's one switch
 /// (date stamp, border, letterbox or camera info), Film Still's subtitle,
-/// and Apply.
+/// DSLR '12's lens, and Apply.
 struct EffectsPanel: View {
     let thumbnails: [RetroEffect: UIImage]
     let selected: RetroEffect?
     @Binding var showsExtra: Bool
     @Binding var subtitle: String
+    @Binding var lens: DSLRLens
     let onSelect: (RetroEffect) -> Void
     let onReset: () -> Void
     let onApply: () -> Void
@@ -445,6 +472,10 @@ struct EffectsPanel: View {
                         .font(.subheadline.weight(.semibold))
                 }
                 .tint(Palette.accent)
+            }
+
+            if selected?.takesLens == true {
+                lensRow
             }
 
             if selected?.takesSubtitle == true {
@@ -472,6 +503,26 @@ struct EffectsPanel: View {
                 .font(.legibleCaption2)
                 .foregroundStyle(Palette.textTertiary)
         }
+    }
+
+    /// 85 mm blurs the background most, 35 mm least.
+    private var lensRow: some View {
+        HStack(spacing: 8) {
+            Image(systemName: "camera.aperture")
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(Palette.textSecondary)
+                .accessibilityHidden(true)
+            ForEach(DSLRLens.allCases) { option in
+                SelectableChip(title: "\(option.focalLength) mm", isSelected: lens == option) {
+                    guard lens != option else { return }
+                    lens = option
+                    Haptics.selection()
+                }
+            }
+            Spacer(minLength: 0)
+        }
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel(Text("Lens", comment: "Label of DSLR '12's lens choice (85, 50 or 35 mm) in the editor's Effects"))
     }
 
     private var effectsRow: some View {

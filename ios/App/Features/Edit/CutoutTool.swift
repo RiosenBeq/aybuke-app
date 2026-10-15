@@ -1,10 +1,11 @@
 import SwiftUI
 import PhotosUI
 import Observation
+import AppCore
 
-/// Cut out after Vision has run: which subjects to keep, brushed fixes to
-/// the edge, and what goes behind them, previewed on a small copy and
-/// rendered at full size on Apply.
+/// Cut out after Vision has run (`SubjectMasks`): which subjects to keep,
+/// brushed fixes to the edge, how crisp or soft the edge is, and what goes
+/// behind them, previewed on a small copy and rendered at full size on Apply.
 @MainActor
 @Observable
 final class CutoutSession {
@@ -13,7 +14,7 @@ final class CutoutSession {
         case keepMore, keepLess
     }
 
-    private(set) var analysis: CutoutAnalysis?
+    private(set) var analysis: SubjectMasks?
     private(set) var selection = IndexSet()
     private(set) var backdrop: CutoutBackdrop = .transparent
     private(set) var customColor = Palette.blush
@@ -27,6 +28,9 @@ final class CutoutSession {
     private(set) var refineStrokes: [CutoutRefineStroke] = []
     /// A soft shadow under the subject on its new background.
     private(set) var showsShadow = false
+    /// The Edge control, from crisp (0) to a soft feather (1); Vision's own
+    /// edge in the middle (`CutoutEdge`).
+    private(set) var edge = CutoutEdge.natural
 
     /// Refine brush diameter at fit, as a share of the photo's width.
     static let refineBrushSize: CGFloat = 0.05
@@ -36,7 +40,7 @@ final class CutoutSession {
     @ObservationIgnored private var previewTask: Task<Void, Never>?
 
     var isActive: Bool { analysis != nil }
-    var subjects: [CutoutAnalysis.Subject] { analysis?.subjects ?? [] }
+    var subjects: [SubjectMasks.Subject] { analysis?.subjects ?? [] }
     var keepsEverything: Bool { analysis.map { selection == $0.allIDs } ?? true }
     /// A cut-out on another photo is a composite (IPTC), not just an edit.
     var isComposite: Bool { backdrop == .photo && backdropPhoto != nil }
@@ -50,7 +54,7 @@ final class CutoutSession {
         }
     }
 
-    func begin(_ analysis: CutoutAnalysis, keeping subject: Int?) {
+    func begin(_ analysis: SubjectMasks, keeping subject: Int?) {
         reset()
         self.analysis = analysis
         sourceHasAlpha = analysis.hasTransparency
@@ -75,6 +79,7 @@ final class CutoutSession {
         refineMode = nil
         refineStrokes = []
         showsShadow = false
+        edge = CutoutEdge.natural
     }
 
     /// WWDC23's lift-subject behaviour: the first tap keeps only what she
@@ -160,6 +165,13 @@ final class CutoutSession {
         refresh()
     }
 
+    func setEdge(_ value: Double) {
+        let value = min(max(value, 0), 1)
+        guard value != edge else { return }
+        edge = value
+        refresh()
+    }
+
     /// The final image at the analysed photo's full size.
     func renderFinal() async -> UIImage? {
         guard let analysis else { return nil }
@@ -194,16 +206,17 @@ final class CutoutSession {
         /// Each kept subject's bounds (with what she brushed in around it),
         /// when it gets a shadow.
         let shadowBounds: [CGRect]
+        let edge: CutoutEdge.Plan
 
-        /// The kept subjects' mask with her brush strokes on top, at the
-        /// analysed photo's size.
-        func mask(from analysis: CutoutAnalysis) -> CIImage? {
-            guard let mask = try? analysis.mask(for: selection) else { return nil }
-            return CutoutRenderer.refined(mask, with: refine)
+        /// The kept subjects' matte with her brush strokes on top and the
+        /// Edge she chose, at the analysed photo's size.
+        func mask(from analysis: SubjectMasks) -> CIImage? {
+            let refined = CutoutRenderer.refined(analysis.matte(for: selection), with: refine)
+            return Matte.edged(refined, plan: edge)
         }
     }
 
-    private func renderJob(_ analysis: CutoutAnalysis) -> RenderJob {
+    private func renderJob(_ analysis: SubjectMasks) -> RenderJob {
         var backdrop = backdrop
         if backdrop == .blurOriginal && sourceHasAlpha { backdrop = .transparent }
         if backdrop == .photo && backdropPhoto == nil { backdrop = .transparent }
@@ -214,7 +227,7 @@ final class CutoutSession {
             brushedIn.filter { $0.intersects(subject.bounds) }.reduce(subject.bounds) { $0.union($1) }.intersection(whole)
         }
         return RenderJob(selection: selection, refine: refineStrokes, backdrop: backdrop, color: UIColor(customColor), photo: backdropPhoto,
-                         bounds: bounds, shadowBounds: shadowBounds)
+                         bounds: bounds, shadowBounds: shadowBounds, edge: CutoutEdge.plan(edge))
     }
 
     /// Re-renders the preview on a ≤ 1200 px copy. Subjects she isn't keeping
@@ -241,7 +254,8 @@ final class CutoutSession {
                     shadowUnder: job.shadowBounds
                 )
                 // Whole subjects she left out show faintly; what she brushed away doesn't.
-                if showsGhosts, let others = try? analysis.mask(for: analysis.allIDs.subtracting(job.selection)) {
+                if showsGhosts {
+                    let others = analysis.matte(for: analysis.allIDs.subtracting(job.selection))
                     output = Self.ghosts(source: source, others: others.transformed(by: transform), kept: mask.transformed(by: transform))
                         .composited(over: output)
                         .cropped(to: extent)
@@ -404,6 +418,7 @@ struct CutoutPanel: View {
                 }
 
                 refineRow
+                edgeRow
 
                 HStack(spacing: 8) {
                     Text("Background")
@@ -471,6 +486,36 @@ struct CutoutPanel: View {
             }
         }
         .animation(.snappy, value: session.refineStrokes.isEmpty)
+    }
+
+    /// Crisp to feathered, with Vision's own edge in the middle.
+    private var edgeRow: some View {
+        HStack(spacing: 10) {
+            Text("Edge", comment: "Cut out: label of the slider that makes the cut-out's edge crisp or soft")
+                .font(.legibleFootnote.weight(.semibold))
+                .foregroundStyle(Palette.textSecondary)
+            Slider(value: Binding(get: { session.edge }, set: { session.setEdge($0) }), in: 0...1) {
+                Text("Edge", comment: "Cut out: label of the slider that makes the cut-out's edge crisp or soft")
+            } minimumValueLabel: {
+                Text("Crisp", comment: "Cut out: the sharp end of the Edge slider")
+                    .font(.legibleCaption2)
+                    .foregroundStyle(Palette.textTertiary)
+            } maximumValueLabel: {
+                Text("Feathered", comment: "Cut out: the soft end of the Edge slider, a gently faded edge")
+                    .font(.legibleCaption2)
+                    .foregroundStyle(Palette.textTertiary)
+            }
+            .tint(Palette.accent)
+            .accessibilityValue(edgeDescription)
+        }
+    }
+
+    private var edgeDescription: Text {
+        if session.edge < CutoutEdge.natural - 0.1 { return Text("Crisp", comment: "Cut out: the sharp end of the Edge slider") }
+        if session.edge > CutoutEdge.natural + 0.1 {
+            return Text("Feathered", comment: "Cut out: the soft end of the Edge slider, a gently faded edge")
+        }
+        return Text("Natural", comment: "Cut out: the Edge slider in the middle, the edge as found on the device")
     }
 
     @ViewBuilder

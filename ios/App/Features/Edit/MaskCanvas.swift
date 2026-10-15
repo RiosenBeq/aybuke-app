@@ -31,16 +31,48 @@ struct MaskStroke: Equatable {
     }
 }
 
+/// A person or thing she picked in Erase: its subject matte from
+/// `SubjectMasks`, grown a little so her outline and soft edge go too.
+struct EraseRegion: Equatable {
+    /// The subject's label in `SubjectMasks`.
+    let id: Int
+    /// White where it's erased (grey on the soft edge), at most 1024 px,
+    /// covering the whole photo.
+    let mask: CGImage
+    /// The mask in the brush colour, for the canvas.
+    let overlay: UIImage
+
+    static func == (lhs: EraseRegion, rhs: EraseRegion) -> Bool { lhs.id == rhs.id }
+
+    /// Call it off the main actor.
+    static func make(id: Int, from masks: SubjectMasks) -> EraseRegion? {
+        let matte = masks.matte(for: [id])
+        let unit = max(matte.extent.width, matte.extent.height) / 1000
+        let grown = Matte.blur(Matte.dilate(Matte.ramp(matte, 0.15, 0.5), 12 * unit), 2 * unit)
+        guard let mask = Matte.grayImage(grown, longEdge: 1024) else { return nil }
+        let alpha = CIImage(cgImage: mask, options: [.colorSpace: NSNull()])
+        let tinted = CIImage(color: CIColor(color: .brandBlush)).cropped(to: alpha.extent)
+            .applyingFilter("CIBlendWithMask", parameters: [
+                kCIInputBackgroundImageKey: CIImage(color: .clear).cropped(to: alpha.extent), kCIInputMaskImageKey: alpha,
+            ])
+        guard let overlay = ImageFilters.context.createCGImage(tinted, from: alpha.extent) else { return nil }
+        return EraseRegion(id: id, mask: mask, overlay: UIImage(cgImage: overlay))
+    }
+}
+
 enum MaskRenderer {
-    /// White strokes on black, at the image's pixel size (the format inpainting
-    /// models expect).
-    static func render(_ strokes: [MaskStroke], size: CGSize) -> UIImage {
+    /// White strokes and picked regions on black, at the image's pixel size
+    /// (the format inpainting models expect).
+    static func render(_ strokes: [MaskStroke], regions: [EraseRegion] = [], size: CGSize) -> UIImage {
         let format = UIGraphicsImageRendererFormat()
         format.scale = 1
         format.opaque = true
         return UIGraphicsImageRenderer(size: size, format: format).image { context in
             UIColor.black.setFill()
             context.fill(CGRect(origin: .zero, size: size))
+            for region in regions {
+                UIImage(cgImage: region.mask).draw(in: CGRect(origin: .zero, size: size), blendMode: .lighten, alpha: 1)
+            }
             let cg = context.cgContext
             cg.setStrokeColor(UIColor.white.cgColor)
             cg.setLineCap(.round)
@@ -55,22 +87,47 @@ enum MaskRenderer {
 }
 
 /// Lets the user paint over objects to erase. One finger paints; two fingers
-/// pan and pinch to zoom in on small things (see `BrushCanvas`).
+/// pan and pinch to zoom in on small things (see `BrushCanvas`). While she
+/// picks people and things (`onPick`), a tap picks one instead of painting.
 struct MaskCanvas: View {
     let image: UIImage
-    @Binding var strokes: [MaskStroke]
+    let strokes: [MaskStroke]
+    var regions: [EraseRegion] = []
     let brushSize: CGFloat
+    /// What she can pick, left to right (for VoiceOver).
+    var subjects: [SubjectMasks.Subject] = []
+    /// Set while picking: the tapped point, normalized, top-left origin.
+    var onPick: ((CGPoint) -> Void)?
+    var onPickSubject: (Int) -> Void = { _ in }
+    let onStroke: (MaskStroke) -> Void
 
     var body: some View {
-        BrushCanvas(image: image, strokes: strokes, color: .brandBlush, opacity: 0.75, brushSize: brushSize) { stroke in
-            strokes.append(stroke)
+        BrushCanvas(image: image, strokes: strokes, regions: regions.map(\.overlay), color: .brandBlush, opacity: 0.75,
+                    brushSize: brushSize, onTap: onPick) { stroke in
+            onStroke(stroke)
             Haptics.tap()
         }
         .aspectRatio(image.size.width / max(image.size.height, 1), contentMode: .fit)
         .clipShape(.control)
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("Brush over the area to erase")
+        .accessibilityLabel(onPick == nil ? Text("Brush over the area to erase") : Text(Self.pickHint))
         .accessibilityAddTraits(.allowsDirectInteraction)
+        .accessibilityActions {
+            if onPick != nil {
+                ForEach(Array(subjects.enumerated()), id: \.element.id) { index, subject in
+                    Button {
+                        onPickSubject(subject.id)
+                    } label: {
+                        Text("Pick subject \(index + 1) of \(subjects.count)",
+                             comment: "VoiceOver action in Erase: adds the person or thing (counted from the left) to what's erased, or takes it off again")
+                    }
+                }
+            }
+        }
+    }
+
+    static var pickHint: LocalizedStringKey {
+        Platform.isMac ? "Click a person or thing to remove it" : "Tap a person or thing to remove it"
     }
 }
 
@@ -84,10 +141,14 @@ struct BrushCanvas: UIViewRepresentable {
     /// Strokes to show (normalized). Leave empty when the canvas shows their
     /// result instead: a new stroke then stays until `image` changes.
     var strokes: [MaskStroke] = []
+    /// Picked areas in the brush colour (Erase), drawn under the strokes.
+    var regions: [UIImage] = []
     let color: UIColor
     var opacity: CGFloat = 0.6
     /// Brush diameter at fit, as a fraction of the image width.
     let brushSize: CGFloat
+    /// Set: one finger taps to pick (normalized point) instead of painting.
+    var onTap: ((CGPoint) -> Void)?
     let onStroke: (MaskStroke) -> Void
 
     func makeUIView(context: Context) -> BrushCanvasView {
@@ -96,10 +157,14 @@ struct BrushCanvas: UIViewRepresentable {
 
     func updateUIView(_ view: BrushCanvasView, context: Context) {
         view.update(image: image, strokes: strokes)
+        if view.overlay.regions.map(ObjectIdentifier.init) != regions.map(ObjectIdentifier.init) {
+            view.overlay.regions = regions
+        }
         view.overlay.color = color
         view.overlay.alpha = opacity
         view.brushSize = brushSize
         view.onStroke = onStroke
+        view.onTap = onTap
     }
 }
 
@@ -107,10 +172,18 @@ final class BrushCanvasView: UIView, UIScrollViewDelegate, UIGestureRecognizerDe
     fileprivate let overlay = BrushOverlayView()
     var brushSize: CGFloat = 0.07
     var onStroke: (MaskStroke) -> Void = { _ in }
+    /// While set, a one-finger tap picks instead of painting.
+    var onTap: ((CGPoint) -> Void)? {
+        didSet {
+            brush.isEnabled = onTap == nil
+            tap.isEnabled = onTap != nil
+        }
+    }
 
     private let scrollView = UIScrollView()
     private let imageView = UIImageView()
     private let brush = BrushGestureRecognizer()
+    private let tap = UITapGestureRecognizer()
     private var laidOutSize = CGSize.zero
 
     init() {
@@ -145,6 +218,9 @@ final class BrushCanvasView: UIView, UIScrollViewDelegate, UIGestureRecognizerDe
         brush.addTarget(self, action: #selector(painted(_:)))
         brush.delegate = self
         scrollView.addGestureRecognizer(brush)
+        tap.addTarget(self, action: #selector(tapped(_:)))
+        tap.isEnabled = false
+        scrollView.addGestureRecognizer(tap)
     }
 
     required init?(coder: NSCoder) { fatalError("init(coder:) is not supported") }
@@ -221,6 +297,12 @@ final class BrushCanvasView: UIView, UIScrollViewDelegate, UIGestureRecognizerDe
         }
     }
 
+    @objc private func tapped(_ recognizer: UITapGestureRecognizer) {
+        let size = imageView.bounds.size
+        let location = recognizer.location(in: imageView)
+        onTap?(CGPoint(x: min(max(location.x / max(size.width, 1), 0), 1), y: min(max(location.y / max(size.height, 1), 0), 1)))
+    }
+
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer,
                            shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         // The pinch and the two-finger pan can start while the brush is down.
@@ -263,6 +345,7 @@ private final class BrushGestureRecognizer: UIGestureRecognizer {
 /// Draws the strokes where the photo is on screen.
 private final class BrushOverlayView: UIView {
     var strokes: [MaskStroke] = [] { didSet { setNeedsDisplay() } }
+    var regions: [UIImage] = [] { didSet { setNeedsDisplay() } }
     /// Finished strokes the canvas hasn't shown yet.
     var pending: [MaskStroke] = [] { didSet { setNeedsDisplay() } }
     var active: MaskStroke? { didSet { setNeedsDisplay() } }
@@ -276,6 +359,9 @@ private final class BrushOverlayView: UIView {
 
     override func draw(_ rect: CGRect) {
         guard let context = UIGraphicsGetCurrentContext(), imageFrame.width > 0 else { return }
+        for region in regions {
+            region.draw(in: imageFrame)
+        }
         // Opaque strokes under the view's alpha: overlaps don't get darker.
         context.setStrokeColor(color.withAlphaComponent(1).cgColor)
         context.setLineCap(.round)

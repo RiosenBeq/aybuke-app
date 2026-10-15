@@ -44,7 +44,7 @@ RETRO CAM & RETRO BOOTH
 • Retro Booth: 4 shots with a 3-2-1 countdown, printed as a strip or a grid with the date
 
 FREE, RIGHT ON YOUR DEVICE
-• 12 retro effects from VHS '86 to Rainbow '17, many with date stamps, plus Tiny World tilt-shift
+• 13 retro effects from VHS '86 to Rainbow '17, many with date stamps, plus Tiny World tilt-shift
 • Collages and photo dumps from 2 to 9 photos, or a seamless carousel
 • Text & Stickers: words in six fonts, cute stickers and doodles
 • Video editor: auto captions in 5 styles (supported languages), auto-cut silences, retro effects and trim
@@ -204,7 +204,7 @@ RETRO CAM VE RETRO BOOTH
 • Retro Booth: 3-2-1 geri sayımlı 4 kare; tarihli şerit ya da ızgara olarak basılır
 
 ÜCRETSİZ, DOĞRUDAN CİHAZINDA
-• VHS '86'dan Rainbow '17'ye 12 retro efekt, çoğu tarih damgalı; üstüne Tiny World tilt-shift
+• VHS '86'dan Rainbow '17'ye 13 retro efekt, çoğu tarih damgalı; üstüne Tiny World tilt-shift
 • 2 ila 9 fotoğraftan kolaj ve photo dump ya da kesintisiz bir kaydırmalı gönderi
 • Yazı ve Çıkartma: altı yazı tipinde yazılar, tatlı çıkartmalar ve karalamalar
 • Video editörü: 5 stilde otomatik altyazı (desteklenen dillerde), sessizlik kesme, retro efekt, kısaltma
