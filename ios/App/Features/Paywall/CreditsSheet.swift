@@ -84,9 +84,10 @@ struct CreditsSheet: View {
         .task {
             // The day may have turned since the pill last counted.
             app.credits.refresh(isPro: isPro, isTrial: app.purchases.trial != nil)
-            await app.refreshAIServicePause()
             await app.refreshServerBalance()
         }
+        // Its own task, so a slow answer never holds up the balance.
+        .task { await app.refreshAIServicePause() }
         .sheet(isPresented: $showsPacks) {
             CreditPacksView()
                 .environment(app)

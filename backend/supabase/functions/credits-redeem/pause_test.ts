@@ -58,6 +58,13 @@ Deno.test("an 'all' pause wins over a free one, and the later end counts", () =>
   assert.equal(pauseFromSummary(longer, now)?.retry_after, 28 * 3600);
 });
 
+Deno.test("yesterday's caps end at midnight UTC, even from a cached summary", () => {
+  const justAfter = new Date("2026-10-16T00:00:10Z");
+  assert.deepEqual(pauseFromSummary(summary({ all_jobs: 400, free_jobs: 60 }), justAfter), { ai_paused: false });
+  const switched = summary({ free_jobs: 60, switches: { all: "2026-10-16T01:00:00Z" } });
+  assert.deepEqual(pauseFromSummary(switched, justAfter), { ai_paused: true, free_only: false, retry_after: 3590 });
+});
+
 Deno.test("an ended switch pauses nothing", () => {
   assert.deepEqual(pauseFromSummary(summary({ switches: { all: "2026-10-15T19:59:59Z" } }), now), {
     ai_paused: false,

@@ -30,14 +30,23 @@ function nextUtcDay(now: Date): number {
   return Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1);
 }
 
+/** The end of the summary's UTC day ("2026-10-15"), else of today's. */
+function dayEnd(day: unknown, now: Date): number {
+  const start = typeof day === "string" ? Date.parse(`${day}T00:00:00Z`) : NaN;
+  return Number.isFinite(start) ? start + 86_400_000 : nextUtcDay(now);
+}
+
 /**
  * From ops_daily_summary()'s breakers for today. Null when the reply isn't
  * one: unknown, never "paused" or "not paused".
  */
 export function pauseFromSummary(summary: unknown, now: Date): AIPause | null {
-  const breakers = (summary as { breakers?: Breakers } | null | undefined)?.breakers;
+  const reply = summary as { day?: unknown; breakers?: Breakers } | null | undefined;
+  const breakers = reply?.breakers;
   if (!breakers || typeof breakers !== "object") return null;
   const at = now.getTime();
+  // A cached summary can outlive its UTC day by a few seconds: yesterday's caps are over.
+  const capsEnd = dayEnd(reply?.day, now);
   const switchedUntil = (scope: string): number | null => {
     const value = breakers.switches?.[scope];
     const time = typeof value === "string" ? Date.parse(value) : NaN;
@@ -45,7 +54,7 @@ export function pauseFromSummary(summary: unknown, now: Date): AIPause | null {
   };
   // admit_job() stops at the cap itself (count >= cap), until the next UTC day.
   const capReached = (count: unknown, cap: unknown): number | null =>
-    typeof count === "number" && typeof cap === "number" && count >= cap ? nextUtcDay(now) : null;
+    typeof count === "number" && typeof cap === "number" && count >= cap && capsEnd > at ? capsEnd : null;
   const latest = (...times: (number | null)[]): number | null => {
     const known = times.filter((time): time is number => time !== null);
     return known.length ? Math.max(...known) : null;
