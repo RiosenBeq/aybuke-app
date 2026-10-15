@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Render Aybuke's app icons and brand board.
 
-    python3 scripts/render-brand-assets.py                   # the app icon: concept C, "Glow Gem"
-    python3 scripts/render-brand-assets.py --concept a       # switch every output below to concept A or B
+    python3 scripts/render-brand-assets.py                   # the app icon: concept D, "Aura Lens"
+    python3 scripts/render-brand-assets.py --concept e       # switch every output below to another concept (a–e)
     python3 scripts/render-brand-assets.py --concept-sheets  # redraw the concept comparison images
 
 Writes, from the chosen concept:
@@ -17,19 +17,23 @@ Writes, from the chosen concept:
 scripts/marketing-images.py puts app-icon-1024.png into web/assets/og-image.png
 (the link preview) the next time it runs.
 
---concept-sheets writes docs/brand/icon-concepts/: concept-{a,b,c}.png (1024 px),
-concept-{a,b,c}-small.png (60 and 29 px, enlarged 4x without smoothing, on light
-and dark) and concepts.png (all three on light and dark Home Screens, with their
+--concept-sheets writes docs/brand/icon-concepts/: concept-{a…e}.png (1024 px),
+concept-{a…e}-small.png (60 and 29 px, enlarged 4x without smoothing, on light
+and dark) and concepts.png (all five on light and dark Home Screens, with their
 dark and tinted versions).
 
 The concepts (docs/02-brand-identity.md):
   a  "Spark Cam"    a crisp white digicam whose lens glows pink around a sparkle
   b  "Heart Print"  a sharp-cornered white print whose photo is a glowing heart
   c  "Glow Gem"     a faceted pink heart, cut like a gem, with a white glint
+  d  "Aura Lens"    a liquid-glass lens glowing white-hot through blush to magenta
+                    in a thin iridescent ring, with a sparkle glinting on its rim
+  e  "Holo Heart"   a puffy glass heart glowing from within, with an iridescent rim
 
 Shapes are exact paths (lines, Bezier curves, circular arcs), drawn at 4x and
-downsampled for clean anti-aliasing. Requires Pillow; the brand board uses
-macOS's New York Italic.
+downsampled for clean anti-aliasing; glows, soft light and the iridescent sweeps
+(conic gradients, drawn as thin wedges) are layered over them. Requires Pillow
+(no numpy); the brand board uses macOS's New York Italic.
 """
 
 from __future__ import annotations
@@ -73,10 +77,12 @@ VARIANTS = ("default", "dark", "tinted")
 
 class Path:
     """Closed shapes made of lines, Bezier curves and circular arcs, in tile
-    units (0…1 across the icon, y down). Pillow gets polygons, SVG the curves."""
+    units (0…1 across the icon, y down). Pillow gets polygons, SVG the curves.
+    An even-odd path leaves a hole wherever its subpaths overlap (rings, crescents)."""
 
-    def __init__(self) -> None:
+    def __init__(self, evenodd: bool = False) -> None:
         self.subpaths: list[tuple[tuple[float, float], list[tuple]]] = []
+        self.evenodd = evenodd
 
     def move(self, p) -> Path:
         self.subpaths.append((p, []))
@@ -114,7 +120,7 @@ class Path:
         return self
 
     def map(self, transform) -> Path:
-        out = Path()
+        out = Path(self.evenodd)
         for start, segments in self.subpaths:
             out.subpaths.append((transform(start), [(s[0],) + tuple(transform(p) for p in s[1:]) for s in segments]))
         return out
@@ -178,6 +184,53 @@ def circle(center, r: float) -> Path:
     return Path().move((center[0] + r, center[1])).arc(center, r, 0, 360)
 
 
+def even_odd(*paths: Path) -> Path:
+    """One path from several, filled even-odd: where they overlap is a hole."""
+    out = Path(evenodd=True)
+    for path in paths:
+        out.add(path)
+    return out
+
+
+def ring(center, outer: float, inner: float) -> Path:
+    return even_odd(circle(center, outer), circle(center, inner))
+
+
+def arc_band(center, outer: float, inner: float, a0: float, a1: float) -> Path:
+    """A piece of a ring, from angle a0 to a1 (degrees, clockwise on screen)."""
+    cx, cy = center
+    path = Path().move((cx + outer * math.cos(math.radians(a0)), cy + outer * math.sin(math.radians(a0))))
+    path.arc(center, outer, a0, a1).line((cx + inner * math.cos(math.radians(a1)), cy + inner * math.sin(math.radians(a1))))
+    return path.arc(center, inner, a1, a0)
+
+
+def ellipse(center, rx: float, ry: float, degrees: float = 0) -> Path:
+    return circle((0, 0), 1).map(lambda p: rotate_point((center[0] + p[0] * rx, center[1] + p[1] * ry), degrees, center))
+
+
+def puffy_heart(center, width: float) -> Path:
+    """A soft, rounded heart: circular lobes curving into a rounded notch, full
+    sides and a gently rounded tip. Centred on its bounding box."""
+    k = width / 2.028
+    r, notch, ease = 0.514, 193.5, 22
+    top, tip = -0.38 - r, 1.0
+
+    def point(p):
+        return (center[0] + p[0] * k, center[1] + (p[1] - (top + tip) / 2) * k)
+
+    def on_lobe(x, angle):
+        a = math.radians(angle)
+        return point((x + r * math.cos(a), -0.38 + r * math.sin(a)))
+
+    path = Path().move(on_lobe(0.5, notch + ease))
+    path.arc(point((0.5, -0.38)), r * k, notch + ease, 360)
+    path.cubic(point((1.014, 0.02)), point((0.52, 0.56)), point((0.06, 0.96)))
+    path.quad(point((0, 1.012)), point((-0.06, 0.96)))
+    path.cubic(point((-0.52, 0.56)), point((-1.014, 0.02)), point((-1.014, -0.38)))
+    path.arc(point((-0.5, -0.38)), r * k, 180, 540 - notch - ease)
+    return path.quad(point((0, -0.475)), on_lobe(0.5, notch + ease))
+
+
 def sparkle(center, r: float, inner: float = 0.28) -> Path:
     """The app's four-point sparkle (`SparkleShape`): concave sides, needle points.
     A smaller `inner` makes thinner, sharper points."""
@@ -228,19 +281,52 @@ class HeartShape:
 # MARK: - Canvases
 
 class Gradient:
-    """Linear gradient through (offset, rgb) stops, from `start` to `end` (tile units)."""
+    """Linear gradient through (offset, colour) stops, from `start` to `end` (tile
+    units). Colours are RGB, or RGBA where the paint fades out."""
 
     def __init__(self, stops, start, end) -> None:
         self.stops, self.start, self.end = stops, start, end
 
+    def offset(self, x: float, y: float) -> float:
+        (sx, sy), (ex, ey) = self.start, self.end
+        dx, dy = ex - sx, ey - sy
+        return ((x - sx) * dx + (y - sy) * dy) / (dx * dx + dy * dy)
 
-def color_at(stops, t: float) -> tuple[int, int, int]:
+
+class RadialGradient:
+    """Gradient through (offset, colour) stops from `center` (0) out to `radius` (1)."""
+
+    def __init__(self, stops, center, radius: float) -> None:
+        self.stops, self.center, self.radius = stops, center, radius
+
+    def offset(self, x: float, y: float) -> float:
+        return math.hypot(x - self.center[0], y - self.center[1]) / self.radius
+
+
+class ConicGradient:
+    """Sweep gradient through (offset, colour) stops once around `center`, starting
+    at `angle` degrees (0 = right, increasing clockwise on screen, like `Path.arc`).
+    Drawn as many thin wedges; the stops should end where they start."""
+
+    wedges = 720
+
+    def __init__(self, stops, center, angle: float = 0) -> None:
+        self.stops, self.center, self.angle = stops, center, angle
+
+
+def rgba(color) -> tuple[int, int, int, int]:
+    return tuple(color) if len(color) == 4 else tuple(color) + (255,)
+
+
+def color_at(stops, t: float) -> tuple:
+    if any(len(color) == 4 for _, color in stops):
+        stops = [(offset, rgba(color)) for offset, color in stops]
     if t <= stops[0][0]:
         return stops[0][1]
     for (p0, c0), (p1, c1) in zip(stops, stops[1:]):
         if t <= p1:
             u = (t - p0) / (p1 - p0)
-            return tuple(round(c0[i] + (c1[i] - c0[i]) * u) for i in range(3))
+            return tuple(round(a + (b - a) * u) for a, b in zip(c0, c1))
     return stops[-1][1]
 
 
@@ -259,30 +345,53 @@ class Raster:
 
     def mask(self, path: Path) -> Image.Image:
         mask = Image.new("L", (self.px, self.px), 0)
-        draw = ImageDraw.Draw(mask)
         for points in path.polygons():
-            draw.polygon([(x * self.px, y * self.px) for x, y in points], fill=255)
+            xy = [(x * self.px, y * self.px) for x, y in points]
+            if not path.evenodd:
+                ImageDraw.Draw(mask).polygon(xy, fill=255)
+                continue
+            single = Image.new("L", (self.px, self.px), 0)
+            ImageDraw.Draw(single).polygon(xy, fill=255)
+            mask = ImageChops.difference(mask, single)
         return mask
 
-    def gradient(self, paint: Gradient) -> Image.Image:
-        small = 256
-        (sx, sy), (ex, ey) = paint.start, paint.end
-        dx, dy = ex - sx, ey - sy
-        length = dx * dx + dy * dy
-        image = Image.new("RGB", (small, small))
-        image.putdata([color_at(paint.stops, (((x + 0.5) / small - sx) * dx + ((y + 0.5) / small - sy) * dy) / length)
-                       for y in range(small) for x in range(small)])
-        return image.resize((self.px, self.px), Image.BICUBIC)
+    def paint_layer(self, paint, box) -> Image.Image:
+        """The paint over `box` (pixels) as an RGBA image. Gradients are sampled
+        at up to 256 px and enlarged smoothly; conic ones are drawn as wedges."""
+        x0, y0, x1, y1 = box
+        w, h = x1 - x0, y1 - y0
+        if isinstance(paint, ConicGradient):
+            return self.conic_layer(paint, box)
+        if not isinstance(paint, (Gradient, RadialGradient)):
+            return Image.new("RGBA", (w, h), rgba(paint))
+        sw, sh = min(w, 256), min(h, 256)
+        stops = [(t, rgba(color)) for t, color in paint.stops]
+        image = Image.new("RGBA", (sw, sh))
+        image.putdata([color_at(stops, paint.offset((x0 + (i + 0.5) * w / sw) / self.px, (y0 + (j + 0.5) * h / sh) / self.px))
+                       for j in range(sh) for i in range(sw)])
+        return image.resize((w, h), Image.BICUBIC)
+
+    def conic_layer(self, paint: ConicGradient, box) -> Image.Image:
+        x0, y0, x1, y1 = box
+        stops = [(t, rgba(color)) for t, color in paint.stops]
+        layer = Image.new("RGBA", (x1 - x0, y1 - y0), stops[0][1])
+        draw = ImageDraw.Draw(layer)
+        cx, cy = paint.center[0] * self.px - x0, paint.center[1] * self.px - y0
+        reach = 2 * (x1 - x0 + y1 - y0)
+        n = paint.wedges
+        for i in range(n):
+            # Each wedge overlaps its neighbours a little, so no seam shows between them.
+            a0, a1 = (math.radians(paint.angle + 360 * (i + d) / n) for d in (-0.3, 1.3))
+            draw.polygon([(cx, cy), (cx + reach * math.cos(a0), cy + reach * math.sin(a0)),
+                          (cx + reach * math.cos(a1), cy + reach * math.sin(a1))], fill=color_at(stops, (i + 0.5) / n))
+        return layer
 
     def composite(self, paint, alpha: Image.Image) -> None:
         box = alpha.getbbox()
         if box is None:
             return
-        if isinstance(paint, Gradient):
-            layer = self.gradient(paint).crop(box).convert("RGBA")
-        else:
-            layer = Image.new("RGBA", (box[2] - box[0], box[3] - box[1]), paint + (255,))
-        layer.putalpha(alpha.crop(box))
+        layer = self.paint_layer(paint, box)
+        layer.putalpha(ImageChops.multiply(layer.getchannel("A"), alpha.crop(box)))
         self.image.alpha_composite(layer, dest=box[:2])
 
     def background(self, paint) -> None:
@@ -290,6 +399,21 @@ class Raster:
 
     def fill(self, path: Path, paint, clip: Path | None = None) -> None:
         mask = self.mask(path)
+        if clip is not None:
+            mask = ImageChops.multiply(mask, self.mask(clip))
+        self.composite(paint, mask)
+
+    def stroke(self, path: Path, width: float, paint, clip: Path | None = None) -> None:
+        """The outline, `width` wide and centred on it, with round joins."""
+        mask = Image.new("L", (self.px, self.px), 0)
+        draw = ImageDraw.Draw(mask)
+        w = width * self.px
+        for points in path.polygons():
+            xy = [(x * self.px, y * self.px) for x, y in points]
+            draw.line(xy + xy[:1], fill=255, width=round(w))
+            # A dot on every vertex rounds the joins (Pillow's own leave gaps on tight curves).
+            for x, y in xy:
+                draw.ellipse((x - w / 2, y - w / 2, x + w / 2, y + w / 2), fill=255)
         if clip is not None:
             mask = ImageChops.multiply(mask, self.mask(clip))
         self.composite(paint, mask)
@@ -309,8 +433,11 @@ class Raster:
             mask = ImageChops.multiply(mask, self.mask(clip))
         self.composite(color, mask)
 
-    def shadow(self, path: Path, offset, blur: float, color, alpha: float) -> None:
+    def shadow(self, path: Path, offset, blur: float, color, alpha: float, clip: Path | None = None) -> None:
+        """A blurred copy of the shape: a shadow, or soft light in a light colour."""
         mask = self.mask(path.moved(*offset)).filter(ImageFilter.GaussianBlur(blur * self.px))
+        if clip is not None:
+            mask = ImageChops.multiply(mask, self.mask(clip))
         self.composite(color, mask.point(lambda value: round(value * alpha)))
 
     def result(self, size: int = SIZE) -> Image.Image:
@@ -334,31 +461,86 @@ class Vector:
         self.count += 1
         return f"{prefix}{self.count}"
 
-    def _paint(self, paint) -> str:
-        if not isinstance(paint, Gradient):
-            return hex_color(paint)
+    def _paint(self, paint) -> tuple[str, bool]:
+        """The paint as an SVG fill value, and whether it is fully opaque."""
+        if not isinstance(paint, (Gradient, RadialGradient)):
+            return hex_color(paint), True
         gradient_id, s = self._id("gradient"), self.size
-        stops = "".join(f'<stop offset="{t:g}" stop-color="{hex_color(color)}"/>' for t, color in paint.stops)
-        self.defs.append(f'<linearGradient id="{gradient_id}" gradientUnits="userSpaceOnUse" '
-                         f'x1="{paint.start[0] * s:.1f}" y1="{paint.start[1] * s:.1f}" '
-                         f'x2="{paint.end[0] * s:.1f}" y2="{paint.end[1] * s:.1f}">{stops}</linearGradient>')
-        return f"url(#{gradient_id})"
+        stops = "".join(f'<stop offset="{t:g}" stop-color="{hex_color(color)}"{self._opacity("stop-opacity", color)}/>'
+                        for t, color in paint.stops)
+        if isinstance(paint, Gradient):
+            self.defs.append(f'<linearGradient id="{gradient_id}" gradientUnits="userSpaceOnUse" '
+                             f'x1="{paint.start[0] * s:.1f}" y1="{paint.start[1] * s:.1f}" '
+                             f'x2="{paint.end[0] * s:.1f}" y2="{paint.end[1] * s:.1f}">{stops}</linearGradient>')
+        else:
+            self.defs.append(f'<radialGradient id="{gradient_id}" gradientUnits="userSpaceOnUse" '
+                             f'cx="{paint.center[0] * s:.1f}" cy="{paint.center[1] * s:.1f}" r="{paint.radius * s:.1f}">'
+                             f'{stops}</radialGradient>')
+        return f"url(#{gradient_id})", all(rgba(color)[3] == 255 for _, color in paint.stops)
+
+    @staticmethod
+    def _opacity(attribute: str, color) -> str:
+        alpha = rgba(color)[3]
+        return "" if alpha == 255 else f' {attribute}="{alpha / 255:.3g}"'
+
+    @staticmethod
+    def _rule(path: Path, attribute: str = "fill-rule") -> str:
+        return f' {attribute}="evenodd"' if path.evenodd else ""
 
     def _clip(self, clip: Path | None) -> str:
         if clip is None:
             return ""
         clip_id = self._id("clip")
-        self.defs.append(f'<clipPath id="{clip_id}"><path d="{clip.svg(self.size)}"/></clipPath>')
+        self.defs.append(f'<clipPath id="{clip_id}"><path d="{clip.svg(self.size)}"{self._rule(clip, "clip-rule")}/></clipPath>')
         return f' clip-path="url(#{clip_id})"'
 
     def background(self, paint) -> None:
-        self.body.append(f'<rect width="{self.size}" height="{self.size}" fill="{self._paint(paint)}"/>')
+        self.body.append(f'<rect width="{self.size}" height="{self.size}" fill="{self._paint(paint)[0]}"/>')
 
     def fill(self, path: Path, paint, clip: Path | None = None) -> None:
-        # A hairline stroke in the same paint hides anti-aliasing seams between facets.
-        paint = self._paint(paint)
-        self.body.append(f'<path d="{path.svg(self.size)}" fill="{paint}" stroke="{paint}" stroke-width="1" '
-                         f'stroke-linejoin="round"{self._clip(clip)}/>')
+        if isinstance(paint, ConicGradient):
+            self._conic(path, paint, clip)
+            return
+        value, opaque = self._paint(paint)
+        attributes = f'fill="{value}"{self._rule(path)}'
+        if not isinstance(paint, (Gradient, RadialGradient)):
+            attributes += self._opacity("fill-opacity", paint)
+            opaque = rgba(paint)[3] == 255
+        if opaque:
+            # A hairline stroke in the same paint hides anti-aliasing seams between facets.
+            attributes += f' stroke="{value}" stroke-width="1" stroke-linejoin="round"'
+        self.body.append(f'<path d="{path.svg(self.size)}" {attributes}{self._clip(clip)}/>')
+
+    def stroke(self, path: Path, width: float, paint, clip: Path | None = None) -> None:
+        if isinstance(paint, ConicGradient):
+            # Wedges clipped to the outline's band: the band as an even-odd path isn't exact, so
+            # clip the wedges to a mask of the stroked outline.
+            mask_id = self._id("mask")
+            self.defs.append(f'<mask id="{mask_id}" maskUnits="userSpaceOnUse" x="0" y="0" width="{self.size}" '
+                             f'height="{self.size}"><path d="{path.svg(self.size)}" fill="none" stroke="#FFFFFF" '
+                             f'stroke-width="{width * self.size:.1f}" stroke-linejoin="round"/></mask>')
+            before = len(self.body)
+            self._conic(rect(0, 0, 1, 1), paint, clip)
+            self.body[before] = f'<g mask="url(#{mask_id})">{self.body[before]}</g>'
+            return
+        value, _ = self._paint(paint)
+        opacity = "" if isinstance(paint, (Gradient, RadialGradient)) else self._opacity("stroke-opacity", paint)
+        self.body.append(f'<path d="{path.svg(self.size)}" fill="none" stroke="{value}"{opacity} '
+                         f'stroke-width="{width * self.size:.1f}" stroke-linejoin="round"{self._clip(clip)}/>')
+
+    def _conic(self, path: Path, paint: ConicGradient, clip: Path | None) -> None:
+        """SVG has no sweep gradient: thin wedges in the path's clip, 2 degrees each."""
+        s, n = self.size, 180
+        cx, cy = paint.center[0] * s, paint.center[1] * s
+        wedges = []
+        for i in range(n):
+            a0, a1 = (math.radians(paint.angle + 360 * (i + d) / n) for d in (-0.3, 1.3))
+            color = color_at(paint.stops, (i + 0.5) / n)
+            wedges.append(f'<path d="M{cx:.1f} {cy:.1f}L{cx + 2 * s * math.cos(a0):.1f} {cy + 2 * s * math.sin(a0):.1f}'
+                          f'L{cx + 2 * s * math.cos(a1):.1f} {cy + 2 * s * math.sin(a1):.1f}Z" '
+                          f'fill="{hex_color(color)}"{self._opacity("fill-opacity", color)}/>')
+        group = f'<g{self._clip(path)}>' + "".join(wedges) + "</g>"
+        self.body.append(group if clip is None else f"<g{self._clip(clip)}>{group}</g>")
 
     def glow(self, center, radius: float, color, alpha: float, clip: Path | None = None) -> None:
         glow_id, s = self._id("glow"), self.size
@@ -368,12 +550,14 @@ class Vector:
         self.body.append(f'<circle cx="{center[0] * s:.1f}" cy="{center[1] * s:.1f}" r="{radius * s:.1f}" '
                          f'fill="url(#{glow_id})"{self._clip(clip)}/>')
 
-    def shadow(self, path: Path, offset, blur: float, color, alpha: float) -> None:
+    def shadow(self, path: Path, offset, blur: float, color, alpha: float, clip: Path | None = None) -> None:
         filter_id = self._id("blur")
         self.defs.append(f'<filter id="{filter_id}" x="-50%" y="-50%" width="200%" height="200%">'
                          f'<feGaussianBlur stdDeviation="{blur * self.size:.1f}"/></filter>')
-        self.body.append(f'<path d="{path.moved(*offset).svg(self.size)}" fill="{hex_color(color)}" '
-                         f'fill-opacity="{alpha:g}" filter="url(#{filter_id})"/>')
+        blurred = (f'<path d="{path.moved(*offset).svg(self.size)}" fill="{hex_color(color)}"{self._rule(path)} '
+                   f'fill-opacity="{alpha:g}" filter="url(#{filter_id})"/>')
+        # Clip a group around the blurred shape, so the blur happens before the clip.
+        self.body.append(blurred if clip is None else f"<g{self._clip(clip)}>{blurred}</g>")
 
     def document(self, comment: str) -> str:
         lines = [f'<svg xmlns="http://www.w3.org/2000/svg" width="{self.size}" height="{self.size}" '
@@ -503,14 +687,141 @@ def draw_glow_gem(c, variant: str) -> None:
     c.fill(sparkle((0.915, 0.255), 0.024, inner=0.26), WHITE)
 
 
+def glint(c, center, r: float, glow: float) -> None:
+    """A crisp white four-point sparkle with its own soft light."""
+    c.glow(center, r * 2.0, WHITE, glow)
+    c.shadow(sparkle(center, r * 1.25, inner=0.3), (0, 0), r * 0.14, WHITE, 0.6)
+    c.fill(sparkle(center, r, inner=0.2), WHITE)
+
+
+LENS_CORE = [(0, WHITE), (0.18, (255, 246, 250)), (0.34, (255, 190, 222)), (0.5, (255, 92, 164)), (0.68, (190, 30, 130)),
+             (0.86, (100, 18, 96)), (1, (74, 14, 80))]
+LENS_CORE_GRAY = [(0, WHITE), (0.18, (252, 252, 252)), (0.34, (236, 236, 236)), (0.5, (200, 200, 200)),
+                  (0.68, (140, 140, 140)), (0.86, (84, 84, 84)), (1, (64, 64, 64))]
+# The ring's pastel sweep: pink, lilac, soft aqua, peach and back to pink.
+LENS_RING = [(0, (255, 168, 214)), (0.25, (196, 166, 255)), (0.5, (140, 230, 236)), (0.75, (255, 200, 160)),
+             (1, (255, 168, 214))]
+LENS_RING_GRAY = [(0, (222, 222, 222)), (0.25, (206, 206, 206)), (0.5, (236, 236, 236)), (0.75, (226, 226, 226)),
+                  (1, (222, 222, 222))]
+
+
+def aura_tile(c) -> None:
+    """The Aura tile behind D and E: deep plum at the top left through berry and
+    rose to warm peach at the bottom right, with a few out-of-focus lights."""
+    c.background(Gradient([(0, (34, 10, 62)), (0.35, (88, 24, 128)), (0.65, (180, 38, 124)), (0.88, (244, 92, 150)),
+                           (1, (255, 160, 150))], (0, 0), (1, 1)))
+    c.glow((1, 1), 0.5, (255, 178, 140), 0.5)
+    for (x, y), r, color, alpha in (((0.14, 0.6), 0.07, AURA_LILAC, 0.22), ((0.86, 0.66), 0.09, (255, 180, 200), 0.2),
+                                    ((0.66, 0.9), 0.05, (255, 200, 180), 0.22), ((0.37, 0.1), 0.045, AURA_LILAC, 0.18)):
+        c.shadow(circle((x, y), r), (0, 0), 0.006, color, alpha)
+
+
+def draw_aura_lens(c, variant: str) -> None:
+    """D, "Aura Lens": a liquid-glass lens whose core glows white-hot through
+    blush to magenta, in a thin iridescent ring, with a sparkle glinting on its
+    rim. The lens = the camera and the photo; the glow = "Make it glow"."""
+    gray = variant == "tinted"
+    center, outer, inner = (0.5, 0.5), 0.268, 0.237
+    cx, cy = center
+    if variant == "default":
+        aura_tile(c)
+        halo, bloom, shade = (255, 176, 214), (255, 80, 160), (60, 10, 70)
+    elif variant == "dark":
+        dark_tile(c)
+        halo, bloom, shade = (255, 176, 214), AURA_PINK, BLACK
+    else:
+        c.background(BLACK)
+        halo, bloom, shade = (200, 200, 200), (130, 130, 130), BLACK
+    lens = circle(center, outer)
+    glass = circle(center, inner)
+    rim = ring(center, outer, inner)
+    # Light spilling past the ring: a wide bloom and a tight halo.
+    c.shadow(lens, (0, 0), 0.09, bloom, 0.75)
+    c.shadow(lens, (0, 0), 0.025, halo, 0.85)
+    # The ring: an iridescent sweep with a bright edge, like a glass tube lit from the top left.
+    c.fill(rim, ConicGradient(LENS_RING_GRAY if gray else LENS_RING, center, angle=200))
+    c.fill(rim, Gradient([(0, WHITE + (150,)), (0.5, WHITE + (0,))], (cx - outer, cy - outer), (cx + outer, cy + outer)))
+    c.fill(even_odd(lens, circle((cx + 0.005, cy + 0.006), outer)), WHITE + (230,), clip=lens)
+    c.fill(even_odd(circle(center, inner + 0.006), circle((cx - 0.004, cy - 0.005), inner + 0.006)), WHITE + (110,), clip=rim)
+    # The glass: a white-hot core through blush and magenta into deep glass, warmer at the bottom right.
+    c.fill(glass, RadialGradient(LENS_CORE_GRAY if gray else LENS_CORE, center, inner))
+    c.glow(center, inner * 0.6, WHITE, 0.3, clip=glass)
+    if not gray:
+        c.glow((cx + 0.05, cy + 0.06), 0.14, AURA_PEACH, 0.4, clip=glass)
+        # A lens coating's faint lilac and aqua reflection.
+        c.shadow(arc_band(center, inner * 0.84, inner * 0.7, 120, 175), (0, 0), 0.012, (150, 220, 255), 0.35, clip=glass)
+    # Where the ring overhangs the glass, and faint light gathering at the bottom right.
+    c.shadow(even_odd(rect(-1, -1, 2, 2), glass), (0, 0.008), 0.01, shade, 0.5, clip=glass)
+    c.shadow(even_odd(glass, circle((cx - 0.008, cy - 0.01), inner)), (0, 0), 0.004, (255, 214, 200), 0.5, clip=glass)
+    # A slim upper-left crescent highlight, and a small, bright reflection at the bottom right.
+    sheen = circle(center, inner * 0.94)
+    c.fill(even_odd(sheen, circle((cx + 0.02, cy + 0.024), inner * 0.95)),
+           Gradient([(0, WHITE + (225,)), (1, WHITE + (0,))], (cx - 0.15, cy - 0.15), (cx - 0.02, cy - 0.02)), clip=sheen)
+    spot = circle(center, inner * 0.86)
+    c.fill(even_odd(spot, circle((cx - 0.045, cy - 0.045), inner * 0.86 + 0.054)), WHITE + (215,), clip=spot)
+    glint(c, (cx - 0.19, cy - 0.19), 0.095, 0.55)
+    glint(c, (0.8, 0.8), 0.042, 0.45)
+    glint(c, (0.215, 0.79), 0.026, 0.4)
+
+
+
+
+HEART_CORE = [(0, WHITE), (0.16, (255, 244, 249)), (0.34, (255, 190, 222)), (0.56, (255, 96, 166)), (0.78, (200, 34, 136)),
+              (1, (120, 20, 100))]
+HEART_CORE_GRAY = [(0, WHITE), (0.16, (248, 248, 248)), (0.34, (226, 226, 226)), (0.56, (188, 188, 188)),
+                   (0.78, (140, 140, 140)), (1, (100, 100, 100))]
+
+
+def draw_holo_heart(c, variant: str) -> None:
+    """E, "Holo Heart": a puffy glass heart glowing white-hot from within, edged
+    with an iridescent rim, with a sparkle on its lobe. The heart = the app's
+    success burst; the glow and rim = the effects."""
+    gray = variant == "tinted"
+    center, width = (0.5, 0.515), 0.64
+    if variant == "default":
+        aura_tile(c)
+        halo, bloom, deep = (255, 186, 220), (255, 80, 160), (110, 14, 96)
+    elif variant == "dark":
+        dark_tile(c)
+        halo, bloom, deep = (255, 186, 220), AURA_PINK, (110, 14, 96)
+    else:
+        c.background(BLACK)
+        halo, bloom, deep = (200, 200, 200), (130, 130, 130), (70, 70, 70)
+    heart = puffy_heart(center, width)
+    outside = even_odd(rect(-1, -1, 2, 2), heart)
+    c.shadow(heart, (0, 0), 0.09, bloom, 0.75)
+    c.shadow(heart, (0, 0), 0.022, halo, 0.85)
+    glow_at = (0.5, 0.47)
+    c.fill(heart, RadialGradient(HEART_CORE_GRAY if gray else HEART_CORE, glow_at, 0.36))
+    c.glow(glow_at, 0.2, WHITE, 0.22, clip=heart)
+    if not gray:
+        c.glow((0.6, 0.66), 0.16, AURA_PEACH, 0.4, clip=heart)
+    # Puffed up: deeper toward the lower-right edges.
+    c.shadow(outside, (0.01, 0.016), 0.03, deep, 0.6, clip=heart)
+    # The iridescent rim, brightest at the top left.
+    c.stroke(heart, 0.026, ConicGradient(LENS_RING_GRAY if gray else LENS_RING, glow_at, angle=200), clip=heart)
+    c.stroke(heart, 0.026, Gradient([(0, WHITE + (170,)), (0.5, WHITE + (0,))], (0.2, 0.2), (0.62, 0.62)), clip=heart)
+    # Crescent highlights on both lobes, and a small reflection low on the right.
+    for lobe, r, offset, alpha in (((0.342, 0.39), 0.13, 0.03, 225), ((0.658, 0.39), 0.13, 0.022, 150)):
+        shine = circle(lobe, r)
+        c.fill(even_odd(shine, circle((lobe[0] + offset * 0.7, lobe[1] + offset), r * 1.02)),
+               Gradient([(0, WHITE + (alpha,)), (1, WHITE + (0,))], (lobe[0] - 0.1, lobe[1] - 0.1), lobe),
+               clip=even_odd(shine, outside))
+    glint(c, (0.255, 0.33), 0.088, 0.55)
+    glint(c, (0.8, 0.8), 0.04, 0.45)
+    glint(c, (0.215, 0.79), 0.026, 0.4)
+
+
 CONCEPTS = {
     "a": ("Spark Cam", draw_spark_cam),
     "b": ("Heart Print", draw_heart_print),
     "c": ("Glow Gem", draw_glow_gem),
+    "d": ("Aura Lens", draw_aura_lens),
+    "e": ("Holo Heart", draw_holo_heart),
 }
 # The app's icon. `--concept` overrides it for one run; change it here to switch
 # for good (the concept sheets mark this one as chosen).
-CHOSEN = "c"
+CHOSEN = "d"
 
 
 def icon(concept: str, variant: str = "default") -> Image.Image:
@@ -659,9 +970,10 @@ def wallpaper(width: int, height: int, top: tuple, bottom: tuple, glow: tuple) -
 
 
 def concepts_sheet(icons: dict[str, dict[str, Image.Image]]) -> Image.Image:
-    """The three concepts on a light and a dark Home Screen, then their dark
-    and tinted versions."""
-    width, column = 1320, 440
+    """The concepts on a light and a dark Home Screen, then their dark and
+    tinted versions."""
+    column = 440
+    width = column * len(CONCEPTS)
     light = wallpaper(width, 430, (252, 238, 246), (234, 226, 250), WHITE)
     dark = wallpaper(width, 760, (40, 30, 52), (10, 10, 14), (110, 60, 120))
     sheet = Image.new("RGBA", (width, 430 + 760), WHITE + (255,))

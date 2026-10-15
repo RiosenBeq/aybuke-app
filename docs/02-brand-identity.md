@@ -11,7 +11,7 @@
 | **Positioning** | The AI photo studio made for girls who glow: trend-ready, true-to-you photos, with honest pricing and private-by-default face data. |
 | **Palette** | "Blush": blush pink `#F7C1D9` and petal `#F8E0EA` with ink `#121212`, charcoal `#24272A`, paper `#F8F8F6` and white; light-first. Decorative "Aura" accents (pink `#FF5CA1`, lilac `#A78BFA`, peach `#FFAA78`, butter `#FFDE6E`, mint `#78E1CD`) for the icon, share cards and template art only |
 | **Display type** | Poppins (SIL OFL 1.1) + New York Italic accents + SF Pro |
-| **Icon** | "Glow Gem" — a pink heart cut like a gem (crisp facets, a sharp tip and notch) with a white glint, on a lilac-to-pink Aura tile with two sparkles |
+| **Icon** | "Aura Lens" — a liquid-glass lens glowing white-hot through blush to magenta in a thin iridescent ring, with a sparkle on its rim, on a deep plum-to-peach Aura tile |
 
 Full evidence: [research/brand-and-design.md](research/brand-and-design.md).
 
@@ -140,33 +140,35 @@ Round shapes stay round where roundness is the meaning: icon buttons, the shutte
 
 ---
 
-## 4. App icon — "Glow Gem"
+## 4. App icon — "Aura Lens"
 
 ![App icon](assets/brand/app-icon-1024.png)
 
-**The idea:** a pink heart cut like a gem, lit from the top left, with a white glint on its glowing table and two sparkles beside it, on a lilac-to-pink Aura tile. The heart and sparkles are the app's success moment (a burst of hearts and sparkles); facets catching the light say "Make it glow". It replaced "Glow Print" (a tilted white print with a sparkle on plum) on 14 October 2026, when the owner asked for a bolder icon with sharper, crisper corners. Before that it was "Sunrise Split" (a before/after disc).
-- **Crisp by construction:** straight facets, a needle-sharp tip and notch, and the app's four-point sparkle (`SparkleShape`). Every shape has a hard edge; soft light and shadow stay on the tile and inside the gem's table.
-- **One bold silhouette:** it still reads as a heart at 29 pt, at 16 px on the Mac and as a favicon.
-- **Stands out:** a light pastel tile with a pink jewel, among the dark icons common in AI photo apps, on light and dark Home Screens.
-- **Variants:** dark (the gem glowing on ink with lilac and pink light) and tinted (a bright grayscale gem on black, so the tint reads strongly) for iOS 18+ Home Screens, and every Mac size on Apple's macOS grid.
-- It follows Apple's icon guidance: one centred shape, a soft gradient background, no text and no photo.
+**The idea:** a liquid-glass lens whose core glows white-hot through blush to magenta, set in a thin iridescent ring (pink, lilac, soft aqua, peach), with a white sparkle glinting on its rim and two small ones beside it. The tile is a deep Aura gradient, plum at the top left through berry and rose to warm peach at the bottom right, with a few out-of-focus lights. The lens is the camera and the photo (Retro Cam, Photo Booth, every edit); the glow is "Make it glow"; the sparkle is the app's AI glyph and success moment. It replaced "Glow Gem" (a faceted pink heart) on 15 October 2026, when the owner asked for something new and more aesthetic, "with effects". Before that it was "Glow Print" and, first, "Sunrise Split".
+- **Glass and light:** a specular crescent at the top left, a small bright reflection and faint rim light at the bottom right, an inner shadow where the ring meets the glass, and a soft pink bloom and halo around the lens. The effects are layered over exact paths, so every edge stays crisp.
+- **Reads small:** a bright core in a ring with a sparkle, at 29 pt, at 16 px on the Mac and as a favicon; the deep glass around the core keeps the contrast.
+- **Not Instagram:** a filled, glowing lens rather than an outline camera, no dot in the upper right, and a peach corner rather than orange and yellow.
+- **Variants:** dark (the lens glowing on ink with lilac and pink light) and tinted (a white-hot core and a bright ring on black, so the tint reads strongly) for iOS 18+ Home Screens, and every Mac size on Apple's macOS grid.
+- It follows Apple's icon guidance: one centred shape, a gradient background, no text and no photo, and nothing important within 6% of the edges.
 
-**Concepts** — all three, also at 60 and 29 px and with their dark and tinted versions, are in [`brand/icon-concepts/`](brand/icon-concepts/concepts.png):
+**Concepts** — all five, also at 60 and 29 px and with their dark and tinted versions, are in [`brand/icon-concepts/`](brand/icon-concepts/concepts.png):
 
 ![Icon concepts](brand/icon-concepts/concepts.png)
 
 - **A, "Spark Cam":** a white digicam whose lens glows pink around a sparkle. Clear, but literal: it reads as a camera app, and camera glyphs are everywhere.
 - **B, "Heart Print":** a sharp-cornered white print whose photo is a heart glowing pink on plum. Meaningful, but close to the retired Glow Print.
-- **C, "Glow Gem":** chosen. The most instantly appealing, the most distinctive, and the strongest silhouette at small sizes.
+- **C, "Glow Gem":** the icon from 14 to 15 October 2026. Appealing, with a strong silhouette, but a flat jewel on a pastel tile; the owner wanted more effects.
+- **D, "Aura Lens":** chosen. New, says camera and glow at once, and keeps the strongest contrast at small sizes.
+- **E, "Holo Heart":** the same glass and glow as a puffy heart with an iridescent rim. The cutest and instantly a heart, but close to the hearts the icon has had; the alternative if the owner would rather keep a heart.
 
 **Files**
-- Everything is drawn by [`scripts/render-brand-assets.py`](../scripts/render-brand-assets.py) from exact paths at 4x: `AppIcon.appiconset` (iOS default, dark and tinted at 1024 px; Mac 16–1024 px), `BrandIcon` (invite card), `web/assets/icon.png` (favicon), [`assets/brand/app-icon-1024.png`](assets/brand/app-icon-1024.png), the brand board and a vector copy, [`assets/brand/app-icon.svg`](assets/brand/app-icon.svg).
-- `--concept a` or `--concept b` switches every output to another concept; `--concept-sheets` redraws the concept images.
+- Everything is drawn by [`scripts/render-brand-assets.py`](../scripts/render-brand-assets.py) with Pillow alone (no image generator): exact paths at 4x, with glows, soft light and conic (iridescent) gradients layered over them. It writes `AppIcon.appiconset` (iOS default, dark and tinted at 1024 px; Mac 16–1024 px), `BrandIcon` (invite card), `web/assets/icon.png` (favicon), [`assets/brand/app-icon-1024.png`](assets/brand/app-icon-1024.png), the brand board and a vector copy, [`assets/brand/app-icon.svg`](assets/brand/app-icon.svg) (the ring's sweep as thin wedges, since SVG has no conic gradient).
+- `--concept a` … `--concept e` switches every output to another concept; `--concept-sheets` redraws the concept images.
 - The link preview `web/assets/og-image.png` shows the icon too; `scripts/marketing-images.py` takes it from `app-icon-1024.png`.
 
 **To do**
-- Build an **Icon Composer** `.icon` with Default / Dark / Clear / Tinted appearances (layers: tile, gem, glint and sparkles; the SVG is a start). iOS 26+ renders Liquid Glass icons, and the iOS 27 SDK is required from April 2027.
-- A/B test it against concept B with Product Page Optimization (the alternate icon has to ship in the app).
+- Build an **Icon Composer** `.icon` with Default / Dark / Clear / Tinted appearances (layers: tile, bloom, ring, glass, highlights and sparkles; the SVG is a start). iOS 26+ renders Liquid Glass icons, and the iOS 27 SDK is required from April 2027.
+- A/B test it against concept E with Product Page Optimization (the alternate icon has to ship in the app).
 
 Early research concepts (amber era): [`assets/research/icon_concepts.png`](assets/research/icon_concepts.png).
 

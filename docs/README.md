@@ -26,6 +26,6 @@
 
 **Visual assets:**
 - [`assets/brand/`](assets/brand/): icon and brand board
-- [`brand/icon-concepts/`](brand/icon-concepts/concepts.png): the three app icon concepts of October 2026 (C, "Glow Gem", is the app icon)
+- [`brand/icon-concepts/`](brand/icon-concepts/concepts.png): the five app icon concepts of October 2026 (D, "Aura Lens", is the app icon)
 - [`assets/screenshots/`](assets/screenshots/): app screens from the iOS Simulator, plus an overview image
 - [`assets/research/`](assets/research/): palette mock-ups, font specimens, icon concepts
