@@ -12,7 +12,11 @@
 //
 // The independent check is safety.ts, not this one: with ANTHROPIC_API_KEY set,
 // Claude also looks at the photo before an edit and at every result, after
-// this check has passed and with the same fail-closed rules. FAL_KEY stays
+// this check has passed and with the same fail-closed rules. On results it
+// also looks for alcohol, tobacco, vaping, drugs and weapons, which the age
+// rating says the app never shows. While it can't run, a circuit breaker
+// pauses AI for a few minutes (safety-breaker.ts) instead of letting xAI bill
+// results nobody may see. FAL_KEY stays
 // unset: fal.ai would see results, so setting it needs fal.ai listed in the
 // app's consent sheet (ios/App/Resources/AppConfig.json aiProcessors) and the
 // privacy policies first. Part of the documented safeguards for EU AI Act

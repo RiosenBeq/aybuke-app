@@ -6,7 +6,9 @@
 //                     Resend account's own address until a domain is verified there
 //
 // The mails carry counts, plans and times only: never a user id, email, token,
-// transaction id or prompt. Everything interpolated is escaped.
+// transaction id or prompt. The one exception is the daily digest's list of
+// RevenueCat App User IDs of accounts already deleted, so the owner can delete
+// those customers too (owner-digest/handler.ts). Everything interpolated is escaped.
 
 export interface Env {
   get(name: string): string | undefined;

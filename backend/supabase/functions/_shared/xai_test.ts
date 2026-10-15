@@ -4,7 +4,17 @@
 // failed answers map as before (moderation_test.ts).
 import assert from "node:assert/strict";
 import type { JobInput } from "./fal.ts";
-import { generate, isBillingError, mapError } from "./xai.ts";
+import { CHECK_DEADLINE_MS } from "./safety.ts";
+import {
+  generate,
+  isBillingError,
+  mapError,
+  MIN_REQUEST_MS,
+  REQUEST_TIMEOUT_MS,
+  requestTimeout,
+  WALL_CLOCK_MS,
+  WORK_DEADLINE_MS,
+} from "./xai.ts";
 
 const INPUT: JobInput = {
   operation: "magic_edit",
@@ -74,4 +84,57 @@ Deno.test("isBillingError: 402 always, 403 and 429 only when they say so", () =>
   assert.ok(!isBillingError(500, "out of credits"));
   const billing = mapError(402, '{"error":"content moderation unavailable"}');
   assert.ok(!billing.ok && billing.code === "provider_billing", "a 402 is billing whatever it says");
+});
+
+Deno.test("the image request ends in time to refund before Supabase's 150 s wall clock", () => {
+  assert.equal(WALL_CLOCK_MS, 150_000);
+  assert.ok(WORK_DEADLINE_MS <= WALL_CLOCK_MS - 10_000, "10 s left to store the result or refund");
+  assert.equal(REQUEST_TIMEOUT_MS, 110_000);
+  // A creation (no photo check) with the result check on, and without it.
+  assert.equal(requestTimeout(1_500, CHECK_DEADLINE_MS), 110_000);
+  assert.equal(requestTimeout(1_500, 0), 110_000);
+  // An edit whose photo check took its full 20 s: the image gets less.
+  assert.equal(requestTimeout(22_000, CHECK_DEADLINE_MS), 98_000);
+  // Whatever came before, the request and the result check end by the deadline.
+  for (let elapsed = 0; elapsed <= 120_000; elapsed += 500) {
+    for (const after of [0, CHECK_DEADLINE_MS]) {
+      const timeout = requestTimeout(elapsed, after);
+      if (timeout > 0) {
+        assert.ok(elapsed + timeout + after <= WORK_DEADLINE_MS, `${elapsed} + ${timeout} + ${after}`);
+        assert.ok(timeout >= MIN_REQUEST_MS && timeout <= REQUEST_TIMEOUT_MS);
+      }
+    }
+  }
+  // Too little left: no request at all.
+  assert.equal(requestTimeout(WORK_DEADLINE_MS - CHECK_DEADLINE_MS - MIN_REQUEST_MS + 1, CHECK_DEADLINE_MS), 0);
+  // The 180 s the app (and a poll's timeout) waits stays longer than all of it.
+  assert.ok(WORK_DEADLINE_MS < 180_000);
+});
+
+Deno.test("no time left: refunded without calling xAI; a request that hangs is cut off", async () => {
+  await withXAI(200, "{}", async (calls) => {
+    const outcome = await generate(INPUT, undefined, 0);
+    assert.ok(!outcome.ok && outcome.code === "provider_unavailable" && outcome.message.includes("refunded"));
+    assert.equal(calls.length, 0);
+  });
+
+  const realGet = Deno.env.get;
+  const realFetch = globalThis.fetch;
+  const realError = console.error;
+  Deno.env.get = (name: string) => (name === "XAI_API_KEY" ? "xai-test-key" : undefined);
+  globalThis.fetch = ((_: unknown, init?: RequestInit) =>
+    new Promise<Response>((_resolve, reject) => {
+      init?.signal?.addEventListener("abort", () => reject(new DOMException("timed out", "TimeoutError")));
+    })) as typeof fetch;
+  console.error = () => {};
+  try {
+    const started = Date.now();
+    const outcome = await generate(INPUT, undefined, 50);
+    assert.ok(!outcome.ok && outcome.code === "provider_unavailable", JSON.stringify(outcome));
+    assert.ok(Date.now() - started < 5_000);
+  } finally {
+    Deno.env.get = realGet;
+    globalThis.fetch = realFetch;
+    console.error = realError;
+  }
 });

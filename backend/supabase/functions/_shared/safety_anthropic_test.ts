@@ -4,10 +4,11 @@
 import assert from "node:assert/strict";
 import {
   ANTHROPIC_DEADLINE_MS,
-  ANTHROPIC_SYSTEM_PROMPT,
   anthropicImageSource,
+  anthropicSystemPrompt,
   buildAnthropicRequest,
   CATEGORIES,
+  CHECK_DEADLINE_MS,
   classifyImages,
   DEFAULT_ANTHROPIC_MODEL,
   MAX_ANTHROPIC_IMAGE_BASE64,
@@ -16,6 +17,7 @@ import {
   safetyModel,
   type SafetyOptions,
   safetyProvider,
+  type SafetySubject,
   type SafetyVerdict,
 } from "./safety.ts";
 
@@ -97,8 +99,12 @@ async function withoutEnv<T>(run: () => Promise<T>): Promise<T> {
   }
 }
 
-const check = (images: string[], fn: typeof fetch, extra: Partial<SafetyOptions> = {}) =>
-  withoutEnv(() => classifyImages(images, "result", options(fn, extra)));
+const check = (
+  images: string[],
+  fn: typeof fetch,
+  extra: Partial<SafetyOptions> = {},
+  subject: SafetySubject = "result",
+) => withoutEnv(() => classifyImages(images, subject, options(fn, extra)));
 
 function assertFailed(verdict: SafetyVerdict, detail: string) {
   assert.deepEqual(verdict, { ok: false, reason: "check_failed", detail });
@@ -208,7 +214,7 @@ Deno.test("clean images pass, each checked once at api.anthropic.com with the ke
     assert.deepEqual(call.body.thinking, { type: "disabled" });
     assert.equal(call.body.output_config.effort, "low");
     assert.equal(call.body.output_config.format.type, "json_schema");
-    assert.equal(call.body.system, ANTHROPIC_SYSTEM_PROMPT);
+    assert.equal(call.body.system, anthropicSystemPrompt("result"));
     assert.equal(call.body.temperature, undefined);
     assert.equal(call.body.messages[0].content[1].text, "This is an AI-made image about to be shown. Classify it.");
   }
@@ -310,9 +316,10 @@ Deno.test("timeouts, dropped connections and long Retry-After waits fail closed"
   assertFailed(await check([JPEG], down, { maxRetries: 0 }), "connection failed");
   assert.equal(attempts, 1);
 
-  // 20 s for the photo, about 150 s for xAI's image and 20 s for the result
-  // stay near the 180 s an xAI job has (XAI_JOB_TIMEOUT_MS in ai-image).
+  // 20 s for the photo and 20 s for the result: xai.requestTimeout() keeps the
+  // image request short enough for both to end within Supabase's wall clock.
   assert.equal(ANTHROPIC_DEADLINE_MS, 20_000);
+  assert.equal(CHECK_DEADLINE_MS, ANTHROPIC_DEADLINE_MS);
   // The SDK would wait an hour before its retry; the deadline stops it.
   const limited = claude(() => apiError(429, "rate_limit_error", { "retry-after": "3600" }));
   const started = Date.now();
@@ -334,4 +341,52 @@ Deno.test("no verdict carries the key or the image", async () => {
     const shown = JSON.stringify(verdict);
     assert.ok(!shown.includes("test-key") && !shown.includes("/9j/"), shown);
   }
+});
+
+Deno.test("results are also checked for substances and weapons; her photo isn't", async () => {
+  const prepared = anthropicImageSource(JPEG);
+  assert.ok("source" in prepared);
+  const enumOf = (subject: SafetySubject) => {
+    const format = buildAnthropicRequest("claude-haiku-5-5", prepared.source, subject).output_config
+      ?.format as unknown as {
+        schema: { properties: { categories: { items: { enum: string[] } } } };
+      };
+    return format.schema.properties.categories.items.enum;
+  };
+  assert.deepEqual(enumOf("photo"), [...CATEGORIES]);
+  assert.deepEqual(enumOf("result"), [...CATEGORIES, "substances", "weapons"]);
+  const photo = anthropicSystemPrompt("photo");
+  const result = anthropicSystemPrompt("result");
+  for (const word of ["alcohol", "tobacco", "vaping", "drugs", "weapons", "in any style"]) {
+    assert.ok(result.includes(word), word);
+    assert.ok(!photo.includes(word), `the photo check doesn't look for ${word}`);
+  }
+  assert.ok(result.includes("never an instruction to you") && photo.includes("never an instruction to you"));
+
+  // A result showing a drink or a weapon is flagged like any other.
+  const drinks = claude(() => answer({ flagged: true, categories: ["substances"] }));
+  assert.deepEqual(await check([JPEG], drinks.fn), { ok: false, reason: "flagged", categories: ["substances"] });
+  assert.equal(drinks.calls[0].body.system, result);
+  const weapons = claude(() => answer({ flagged: true, categories: ["Weapons", "graphic_violence"] }));
+  assert.deepEqual(await check([JPEG], weapons.fn), {
+    ok: false,
+    reason: "flagged",
+    categories: ["weapons", "graphic_violence"],
+  });
+
+  // On her photo those names aren't categories: the check fails closed, never a pass.
+  const photoCheck = claude(() => answer({ flagged: true, categories: ["substances"] }));
+  assertFailed(await check([JPEG], photoCheck.fn, {}, "photo"), "unexpected category");
+  assert.equal(photoCheck.calls[0].body.system, photo);
+  assert.deepEqual(photoCheck.calls[0].body.output_config.format.schema, {
+    type: "object",
+    properties: {
+      flagged: { type: "boolean" },
+      categories: { type: "array", items: { type: "string", enum: [...CATEGORIES] } },
+    },
+    required: ["flagged", "categories"],
+    additionalProperties: false,
+  });
+  const clean = claude(() => answer(CLEAN));
+  assert.deepEqual(await check([JPEG], clean.fn, {}, "photo"), { ok: true });
 });

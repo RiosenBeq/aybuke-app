@@ -3,7 +3,7 @@
 // with the summaries and Resend stubbed.
 import assert from "node:assert/strict";
 import type { RenderedMail } from "../_shared/owner-mail.ts";
-import { type DigestDeps, handleDigest, yesterday } from "./handler.ts";
+import { type DigestDeps, handleDigest, revenueCatSection, yesterday } from "./handler.ts";
 
 const NOW = new Date(Date.UTC(2026, 9, 15, 6, 0));
 const SECRET = "digest-secret-for-tests-0123456789";
@@ -122,4 +122,84 @@ Deno.test("the digest shows xAI's estimated balance, and dashes when it can't be
     console.warn = warn;
   }
   assert.ok(unknown.sent[0].text.includes("Left: –"));
+});
+
+const PENDING = {
+  count: 3,
+  oldest: "2026-10-12T09:30:00+00:00",
+  failed: 0,
+  app_user_ids: ["0B7C1E2A-1111-4C2B-9D3E-0123456789AB", "5F00D1E2-2222-4A1B-8C2D-ABCDEF012345"],
+};
+
+Deno.test("RevenueCat customers waiting are listed with what to do, and the line that marks them done", async () => {
+  const { value, sent } = deps({ RESEND_API_KEY: "re_test", DIGEST_SECRET: SECRET });
+  value.revenueCat = () => Promise.resolve(PENDING);
+  assert.equal((await handleDigest(call({ "x-digest-secret": SECRET }), value)).status, 200);
+  const text = sent[0].text;
+  for (
+    const line of [
+      "REVENUECAT DELETIONS (DELETED ACCOUNTS)",
+      "Waiting: 3",
+      "Waiting since: 2026-10-12",
+      "App User ID: 0B7C1E2A-1111-4C2B-9D3E-0123456789AB",
+      "App User ID: 5F00D1E2-2222-4A1B-8C2D-ABCDEF012345",
+      "And 1 more: select upper(user_id::text) from public.pending_revenuecat_deletions order by created_at;",
+      "What to do: Delete each customer in RevenueCat › Project Glowlit › Customers",
+      "Then run: select public.ops_mark_revenuecat_deleted(array['0B7C1E2A-1111-4C2B-9D3E-0123456789AB', " +
+      "'5F00D1E2-2222-4A1B-8C2D-ABCDEF012345']);",
+    ]
+  ) {
+    assert.ok(text.includes(line), line);
+  }
+  assert.ok(sent[0].html.includes("0B7C1E2A-1111-4C2B-9D3E-0123456789AB"));
+  assert.ok(!text.includes("Deleted automatically"), "no automatic pass without the key");
+});
+
+Deno.test("nothing waiting is one line; anything but an App User ID is never shown", () => {
+  const none = revenueCatSection({ count: 0, oldest: null, app_user_ids: [] });
+  assert.deepEqual(none.rows, [{ label: "Waiting", value: 0 }]);
+
+  const odd = revenueCatSection({
+    count: 2,
+    app_user_ids: ["'); drop table x; --", "<b>0B7C1E2A-1111-4C2B-9D3E-0123456789AB</b>", 42],
+  });
+  const shown = JSON.stringify(odd.rows);
+  assert.ok(!shown.includes("drop table") && !shown.includes("<b>"), shown);
+  assert.ok(!odd.rows.some((row) => row.label === "Then run"), "no line without ids to mark");
+  assert.ok(odd.rows.some((row) => row.label === "And 2 more"));
+
+  const unknown = revenueCatSection(undefined);
+  assert.deepEqual(unknown.rows, [{ label: "Waiting", value: undefined }]);
+});
+
+Deno.test("with the key, the digest deletes first, then reports what is left; it never waits long", async () => {
+  const order: string[] = [];
+  const { value, sent } = deps({ RESEND_API_KEY: "re_test", DIGEST_SECRET: SECRET });
+  value.deleteRevenueCat = () => {
+    order.push("delete");
+    return Promise.resolve({ deleted: 5, failed: 1, waiting: false });
+  };
+  value.revenueCat = () => {
+    order.push("read");
+    return Promise.resolve({ ...PENDING, count: 1, app_user_ids: PENDING.app_user_ids.slice(0, 1) });
+  };
+  assert.equal((await handleDigest(call({ "x-digest-secret": SECRET }), value)).status, 200);
+  assert.deepEqual(order, ["delete", "read"]);
+  assert.ok(sent[0].text.includes("Deleted automatically now · failed: 5 · 1"));
+  assert.ok(sent[0].text.includes("Waiting: 1"));
+
+  // RevenueCat hangs: the digest goes out anyway, the rest stays queued.
+  const slow = deps({ RESEND_API_KEY: "re_test", DIGEST_SECRET: SECRET });
+  slow.value.deleteRevenueCat = () => new Promise(() => {});
+  slow.value.revenueCatWaitMs = 20;
+  slow.value.revenueCat = () => Promise.reject(new Error("db down"));
+  const warn = console.warn;
+  console.warn = () => {};
+  try {
+    assert.equal((await handleDigest(call({ "x-digest-secret": SECRET }), slow.value)).status, 200);
+  } finally {
+    console.warn = warn;
+  }
+  assert.ok(slow.sent[0].text.includes("Waiting: –"));
+  assert.ok(!slow.sent[0].text.includes("Deleted automatically"));
 });

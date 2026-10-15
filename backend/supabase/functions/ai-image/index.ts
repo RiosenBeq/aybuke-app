@@ -28,11 +28,14 @@
 // (_shared/provider-alerts.ts). Every result passes the output check
 // (moderation.ts) and, when it's on, the independent check (safety.ts: Claude
 // with ANTHROPIC_API_KEY, or an xAI model with XAI_SAFETY_MODEL; it also checks
-// the photo before an edit), or is blocked and refunded, and a flagged result
-// counts as a strike. The poll that returns the results records the delivery;
-// a DELETE on a delivered job confirms the app has the images and clears them
-// right away. Results the app never received are refunded (cancel_job(),
-// settle_unconfirmed(), sweep_jobs()).
+// the photo before an edit, and results for alcohol, tobacco, vaping, drugs and
+// weapons too), or is blocked and refunded, and a flagged result counts as a
+// strike. Checks that can't run trip a circuit breaker that pauses AI for a few
+// minutes (safety-breaker.ts), and an xAI job's work ends within Supabase's
+// 150 s wall clock (xai.requestTimeout()). The poll that returns the results
+// records the delivery; a DELETE on a delivered job confirms the app has the
+// images and clears them right away. Results the app never received are
+// refunded (cancel_job(), settle_unconfirmed(), sweep_jobs()).
 import type { SupabaseClient } from "npm:@supabase/supabase-js@2.117.3";
 import { admissionError, type AdmitResult } from "../_shared/admission.ts";
 import { type EntitlementStatus, type InstallProof, resolveEntitlement, verifyInstall } from "../_shared/apple.ts";
@@ -53,11 +56,14 @@ import { EDIT_GUARD, evaluatePrompt, type Verdict } from "../_shared/policy.ts";
 import { checkProviderBudget, pauseForProviderBilling } from "../_shared/provider-alerts.ts";
 import {
   API_KEY_SECRET,
+  CHECK_DEADLINE_MS,
   classifyImages,
+  resultCountsAsStrike,
   safetyConfig,
   type SafetySubject,
   type SafetyVerdict,
 } from "../_shared/safety.ts";
+import { noteSafetyCheckError } from "../_shared/safety-breaker.ts";
 import { PRO_STYLES, templateRecipe } from "../_shared/templates.ts";
 import * as xai from "../_shared/xai.ts";
 import { holdWhilePending, isPending, waitSeconds } from "./long-poll.ts";
@@ -105,6 +111,8 @@ const safety = safetyConfig();
 console.info(`output check in force: ${outputCheck()}${safety ? ` + ${safety.provider}:${safety.model}` : ""}`);
 
 Deno.serve(async (req) => {
+  // The wall clock that ends the function (background work included) runs from here.
+  const started = Date.now();
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
   try {
     const db = serviceClient();
@@ -116,7 +124,7 @@ Deno.serve(async (req) => {
       case "POST": {
         const entitlement = await resolveEntitlement(db, user.id, req.headers.get("x-entitlement-jws"));
         const install = await verifyInstall(req.headers.get("x-app-transaction"));
-        return await createJob(db, user.id, entitlement, install, clientIp(req.headers), req);
+        return await createJob(db, user.id, entitlement, install, clientIp(req.headers), req, started);
       }
       case "GET": {
         if (jobId) return await pollJob(db, user.id, jobId, waitSeconds(url.searchParams.get("wait")), req.signal);
@@ -197,6 +205,7 @@ async function createJob(
   install: InstallProof,
   ip: string | undefined,
   req: Request,
+  started: number,
 ): Promise<Response> {
   const body = await readBody(req);
   const isPro = entitlement.isPro;
@@ -292,7 +301,7 @@ async function createJob(
     isPro,
   };
   if (useXAI) {
-    background(runXAI(db, jobId, input, await xai.userTag(userId)));
+    background(runXAI(db, jobId, input, await xai.userTag(userId), started));
     return json({ job_id: jobId, status: "queued", credits_remaining: admitted.credits_remaining }, 202);
   }
 
@@ -316,13 +325,25 @@ async function createJob(
   return json({ job_id: jobId, status: "queued", credits_remaining: admitted.credits_remaining }, 202);
 }
 
-/** xAI answers in one request: mark the job processing, run it, keep the outcome. */
-async function runXAI(db: SupabaseClient, jobId: string, input: fal.JobInput, userTag: string): Promise<void> {
+/**
+ * xAI answers in one request: mark the job processing, run it, keep the outcome.
+ * The image request gets what is left of the work deadline after the photo
+ * check, less the result check's time, so even a request that hangs ends in
+ * time to fail and refund the job before the function is stopped.
+ */
+async function runXAI(
+  db: SupabaseClient,
+  jobId: string,
+  input: fal.JobInput,
+  userTag: string,
+  started: number,
+): Promise<void> {
   try {
     await db.from("jobs").update({ status: "processing", updated_at: new Date().toISOString() })
       .eq("id", jobId).eq("status", "queued");
     if (!await photoPassesSafetyCheck(db, jobId, input)) return;
-    await finish(db, jobId, await xai.generate(input, userTag));
+    const timeout = xai.requestTimeout(Date.now() - started, safetyConfig() ? CHECK_DEADLINE_MS : 0);
+    await finish(db, jobId, await xai.generate(input, userTag, timeout), input.operation !== "text_to_image");
   } catch (error) {
     console.error("xai job failed", error);
     await failJob(db, jobId, "provider_failed", "This creation failed. Your credit was refunded.");
@@ -370,6 +391,7 @@ async function photoPassesSafetyCheck(db: SupabaseClient, jobId: string, input: 
     // Its own code: no result exists yet, so the output check's "this result
     // wasn't shown" (safety_check_failed) would be the wrong thing to tell her.
     await failJob(db, jobId, "photo_check_failed", PHOTO_CHECK_FAILED);
+    await noteSafetyCheckError(db, verdict);
   }
   return false;
 }
@@ -426,7 +448,7 @@ async function advance(db: SupabaseClient, job: JobRow): Promise<void> {
   }
   if (state !== "COMPLETED") return;
 
-  await finish(db, job.id, await fal.result(job.response_url));
+  await finish(db, job.id, await fal.result(job.response_url), job.operation !== "text_to_image");
 }
 
 const BLOCKED_RESULT = "This result was blocked by our safety filters. Your credit was refunded.";
@@ -437,15 +459,21 @@ const PHOTO_CHECK_FAILED = "We couldn't check this photo, so we didn't edit it. 
  * Stores a provider's outcome, then looks after the provider's credit
  * (provider-alerts.ts): a billing refusal pauses AI and tells the owner, and
  * a job the provider billed checks the estimated balance in the background.
+ * `fromPhoto`: the job edits her photo (every operation but text_to_image).
  */
-async function finish(db: SupabaseClient, jobId: string, outcome: fal.ResultOutcome): Promise<void> {
-  await store(db, jobId, outcome);
+async function finish(
+  db: SupabaseClient,
+  jobId: string,
+  outcome: fal.ResultOutcome,
+  fromPhoto: boolean,
+): Promise<void> {
+  await store(db, jobId, outcome, fromPhoto);
   if (!outcome.ok && outcome.code === "provider_billing") await pauseForProviderBilling(db);
   else if (outcome.ok || outcome.code === "content_blocked") runInBackground(checkProviderBudget(db));
 }
 
 /** Stores a provider's outcome: results (after the output safety checks) or a refund. */
-async function store(db: SupabaseClient, jobId: string, outcome: fal.ResultOutcome): Promise<void> {
+async function store(db: SupabaseClient, jobId: string, outcome: fal.ResultOutcome, fromPhoto: boolean): Promise<void> {
   if (!outcome.ok) {
     // The provider's own moderation withheld it: a strike, like a flag below.
     if (outcome.code === "content_blocked") await flagJob(db, jobId, outcome.message, "provider_moderation");
@@ -467,9 +495,15 @@ async function store(db: SupabaseClient, jobId: string, outcome: fal.ResultOutco
   );
   if (second && !second.ok) {
     console.warn(`safety model blocked job ${jobId}:`, second.reason === "flagged" ? second.categories : second.detail);
-    if (second.reason === "flagged") {
+    if (second.reason !== "flagged") {
+      await failJob(db, jobId, "safety_check_failed", SAFETY_CHECK_FAILED);
+      await noteSafetyCheckError(db, second);
+    } else if (resultCountsAsStrike(second.categories, fromPhoto)) {
       await flagJob(db, jobId, BLOCKED_RESULT, second.categories.join(",") || "safety_model");
-    } else await failJob(db, jobId, "safety_check_failed", SAFETY_CHECK_FAILED);
+    } else {
+      // Only substances or weapons, in an edit of her photo: blocked and refunded, no strike.
+      await failJob(db, jobId, "content_blocked", BLOCKED_RESULT);
+    }
     return;
   }
   await db.from("jobs")

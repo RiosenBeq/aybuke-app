@@ -95,8 +95,40 @@ const BILLING: Outcome = {
   message: "The AI service is busy. Your credit was refunded.",
 };
 
+/**
+ * Supabase's Free plan stops a function 150 s after its request arrived,
+ * background work included, so a job cut off there was never failed or
+ * refunded by the function (only later, by the poll's 180 s timeout or
+ * sweep_jobs()). Everything a job does ends by WORK_DEADLINE_MS, counted from
+ * the request's arrival, leaving 10 s to store the result or fail and refund it.
+ */
+export const WALL_CLOCK_MS = 150_000;
+export const WORK_DEADLINE_MS = 140_000;
+/** The most one image request may take: the photo check, if any, comes first and the result check after it. */
+export const REQUEST_TIMEOUT_MS = 110_000;
+/** Never less than this: a request that can't get it fails at once and is refunded. */
+export const MIN_REQUEST_MS = 10_000;
+
+/**
+ * How long the image request may take when the job's work has already run
+ * `elapsedMs` since the request arrived and `afterMs` must stay free for the
+ * result check (safety.CHECK_DEADLINE_MS with the check on, else 0). Zero when
+ * less than MIN_REQUEST_MS is left: then the request isn't sent.
+ */
+export function requestTimeout(elapsedMs: number, afterMs: number): number {
+  const left = Math.min(REQUEST_TIMEOUT_MS, WORK_DEADLINE_MS - Math.max(0, elapsedMs) - Math.max(0, afterMs));
+  return left >= MIN_REQUEST_MS ? Math.floor(left) : 0;
+}
+
+const UNAVAILABLE: Outcome = {
+  ok: false,
+  code: "provider_unavailable",
+  message: "The AI service is busy. Your credit was refunded.",
+};
+
 /** Runs one request. Never throws: failures come back as an outcome to refund. */
-export async function generate(input: JobInput, userTag?: string, timeoutMs = 150_000): Promise<Outcome> {
+export async function generate(input: JobInput, userTag?: string, timeoutMs = REQUEST_TIMEOUT_MS): Promise<Outcome> {
+  if (timeoutMs <= 0) return UNAVAILABLE;
   const { path, body } = buildRequest(input, userTag);
   let response: Response;
   try {
@@ -111,7 +143,7 @@ export async function generate(input: JobInput, userTag?: string, timeoutMs = 15
     });
   } catch (error) {
     console.error("xai request failed", error);
-    return { ok: false, code: "provider_unavailable", message: "The AI service is busy. Your credit was refunded." };
+    return UNAVAILABLE;
   }
   const text = await response.text().catch(() => "");
   if (!response.ok) {

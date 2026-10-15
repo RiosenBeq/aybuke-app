@@ -1,6 +1,18 @@
 // deno test _shared/
 import assert from "node:assert/strict";
-import { buildRequest, classifyImages, parseVerdict, safetyModel, safetyProvider, XAI_CHAT_URL } from "./safety.ts";
+import {
+  buildRequest,
+  CATEGORIES,
+  classifyImages,
+  isServiceFailure,
+  parseVerdict,
+  RESULT_CATEGORIES,
+  resultCountsAsStrike,
+  safetyModel,
+  safetyProvider,
+  systemPrompt,
+  XAI_CHAT_URL,
+} from "./safety.ts";
 
 const env = (values: Record<string, string>) => ({ get: (name: string) => values[name] });
 const answer = (content: unknown, extra: Record<string, unknown> = {}) => ({
@@ -143,4 +155,69 @@ Deno.test("an answer outside the schema fails closed, whatever flagged says", ()
   });
   assert.deepEqual(parseVerdict(answer([])), { ok: false, reason: "check_failed", detail: "unexpected shape" });
   assert.deepEqual(parseVerdict(answer("true")), { ok: false, reason: "check_failed", detail: "unexpected shape" });
+});
+
+Deno.test("the xAI request asks about substances and weapons on results only", () => {
+  const schemaEnum = (subject: "photo" | "result") => {
+    const body = buildRequest("grok-vision-test", image, subject) as {
+      messages: { content: unknown }[];
+      response_format: { json_schema: { schema: { properties: { categories: { items: { enum: string[] } } } } } };
+    };
+    assert.equal(body.messages[0].content, systemPrompt(subject));
+    return body.response_format.json_schema.schema.properties.categories.items.enum;
+  };
+  assert.deepEqual(schemaEnum("photo"), [...CATEGORIES]);
+  assert.deepEqual(schemaEnum("result"), [...CATEGORIES, ...RESULT_CATEGORIES]);
+  assert.ok(systemPrompt("result").includes("substances (alcohol, tobacco, vaping or drugs"));
+  assert.ok(!systemPrompt("photo").includes("alcohol") && !systemPrompt("photo").includes("weapons"));
+
+  assert.deepEqual(parseVerdict(answer({ flagged: true, categories: ["weapons"] }), "result"), {
+    ok: false,
+    reason: "flagged",
+    categories: ["weapons"],
+  });
+  assert.deepEqual(parseVerdict(answer({ flagged: true, categories: ["substances"] }), "photo"), {
+    ok: false,
+    reason: "check_failed",
+    detail: "unexpected category",
+  });
+  assert.deepEqual(parseVerdict(answer({ flagged: false, categories: [] }), "photo"), { ok: true });
+});
+
+Deno.test("a result flagged only for substances or weapons in an edit of her photo is no strike", () => {
+  // Creations: every flag is a strike.
+  assert.ok(resultCountsAsStrike(["substances"], false));
+  assert.ok(resultCountsAsStrike(["weapons"], false));
+  // Edits of her photo: the drink may be hers, so blocked and refunded without a strike.
+  assert.ok(!resultCountsAsStrike(["substances"], true));
+  assert.ok(!resultCountsAsStrike(["substances", "weapons"], true));
+  // Anything else is a strike as before, also next to them.
+  assert.ok(resultCountsAsStrike(["nudity"], true));
+  assert.ok(resultCountsAsStrike(["weapons", "graphic_violence"], true));
+  assert.ok(resultCountsAsStrike([], true), "a flag without a category stays a strike");
+});
+
+Deno.test("only checks that couldn't run count as outages", () => {
+  const failed = (detail: string) => ({ ok: false as const, reason: "check_failed" as const, detail });
+  for (
+    const detail of [
+      "timeout",
+      "deadline",
+      "connection failed",
+      "HTTP 529 overloaded_error",
+      "HTTP 401 authentication_error",
+      "not JSON",
+      "cut off",
+      "ANTHROPIC_API_KEY is not set",
+    ]
+  ) {
+    assert.ok(isServiceFailure(failed(detail)), detail);
+  }
+  for (
+    const detail of ["refused", "unsupported image type", "image too large", "bad base64", "not an image", "no images"]
+  ) {
+    assert.ok(!isServiceFailure(failed(detail)), detail);
+  }
+  assert.ok(!isServiceFailure({ ok: true }));
+  assert.ok(!isServiceFailure({ ok: false, reason: "flagged", categories: ["nudity"] }));
 });
