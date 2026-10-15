@@ -147,14 +147,19 @@ struct ShareComposerView: View {
                 formatChips
             }
         } else {
-            ScrollView(.horizontal) {
-                HStack(spacing: 8) {
-                    formatChips
+            // Opens on the chosen design even when it sits off the edge of
+            // the row (the composer can open on Cover star, say).
+            ScrollViewReader { proxy in
+                ScrollView(.horizontal) {
+                    HStack(spacing: 8) {
+                        formatChips
+                    }
+                    .padding(.horizontal, Metrics.gutter)
                 }
-                .padding(.horizontal, Metrics.gutter)
+                .scrollIndicators(.hidden)
+                .padding(.horizontal, -Metrics.gutter)
+                .onAppear { proxy.scrollTo(format.id, anchor: .center) }
             }
-            .scrollIndicators(.hidden)
-            .padding(.horizontal, -Metrics.gutter)
         }
     }
 
@@ -164,6 +169,7 @@ struct ShareComposerView: View {
                 Haptics.selection()
                 withAnimation(.snappy) { format = option }
             }
+            .id(option.id)
         }
     }
 
