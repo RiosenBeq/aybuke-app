@@ -15,7 +15,7 @@ Son güncelleme: 15 Ekim 2026
 
 ## 1. Bu Koşullar hakkında
 
-İşbu Kullanım Koşulları ("**Koşullar**"), Aybuke iOS uygulamasını ve buna bağlı çevrim içi hizmetleri (birlikte "**Hizmet**") kullanımınızı düzenler. Hizmet, Okan Berk Manavoğlu (bireysel geliştirici) (İstanbul, Türkiye, Türkiye) tarafından sunulmaktadır ("**biz**" veya "**Şirket**"). İletişim bilgilerimizin tamamı 26. bölümde yer alır.
+İşbu Kullanım Koşulları ("**Koşullar**"), iPhone, iPad ve Mac için Aybuke uygulamasını ve buna bağlı çevrim içi hizmetleri (birlikte "**Hizmet**") kullanımınızı düzenler. Hizmet, Okan Berk Manavoğlu (bireysel geliştirici) (İstanbul, Türkiye, Türkiye) tarafından sunulmaktadır ("**biz**" veya "**Şirket**"). İletişim bilgilerimizin tamamı 26. bölümde yer alır.
 
 Aybuke uygulamasını indirerek, yükleyerek veya kullanarak bu Koşulları kabul etmiş olursunuz. Kabul etmiyorsanız lütfen Hizmeti kullanmayın.
 
@@ -33,7 +33,7 @@ Satın alımlarınıza ayrıca sizinle Apple arasında geçerli olan Apple koşu
 ## 2. Tanımlar
 
 - **Bulut yapay zekâ özellikleri**: İçeriği cihazınızdan sunucularımıza ve yapay zekâ sağlayıcılarımıza göndererek işleyen özellikler. Bunlar Magic Edit, Styles, AI Enhance, Erase ve Create from text özellikleridir.
-- **Cihaz üzerindeki özellikler**: Tamamen iPhone'unuzda çalışan ve fotoğraflarınızı bize hiçbir zaman göndermeyen özellikler. Bunlar Remove background, Adjust ve Effects'tir (tanıtım (onboarding) sırasında sunulan Digicam '04 görünümü dahil).
+- **Cihaz üzerindeki özellikler**: Tamamen cihazınızda çalışan ve fotoğraflarınızı bize hiçbir zaman göndermeyen özellikler. Bunlar Remove background, Adjust ve Effects'tir (tanıtım (onboarding) sırasında sunulan Digicam '04 görünümü dahil).
 - **Girdiler**: Bulut yapay zekâ özelliklerine gönderdiğiniz fotoğraflar, maskeler (fırçayla işaretlediğiniz alanlar) ve metin istemleri (prompt).
 - **Çıktılar** veya **sonuçlar**: Hizmetin sizin için ürettiği veya düzenlediği görseller.
 - **Kredi**: Bulut yapay zekâ çıktıları için kullandığınız birim (8. bölüm).
@@ -58,30 +58,30 @@ Bu bölüm, genç kullanıcılar için hazırlanmış sade bir özettir. Koşull
 - **Satın alımlar Apple üzerinden yapılır.** Satın alımlar, cihazınızdaki Apple Hesabından tahsil edilir. Aile Paylaşımı'nda bir çocuk hesabınız varsa, her satın alımın veliniz veya vasiniz tarafından "Satın Alma İzni İste" (Ask to Buy) özelliğiyle onaylanması gerekebilir. İzin almadan hiçbir şey satın almayın.
 - **Reklamlar isteğe bağlıdır ve asla kişiselleştirilmez.** Pro'nuz yoksa herkese uygun birkaç reklam görebilirsiniz: krediniz bittiğinde 1 kredi için izlemeyi seçebileceğiniz bir reklam (uygulamanın gösterdiği gibi günde birkaç kez) ve bazen kaydettikten sonra bir reklam. Hiçbir reklamı izlemek zorunda değilsiniz ve reklamlar asla diğer uygulamalarda yaptıklarınıza dayanmaz.
 - **Yalnızca "evet" diyen kişileri düzenleyin.** Başkalarının, özellikle de diğer gençlerin fotoğraflarını izinleri olmadan yüklemeyin veya düzenlemeyin. Hiç kimse hakkında cinsel, aşağılayıcı veya kırıcı bir şey oluşturmayın.
-- **Paylaşmadan önce düşünün.** Oluşturduklarınız, siz paylaşmadıkça telefonunuzda kalır. İnternete bir kez çıkan bir şeyi geri almak zor olabilir.
+- **Paylaşmadan önce düşünün.** Oluşturduklarınız, siz paylaşmadıkça cihazınızda kalır. İnternete bir kez çıkan bir şeyi geri almak zor olabilir.
 - **Yardım her zaman var.** Bir şeyler ters giderse veya biri Aybuke uygulamasını size zarar vermek için kullanırsa, güvendiğiniz bir yetişkine anlatın ve durumu bize bildirin (bkz. [Politika](kabul-edilebilir-kullanim-politikasi.md)). Veliler ve vasiler, çocuklarının verilerini sildirmek dahil her konuda [hello@buaze.com](mailto:hello@buaze.com) adresinden bize ulaşabilir.
 
 ## 5. Hesabınız
 
 ### Kayıt gerekmez
 
-Aybuke sizden kayıt olmanızı veya adınızı, e-posta adresinizi ya da bir şifre vermenizi istemez. Bir bulut yapay zekâ özelliğini veya sunucularımızdaki kredi bakiyenizi ilk kez kullandığınızda uygulama, arka uç (backend) hizmet sağlayıcımız nezdinde rastgele bir kullanıcı kimliğiyle tanımlanan anonim bir hesabı otomatik olarak oluşturur. Uygulama, bu hesabın oturum anahtarlarını cihazınızdaki iOS Anahtar Zinciri'nde (Keychain) saklar.
+Aybuke sizden kayıt olmanızı veya adınızı ya da bir şifre vermenizi istemez; e-posta adresine de ihtiyacınız yoktur. Bir bulut yapay zekâ özelliğini veya sunucularımızdaki kredi bakiyenizi ilk kez kullandığınızda uygulama, arka uç (backend) hizmet sağlayıcımız nezdinde rastgele bir kullanıcı kimliğiyle tanımlanan anonim bir hesabı otomatik olarak oluşturur. Uygulama, bu hesabın oturum anahtarlarını cihazınızdaki Anahtar Zinciri'nde (Keychain) saklar.
 
 ### İsteğe bağlı Apple ile giriş
 
-Uygulamanın sunduğu durumlarda, örneğin cihaz değiştirdiğinizde veya yeni bir cihaz eklediğinizde kredilerinizi korumak için Apple ile giriş yapmayı seçebilirsiniz; etkin bir abonelik onu satın alan Apple Hesabı'na bağlı kalır. Giriş yapmak uygulamanın her sürümünde sunulmaz ve Aybuke uygulamasını kullanmak için hiçbir zaman zorunlu değildir. Giriş yaptığınızda o iPhone'daki anonim hesap, satın aldığınız krediler dahil, hesabınızla birleştirilir. Çıkış yaptığınızda o iPhone yeni bir anonim hesaba döner; kredileriniz hesabınızda kalır, etkin bir abonelik ise onu satın alan Apple Hesabı'na bağlı kalır. Fotoğraflarınız ve kütüphaneniz cihazlar arasında eşitlenmez.
+Örneğin cihaz değiştirdiğinizde veya yeni bir cihaz eklediğinizde kredilerinizi korumak için uygulamada Apple ile giriş yapmayı seçebilirsiniz; etkin bir abonelik onu satın alan Apple Hesabı'na bağlı kalır. Giriş yapmak Aybuke uygulamasını kullanmak için hiçbir zaman zorunlu değildir ve 13 yaşından küçüklere sunulmaz. Apple bize sizin için bir tanımlayıcı ve yalnızca paylaşmayı seçerseniz e-posta adresinizi veya Apple'ın gizli aktarma adresini verir; bunları yalnızca hesabınız için, [Gizlilik Politikası](gizlilik-politikasi.md) metninde açıklandığı şekilde kullanırız. Giriş yaptığınızda o cihazdaki anonim hesap, satın aldığınız krediler dahil, hesabınızla birleştirilir. Çıkış yaptığınızda o cihaz yeni bir anonim hesaba döner; kredileriniz hesabınızda kalır, etkin bir abonelik ise onu satın alan Apple Hesabı'na bağlı kalır. Fotoğraflarınız ve kütüphaneniz cihazlar arasında eşitlenmez.
 
 ### Cihazınızı güvende tutun
 
-Kilidi açık iPhone'unuzu kullanabilen herkes hesabınızı, kredilerinizi ve Pro avantajlarınızı da kullanabilir. Lütfen cihazınızı bir parolayla koruyun.
+Kilidi açık cihazınızı kullanabilen herkes hesabınızı, kredilerinizi ve Pro avantajlarınızı da kullanabilir. Lütfen cihazınızı bir parolayla koruyun.
 
 ### Hesabınıza erişimi kaybederseniz
 
-Apple ile giriş yapmadıysanız hesabınıza erişim cihazınıza bağlıdır. Örneğin iPhone'unuzu bir yedekten geri yüklemeden sıfırlarsanız erişimi kaybedebilirsiniz; bu durumda hesabınızı veya kredi bakiyenizi kurtaramayabiliriz. Etkin bir Pro aboneliğini uygulamadaki "Restore purchases" (Satın alımları geri yükle) seçeneğiyle geri yükleyebilirsiniz. Apple ile giriş yaptıysanız, kredilerinizi geri almak için yeni iPhone'unuzda tekrar giriş yapın. Yardıma ihtiyacınız olursa Apple satın alma makbuzunuzdaki Sipariş Numarası (Order ID) ile bize ulaşın; makul ölçüde elimizden geleni yaparız.
+Apple ile giriş yapmadıysanız hesabınıza erişim cihazınıza bağlıdır. Örneğin cihazınızı bir yedekten geri yüklemeden sıfırlarsanız erişimi kaybedebilirsiniz; bu durumda hesabınızı veya kredi bakiyenizi kurtaramayabiliriz. Etkin bir Pro aboneliğini uygulamadaki "Restore purchases" (Satın alımları geri yükle) seçeneğiyle geri yükleyebilirsiniz. Apple ile giriş yaptıysanız, kredilerinizi geri almak için yeni cihazınızda tekrar giriş yapın. Yardıma ihtiyacınız olursa Apple satın alma makbuzunuzdaki Sipariş Numarası (Order ID) ile bize ulaşın; makul ölçüde elimizden geleni yaparız.
 
 ### Hesabınızı silme
 
-Hesabınızı istediğiniz zaman **Settings → Delete my data & account** (Ayarlar → Verilerimi ve hesabımı sil) yoluyla silebilirsiniz. Bu işlem, sunucudaki hesabınızı ve ona bağlı tüm sunucu kayıtlarını (kredi cüzdanı, kredi hareketleri, iş kayıtları, abonelik hakkı kayıtları, reklam ödül kayıtları ve raporlar) ve cihazınızdaki görsel kütüphanesini kalıcı olarak siler. Apple ile giriş yaptıysanız Aybuke uygulamasının Apple Kimliğinize erişimini de iptal ederiz. App Store indirmenizin tek yönlü bir özeti (hash), o günün ücretsiz kredileri ve varsa bir güvenlik molasıyla (8. bölüm) birlikte, silme işleminden sonra hesabınıza bağlı kalmaz ve yalnızca kötüye kullanımı önlemek için [Gizlilik Politikası](gizlilik-politikasi.md) metninde açıklanan sınırlı süre boyunca saklanır; bu nedenle hesabınızı silmek ücretsiz kredileri veya bir molayı sıfırlamaz.
+Hesabınızı istediğiniz zaman **Settings → Delete my data & account** (Ayarlar → Verilerimi ve hesabımı sil) yoluyla silebilirsiniz. Bu işlem, sunucudaki hesabınızı ve ona bağlı tüm sunucu kayıtlarını (kredi cüzdanı, kredi hareketleri, iş kayıtları, abonelik hakkı kayıtları, reklam ödül kayıtları ve raporlar) ve cihazınızdaki görsel kütüphanesini kalıcı olarak siler. Apple ile giriş yaptıysanız Aybuke uygulamasının Apple Hesabınıza erişimini de iptal ederiz. App Store indirmenizin tek yönlü bir özeti (hash), o günün ücretsiz kredileri ve varsa bir güvenlik molasıyla (8. bölüm) birlikte, silme işleminden sonra hesabınıza bağlı kalmaz ve yalnızca kötüye kullanımı önlemek için [Gizlilik Politikası](gizlilik-politikasi.md) metninde açıklanan sınırlı süre boyunca saklanır; bu nedenle hesabınızı silmek ücretsiz kredileri veya bir molayı sıfırlamaz.
 
 Hesabınızı sildiğinizde, satın aldığınız krediler dahil kalan tüm kredileriniz kaybolur; bunlar geri yüklenemez ve iade edilemez. Daha sonra bir bulut yapay zekâ özelliğini yeniden kullanırsanız yeni bir anonim hesap oluşturulur.
 
@@ -101,7 +101,7 @@ Bazı şablon ve stiller yalnızca Pro ile kullanılabilir. Ünlülere veya baş
 
 ### Cihaz üzerindeki özellikler
 
-Remove background (Apple'ın Vision çerçevesiyle arka plan kaldırma), Adjust (parlaklık, kontrast, doygunluk, sıcaklık, keskinlik ve vinyet ayarı) ve Effects (tanıtım sırasında da sunulan Digicam '04 gibi retro görünümler) tamamen iPhone'unuzda çalışır. Bu özellikler ücretsizdir, kredi kullanmaz ve bulut işlemeye onay vermeseniz de çalışır.
+Remove background (Apple'ın Vision çerçevesiyle arka plan kaldırma), Adjust (parlaklık, kontrast, doygunluk, sıcaklık, keskinlik ve vinyet ayarı) ve Effects (tanıtım sırasında da sunulan Digicam '04 gibi retro görünümler) tamamen cihazınızda çalışır. Bu özellikler ücretsizdir, kredi kullanmaz ve bulut işlemeye onay vermeseniz de çalışır.
 
 ### Likeness Lock
 
@@ -192,7 +192,7 @@ Krediler, Aybuke uygulamasındaki bulut yapay zekâ özelliklerini kullanmanıza
 
 ### Ödemeleri Apple yönetir
 
-Aybuke uygulamasındaki tüm satın alımlar Apple'ın uygulama içi satın alma sistemiyle yapılır. Satıcı (merchant of record) Apple'dır ve ödemenizi Apple işler. Kart bilgilerinizi, adınızı veya Apple Hesabı e-posta adresinizi hiçbir zaman almayız.
+Aybuke uygulamasındaki tüm satın alımlar Apple'ın uygulama içi satın alma sistemiyle yapılır. Satıcı (merchant of record) Apple'dır ve ödemenizi Apple işler. Kart bilgilerinizi hiçbir zaman almayız; satın alımlar bize adınızı veya e-posta adresinizi de vermez.
 
 Satın alımlar, cihazınızda kullanılan Apple Hesabından tahsil edilir. 18 yaşından küçükseniz bir şey satın almadan önce velinizin veya vasinizin iznini almanız gerekir; ayrıca satın alımın Apple Hesabı sahibi veya aile düzenleyicisi tarafından onaylanması gerekebilir (örneğin Aile Paylaşımı'ndaki "Satın Alma İzni İste" özelliğiyle).
 
@@ -226,7 +226,7 @@ Deneme süresinin bitiminden en az 24 saat önce iptal etmezseniz aboneliğiniz 
 - Ödeme, satın alımı onayladığınızda veya ücretsiz deneme başlattıysanız deneme süresi sona erdiğinde Apple Hesabınızdan tahsil edilir.
 - Mevcut dönemin bitiminden en az 24 saat önce iptal etmediğiniz sürece aboneliğiniz, o tarihteki güncel fiyattan aynı süre için otomatik olarak yenilenir.
 - Yenileme ücreti, mevcut dönemin bitiminden önceki 24 saat içinde Apple Hesabınızdan tahsil edilir.
-- Aboneliğinizi istediğiniz zaman iPhone'unuzun **Ayarlar → adınız → Abonelikler** bölümünden veya App Store üzerinden yönetebilir ya da iptal edebilirsiniz. İptal, mevcut fatura döneminin sonunda geçerli olur; o zamana kadar Pro'yu kullanmaya devam edersiniz.
+- Aboneliğinizi istediğiniz zaman Apple Hesabı ayarlarınızdan yönetebilir ya da iptal edebilirsiniz: iPhone veya iPad'de **Ayarlar → adınız → Abonelikler** bölümünden, Mac'te ise App Store'da (**adınız → Hesap Ayarları → Abonelikler**). İptal, mevcut fatura döneminin sonunda geçerli olur; o zamana kadar Pro'yu kullanmaya devam edersiniz.
 - Uygulamayı veya Aybuke hesabınızı silmek aboneliğinizi iptal etmez.
 
 ### Fiyat değişiklikleri
@@ -311,7 +311,7 @@ Yapay zekâ ile üretilmiş veya düzenlenmiş olup dışa aktardığınız her 
 
 ## 13. Sonuçlarınızı paylaşma
 
-Sonuçlarınızı iOS paylaşım menüsüyle (Instagram Stories (Hikâyeler) seçeneği de buradadır), "Before / After" (önce / sonra) kolajı olarak veya 9:16 oranlı hikâye kartı ya da başka bir kart tasarımı olarak paylaşabilirsiniz. Ücretsiz kullanımda, bulut yapay zekâmızla üretilen veya düzenlenen görsellerin kolajlarında ve kartlarında küçük bir "Made with Aybuke" işareti bulunur; Pro bu işareti kaldırır. Uygulama ayrıca kopyalayabileceğiniz, hashtag içeren açıklama metinleri önerebilir; bu metinler cihazınızda yazılır ve bunun için hiçbir yere veri gönderilmez.
+Sonuçlarınızı paylaşım menüsüyle (iPhone ve iPad'de Instagram Stories (Hikâyeler) seçeneği de buradadır), "Before / After" (önce / sonra) kolajı olarak veya 9:16 oranlı hikâye kartı ya da başka bir kart tasarımı olarak paylaşabilirsiniz. Ücretsiz kullanımda, bulut yapay zekâmızla üretilen veya düzenlenen görsellerin kolajlarında ve kartlarında küçük bir "Made with Aybuke" işareti bulunur; Pro bu işareti kaldırır. Uygulama ayrıca kopyalayabileceğiniz, hashtag içeren açıklama metinleri önerebilir; bu metinler cihazınızda yazılır ve bunun için hiçbir yere veri gönderilmez.
 
 Paylaştığınızda içeriği alan hizmetin kendi koşulları ve gizlilik politikası geçerli olur ve yayımladığınız içerikten siz sorumlusunuz. Önce/sonra görselleri dahil, bir görselde yer alan herkesin paylaşıma onay verdiğinden emin olun.
 
@@ -366,7 +366,7 @@ Girdilerinizi saklamadığımız ve çıktıları teslimden sonra tutmadığım�
 
 ## 17. Üçüncü taraf hizmetleri
 
-Aybuke; Apple (App Store, ödemeler ve iOS özellikleri), Instagram ve paylaşım yaptığınız diğer uygulamalar, Gizlilik Politikası'nda listelenen yapay zekâ sağlayıcıları ve ücretsiz üyelerin gördüğü reklamları sağlayan Google AdMob gibi başkaları tarafından işletilen hizmetlerle birlikte çalışır. Bu hizmetleri kullanımınıza onların kendi koşulları uygulanır. Reklamların içeriğini kontrol etmeyiz; ancak Google'dan yalnızca kişiselleştirilmemiş reklamlar, 18 yaşından küçükler ve yaşını bilmediğimiz kişiler için de yalnızca genel izleyiciye uygun reklamlar isteriz.
+Aybuke; Apple (App Store, ödemeler, Apple ile giriş ve cihazınızın işletim sistemi özellikleri), Instagram ve paylaşım yaptığınız diğer uygulamalar, Gizlilik Politikası'nda listelenen yapay zekâ sağlayıcıları ve ücretsiz üyelerin gördüğü reklamları sağlayan Google AdMob gibi başkaları tarafından işletilen hizmetlerle birlikte çalışır. Bu hizmetleri kullanımınıza onların kendi koşulları uygulanır. Reklamların içeriğini kontrol etmeyiz; ancak Google'dan yalnızca kişiselleştirilmemiş reklamlar, 18 yaşından küçükler ve yaşını bilmediğimiz kişiler için de yalnızca genel izleyiciye uygun reklamlar isteriz.
 
 Uygulamayı kullanırken size uygulanan üçüncü taraf koşullarına, örneğin mobil veri tarifenizin koşullarına uymanız gerekir. Kontrolümüzde olmayan üçüncü taraf hizmetlerinden sorumlu değiliz.
 

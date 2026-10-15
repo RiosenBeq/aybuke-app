@@ -15,7 +15,7 @@ Last updated: 15 October 2026
 
 ## 1. About these Terms
 
-These Terms of Use ("**Terms**") govern your use of the Aybuke iOS app and the related online services (together, the "**Service**"). The Service is provided by Okan Berk Manavoğlu (individual developer), Istanbul, Türkiye, Türkiye ("**we**", "**us**" or "**our**"). Our full contact details are in section 26.
+These Terms of Use ("**Terms**") govern your use of the Aybuke app for iPhone, iPad and Mac and the related online services (together, the "**Service**"). The Service is provided by Okan Berk Manavoğlu (individual developer), Istanbul, Türkiye, Türkiye ("**we**", "**us**" or "**our**"). Our full contact details are in section 26.
 
 By downloading, installing or using Aybuke, you agree to these Terms. If you don't agree, please don't use the Service.
 
@@ -33,7 +33,7 @@ Your purchases are also subject to Apple's terms, such as the Apple Media Servic
 ## 2. Key definitions
 
 - **Cloud AI features**: features that send content from your device to our servers and AI providers for processing. These are Magic Edit, Styles, AI Enhance, Erase and Create from text.
-- **On-device features**: features that run entirely on your iPhone and never send your photos to us. These are Remove background, Adjust and Effects (including the Digicam '04 look offered during onboarding).
+- **On-device features**: features that run entirely on your device and never send your photos to us. These are Remove background, Adjust and Effects (including the Digicam '04 look offered during onboarding).
 - **Inputs**: the photos, masks (the areas you brush over) and text prompts you submit to cloud AI features.
 - **Outputs** or **results**: the images the Service generates or edits for you.
 - **Credits**: units you use to pay for cloud AI outputs (section 8).
@@ -58,30 +58,30 @@ This section is a plain-language summary for younger users. The rest of these Te
 - **Purchases go through Apple.** Purchases are charged to the Apple Account on your device. If you have a child account in Family Sharing, your parent or guardian may need to approve each purchase with "Ask to Buy". Never buy anything without permission.
 - **Ads are optional and never personalised.** Without Pro, you may see a few ads suitable for everyone: one you can choose to watch for 1 credit when you've run out (a few a day, as the app shows), and sometimes one after you save. You never have to watch one, and they're never based on what you do in other apps.
 - **Only edit people who say yes.** Don't upload or edit photos of other people, especially other young people, without their permission. Never create anything sexual, humiliating or mean about anyone.
-- **Think before you share.** Your creations stay on your phone unless you share them. Once something is online, it can be hard to take back.
+- **Think before you share.** Your creations stay on your device unless you share them. Once something is online, it can be hard to take back.
 - **Help is here.** If something goes wrong, or someone uses Aybuke to hurt you, tell a trusted adult and report it to us (see the [AUP](acceptable-use-policy.md)). Parents and guardians can contact us at [hello@buaze.com](mailto:hello@buaze.com), including to delete their child's data.
 
 ## 5. Your account
 
 ### No sign-up
 
-Aybuke doesn't ask you to sign up or give us your name, email address or a password. When you first use a cloud AI feature or your credit balance on our servers, the app automatically creates an anonymous account, identified by a random user ID, with our backend provider. The app stores the session tokens for this account in the iOS Keychain on your device.
+Aybuke doesn't ask you to sign up or give us your name or a password, and you don't need an email address. When you first use a cloud AI feature or your credit balance on our servers, the app automatically creates an anonymous account, identified by a random user ID, with our backend provider. The app stores the session tokens for this account in the Keychain on your device.
 
 ### Optional Sign in with Apple
 
-Where the app offers it, you can choose to sign in with Apple, for example to keep your credits when you switch or add a device; an active subscription stays with the Apple Account that bought it. Not every version of the app offers signing in, and it is never required to use Aybuke. When you sign in, the anonymous account on that iPhone is merged into your account, including its purchased credits. Signing out returns that iPhone to a new anonymous account; your credits stay with your account, and an active subscription stays with the Apple Account that bought it. Your photos and library are not synced between devices.
+You can choose to sign in with Apple in the app, for example to keep your credits when you switch or add a device; an active subscription stays with the Apple Account that bought it. Signing in is never required to use Aybuke, and it isn't offered under 13. Apple gives us an identifier for you and, only if you choose to share it, your email address or Apple's private relay address, which we use only for your account, as our [Privacy Policy](privacy-policy.md) explains. When you sign in, the anonymous account on that device is merged into your account, including its purchased credits. Signing out returns that device to a new anonymous account; your credits stay with your account, and an active subscription stays with the Apple Account that bought it. Your photos and library are not synced between devices.
 
 ### Keep your device secure
 
-Anyone who can use your unlocked iPhone can use your account, your credits and your Pro benefits. Please protect your device with a passcode.
+Anyone who can use your unlocked device can use your account, your credits and your Pro benefits. Please protect your device with a passcode.
 
 ### If you lose access
 
-If you haven't signed in with Apple, access to your account depends on your device. If you lose access, for example after erasing your iPhone without restoring a backup, we may not be able to recover the account or its credit balance. You can restore an active Pro subscription with "Restore purchases" in the app. If you signed in with Apple, sign in again on your new iPhone to get your credits back. If you need help, contact us with the Order ID from your Apple purchase receipt and we'll do what we reasonably can.
+If you haven't signed in with Apple, access to your account depends on your device. If you lose access, for example after erasing your device without restoring a backup, we may not be able to recover the account or its credit balance. You can restore an active Pro subscription with "Restore purchases" in the app. If you signed in with Apple, sign in again on your new device to get your credits back. If you need help, contact us with the Order ID from your Apple purchase receipt and we'll do what we reasonably can.
 
 ### Deleting your account
 
-You can delete your account at any time in **Settings → Delete my data & account**. This permanently deletes your server account and all server-side records linked to it (credit wallet, credit ledger, job records, entitlement records, ad reward records and reports), as well as the creations library on your device. A one-way hash of your App Store download, with that day's free credits and any safety pause (section 8), isn't linked to your account after deletion and is kept for a limited time only to prevent abuse, as our [Privacy Policy](privacy-policy.md) explains; so deleting your account doesn't reset free credits or a pause. If you signed in with Apple, we also revoke Aybuke's access to your Apple ID.
+You can delete your account at any time in **Settings → Delete my data & account**. This permanently deletes your server account and all server-side records linked to it (credit wallet, credit ledger, job records, entitlement records, ad reward records and reports), as well as the creations library on your device. A one-way hash of your App Store download, with that day's free credits and any safety pause (section 8), isn't linked to your account after deletion and is kept for a limited time only to prevent abuse, as our [Privacy Policy](privacy-policy.md) explains; so deleting your account doesn't reset free credits or a pause. If you signed in with Apple, we also revoke Aybuke's access to your Apple Account.
 
 Any remaining credits, including purchased credits, are lost when you delete your account and cannot be restored or refunded. If you use a cloud AI feature again later, a new anonymous account is created.
 
@@ -101,7 +101,7 @@ Some templates and styles are available only with Pro. We don't offer templates 
 
 ### On-device features
 
-Remove background (using Apple's Vision framework), Adjust (brightness, contrast, saturation, warmth, sharpness and vignette) and Effects (retro looks such as Digicam '04, which is also offered during onboarding) run entirely on your iPhone. They are free, don't use credits and work without consent to cloud processing.
+Remove background (using Apple's Vision framework), Adjust (brightness, contrast, saturation, warmth, sharpness and vignette) and Effects (retro looks such as Digicam '04, which is also offered during onboarding) run entirely on your device. They are free, don't use credits and work without consent to cloud processing.
 
 ### Likeness Lock
 
@@ -192,7 +192,7 @@ We may change the free daily allowance or the monthly Pro allowance for future p
 
 ### Apple handles payments
 
-All purchases in Aybuke are made through Apple's in-app purchase system. Apple is the seller (merchant of record) and processes your payment. We never receive your card details, your name or your Apple Account email address.
+All purchases in Aybuke are made through Apple's in-app purchase system. Apple is the seller (merchant of record) and processes your payment. We never receive your card details, and purchases don't give us your name or email address.
 
 Purchases are charged to the Apple Account used on your device. If you're under 18, you need the permission of a parent or guardian before buying anything, and the Apple Account holder or family organiser may need to approve the purchase (for example with Family Sharing's "Ask to Buy").
 
@@ -226,7 +226,7 @@ If you buy a subscription while you're in a free trial, any unused part of the t
 - Payment is charged to your Apple Account when you confirm your purchase or, if you started a free trial, when the trial ends.
 - Your subscription renews automatically for the same period at the then-current price unless you cancel at least 24 hours before the end of the current period.
 - Your Apple Account is charged for the renewal within the 24 hours before the current period ends.
-- You can manage or cancel your subscription at any time in your iPhone's **Settings → your name → Subscriptions**, or in the App Store. Cancellation takes effect at the end of the current billing period, and you keep Pro until then.
+- You can manage or cancel your subscription at any time in your Apple Account settings: on iPhone or iPad in **Settings → your name → Subscriptions**, and on a Mac in the App Store (**your name → Account Settings → Subscriptions**). Cancellation takes effect at the end of the current billing period, and you keep Pro until then.
 - Deleting the app or your Aybuke account does not cancel your subscription.
 
 ### Price changes
@@ -311,7 +311,7 @@ On the free tier, exports of images made or edited with our cloud AI carry a sma
 
 ## 13. Sharing your results
 
-You can share results with the iOS share sheet (which also offers Instagram Stories), as a "Before / After" collage, or as a 9:16 story card or another card design. On the free tier, collages and cards of images made or edited with our cloud AI include a small "Made with Aybuke" mark; Pro removes it. The app can also suggest captions, with hashtags, for you to copy; captions are written on your device and nothing is sent anywhere to write them.
+You can share results with the share sheet (which on iPhone and iPad also offers Instagram Stories), as a "Before / After" collage, or as a 9:16 story card or another card design. On the free tier, collages and cards of images made or edited with our cloud AI include a small "Made with Aybuke" mark; Pro removes it. The app can also suggest captions, with hashtags, for you to copy; captions are written on your device and nothing is sent anywhere to write them.
 
 When you share, the receiving service's own terms and privacy policy apply, and you're responsible for what you publish. Make sure everyone shown in an image, including a before-and-after image, agrees to it being shared.
 
@@ -366,7 +366,7 @@ Because we don't store your inputs or keep outputs after delivery, we usually ca
 
 ## 17. Third-party services
 
-Aybuke works with services operated by others, such as Apple (App Store, payments and iOS features), Instagram and other apps you share to, the AI providers listed in our Privacy Policy, and Google AdMob, which provides the ads free members see. Their own terms apply to your use of their services. We don't control the content of ads, but we ask Google for non-personalised ads only, and for general-audience ads for anyone under 18 or whose age we don't know.
+Aybuke works with services operated by others, such as Apple (App Store, payments, Sign in with Apple and the features of your device's operating system), Instagram and other apps you share to, the AI providers listed in our Privacy Policy, and Google AdMob, which provides the ads free members see. Their own terms apply to your use of their services. We don't control the content of ads, but we ask Google for non-personalised ads only, and for general-audience ads for anyone under 18 or whose age we don't know.
 
 When using the app, you must comply with any third-party terms that apply to you, for example your mobile data plan. We're not responsible for third-party services that we don't control.
 
