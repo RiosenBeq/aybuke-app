@@ -255,6 +255,9 @@ struct AdjustPanel: View {
     @Binding var settings: AdjustmentSettings
     /// The vibe she picked, if any; its values are on the sliders.
     let vibe: AdjustVibe?
+    /// Her saved filters ("My filters"), shown before the vibes.
+    let myFilters: MyFiltersStore
+    let onMyFilter: (MyFilter) -> Void
     let onAuto: () -> Void
     let onVibe: (AdjustVibe) -> Void
     let onChange: () -> Void
@@ -262,13 +265,24 @@ struct AdjustPanel: View {
     let onApply: () -> Void
 
     @State private var selected: AdjustmentParameter
+    /// Naming a new filter, or renaming one of hers.
+    @State private var naming: Naming?
+    @State private var name = ""
+    @State private var showsFullShelf = false
     @Environment(\.editorPanelPlacement) private var placement
 
-    init(settings: Binding<AdjustmentSettings>, vibe: AdjustVibe?, onAuto: @escaping () -> Void,
-         onVibe: @escaping (AdjustVibe) -> Void, onChange: @escaping () -> Void, onReset: @escaping () -> Void,
-         onApply: @escaping () -> Void) {
+    private enum Naming: Equatable {
+        case new
+        case rename(MyFilter)
+    }
+
+    init(settings: Binding<AdjustmentSettings>, vibe: AdjustVibe?, myFilters: MyFiltersStore, onMyFilter: @escaping (MyFilter) -> Void,
+         onAuto: @escaping () -> Void, onVibe: @escaping (AdjustVibe) -> Void, onChange: @escaping () -> Void,
+         onReset: @escaping () -> Void, onApply: @escaping () -> Void) {
         _settings = settings
         self.vibe = vibe
+        self.myFilters = myFilters
+        self.onMyFilter = onMyFilter
         self.onAuto = onAuto
         self.onVibe = onVibe
         self.onChange = onChange
@@ -306,6 +320,23 @@ struct AdjustPanel: View {
             guard let picked else { return }
             withAnimation(.snappy) { selected = picked.lead }
         }
+        .alert(naming == .new ? Text("Name your filter") : Text("Rename filter"), isPresented: Binding(
+            get: { naming != nil },
+            set: { if !$0 { naming = nil } }
+        )) {
+            TextField("Filter name", text: $name)
+            Button("Save") { finishNaming() }
+            Button("Cancel", role: .cancel) { naming = nil }
+        } message: {
+            if naming == .new {
+                Text("Use it on any photo, any time. It stays on this device.")
+            }
+        }
+        .alert("Your filters are full", isPresented: $showsFullShelf) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text("You can keep up to \(MyFilterShelf.limit) filters. Delete one to save a new one.")
+        }
     }
 
     // MARK: Auto and vibes
@@ -322,6 +353,13 @@ struct AdjustPanel: View {
             }
             .buttonStyle(.pressable)
             .accessibilityHint("Picks the best light and colour for this photo")
+            if canSave {
+                saveChip
+                    .transition(.scale(scale: 0.9).combined(with: .opacity))
+            }
+            ForEach(myFilters.filters) { filter in
+                myFilterChip(filter)
+            }
             ForEach(AdjustVibes.all) { item in
                 SelectableChip(title: LocalizedStringKey(L10n.core(item.name)), symbolName: item.symbolName, isSelected: vibe == item) {
                     onVibe(item)
@@ -329,6 +367,83 @@ struct AdjustPanel: View {
                 .accessibilityHint(Text("Sets several sliders at once. Tap it again to take it off.",
                                         comment: "Accessibility hint of a one-tap vibe (Dreamy, Analog…) in the editor's Adjust tool"))
             }
+        }
+    }
+
+    // MARK: My filters
+
+    /// Something to save that isn't saved yet.
+    private var canSave: Bool {
+        !settings.isNeutral && myFilters.shelf.filter(matching: settings) == nil
+    }
+
+    private var saveChip: some View {
+        Button {
+            guard !myFilters.shelf.isFull else {
+                showsFullShelf = true
+                return
+            }
+            name = myFilters.shelf.suggestedName(base: String(localized: "My filter", comment: "Suggested name of a saved Adjust filter, followed by a number"))
+            naming = .new
+        } label: {
+            Label("Save as my filter", systemImage: "plus")
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(Palette.textPrimary)
+                .lineLimit(1)
+                .fixedSize()
+                .padding(.horizontal, 14)
+                .frame(minHeight: 44)
+                .background(Palette.surface.opacity(0.6), in: .chip)
+                .overlay(RoundedRectangle.chip.strokeBorder(Palette.accent, style: StrokeStyle(lineWidth: 1.5, dash: [5, 4])))
+        }
+        .buttonStyle(.pressable)
+        .accessibilityHint(Text("Saves these sliders under a name, to put on any photo with one tap",
+                                comment: "Accessibility hint of Save as my filter in the editor's Adjust tool"))
+    }
+
+    private func myFilterChip(_ filter: MyFilter) -> some View {
+        SelectableChip(verbatim: filter.name, symbolName: "heart", isSelected: settings == filter.settings) {
+            onMyFilter(filter)
+        }
+        .contextMenu {
+            Button { beginRenaming(filter) } label: { Label("Rename", systemImage: "pencil") }
+            Button(role: .destructive) { delete(filter) } label: { Label("Delete", systemImage: "trash") }
+        }
+        .accessibilityHint(Text("Your saved filter. Tap it again to take it off.",
+                                comment: "Accessibility hint of one of her saved filters in the editor's Adjust tool"))
+        .accessibilityAction(named: Text("Rename")) { beginRenaming(filter) }
+        .accessibilityAction(named: Text("Delete")) { delete(filter) }
+    }
+
+    private func beginRenaming(_ filter: MyFilter) {
+        name = filter.name
+        naming = .rename(filter)
+    }
+
+    private func delete(_ filter: MyFilter) {
+        withAnimation(.snappy) { myFilters.delete(filter) }
+        Haptics.selection()
+    }
+
+    private func finishNaming() {
+        defer { naming = nil }
+        switch naming {
+        case .new?:
+            // Left empty: the suggested name.
+            let chosen = MyFilterShelf.cleanName(name)
+                ?? myFilters.shelf.suggestedName(base: String(localized: "My filter", comment: "Suggested name of a saved Adjust filter, followed by a number"))
+            let result = withAnimation(.snappy) {
+                myFilters.save(name: chosen, settings: settings, vibe: vibe)
+            }
+            switch result {
+            case .saved: Haptics.success()
+            case .full: showsFullShelf = true
+            case .emptyName, .duplicate, .neutral: break
+            }
+        case .rename(let filter)?:
+            withAnimation(.snappy) { _ = myFilters.rename(filter, to: name) }
+        case nil:
+            break
         }
     }
 

@@ -1,6 +1,7 @@
 import SwiftUI
 import UIKit
 import UIKit.UIGestureRecognizerSubclass
+import AppCore
 
 /// A brush stroke in normalized coordinates (0…1 on both axes) so it maps
 /// directly onto the image regardless of on-screen size.
@@ -134,8 +135,9 @@ struct MaskCanvas: View {
 /// A photo to paint on. One finger paints; two fingers pan, and a pinch
 /// zooms up to 4× like the editor canvas (`ZoomableImage`), with the
 /// trackpad on iPad and the Mac too. The brush keeps its size on screen, so
-/// a stroke made zoomed in is finer on the photo. Give it the image's aspect
-/// ratio.
+/// a stroke made zoomed in is finer on the photo. While a finger paints, a
+/// loupe above it shows the spot under it (not on the Mac, where a pointer
+/// hides nothing). Give it the image's aspect ratio.
 struct BrushCanvas: UIViewRepresentable {
     let image: UIImage
     /// Strokes to show (normalized). Leave empty when the canvas shows their
@@ -170,6 +172,7 @@ struct BrushCanvas: UIViewRepresentable {
 
 final class BrushCanvasView: UIView, UIScrollViewDelegate, UIGestureRecognizerDelegate {
     fileprivate let overlay = BrushOverlayView()
+    private let loupe = BrushLoupeView()
     var brushSize: CGFloat = 0.07
     var onStroke: (MaskStroke) -> Void = { _ in }
     /// While set, a one-finger tap picks instead of painting.
@@ -214,6 +217,8 @@ final class BrushCanvasView: UIView, UIScrollViewDelegate, UIGestureRecognizerDe
         overlay.backgroundColor = .clear
         overlay.contentMode = .redraw
         addSubview(overlay)
+        loupe.isHidden = true
+        addSubview(loupe)
 
         brush.addTarget(self, action: #selector(painted(_:)))
         brush.delegate = self
@@ -259,6 +264,16 @@ final class BrushCanvasView: UIView, UIScrollViewDelegate, UIGestureRecognizerDe
             #endif
         }
         followImage()
+        #if DEBUG
+        // Screenshot QA of the loupe: -GLLoupe x,y (normalized on the photo).
+        if ScreenshotScene.current != nil, let spot = UserDefaults.standard.string(forKey: "GLLoupe"), overlay.imageFrame.width > 0 {
+            let parts = spot.split(separator: ",").compactMap { Double($0) }
+            if parts.count == 2 {
+                let frame = overlay.imageFrame
+                showLoupe(at: CGPoint(x: frame.minX + parts[0] * frame.width, y: frame.minY + parts[1] * frame.height), animated: false)
+            }
+        }
+        #endif
     }
 
     func viewForZooming(in scrollView: UIScrollView) -> UIView? { imageView }
@@ -283,18 +298,53 @@ final class BrushCanvasView: UIView, UIScrollViewDelegate, UIGestureRecognizerDe
         switch recognizer.state {
         case .began:
             overlay.active = MaskStroke(points: [point], width: brushSize / max(scrollView.zoomScale, 1))
+            showLoupe(at: recognizer.location(in: self), animated: true)
         case .changed:
             overlay.active?.points.append(point)
+            showLoupe(at: recognizer.location(in: self), animated: false)
         case .ended:
             if let stroke = overlay.active {
                 overlay.pending.append(stroke)
                 onStroke(stroke)
             }
             overlay.active = nil
+            hideLoupe()
         default:
             // A second finger came down: that was a pinch or a pan.
             overlay.active = nil
+            hideLoupe()
         }
+    }
+
+    // MARK: Loupe
+
+    private static let loupeDiameter: CGFloat = 116
+
+    private func showLoupe(at point: CGPoint, animated: Bool) {
+        guard !Platform.isMac, bounds.width > Self.loupeDiameter, let image = imageView.image else { return }
+        let frame = LoupeLayout.frame(touchX: point.x, touchY: point.y, width: bounds.width, height: bounds.height,
+                                      diameter: Self.loupeDiameter, gap: 40)
+        loupe.frame = CGRect(x: frame.x, y: frame.y, width: frame.width, height: frame.height)
+        loupe.image = image
+        loupe.overlay = overlay
+        loupe.touch = point
+        // The brush's size on screen: strokes keep it whatever the zoom.
+        loupe.brushDiameter = brushSize * overlay.imageFrame.width / max(scrollView.zoomScale, 1)
+        loupe.setNeedsDisplay()
+        guard loupe.isHidden else { return }
+        loupe.isHidden = false
+        loupe.alpha = animated ? 0 : 1
+        if animated {
+            UIView.animate(withDuration: 0.12) { self.loupe.alpha = 1 }
+        }
+    }
+
+    private func hideLoupe() {
+        guard !loupe.isHidden else { return }
+        UIView.animate(withDuration: 0.15, animations: { self.loupe.alpha = 0 }, completion: { _ in
+            self.loupe.isHidden = true
+            self.loupe.image = nil
+        })
     }
 
     @objc private func tapped(_ recognizer: UITapGestureRecognizer) {
@@ -358,7 +408,15 @@ private final class BrushOverlayView: UIView {
     }
 
     override func draw(_ rect: CGRect) {
-        guard let context = UIGraphicsGetCurrentContext(), imageFrame.width > 0 else { return }
+        guard let context = UIGraphicsGetCurrentContext() else { return }
+        drawContent(in: context)
+    }
+
+    /// The picked areas and strokes where the photo is; the loupe draws them too.
+    func drawContent(in context: CGContext) {
+        guard imageFrame.width > 0 else { return }
+        context.saveGState()
+        defer { context.restoreGState() }
         for region in regions {
             region.draw(in: imageFrame)
         }
@@ -372,5 +430,69 @@ private final class BrushOverlayView: UIView {
             context.addPath(stroke.path(in: imageFrame.size).cgPath)
             context.strokePath()
         }
+    }
+}
+
+/// The magnifier above her finger: the photo and the strokes around the
+/// touch at twice their size on screen, with the brush's outline in the middle.
+private final class BrushLoupeView: UIView {
+    var image: UIImage?
+    weak var overlay: BrushOverlayView?
+    var touch = CGPoint.zero
+    /// The brush's diameter on screen, in points.
+    var brushDiameter: CGFloat = 0
+
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        isOpaque = false
+        backgroundColor = .clear
+        isUserInteractionEnabled = false
+        contentMode = .redraw
+        layer.shadowColor = UIColor.black.cgColor
+        layer.shadowOpacity = 0.28
+        layer.shadowRadius = 10
+        layer.shadowOffset = CGSize(width: 0, height: 4)
+    }
+
+    required init?(coder: NSCoder) { fatalError("init(coder:) is not supported") }
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        layer.shadowPath = UIBezierPath(ovalIn: bounds.insetBy(dx: 3, dy: 3)).cgPath
+    }
+
+    override func draw(_ rect: CGRect) {
+        guard let context = UIGraphicsGetCurrentContext(), let overlay else { return }
+        let circle = bounds.insetBy(dx: 3, dy: 3)
+        let magnification = CGFloat(LoupeLayout.magnification)
+        context.saveGState()
+        UIBezierPath(ovalIn: circle).addClip()
+        UIColor.brandPetal.setFill()
+        context.fill(circle)
+        context.translateBy(x: bounds.midX, y: bounds.midY)
+        context.scaleBy(x: magnification, y: magnification)
+        context.translateBy(x: -touch.x, y: -touch.y)
+        image?.draw(in: overlay.imageFrame)
+        // One layer at the overlay's alpha, as on the canvas: overlaps don't get darker.
+        context.setAlpha(overlay.alpha)
+        context.beginTransparencyLayer(auxiliaryInfo: nil)
+        overlay.drawContent(in: context)
+        context.endTransparencyLayer()
+        context.restoreGState()
+
+        // The brush, so she sees what one stroke covers.
+        let ring = brushDiameter * magnification
+        if ring > 4 {
+            let ringRect = CGRect(x: bounds.midX - ring / 2, y: bounds.midY - ring / 2, width: ring, height: ring)
+            context.setLineWidth(3)
+            context.setStrokeColor(UIColor.brandInk.withAlphaComponent(0.35).cgColor)
+            context.strokeEllipse(in: ringRect)
+            context.setLineWidth(1.5)
+            context.setStrokeColor(UIColor.white.cgColor)
+            context.strokeEllipse(in: ringRect)
+        }
+        context.setLineWidth(3)
+        context.setStrokeColor(UIColor.white.cgColor)
+        context.strokeEllipse(in: circle)
     }
 }

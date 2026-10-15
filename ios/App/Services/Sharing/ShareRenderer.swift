@@ -1,4 +1,5 @@
 import UIKit
+import CoreImage
 import AppCore
 
 /// What the user is sharing. `original` enables the Before / After collage.
@@ -74,8 +75,47 @@ enum ShareFormat: String, CaseIterable, Identifiable {
         }
     }
 
-    /// 9:16 formats that go into Stories as the background.
-    var isStory: Bool { self == .story || self == .strip || self == .pick }
+    /// The Photo and the Story card come in every size (`ShareSize`).
+    var offersSizes: Bool { self == .photo || self == .story }
+
+    /// Text she can change on this design.
+    var textSlots: [ShareTextSlot] {
+        switch self {
+        case .story: return [.storyLine]
+        case .cover: return [.coverHeadline, .coverMasthead]
+        case .strip: return [.stripCaption]
+        case .photo, .beforeAfter, .pick: return []
+        }
+    }
+}
+
+/// What she changed on a design: its size, its background and its text.
+/// Empty, every design looks as it always has.
+struct ShareDesign: Equatable, Sendable {
+    /// For the Photo and the Story card; the others keep their own shape.
+    var size: ShareSize = .original
+    /// nil: the design's own (the blurred photo around a padded Photo, the
+    /// brand glow on cards).
+    var backdrop: ShareBackdrop?
+    /// Her words, already through `ContentPolicy`; a missing slot shows the design's own.
+    var texts: [ShareTextSlot: String] = [:]
+    var font: OverlayFont?
+    var color: OverlayColor?
+
+    func text(_ slot: ShareTextSlot) -> String? {
+        texts[slot].flatMap { $0.isEmpty ? nil : $0 }
+    }
+
+    /// The Story card's size: Stories unless she picked another.
+    var cardSize: ShareSize { size == .original ? .story : size }
+}
+
+extension CanvasRect {
+    init(_ rect: CGRect) {
+        self.init(x: rect.minX, y: rect.minY, width: rect.width, height: rect.height)
+    }
+
+    var cgRect: CGRect { CGRect(x: x, y: y, width: width, height: height) }
 }
 
 /// Renders share formats. Free exports of Aybuke's cloud AI results carry
@@ -83,30 +123,41 @@ enum ShareFormat: String, CaseIterable, Identifiable {
 /// collages and cards); on-device edits and Pro never do. Pure functions,
 /// safe off the main thread.
 enum ShareRenderer {
-    static func render(_ payload: SharePayload, format: ShareFormat, branded: Bool, showPrompt: Bool, aiLabel: Bool = false) -> UIImage {
-        let rendered = render(payload, format: format, branded: branded, showPrompt: showPrompt)
+    static func render(_ payload: SharePayload, format: ShareFormat, branded: Bool, showPrompt: Bool, aiLabel: Bool = false,
+                       design: ShareDesign = ShareDesign()) -> UIImage {
+        let rendered = render(payload, format: format, branded: branded, showPrompt: showPrompt, design: design)
         let provenance = payload.provenance
         guard aiLabel, provenance.carriesAIProvenance else { return rendered }
-        let reservedBottom: CGFloat = format.isStory ? 300 : format == .cover ? 70 : 0
+        let reservedBottom: CGFloat
+        switch format {
+        case .story: reservedBottom = ShareLayout.labelReserve(size: design.cardSize, isCard: true)
+        case .strip, .pick: reservedBottom = 300
+        case .cover: reservedBottom = 70
+        case .photo: reservedBottom = ShareLayout.labelReserve(size: design.size, isCard: false)
+        case .beforeAfter: reservedBottom = 0
+        }
         return addAILabel(to: rendered, text: provenance.isFullyGenerated ? String(localized: "Made with AI") : String(localized: "AI-edited"), reservedBottom: reservedBottom)
     }
 
-    private static func render(_ payload: SharePayload, format: ShareFormat, branded: Bool, showPrompt: Bool) -> UIImage {
+    private static func render(_ payload: SharePayload, format: ShareFormat, branded: Bool, showPrompt: Bool, design: ShareDesign) -> UIImage {
         let image = ImageUtilities.normalized(payload.image, maxLongEdge: 2048)
         switch format {
         case .photo:
-            return branded ? Watermark.apply(to: image) : image
+            // Sized for where she posts: the whole photo, the room around it filled.
+            guard let pixels = design.size.pixelSize else { return branded ? Watermark.apply(to: image) : image }
+            let padded = paddedPhoto(image, canvas: CGSize(width: pixels.width, height: pixels.height), backdrop: design.backdrop ?? .blur)
+            return branded ? Watermark.apply(to: padded) : padded
         case .beforeAfter:
             guard let original = payload.original else { return branded ? Watermark.apply(to: image) : image }
             return beforeAfter(before: ImageUtilities.normalized(original, maxLongEdge: 2048), after: image, branded: branded)
         case .story:
-            return storyCard(image, prompt: showPrompt ? payload.shareablePrompt : nil, branded: branded)
+            return storyCard(image, prompt: showPrompt ? payload.shareablePrompt : nil, branded: branded, design: design)
         case .cover:
-            return magazineCover(image, branded: branded)
+            return magazineCover(image, branded: branded, design: design)
         case .strip:
             let frames = payload.stripImages.map { ImageUtilities.normalized($0, maxLongEdge: 1400) }
             guard frames.count >= 2 else { return storyCard(image, prompt: nil, branded: branded) }
-            return photoStrip(frames, branded: branded)
+            return photoStrip(frames, branded: branded, design: design)
         case .pick:
             guard let pair = payload.pickPair else { return storyCard(image, prompt: nil, branded: branded) }
             return pickCard(
@@ -240,50 +291,122 @@ enum ShareRenderer {
 
     static let storySize = CGSize(width: 1080, height: 1920)
 
-    static func storyCard(_ image: UIImage, prompt: String?, branded: Bool) -> UIImage {
-        let canvas = storySize
+    /// The Story card: her photo tilted on the brand glow, in any size
+    /// (`StoryCardLayout` keeps it clear of the app's own buttons), with her
+    /// words or the prompt under it.
+    static func storyCard(_ image: UIImage, prompt: String?, branded: Bool, design: ShareDesign = ShareDesign()) -> UIImage {
+        let words = design.text(.storyLine)
+        let caption = words ?? prompt.map { "“\(String($0.prefix(110)))\($0.count > 110 ? "…" : "")”" }
+        let layout = StoryCardLayout(size: design.cardSize, branded: branded, hasCaption: caption != nil)
+        let canvas = CGSize(width: layout.canvas.width, height: layout.canvas.height)
+        let unit = layout.unit
+        let backdrop = design.backdrop ?? .glow
+        // Light type on a dark background, the free mark included.
+        let ink: UIColor = backdrop.isDark ? .white : .brandInk
         return renderer(canvas, opaque: true).image { context in
             let cg = context.cgContext
-            UIColor.brandBlush.setFill()
-            context.fill(CGRect(origin: .zero, size: canvas))
-            radialGlow(cg, center: CGPoint(x: 160, y: 260), radius: 760, color: .white, alpha: 0.75)
-            radialGlow(cg, center: CGPoint(x: 980, y: 1700), radius: 700, color: .brandPetal, alpha: 0.9)
+            drawBackdrop(backdrop, photo: image, canvas: canvas, context: cg) { brandGlow(cg, canvas: canvas) }
 
-            // Instagram keeps ~250 px at the top and bottom for its own UI.
-            let promptHeight: CGFloat = prompt == nil ? 0 : 190
-            let maxImage = CGSize(width: canvas.width - 220, height: canvas.height - 620 - promptHeight)
-            let imageSize = scaled(image.size, toFit: maxImage)
-            let frame = CGRect(
-                x: (canvas.width - imageSize.width) / 2,
-                y: 300 + (maxImage.height - imageSize.height) / 2,
-                width: imageSize.width,
-                height: imageSize.height
-            )
-
+            let frame = layout.photoFrame(imageWidth: image.size.width, imageHeight: image.size.height).cgRect
             cg.saveGState()
             cg.translateBy(x: frame.midX, y: frame.midY)
             cg.rotate(by: -2 * .pi / 180)
             cg.translateBy(x: -frame.midX, y: -frame.midY)
-            let border = frame.insetBy(dx: -18, dy: -18)
-            cg.setShadow(offset: CGSize(width: 0, height: 24), blur: 48, color: UIColor.brandInk.withAlphaComponent(0.22).cgColor)
+            let border = frame.insetBy(dx: -18 * unit, dy: -18 * unit)
+            cg.setShadow(offset: CGSize(width: 0, height: 24 * unit), blur: 48 * unit, color: UIColor.brandInk.withAlphaComponent(0.22).cgColor)
             UIColor.white.setFill()
-            UIBezierPath(roundedRect: border, cornerRadius: 52).fill()
+            UIBezierPath(roundedRect: border, cornerRadius: 52 * unit).fill()
             cg.setShadow(offset: .zero, blur: 0, color: nil)
-            drawRounded(image, in: frame, radius: 36, context: cg)
+            drawRounded(image, in: frame, radius: 36 * unit, context: cg)
             cg.restoreGState()
 
-            if let prompt {
-                let text = "“\(String(prompt.prefix(110)))\(prompt.count > 110 ? "…" : "")”"
-                drawText(text, font: brandFont(40, weight: .semibold), color: .brandInk,
-                         centeredIn: CGRect(x: 120, y: frame.maxY + 70, width: canvas.width - 240, height: promptHeight - 20), lines: 3)
+            if let caption, let rect = layout.caption(under: CanvasRect(frame))?.cgRect {
+                let font = words != nil ? (design.font?.uiFont(size: 46 * unit) ?? brandFont(44 * unit, weight: .bold))
+                                        : brandFont(40 * unit, weight: .semibold)
+                drawText(caption, font: font, color: words != nil ? (design.color?.uiColor ?? ink) : ink, centeredIn: rect, lines: 3)
             }
-            if branded {
-                drawText(Brand.name, font: brandFont(64, weight: .heavy), color: .brandInk,
-                         centeredIn: CGRect(x: 0, y: 150, width: canvas.width, height: 90))
-                drawText(String(localized: "Made with \(Brand.name) ✦  ·  \(Brand.tagline)"), font: brandFont(34, weight: .semibold), color: .brandInk,
-                         centeredIn: CGRect(x: 0, y: canvas.height - 300, width: canvas.width, height: 60))
+            if branded, let header = layout.header?.cgRect, let footer = layout.footer?.cgRect {
+                drawText(Brand.name, font: brandFont(64 * unit, weight: .heavy), color: ink, centeredIn: header)
+                drawText(String(localized: "Made with \(Brand.name) ✦  ·  \(Brand.tagline)"), font: brandFont(34 * unit, weight: .semibold), color: ink,
+                         centeredIn: footer)
             }
         }
+    }
+
+    // MARK: Sizes and backgrounds
+
+    /// The whole photo in a size for where she posts, the room around it filled.
+    static func paddedPhoto(_ image: UIImage, canvas: CGSize, backdrop: ShareBackdrop) -> UIImage {
+        renderer(canvas, opaque: true).image { context in
+            let cg = context.cgContext
+            drawBackdrop(backdrop, photo: image, canvas: canvas, context: cg) { brandGlow(cg, canvas: canvas) }
+            let frame = ShareLayout.fit(width: image.size.width, height: image.size.height,
+                                        in: CanvasRect(x: 0, y: 0, width: canvas.width, height: canvas.height))
+            image.draw(in: frame.cgRect)
+        }
+    }
+
+    /// The brand glow: blush with soft white and petal light, as on the Story card.
+    static func brandGlow(_ cg: CGContext, canvas: CGSize) {
+        let unit = min(canvas.width, canvas.height) / 1080
+        UIColor.brandBlush.setFill()
+        cg.fill(CGRect(origin: .zero, size: canvas))
+        radialGlow(cg, center: CGPoint(x: 160 * unit, y: 260 * unit), radius: 760 * unit, color: .white, alpha: 0.75)
+        radialGlow(cg, center: CGPoint(x: canvas.width - 100 * unit, y: canvas.height - 220 * unit), radius: 700 * unit, color: .brandPetal, alpha: 0.9)
+    }
+
+    /// Behind a design: its own glow (`glow`), her photo blurred, or a colour.
+    static func drawBackdrop(_ backdrop: ShareBackdrop, photo: UIImage, canvas: CGSize, context cg: CGContext, glow: () -> Void) {
+        let bounds = CGRect(origin: .zero, size: canvas)
+        switch backdrop {
+        case .glow:
+            glow()
+        case .blur:
+            guard let blurred = blurredBackdrop(photo) else { return glow() }
+            cg.saveGState()
+            cg.interpolationQuality = .high
+            blurred.draw(in: fillRect(for: blurred.size, in: bounds, face: nil))
+            cg.restoreGState()
+            // A light veil keeps it calm behind the photo and the type.
+            UIColor.white.withAlphaComponent(0.14).setFill()
+            cg.fill(bounds)
+        case .color(let swatch):
+            UIColor(hex: swatch.hex).setFill()
+            cg.fill(bounds)
+        }
+    }
+
+    /// Her photo, small and heavily blurred: soft colour, no detail.
+    static func blurredBackdrop(_ image: UIImage) -> UIImage? {
+        guard let cgImage = image.cgImage else { return nil }
+        let source = CIImage(cgImage: cgImage)
+        let scale = 240 / max(source.extent.width, source.extent.height, 1)
+        let small = source.transformed(by: CGAffineTransform(scaleX: scale, y: scale))
+        let blurred = small.clampedToExtent().applyingGaussianBlur(sigma: 12).cropped(to: small.extent)
+        guard let output = ImageFilters.context.createCGImage(blurred, from: small.extent.integral) else { return nil }
+        return UIImage(cgImage: output)
+    }
+
+    /// The largest size of `make` (down to `minimum`) at which `text` fits
+    /// `width` on one line, or `width` × `height` when it may wrap.
+    static func fittedFont(_ text: String, width: CGFloat, height: CGFloat? = nil, from size: CGFloat, minimum: CGFloat,
+                           lineHeight: CGFloat = 1, kern: CGFloat = 0, make: (CGFloat) -> UIFont) -> UIFont {
+        var size = size
+        while size > minimum {
+            let font = make(size)
+            if let height {
+                let paragraph = NSMutableParagraphStyle()
+                paragraph.lineHeightMultiple = lineHeight
+                let bounds = (text as NSString).boundingRect(with: CGSize(width: width, height: .greatestFiniteMagnitude),
+                                                             options: [.usesLineFragmentOrigin, .usesFontLeading],
+                                                             attributes: [.font: font, .paragraphStyle: paragraph], context: nil)
+                if bounds.height <= height { return font }
+            } else if (text as NSString).size(withAttributes: [.font: font, .kern: kern]).width <= width {
+                return font
+            }
+            size -= 2
+        }
+        return make(minimum)
     }
 
     // MARK: Drawing helpers

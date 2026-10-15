@@ -2,9 +2,11 @@ import SwiftUI
 import UniformTypeIdentifiers
 import AppCore
 
-/// "Share your glow": pick a format (photo, before/after collage, 9:16 story
-/// card), edit the caption, then send it to Instagram Stories, Photos, the
-/// clipboard or any app. Every export keeps the AI provenance metadata.
+/// "Share your glow": pick a format (photo, before/after collage, story
+/// card…), a size for where she posts, a background and her own words where
+/// the design has them, edit the caption, then send it to Instagram Stories,
+/// Photos, the clipboard or any app. Every export keeps the AI provenance
+/// metadata, and the free mark stays as it is.
 struct ShareComposerView: View {
     let payload: SharePayload
 
@@ -24,6 +26,18 @@ struct ShareComposerView: View {
     @State private var loadingWriter: WrittenBy = .device
     @State private var isLoadingIdeas = false
     @State private var faces = ShareFaceHiding()
+    /// Where she posts (Photo and Story card).
+    @State private var size: ShareSize = .original
+    /// nil: the design's own.
+    @State private var backdrop: ShareBackdrop?
+    /// Her words as typed, and as drawn once they passed the text rules.
+    @State private var drafts: [ShareTextSlot: String] = [:]
+    @State private var texts: [ShareTextSlot: String] = [:]
+    @State private var textFont: OverlayFont?
+    @State private var textColor: OverlayColor?
+    @State private var editsText = false
+    @State private var textNotice: String?
+    @FocusState private var focusedSlot: ShareTextSlot?
 
     /// On-device edits are never branded; free cloud AI results are.
     private var branded: Bool { payload.provenance.showsMark(isPro: app.purchases.isPro) }
@@ -42,13 +56,33 @@ struct ShareComposerView: View {
 
     private var instagramReady: Bool { InstagramStories.isAvailable(appID: app.config.instagramAppID) }
 
+    private var design: ShareDesign {
+        ShareDesign(size: format == .story ? (size == .original ? .story : size) : size,
+                    backdrop: backdrop, texts: texts, font: textFont, color: textColor)
+    }
+
+    /// The size the chosen design comes out in.
+    private var shownSize: ShareSize { format == .story && size == .original ? .story : size }
+
+    /// A background shows: the cards always, the Photo when its size leaves room.
+    private var showsBackdrops: Bool {
+        switch format {
+        case .story, .strip: return true
+        case .photo: return ShareLayout.showsBackdrop(imageWidth: payload.image.size.width, imageHeight: payload.image.size.height, size: size)
+        case .beforeAfter, .cover, .pick: return false
+        }
+    }
+
+    private var shownBackdrop: ShareBackdrop { backdrop ?? (format == .photo ? .blur : .glow) }
+
     var body: some View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 22) {
                     preview
                     formatPicker
-                    if format == .story, payload.shareablePrompt != nil {
+                    designControls
+                    if format == .story, payload.shareablePrompt != nil, texts[.storyLine] == nil {
                         Toggle("Show my prompt on the card", isOn: $showPrompt)
                             .font(.subheadline.weight(.semibold))
                             .tint(Palette.accent)
@@ -96,8 +130,18 @@ struct ShareComposerView: View {
             }
         }
         .tint(Palette.accent)
-        .task(id: RenderKey(format: format, showPrompt: showPrompt, branded: branded, aiLabel: showsAILabel, faces: faces.plan)) {
+        .task(id: RenderKey(format: format, showPrompt: showPrompt, branded: branded, aiLabel: showsAILabel, faces: faces.plan, design: design)) {
             await render()
+        }
+        // Her words are drawn a moment after she stops typing, once they pass the text rules.
+        .task(id: drafts) {
+            try? await Task.sleep(for: .milliseconds(500))
+            guard !Task.isCancelled else { return }
+            commitTexts()
+        }
+        .onChange(of: format) { _, newFormat in
+            textNotice = nil
+            if newFormat.textSlots.isEmpty { editsText = false }
         }
         .task {
             app.writer.prewarm()
@@ -113,6 +157,21 @@ struct ShareComposerView: View {
             if ScreenshotScene.current == .share, payload.original != nil {
                 // `-GLShareFormat pick` shows another format in screenshots.
                 format = UserDefaults.standard.string(forKey: "GLShareFormat").flatMap(ShareFormat.init(rawValue:)) ?? .beforeAfter
+            }
+            if ScreenshotScene.current == .share {
+                // `-GLShareSize story`, `-GLShareBackdrop blur|glow|<swatch>`, `-GLShareText "…"`
+                // (the design's first text), `-GLShareFont <font>`, `-GLShareTextColor <colour>`
+                // and `-GLShareTextEditor YES` show the design controls.
+                let defaults = UserDefaults.standard
+                if let picked = defaults.string(forKey: "GLShareSize").flatMap(ShareSize.init(rawValue:)) { size = picked }
+                if let picked = defaults.string(forKey: "GLShareBackdrop").flatMap(ShareBackdrop.init(id:)) { backdrop = picked }
+                if let words = defaults.string(forKey: "GLShareText"), let slot = format.textSlots.first {
+                    drafts[slot] = words
+                    commitTexts()
+                }
+                textFont = defaults.string(forKey: "GLShareFont").flatMap(OverlayFont.init(rawValue:))
+                textColor = defaults.string(forKey: "GLShareTextColor").flatMap(OverlayColor.init(rawValue:))
+                editsText = defaults.bool(forKey: "GLShareTextEditor") && !format.textSlots.isEmpty
             }
             #endif
         }
@@ -139,7 +198,83 @@ struct ShareComposerView: View {
         .frame(height: 360)
         .padding(.top, 8)
         .animation(.easeInOut(duration: 0.2), value: rendered)
+        // A tap on a design with words opens its text.
+        .contentShape(Rectangle())
+        .onTapGesture {
+            guard let first = format.textSlots.first else { return }
+            withAnimation(.snappy) { editsText = true }
+            focusedSlot = first
+        }
+        .accessibilityElement(children: .ignore)
         .accessibilityLabel("Preview of the \(format.title.lowercased()) you're sharing")
+        .accessibilityAddTraits(format.textSlots.isEmpty ? .isImage : [.isImage, .isButton])
+        .accessibilityHint(format.textSlots.isEmpty ? Text(verbatim: "") : Text("Edits the text on it", comment: "Accessibility hint of the share preview on designs with text"))
+    }
+
+    // MARK: Design
+
+    /// Size, background and text, each only where the design uses it.
+    @ViewBuilder
+    private var designControls: some View {
+        if format.offersSizes {
+            ShareSizeRow(sizes: format == .photo ? ShareSize.allCases : ShareSize.cardSizes, selected: shownSize) { picked in
+                size = picked
+            }
+            .transition(.opacity)
+        }
+        if showsBackdrops {
+            ShareBackdropRow(photo: payload.image, selected: shownBackdrop) { picked in
+                backdrop = picked
+            }
+            .transition(.opacity)
+        }
+        if !format.textSlots.isEmpty {
+            if editsText {
+                ShareTextEditor(slots: format.textSlots, drafts: $drafts, font: $textFont, color: $textColor, notice: textNotice,
+                                focus: $focusedSlot) {
+                    commitTexts()
+                    focusedSlot = nil
+                    withAnimation(.snappy) { editsText = false }
+                }
+                .onSubmit { commitTexts() }
+                .transition(.opacity.combined(with: .move(edge: .top)))
+            } else {
+                Button {
+                    withAnimation(.snappy) { editsText = true }
+                    focusedSlot = format.textSlots.first
+                } label: {
+                    Label("Edit text", systemImage: "textformat")
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(Palette.textPrimary)
+                        .padding(.horizontal, 16)
+                        .frame(minHeight: 44)
+                        .background(Palette.surface, in: .chip)
+                        .overlay(RoundedRectangle.chip.strokeBorder(Palette.stroke, lineWidth: 1))
+                }
+                .buttonStyle(.pressable)
+                .transition(.opacity)
+            }
+        }
+    }
+
+    /// Draws what she typed once it passes the same rules as text on a
+    /// photo; a blocked word keeps the last good text and says why.
+    private func commitTexts() {
+        var notice: String?
+        for slot in ShareTextSlot.allCases {
+            let cleaned = slot.clean(drafts[slot] ?? "")
+            if cleaned.isEmpty {
+                if texts[slot] != nil { texts[slot] = nil }
+                continue
+            }
+            if case .blocked(let reason, _) = ContentPolicy.evaluate(cleaned, operation: .textToImage) {
+                notice = L10n.core(reason)
+                continue
+            }
+            if texts[slot] != cleaned { texts[slot] = cleaned }
+        }
+        if notice != nil && notice != textNotice { Haptics.error() }
+        textNotice = notice
     }
 
     /// Every design in view on the Mac (wrapped), a sideways row elsewhere.
@@ -346,6 +481,7 @@ struct ShareComposerView: View {
         let branded: Bool
         let aiLabel: Bool
         let faces: ShareFaceHiding.Plan?
+        let design: ShareDesign
     }
 
     private func render() async {
@@ -355,8 +491,9 @@ struct ShareComposerView: View {
         let showPrompt = showPrompt
         let branded = branded
         let aiLabel = showsAILabel
+        let design = design
         let image = await Task.detached(priority: .userInitiated) {
-            ShareRenderer.render(payload, format: format, branded: branded, showPrompt: showPrompt, aiLabel: aiLabel)
+            ShareRenderer.render(payload, format: format, branded: branded, showPrompt: showPrompt, aiLabel: aiLabel, design: design)
         }.value
         guard !Task.isCancelled else { return }
         rendered = image
@@ -422,7 +559,9 @@ struct ShareComposerView: View {
         let appID = app.config.instagramAppID
         if InstagramStories.isAvailable(appID: appID) {
             UIPasteboard.general.string = caption
-            let opened = await InstagramStories.share(rendered, asBackground: format.isStory, sourceType: payload.provenance.sourceType, appID: appID)
+            // 9:16 fills the Story; any other size goes on it as a sticker.
+            let asBackground = ShareLayout.isStoryShaped(width: rendered.size.width, height: rendered.size.height)
+            let opened = await InstagramStories.share(rendered, asBackground: asBackground, sourceType: payload.provenance.sourceType, appID: appID)
             if opened {
                 app.countHappyMoment()
                 app.ads.noteFinishedExport()

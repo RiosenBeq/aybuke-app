@@ -719,6 +719,22 @@ final class EditorViewModel {
         Haptics.selection()
     }
 
+    /// One of her saved filters: every slider and the vibe it was built on;
+    /// the same one again takes it off, like a vibe.
+    func applyMyFilter(_ filter: MyFilter) {
+        withAnimation(.snappy) {
+            if adjustments == filter.settings {
+                adjustments = .neutral
+                adjustVibe = nil
+            } else {
+                adjustments = filter.settings
+                adjustVibe = filter.vibe
+            }
+        }
+        updateAdjustPreview()
+        Haptics.selection()
+    }
+
     // MARK: Effects (on-device)
 
     func loadEffectThumbnails() async {

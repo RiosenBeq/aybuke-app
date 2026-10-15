@@ -6,6 +6,8 @@ struct SelectableChip: View {
     var symbolName: String?
     let isSelected: Bool
     var isLocked = false
+    /// A name she typed (a saved filter), shown as is in place of `title`.
+    var verbatimTitle: String?
     let action: () -> Void
 
     @Environment(\.accessibilityDifferentiateWithoutColor) private var differentiateWithoutColor
@@ -48,7 +50,14 @@ struct SelectableChip: View {
     }
 
     private var titleText: Text {
-        Text(title).font(.subheadline.weight(isSelected ? .bold : .semibold))
+        (verbatimTitle.map { Text(verbatim: $0) } ?? Text(title)).font(.subheadline.weight(isSelected ? .bold : .semibold))
+    }
+}
+
+extension SelectableChip {
+    /// A chip named by her (a saved filter): the name is never looked up in the catalog.
+    init(verbatim name: String, symbolName: String? = nil, isSelected: Bool, action: @escaping () -> Void) {
+        self.init(title: "", symbolName: symbolName, isSelected: isSelected, verbatimTitle: name, action: action)
     }
 }
 

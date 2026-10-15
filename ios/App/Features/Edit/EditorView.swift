@@ -15,6 +15,11 @@ struct EditorView: View {
     @State private var isSaving = false
     @State private var zoom = CanvasZoom()
     @State private var isZoomed = false
+    /// The "2×" badge's number while it shows (nil at fit).
+    @State private var zoomBadge: Double?
+    @State private var showsZoomBadge = false
+    /// Focus mode: one tap on the photo hides the bars, another brings them back.
+    @State private var isFocused = false
     @State private var ideasDismissed = false
     @State private var ideasShown = false
     /// Mac: the window's width, for the inspector beside the photo.
@@ -72,6 +77,15 @@ struct EditorView: View {
                 try? await Task.sleep(for: .seconds(1.5))
                 await model.applyOverlays()
             }
+            // Screenshot QA: -GLFocusMode YES hides the bars, -GLHoldOriginal YES
+            // shows the original as a held finger would.
+            if ScreenshotScene.current != nil {
+                if UserDefaults.standard.bool(forKey: "GLFocusMode") { isFocused = true }
+                if UserDefaults.standard.bool(forKey: "GLHoldOriginal") {
+                    try? await Task.sleep(for: .seconds(1))
+                    model.isHoldingOriginal = true
+                }
+            }
             #endif
             await model.checkForOtherPeople()
         }
@@ -86,6 +100,25 @@ struct EditorView: View {
             registerClose()
         }
         .onChange(of: isUnderAppSheet) { _, _ in registerClose() }
+        // A new tool starts at fit, with every bar in view.
+        .onChange(of: model.activeTool) { _, _ in
+            isFocused = false
+            zoomBadge = nil
+            showsZoomBadge = false
+        }
+        .onChange(of: model.isProcessing) { _, processing in
+            if processing { isFocused = false }
+        }
+        .task(id: zoomBadge) {
+            // The badge says the zoom, then fades.
+            guard zoomBadge != nil else { return }
+            #if DEBUG
+            if ScreenshotScene.current != nil, UserDefaults.standard.double(forKey: "GLCanvasZoom") > 1 { return }
+            #endif
+            try? await Task.sleep(for: .seconds(1.2))
+            guard !Task.isCancelled else { return }
+            withAnimation(.easeOut(duration: 0.4)) { showsZoomBadge = false }
+        }
         .onDisappear {
             if app.activeEditor === model {
                 app.activeEditor = nil
@@ -133,14 +166,28 @@ struct EditorView: View {
         VStack(spacing: 0) {
             topBar
                 .disabled(model.isProcessing)
-                // Typing covers it; only its Esc shortcut stays.
-                .opacity(isTypingOverlayText ? 0 : 1)
+                // Typing covers it, and so does focus mode; only its
+                // shortcuts (Esc, ⌘S) stay.
+                .opacity(isTypingOverlayText || isFocused ? 0 : 1)
+                .allowsHitTesting(!isFocused)
                 .background { applyShortcut }
             canvas
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .padding(.horizontal, 12)
                 .padding(.vertical, 8)
                 .overlay { SparkleBurst(trigger: model.celebration) }
+            if !isFocused {
+                stackedPanels
+                    .transition(.move(edge: .bottom).combined(with: .opacity))
+            }
+        }
+        .animation(.snappy, value: isFocused)
+    }
+
+    /// Under the photo: the kindness note, a result's retry, ideas, the
+    /// tool's panel and the tool bar. Focus mode hides them all.
+    private var stackedPanels: some View {
+        VStack(spacing: 0) {
             Group {
                 if model.showsKindnessNote && !model.isProcessing {
                     kindnessNote
@@ -168,6 +215,14 @@ struct EditorView: View {
             toolBar
                 .disabled(model.isProcessing)
         }
+    }
+
+    /// One tap on the photo hides the bars (iPhone, iPad and a narrow Mac
+    /// window); tools that use taps themselves keep them.
+    private func toggleFocus() {
+        guard !usesInspector, !model.isProcessing else { return }
+        isFocused.toggle()
+        Haptics.tap()
     }
 
     /// A wide Mac window: the photo keeps the middle with the tool bar under
@@ -418,6 +473,10 @@ struct EditorView: View {
     /// compare; Text & Stickers needs the canvas for its own gestures.
     private var canCompare: Bool { model.hasChanges && model.activeTool != .crop && model.activeTool != .textStickers }
 
+    /// Holding the photo shows the original once anything changed, a
+    /// previewed effect or adjustment included.
+    private var canHoldForOriginal: Bool { model.hasChanges || model.pendingPreview != nil }
+
     // MARK: Canvas
 
     @ViewBuilder
@@ -454,9 +513,16 @@ struct EditorView: View {
                     image: model.displayImage,
                     zoom: zoom,
                     onHold: { pressing in
-                        if model.hasChanges { model.isHoldingOriginal = pressing }
+                        if canHoldForOriginal || !pressing { model.isHoldingOriginal = pressing }
                     },
-                    onZoomChange: { isZoomed = $0 }
+                    onZoomChange: { isZoomed = $0 },
+                    onScale: { scale in
+                        let value = CanvasZoomMath.badgeValue(for: Double(scale))
+                        guard value != zoomBadge else { return }
+                        zoomBadge = value
+                        withAnimation(.easeOut(duration: 0.15)) { showsZoomBadge = value != nil }
+                    },
+                    onTap: usesInspector ? nil : { toggleFocus() }
                 )
                 // A fresh canvas (fit) for every tool and every step.
                 .id("\(model.activeTool?.rawValue ?? "")-\(model.historyVersion)")
@@ -467,23 +533,48 @@ struct EditorView: View {
             .clipShape(.control)
             .shadow(color: Palette.shadow, radius: 16, y: 8)
             .overlay(alignment: .bottom) {
-                if model.hasChanges && !model.isHoldingOriginal && !isZoomed {
-                    Text("Hold to see original")
-                        .font(.legibleCaption2.weight(.semibold))
-                        .foregroundStyle(.white.opacity(0.95))
-                        .padding(.horizontal, 10)
-                        .padding(.vertical, 5)
-                        .background(Palette.ink.opacity(reduceTransparency ? 0.9 : 0.65), in: .tag)
-                        .padding(10)
+                if canHoldForOriginal && !model.isHoldingOriginal && !isZoomed && !isFocused {
+                    canvasPill(Text("Hold to see original"))
+                        .transition(.opacity)
                 }
             }
+            .overlay(alignment: .top) {
+                if model.isHoldingOriginal {
+                    canvasPill(Text("Original"))
+                        .transition(.opacity)
+                }
+            }
+            .overlay(alignment: .topTrailing) {
+                if showsZoomBadge, let zoomBadge {
+                    canvasPill(Text(verbatim: zoomBadge.formatted(.number.precision(.fractionLength(0...1))) + "×"))
+                        .monospacedDigit()
+                        .transition(.opacity)
+                        .accessibilityHidden(true)
+                }
+            }
+            .animation(.easeOut(duration: 0.15), value: model.isHoldingOriginal)
             .accessibilityElement(children: .ignore)
             .accessibilityLabel(model.isHoldingOriginal ? "Original photo" : "Edited photo")
             .accessibilityAddTraits(.isImage)
             .accessibilityZoomAction { action in
                 zoom.step(zoomIn: action.direction == .zoomIn)
             }
+            .accessibilityAction(named: isFocused ? Text("Show tools", comment: "VoiceOver action on the editor's photo: brings back the bars focus mode hid")
+                                                  : Text("Hide tools", comment: "VoiceOver action on the editor's photo: focus mode, only the photo on screen")) {
+                toggleFocus()
+            }
         }
+    }
+
+    /// A small dark label on the photo ("Hold to see original", "Original", "2×").
+    private func canvasPill(_ text: Text) -> some View {
+        text
+            .font(.legibleCaption2.weight(.semibold))
+            .foregroundStyle(.white.opacity(0.95))
+            .padding(.horizontal, 10)
+            .padding(.vertical, 5)
+            .background(Palette.ink.opacity(reduceTransparency ? 0.9 : 0.65), in: .tag)
+            .padding(10)
     }
 
     /// Under a fresh cloud result: Likeness Lock's free retry (people edits)
@@ -698,6 +789,8 @@ struct EditorView: View {
             AdjustPanel(
                 settings: $model.adjustments,
                 vibe: model.adjustVibe,
+                myFilters: app.myFilters,
+                onMyFilter: { model.applyMyFilter($0) },
                 onAuto: { model.autoAdjust() },
                 onVibe: { model.pickVibe($0) },
                 onChange: { model.updateAdjustPreview() },

@@ -197,6 +197,8 @@ final class AppModel {
     let cloudWriter: CloudWriter?
     /// Create's recent prompts and draft, kept only on this device.
     let prompts: PromptHistory
+    /// Adjust's saved filters ("My filters"), kept only on this device.
+    let myFilters: MyFiltersStore
     /// Rewarded and interstitial ads for free members 13+ (see `AdCoordinator`).
     let ads: AdCoordinator
 
@@ -245,7 +247,7 @@ final class AppModel {
         static let wiped = [
             onboarding, onboardingPaywallPending, consent, ageRecord, interests, successfulSaves, reviewPolicy, appearance, deletionRequested,
             "credits.wallet.v2", "notifications.preferences.v1", "notifications.readyPingDeclined", "tour.seen.v1",
-            PromptHistory.recentKey, PromptHistory.draftKey, AdCoordinator.pacingKey, AdCoordinator.usedKey,
+            PromptHistory.recentKey, PromptHistory.draftKey, MyFiltersStore.key, AdCoordinator.pacingKey, AdCoordinator.usedKey,
             PurchaseManager.purchasedKey,
         ] + legacyConsent
         static let wipedKeychain = [appleUserID, "auth.session", "auth.pendingMerge", "auth.pendingAppleCode"]
@@ -260,8 +262,13 @@ final class AppModel {
         // `-GLKeepPrompts YES` asks for the stored ones (QA).
         let keepsPrompts = ScreenshotScene.current == nil || UserDefaults.standard.bool(forKey: "GLKeepPrompts")
         self.prompts = PromptHistory(defaults: keepsPrompts ? defaults : nil)
+        // `-GLMyFilters YES` shows a few saved filters in Adjust, in memory only.
+        let myFilters = MyFiltersStore(defaults: ScreenshotScene.current == nil ? defaults : nil)
+        if ScreenshotScene.current != nil, UserDefaults.standard.bool(forKey: "GLMyFilters") { myFilters.seedForScreenshots() }
+        self.myFilters = myFilters
         #else
         self.prompts = PromptHistory(defaults: defaults)
+        self.myFilters = MyFiltersStore(defaults: defaults)
         #endif
         self.hasCompletedOnboarding = defaults.bool(forKey: Keys.onboarding)
         self.consentRecord = AIConsentRecord.decode(defaults.data(forKey: Keys.consent))
@@ -661,6 +668,7 @@ final class AppModel {
         tour.reset()
         GlowTips.eraseAll()
         prompts.reset()
+        myFilters.reset()
         ads.reset()
         credits.resetAll()
         purchases.forgetPurchases()

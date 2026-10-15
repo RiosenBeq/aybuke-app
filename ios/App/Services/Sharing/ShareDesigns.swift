@@ -111,8 +111,9 @@ extension ShareRenderer {
 
     /// "Cover star": a 4:5 magazine cover. When Vision finds a person, the
     /// masthead tucks behind her head like a real cover. Cover lines, a
-    /// "100% you" sticker and a barcode finish it. Feed-ready.
-    static func magazineCover(_ image: UIImage, branded: Bool, date: Date = Date()) -> UIImage {
+    /// "100% you" sticker and a barcode finish it. Feed-ready. She can
+    /// retitle it and write her own headline, in her font and colour.
+    static func magazineCover(_ image: UIImage, branded: Bool, design: ShareDesign = ShareDesign(), date: Date = Date()) -> UIImage {
         let canvas = coverSize
         let subject = SubjectAnalysis.analyze(image, includingCutout: true)
         let photo = fillRect(for: image.size, in: CGRect(origin: .zero, size: canvas), face: subject.face, faceAnchor: CGPoint(x: 0.5, y: 0.46))
@@ -129,13 +130,18 @@ extension ShareRenderer {
         // Behind her head only when that still leaves most of the word readable.
         let tucksBehind = subject.cutout != nil && coverage > 0.02 && coverage < 0.36
         let ink: UIColor = topIsLight ? .brandInk : .white
+        let masthead = design.text(.coverMasthead) ?? String(localized: "GLOW", comment: "Magazine cover masthead")
+        let headline = design.text(.coverHeadline) ?? String(localized: "Main character\nenergy", comment: "Magazine cover headline, two short lines")
+        let headlineFont = fittedFont(headline, width: 700, height: 200, from: 84, minimum: 48, lineHeight: 0.98) { size in
+            design.font?.uiFont(size: size) ?? accentFont(size)
+        }
 
         return renderer(canvas, opaque: true).image { context in
             let cg = context.cgContext
             image.draw(in: photo)
             shade(cg, from: canvas.height - 640, to: canvas.height, width: canvas.width, alpha: 0.6)
 
-            drawMasthead(String(localized: "GLOW", comment: "Magazine cover masthead"), in: band, color: ink, context: cg)
+            drawMasthead(masthead, in: band, color: design.color?.uiColor ?? ink, font: design.font, context: cg)
             if tucksBehind, let cutout = subject.cutout {
                 cg.saveGState()
                 cg.clip(to: CGRect(x: 0, y: 0, width: canvas.width, height: band.maxY))
@@ -152,8 +158,8 @@ extension ShareRenderer {
             let left: CGFloat = 52
             drawPill(String(localized: "THE GLOW ISSUE"), font: brandFont(24, weight: .heavy), fill: .brandBlush, color: .brandInk,
                      at: CGPoint(x: left, y: 806), kern: 2)
-            drawLeft(String(localized: "Main character\nenergy", comment: "Magazine cover headline, two short lines"),
-                     font: accentFont(84), color: .white, at: CGPoint(x: left, y: 862), maxWidth: 700, shadow: true, lineHeight: 0.98)
+            drawLeft(headline, font: headlineFont, color: design.color?.uiColor ?? .white, at: CGPoint(x: left, y: 862), maxWidth: 700,
+                     shadow: true, lineHeight: 0.98)
             drawLeft(String(localized: "10 looks that are so you"), font: brandFont(34, weight: .bold), color: .white,
                      at: CGPoint(x: left, y: 1080), maxWidth: 640, shadow: true)
             drawLeft(String(localized: "Glow-up secrets, unlocked"), font: brandFont(30, weight: .semibold), color: .white,
@@ -170,8 +176,9 @@ extension ShareRenderer {
     }
 
     /// "Photo strip": two to four frames in a black booth strip on a pink
-    /// story background, date-stamped like a real photo booth.
-    static func photoStrip(_ images: [UIImage], branded: Bool, date: Date = Date()) -> UIImage {
+    /// story background, date-stamped like a real photo booth, or with her
+    /// own caption in place of the date.
+    static func photoStrip(_ images: [UIImage], branded: Bool, design: ShareDesign = ShareDesign(), date: Date = Date()) -> UIImage {
         let canvas = storySize
         let frames = Array(images.prefix(4))
         let count = CGFloat(max(frames.count, 1))
@@ -181,16 +188,21 @@ extension ShareRenderer {
         let frameHeight = ((height - footer - gap * (count + 1)) / count).rounded(.down)
         let frameWidth = (frameHeight * 0.8).rounded()
         let strip = CGRect(x: ((canvas.width - frameWidth - gap * 2) / 2).rounded(), y: 245, width: frameWidth + gap * 2, height: height)
+        let backdrop = design.backdrop ?? .glow
+        // The glow-up, blurred, behind a "blur" background.
+        let blurSource = frames.count > 1 ? frames[1] : frames[0]
 
         return renderer(canvas, opaque: true).image { context in
             let cg = context.cgContext
-            let colors = [UIColor.brandBlush.cgColor, UIColor.brandPetal.cgColor] as CFArray
-            if let gradient = CGGradient(colorsSpace: CGColorSpaceCreateDeviceRGB(), colors: colors, locations: [0, 1]) {
-                cg.drawLinearGradient(gradient, start: .zero, end: CGPoint(x: 0, y: canvas.height), options: [])
+            drawBackdrop(backdrop, photo: blurSource, canvas: canvas, context: cg) {
+                let colors = [UIColor.brandBlush.cgColor, UIColor.brandPetal.cgColor] as CFArray
+                if let gradient = CGGradient(colorsSpace: CGColorSpaceCreateDeviceRGB(), colors: colors, locations: [0, 1]) {
+                    cg.drawLinearGradient(gradient, start: .zero, end: CGPoint(x: 0, y: canvas.height), options: [])
+                }
+                radialGlow(cg, center: CGPoint(x: 150, y: 360), radius: 640, color: .white, alpha: 0.7)
+                radialGlow(cg, center: CGPoint(x: 960, y: 1620), radius: 640, color: .auraLilac, alpha: 0.3)
+                scatterDoodles(in: canvas, avoiding: strip.insetBy(dx: -40, dy: -20))
             }
-            radialGlow(cg, center: CGPoint(x: 150, y: 360), radius: 640, color: .white, alpha: 0.7)
-            radialGlow(cg, center: CGPoint(x: 960, y: 1620), radius: 640, color: .auraLilac, alpha: 0.3)
-            scatterDoodles(in: canvas, avoiding: strip.insetBy(dx: -40, dy: -20))
 
             cg.saveGState()
             cg.translateBy(x: strip.midX, y: strip.midY)
@@ -200,6 +212,12 @@ extension ShareRenderer {
             UIColor.brandInk.setFill()
             cg.fill(strip)
             cg.setShadow(offset: .zero, blur: 0, color: nil)
+            if backdrop.isDark {
+                // A white edge, so the black strip stands out on black.
+                UIColor.white.setStroke()
+                cg.setLineWidth(8)
+                cg.stroke(strip.insetBy(dx: -4, dy: -4))
+            }
             for (index, image) in frames.enumerated() {
                 let frame = CGRect(x: strip.minX + gap, y: strip.minY + gap + CGFloat(index) * (frameHeight + gap), width: frameWidth, height: frameHeight)
                 let face = SubjectAnalysis.analyze(image, includingCutout: false).face
@@ -209,10 +227,14 @@ extension ShareRenderer {
                 cg.restoreGState()
             }
             let stamp = date.formatted(.dateTime.day(.twoDigits).month(.twoDigits).year(.twoDigits))
-            let label = branded ? "\(Brand.name.uppercased()) ✦ \(stamp)" : "✦ \(stamp) ✦"
-            let typewriter = UIFont(name: "Courier-Bold", size: 34) ?? .monospacedSystemFont(ofSize: 34, weight: .bold)
-            drawText(label, font: typewriter, color: .white,
-                     centeredIn: CGRect(x: strip.minX, y: strip.maxY - footer, width: strip.width, height: footer - gap / 2))
+            // Her caption takes the date's place; the free mark stays in front.
+            let words = design.text(.stripCaption) ?? stamp
+            let label = branded ? "\(Brand.name.uppercased()) ✦ \(words)" : "✦ \(words) ✦"
+            let typewriter = fittedFont(label, width: strip.width - gap * 2, from: 34, minimum: 18) { size in
+                design.font?.uiFont(size: size) ?? UIFont(name: "Courier-Bold", size: size) ?? .monospacedSystemFont(ofSize: size, weight: .bold)
+            }
+            drawText(label, font: typewriter, color: design.color?.uiColor ?? .white,
+                     centeredIn: CGRect(x: strip.minX + gap, y: strip.maxY - footer, width: strip.width - gap * 2, height: footer - gap / 2))
             cg.restoreGState()
 
             drawSymbol("heart.fill", in: CGRect(x: strip.maxX - 54, y: strip.minY - 58, width: 118, height: 118), color: .auraPink, outline: .white, angle: 14)
@@ -222,12 +244,14 @@ extension ShareRenderer {
 
     // MARK: Cover parts
 
-    /// The masthead, fitted to the band's width.
-    private static func drawMasthead(_ text: String, in band: CGRect, color: UIColor, context: CGContext) {
-        let probe = brandFont(100, weight: .heavy)
+    /// The masthead, fitted to the band's width, in the brand's heavy
+    /// Poppins or the font she picked.
+    private static func drawMasthead(_ text: String, in band: CGRect, color: UIColor, font picked: OverlayFont? = nil, context: CGContext) {
+        let make: (CGFloat) -> UIFont = { size in picked?.uiFont(size: size) ?? brandFont(size, weight: .heavy) }
+        let probe = make(100)
         let probeWidth = (text as NSString).size(withAttributes: [.font: probe, .kern: -4]).width
         let size = min(300, 100 * band.width / max(probeWidth, 1))
-        let font = brandFont(size, weight: .heavy)
+        let font = make(size)
         let shadow = NSShadow()
         shadow.shadowColor = UIColor.black.withAlphaComponent(color == .white ? 0.22 : 0)
         shadow.shadowBlurRadius = 24
