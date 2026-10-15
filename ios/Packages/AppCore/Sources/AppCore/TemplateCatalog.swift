@@ -245,7 +245,7 @@ public enum TemplateCatalog {
         PhotoTemplate(
             id: "ballet", title: "Ballet Core", subtitle: "Satin bows & tulle",
             category: .aesthetic,
-            prompt: "Restyle the photo with a soft balletcore aesthetic: satin ribbon bows in the hair, a pastel pink wrap cardigan with a flowing tulle skirt, a sunlit dance studio with a barre and tall mirrors, and airy pastel light. \(identityClause)",
+            prompt: "Restyle the photo with a soft balletcore aesthetic: satin ribbon bows in the hair, a pastel pink wrap cardigan with a flowing tulle skirt, a sunlit dance studio with a barre and tall mirrors, and airy pastel light. \(modestyClause) \(identityClause)",
             symbolName: "figure.dance", isNew: true
         ),
         PhotoTemplate(
@@ -269,7 +269,7 @@ public enum TemplateCatalog {
         PhotoTemplate(
             id: "old-money", title: "Old Money", subtitle: "Quiet-luxury editorial",
             category: .aesthetic,
-            prompt: "Restyle as an 'old money' editorial portrait: tailored neutral-toned clothing, an elegant estate garden background, golden-hour light and a 35mm film look. \(identityClause)",
+            prompt: "Restyle as an 'old money' editorial portrait: tailored neutral-toned clothing, an elegant estate garden background, golden-hour light and a 35mm film look. \(modestyClause) \(identityClause)",
             symbolName: "building.columns", isPro: true
         ),
 
@@ -277,7 +277,7 @@ public enum TemplateCatalog {
         PhotoTemplate(
             id: "fairy", title: "Fairy Princess", subtitle: "Enchanted & ethereal",
             category: .dreamy,
-            prompt: "Transform the photo into an ethereal fairy princess portrait: an elegant flowing pastel gown with long sleeves, delicate translucent wings, a flower crown, and a glowing enchanted forest with fireflies and soft sparkles. \(identityClause)",
+            prompt: "Transform the photo into an ethereal fairy princess portrait: an elegant flowing pastel gown with long sleeves, delicate translucent wings, a flower crown, and a glowing enchanted forest with fireflies and soft sparkles. \(modestyClause) \(identityClause)",
             symbolName: "crown", isPro: true
         ),
         PhotoTemplate(
@@ -303,13 +303,13 @@ public enum TemplateCatalog {
         PhotoTemplate(
             id: "spooky", title: "Spooky Portrait", subtitle: "Candle-lit Halloween",
             category: .seasonal,
-            prompt: "Transform this photo into a cinematic Halloween portrait: a moody candle-lit atmosphere, carved glowing pumpkins, light fog, autumn leaves and a subtle gothic costume. \(identityClause)",
+            prompt: "Transform this photo into a cinematic Halloween portrait: a moody candle-lit atmosphere, carved glowing pumpkins, light fog, autumn leaves and a subtle gothic costume. \(modestyClause) \(identityClause)",
             symbolName: "moon.stars", isPro: true, isNew: true, season: .halloween
         ),
         PhotoTemplate(
             id: "witchy", title: "Witchy Glam", subtitle: "Cute & a little spooky",
             category: .seasonal,
-            prompt: "Restyle the person as a cute, glamorous witch: an elegant black witch hat, a cozy dark knit dress, a little black cat nearby, candles, pumpkins and a soft purple-and-pink glow. \(identityClause)",
+            prompt: "Restyle the person as a cute, glamorous witch: an elegant black witch hat, a cozy dark knit dress, a little black cat nearby, candles, pumpkins and a soft purple-and-pink glow. \(modestyClause) \(identityClause)",
             symbolName: "wand.and.stars", season: .halloween
         ),
 
@@ -361,7 +361,7 @@ public enum TemplateCatalog {
         PhotoTemplate(
             id: "headshot", title: "Pro Headshot", subtitle: "LinkedIn-ready in seconds",
             category: .business,
-            prompt: "Turn this into a professional headshot of the same person wearing a tailored blazer, soft studio lighting, a neutral light-gray backdrop, shallow depth of field and natural skin texture. \(identityClause)",
+            prompt: "Turn this into a professional headshot of the same person wearing a tailored blazer, soft studio lighting, a neutral light-gray backdrop, shallow depth of field and natural skin texture. \(modestyClause) \(identityClause)",
             symbolName: "person.crop.square", isPro: true
         ),
         PhotoTemplate(
@@ -488,7 +488,7 @@ public enum TemplateCatalog {
         PhotoTemplate(
             id: "grad-day", title: "Grad Day", subtitle: "Cap, gown & confetti",
             category: .dreamy,
-            prompt: "Turn this into a graduation-day photo: a classic graduation cap and gown over her outfit, a sunny campus lawn with leafy trees, golden confetti and tossed caps in the air, and warm afternoon light. Keep natural skin texture, no skin smoothing. \(identityClause)",
+            prompt: "Turn this into a graduation-day photo: a classic graduation cap and gown over her outfit, a sunny campus lawn with leafy trees, golden confetti and tossed caps in the air, and warm afternoon light. Keep natural skin texture, no skin smoothing. \(modestyClause) \(identityClause)",
             symbolName: "graduationcap.fill", isNew: true
         ),
         PhotoTemplate(

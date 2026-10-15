@@ -72,7 +72,7 @@
     {
       "id" : "ballet",
       "isPro" : false,
-      "prompt" : "Restyle the photo with a soft balletcore aesthetic: satin ribbon bows in the hair, a pastel pink wrap cardigan with a flowing tulle skirt, a sunlit dance studio with a barre and tall mirrors, and airy pastel light. Keep the person's face, identity, skin tone, body shape and expression exactly the same.",
+      "prompt" : "Restyle the photo with a soft balletcore aesthetic: satin ribbon bows in the hair, a pastel pink wrap cardigan with a flowing tulle skirt, a sunlit dance studio with a barre and tall mirrors, and airy pastel light. Keep the outfit modest and age-appropriate, with sleeves and a high neckline. Keep the person's face, identity, skin tone, body shape and expression exactly the same.",
       "title" : "Ballet Core"
     },
     {
@@ -96,13 +96,13 @@
     {
       "id" : "old-money",
       "isPro" : true,
-      "prompt" : "Restyle as an 'old money' editorial portrait: tailored neutral-toned clothing, an elegant estate garden background, golden-hour light and a 35mm film look. Keep the person's face, identity, skin tone, body shape and expression exactly the same.",
+      "prompt" : "Restyle as an 'old money' editorial portrait: tailored neutral-toned clothing, an elegant estate garden background, golden-hour light and a 35mm film look. Keep the outfit modest and age-appropriate, with sleeves and a high neckline. Keep the person's face, identity, skin tone, body shape and expression exactly the same.",
       "title" : "Old Money"
     },
     {
       "id" : "fairy",
       "isPro" : true,
-      "prompt" : "Transform the photo into an ethereal fairy princess portrait: an elegant flowing pastel gown with long sleeves, delicate translucent wings, a flower crown, and a glowing enchanted forest with fireflies and soft sparkles. Keep the person's face, identity, skin tone, body shape and expression exactly the same.",
+      "prompt" : "Transform the photo into an ethereal fairy princess portrait: an elegant flowing pastel gown with long sleeves, delicate translucent wings, a flower crown, and a glowing enchanted forest with fireflies and soft sparkles. Keep the outfit modest and age-appropriate, with sleeves and a high neckline. Keep the person's face, identity, skin tone, body shape and expression exactly the same.",
       "title" : "Fairy Princess"
     },
     {
@@ -126,13 +126,13 @@
     {
       "id" : "spooky",
       "isPro" : true,
-      "prompt" : "Transform this photo into a cinematic Halloween portrait: a moody candle-lit atmosphere, carved glowing pumpkins, light fog, autumn leaves and a subtle gothic costume. Keep the person's face, identity, skin tone, body shape and expression exactly the same.",
+      "prompt" : "Transform this photo into a cinematic Halloween portrait: a moody candle-lit atmosphere, carved glowing pumpkins, light fog, autumn leaves and a subtle gothic costume. Keep the outfit modest and age-appropriate, with sleeves and a high neckline. Keep the person's face, identity, skin tone, body shape and expression exactly the same.",
       "title" : "Spooky Portrait"
     },
     {
       "id" : "witchy",
       "isPro" : false,
-      "prompt" : "Restyle the person as a cute, glamorous witch: an elegant black witch hat, a cozy dark knit dress, a little black cat nearby, candles, pumpkins and a soft purple-and-pink glow. Keep the person's face, identity, skin tone, body shape and expression exactly the same.",
+      "prompt" : "Restyle the person as a cute, glamorous witch: an elegant black witch hat, a cozy dark knit dress, a little black cat nearby, candles, pumpkins and a soft purple-and-pink glow. Keep the outfit modest and age-appropriate, with sleeves and a high neckline. Keep the person's face, identity, skin tone, body shape and expression exactly the same.",
       "title" : "Witchy Glam"
     },
     {
@@ -180,7 +180,7 @@
     {
       "id" : "headshot",
       "isPro" : true,
-      "prompt" : "Turn this into a professional headshot of the same person wearing a tailored blazer, soft studio lighting, a neutral light-gray backdrop, shallow depth of field and natural skin texture. Keep the person's face, identity, skin tone, body shape and expression exactly the same.",
+      "prompt" : "Turn this into a professional headshot of the same person wearing a tailored blazer, soft studio lighting, a neutral light-gray backdrop, shallow depth of field and natural skin texture. Keep the outfit modest and age-appropriate, with sleeves and a high neckline. Keep the person's face, identity, skin tone, body shape and expression exactly the same.",
       "title" : "Pro Headshot"
     },
     {
@@ -294,7 +294,7 @@
     {
       "id" : "grad-day",
       "isPro" : false,
-      "prompt" : "Turn this into a graduation-day photo: a classic graduation cap and gown over her outfit, a sunny campus lawn with leafy trees, golden confetti and tossed caps in the air, and warm afternoon light. Keep natural skin texture, no skin smoothing. Keep the person's face, identity, skin tone, body shape and expression exactly the same.",
+      "prompt" : "Turn this into a graduation-day photo: a classic graduation cap and gown over her outfit, a sunny campus lawn with leafy trees, golden confetti and tossed caps in the air, and warm afternoon light. Keep natural skin texture, no skin smoothing. Keep the outfit modest and age-appropriate, with sleeves and a high neckline. Keep the person's face, identity, skin tone, body shape and expression exactly the same.",
       "title" : "Grad Day"
     },
     {
