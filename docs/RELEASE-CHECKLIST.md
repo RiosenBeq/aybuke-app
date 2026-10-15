@@ -35,12 +35,12 @@
   - Yap: App Store Connect › Aybuke › Subscriptions (grup **Aybuke Pro**: `app.glowlit.pro.yearly`, `app.glowlit.pro.monthly`) ve In-App Purchases (`app.glowlit.credits.30`, `app.glowlit.credits.100`).
   - Beklenen: Yıllıkta 1 hafta ücretsiz deneme, aylıkta 1 ay $1.99 tanıtım fiyatı; en-US ve tr metinleri ve fiyatlar dolu. Yerel ürün dosyası (`ios/StoreKit/Products.storekit`) aynı kimlikleri ve fiyatları taşır: yıllık $39.99 (deneme P1W), aylık $5.99 (ilk dönem $1.99), 30 kredi $2.99, 100 kredi $7.99. Ürün bilgisindeki değişikliklerin sandbox'a yansıması bir saati bulabilir.
   - Sorun olursa: "Missing Metadata" olanı not et. Uygulama dört ürünün hepsini bekler: eksik ürün listede görünmez; hiç plan ya da hiç paket yüklenmezse "unavailable" yazısı ve **Try again** çıkar.
-- [ ] **Backend canlı, derleme demo modunda değil** *[yalnızca sahip; açık: canlıya alınmadı]*
+- [x] **Backend canlı, derleme demo modunda değil** *[yapıldı 15 Ekim 2026: migrasyonlar, altı fonksiyon, üç cron işi; gerçek bir Magic Edit uçtan uca 12 sn'de geçti. TestFlight bandı kontrolü sahipte]*
   - Yap: Supabase projesi `efapupjvidyqhqdevmcu` › Edge Functions: `ai-image`, `credits-redeem`, `account`, `report`, `ad-reward` yayında (aşağıdaki iki madde). SQL Editor'da `select jobname, schedule from cron.job;` → `sweep-jobs` `*/5 * * * *`, `sweep-ad-rewards` `17 * * * *`, `revenuecat-deletions` `17 * * * *`. `revenuecat-deletions` zamanlaması Vault'taki `project_url` ve `service_role_key` adlarını kullanır; değerleri hiçbir yere yazma.
   - Beklenen: TestFlight derlemesinde Explore'da **Preview build: AI results are samples** bandı **yok**, sonuçlarda "DEMO PREVIEW" damgası yok.
   - Sorun olursa: Bant görünüyorsa derleme demo modundadır; bu derleme incelemeye asla gönderilmez.
   - Doğrulanamadı: canlı proje durumu bu ortamdan görülemiyor. Sahip deploy'u onayladı; yapılmadı.
-- [ ] **Sunucu gizli değerleri** (yalnızca adlarına bak, değerleri hiçbir yere yazma) *[yalnızca sahip; açık]*
+- [x] **Sunucu gizli değerleri** (yalnızca adlarına bak, değerleri hiçbir yere yazma) *[yapıldı 15 Ekim 2026: XAI_API_KEY, ANTHROPIC_API_KEY, APPLE_APP_ID, APPLE_BUNDLE_ID, APPLE_TEAM_ID, ADMOB_REWARDED_AD_UNIT var; kaldırılacak ad yok]*
   - Yap: Supabase › Edge Functions › Secrets.
   - Beklenen: `XAI_API_KEY`, `APPLE_BUNDLE_ID` (`app.glowlit.ios`), `APPLE_TEAM_ID` (`CBTKNY3LFC`), `APPLE_APP_ID` (`6822716008`) ve `ADMOB_REWARDED_AD_UNIT` var. `APPLE_SIGNIN_KEY_ID` ve `APPLE_SIGNIN_PRIVATE_KEY` yalnızca girişi açarken (§5), `REVENUECAT_SECRET_KEY` ve `REVENUECAT_PROJECT_ID` ise hesap silmede RevenueCat müşterisini silmek için (§9.5) gerekir. `ANTHROPIC_API_KEY` de var (Claude güvenlik denetimi; `ANTHROPIC_SAFETY_MODEL` boş kalabilir, varsayılan `claude-haiku-5-5`). `FAL_KEY` ve `XAI_SAFETY_MODEL` yok (karar: Claude, §12-5). `OUTPUT_MODERATION` artık okunmuyor: ekleme, varsa sil. `GLOWLIT_ALLOW_XCODE_APP_TRANSACTIONS` üretimde olmamalı; varsa sil (hosted projede yok sayılır ve log'a yazılır).
   - Sorun olursa: Eksikleri listele. `APPLE_APP_ID` yoksa App Store kurulumlarında ücretsiz krediler kapalı kalır (kurulum kanıtı maddesi). §9'daki ilgili maddeler eksik anahtarla başarısız olur.
@@ -48,7 +48,7 @@
   - Yap: console.x.ai › ekip ayarları.
   - Beklenen: Açık. Onay ekranı ve gizlilik politikası "1 saat içinde silinir" diyor.
   - Doğrulanamadı: Zero Data Retention durumu bu depodan kanıtlanamaz (`docs/SUPABASE-TODO.md` §7).
-- [ ] **Veritabanı geçişleri (sırayla)** *[yalnızca sahip; açık: canlıda yok]*
+- [x] **Veritabanı geçişleri (sırayla)** *[yapıldı 15 Ekim 2026: 20261019000000–20261025000003, on iki dosya, her biri kendi transaction'ında, hatasız; MAC-YAYIN 5.2 sorgusu 19/19]*
   - Yap: Önce iki eski geçişin durumuna bak. SQL Editor'da:
     ```sql
     select to_regclass('public.pending_revenuecat_deletions');
@@ -59,7 +59,7 @@
   - Sorun olursa: Dur; hatanın dosya adını ve metnini not et. Sonraki dosyaya geçme, başarısız dosyayı ikinci kez çalıştırma.
   - Not: `docs/SUPABASE-TODO.md` §3 yalnızca `20261019500000`'a kadar listeliyor; bu maddedeki liste esastır.
   - Doğrulanamadı: canlı veritabanında `20261017000000` ve `20261018000000`'in durumu. Geçişler bu ortamda çalıştırılamaz.
-- [ ] **Edge Functions yayımı** *[yalnızca sahip; açık]*
+- [x] **Edge Functions yayımı** *[yapıldı 15 Ekim 2026: altı fonksiyon ACTIVE; ad-reward ve app-store-notifications JWT doğrulaması kapalı]*
   - Yap: Mac'te Terminal, repo içinde `backend` klasöründe, `supabase login` ile kendi hesabınla giriş yaptıktan sonra komutları ayrı ayrı çalıştır:
     ```
     supabase functions deploy ai-image --project-ref efapupjvidyqhqdevmcu --use-api
@@ -80,7 +80,7 @@
   - Yap: `backend/README.md` içindeki **Abuse runbook** (*Kötüye kullanım*) bölümünü oku. İlk gerçek günden önce SQL Editor'da `select public.ops_daily_summary();` çalıştır.
   - Beklenen: AI'yi durdurmanın (`select public.ops_pause_ai('all', 2, 'neden');`), bloku kaldırmanın (`ops_unblock`) ve strike'ları okumanın (`ops_strikes`) nasıl yapılacağını biliyorsun. Sayılar: 3 strike 24 saatte 24 saatlik cool-down başlatır; 30 günde 3 cool-down install'ı bloklar; ücretsiz AI işleri günde 1.500'de, doğrulanmamış kurulumlar 200'de, tüm AI 8.000'de durur (UTC gün).
   - Sorun olursa: Bir `ops_*` fonksiyonu yoksa yukarıdaki geçişlerin tamamının uygulandığını kontrol et.
-- [ ] **Claude güvenlik denetimi açık; XAI_SAFETY_MODEL ve FAL_KEY boş** *[yalnızca sahip; açık: canlıda denenmedi]*
+- [x] **Claude güvenlik denetimi açık; XAI_SAFETY_MODEL ve FAL_KEY boş** *[yapıldı 15 Ekim 2026: log satırı `output check in force: xai + anthropic:claude-haiku-5-5`; gerçek düzenlemede fotoğraf ve sonuç denetimi geçti]*
   - Yap: Supabase › Edge Functions › Secrets'ta adlara bak: `ANTHROPIC_API_KEY` var; `XAI_SAFETY_MODEL` ve `FAL_KEY` yok. Claude Console'da (platform.claude.com) bakiye ve aylık harcama limiti olsun (`docs/SAHIP-YAPILACAKLAR.md` §1.11). `ai-image` yayımlandıktan sonra Edge Functions › `ai-image` › Logs'a bak.
   - Beklenen: Log'da `output check in force: xai + anthropic:claude-haiku-5-5`. Claude (`_shared/safety.ts`), düzenlenecek fotoğrafı görsel modele gitmeden önce ve her sonucu xAI'nin kendi denetiminden sonra denetler; denetim hata verirse, zaman aşımına uğrarsa, reddederse ya da beklenmeyen yanıt dönerse iş engellenir ve kredi iade edilir. İşaretlenen fotoğraf strike sayılmadan iade edilir (`input_blocked`); işaretlenen sonuç strike sayılır. `ANTHROPIC_API_KEY` ayarlıyken `XAI_SAFETY_MODEL` okunmaz.
   - Sorun olursa: Log'da yalnızca `xai` yazıyorsa anahtar eksiktir. Her düzenleme `photo_check_failed` ya da her sonuç `safety_check_failed` ile iade ediliyorsa Anthropic bakiyesine, limite ve anahtara bak; kısa neden `ai-image` Logs'taki uyarıda yazar.
@@ -90,12 +90,12 @@
   - Beklenen: xAI'de bakiye ve limit var; Magic Edit gerçek sonuç verir (§3.4).
   - Sorun olursa: Bakiye bitmişse her AI işi başarısız olur ve kredi iade edilir (`docs/SAHIP-YAPILACAKLAR.md` §1.1 bu durumu bildiriyor). Bu madde kapanmadan §3'e geçme.
   - Doğrulanamadı: xAI bakiyesi, limit ve anahtarın döndürülüp döndürülmediği bu depodan görülemez.
-- [ ] **Reklam birimleri (AdMob)** *[yalnızca sahip; açık]*
+- [x] **Reklam birimleri (AdMob)** *[yapıldı 15 Ekim 2026: SSV doğrulandı ve kaydedildi, geçiş birimi oluşturuldu, hassas kategoriler engellendi; GDPR mesajını yayımlamak sahipte]*
   - Yap: AdMob'da ödüllü birimi (`ca-app-pub-2292230772061554/1406702504`, ödül 1, öğe `credit`) aç. **Server-side verification** geri çağırma adresi: `https://efapupjvidyqhqdevmcu.supabase.co/functions/v1/ad-reward` (sorgu dizesi olmadan). **Verify URL**'yi çalıştır. Geçiş reklamı birimi "After save interstitial" (`ca-app-pub-2292230772061554/6797438012`) oluşturuldu ve kimliği `ios/App/Resources/AppConfig.json` içindeki `ads.interstitialUnitID` alanında; AdMob'daki sıklık sınırının günde 3 olduğunu kontrol et.
   - Beklenen: Verify URL doğrular. `ADMOB_REWARDED_AD_UNIT` ile aynı birim kimliği Supabase'te var; boşsa hiçbir ödül verilmez. `interstitialUnitID` dolu: Release derlemesinde ücretsiz 13+ üyelere, kayıt ya da paylaşım bittikten sonra doğal bir arada, uygulamanın kendi sınırlarıyla (`InterstitialPacing`: ilk 24 saat yok, 3. kayıttan sonra, 4 dakikada en çok 1, günde en çok 3) geçiş reklamı gösterilebilir. Pro'da, 13 yaş altında, Mac'te ve önizleme derlemelerinde gösterilmez.
   - Sorun olursa: Doğrulama başarısızsa `ad-reward` günlüğüne bak. Ödül kayıtları 30 gün sonra `sweep_ad_rewards` ile temizlenir.
   - Doğrulanamadı: AdMob konsolunun durumu bu depodan görülemez. AdSense ödeme hesabı (`docs/SAHIP-YAPILACAKLAR.md` §3.6) sahibe ait ve açık.
-- [ ] **Web sitesi ve yasal adresler** *[tamam (depoda); açık: canlı kontrol]*
+- [x] **Web sitesi ve yasal adresler** *[yapıldı 15 Ekim 2026: bütün adresler 200, app-ads.txt doğru, hukuk metinleri (Anthropic) aybuke.org'da canlı]*
   - Yap: Tarayıcıda aç: `https://aybuke.org`, `https://aybuke.org/legal/en/privacy-policy`, `https://aybuke.org/legal/tr/gizlilik-politikasi`, `https://aybuke.org/app-ads.txt` ve destek sayfası.
   - Beklenen: Hepsi açılır. `app-ads.txt` AdMob yayıncı satırını (`pub-2292230772061554`) içerir. Uygulamanın `websiteURL`, `privacyPolicyURL` ve `termsURL` değerleri aybuke.org'a işaret eder.
   - Sorun olursa: Açılmıyorsa Vercel dağıtımını ve alan adını kontrol et. Search Console site haritası ve IndexNow bildirimi (`docs/SAHIP-YAPILACAKLAR.md` §4) sahibe ait ve açık.

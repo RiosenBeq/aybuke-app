@@ -2,7 +2,7 @@
 
 > **Türkçe özet:** Kod tarafında ajanın yapabileceği lansman işleri bitti (iade bildirimleri, SQL düzeltmeleri, politika testleri, Mac düzeltmeleri, hukuk metinleri). Kalanlar sahibin hesaplarında ve Mac'te: Supabase'i canlıya almak, AdMob ve App Store Connect panelleri, ekran görüntüleri, derlemelerin yüklenmesi ve gönderme. Hepsinin komutları ve Claude Code'a verilecek tek prompt: [`MAC-YAYIN.md`](MAC-YAYIN.md). Aşağıdaki bölümler geçmiş kayıt ve ayrıntı içindir; çelişki olursa `MAC-YAYIN.md` ve [`SAHIP-YAPILACAKLAR.md`](SAHIP-YAPILACAKLAR.md) geçerlidir. İncelemeye gönderme yalnızca sahibin açık onayıyla yapılır.
 
-Son güncelleme: 14 Ekim 2026. Ajan işlerinin sıralı ve tam listesi [`AI-TODO.md`](AI-TODO.md) dosyasındadır; burada yalnızca hemen yapılacaklar var. Başlamadan önce [`AGENTS.md`](../AGENTS.md) §6'yı oku.
+Son güncelleme: 15 Ekim 2026 sabahı. **Gece yapılanlar:** backend canlı (migrasyonlar, altı fonksiyon, gizli değerler, cron, güvenlik ve duman testi, gerçek bir Magic Edit), Claude bağımsız güvenlik denetimi, AdMob (SSV, geçiş birimi, hassas kategoriler, GDPR taslağı), App Store Connect metadata ve ayarları (API), aybuke.org hukuk metinleri, IndexNow ve Search Console, 12 dilde ekran görüntüleri. **Kalan:** derleme yüklemesi (Xcode'a Apple hesabıyla giriş ve `SIGNING=account`), App Privacy, GDPR yayını, RevenueCat yönlendirme adresi, satın almaları sürüme ekleme, TestFlight kontrolleri ve gönderme; ayrıntılar [`SAHIP-YAPILACAKLAR.md`](SAHIP-YAPILACAKLAR.md) durum paragrafında. Ajan işlerinin sıralı ve tam listesi [`AI-TODO.md`](AI-TODO.md) dosyasındadır; burada yalnızca hemen yapılacaklar var. Başlamadan önce [`AGENTS.md`](../AGENTS.md) §6'yı oku.
 
 ## 1. Nerede, hangi hesapta, hangi klasörde
 

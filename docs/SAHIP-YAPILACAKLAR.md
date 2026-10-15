@@ -2,7 +2,7 @@
 
 Bu liste yalnızca sahibin yapabileceği işleri içerir: Supabase, xAI, Anthropic (Claude Console), AdMob, AdSense, App Store Connect, Search Console, Vercel ve Mac'te Xcode. Ajan (bu depoda kod ve belge değiştiren asistan) bu hesaplara giremez, anahtar giremez ve gönderme kararı veremez. "Öneri" satırları yalnızca yardımcı görüştür; karar sahibindedir.
 
-**Durum.** 14 Ekim 2026. `pink-girls-redesign` ve `main` aynı commit'te; CI yeşil olunca `main` ileri alınır. Yeniden adlandırma, aybuke.org adresleri, kredi kontrolü (`scripts/check-credit-policy.py`) ve App Store iade bildirimleri uç noktası (`functions/app-store-notifications`) depoda. Canlıda henüz hiçbir şey yok: Supabase, App Store Connect ve ekran görüntüleri sahibin hesaplarında ya da Mac'te yapılır. AdMob'da 15 Ekim 2026'da geçiş birimi, ödüllü birimin sunucu doğrulaması, hassas kategoriler ve GDPR mesajı taslağı tamamlandı (3.1–3.3); GDPR mesajını yayımlamak sahipte. Bu ortamdan dış sitelere çıkılamadı (proxy 403); aybuke.org burada kontrol edilemedi. Mac'te hepsini bir ajana yaptırmak için tek prompt: [`docs/MAC-YAYIN.md`](MAC-YAYIN.md) (tüm komutlar ve Claude Code promptu).
+**Durum.** 15 Ekim 2026, sabah. Backend canlı: on iki migrasyon (`20261019000000`–`20261025000003`) uygulandı, altı fonksiyon yayında (`ai-image` Claude denetimiyle), gizli değerler ve üç cron işi tamam, güvenlik sorguları ve duman testi geçti; gerçek bir Magic Edit uçtan uca 12 saniyede çalıştı (Claude fotoğraf ve sonuç denetimi, xAI düzenlemesi). AdMob: SSV doğrulandı, geçiş birimi oluşturuldu, hassas kategoriler engellendi, GDPR mesajı taslakta. App Store Connect (API ile): 13 dilde metadata, iOS ve macOS 1.0 manuel yayın, telif, adresler, abonelik açıklamaları ve inceleme notları. aybuke.org'da Anthropic'i anan hukuk metinleri canlı; IndexNow ve Search Console tamam. **Derleme yüklenemedi:** `xcodebuild` API anahtarıyla profil oluştururken "Authentication failed" verdi ve App Group `group.app.glowlit.shared` ile widget kimliği `app.glowlit.ios.widgets` portalda yok (2.2). Panel değişiklikleri (App Privacy, GDPR yayını, RevenueCat yönlendirme adresi, portal) senin tıklamanı bekliyor; sabah listesi: 2.2, 2.7, 3.3, 2.14, 1.2, 1.3, 1.11, 6.3, 2.12, 2.13.
 
 **Önerilen sıra.** 1.1 ve 1.3 (xAI), 1.11 (Anthropic), 1.4 (migrasyon), 1.5 (gizli değer), 1.6 (fonksiyon), 1.7 ve 1.8 (zamanlama, kimlik), 1.9 (kontrol), 3.3–3.4 (AdMob: GDPR mesajını yayımla, uygulama adı), 2.1 (URL), 2.2–2.12 (derleme ve testler), 2.14 (iade bildirimleri: RevenueCat yönlendirme adresi), 4 (arama), 5 ve 6 (kararlar), en son 2.13 (gönderme kararı).
 
@@ -29,18 +29,21 @@ Bu liste yalnızca sahibin yapabileceği işleri içerir: Supabase, xAI, Anthrop
   - **Sıra:** 1) Açıksa not al. 2) Kapalıysa aç. 3) Açılamıyorsa metinler yanlış olur; avukatla birlikte karar ver (6.1).
 
 ### 1.4 Supabase migrasyonlarını sırayla uygula
+- [x] **Yapıldı (15 Ekim 2026):** on iki dosya (`20261019000000`–`20261025000003`) sırayla, her biri kendi transaction'ında, hatasız uygulandı; MAC-YAYIN 5.2 sorgusu 19/19.
 - [ ] **Ne:** `backend/supabase/migrations/` içindeki dosyaları zaman damgası sırasıyla SQL Editor'da çalıştır. Her dosyayı `begin;` ile `commit;` arasına al. Dosyaların içinde kendi transaction ifadesi yok (kontrol edildi), bu yüzden sarmalamak güvenli.
   - **Neden:** Dizinde 21 dosya var. En yeni dördü `20261025000000_app_store_notifications.sql` (iade bildirimleri), `20261025000001_sql_gaps.sql` (bakiye ve tekrar sayımı düzeltmeleri), `20261025000002_refunded_transactions.sql` (iadesi önce gelen satın almalar) ve `20261025000003_notification_prune.sql`; `docs/SUPABASE-TODO.md` §1'de 1.10–1.13. Commit'li `docs/SUPABASE-TODO.md` §3 yalnızca 10 dosya listeliyordu; çalışma ağacındaki taslak §1'de 1.1–1.9 sırasını veriyor. Yedi dosya ilk listede yoktu: `20261020000000_credit_policy_v2.sql`, `20261021000000_install_and_subscription_credits.sql`, `20261022000000_abuse_controls.sql`, `20261023000000_ad_rewards_per_install.sql`, `20261024000000_private_rls.sql`, `20261024000001_abuse_fixes.sql`, `20261024000002_entitlement_order.sql`. `docs/HANDOFF-PROMPT.md`'ye göre `20261011000000`–`20261018000000` ile `20261019500000_keepalive.sql` uygulanmış; taslağın §0 sorgusu `20261017000000` ve `20261018000000` nesnelerini kontrol ediyor.
   - **Nerede:** Supabase panosu > SQL Editor (proje `efapupjvidyqhqdevmcu`, Frankfurt).
   - **Sıra:** 1) `docs/SUPABASE-TODO.md` §0'daki sorguyu çalıştır; eksik nesne varsa ilgili dosyayı önce uygula. 2) Uygulanmış dosyaları atla. 3) §1'deki sırayla, uygulanmamış olanları (1.1–1.13) çalıştır; her dosya kendi `begin;` ... `commit;` bloğunda. 4) Bir dosya hata verirse dur, hata metnini ajana ver; sonraki dosyaya geçme.
 
 ### 1.5 Gizli değerleri kontrol et ve eksiği ekle
+- [x] **Yapıldı (15 Ekim 2026):** `ADMOB_REWARDED_AD_UNIT`, `APPLE_APP_ID`, `APPLE_BUNDLE_ID`, `APPLE_TEAM_ID` yazıldı; `XAI_API_KEY` ve `ANTHROPIC_API_KEY` var; kaldırılacak ad yok.
 - [ ] **Ne:** Adları kontrol et, `ADMOB_REWARDED_AD_UNIT` değerini ekle. Değerleri hiçbir yere yazma.
   - **Neden:** `docs/HANDOFF-PROMPT.md`'ye göre ayarlı: `XAI_API_KEY`, `ANTHROPIC_API_KEY` (15 Ekim 2026'da girildi; Claude güvenlik denetimi, 5.8), `APPLE_APP_ID` (6822716008; yoksa ücretsiz krediler App Store kurulumları için kapalı kalır, taslak §6), `APPLE_BUNDLE_ID`, `APPLE_TEAM_ID`. Eksik: `ADMOB_REWARDED_AD_UNIT` (boşsa her ödül reddedilir; `backend/README.md`, "Rewarded ads"). `OUTPUT_MODERATION` artık okunmuyor (`docs/SUPABASE-TODO.md` §6); `docs/RELEASE-CHECKLIST.md` §1.1 bu adı bekliyor. Ekleme.
   - **Nerede:** Supabase > Edge Functions > Secrets.
   - **Sıra:** 1) `ADMOB_REWARDED_AD_UNIT` = `ca-app-pub-2292230772061554/1406702504`. 2) `FAL_KEY` ve `XAI_SAFETY_MODEL` eklenmez; `ANTHROPIC_SAFETY_MODEL` boş kalabilir (varsayılan `claude-haiku-5-5`; bkz. 5.8). 3) `GLOWLIT_ALLOW_XCODE_APP_TRANSACTIONS` üretimde olmamalı; varsa sil. 4) Apple ile giriş ve RevenueCat anahtarları isteğe bağlı (bkz. 5.6, 5.7).
 
 ### 1.6 Edge Functions'ı yayımla
+- [x] **Yapıldı (15 Ekim 2026):** altı fonksiyon yayında (ACTIVE); `ad-reward` ve `app-store-notifications` `--no-verify-jwt`; `ai-image` başlangıç satırı `output check in force: xai + anthropic:claude-haiku-5-5`.
 - [ ] **Ne:** Migrasyon ve gizli değerlerden sonra altı fonksiyonu yayımla. `ad-reward` ve `app-store-notifications` ilk kez yayımlanıyor; ikisinde de JWT doğrulaması kapalı olmalı (AdMob ve Apple JWT göndermez; fonksiyonlar imzayı kendileri denetler).
   - **Neden:** Canlıdaki `ai-image`, `account`, `credits-redeem` ve `report` 47b5c6f sürümünden (`docs/HANDOFF-PROMPT.md`); depo daha yeni (`docs/RELEASE-CHECKLIST.md` §12: `ai-image` ve `account` yeniden yayımlanmalı). `ad-reward` hiç yayımlanmadı. AdMob geri çağrısında JWT yoktur (`backend/README.md`, "Setup" 5). Önkoşul: `ai-image` ve `account`, §1 migrasyonları ve §0 nesneleri olmadan yayımlanmamalı (`docs/SUPABASE-TODO.md` §5).
   - **Nerede:** Mac'te Terminal, repo içinde `backend` klasörü, Supabase CLI.
@@ -56,18 +59,21 @@ supabase functions deploy app-store-notifications --project-ref efapupjvidyqhqde
 ```
 
 ### 1.7 Zamanlanmış işleri kontrol et
+- [x] **Yapıldı (15 Ekim 2026):** `sweep-jobs`, `sweep-ad-rewards`, `sweep-app-store-notifications` etkin. `revenuecat-deletions` kurulmadı (RevenueCat anahtarı yok, `pg_net` kapalı; isteğe bağlı).
 - [ ] **Ne:** Temizlik işleri ve RevenueCat silme kuyruğu çalışıyor olmalı. Keep-alive iş akışı main'de etkin olmalı.
   - **Neden:** Takılan işlerin iadesi ve sonuçların silinmesi `sweep-jobs` ile yapılır; reklam kayıtları `sweep-ad-rewards` ile temizlenir (`backend/README.md`, "Setup" 6; `docs/SUPABASE-TODO.md` §3). Keep-alive, ücretsiz planda projenin duraklatılmasını önler (`.github/workflows/keepalive.yml`).
   - **Nerede:** Supabase > SQL Editor; GitHub > repo > Actions.
   - **Sıra:** 1) `select jobname, schedule from cron.job;` çalıştır. `sweep-jobs` (`*/5 * * * *`), `sweep-ad-rewards` (`17 * * * *`) ve `sweep-app-store-notifications` (`23 3 * * *`) yoksa `docs/SUPABASE-TODO.md` §3'teki komutlarla ekle; aynı adla eklemek mevcut işi değiştirir, o yüzden önce kontrol et. 2) `revenuecat-deletions` için `select name from vault.decrypted_secrets;` ile `project_url` ve `service_role_key` adlarına bak; varsa yeniden ekleme. Service role anahtarını hiçbir yere yapıştırma. 3) GitHub Actions'ta "Backend keep-alive" iş akışının çalıştığını kontrol et. Public depoda 60 gün commit yoksa GitHub zamanlamayı durdurur (`keepalive.yml` yorumu); durduysa Actions'tan yeniden etkinleştir.
 
 ### 1.8 Kimlik doğrulama ayarları (CAPTCHA açılmaz)
+- [x] **Yapıldı (15 Ekim 2026):** anonim giriş açık, saatte IP başına 15, e-posta kapalı, CAPTCHA kapalı (panelde okundu).
 - [ ] **Ne:** Anonim giriş açık, e-posta sağlayıcısı kapalı, CAPTCHA kapalı, Apple sağlayıcısında Client IDs `app.glowlit.ios`.
   - **Neden:** `backend/README.md`, "Setup" 2: uygulamanın CAPTCHA widget'ı yok; CAPTCHA açılırsa her anonim kayıt başarısız olur. Commit'li `docs/SUPABASE-TODO.md` §4 CAPTCHA (Turnstile) öneriyordu; çalışma ağacındaki taslakta bu öneri geri alınmış (kapalı kalsın).
   - **Nerede:** Supabase > Authentication > Sign In / Providers ve Rate Limits.
   - **Sıra:** 1) CAPTCHA'nın kapalı olduğunu doğrula. 2) Anonim girişte sınır 15 giriş/saat/IP olsun. 3) E-posta sağlayıcısı kapalı olsun. 4) Apple'da Client IDs `app.glowlit.ios` olsun.
 
 ### 1.9 Kontroller: Security Advisor ve duman testi
+- [x] **Yapıldı (15 Ekim 2026):** anonim kullanıcının çalıştırabildiği tek fonksiyon `keepalive()`, RLS'si kapalı tablo yok, Security Advisor bulgu yok; duman testi ve gerçek bir Magic Edit geçti, test kullanıcıları silindi.
 - [ ] **Ne:** Security Advisor uyarılarını oku; anonim bir kullanıcıyla duman testi yap; test kullanıcısının silindiğini doğrula.
   - **Neden:** `docs/HANDOFF-PROMPT.md` adım 6. `20261020000000_credit_policy_v2.sql`, Security Advisor'ın "Function Search Path Mutable" uyarısını gidermeyi amaçlıyor.
   - **Nerede:** Supabase panosu > Advisors > Security Advisor; SQL Editor; Terminal. Proje adresi ve anon anahtar `ios/App/Resources/AppConfig.json` içinde. Değerleri kopyalayıp bir dosyaya yazma.
@@ -88,6 +94,7 @@ supabase functions deploy app-store-notifications --project-ref efapupjvidyqhqde
 ## 2) Uygulama yayını (App Store Connect ve Mac)
 
 ### 2.1 Bağlantı adreslerini tarayıcıdan doğrula
+- [x] **Yapıldı (15 Ekim 2026):** aybuke.org, /support, gizlilik ve kullanım sayfaları 200; `check-release-config.py --online` geçiyor.
 - [ ] **Ne:** Uygulamanın `websiteURL`, `privacyPolicyURL` ve `termsURL` adresleri artık aybuke.org'u gösteriyor (`ios/App/Resources/AppConfig.json`; bu değişiklik commit'lenecek). Adreslerin tarayıcıda açıldığını doğrula.
   - **Neden:** `AGENTS.md` §6 (4. madde). Bu adresler paylaşım yazılarında ve davet QR kodunda kullanılır. Bu ortamdan dış sitelere çıkılamadığı için `check-release-config.py --online` burada kanıt değil.
   - **Nerede:** Tarayıcı; Vercel (`RiosenBeq/aybuke` dağıtımı, aybuke.org alan adı).
@@ -106,12 +113,14 @@ supabase functions deploy app-store-notifications --project-ref efapupjvidyqhqde
   - **Sıra:** 1) `app.glowlit.pro.yearly`, `app.glowlit.pro.monthly`, `app.glowlit.credits.30` ve `app.glowlit.credits.100` ekle. 2) İnceleme ekran görüntüsü ve notu olsun. Paywall görüntüsü `docs/marketing/app-store/en/09-paywall.jpg`. 3) Durumlar "Ready to Submit" olsun.
 
 ### 2.4 Destek ve gizlilik adresleri
+- [x] **Yapıldı (15 Ekim 2026):** Support `https://aybuke.org/support`, Marketing `https://aybuke.org`, gizlilik EN/TR adresleri 13 dilde API ile yazıldı.
 - [ ] **Ne:** App Store Connect'teki Support URL, Marketing URL ve gizlilik URL'lerini tek bir karara bağla.
   - **Neden:** Çalışma ağacındaki taslak `docs/marketing/app-store-connect-setup.md` Support ve Marketing URL'sini `https://aybuke.org` yazıyor. `docs/HANDOFF-PROMPT.md` (adım 7) ise Support URL'sini `https://aybuke.org/support` diyor. İki belge çelişiyor.
   - **Nerede:** App Store Connect > sürüm sayfası (Support URL, Marketing URL) ve App Information (Privacy Policy URL).
   - **Sıra:** 1) `https://aybuke.org/support` açılıyorsa onu, açılmıyorsa `https://aybuke.org` yaz. 2) Gizlilik URL'leri: `https://aybuke.org/legal/en/privacy-policy` ve `https://aybuke.org/legal/tr/gizlilik-politikasi`. 3) Sayfaların 200 döndüğünü kontrol et (2.1).
 
 ### 2.5 Telif satırı, yayın türü ve sürüm numarası
+- [x] **Yapıldı (15 Ekim 2026):** telif `2026 Okan Berk Manavoğlu`, iOS ve macOS 1.0 yayın türü MANUAL (API).
 - [ ] **Ne:** Üç ayarı karara bağla.
   - **Telif (karar verildi):** `2026 Okan Berk Manavoğlu`. `docs/HANDOFF-PROMPT.md` ve kurulum dokümanı §6 bu değeri veriyordu; kurulum dokümanındaki eski `2026 Aybuke` satırı bu değerle düzeltildi.
   - **Yayın türü:** HANDOFF'a göre sürüm "AFTER_APPROVAL" (onaydan hemen sonra otomatik yayın). Kurulum dokümanı §6 "Manual release after approval" diyor. Öneri: manuel yayın; backend ve reklam kurulumu bitmeden yayın olmasın.
@@ -120,6 +129,7 @@ supabase functions deploy app-store-notifications --project-ref efapupjvidyqhqde
   - **Sıra:** 1) Telif satırına `2026 Okan Berk Manavoğlu` yaz. 2) "Manually release this version" seç (öneri). 3) Sürümün 1.0 olduğunu kontrol et.
 
 ### 2.6 Abonelik açıklamasındaki kredi sayısı
+- [x] **Yapıldı (15 Ekim 2026):** öneri uygulandı: açıklamalar 13 dilde sayısız ("Monthly credits, every look, best-quality AI"); inceleme notları 80 kredi ve fiyatlarla düzeltildi.
 - [ ] **Ne:** Abonelik açıklaması "80 kredi" yazıyor; kurulum dokümanı sayı yazılmamasını istiyor. Karar ver.
   - **Neden:** `scripts/asc/iap_localize.py` en-US için "80 credits a month, every look, best AI" yazıyor; HANDOFF'a göre 13 dilde böyle. `docs/marketing/app-store-connect-setup.md` §4: "It names no number on purpose". Sunucudaki sayı (`credit_policy()`) değişebilir.
   - **Nerede:** App Store Connect > abonelik grubu "Aybuke Pro" > yerelleştirmeler; ya da `scripts/asc/iap_localize.py`.
@@ -216,12 +226,14 @@ supabase functions deploy app-store-notifications --project-ref efapupjvidyqhqde
 ## 4) Web ve arama
 
 ### 4.1 Search Console site haritası
+- [x] **Yapıldı (15 Ekim 2026):** site haritası yeniden gönderildi ve okundu (107 sayfa).
 - [ ] **Ne:** aybuke.org için site haritasını yeniden gönder.
   - **Neden:** `docs/HANDOFF-PROMPT.md`, "Unfinished branches" 3 (site yayında; ardından Search Console ve IndexNow).
   - **Nerede:** Google Search Console > aybuke.org mülkü > Sitemaps.
   - **Sıra:** 1) Site haritası adresini web sitesi deposundan (`RiosenBeq/aybuke`) doğrula. 2) Yeniden gönder. 3) Durumun "Başarılı" olduğunu kontrol et.
 
 ### 4.2 IndexNow
+- [x] **Yapıldı (15 Ekim 2026):** 107 adres gönderildi, HTTP 200.
 - [ ] **Ne:** Sayfa adreslerini IndexNow'a bildir.
   - **Neden:** `docs/HANDOFF-PROMPT.md`, "Unfinished branches" 3. Anahtar dosyası web sitesi deposunun `public/` klasöründe; bu depoda yok.
   - **Nerede:** `RiosenBeq/aybuke` deposu `public/`; IndexNow.
