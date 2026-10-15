@@ -43,16 +43,12 @@ struct CreditsSheet: View {
                             .animation(Motion.bouncy, value: balance)
                         refillLine
                     }
+                    // Why AI says no right now, though credits are left: her
+                    // own rest, else the server's pause for everyone.
                     if let pause = app.cloudPause, pause.isActive() {
-                        // Why AI says no right now, though credits are left.
-                        Label {
-                            Text(verbatim: app.message(for: pause))
-                        } icon: {
-                            Image(systemName: "moon.zzz.fill")
-                        }
-                        .font(.subheadline)
-                        .foregroundStyle(Palette.textPrimary)
-                        .fixedSize(horizontal: false, vertical: true)
+                        PauseNote(text: app.message(for: pause))
+                    } else if let pause = app.activeAIServicePause {
+                        PauseNote(text: app.message(for: pause))
                     }
                     rules
                     // Free and out of credits: one more for a short ad, if she likes.
@@ -88,6 +84,7 @@ struct CreditsSheet: View {
         .task {
             // The day may have turned since the pill last counted.
             app.credits.refresh(isPro: isPro, isTrial: app.purchases.trial != nil)
+            await app.refreshAIServicePause()
             await app.refreshServerBalance()
         }
         .sheet(isPresented: $showsPacks) {

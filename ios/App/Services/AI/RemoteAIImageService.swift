@@ -230,6 +230,13 @@ final class RemoteAIImageService: AIImageService {
         return try ResponseDecoder.decodeBalanceState(data: data, statusCode: (response as? HTTPURLResponse)?.statusCode ?? 0)
     }
 
+    /// Whether cloud AI rests for everyone right now (nil: it takes jobs).
+    /// Sent without her session or install: the answer is the same for all.
+    func fetchAIPause() async throws -> AIServicePause? {
+        let (data, response) = try await load(RequestFactory.aiPause(config: config))
+        return try ResponseDecoder.decodeAIPause(data: data, statusCode: (response as? HTTPURLResponse)?.statusCode ?? 0)
+    }
+
     /// Sends a consumable's signed transaction; returns the new balance.
     func redeemCreditPack(signedTransaction: String) async throws -> Int {
         let token = try await auth.validAccessToken()

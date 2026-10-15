@@ -1,16 +1,32 @@
 // Grants a consumable credit pack after verifying Apple's signed transaction.
 //   POST /credits-redeem { "signed_transaction": "<JWS>" } → { credits_remaining }
+//   GET  /credits-redeem → { ai_paused, free_only?, retry_after? }
 // Idempotent per Apple transaction id, so StoreKit redeliveries are safe. With
 // X-App-Transaction the balance includes today's free credits on the install.
 // The first grant of a transaction mails the owner (_shared/owner-alerts.ts).
+// GET says whether cloud AI takes jobs right now (pause.ts). It's the same for
+// everyone, so it needs no session and reads nobody's data: the app asks before
+// it offers an ad for a credit or sells credits, and says so while AI rests.
 import { CREDIT_PACKS, verifyInstall, verifyTransaction } from "../_shared/apple.ts";
 import { requireUser, serviceClient } from "../_shared/auth.ts";
 import { corsHeaders, errorResponse, HttpError, json } from "../_shared/http.ts";
 import { alertPurchase, ownerAlertsEnabled, packGranted } from "../_shared/owner-alerts.ts";
+import { pauseReader } from "./pause.ts";
+
+// One reader per instance, so its short cache spans requests.
+let readPause: ReturnType<typeof pauseReader> | null = null;
+
+async function aiPause(): Promise<Response> {
+  readPause ??= pauseReader(() => serviceClient().rpc("ops_daily_summary"));
+  const pause = await readPause();
+  if (!pause) throw new HttpError(503, "unavailable", "Couldn't check AI right now. Please try again.");
+  return json(pause);
+}
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
   try {
+    if (req.method === "GET") return await aiPause();
     if (req.method !== "POST") throw new HttpError(405, "method_not_allowed", "Method not allowed.");
     const db = serviceClient();
     const user = await requireUser(db, req);

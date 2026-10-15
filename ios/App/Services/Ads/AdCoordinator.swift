@@ -121,7 +121,8 @@ final class AdCoordinator {
     }
 
     /// "Watch a short ad · +1 credit" belongs on screen: a free member with a
-    /// session and AI consent who's out of credits.
+    /// session and AI consent who's out of credits, while the server takes
+    /// jobs on free credits (the ad's credit lands among them).
     var offersRewardedAd: Bool {
         // Before the screenshot override, which would otherwise show it on the Mac.
         guard !Platform.isMac else { return false }
@@ -129,7 +130,8 @@ final class AdCoordinator {
         if Self.screenshotState != nil { return true }
         #endif
         guard adsPossible, let app, backend != nil, config.activeRewardedUnitID != nil, app.hasAIConsent else { return false }
-        return rewardPolicy.offersAd(isPro: app.purchases.isPro, audience: audience, balance: app.credits.balance)
+        return rewardPolicy.offersAd(isPro: app.purchases.isPro, audience: audience, balance: app.credits.balance,
+                                     pause: app.aiServicePause)
     }
 
     /// The server's cap, as it last said so; the bundled one until it has.
@@ -199,6 +201,12 @@ final class AdCoordinator {
             return
         }
         rewardState = .loading
+        // AI may have gone on a break since the card appeared: its credit would wait unused.
+        await app.refreshAIServicePause()
+        guard offersRewardedAd else {
+            rewardState = .available(remaining: nil)
+            return
+        }
         markAdsUsed()
         guard await provider.gatherConsent(audience: audience) else {
             rewardState = .notice(.consent)

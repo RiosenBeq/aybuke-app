@@ -188,6 +188,38 @@ final class BackendAPITests: XCTestCase {
         XCTAssertEqual(CloudPause.from(unverified), .blocked)
     }
 
+    func testDecodesTheServersAIPause() throws {
+        let now = Date(timeIntervalSince1970: 1_000_000)
+        func pause(_ json: String, status: Int = 200) throws -> AIServicePause? {
+            try ResponseDecoder.decodeAIPause(data: Data(json.utf8), statusCode: status, now: now)
+        }
+        XCTAssertNil(try pause(#"{"ai_paused": false}"#))
+        XCTAssertEqual(try pause(#"{"ai_paused": true, "free_only": false, "retry_after": 600}"#),
+                       AIServicePause(freeOnly: false, until: now.addingTimeInterval(600)))
+        XCTAssertEqual(try pause(#"{"ai_paused": true, "free_only": true, "retry_after": 14400}"#),
+                       AIServicePause(freeOnly: true, until: now.addingTimeInterval(14400)))
+        // Without an end or a scope: an hour, and all of AI (the careful reading).
+        XCTAssertEqual(try pause(#"{"ai_paused": true}"#), AIServicePause(freeOnly: false, until: now.addingTimeInterval(3600)))
+        XCTAssertThrowsError(try pause(#"{"credits_remaining": 3}"#), "not an answer about the pause")
+        XCTAssertThrowsError(try pause(#"{"error":{"code":"unavailable","message":"x"}}"#, status: 503))
+
+        let free = AIServicePause(freeOnly: true, until: now.addingTimeInterval(60))
+        XCTAssertTrue(free.isActive(at: now))
+        XCTAssertFalse(free.isActive(at: now.addingTimeInterval(60)))
+        XCTAssertTrue(free.touches(isPro: false))
+        XCTAssertFalse(free.touches(isPro: true), "a pause on free credits leaves Pro's alone")
+        XCTAssertTrue(AIServicePause(freeOnly: false, until: now).touches(isPro: true))
+    }
+
+    func testAIPauseRequestNeedsNoSession() throws {
+        let request = try RequestFactory.aiPause(config: config)
+        XCTAssertEqual(request.httpMethod, "GET")
+        XCTAssertEqual(request.url?.absoluteString, "https://demo.supabase.co/functions/v1/credits-redeem")
+        XCTAssertEqual(request.value(forHTTPHeaderField: "Authorization"), "Bearer anon-key", "nobody's session")
+        XCTAssertNil(request.value(forHTTPHeaderField: RequestFactory.appTransactionHeader))
+        XCTAssertNil(request.httpBody)
+    }
+
     func testCooldownWithoutSecondsRestsADay() throws {
         let now = Date(timeIntervalSince1970: 1_000_000)
         let state = try ResponseDecoder.decodeBalanceState(

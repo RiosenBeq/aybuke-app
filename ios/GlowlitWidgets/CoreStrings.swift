@@ -56,7 +56,7 @@ enum CoreStrings {
         String(localized: "Cozy Sweater Digicam", comment: "One-tap look (trend) name. Keep trend names people use in English, such as Y2K or Clean Girl."),
         String(localized: "New Year Confetti", comment: "One-tap look (trend) name. Keep trend names people use in English, such as Y2K or Clean Girl."),
         String(localized: "Galentine's Brunch", comment: "One-tap look (trend) name. Keep trend names people use in English, such as Y2K or Clean Girl."),
-        String(localized: "Heart Photo Booth", comment: "One-tap look (trend) name. Keep trend names people use in English, such as Y2K or Clean Girl."),
+        String(localized: "Heart Booth", comment: "One-tap look (trend) name. Keep trend names people use in English, such as Y2K or Clean Girl."),
         String(localized: "Concert Night", comment: "One-tap look (trend) name. Keep trend names people use in English, such as Y2K or Clean Girl."),
         String(localized: "Pet & Me Studio", comment: "One-tap look (trend) name. Keep trend names people use in English, such as Y2K or Clean Girl."),
         String(localized: "Sticker Sheet", comment: "One-tap look (trend) name. Keep trend names people use in English, such as Y2K or Clean Girl."),

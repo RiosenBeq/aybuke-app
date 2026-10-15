@@ -312,8 +312,8 @@ struct RetroCamView: View {
         .buttonStyle(PressableButtonStyle(scale: 0.92))
         .macHoverLift(scale: 1.04)
         .disabled(model.isDeveloping || model.pause != nil)
-        .accessibilityLabel(model.isShooting ? Text("Stop") : model.mode == .booth ? Text("Start photo booth") : Text("Take photo"))
-        .macHelp(model.isShooting ? Text("Stop") : model.mode == .booth ? Text("Start photo booth") : Text("Take photo"))
+        .accessibilityLabel(model.isShooting ? Text("Stop") : model.mode == .booth ? Text("Start Retro Booth") : Text("Take photo"))
+        .macHelp(model.isShooting ? Text("Stop") : model.mode == .booth ? Text("Start Retro Booth") : Text("Take photo"))
         .macKeyboardShortcut(KeyboardShortcut(.space, modifiers: []))
     }
 
@@ -486,7 +486,7 @@ struct RetroCamHubCard: View {
                     .background(AuraFill(palette: .mint).clipShape(.control))
                 VStack(alignment: .leading, spacing: 3) {
                     TitleWithNewBadge(title: "Retro Cam")
-                    Text("Live retro effects & photo booth · free")
+                    Text("Live retro effects & Retro Booth · free")
                         .font(.legibleFootnote)
                         .foregroundStyle(Palette.textSecondary)
                         .fixedSize(horizontal: false, vertical: true)

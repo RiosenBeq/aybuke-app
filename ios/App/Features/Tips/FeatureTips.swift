@@ -119,12 +119,12 @@ enum GlowTips {
 
 // MARK: - Tips
 
-/// Explore: the camera with live effects and the photo booth.
+/// Explore: the camera with live effects and Retro Booth.
 struct RetroCamTip: Tip {
     var id: String { GlowTips.id("retro-cam") }
     var title: Text { Text("Meet Retro Cam") }
     var message: Text? {
-        Text("Shoot with live 80s, 90s and Y2K effects, or start a four-shot photo booth. Free, on your device.")
+        Text("Shoot with live 80s, 90s and Y2K effects, or start a four-shot Retro Booth. Free, on your device.")
     }
     var image: Image? { Image(systemName: "camera.fill") }
     var actions: [Action] {

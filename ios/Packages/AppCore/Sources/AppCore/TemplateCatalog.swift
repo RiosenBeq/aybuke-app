@@ -452,7 +452,7 @@ public enum TemplateCatalog {
             symbolName: "fork.knife", season: .galentines, keepsLikeness: true
         ),
         PhotoTemplate(
-            id: "heart-booth", title: "Heart Photo Booth", subtitle: "Bestie booth strip",
+            id: "heart-booth", title: "Heart Booth", subtitle: "Bestie booth strip",
             category: .seasonal,
             prompt: "Turn this into a retro photo-booth picture: a pink curtain with paper hearts, heart-shaped sunglasses as props, bright even flash and a light film grain. \(modestyClause) \(groupIdentityClause)",
             symbolName: "heart.square", season: .galentines, keepsLikeness: true

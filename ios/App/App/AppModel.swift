@@ -127,6 +127,11 @@ final class AppModel {
     /// While it lasts, AI actions explain it kindly instead of trying, and
     /// never open the paywall; the free on-device tools work as always.
     private(set) var cloudPause: CloudPause?
+    /// Cloud AI rests for everyone: the server's own pause (the owner's
+    /// switch, the day's limits or the image provider's balance), from
+    /// `GET /credits-redeem`. While it touches her there's no ad for a
+    /// credit, and the paywall and the packs say so (`activeAIServicePause`).
+    private(set) var aiServicePause: AIServicePause?
     private(set) var paywallSource = "unknown"
     var isPhotoPickerPresented = false
     var editorLaunch: EditorLaunch? {
@@ -209,6 +214,8 @@ final class AppModel {
     /// one (`BalanceRefreshPolicy`).
     @ObservationIgnored private var lastBalanceRead: Date?
     @ObservationIgnored private var balanceReadsInFlight = 0
+    /// When the server's pause was last asked for: at most once a minute.
+    @ObservationIgnored private var lastAIPauseRead: Date?
 
     private enum Keys {
         static let onboarding = "onboarding.completed"
@@ -751,6 +758,37 @@ final class AppModel {
     func refreshServerBalanceIfDue() async {
         guard balanceReadsInFlight == 0, BalanceRefreshPolicy.standard.isDue(lastRead: lastBalanceRead) else { return }
         await refreshServerBalance()
+    }
+
+    /// Asks whether cloud AI rests for everyone, where it matters: as the
+    /// paywall, the credits sheet or the packs appear, before an ad for a
+    /// credit, and after a job was refused with `ai_paused`. It needs no
+    /// session (nobody gets an account by opening the paywall) and runs at
+    /// most once a minute unless `force`. A failed read changes nothing.
+    func refreshAIServicePause(force: Bool = false) async {
+        #if DEBUG
+        // -GLAIPause all|free: the server's pause, for QA and screenshots.
+        if let scope = UserDefaults.standard.string(forKey: "GLAIPause") {
+            aiServicePause = AIServicePause(freeOnly: scope == "free", until: .distantFuture)
+            return
+        }
+        #endif
+        guard let remote, allowsCloudAI || allowsPurchases, !isCloudOffline else { return }
+        if !force, let lastAIPauseRead, abs(lastAIPauseRead.timeIntervalSinceNow) < 60 { return }
+        lastAIPauseRead = Date()
+        do {
+            aiServicePause = try await remote.fetchAIPause()
+        } catch {
+            // Unknown: the last answer stands until its end, and the next look asks again.
+            lastAIPauseRead = nil
+        }
+    }
+
+    /// The server's pause while it lasts and touches her: a pause on free
+    /// credits leaves Pro's alone.
+    var activeAIServicePause: AIServicePause? {
+        guard let aiServicePause, aiServicePause.isActive(), aiServicePause.touches(isPro: purchases.isPro) else { return nil }
+        return aiServicePause
     }
 
     // MARK: Onboarding & consent
@@ -1447,6 +1485,10 @@ final class AppModel {
             if allowsCloudAI { consentRequest = ConsentRequest {} }
             return
         }
+        if case AIServiceError.aiPaused = error {
+            // Resting for everyone? Then no ad for a credit, and the paywall says so.
+            Task { await refreshAIServicePause(force: true) }
+        }
         showToast(verbatim: Self.localizedMessage(for: error), style: .error)
     }
 
@@ -1472,6 +1514,17 @@ final class AppModel {
         case .blocked:
             return String(localized: "Cloud AI is turned off here for now. Effects, Retro Cam, Cut out and your other free tools still work. If you think this is a mistake, write to us at \(config.supportEmail).")
         }
+    }
+
+    /// One honest line where credits are explained or sold while the server
+    /// rests AI: what rests, and that what she buys waits for her. Never a
+    /// date: the owner can end a pause sooner.
+    func message(for pause: AIServicePause) -> String {
+        pause.freeOnly
+            ? String(localized: "Free AI credits are taking a short break. Your free tools still work.",
+                     comment: "Note on the paywall and the credits sheet while the server pauses AI on free daily credits")
+            : String(localized: "AI is taking a short break. Credits you buy stay safe until it's back.",
+                     comment: "Note on the paywall, the credits sheet and the credit packs while the server pauses all cloud AI")
     }
 
     /// The user's language for any error: known server codes get their own

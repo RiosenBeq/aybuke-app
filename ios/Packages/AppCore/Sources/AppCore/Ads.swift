@@ -51,10 +51,13 @@ public struct AdRewardPolicy: Equatable, Sendable {
     public static let standard = AdRewardPolicy()
 
     /// Whether "Watch a short ad" belongs on screen: never for Pro (their
-    /// credits come every month), never without an audience, and only once
-    /// the balance is empty.
-    public func offersAd(isPro: Bool, audience: AdAudience?, balance: Int) -> Bool {
-        !isPro && audience != nil && balance <= 0
+    /// credits come every month), never without an audience, only once the
+    /// balance is empty, and never while the server rests free AI (`pause`):
+    /// the ad's credit lands among the free credits, so she couldn't use it.
+    public func offersAd(isPro: Bool, audience: AdAudience?, balance: Int, pause: AIServicePause? = nil,
+                         now: Date = Date()) -> Bool {
+        if let pause, pause.isActive(at: now) { return false }
+        return !isPro && audience != nil && balance <= 0
     }
 }
 

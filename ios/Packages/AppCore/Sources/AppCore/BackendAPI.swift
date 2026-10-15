@@ -273,6 +273,34 @@ public enum CloudPause: Equatable, Sendable {
     }
 }
 
+/// `GET /credits-redeem`: cloud AI rests for everyone, not just her (that's
+/// `CloudPause`): the owner's pause, the day's limits or the image
+/// provider's balance (backend `credits-redeem/pause.ts`). Jobs get
+/// `ai_paused` meanwhile, so the app offers no ad for a credit and says so
+/// where credits are sold. The free on-device tools always work.
+public struct AIServicePause: Equatable, Sendable {
+    /// Only free daily credits rest (ad credits land there too); Pro
+    /// credits and packs still work.
+    public var freeOnly: Bool
+    /// When it ends at the latest; the owner can end it sooner.
+    public var until: Date
+
+    public init(freeOnly: Bool, until: Date) {
+        self.freeOnly = freeOnly
+        self.until = until
+    }
+
+    public func isActive(at date: Date = Date()) -> Bool {
+        until > date
+    }
+
+    /// Whether it stops what she'd pay with: every pause stops free credits,
+    /// a free one leaves Pro's credits alone.
+    public func touches(isPro: Bool) -> Bool {
+        !(freeOnly && isPro)
+    }
+}
+
 /// When the app reads the balance on its own (at launch, back in the
 /// foreground): each read is a server request, so at most once every
 /// `interval` after the last read that answered. A purchase, a sign-in, the
@@ -587,6 +615,13 @@ public enum RequestFactory {
         return request
     }
 
+    /// Whether cloud AI takes jobs right now (`AIServicePause`). The answer is
+    /// the same for everyone, so it goes without her session: the
+    /// publishable key is enough, and no account is ever made to ask.
+    public static func aiPause(config: BackendConfiguration) throws -> URLRequest {
+        try authorized(config: config, path: "functions/v1/credits-redeem", method: "GET", query: [], accessToken: nil)
+    }
+
     /// Deletes the account and all server-side data (Guideline 5.1.1(v)); the
     /// server also revokes the Sign in with Apple token. `anonymousToken` is an
     /// anonymous user that was never merged after Sign in with Apple, so the
@@ -758,6 +793,32 @@ public enum ResponseDecoder {
             throw AIServiceError.invalidResponse
         }
         return state
+    }
+
+    /// `GET /credits-redeem`: nil while cloud AI takes jobs. A pause without
+    /// an end lasts an hour here, until the next read says more; one that
+    /// doesn't say it's free-only counts as all of AI.
+    public static func decodeAIPause(data: Data, statusCode: Int, now: Date = Date()) throws -> AIServicePause? {
+        struct Body: Decodable {
+            let aiPaused: Bool
+            let freeOnly: Bool?
+            let retryAfter: Int?
+
+            enum CodingKeys: String, CodingKey {
+                case aiPaused = "ai_paused"
+                case freeOnly = "free_only"
+                case retryAfter = "retry_after"
+            }
+        }
+        guard (200..<300).contains(statusCode) else {
+            throw error(from: data, statusCode: statusCode)
+        }
+        guard let body = try? JSONDecoder().decode(Body.self, from: data) else {
+            throw AIServiceError.invalidResponse
+        }
+        guard body.aiPaused else { return nil }
+        let wait = TimeInterval(max(1, body.retryAfter ?? 3600))
+        return AIServicePause(freeOnly: body.freeOnly ?? false, until: now.addingTimeInterval(wait))
     }
 
     public static func error(from data: Data, statusCode: Int, retryAfter: String? = nil) -> AIServiceError {

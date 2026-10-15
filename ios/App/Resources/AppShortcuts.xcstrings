@@ -376,16 +376,16 @@
         }
       }
     },
-    "Start a photo booth in ${applicationName}" : {
+    "Start Retro Booth in ${applicationName}" : {
       "extractionState" : "extracted_with_value",
       "localizations" : {
         "de" : {
           "stringSet" : {
             "state" : "translated",
             "values" : [
-              "Starte eine Fotobox in ${applicationName}",
-              "Starte die ${applicationName}-Fotobox",
-              "Mach Fotobox-Bilder mit ${applicationName}"
+              "Starte Retro Booth in ${applicationName}",
+              "Öffne Retro Booth in ${applicationName}",
+              "Mach Bilder mit Retro Booth in ${applicationName}"
             ]
           }
         },
@@ -393,9 +393,9 @@
           "stringSet" : {
             "state" : "new",
             "values" : [
-              "Start a photo booth in ${applicationName}",
-              "Start the ${applicationName} photo booth",
-              "Take photo booth pictures with ${applicationName}"
+              "Start Retro Booth in ${applicationName}",
+              "Open Retro Booth in ${applicationName}",
+              "Take Retro Booth pictures with ${applicationName}"
             ]
           }
         },
@@ -403,9 +403,9 @@
           "stringSet" : {
             "state" : "translated",
             "values" : [
-              "Inicia un fotomatón en ${applicationName}",
-              "Abre el fotomatón de ${applicationName}",
-              "Toma fotos de fotomatón con ${applicationName}"
+              "Inicia Retro Booth en ${applicationName}",
+              "Abre Retro Booth en ${applicationName}",
+              "Toma fotos con Retro Booth en ${applicationName}"
             ]
           }
         },
@@ -413,9 +413,9 @@
           "stringSet" : {
             "state" : "translated",
             "values" : [
-              "Lance un photomaton dans ${applicationName}",
-              "Lance le photomaton ${applicationName}",
-              "Prends des photos photomaton avec ${applicationName}"
+              "Lance Retro Booth dans ${applicationName}",
+              "Ouvre Retro Booth dans ${applicationName}",
+              "Prends des photos avec Retro Booth dans ${applicationName}"
             ]
           }
         },
@@ -423,9 +423,9 @@
           "stringSet" : {
             "state" : "translated",
             "values" : [
-              "Mulai photobooth di ${applicationName}",
-              "Buka photobooth ${applicationName}",
-              "Foto di photobooth ${applicationName}"
+              "Mulai Retro Booth di ${applicationName}",
+              "Buka Retro Booth di ${applicationName}",
+              "Foto pakai Retro Booth di ${applicationName}"
             ]
           }
         },
@@ -433,9 +433,9 @@
           "stringSet" : {
             "state" : "translated",
             "values" : [
-              "Avvia una cabina fotografica in ${applicationName}",
-              "Apri la cabina fotografica di ${applicationName}",
-              "Scatta foto da cabina con ${applicationName}"
+              "Avvia Retro Booth in ${applicationName}",
+              "Apri Retro Booth in ${applicationName}",
+              "Scatta foto con Retro Booth in ${applicationName}"
             ]
           }
         },
@@ -443,9 +443,9 @@
           "stringSet" : {
             "state" : "translated",
             "values" : [
-              "${applicationName}でフォトブースを開始",
-              "${applicationName}のフォトブースを始める",
-              "${applicationName}でフォトブースの写真を撮る"
+              "${applicationName}でRetro Boothを開始",
+              "${applicationName}のRetro Boothを開く",
+              "${applicationName}のRetro Boothで写真を撮る"
             ]
           }
         },
@@ -453,9 +453,9 @@
           "stringSet" : {
             "state" : "translated",
             "values" : [
-              "${applicationName}에서 포토부스 시작",
-              "${applicationName} 포토부스 열기",
-              "${applicationName}으로 네 컷 사진 찍기"
+              "${applicationName}에서 Retro Booth 시작",
+              "${applicationName} Retro Booth 열기",
+              "${applicationName} Retro Booth로 네 컷 사진 찍기"
             ]
           }
         },
@@ -463,9 +463,9 @@
           "stringSet" : {
             "state" : "translated",
             "values" : [
-              "Iniciar a cabine de fotos no ${applicationName}",
-              "Abre a cabine de fotos do ${applicationName}",
-              "Tirar fotos de cabine com o ${applicationName}"
+              "Iniciar o Retro Booth no ${applicationName}",
+              "Abrir o Retro Booth no ${applicationName}",
+              "Tirar fotos com o Retro Booth no ${applicationName}"
             ]
           }
         },
@@ -473,9 +473,9 @@
           "stringSet" : {
             "state" : "translated",
             "values" : [
-              "Запусти фотобудку в ${applicationName}",
-              "Открой фотобудку ${applicationName}",
-              "Сделай снимки в фотобудке ${applicationName}"
+              "Запусти Retro Booth в ${applicationName}",
+              "Открой Retro Booth в ${applicationName}",
+              "Сделай снимки в Retro Booth в ${applicationName}"
             ]
           }
         },
@@ -483,9 +483,9 @@
           "stringSet" : {
             "state" : "translated",
             "values" : [
-              "${applicationName} ile fotoğraf kabini başlat",
-              "${applicationName} fotoğraf kabinini başlat",
-              "${applicationName} ile Retro Booth'u başlat"
+              "${applicationName} ile Retro Booth'u başlat",
+              "${applicationName} içinde Retro Booth'u aç",
+              "${applicationName} Retro Booth ile fotoğraf çek"
             ]
           }
         },
@@ -493,9 +493,9 @@
           "stringSet" : {
             "state" : "translated",
             "values" : [
-              "在 ${applicationName} 中拍大头贴",
-              "打开 ${applicationName} 大头贴",
-              "用 ${applicationName} 拍大头贴"
+              "在 ${applicationName} 中开始 Retro Booth",
+              "打开 ${applicationName} 的 Retro Booth",
+              "用 ${applicationName} 的 Retro Booth 拍照"
             ]
           }
         }

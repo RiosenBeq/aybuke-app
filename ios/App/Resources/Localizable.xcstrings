@@ -551,6 +551,77 @@
         }
       }
     },
+    "AI is taking a short break. Credits you buy stay safe until it's back." : {
+      "comment" : "Note on the paywall, the credits sheet and the credit packs while the server pauses all cloud AI",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die KI macht gerade eine kurze Pause. Credits, die du kaufst, bleiben sicher, bis sie zurück ist."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La IA se está tomando un breve descanso. Los créditos que compres te esperan hasta que vuelva."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L’IA fait une courte pause. Les crédits que tu achètes t’attendent jusqu’à son retour."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI sedang istirahat sebentar. Kredit yang kamu beli tetap aman sampai AI kembali."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L’IA si sta prendendo una breve pausa. I crediti che acquisti restano al sicuro finché non torna."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIは少し休憩中です。購入したクレジットは、再開するまでそのまま残ります。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI가 잠깐 쉬고 있어요. 구매한 크레딧은 다시 돌아올 때까지 안전하게 남아 있어요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A IA está fazendo uma pausa rápida. Os créditos que você comprar ficam guardados até ela voltar."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ИИ ненадолго взял паузу. Купленные кредиты сохранятся, пока он не вернётся."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yapay zekâ kısa bir mola veriyor. Satın aldığın krediler, o dönene kadar güvende kalır."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI 正在短暂休息。你购买的点数会一直保留，直到它恢复。"
+          }
+        }
+      }
+    },
     "AI is taking a short break. Please try again later. Your free tools still work." : {
       "comment" : "Error message",
       "localizations" : {
@@ -972,6 +1043,77 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "请通过 Apple 确认，以完成删除你的账户。"
+          }
+        }
+      }
+    },
+    "Free AI credits are taking a short break. Your free tools still work." : {
+      "comment" : "Note on the paywall and the credits sheet while the server pauses AI on free daily credits",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Gratis-KI-Credits machen gerade eine kurze Pause. Deine Gratis-Tools funktionieren weiter."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Los créditos de IA gratis se están tomando un breve descanso. Tus herramientas gratis siguen funcionando."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les crédits IA gratuits font une courte pause. Tes outils gratuits fonctionnent toujours."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kredit AI gratis sedang istirahat sebentar. Alat gratismu tetap bisa dipakai."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "I crediti IA gratis si stanno prendendo una breve pausa. I tuoi strumenti gratis funzionano ancora."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "無料のAIクレジットは少し休憩中です。無料ツールはそのまま使えます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "무료 AI 크레딧이 잠깐 쉬고 있어요. 무료 도구는 계속 쓸 수 있어요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Os créditos de IA grátis estão fazendo uma pausa rápida. Suas ferramentas grátis continuam funcionando."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Бесплатные ИИ-кредиты ненадолго на паузе. Бесплатные инструменты по-прежнему работают."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ücretsiz yapay zekâ kredileri kısa bir mola veriyor. Ücretsiz araçların çalışmaya devam ediyor."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "免费 AI 点数正在短暂休息。免费工具仍可使用。"
           }
         }
       }
@@ -53284,7 +53426,7 @@
         }
       }
     },
-    "Heart Photo Booth" : {
+    "Heart Booth" : {
       "comment" : "One-tap look (trend) name. Keep trend names people use in English, such as Y2K or Clean Girl.",
       "localizations" : {
         "de" : {
@@ -59486,72 +59628,72 @@
         }
       }
     },
-    "Live retro effects & photo booth · free" : {
+    "Live retro effects & Retro Booth · free" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Live-Retro-Effekte & Fotobox · gratis"
+            "value" : "Live-Retro-Effekte & Retro Booth · gratis"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Efectos retro en vivo y fotomatón · gratis"
+            "value" : "Efectos retro en vivo y Retro Booth · gratis"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Effets rétro en direct et photomaton · gratuit"
+            "value" : "Effets rétro en direct et Retro Booth · gratuit"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Efek retro live & photobooth · gratis"
+            "value" : "Efek retro live & Retro Booth · gratis"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Effetti retrò in tempo reale e cabina fotografica · gratis"
+            "value" : "Effetti retrò in tempo reale e Retro Booth · gratis"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ライブのレトロエフェクト＆フォトブース · 無料"
+            "value" : "ライブのレトロエフェクト＆Retro Booth · 無料"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "실시간 레트로 효과 & 포토부스 · 무료"
+            "value" : "실시간 레트로 효과 & Retro Booth · 무료"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Efeitos retrô ao vivo e cabine de fotos · grátis"
+            "value" : "Efeitos retrô ao vivo e Retro Booth · grátis"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ретро-эффекты вживую и фотобудка · бесплатно"
+            "value" : "Ретро-эффекты вживую и Retro Booth · бесплатно"
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Canlı retro efektler ve fotoğraf kabini · ücretsiz"
+            "value" : "Canlı retro efektler ve Retro Booth · ücretsiz"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "实时复古特效和大头贴 · 免费"
+            "value" : "实时复古特效和 Retro Booth · 免费"
           }
         }
       }
@@ -69183,72 +69325,72 @@
         }
       }
     },
-    "Opens Retro Cam's photo booth: four shots with a 3-2-1 countdown, printed as a strip or a grid. Free, on your device." : {
+    "Opens Retro Booth in Retro Cam: four shots with a 3-2-1 countdown, printed as a strip or a grid. Free, on your device." : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Öffnet die Fotobox von Retro Cam: vier Fotos mit 3-2-1-Countdown, gedruckt als Streifen oder Raster. Gratis, auf deinem Gerät."
+            "value" : "Öffnet Retro Booth in Retro Cam: vier Fotos mit 3-2-1-Countdown, gedruckt als Streifen oder Raster. Gratis, auf deinem Gerät."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Abre el fotomatón de Retro Cam: cuatro fotos con cuenta regresiva 3-2-1, impresas en tira o en cuadrícula. Gratis, en tu dispositivo."
+            "value" : "Abre Retro Booth en Retro Cam: cuatro fotos con cuenta regresiva 3-2-1, impresas en tira o en cuadrícula. Gratis, en tu dispositivo."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ouvre le photomaton de Retro Cam : quatre photos avec un compte à rebours 3-2-1, imprimées en bande ou en grille. Gratuit, sur ton appareil."
+            "value" : "Ouvre Retro Booth dans Retro Cam : quatre photos avec un compte à rebours 3-2-1, imprimées en bande ou en grille. Gratuit, sur ton appareil."
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Membuka photobooth Retro Cam: empat jepretan dengan hitung mundur 3-2-1, dicetak sebagai strip atau grid. Gratis, di perangkatmu."
+            "value" : "Membuka Retro Booth di Retro Cam: empat jepretan dengan hitung mundur 3-2-1, dicetak sebagai strip atau grid. Gratis, di perangkatmu."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Apre la cabina fotografica di Retro Cam: quattro scatti con conto alla rovescia 3-2-1, stampati in striscia o in griglia. Gratis, sul tuo dispositivo."
+            "value" : "Apre Retro Booth in Retro Cam: quattro scatti con conto alla rovescia 3-2-1, stampati in striscia o in griglia. Gratis, sul tuo dispositivo."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Retro Camのフォトブースを開きます。3・2・1のカウントダウンで4枚撮影し、縦型またはグリッドでプリント。無料・端末内で処理。"
+            "value" : "Retro CamのRetro Boothを開きます。3・2・1のカウントダウンで4枚撮影し、縦型またはグリッドでプリント。無料・端末内で処理。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Retro Cam의 포토부스를 열어요. 3-2-1 카운트다운으로 네 컷을 찍고 세로형이나 그리드로 인화해요. 무료, 기기에서 처리돼요."
+            "value" : "Retro Cam의 Retro Booth를 열어요. 3-2-1 카운트다운으로 네 컷을 찍고 세로형이나 그리드로 인화해요. 무료, 기기에서 처리돼요."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Abre a cabine de fotos da Retro Cam: quatro cliques com contagem regressiva 3-2-1, impressos em tirinha ou em grade. Grátis, no seu aparelho."
+            "value" : "Abre o Retro Booth na Retro Cam: quatro cliques com contagem regressiva 3-2-1, impressos em tirinha ou em grade. Grátis, no seu aparelho."
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Открывает фотобудку Retro Cam: четыре кадра с отсчётом 3-2-1, напечатанные полоской или сеткой. Бесплатно, на твоём устройстве."
+            "value" : "Открывает Retro Booth в Retro Cam: четыре кадра с отсчётом 3-2-1, напечатанные полоской или сеткой. Бесплатно, на твоём устройстве."
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Retro Cam'in fotoğraf kabinini açar: 3-2-1 geri sayımlı dört kare, şerit ya da ızgara olarak basılır. Ücretsiz, cihazında."
+            "value" : "Retro Cam'de Retro Booth'u açar: 3-2-1 geri sayımlı dört kare, şerit ya da ızgara olarak basılır. Ücretsiz, cihazında."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "打开 Retro Cam 的大头贴模式：3-2-1 倒计时连拍四张，打印成长条或宫格。免费，本机处理。"
+            "value" : "打开 Retro Cam 中的 Retro Booth：3-2-1 倒计时连拍四张，打印成长条或宫格。免费，本机处理。"
           }
         }
       }
@@ -86031,72 +86173,72 @@
         }
       }
     },
-    "Shoot with live 80s, 90s and Y2K effects, or start a four-shot photo booth. Free, on your device." : {
+    "Shoot with live 80s, 90s and Y2K effects, or start a four-shot Retro Booth. Free, on your device." : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Fotografiere mit Live-Effekten aus den 80ern, 90ern und Y2K oder starte eine Fotobox mit vier Fotos. Gratis, auf deinem Gerät."
+            "value" : "Fotografiere mit Live-Effekten aus den 80ern, 90ern und Y2K oder starte Retro Booth mit vier Fotos. Gratis, auf deinem Gerät."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dispara con efectos de los 80, los 90 y Y2K en vivo, o inicia un fotomatón de cuatro fotos. Gratis, en tu dispositivo."
+            "value" : "Dispara con efectos de los 80, los 90 y Y2K en vivo, o inicia Retro Booth con cuatro fotos. Gratis, en tu dispositivo."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Prends des photos avec des effets années 80, 90 et Y2K en direct, ou lance un photomaton de quatre photos. Gratuit, sur ton appareil."
+            "value" : "Prends des photos avec des effets années 80, 90 et Y2K en direct, ou lance Retro Booth pour quatre photos. Gratuit, sur ton appareil."
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Foto dengan efek 80-an, 90-an, dan Y2K secara live, atau mulai photobooth empat jepretan. Gratis, di perangkatmu."
+            "value" : "Foto dengan efek 80-an, 90-an, dan Y2K secara live, atau mulai Retro Booth empat jepretan. Gratis, di perangkatmu."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Scatta con effetti anni '80, '90 e Y2K in tempo reale o avvia una cabina fotografica da quattro scatti. Gratis, sul tuo dispositivo."
+            "value" : "Scatta con effetti anni '80, '90 e Y2K in tempo reale o avvia Retro Booth da quattro scatti. Gratis, sul tuo dispositivo."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "80年代・90年代・Y2Kのエフェクトをライブでかけて撮影したり、4枚撮りのフォトブースを始めたり。無料・端末内で処理。"
+            "value" : "80年代・90年代・Y2Kのエフェクトをライブでかけて撮影したり、4枚撮りのRetro Boothを始めたり。無料・端末内で処理。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "80·90년대와 Y2K 효과를 실시간으로 입혀 찍거나, 네 컷 포토부스를 시작해 보세요. 무료, 기기에서 처리돼요."
+            "value" : "80·90년대와 Y2K 효과를 실시간으로 입혀 찍거나, 네 컷 Retro Booth를 시작해 보세요. 무료, 기기에서 처리돼요."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Fotografe com efeitos anos 80, 90 e Y2K ao vivo ou comece uma cabine de fotos com quatro cliques. Grátis, no seu aparelho."
+            "value" : "Fotografe com efeitos anos 80, 90 e Y2K ao vivo ou comece o Retro Booth com quatro cliques. Grátis, no seu aparelho."
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Снимай с живыми эффектами 80-х, 90-х и Y2K или запусти фотобудку на четыре кадра. Бесплатно, на твоём устройстве."
+            "value" : "Снимай с живыми эффектами 80-х, 90-х и Y2K или запусти Retro Booth на четыре кадра. Бесплатно, на твоём устройстве."
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Canlı 80'ler, 90'lar ve Y2K efektleriyle çek ya da dört karelik bir fotoğraf kabini başlat. Ücretsiz, cihazında."
+            "value" : "Canlı 80'ler, 90'lar ve Y2K efektleriyle çek ya da dört karelik Retro Booth'u başlat. Ücretsiz, cihazında."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "用实时 80、90 年代和 Y2K 特效拍照，或开启四连拍大头贴。免费，本机处理。"
+            "value" : "用实时 80、90 年代和 Y2K 特效拍照，或开启四连拍 Retro Booth。免费，本机处理。"
           }
         }
       }
@@ -90823,76 +90965,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "开始 7 天免费试用"
-          }
-        }
-      }
-    },
-    "Start photo booth" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Fotobox starten"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Iniciar fotomatón"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lancer le photomaton"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mulai photobooth"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Avvia cabina fotografica"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "フォトブースを開始"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "포토부스 시작"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Iniciar cabine de fotos"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Запустить фотобудку"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Fotoğraf kabinini başlat"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "开始拍大头贴"
           }
         }
       }
@@ -111761,72 +111833,72 @@
         }
       }
     },
-    "Your photo booth print" : {
+    "Your Retro Booth print" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dein Fotobox-Abzug"
+            "value" : "Dein Abzug aus Retro Booth"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tu impresión de fotomatón"
+            "value" : "Tu impresión de Retro Booth"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ton tirage photomaton"
+            "value" : "Ton tirage Retro Booth"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cetakan photobooth-mu"
+            "value" : "Cetakan Retro Booth-mu"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "La tua stampa della cabina fotografica"
+            "value" : "La tua stampa di Retro Booth"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "フォトブースのプリント"
+            "value" : "Retro Boothのプリント"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "포토부스 인화 사진"
+            "value" : "Retro Booth 인화 사진"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sua impressão da cabine de fotos"
+            "value" : "Sua impressão do Retro Booth"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Твой снимок из фотобудки"
+            "value" : "Твой снимок из Retro Booth"
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Fotoğraf kabini baskın"
+            "value" : "Retro Booth baskın"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "你的大头贴"
+            "value" : "你的 Retro Booth 照片"
           }
         }
       }

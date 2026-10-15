@@ -175,7 +175,7 @@ struct OpenRetroCamIntent: AppIntent {
 struct StartPhotoBoothIntent: AppIntent {
     static let title: LocalizedStringResource = "Start Retro Booth"
     static let description = IntentDescription(
-        "Opens Retro Cam's photo booth: four shots with a 3-2-1 countdown, printed as a strip or a grid. Free, on your device."
+        "Opens Retro Booth in Retro Cam: four shots with a 3-2-1 countdown, printed as a strip or a grid. Free, on your device."
     )
     static let openAppWhenRun = true
 
@@ -233,9 +233,9 @@ struct GlowShortcuts: AppShortcutsProvider {
         AppShortcut(
             intent: StartPhotoBoothIntent(),
             phrases: [
-                "Start a photo booth in \(.applicationName)",
-                "Start the \(.applicationName) photo booth",
-                "Take photo booth pictures with \(.applicationName)",
+                "Start Retro Booth in \(.applicationName)",
+                "Open Retro Booth in \(.applicationName)",
+                "Take Retro Booth pictures with \(.applicationName)",
             ],
             shortTitle: "Retro Booth",
             systemImageName: "square.grid.2x2"

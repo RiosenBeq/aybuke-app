@@ -41,6 +41,20 @@ final class AdsTests: XCTestCase {
         XCTAssertFalse(policy.offersAd(isPro: false, audience: nil, balance: 0), "never under 13")
     }
 
+    /// The ad's credit lands among the free credits, so no ad while the
+    /// server rests free AI or all of it: she couldn't use the credit today.
+    func testNoRewardedAdWhileTheServerRestsAI() {
+        let policy = AdRewardPolicy.standard
+        let now = Date(timeIntervalSince1970: 1_000_000)
+        let free = AIServicePause(freeOnly: true, until: now.addingTimeInterval(3600))
+        let all = AIServicePause(freeOnly: false, until: now.addingTimeInterval(3600))
+        XCTAssertFalse(policy.offersAd(isPro: false, audience: .teen, balance: 0, pause: free, now: now))
+        XCTAssertFalse(policy.offersAd(isPro: false, audience: .adult, balance: 0, pause: all, now: now))
+        XCTAssertTrue(policy.offersAd(isPro: false, audience: .teen, balance: 0, pause: free, now: now.addingTimeInterval(3600)),
+                      "back once the pause is over")
+        XCTAssertTrue(policy.offersAd(isPro: false, audience: .teen, balance: 0, pause: nil, now: now))
+    }
+
     func testAdMobIDs() {
         XCTAssertTrue(AdMobID.isAppID("ca-app-pub-2292230772061554~5236020895"))
         XCTAssertTrue(AdMobID.isAppID("ca-app-pub-3940256099942544~1458002511"), "Google's test app id")

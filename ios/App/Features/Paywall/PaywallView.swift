@@ -106,6 +106,7 @@ struct PaywallView: View {
         }
         .accessibilityElement(children: .contain)
         .task { await purchases.loadProducts() }
+        .task { await app.refreshAIServicePause() }
         // Products can arrive late (after "Try again"), so check eligibility then.
         .task(id: purchases.products.count) {
             if let yearly = purchases.yearly {
@@ -168,17 +169,14 @@ struct PaywallView: View {
         }
     }
 
-    /// Why cloud AI is off right now, as the credits sheet says it.
+    /// Why cloud AI is off right now, as the credits sheet says it: her own
+    /// rest, else the server's pause for everyone, so nobody buys credits
+    /// without knowing they wait.
     @ViewBuilder private var cloudPauseNote: some View {
         if let pause = app.cloudPause, pause.isActive() {
-            Label {
-                Text(verbatim: app.message(for: pause))
-            } icon: {
-                Image(systemName: "moon.zzz.fill")
-            }
-            .font(.subheadline)
-            .foregroundStyle(Palette.textPrimary)
-            .fixedSize(horizontal: false, vertical: true)
+            PauseNote(text: app.message(for: pause))
+        } else if let pause = app.activeAIServicePause {
+            PauseNote(text: app.message(for: pause))
         }
     }
 
@@ -449,6 +447,23 @@ struct PaywallView: View {
             errorTitle = String(localized: "Nothing to restore")
             errorMessage = String(localized: "No active subscription found for this Apple Account.")
         }
+    }
+}
+
+/// Why AI says no right now, though credits are left or for sale: one calm
+/// line (the paywall, the credits sheet and the packs).
+struct PauseNote: View {
+    let text: String
+
+    var body: some View {
+        Label {
+            Text(verbatim: text)
+        } icon: {
+            Image(systemName: "moon.zzz.fill")
+        }
+        .font(.subheadline)
+        .foregroundStyle(Palette.textPrimary)
+        .fixedSize(horizontal: false, vertical: true)
     }
 }
 
@@ -817,6 +832,10 @@ struct CreditPackList: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
+            // Only a pause on all of AI: packs work while free credits rest.
+            if let pause = app.activeAIServicePause, !pause.freeOnly {
+                PauseNote(text: app.message(for: pause))
+            }
             if hasPendingPack {
                 PendingApprovalCard(text: "Waiting for approval. If it's approved, your credits are added automatically.")
             }
@@ -832,6 +851,7 @@ struct CreditPackList: View {
             }
         }
         .task { await purchases.loadProducts() }
+        .task { await app.refreshAIServicePause() }
     }
 
     private func row(for product: Product) -> some View {
