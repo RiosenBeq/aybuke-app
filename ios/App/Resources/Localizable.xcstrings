@@ -71442,6 +71442,76 @@
         }
       }
     },
+    "Payment is charged to your Apple Account. Subscriptions renew automatically at the price shown unless cancelled at least 24 hours before the end of the current period. Manage or cancel anytime in the App Store app › your name › Account Settings › Subscriptions." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Zahlung wird deinem Apple Account belastet. Abonnements verlängern sich automatisch zum angezeigten Preis, sofern sie nicht mindestens 24 Stunden vor Ende des aktuellen Zeitraums gekündigt werden. Verwalte oder kündige sie jederzeit in der App Store App › dein Name › Accounteinstellungen › Abos."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El pago se cargará a tu Cuenta de Apple. Las suscripciones se renuevan automáticamente al precio indicado, salvo que se cancelen al menos 24 horas antes de que termine el periodo actual. Puedes gestionarlas o cancelarlas cuando quieras en la app App Store › tu nombre › Ajustes de la cuenta › Suscripciones."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le paiement est débité sur ton compte Apple. Les abonnements se renouvellent automatiquement au prix indiqué, sauf annulation au moins 24 heures avant la fin de la période en cours. Tu peux gérer ou annuler ton abonnement à tout moment dans l'app App Store › ton nom › Réglages du compte › Abonnements."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pembayaran ditagihkan ke Akun Apple kamu. Langganan diperpanjang otomatis dengan harga yang tertera, kecuali dibatalkan paling lambat 24 jam sebelum periode berjalan berakhir. Kelola atau batalkan kapan saja di app App Store › namamu › Pengaturan Akun › Langganan."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Il pagamento viene addebitato sul tuo Account Apple. Gli abbonamenti si rinnovano automaticamente al prezzo indicato, a meno che non vengano disdetti almeno 24 ore prima della fine del periodo in corso. Puoi gestirli o disdirli in qualsiasi momento nell'app App Store › il tuo nome › Impostazioni account › Abbonamenti."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "お支払いはApple Accountに請求されます。サブスクリプションは、現在の期間が終了する24時間以上前までにキャンセルしない限り、表示価格で自動的に更新されます。管理やキャンセルは、「App Store」› 自分の名前 ›「アカウント設定」›「サブスクリプション」からいつでも行えます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "결제 금액은 Apple 계정으로 청구돼요. 구독은 현재 기간이 끝나기 최소 24시간 전에 취소하지 않으면 표시된 가격으로 자동 갱신돼요. App Store 앱 › 내 이름 › 계정 설정 › 구독에서 언제든지 관리하거나 취소할 수 있어요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O pagamento é cobrado na sua Conta Apple. As assinaturas são renovadas automaticamente pelo preço exibido, a menos que sejam canceladas pelo menos 24 horas antes do fim do período atual. Gerencie ou cancele quando quiser no app App Store › seu nome › Ajustes da Conta › Assinaturas."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Оплата списывается с твоего Аккаунта Apple. Подписка продлевается автоматически по указанной цене, если не отменить её не позднее чем за 24 часа до окончания текущего периода. Управлять подпиской или отменить её можно в любой момент: приложение App Store › твоё имя › Настройки учетной записи › Подписки."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ödeme, Apple Hesabından tahsil edilir. Abonelikler, mevcut dönemin bitiminden en az 24 saat önce iptal edilmediği sürece gösterilen fiyattan otomatik olarak yenilenir. Aboneliğini istediğin zaman App Store uygulaması › adın › Hesap Ayarları › Abonelikler bölümünden yönetebilir veya iptal edebilirsin."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "付款将从你的 Apple 账户中扣除。除非在当前订阅期结束前至少 24 小时取消，否则订阅将按所示价格自动续订。你可以随时前往“App Store”› 你的账户名称 ›“账户设置”›“订阅”管理或取消订阅。"
+          }
+        }
+      }
+    },
     "Peach" : {
       "localizations" : {
         "de" : {
@@ -99391,6 +99461,76 @@
         }
       }
     },
+    "To avoid being charged, cancel before %@ in the App Store app › your name › Account Settings › Subscriptions." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Damit dir nichts berechnet wird, kündige bis %@ in der App Store App › dein Name › Accounteinstellungen › Abos."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Para que no se te cobre, cancela antes del %@ en la app App Store › tu nombre › Ajustes de la cuenta › Suscripciones."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pour ne rien payer, annule avant %@ dans l'app App Store › ton nom › Réglages du compte › Abonnements."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Agar tidak ditagih, batalkan sebelum %@ di app App Store › namamu › Pengaturan Akun › Langganan."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Per evitare l'addebito, disdici prima del %@ nell'app App Store › il tuo nome › Impostazioni account › Abbonamenti."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "請求されないようにするには、%@より前に「App Store」› 自分の名前 ›「アカウント設定」›「サブスクリプション」からキャンセルしてください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "결제되지 않으려면 %@ 전에 App Store 앱 › 내 이름 › 계정 설정 › 구독에서 취소하세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Para evitar a cobrança, cancele antes de %@ no app App Store › seu nome › Ajustes da Conta › Assinaturas."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Чтобы не платить, отмени подписку до %@: приложение App Store › твоё имя › Настройки учетной записи › Подписки."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ücret alınmaması için %@ öncesinde App Store uygulaması › adın › Hesap Ayarları › Abonelikler bölümünden iptal et."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "如不想被扣费，请在 %@前前往“App Store”› 你的账户名称 ›“账户设置”›“订阅”取消。"
+          }
+        }
+      }
+    },
     "To avoid the %@ charge, cancel before %@ in Settings › Apple Account › Subscriptions." : {
       "localizations" : {
         "de" : {
@@ -99463,6 +99603,82 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "如不想被扣费 %1$@，请在 %2$@前前往“设置 › Apple 账户 › 订阅”取消。"
+          }
+        }
+      }
+    },
+    "To avoid the %@ charge, cancel before %@ in the App Store app › your name › Account Settings › Subscriptions." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Damit dir die %1$@ nicht berechnet werden, kündige bis %2$@ in der App Store App › dein Name › Accounteinstellungen › Abos."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "To avoid the %1$@ charge, cancel before %2$@ in the App Store app › your name › Account Settings › Subscriptions."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Para que no se te cobren %1$@, cancela antes del %2$@ en la app App Store › tu nombre › Ajustes de la cuenta › Suscripciones."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pour éviter le prélèvement de %1$@, annule avant %2$@ dans l'app App Store › ton nom › Réglages du compte › Abonnements."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Agar tidak ditagih %1$@, batalkan sebelum %2$@ di app App Store › namamu › Pengaturan Akun › Langganan."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Per evitare l'addebito di %1$@, disdici prima del %2$@ nell'app App Store › il tuo nome › Impostazioni account › Abbonamenti."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@の請求を避けるには、%2$@より前に「App Store」› 自分の名前 ›「アカウント設定」›「サブスクリプション」からキャンセルしてください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ 결제를 피하려면 %2$@ 전에 App Store 앱 › 내 이름 › 계정 설정 › 구독에서 취소하세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Para evitar a cobrança de %1$@, cancele antes de %2$@ no app App Store › seu nome › Ajustes da Conta › Assinaturas."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Чтобы не платить %1$@, отмени подписку до %2$@: приложение App Store › твоё имя › Настройки учетной записи › Подписки."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ tutarında ücret alınmaması için %2$@ öncesinde App Store uygulaması › adın › Hesap Ayarları › Abonelikler bölümünden iptal et."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "如不想被扣费 %1$@，请在 %2$@前前往“App Store”› 你的账户名称 ›“账户设置”›“订阅”取消。"
           }
         }
       }
