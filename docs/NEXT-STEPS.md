@@ -1,15 +1,14 @@
 # Aybuke: kalan işler ve devam promptları
 
-> **Türkçe özet:** Kod tarafında ajanın yapabileceği lansman işleri bitti (iade bildirimleri, SQL düzeltmeleri, politika testleri, Mac düzeltmeleri, hukuk metinleri). Kalanlar sahibin hesaplarında ve Mac'te: Supabase'i canlıya almak, AdMob ve App Store Connect panelleri, ekran görüntüleri, derlemelerin yüklenmesi ve gönderme. Hepsinin komutları ve Claude Code'a verilecek tek prompt: [`MAC-YAYIN.md`](MAC-YAYIN.md). Aşağıdaki bölümler geçmiş kayıt ve ayrıntı içindir; çelişki olursa `MAC-YAYIN.md` ve [`SAHIP-YAPILACAKLAR.md`](SAHIP-YAPILACAKLAR.md) geçerlidir. İncelemeye gönderme yalnızca sahibin açık onayıyla yapılır.
+> **Türkçe özet:** Aybuke 1.0, 15 Ekim 2026'da iOS ve macOS için App Review'a gönderildi (yayın türü AFTER_APPROVAL: onaylanınca kendiliğinden yayına girer). Ajanın yapabileceği lansman işleri bitti. Kalanlar sahibin hesaplarında: xAI ve Anthropic harcama limitleri ve bakiye, xAI anahtarının döndürülmesi, Anthropic ve xAI DPA'ları ile KVKK adımları (avukat), onaydan sonra AdMob uygulamasının mağaza kaydına bağlanması ve isteğe bağlı TestFlight cihaz testi. Güncel liste: [`SAHIP-YAPILACAKLAR.md`](SAHIP-YAPILACAKLAR.md). Aşağıdaki §3–§4 geçmiş kayıttır; çelişki olursa `SAHIP-YAPILACAKLAR.md` ve [`AGENTS.md`](../AGENTS.md) §6 geçerlidir.
 
-Son güncelleme: 15 Ekim 2026 sabahı. **Gece yapılanlar:** backend canlı (migrasyonlar, altı fonksiyon, gizli değerler, cron, güvenlik ve duman testi, gerçek bir Magic Edit), Claude bağımsız güvenlik denetimi, AdMob (SSV, geçiş birimi, hassas kategoriler, GDPR taslağı), App Store Connect metadata ve ayarları (API), aybuke.org hukuk metinleri, IndexNow ve Search Console, 12 dilde ekran görüntüleri. **Kalan:** derleme yüklemesi (Xcode'a Apple hesabıyla giriş ve `SIGNING=account`), App Privacy, GDPR yayını, RevenueCat yönlendirme adresi, satın almaları sürüme ekleme, TestFlight kontrolleri ve gönderme; ayrıntılar [`SAHIP-YAPILACAKLAR.md`](SAHIP-YAPILACAKLAR.md) durum paragrafında. Ajan işlerinin sıralı ve tam listesi [`AI-TODO.md`](AI-TODO.md) dosyasındadır; burada yalnızca hemen yapılacaklar var. Başlamadan önce [`AGENTS.md`](../AGENTS.md) §6'yı oku.
+Son güncelleme: 15 Ekim 2026 akşamı. **Durum:** iOS 1.0 (derleme 20261015.1225; abonelik grubu, iki abonelik ve iki paketle) ve macOS 1.0 (20261015.1233) WAITING_FOR_REVIEW. Derlemeler manuel imzalama ve altool ile yüklendi. Backend canlı: migrasyonlar `20261029000002`'ye kadar, yedi fonksiyon (`owner-digest` dahil), gizli değerler, üç cron işi; günlük sigortalar 60 ücretsiz / 10 doğrulanmamış / 400 toplam iş; sahip uyarı e-postaları ve günlük özet çalışıyor. Apple ile giriş 1.0'da açık (anahtar `36Q32XU57F`). xAI Zero Data Retention açık. App Privacy (10 veri türü), 364 ekran görüntüsü ve en-US iPhone uygulama önizlemesi yayında. RevenueCat (proje ve uygulama adı Aybuke) App Store bildirimlerini `app-store-notifications`'a iletiyor; Supabase organizasyonu ve projesi de Aybuke adını aldı. AdMob GDPR mesajı yayında. TestFlight iç grubu "Aybuke Team" var. Ajan işlerinin listesi [`AI-TODO.md`](AI-TODO.md) dosyasındadır. Başlamadan önce [`AGENTS.md`](../AGENTS.md) §6'yı oku.
 
 ## 1. Nerede, hangi hesapta, hangi klasörde
 
 - **Yerel klasör:** sahibin Mac'indeki depo kökü (yol bu dosyada yazılmaz). Komutlarda `<depo kökü>` yazan yere kendi klasörünü koy.
 - **GitHub deposu:** https://github.com/RiosenBeq/aybuke-app
-- **Ana dal:** `main` = `d007a8b` (PR #1 birleşti). `main`'de olmayanlar: yeniden adlandırma `6f2959d`, ad-reward Deno testlerinin CI'a eklenmesi `31f8817` ve aybuke.org adreslerini ve durum belgelerini ekleyen `28c16eb`. Hepsi `pink-girls-redesign` dalında; yerel dal ve `origin/pink-girls-redesign` izleme dalı `28c16eb`.
-- **Yerel `main`** (`766ce37`) eski. `origin/main` kullan.
+- **Ana dal:** `main`, CI yeşil olunca `pink-girls-redesign`'i ileri sarar (15 Ekim 2026'da `4b6c9fa`). Çalışma `pink-girls-redesign`'de sürer.
 - **Bekleyen dallar (GitHub'da):**
   - `worktree-agent-a1f71de31e33eae9b` (performans) ve `worktree-agent-a6acce03ae5d2fa55` (kredi ve kötüye kullanım): ikisi de `main`'de.
   - `worktree-agent-a9b1c4b8c9e51e4d3`: `main`'de.
@@ -17,7 +16,7 @@ Son güncelleme: 15 Ekim 2026 sabahı. **Gece yapılanlar:** backend canlı (mig
   - `origin/screenshots`: `pink-girls-redesign`'de değil. `.github/workflows/screenshots.yml` bu dala yazar.
 - **Web sitesi:** https://aybuke.org (Vercel). Kaynağı `RiosenBeq/aybuke` deposunun `main` dalı (AGENTS.md §6). Bu depodaki `web/` ve GitHub Pages iş akışı (`.github/workflows/website.yml`) eski kopya. Yasal sayfalar: `/legal/en/privacy-policy`, `/legal/en/terms-of-use`, `/legal/tr/gizlilik-politikasi`.
   - Doğrulanamadı: aybuke.org ve bu sayfalar bu ortamdan açılamadı (bağlantı kurulamadı).
-- **Backend:** Supabase projesi `efapupjvidyqhqdevmcu` (Frankfurt, Free plan). Migrasyon ve dağıtım durumu için 4.2, adım 3.
+- **Backend:** Supabase projesi `efapupjvidyqhqdevmcu` (Frankfurt, Free plan; organizasyon ve proje adı Aybuke). 15 Ekim 2026'dan beri canlı.
 - **App Store Connect:** uygulama kimliği `6822716008` (`AppConfig.json` › `appStoreID`). Paket kimliği `app.glowlit.ios`, widget `app.glowlit.ios.widgets`, takım `CBTKNY3LFC`.
   - Abonelik grubu "Aybuke Pro": `app.glowlit.pro.yearly` ($39.99) ve `app.glowlit.pro.monthly` ($5.99, ilk ay $1.99).
   - Kredi paketleri: `app.glowlit.credits.30` ($2.99) ve `app.glowlit.credits.100` ($7.99).
@@ -28,19 +27,19 @@ Son güncelleme: 15 Ekim 2026 sabahı. **Gece yapılanlar:** backend canlı (mig
 
 - **App Store Connect API anahtarı:** `~/.appstoreconnect/private_keys/AuthKey_<KEY_ID>.p8`. Yeni makinede sahibin dosyayı güvenli biçimde kopyalaması gerekir. Dosyayı asla commit etme, yazdırma veya bir yere yapıştırma. Dosya adındaki anahtar kimliği ile issuer kimliği, App Store Connect → Users and Access → Integrations sayfasındaki liste ile yüklemeden önce karşılaştırılmalı.
 - **Supabase CLI:** yeni makinede `supabase login` gerekir. Fonksiyon dağıtım komutları 4.2, adım 5'te.
-- **Supabase Secrets** (Edge Functions → Secrets): değerler bu dosyada ve repoda yok. Durum:
-  - HANDOFF-PROMPT.md'ye göre ayarlı: `XAI_API_KEY`, `APPLE_APP_ID`, `APPLE_BUNDLE_ID`, `APPLE_TEAM_ID`. `APPLE_APP_ID` değeri `6822716008` olmalı. Sahip 15 Ekim 2026'da `ANTHROPIC_API_KEY` ekledi (Claude güvenlik denetimi, SAHIP-YAPILACAKLAR.md 5.8).
-    - Doğrulanamadı: Secrets bu ortamdan görülemedi.
-  - Eksik: `ADMOB_REWARDED_AD_UNIT`. `ad-reward/index.ts` bu değeri okur; boşsa her ödülü reddeder.
+- **Supabase Secrets** (Edge Functions → Secrets): değerler bu dosyada ve repoda yok. 15 Ekim 2026 durumu:
+  - Ayarlı: `XAI_API_KEY`, `ANTHROPIC_API_KEY`, `APPLE_APP_ID` (`6822716008`), `APPLE_BUNDLE_ID`, `APPLE_TEAM_ID`, `ADMOB_REWARDED_AD_UNIT`, `APPLE_SIGNIN_KEY_ID` / `APPLE_SIGNIN_PRIVATE_KEY` (Apple ile giriş açık, `signInWithApple: true`), `RESEND_API_KEY`, `DIGEST_SECRET`, `OWNER_ALERT_TO`.
   - Olmamalı: `GLOWLIT_ALLOW_XCODE_APP_TRANSACTIONS`. `_shared/apple.ts` yalnızca yerel projede kabul eder; barındırılan projede yok sayar ve günlüğe yazar.
   - Hiçbir fonksiyon `OUTPUT_MODERATION` okumuyor (yalnızca `_shared/moderation_test.ts` bunun yok sayıldığını test eder).
   - Eklenmez (sahip kararı, SAHIP-YAPILACAKLAR.md 5.8: bağımsız denetim Claude): `FAL_KEY`, `XAI_SAFETY_MODEL`. `ANTHROPIC_SAFETY_MODEL` boş kalabilir (varsayılan `claude-haiku-5-5`).
-  - Henüz yok: `REVENUECAT_SECRET_KEY`, `APPLE_SIGNIN_KEY_ID`, `APPLE_SIGNIN_PRIVATE_KEY`. Hesap silme RevenueCat kaydını `pending_revenuecat_deletions` tablosunda bekletir. Apple ile giriş bu sürümde kapalı (`signInWithApple: false`).
-- **xAI konsolu:** kredi ya da aylık harcama limiti bitmiş (HANDOFF-PROMPT.md). Sohbete yapıştırılmış API anahtarı döndürülmeli (SAHIP-YAPILACAKLAR.md 1.2). Zero Data Retention durumu sahibin işi (4.3, madde 4).
+  - Yok (isteğe bağlı): `REVENUECAT_SECRET_KEY`. Hesap silme RevenueCat kaydını `pending_revenuecat_deletions` tablosunda bekletir; günlük özet bekleyenleri listeler.
+- **xAI konsolu:** Zero Data Retention "Active" (15 Ekim 2026). Açık: aylık harcama limiti ve bakiye (SAHIP-YAPILACAKLAR.md 1.1), sohbete yapıştırılmış API anahtarının döndürülmesi (1.2).
 - **Apple sahibi:** App Store Connect "Account Holder" sahibin Apple kimliğidir. Sözleşmeleri kabul etmek (Paid Apps Agreement dahil) ve gönderimi onaylamak yalnızca sahibin işidir.
 - **Yerel gizli dosyalar:** `ios/Config/Secrets.xcconfig` (`.gitignore`'da, yalnızca DEBUG'da kullanılır). Repoya girmez.
 
 ## 3. Tamamlananlar (özet)
+
+> 14–15 Ekim 2026 sabahının kaydı. Sonrası: yukarıdaki "Son güncelleme" ve [`SAHIP-YAPILACAKLAR.md`](SAHIP-YAPILACAKLAR.md).
 
 - **Ana dal ve CI:** PR #1 `main`'de (`d007a8b`). `main` için CI çalıştırması (38625838738) yeşil. Yeniden adlandırma `6f2959d` için CI çalıştırması (38626550552, elle başlatıldı) dört işte yeşil: belgelerin senkronu, AppCore testleri (Linux), backend (Deno ve PostgreSQL) ve iOS derlemesi (iOS ve Mac Catalyst adımları dahil). `31f8817` ve `28c16eb` için çalıştırma yok (bkz. 4.1, adım 1).
 - **Yerelde geçen kontroller:** bu oturumda `build-legal.py --check`, `export-core-strings.py --check`, `check-honest-copy.py` ve `check-release-config.py --report` geçti. `--report` o gün yalnızca geçiş birimi boş uyarısını veriyordu (15 Ekim'de birim eklendi, uyarı kalktı). Ajanın bildirip bu dosyada yeniden çalıştırmadığı kontroller: AppCore `swift test` 319 testi geçti (yeniden adlandırmadan sonra); Deno fmt, lint, check ve 50 test geçti; `backend/scripts/test-db.sh` PostgreSQL 16'da geçti; 206 Swift dosyasının sözdizimi denetlendi. Sayılar koda karşı kontrol edildi: 319 `func test` bildirimi ve 50 `Deno.test`.
@@ -55,6 +54,8 @@ Son güncelleme: 15 Ekim 2026 sabahı. **Gece yapılanlar:** backend canlı (mig
 - **Çeviri:** 11 dil uygulama kataloglarında. 14 Ekim'de eklenen yaklaşık 360 metnin çevirisi açık (AGENTS.md §6, AI-TODO.md §1.12).
 
 ## 4. Açık işler (sırayla)
+
+> Geçmiş kayıt: §4.1 ve §4.2'deki adımların hepsi 15 Ekim 2026'da yapıldı ya da karara bağlandı (backend canlı, iade bildirimleri yayında, derlemeler gönderildi). Güncel açık işler [`SAHIP-YAPILACAKLAR.md`](SAHIP-YAPILACAKLAR.md) ve [`AI-TODO.md`](AI-TODO.md) dosyalarında.
 
 ### 4.1 Ajan adımları
 
@@ -151,7 +152,7 @@ Komutları depo kökünden çalıştır.
 
 ```bash
 swift test --package-path ios/Packages/AppCore
-(cd backend/supabase/functions && deno fmt --check && deno lint && deno check ai-image/index.ts credits-redeem/index.ts account/index.ts report/index.ts ad-reward/index.ts && deno test _shared/ ad-reward/)
+(cd backend/supabase/functions && deno fmt --check && deno lint && deno check ai-image/index.ts credits-redeem/index.ts account/index.ts report/index.ts ad-reward/index.ts app-store-notifications/index.ts owner-digest/index.ts && deno test _shared/ ad-reward/ app-store-notifications/ account/ owner-digest/ ai-image/ credits-redeem/)
 backend/scripts/test-db.sh
 xcodebuild build -project ios/Glowlit.xcodeproj -scheme Glowlit -configuration Debug -destination 'id=<simülatör-udid>' -quiet
 xcodebuild build -project ios/Glowlit.xcodeproj -scheme Glowlit -configuration Release -destination 'generic/platform=iOS' CODE_SIGNING_ALLOWED=NO -quiet
@@ -167,9 +168,9 @@ Ağır derlemelerde disk alanını kontrol et (`df -h /System/Volumes/Data`). Ö
 
 ## 6. Bilinen sorunlar ve riskler
 
-- **Arka uç canlı değil:** migrasyonlar ve fonksiyonlar bekliyor (4.2). xAI kredisi bitmiş; her AI işi başarısız oluyor ve iade ediliyor. App Review'a gönderilmeden önce ikisi de çözülmeli.
-- **Çıktı denetimi:** `FAL_KEY` yokken kontrol xAI'nin kendi moderasyon kararıdır. Kontrol başarısız olursa sonuç engellenir (fail-closed, `_shared/moderation.ts`). Bunun üstüne Claude düzenlenecek fotoğrafı ve her sonucu denetler (`_shared/safety.ts`, o da fail-closed); yalnızca sahte yanıtlarla test edildi, yayımdan sonra canlıda doğrulanmalı (AI-TODO.md §5, risk 20). Anthropic bakiyesi biterse her düzenleme engellenir ve iade edilir (SAHIP-YAPILACAKLAR.md 1.11).
-- **Apple ile giriş kapalı** (`signInWithApple: false`). Açmadan önce `APPLE_SIGNIN_KEY_ID` ve `APPLE_SIGNIN_PRIVATE_KEY` eklenmeli, App Privacy'de e-posta beyan edilmeli ve giriş satırları App Store metinlerine geri konmalı. `check-honest-copy.py` giriş satırlarını kapalıyken reddeder.
+- **xAI ve Anthropic bütçesi:** arka uç canlı; xAI'de 14 Ekim'de yüklenen 10 USD test ve inceleme için yeterli, lansman için değil. Bakiye ya da limit dolarsa her AI işi başarısız olur ve kredi iade edilir. Harcama limitleri ve yükleme sahipte (SAHIP-YAPILACAKLAR.md 1.1, 1.11); günlük sigortalar 60 ücretsiz / 400 toplam iş.
+- **Çıktı denetimi:** `FAL_KEY` yokken kontrol xAI'nin kendi moderasyon kararıdır. Kontrol başarısız olursa sonuç engellenir (fail-closed, `_shared/moderation.ts`). Bunun üstüne Claude düzenlenecek fotoğrafı ve her sonucu denetler (`_shared/safety.ts`, o da fail-closed); 15 Ekim 2026'da canlıda gerçek bir Magic Edit'le doğrulandı. Anthropic bakiyesi biterse her düzenleme engellenir ve iade edilir (SAHIP-YAPILACAKLAR.md 1.11).
+- **Apple ile giriş açık** (`signInWithApple: true`, 1.0). Anahtarlar ayarlı ve App Privacy yayında. Cihazda giriş, kredi birleştirme ve token iptalli silme testi sahipte ve isteğe bağlı (`RELEASE-CHECKLIST.md` §5, §9.6). Kapatılırsa `check-honest-copy.py` App Store metinlerindeki giriş satırlarını reddeder.
 - **Mac'te Eserlerim:** Mac derlemesinde `ImageStore` dosyaları `completeFileProtectionUntilFirstUserAuthentication` ile yazıyor (`ImageStore.swift`, `#if targetEnvironment(macCatalyst)`). Gerçek Mac'te kutuların boş kalmadığı doğrulanmalı.
   - Doğrulanamadı: bu ortamda Mac yok.
 - **Ücretsiz kredi kötüye kullanımı:** App Attest ve DeviceCheck henüz yok (`backend/README.md`, "Before launch", işaretsiz). Bunlar olmadan ücretsiz kredi toplamak tam olarak engellenmez. Apple tarafı ayar ve gerçek cihaz testi gerektirir (AI-TODO.md §2.7).

@@ -82,11 +82,11 @@ Each decision below is an owner call. The agent prepares the facts and the code,
 1. **Trial roll-in:** unused trial credits (20) add to the first paid month (80), capped at 160 (`private.refresh_subscription`). Confirm, or make the trial credits expire.
 2. **Refunds and revocations:** keep Pro until `expires_at` until the notifications endpoint (section 1, item 6) exists, or stop Pro on the refund signal. Recommended before launch: the endpoint.
 3. **Shared addresses:** three strikes from one address without a verified install cool down every user on that address. Set a higher threshold for address keys, or accept the risk for schools and carriers (`private.add_strike`).
-4. **xAI Zero Data Retention:** the privacy texts say it is on, but the repository cannot prove it. Confirm it in the xAI console.
+4. **xAI Zero Data Retention:** the privacy texts say it is on. **Done (15 October 2026):** Active for the team in the xAI console.
 5. **Company registry line:** `legal/config.json` says "None (individual developer)" for `COMPANY_REGISTRY`. Keep it, or change it, and rebuild the legal pages.
 6. **Balance endpoint and address cool-downs:** the owner needs address-level cool-downs in the balance (section 1, item 8). Confirm the change is wanted.
 7. **FAL_KEY and XAI_SAFETY_MODEL:** whether to turn on the independent output check (section 1, item 5), and whether to test `XAI_SAFETY_MODEL` against the live API. Both are off by default. **Decided (15 October 2026):** the independent check is Claude (`ANTHROPIC_API_KEY`, set); `FAL_KEY` and `XAI_SAFETY_MODEL` stay unset. Left for the owner: a monthly spend limit in the Claude Console, and Anthropic's DPA and the US transfer basis with counsel (section 3, item 10).
-8. **Email Address in App Privacy:** `PrivacyInfo.xcprivacy` lists it, and the setup doc says it can stay undeclared while sign-in is off. Decide, and make the two agree.
+8. **Email Address in App Privacy:** `PrivacyInfo.xcprivacy` lists it. **Done (15 October 2026):** Sign in with Apple is on in 1.0 and App Privacy was published with 10 data types, Email Address among them (setup doc §5).
 9. **App Store Connect and launch:** builds, screenshots, the Paid Apps Agreement, the subscriptions and packs attached to the version, the review phone number, and the final submit decision (`NEXT-STEPS.md`, section 3).
 10. **Legal and brand:** lawyer review; the trademark search for "Aybuke" (roadmap Phase 4, open); the domain (`glowlit.app` is in the roadmap, but the brand is now Aybuke and the site is aybuke.org).
 11. **Native-speaker review** of the translations (roadmap Phase 6, open).

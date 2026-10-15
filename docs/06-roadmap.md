@@ -47,7 +47,7 @@ Legend: ✅ done in this repository · ⏳ next · 🔭 later
 - ✅ Differentiators: likeness check, Best shot, Which vibe?, kindness reminder, visible AI-edited label
 - ✅ Optional Sign in with Apple: account merge (`merge_accounts`), Apple token revocation on deletion
 
-## Phase 3 — Backend ✅ (code) / ⏳ (deploy)
+## Phase 3 — Backend ✅ (live since 15 October 2026)
 
 - ✅ Supabase schema
   - Tables: wallets, append-only ledger, jobs, entitlements
@@ -60,35 +60,38 @@ Legend: ✅ done in this repository · ⏳ next · 🔭 later
 - ✅ Safety
   - Server prompt policy; server-only template recipes; strict model safety; output NSFW check
 - ✅ CI: Deno fmt/lint/check plus SQL ledger tests on PostgreSQL
-- ⏳ Create the Supabase project, set secrets (`XAI_API_KEY`), deploy, and schedule `sweep_jobs` → [backend/README.md](../backend/README.md)
-- ⏳ Switch on **Zero Data Retention** for the team in the xAI console (selfies are personal data)
-- ⏳ Point `AppConfig.json` at the project; run end-to-end on TestFlight
+- ✅ Supabase project live: migrations through `20261029000002`, seven Edge Functions (incl. `app-store-notifications` and `owner-digest`), secrets, the sweeper cron jobs, the owner's alert mails and daily digest → [backend/README.md](../backend/README.md)
+- ✅ **Zero Data Retention** Active for the team in the xAI console (15 October 2026)
+- ✅ `AppConfig.json` points at the project; a real Magic Edit passed end to end with both Claude checks. ⏳ A device test on TestFlight (optional now)
 - ⏳ Check xAI's current prices and latency; if fal is used, verify it accepts data-URI inputs on every endpoint
 
-## Phase 4 — Launch readiness ⏳
+## Phase 4 — Launch readiness ✅ (1.0 submitted on 15 October 2026)
+
+iOS 1.0 (build 20261015.1225) and macOS 1.0 (build 20261015.1233) are waiting for App Review, release type AFTER_APPROVAL (they go live on approval). Left: see the ⏳ lines and [SAHIP-YAPILACAKLAR.md](SAHIP-YAPILACAKLAR.md).
 
 **Legal and brand**
 - ⏳ Clear the name **Aybuke**: App Store/Play search; USPTO/EUIPO classes 9 and 42; social handles
-- ⏳ Register `glowlit.app`
+- ✅ Website and legal pages live at aybuke.org (the `RiosenBeq/aybuke` repository on Vercel)
 - ✅ Drafted Terms of Use (EULA), Privacy Policy, Acceptable Use Policy (EN/TR) and the KVKK notice, bundled in the app and published under `docs/legal/` → [legal/README.md](../legal/README.md)
-- ⏳ Lawyer review, fill in `legal/config.json`, publish at stable URLs, sign DPAs and KVKK standard contracts
+- ⏳ Lawyer review; sign the DPAs with Anthropic and xAI and the KVKK standard contracts
 
 **App Store**
-- ⏳ App Store Connect setup
+- ✅ App Store Connect: app record with iOS and macOS, metadata in 13 locales, App Privacy (10 data types), age rating, availability without mainland China
   - Bundle id `app.glowlit.ios`
-  - Products: `app.glowlit.pro.yearly` ($39.99, 7-day free trial), `app.glowlit.pro.monthly` ($5.99, first month $1.99 introductory offer), `app.glowlit.credits.30` ($2.99), `app.glowlit.credits.100` ($7.99)
-  - Set `APPLE_APP_ID`
-- ✅ RevenueCat project created; public SDK key in `AppConfig.json` (observer mode, on in builds)
+  - Products: `app.glowlit.pro.yearly` ($39.99, 7-day free trial), `app.glowlit.pro.monthly` ($5.99, first month $1.99 introductory offer), `app.glowlit.credits.30` ($2.99), `app.glowlit.credits.100` ($7.99), all submitted with 1.0 (a China price, ¥298 / ¥38, was required; China stays unavailable)
+  - `APPLE_APP_ID` set
+- ✅ RevenueCat project (renamed Aybuke) with the public SDK key in `AppConfig.json` (observer mode, on in builds)
 - ⏳ Upload the App Store Connect in-app purchase key (.p8) in RevenueCat (owner)
-- ⏳ App Store Server Notifications V2 endpoint for refunds, revocations and Texas consent revocation (backlog `abuse-ops-reports-bans`)
-- ⏳ Turn on Sign in with Apple for the app id, enable the Apple provider in Supabase, set `APPLE_TEAM_ID` / `APPLE_SIGNIN_KEY_ID` / `APPLE_SIGNIN_PRIVATE_KEY`, set `signInWithApple` to true in `AppConfig.json` (off in 1.0), and test sign-in and the merge on two devices
+- ✅ App Store Server Notifications V2 endpoint for refunds and revocations (`functions/app-store-notifications`); RevenueCat forwards Apple's notifications to it. ⏳ Texas consent revocation (backlog `abuse-ops-reports-bans`)
+- ✅ Sign in with Apple on in 1.0: Apple key `36Q32XU57F` checked against Apple, `APPLE_SIGNIN_KEY_ID` / `APPLE_SIGNIN_PRIVATE_KEY` set, `signInWithApple` true. ⏳ Test sign-in, the merge and deletion on two devices
 - ✅ Age step with the Declared Age Range API and teen defaults (on-device only under 13, no automatic paywall under 18, guardian step in the consent sheet)
-- ⏳ Age rating questionnaire (target 13+ with the override; "Age Assurance" once shipped)
-- ✅ "Aura Lens" app icon (Oct 15, replacing Glow Gem, which replaced Glow Print on Oct 14) with dark and tinted variants and Mac sizes (`scripts/render-brand-assets.py`; concepts in [brand/icon-concepts](brand/icon-concepts/concepts.png))
-- ⏳ Build with the latest SDK (iOS 26/27); Icon Composer `.icon` with clear variants
-- ✅ App Store copy (EN/TR), 8 generated screenshots per language, social images → [marketing](marketing/README.md)
-- ⏳ Recapture the screenshots with real AI results (needs an AI key), including the new effects and Cover star scenes in `screenshot-captions.json`; header asset, Custom Product Pages
-- ⏳ Localized App Store metadata and screenshots for the app's other languages
+- ⏳ "Age Assurance" in the age rating once the build with the age step is live
+- ✅ "Aura Lens" app icon (Oct 15, replacing Glow Gem, which replaced Glow Print on Oct 14) with dark and tinted variants and Mac sizes (`scripts/render-brand-assets.py`; concepts in [brand/icon-concepts](brand/icon-concepts/concepts.png)); "Holo Heart" ships in the binary as an alternate icon for Product Page Optimization tests
+- ⏳ Icon Composer `.icon` with clear variants
+- ✅ Builds signed manually and uploaded with altool; TestFlight internal group "Aybuke Team"
+- ✅ App Store copy, 364 screenshots for iPhone, iPad and Mac in every App Store locale, and an en-US iPhone App Preview → [marketing](marketing/README.md)
+- ⏳ Recapture the screenshots with real AI results; header asset, Custom Product Pages
+- ⏳ After approval: link the AdMob app to the App Store listing
 
 **Hardening and quality**
 - ⏳ App Attest + DeviceCheck + `appTransactionID` binding against free-credit farming (backlog `abuse-ops-reports-bans`)
@@ -96,7 +99,9 @@ Legend: ✅ done in this repository · ⏳ next · 🔭 later
 - ⏳ Replace the template card art with real before/after thumbnails (diverse casting)
 - ✅ Backend `report` endpoint + `reports` table (12-month retention) wired to "Report this image"
 - ⏳ Ban list and an abuse inbox/review routine (1.2) (backlog `abuse-ops-reports-bans`)
-- ✅ Independent, fail-closed safety check before the backend goes live (backlog `server-moderation-stack`): Anthropic's Claude checks the photo before an edit and every result, on top of xAI's own moderation (`_shared/safety.ts`; consent version 2 names Anthropic). ⏳ Confirm it on the live API after the deploy
+- ✅ Independent, fail-closed safety check (backlog `server-moderation-stack`): Anthropic's Claude checks the photo before an edit and every result, on top of xAI's own moderation (`_shared/safety.ts`; consent version 2 names Anthropic); confirmed on the live API on 15 October 2026
+- ✅ Launch budget: daily breakers at 60 free jobs, 10 unverified and 400 in all (paid jobs keep room), a safety circuit breaker, and the owner's alert mails and daily digest
+- ⏳ xAI and Anthropic spending limits and top-ups; rotate the xAI key (owner)
 - ✅ Release guard: `scripts/check-release-config.py` stops demo-mode and placeholder builds; `scripts/check-honest-copy.py` in CI
 
 ## Phase 5 — Growth 🔭
@@ -123,7 +128,7 @@ Legend: ✅ done in this repository · ⏳ next · 🔭 later
 - ✅ Favorites in My Works, sparkle celebration, editorial serif accents, Settings › Appearance and "Spread the glow"
 - ✅ Developer AI key slot (`ios/Config/Secrets.xcconfig`, DEBUG only) with direct xAI, fal.ai, OpenAI and Gemini adapters
 - ✅ Landing page (`web/`) with legal pages and a manual GitHub Pages workflow
-- ⏳ Add the owner's AI key and verify real results end to end; recapture marketing screenshots
+- ✅ The owner's AI key is set and real results were verified end to end (15 October 2026); ⏳ recapture marketing screenshots with real AI results
 - 🔭 Optional: Meta App ID for direct Instagram Stories sharing (`instagramAppID`); Stories already works through the share sheet without it
 - ✅ Typeface: display font switched to Poppins (SIL OFL)
 - 🔭 Backend adapters for OpenAI/Gemini if production moves off xAI and fal.ai
@@ -216,7 +221,7 @@ Seven audits (code, UX and accessibility, platform, competitors, trends, wellbei
 | `store-retention-pricing-ops` | Win-back offers, Retention Messaging, regional prices, billing-issue banner | Mostly App Store Connect setup once the app record exists | No |
 | `trial-credit-cap-family-sharing` | Cap credits during the trial; Family Sharing with a smaller allowance | A trial grants 20 credits in the category with the highest refund rate | Yes |
 | `funnel-measurement` | Private funnel measurement: paywall source, peer benchmarks, anonymous counters | The spec's KPIs can't be measured today | Yes |
-| `server-moderation-stack` | Fail-closed output moderation, input nudity screening, multilingual classifier | ✅ Shipped (15 October 2026) with Claude as the independent check of the photo and every result, instead of fal.ai; left: confirm it on the live API | Yes |
+| `server-moderation-stack` | Fail-closed output moderation, input nudity screening, multilingual classifier | ✅ Shipped (15 October 2026) with Claude as the independent check of the photo and every result, instead of fal.ai; confirmed on the live API the same day | Yes |
 | `abuse-ops-reports-bans` | Ban list, reviewable reports, CSAM/NCII runbook with legal hold, App Attest, App Store Server Notifications, PermissionKit | Apple 1.2 and Texas consent revocation; reports have no image today | Yes |
 | `c2pa-trustmark` | Signed C2PA manifests, imperceptible watermark, a free verify page | The EU Code of Practice expects signed metadata plus a watermark | Yes |
 | `storefront-compliance` | India and Korea visible labels, Brazil ECA Digital, Russia decision, DPIA, red-team safety case, BIPA review | Legal decisions that need counsel and the owner | No |

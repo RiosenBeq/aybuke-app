@@ -2,7 +2,7 @@
 
 Bu dosya, Aybuke'nin arka ucunu (Supabase projesi `efapupjvidyqhqdevmcu`, Frankfurt) canlıya almak için kalan adımları listeler. Kod hazır: veritabanı geçişleri `backend/supabase/migrations/` klasöründe, Edge Functions `backend/supabase/functions/` klasöründe. Gerekçeler ve kötüye kullanım runbook'u: [`backend/README.md`](../backend/README.md). Sahibin yapacakları ve kararları [`docs/SAHIP-YAPILACAKLAR.md`](SAHIP-YAPILACAKLAR.md) listesinde; bu dosyadaki `§` numaraları o listenin atıfları için sabittir.
 
-> **Durum (14 Ekim 2026):** Bu depodan canlı projeye bağlanılamadı, bu yüzden hiçbir madde tamamlanmış sayılmaz. "Doğrulanamadı" işaretli her madde sahibin Supabase, xAI, AdMob veya App Store panelinde kontrol etmesini bekler. Arka uç canlı olana kadar yapay zekâ özellikleri demo modunda çalışır; App Store incelemesine bu adımlar bitmeden gönderilmez.
+> **Durum (15 Ekim 2026):** Arka uç canlı: migrasyonlar `20261029000002`'ye kadar uygulandı, yedi fonksiyon yayında (`owner-digest` dahil), gizli değerler ve üç cron işi tamam, RevenueCat yönlendirme adresi girildi; Supabase organizasyonu ve projesi "Aybuke" adını aldı. Aybuke 1.0 incelemede. Aşağıdaki kutular 14 Ekim'de yazıldı; liste artık yeniden kurulum ve kontrol için kayıttır. Güncel açık işler: [`SAHIP-YAPILACAKLAR.md`](SAHIP-YAPILACAKLAR.md).
 
 > **Kural:** Anahtar, şifre, service role anahtarı, `.p8` içeriği ve e-posta adresi bu dosyaya, bir commit'e ya da bir sohbete yazılmaz. Değerler yalnızca ilgili panele girilir. Proje kimliği ve AdMob birim kimlikleri herkese açıktır.
 
@@ -132,7 +132,7 @@ Supabase panelinde Authentication. (Doğrulanamadı: menü adları panel sürüm
 - [ ] **Anonim giriş sınırı: saatte IP başına 15** (Rate Limits). Hesap açmanın çoğaltılmasını sınırlar.
 - [ ] **Email sağlayıcısı: kapalı.**
 - [ ] **CAPTCHA: kapalı kalsın.** Uygulamada CAPTCHA widget'ı yok; açılırsa her anonim kayıt başarısız olur. Eski Turnstile önerisi geçersiz.
-- [ ] **Apple sağlayıcısı: Client ID `app.glowlit.ios`.** Apple ile giriş bu sürümde kapalı (`signInWithApple: false`, `ios/App/Resources/AppConfig.json`). Açılma koşulu: §6 ve SAHIP 5.6.
+- [ ] **Apple sağlayıcısı: Client ID `app.glowlit.ios`.** Apple ile giriş 1.0'da açık (`signInWithApple: true`, `ios/App/Resources/AppConfig.json`; anahtarlar §6'da ayarlı, SAHIP 5.6).
 
 ## §5 Edge Functions
 
@@ -155,7 +155,7 @@ supabase functions deploy app-store-notifications --project-ref efapupjvidyqhqde
 - [ ] `ad-reward` ve `app-store-notifications` `--no-verify-jwt` ile yayımlandı. Bu bayrak olmazsa AdMob'un ve Apple'ın çağrıları reddedilir.
 - [ ] Edge Functions › Logs'ta her fonksiyonun ilk istekten sonra başlatma hatası yok.
 - [ ] Yayımlanacak commit'te CI yeşil: `.github/workflows/ci.yml` `deno check` ve `deno test` çalıştırır.
-- [ ] **App Store Server Notifications V2 adresi (sahip, RevenueCat üzerinden).** App Store Connect her ortam için tek adres kabul eder ve App Store Connect › Aybuke › App Information › App Store Server Notifications'taki Production ve Sandbox adresleri RevenueCat'i gösterir; öyle kalır. Adres RevenueCat'e girilir: RevenueCat › Project Glowlit › Apps › Glowlit (App Store) › "Apple Server Notification Forwarding URL" = `https://efapupjvidyqhqdevmcu.supabase.co/functions/v1/app-store-notifications`. RevenueCat her imzalı bildirimi değiştirmeden iletir; fonksiyon Apple'ın imzasını kendisi denetler. Bu ayarı sahip yapar (bir ajanın denemesi engellendi). Ardından bir Sandbox satın alması (ya da App Store Connect'in test bildirimi, RevenueCat iletirse); Edge Functions › Logs'ta `app-store-notifications` 200 döner. Fonksiyon üretim bildirimlerini yalnızca `APPLE_APP_ID` ayarlıyken kabul eder. SAHIP 2.14.
+- [ ] **App Store Server Notifications V2 adresi (sahip, RevenueCat üzerinden).** App Store Connect her ortam için tek adres kabul eder ve App Store Connect › Aybuke › App Information › App Store Server Notifications'taki Production ve Sandbox adresleri RevenueCat'i gösterir; öyle kalır. Adres RevenueCat'e girildi (15 Ekim 2026): RevenueCat › Project Aybuke › Apps › Aybuke (App Store) › "Apple Server Notification Forwarding URL" = `https://efapupjvidyqhqdevmcu.supabase.co/functions/v1/app-store-notifications`. RevenueCat her imzalı bildirimi değiştirmeden iletir; fonksiyon Apple'ın imzasını kendisi denetler. Bu ayarı sahip yapar (bir ajanın denemesi engellendi). Ardından bir Sandbox satın alması (ya da App Store Connect'in test bildirimi, RevenueCat iletirse); Edge Functions › Logs'ta `app-store-notifications` 200 döner. Fonksiyon üretim bildirimlerini yalnızca `APPLE_APP_ID` ayarlıyken kabul eder. SAHIP 2.14.
 - [ ] **AdMob doğrulama adresi.** Server-side verification: `https://efapupjvidyqhqdevmcu.supabase.co/functions/v1/ad-reward` (sorgu dizesi yok), ardından **Verify URL**. Test geri çağrısı 200 döner ve kredi vermez. Ayrıntı: `backend/README.md` "Rewarded ads"; SAHIP 3.2.
 
 ## §6 Gizli değerler (secrets)

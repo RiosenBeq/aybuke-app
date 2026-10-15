@@ -6,6 +6,8 @@
 
 > Working on this repository with an AI agent (or new to it)? Start with [AGENTS.md](AGENTS.md): what the app is, where the code lives, how to build and test, the rules and what's next.
 
+> **Status:** version 1.0 for iPhone, iPad and Mac was submitted for App Review on 15 October 2026; the backend is live.
+
 - **Say it, see it:** "give me pink hair", "add soft glam makeup", "put me in a pink dress". "Ideas for this photo" suggests effects, looks and edits that fit the picture (worked out on the device), and **Surprise me** tries free effects for you.
 - **One-tap looks:** 50+ trends such as Doll Box, Y2K Digicam, Bow Era, Sticker Sheet, Plushie Me, Fairy Princess, bestie looks like Sleepover and pet portraits, plus seasonal looks (Halloween, winter, Galentine's) promoted on Home in season.
 - **Dream it, create it:** turn any idea into art with 20 styles, from Pastel Dream and Kawaii to Watercolor, Sticker and Cozy Knit. With Apple Intelligence, **Inspire me** and **Make it magic** write ideas and better prompts on the device, and **Create with Image Playground** makes pictures with Apple's own image maker on supported devices. New results "develop" like an instant photo.
@@ -19,7 +21,7 @@
 - **On the Mac too:** the same app on macOS 14+ (Mac Catalyst), with a menu bar (⌘N New Creation, ⌘O Open Photo…, ⌘1–⌘4 for the tabs, ⌘, Settings), drag and drop of photo files, Esc and ⌘S in the editors, and a resizable window. One purchase covers iPhone, iPad and Mac. The Live Activity and Instagram Stories sharing are iPhone and iPad only.
 - **Easy to find your way:** a 7-step guided tour after onboarding spotlights Magic Edit, the daily credits, the free tools, Create, photos and videos, the private gallery and Settings. Replay it from Settings → "Show me around".
 - **Safe by design:** the prompt filter blocks sexual, revealing, humiliating and body- or face-reshaping requests in every app language, and every edit keeps her face, body, skin tone and skin texture. A neutral age step comes first: under 13 gets the on-device tools only, and under 18 never sees a paywall by itself.
-- **No sign-up:** an anonymous account is created only at the first cloud edit or purchase, and Delete my data removes everything. Sign in with Apple (credits on every device; Pro always follows the Apple Account) is built but switched off in this version (`signInWithApple` in `AppConfig.json`).
+- **No sign-up:** an anonymous account is created only at the first cloud edit or purchase, and Delete my data removes everything. Signing in with Apple is optional: it keeps the credits on every device (Pro always follows the Apple Account), and deleting the account revokes Apple's token.
 
 | Promise | What it means |
 |---|---|
@@ -79,9 +81,9 @@ Release builds never contain the key, because `Release.xcconfig` blanks it and t
 
 Deploy the Supabase backend ([backend/README.md](backend/README.md)) and set `XAI_API_KEY` as an Edge Function secret (or `FAL_KEY` with `AI_PROVIDER=fal`). Then set `backendBaseURL` and `supabaseAnonKey` in `ios/App/Resources/AppConfig.json`. The backend meters credits, moderates prompts and outputs, and keeps the provider key off devices.
 
-Cloud jobs run on xAI Grok Imagine (`grok-imagine-image-2.0` at 1k): low quality for free users and medium for Pro, about $0.04 per created image and $0.05–0.07 per edit. Each request runs in the background (`EdgeRuntime.waitUntil`); results come back inline and are cleared as soon as the app confirms the download, and `sweep_jobs()` clears any left after an hour. **Before launch, switch on Zero Data Retention in the xAI console:** selfies are personal data. xAI doesn't train on API data without permission. fal.ai stays available as an alternative.
+Cloud jobs run on xAI Grok Imagine (`grok-imagine-image-2.0` at 1k): low quality for free users and medium for Pro, about $0.04 per created image and $0.05–0.07 per edit. Each request runs in the background (`EdgeRuntime.waitUntil`); results come back inline and are cleared as soon as the app confirms the download, and `sweep_jobs()` clears any left after an hour. Zero Data Retention is on for the team in the xAI console (since 15 October 2026): selfies are personal data. xAI doesn't train on API data without permission. fal.ai stays available as an alternative.
 
-> 🇹🇷 **API anahtarı nereye?** Simülatörde denemek için `ios/Config/Secrets.xcconfig` dosyasına `GL_AI_PROVIDER` (xai, fal, openai veya gemini) ve `GL_AI_API_KEY` değerlerini yazın. Canlı sürüm için anahtar yalnızca backend'de `XAI_API_KEY` olarak durur (fal.ai için `FAL_KEY` ve `AI_PROVIDER=fal`). Lansmandan önce xAI konsolunda Zero Data Retention'ı açın. Bu dosyalar git'e girmez.
+> 🇹🇷 **API anahtarı nereye?** Simülatörde denemek için `ios/Config/Secrets.xcconfig` dosyasına `GL_AI_PROVIDER` (xai, fal, openai veya gemini) ve `GL_AI_API_KEY` değerlerini yazın. Canlı sürüm için anahtar yalnızca backend'de `XAI_API_KEY` olarak durur (fal.ai için `FAL_KEY` ve `AI_PROVIDER=fal`). xAI konsolunda Zero Data Retention açık (15 Ekim 2026'dan beri). Bu dosyalar git'e girmez.
 
 ## Sharing and promotion
 
@@ -94,7 +96,7 @@ Cloud jobs run on xAI Grok Imagine (`grok-imagine-image-2.0` at 1k): low quality
 
 - **Notifications** are local and opt-in (`GlowNotifier`, `NotificationPlanner` in AppCore): edit ready, free credits back, one free look a week, and the trial reminder (at least 26 hours before the trial ends). Never at night (21:00–09:00) or during school hours on weekdays, and never her prompt on the Lock Screen (Live Activity and widget titles are catalog names).
 - **Rating prompts** follow `ReviewPromptPolicy`: only after the third save, share or heart, from day 3, once per version, never after a failure, report, retry or paywall.
-- **Accounts** are optional and off in this version: with `signInWithApple` set to true in `AppConfig.json`, Sign in with Apple appears and the backend merges the anonymous user (see [backend/README.md](backend/README.md#accounts-sign-in-with-apple)). Turn on the Sign in with Apple capability for `app.glowlit.ios` before running on a device.
+- **Accounts** are optional and on since 1.0: with `signInWithApple` true in `AppConfig.json`, Sign in with Apple appears in Settings, on the paywall and after a purchase, and the backend merges the anonymous user (see [backend/README.md](backend/README.md#accounts-sign-in-with-apple)). Turn on the Sign in with Apple capability for `app.glowlit.ios` before running on a device.
 
 ## Widgets and Live Activity
 

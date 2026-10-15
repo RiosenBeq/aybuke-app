@@ -2,7 +2,7 @@
 
 Every value needed to create Aybuke in App Store Connect, in the order the forms ask for it. Listing text for 13 locales: [`app-store-metadata.json`](app-store-metadata.json) (all limits checked). Screenshots: `docs/marketing/app-store/<lang>/` (iPhone 6.9", 1290×2796) and `…/<lang>/ipad/` (iPad 13", 2064×2752), plus `…/<lang>/mac/` (Mac, 2880×1800, see section 8), made by `scripts/marketing-images.py`.
 
-> Submit for review only after the backend is live ([`docs/SUPABASE-TODO.md`](../SUPABASE-TODO.md)); without it AI runs in demo mode.
+> **Status (15 October 2026):** done. iOS 1.0 (build 20261015.1225) and macOS 1.0 (build 20261015.1233) were submitted with the values below and wait for review, release type AFTER_APPROVAL on both. This page now records what was entered; follow it again for a new record or a change. Submit a version for review only while the backend is live ([`docs/SUPABASE-TODO.md`](../SUPABASE-TODO.md)); without it AI runs in demo mode.
 
 ## 1. New app
 
@@ -49,9 +49,11 @@ Localized description for both: "Monthly credits, every look, best-quality AI" (
 | `app.glowlit.credits.30` | 30 Credits | $2.99 | 30 credits that never expire |
 | `app.glowlit.credits.100` | 100 Credits | $7.99 | 100 credits that never expire |
 
-These IDs already exist in RevenueCat (project "Glowlit", entitlement `pro`, offering `default`) and in `ios/StoreKit/Products.storekit`. Leave **App Store Server Notifications V2** (Production and Sandbox, App Information) pointing at RevenueCat: App Store Connect takes one URL per environment. The backend gets each notification through RevenueCat › Project Glowlit › Apps › Glowlit (App Store) › **Apple Server Notification Forwarding URL** = `https://efapupjvidyqhqdevmcu.supabase.co/functions/v1/app-store-notifications`, which the owner sets (`backend/README.md`, "Setup" 5; `docs/SAHIP-YAPILACAKLAR.md` 2.14).
+All four went to review with iOS 1.0 on 15 October 2026. The first subscriptions needed a price for China mainland even though the app isn't sold there: CHN ¥298 (yearly) and ¥38 (monthly) were added, availability unchanged. These IDs also exist in RevenueCat (project "Aybuke", renamed from Glowlit; entitlement `pro`, offering `default`) and in `ios/StoreKit/Products.storekit`. Leave **App Store Server Notifications V2** (Production and Sandbox, App Information) pointing at RevenueCat: App Store Connect takes one URL per environment. The backend gets each notification through RevenueCat › Project Aybuke › Apps › Aybuke (App Store) › **Apple Server Notification Forwarding URL** = `https://efapupjvidyqhqdevmcu.supabase.co/functions/v1/app-store-notifications`, set on 15 October 2026 (`backend/README.md`, "Setup" 5; `docs/SAHIP-YAPILACAKLAR.md` 2.14).
 
 ## 5. App Privacy
+
+Published on 15 October 2026 with the 10 data types below.
 
 "Do you or your third-party partners use data for tracking?" **No.** The app never shows Apple's tracking prompt and never reads the advertising identifier, every ad request is non-personalised (`publisherPrivacyPersonalizationState = .disabled`, Google's restricted data processing on, first-party ad ID off), and teens get child treatment. Matches `ios/App/Resources/PrivacyInfo.xcprivacy` (our own collection; Google's SDKs ship their own manifests).
 
@@ -63,7 +65,7 @@ These IDs already exist in RevenueCat (project "Glowlit", entitlement `pro`, off
 | Other User Content (prompts, reports) | Yes | App Functionality (prompts reach the AI provider with a hashed user tag we can link back; reports are keyed to the user ID) |
 | User ID (anonymous account ID) | Yes | App Functionality, Analytics (RevenueCat) |
 | Purchase History | Yes | App Functionality, Analytics (RevenueCat) |
-| Email Address (only with Sign in with Apple, which is off in this version: `signInWithApple` in `AppConfig.json`) | Yes | App Functionality. Not collected while sign-in is off, so it can stay undeclared now; declare it before turning sign-in on. The privacy manifest keeps listing it, so it stays valid either way |
+| Email Address (only with Sign in with Apple, on in 1.0: `signInWithApple` in `AppConfig.json`; a hidden relay address works) | Yes | App Functionality. Declared because sign-in is on; the privacy manifest lists it too |
 | Advertising Data (our record of each confirmed rewarded ad: AdMob transaction id, ad unit, reward, date; 30 days) | Yes | App Functionality |
 
 **New with ads: Google Mobile Ads SDK** (free members 13+ on iPhone and iPad; nothing for Pro, under 13 or the Mac). Declare these with **Third-Party Advertising** and **Analytics** as purposes, **not linked to the user** and **not used for tracking**:
@@ -86,8 +88,9 @@ Two notes for the form: Apple asks "linked to the user" once per data type, so *
 | Rewarded unit | `ca-app-pub-2292230772061554/1406702504`, reward amount **1**, reward item **credit**. *Server-side verification*: callback URL `https://efapupjvidyqhqdevmcu.supabase.co/functions/v1/ad-reward` (no query string), then **Verify URL** (it answers 200 and grants nothing); verified and saved on 15 October 2026. Supabase secret `ADMOB_REWARDED_AD_UNIT` = the same unit id (`backend/README.md`, "Rewarded ads") |
 | Interstitial unit | "After save interstitial" `ca-app-pub-2292230772061554/6797438012`, frequency cap 3 per user a day (created 15 October 2026), in `AppConfig.json` → `ads.interstitialUnitID`. Empty: no interstitials |
 | Content | Blocking controls › Sensitive categories: all 11 standard sensitive categories (dating, gambling, alcohol, weight loss and the rest) and the restricted ones are blocked (15 October 2026), so adults' PG ads stay teen-friendly too. The block is account-wide, so it also applies to the owner's other apps in the same AdMob account. The app already sets G for teens and PG for adults |
-| Privacy & messaging | The **GDPR** message "Aybuke GDPR" (EEA, UK, Switzerland; Aybuke only, the privacy policy URL, a "Do not consent" button in every country, 9 extra languages) is saved as a **draft**: the owner publishes it in Privacy & messaging › European regulations. A **US states** message is optional. Teens are tagged as under the age of consent and never see them |
-| app-ads.txt | AdMob reads `https://aybuke.org/app-ads.txt`. The line is in the website repository (`RiosenBeq/aybuke`) and in `web/app-ads.txt` here; the live file was not checked from the build sandbox, so confirm it answers at the domain root |
+| Privacy & messaging | The **GDPR** message "Aybuke GDPR" (EEA, UK, Switzerland; Aybuke only, the privacy policy URL, a "Do not consent" button in every country, 9 extra languages) is published (15 October 2026). A **US states** message is optional. Teens are tagged as under the age of consent and never see them |
+| app-ads.txt | AdMob reads `https://aybuke.org/app-ads.txt`. The line is in the website repository (`RiosenBeq/aybuke`) and in `web/app-ads.txt` here; the live file answers 200 with the line (15 October 2026) |
+| Store listing | Once the app is live, link the AdMob app to its App Store listing (id `6822716008`), so AdMob finds app-ads.txt through the listing's website (`docs/SAHIP-YAPILACAKLAR.md` 3.7) |
 | Age rating | Under Capabilities, tick **Advertising** (free members see ads; they're never personalised or targeted). It doesn't raise the 13+ rating |
 
 ## 6. Version 1.0
@@ -95,17 +98,19 @@ Two notes for the form: Apple asks "linked to the user" once per data type, so *
 | Field | Value |
 |---|---|
 | Promotional text, description, keywords, What's New | `app-store-metadata.json` |
-| Support URL | `https://aybuke.org` (landing page with the support email) |
-| Marketing URL | same as Support URL |
+| Support URL | `https://aybuke.org/support` |
+| Marketing URL | `https://aybuke.org` |
 | Copyright | `2026 Okan Berk Manavoğlu` |
 | App Review information | Contact name, phone and email of the owner; no demo account needed; notes from [`app-store-listing.md`](app-store-listing.md) ("App Review notes"), which say the consent screen names Supabase, xAI and Anthropic, and that the layered safety includes an independent Claude check of the photo and every result |
-| Build | `ASC_KEY_ID=… ASC_ISSUER_ID=… scripts/upload-app-store.sh` (App Store Connect API key, automatic signing; `PLATFORM=mac` for the Mac build), or Xcode › Product › Archive › Distribute. The script first runs `scripts/check-release-config.py --online` and stops on release blockers: demo mode (no backend), `[bracketed]` legal placeholders, a missing or GitHub-blob `websiteURL`, a website or privacy page that doesn't answer, mail domains without MX records. For a deliberate TestFlight preview set `GL_PREVIEW_BUILD=1`; never submit such a build for review. Xcode archives skip the check, so run it by hand before submitting one. `ITSAppUsesNonExemptEncryption` is `NO` (HTTPS only), so no export-compliance documents are needed |
-| Release | Manual release after approval |
+| Build | `ASC_KEY_ID=… ASC_ISSUER_ID=… scripts/upload-app-store.sh` (App Store Connect API key, automatic signing; `PLATFORM=mac` for the Mac build), or Xcode › Product › Archive › Distribute. The 1.0 builds (iOS 20261015.1225, Mac 20261015.1233) were signed manually and uploaded with altool, because automatic signing failed on the owner's Mac (`AGENTS.md` §6, item 2). The script first runs `scripts/check-release-config.py --online` and stops on release blockers: demo mode (no backend), `[bracketed]` legal placeholders, a missing or GitHub-blob `websiteURL`, a website or privacy page that doesn't answer, mail domains without MX records. For a deliberate TestFlight preview set `GL_PREVIEW_BUILD=1`; never submit such a build for review. Xcode archives skip the check, so run it by hand before submitting one. `ITSAppUsesNonExemptEncryption` is `NO` (HTTPS only), so no export-compliance documents are needed |
+| Release | Automatically after approval (AFTER_APPROVAL), iOS and macOS |
 
-## 7. Before pressing "Submit for Review"
+## 7. Before pressing "Submit for Review" (every version)
+
+1.0 went through this list on 15 October 2026.
 
 - [ ] Backend live and AppConfig.json pointing to it (real AI results in TestFlight, with `ANTHROPIC_API_KEY` set so the Claude safety check runs)
-- [ ] GitHub Pages on, so the Privacy Policy and Support URLs open
+- [ ] aybuke.org answers, so the Privacy Policy and Support URLs open
 - [ ] Paid Apps Agreement, tax and banking complete (Business section)
 - [ ] All in-app purchases "Ready to Submit" and attached to the version
 - [ ] The owner's final go-ahead
@@ -117,7 +122,7 @@ The Mac app is the same app built with Mac Catalyst, with the same bundle IDs (`
 | Step | What to do |
 |---|---|
 | Platform | On the app's page in App Store Connect, add the **macOS** platform (the "+" next to the platform names). Pricing, availability (still no China mainland), age rating, App Privacy and in-app purchases are shared with iOS |
-| Signing | `PLATFORM=mac ASC_KEY_ID=… ASC_ISSUER_ID=… scripts/upload-app-store.sh`. Automatic signing makes the Mac Catalyst profiles for the same App IDs; the App Group and Sign in with Apple carry over. The Mac build is sandboxed (`ios/Config/*-macOS.entitlements`), as the Mac App Store requires |
+| Signing | `PLATFORM=mac ASC_KEY_ID=… ASC_ISSUER_ID=… scripts/upload-app-store.sh`. Automatic signing fails for a Mac archive while the team has no registered Mac, so 1.0 used manual signing with Mac Catalyst profiles for the same App IDs (`AGENTS.md` §6, item 2); the App Group and Sign in with Apple carry over. The Mac build is sandboxed (`ios/Config/*-macOS.entitlements`), as the Mac App Store requires |
 | Category | Set once in App Information and shared with iOS. The Mac build also declares `LSApplicationCategoryType` = `public.app-category.photography`, which the Mac App Store requires |
 | Version page | The macOS version has its own description, keywords and screenshots. Start from `app-store-metadata.json`, but drop the Lock Screen and Dynamic Island lines and say Mac where it says iPhone or iPad: there is no Live Activity or Instagram Stories sharing on the Mac |
 | Screenshots | 16:10 (1280×800, 1440×900, 2560×1600 or 2880×1800; up to 10). Ready: eight per language at 2880×1800 in `docs/marketing/app-store/<lang>/mac/` (home in a MacBook, Makeup Studio, before/after, Create, effects, Cover star, Cut out, Hide faces), made by `scripts/marketing-images.py` from window captures of the Mac app launched with `-GLScreenshotScene <scene> -GLWindowSize 1600x1000`; captions in the `mac` lists of `screenshot-captions.json` |

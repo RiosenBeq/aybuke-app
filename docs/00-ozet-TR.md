@@ -2,6 +2,17 @@
 
 > Bu belge, araştırmayla alınan tüm kararların Türkçe özetidir. Ayrıntılar ve kaynaklar İngilizce belgelerdedir ([docs/README.md](README.md)).
 
+## Ekim 2026 güncellemesi (6): 1.0 incelemede (15 Ekim akşamı)
+
+**Ne değişti?**
+- **Gönderim:** iOS 1.0 (derleme 20261015.1225) abonelik grubu, iki abonelik ve iki kredi paketiyle, macOS 1.0 (20261015.1233) ile birlikte App Review'da. Yayın türü AFTER_APPROVAL: onaylanınca kendiliğinden yayına girer. Derlemeler manuel imzalama ve altool ile yüklendi. İlk abonelikler Çin fiyatı istedi (¥298 / ¥38); uygulama Çin'de yine satılmıyor.
+- **Backend canlı:** migrasyonlar `20261029000002`'ye kadar, yedi fonksiyon (sahibin günlük özeti `owner-digest` dahil); günlük sigortalar 60 ücretsiz, 10 doğrulanmamış, toplam 400 iş. Yeni Pro üyeler için anında e-posta ve her sabah özet geliyor.
+- **Apple ile giriş açık:** anahtar `36Q32XU57F` Apple'a karşı doğrulandı; krediler cihazlar arasında taşınıyor, hesap silme Apple token'ını iptal ediyor.
+- **Paneller:** xAI Zero Data Retention açık; App Privacy 10 veri türüyle yayında; RevenueCat projesi ve uygulaması Aybuke adını aldı ve iade bildirimlerini backend'e iletiyor; Supabase organizasyonu ve projesi de Aybuke oldu; AdMob GDPR mesajı yayında.
+- **Mağaza sayfası:** yeni Aura Lens ikonu (Holo Heart, ikon testleri için alternatif ikon olarak derlemede), 364 ekran görüntüsü ve en-US iPhone uygulama önizlemesi. TestFlight iç grubu "Aybuke Team" hazır.
+
+**Sizin yapmanız gerekenler:** xAI ve Anthropic'te harcama limiti ve bakiye; xAI anahtarını döndürmek; Anthropic ve xAI veri işleme sözleşmeleri ile KVKK adımları için avukat; onaydan sonra AdMob uygulamasını mağaza kaydına bağlamak; isteğe bağlı olarak TestFlight'ta cihaz testi (giriş, kredi birleştirme ve silme dahil). Ayrıntı: [SAHIP-YAPILACAKLAR.md](SAHIP-YAPILACAKLAR.md).
+
 ## Ekim 2026 güncellemesi (5): Claude ile bağımsız güvenlik denetimi (15 Ekim)
 
 **Ne değişti?**
@@ -10,7 +21,7 @@
 - **Hukuk metinleri:** Gizlilik politikası (İngilizce, Türkçe) ve KVKK aydınlatma metni Anthropic, PBC'yi (ABD) alt işleyen olarak yazıyor: girdileri ve çıktıları 30 gün içinde siler, ihlal şüphesiyle işaretlenen içeriği 2 yıla kadar saklayabilir, varsayılan olarak model eğitiminde kullanmaz.
 - **Maliyet:** Denetim başına yaklaşık $0.0002; bir Magic Edit'te iki denetim.
 
-**Sizin yapmanız gerekenler:** Claude Console'da bakiye ve aylık harcama limiti; `ai-image` yayımlandıktan sonra log satırını ve bir gerçek düzenlemeyi kontrol etmek ([SAHIP-YAPILACAKLAR.md](SAHIP-YAPILACAKLAR.md) 1.11); Anthropic'in veri işleme sözleşmesi ve ABD'ye aktarım dayanağı için avukat görüşü.
+**Sizin yapmanız gerekenler:** Claude Console'da bakiye ve aylık harcama limiti ([SAHIP-YAPILACAKLAR.md](SAHIP-YAPILACAKLAR.md) 1.11); Anthropic'in veri işleme sözleşmesi ve ABD'ye aktarım dayanağı için avukat görüşü. Log satırı ve gerçek bir düzenleme 15 Ekim'de canlıda doğrulandı.
 
 ## Ekim 2026 güncellemesi (4): daha fazla eğlence (14 Ekim)
 
@@ -120,7 +131,7 @@
   - *Çıkarılanlar:*
     - Rakiplerde zaten olduğu için: "Steal the look", feed önizlemesi ve fotoğraf dökümü.
     - Doğum günü, doğum tarihi gerektirdiği için.
-- **Apple ile giriş (isteğe bağlı, bu sürümde kapalı):** `AppConfig.json` içindeki `signInWithApple` değeri `false` olduğu için uygulamada hiçbir giriş noktası görünmüyor; açmak tek satırlık bir değişiklik (önce sunucuya `APPLE_SIGNIN_KEY_ID` / `APPLE_SIGNIN_PRIVATE_KEY` eklenmeli). Açıkken krediler başka cihazda da kullanılabiliyor; Pro ise her zaman onu satın alan Apple Hesabı'na bağlı. Anonim hesap otomatik olarak Apple hesabına birleştiriliyor, hesap silinince Apple erişimi iptal ediliyor. Fotoğraflar eşitlenmiyor, her iPhone'da kalıyor. Gerçek cihazda çalışması için Apple Developer hesabında "Sign in with Apple" özelliğinin ve Supabase'de Apple sağlayıcısının açılması gerekiyor.
+- **Apple ile giriş (isteğe bağlı, 1.0'da açık):** `AppConfig.json` içinde `signInWithApple` değeri `true`; sunucuda `APPLE_SIGNIN_KEY_ID` / `APPLE_SIGNIN_PRIVATE_KEY` ayarlı (15 Ekim 2026). Giriş Settings'te, paywall'da ve satın almadan sonra sunuluyor, hiçbir yerde zorunlu değil. Krediler başka cihazda da kullanılabiliyor; Pro ise her zaman onu satın alan Apple Hesabı'na bağlı. Anonim hesap otomatik olarak Apple hesabına birleştiriliyor, hesap silinince Apple erişimi iptal ediliyor. Fotoğraflar eşitlenmiyor, her iPhone'da kalıyor. Gerçek cihazda çalışması için Apple Developer hesabında "Sign in with Apple" özelliğinin ve Supabase'de Apple sağlayıcısının açılması gerekiyor.
 - **Diğer yeni özellikler:** Galeride kalpli favoriler. "Bu görseli bildir" artık gerçekten backend'e gidiyor (`report` fonksiyonu ve `reports` tablosu).
 - **Yasal metinler:** Kullanım Koşulları, Gizlilik Politikası, Kabul Edilebilir Kullanım Politikası (İngilizce ve Türkçe) ve KVKK Aydınlatma Metni hazırlandı. GDPR, KVKK (7499 sayılı Kanun değişiklikleri dahil), CCPA, COPPA, Birleşik Krallık Yaşa Uygun Tasarım Kuralları, AB Yapay Zekâ Tüzüğü md. 50 ve Apple'ın EULA şartları kapsanıyor.
   - Metinler uygulamanın içinde okunabiliyor ve ayrıca `docs/legal/` ile `web/legal/` altında yayınlanıyor.
@@ -190,7 +201,7 @@ Görüntüler, CI'daki Screenshots iş akışında iPhone Pro simülatöründe d
 - **Elenenler:** Space Grotesk ve Sora sıradan "AI/web3" görünümü veriyor (Sora ayrıca OpenAI ile karışıyor); Unbounded kripto çağrışımı taşıyor.
 
 ### İkon: "Aura Lens" (15 Ekim 2026)
-Koyu erik renginden böğürtlen ve gül tonlarına, oradan sıcak şeftaliye uzanan bir "Aura" zemin üzerinde sıvı camdan bir lens: çekirdeği beyaz-sıcaktan pudra pembesine ve macentaya doğru parlıyor, ince yanardöner bir halka (pembe, lila, açık su yeşili, şeftali) onu çevreliyor; halkanın sol üstünde beyaz bir ışıltı, yanında iki küçük ışıltı var. Lens kamerayı ve fotoğrafı (Retro Cam, Photo Booth, her düzenleme), ışıma "Make it glow"u anlatıyor. Cam efektleri: sol üstte hilal biçiminde bir parlama, sağ altta küçük bir yansıma ve hafif bir kenar ışığı, halkanın cama değdiği yerde iç gölge, lensin çevresinde yumuşak pembe bir ışıma. Proje sahibi yeni, estetik ve "efektli" bir ikon istedi; iki yeni konsept çizildi (D "Aura Lens" ve E "Holo Heart": aynı camdan, içten parlayan kabarık bir kalp) ve D seçildi: hem yeni hem de 29 punto boyutunda en net okunan. Tüm konseptler [brand/icon-concepts/concepts.png](brand/icon-concepts/concepts.png) dosyasında. Koyu ve renklendirilmiş (tinted) varyantları ve Mac boyutları var; `scripts/render-brand-assets.py --concept e` (ya da `a`–`c`) ile diğer konseptlere geçilebiliyor. Önceki ikonlar: "Glow Gem" (14–15 Ekim 2026, mücevher gibi kesilmiş pembe bir kalp), "Glow Print" (eğik, beyaz bir baskı fotoğraf) ve ondan önce "Sunrise Split" (önce/sonra diski).
+Koyu erik renginden böğürtlen ve gül tonlarına, oradan sıcak şeftaliye uzanan bir "Aura" zemin üzerinde sıvı camdan bir lens: çekirdeği beyaz-sıcaktan pudra pembesine ve macentaya doğru parlıyor, ince yanardöner bir halka (pembe, lila, açık su yeşili, şeftali) onu çevreliyor; halkanın sol üstünde beyaz bir ışıltı, yanında iki küçük ışıltı var. Lens kamerayı ve fotoğrafı (Retro Cam, Photo Booth, her düzenleme), ışıma "Make it glow"u anlatıyor. Cam efektleri: sol üstte hilal biçiminde bir parlama, sağ altta küçük bir yansıma ve hafif bir kenar ışığı, halkanın cama değdiği yerde iç gölge, lensin çevresinde yumuşak pembe bir ışıma. Proje sahibi yeni, estetik ve "efektli" bir ikon istedi; iki yeni konsept çizildi (D "Aura Lens" ve E "Holo Heart": aynı camdan, içten parlayan kabarık bir kalp) ve D seçildi: hem yeni hem de 29 punto boyutunda en net okunan. Tüm konseptler [brand/icon-concepts/concepts.png](brand/icon-concepts/concepts.png) dosyasında. Koyu ve renklendirilmiş (tinted) varyantları ve Mac boyutları var; `scripts/render-brand-assets.py --concept e` (ya da `a`–`c`) ile diğer konseptlere geçilebiliyor. Holo Heart (E) derlemeye alternatif ikon olarak kondu, böylece App Store'un Ürün Sayfası Optimizasyonu iki ikonu karşılaştırabilir; uygulamanın kendisi Aura Lens'te kalır ve ikon değiştirmez. Önceki ikonlar: "Glow Gem" (14–15 Ekim 2026, mücevher gibi kesilmiş pembe bir kalp), "Glow Print" (eğik, beyaz bir baskı fotoğraf) ve ondan önce "Sunrise Split" (önce/sonra diski).
 
 ### Fiyatlandırma: "Adil Fiyat Sözü"
 Araştırmanın en net bulgusu: kullanıcıların **1 numaralı şikâyeti haftalık deneme tuzakları ve sürpriz ücretler**. Yıllık plan ise kurulum başına yaklaşık **5 kat** daha fazla gelir getiriyor; haftalık abonelerin bir yıl sonra yalnızca %1–2'si kalıyor.
@@ -249,11 +260,11 @@ Güven özellikleri:
 
 ## Sırada ne var? (bkz. [06-roadmap.md](06-roadmap.md))
 
-1. İsmin hukuki kontrolü ve `glowlit.app` alan adının alınması.
-2. Gizlilik politikası ve kullanım şartları sayfalarının yayınlanması.
-3. xAI Zero Data Retention'ın açılması, Supabase'in kurulup deploy edilmesi ve TestFlight'ta uçtan uca test.
-4. App Store Connect'te ürünlerin ve abonelik fiyatlarının tanımlanması ($39.99 yıllık, $5.99 aylık ve ilk ay $1.99 teklifi, $2.99 ve $7.99 paketler); uygulama içi satın alma anahtarının RevenueCat'e yüklenmesi.
+1. İsmin hukuki kontrolü (marka araması).
+2. Yasal metinlerin avukat incelemesi; Anthropic ve xAI veri işleme sözleşmeleri, ABD'ye aktarım dayanağı ve KVKK standart sözleşmeleri.
+3. App Review sonucu ve yayın (AFTER_APPROVAL); ardından AdMob uygulamasının mağaza kaydına bağlanması ve isteğe bağlı TestFlight cihaz testi. (Supabase, xAI Zero Data Retention, App Store Connect ürünleri ve gönderim 15 Ekim 2026'da tamamlandı.)
+4. xAI ve Anthropic harcama limitleri ve bakiye; xAI anahtarının döndürülmesi.
 5. App Attest ile ücretsiz kredi suistimaline karşı koruma ve kötüye kullanım araçları (yaş adımı ve Declared Age Range Ekim 2026'da, Claude ile bağımsız güvenlik denetimi 15 Ekim 2026'da eklendi).
 6. Şablon kartlarına gerçek önce/sonra görsellerinin eklenmesi (farklı ten renkleri ve yüz tiplerinden oluşan geniş bir oyuncu kadrosuyla).
-7. 11 çevirinin anadili konuşanlarca kontrolü; App Store metinlerinin ve ekran görüntülerinin bu dillere uyarlanması.
+7. 14 Ekim'de eklenen yaklaşık 360 metnin çevirisi ve 11 çevirinin anadili konuşanlarca kontrolü (App Store metinleri ve ekran görüntüleri 15 Ekim 2026'da bütün dillerde yüklendi).
 8. Denetimin "sonra" listesi (retro kamera, fotoğraf kabini, Siri ve Kestirmeler Ekim 2026'da eklendi): önce paylaşım uzantıları; büyüme aşamasında selfie profilli Likeness Lock v2, şablonların video versiyonları, C2PA içerik kimlik bilgileri.

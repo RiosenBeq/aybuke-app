@@ -2,7 +2,7 @@
 
 > **Amaç:** App Review'a göndermeden önce Aybuke'yi kendi iPhone'unda (ve Mac'inde), TestFlight derlemesiyle ve canlı backend'e (Supabase + xAI, Claude güvenlik denetimiyle) karşı uçtan uca denemek. Liste koddan çıkarıldı: ekran adları, düğmeler ve beklenen davranış uygulamadaki gibidir. **Submit for Review** yalnızca sahibin açık onayıyla yapılır (§14).
 >
-> **Durum (14 Ekim 2026):** `origin/main` = `d007a8b` (PR #1 birleşti). `pink-girls-redesign` = `28c16eb`. Main'de henüz olmayan üç değişiklik var: yeniden adlandırma (`6f2959d`), ad-reward Deno testlerinin CI'a eklenmesi (`31f8817`) ve uygulamanın aybuke.org bağlantıları (`28c16eb`). Orkestratörün bu geçişte bildirdiği yerel kontroller (bu ortamda yeniden çalıştırılmadı): Deno fmt, lint, check ve 50 test; `backend/scripts/test-db.sh` (PostgreSQL 16); AppCore `swift test` 319 test; Swift sözdizimi (206 dosya); `build-legal.py --check`, `check-honest-copy.py`, `check-release-config.py --report`, `export-core-strings.py --check`. CI: `6f2959d` için `CI` (çalıştırma `38626550552`: hukuk senkronu, AppCore, backend, iOS derlemesi; derleme hem iPhone hem Mac Catalyst için) ve `Website` yeşil. `31f8817` ve `28c16eb` için `gh run list` çalıştırma göstermiyor (`ci.yml` yalnızca main'e push, PR ve elle çalıştırmada tetiklenir).
+> **Durum (15 Ekim 2026, akşam):** iOS 1.0 (derleme `20261015.1225`) abonelik grubu, iki abonelik ve iki paketle, macOS 1.0 (derleme `20261015.1233`) ile birlikte App Review'a gönderildi; ikisi de WAITING_FOR_REVIEW, yayın türü AFTER_APPROVAL. Backend canlı (migrasyonlar `20261029000002`'ye kadar, yedi fonksiyon), Apple ile giriş açık, xAI Zero Data Retention açık, App Privacy yayında. Bu liste artık onaydan önce ya da sonra TestFlight derlemesiyle yapılacak isteğe bağlı cihaz testidir; TestFlight iç grubu "Aybuke Team" hazır. Açık sahip işleri: [`SAHIP-YAPILACAKLAR.md`](SAHIP-YAPILACAKLAR.md).
 
 **Nasıl kullanılır**
 
@@ -18,7 +18,7 @@
 - Ücretsiz deneme ile ilk ay $1.99 aynı abonelik grubundadır. Bir Apple Hesabı bu gruptaki tanıtım tekliflerinden **yalnızca birini** kullanabilir; ikisini de denemek için satın alma geçmişini sıfırlaman ya da ikinci bir hesap kullanman gerekir (§1.3–1.4).
 - Yaş bandı istediğin zaman küçültülebilir ama kendi beyanınla büyütülemez (yılda bir). Geri dönmenin yolu §9'daki silmedir.
 
-**Gönderimden önce kapanması gerekenler (özet):** Paid Apps Agreement (§1.1); Supabase'in canlıya alınması: dokuz geçiş (`20261019000000`–`20261024000002`) ile önce `20261017000000` ve `20261018000000`'in durumunun kontrolü, beş Edge Function (`ad-reward` JWT doğrulaması kapalı) ve `APPLE_APP_ID` (§1.1); xAI kredisi ve API anahtarı (§1.1); Anthropic bakiyesi ve `ANTHROPIC_API_KEY` (§1.1, Claude güvenlik denetimi); RevenueCat silme anahtarı (§9.5, §12-4); xAI Zero Data Retention (§1.1); yeni iPhone ve Mac derlemeleri ile App Store Connect bağlantıları (§11); ekran görüntüleri (şu an yalnızca en ve tr hazır; §11); App Privacy'deki e-posta ve kurulum kimliği kararı (§11, §12-15); App Review notları ve telefon (§11). Sign in with Apple bu sürümde gizli (§5); açmadan önce token iptali anahtarları gerekir (§12-3).
+**Gönderim durumu (özet):** 15 Ekim 2026'da gönderildi (§14). Kapananlar: Supabase (migrasyonlar, yedi fonksiyon, gizli değerler, cron), Claude güvenlik denetimi, xAI Zero Data Retention, Apple ile giriş anahtarları (§5, §12-3), derlemeler ve ürünlerin sürüme bağlanması, ekran görüntüleri, App Privacy (§11). Açık kalanlar: xAI ve Anthropic harcama limitleri ve bakiye, xAI anahtarının döndürülmesi, RevenueCat silme anahtarı (§9.5, §12-4, isteğe bağlı) ve cihaz testi (bu liste).
 
 ---
 
@@ -31,24 +31,23 @@
   - Beklenen: Durum **Active**. Apple'ın sandbox belgesine göre bu sözleşme imzalanmadan sandbox'ta satın alma test edilemez; paywall'da **Subscriptions are unavailable right now.** (*Abonelikler şu anda kullanılamıyor.*) görünür.
   - Sorun olursa: Durumu not et; §4'ü ertele, diğer bölümlerle devam et.
   - Doğrulanamadı: sözleşmenin ve banka/vergi bilgilerinin durumu bu depodan görülemez.
-- [ ] **Dört ürün tanımlı ve "Ready to Submit"** *[yalnızca sahip; açık]*
+- [x] **Dört ürün tanımlı ve "Ready to Submit"** *[yapıldı 15 Ekim 2026: dördü iOS 1.0 ile incelemeye gönderildi]*
   - Yap: App Store Connect › Aybuke › Subscriptions (grup **Aybuke Pro**: `app.glowlit.pro.yearly`, `app.glowlit.pro.monthly`) ve In-App Purchases (`app.glowlit.credits.30`, `app.glowlit.credits.100`).
   - Beklenen: Yıllıkta 1 hafta ücretsiz deneme, aylıkta 1 ay $1.99 tanıtım fiyatı; en-US ve tr metinleri ve fiyatlar dolu. Yerel ürün dosyası (`ios/StoreKit/Products.storekit`) aynı kimlikleri ve fiyatları taşır: yıllık $39.99 (deneme P1W), aylık $5.99 (ilk dönem $1.99), 30 kredi $2.99, 100 kredi $7.99. Ürün bilgisindeki değişikliklerin sandbox'a yansıması bir saati bulabilir.
   - Sorun olursa: "Missing Metadata" olanı not et. Uygulama dört ürünün hepsini bekler: eksik ürün listede görünmez; hiç plan ya da hiç paket yüklenmezse "unavailable" yazısı ve **Try again** çıkar.
-- [x] **Backend canlı, derleme demo modunda değil** *[yapıldı 15 Ekim 2026: migrasyonlar, altı fonksiyon, üç cron işi; gerçek bir Magic Edit uçtan uca 12 sn'de geçti. TestFlight bandı kontrolü sahipte]*
+- [x] **Backend canlı, derleme demo modunda değil** *[yapıldı 15 Ekim 2026: migrasyonlar `20261029000002`'ye kadar, yedi fonksiyon (`owner-digest` dahil), üç cron işi; gerçek bir Magic Edit uçtan uca 12 sn'de geçti. TestFlight bandı kontrolü sahipte]*
   - Yap: Supabase projesi `efapupjvidyqhqdevmcu` › Edge Functions: `ai-image`, `credits-redeem`, `account`, `report`, `ad-reward` yayında (aşağıdaki iki madde). SQL Editor'da `select jobname, schedule from cron.job;` → `sweep-jobs` `*/5 * * * *`, `sweep-ad-rewards` `17 * * * *`, `revenuecat-deletions` `17 * * * *`. `revenuecat-deletions` zamanlaması Vault'taki `project_url` ve `service_role_key` adlarını kullanır; değerleri hiçbir yere yazma.
   - Beklenen: TestFlight derlemesinde Explore'da **Preview build: AI results are samples** bandı **yok**, sonuçlarda "DEMO PREVIEW" damgası yok.
   - Sorun olursa: Bant görünüyorsa derleme demo modundadır; bu derleme incelemeye asla gönderilmez.
-  - Doğrulanamadı: canlı proje durumu bu ortamdan görülemiyor. Sahip deploy'u onayladı; yapılmadı.
-- [x] **Sunucu gizli değerleri** (yalnızca adlarına bak, değerleri hiçbir yere yazma) *[yapıldı 15 Ekim 2026: XAI_API_KEY, ANTHROPIC_API_KEY, APPLE_APP_ID, APPLE_BUNDLE_ID, APPLE_TEAM_ID, ADMOB_REWARDED_AD_UNIT var; kaldırılacak ad yok]*
+- [x] **Sunucu gizli değerleri** (yalnızca adlarına bak, değerleri hiçbir yere yazma) *[yapıldı 15 Ekim 2026: XAI_API_KEY, ANTHROPIC_API_KEY, APPLE_APP_ID, APPLE_BUNDLE_ID, APPLE_TEAM_ID, ADMOB_REWARDED_AD_UNIT, APPLE_SIGNIN_KEY_ID, APPLE_SIGNIN_PRIVATE_KEY, RESEND_API_KEY, DIGEST_SECRET, OWNER_ALERT_TO var; kaldırılacak ad yok]*
   - Yap: Supabase › Edge Functions › Secrets.
-  - Beklenen: `XAI_API_KEY`, `APPLE_BUNDLE_ID` (`app.glowlit.ios`), `APPLE_TEAM_ID` (`CBTKNY3LFC`), `APPLE_APP_ID` (`6822716008`) ve `ADMOB_REWARDED_AD_UNIT` var. `APPLE_SIGNIN_KEY_ID` ve `APPLE_SIGNIN_PRIVATE_KEY` yalnızca girişi açarken (§5), `REVENUECAT_SECRET_KEY` ve `REVENUECAT_PROJECT_ID` ise hesap silmede RevenueCat müşterisini silmek için (§9.5) gerekir. `ANTHROPIC_API_KEY` de var (Claude güvenlik denetimi; `ANTHROPIC_SAFETY_MODEL` boş kalabilir, varsayılan `claude-haiku-5-5`). `FAL_KEY` ve `XAI_SAFETY_MODEL` yok (karar: Claude, §12-5). `OUTPUT_MODERATION` artık okunmuyor: ekleme, varsa sil. `GLOWLIT_ALLOW_XCODE_APP_TRANSACTIONS` üretimde olmamalı; varsa sil (hosted projede yok sayılır ve log'a yazılır).
+  - Beklenen: `XAI_API_KEY`, `APPLE_BUNDLE_ID` (`app.glowlit.ios`), `APPLE_TEAM_ID` (`CBTKNY3LFC`), `APPLE_APP_ID` (`6822716008`) ve `ADMOB_REWARDED_AD_UNIT` var. `APPLE_SIGNIN_KEY_ID` ve `APPLE_SIGNIN_PRIVATE_KEY` giriş açık olduğu için gerekli (§5; silmede token iptali), `REVENUECAT_SECRET_KEY` ve `REVENUECAT_PROJECT_ID` ise hesap silmede RevenueCat müşterisini silmek için (§9.5) gerekir. `ANTHROPIC_API_KEY` de var (Claude güvenlik denetimi; `ANTHROPIC_SAFETY_MODEL` boş kalabilir, varsayılan `claude-haiku-5-5`). `FAL_KEY` ve `XAI_SAFETY_MODEL` yok (karar: Claude, §12-5). `OUTPUT_MODERATION` artık okunmuyor: ekleme, varsa sil. `GLOWLIT_ALLOW_XCODE_APP_TRANSACTIONS` üretimde olmamalı; varsa sil (hosted projede yok sayılır ve log'a yazılır).
   - Sorun olursa: Eksikleri listele. `APPLE_APP_ID` yoksa App Store kurulumlarında ücretsiz krediler kapalı kalır (kurulum kanıtı maddesi). §9'daki ilgili maddeler eksik anahtarla başarısız olur.
 - [x] **xAI Zero Data Retention açık** (15 Ekim 2026'da xAI konsolunda Team › Zero Data Retention: Active)
   - Yap: console.x.ai › ekip ayarları.
   - Beklenen: Açık. Onay ekranı ve gizlilik politikası "1 saat içinde silinir" diyor.
   - Doğrulanamadı: Zero Data Retention durumu bu depodan kanıtlanamaz (`docs/SUPABASE-TODO.md` §7).
-- [x] **Veritabanı geçişleri (sırayla)** *[yapıldı 15 Ekim 2026: 20261019000000–20261025000003, on iki dosya, her biri kendi transaction'ında, hatasız; MAC-YAYIN 5.2 sorgusu 19/19]*
+- [x] **Veritabanı geçişleri (sırayla)** *[yapıldı 15 Ekim 2026: 20261019000000–20261025000003, on iki dosya, her biri kendi transaction'ında, hatasız; MAC-YAYIN 5.2 sorgusu 19/19; ardından 20261026000000–20261029000002 de uygulandı]*
   - Yap: Önce iki eski geçişin durumuna bak. SQL Editor'da:
     ```sql
     select to_regclass('public.pending_revenuecat_deletions');
@@ -58,8 +57,7 @@
   - Beklenen: Her dosya hatasız biter. Zamanlamalar §1.1'deki "Backend canlı" maddesinde.
   - Sorun olursa: Dur; hatanın dosya adını ve metnini not et. Sonraki dosyaya geçme, başarısız dosyayı ikinci kez çalıştırma.
   - Not: `docs/SUPABASE-TODO.md` §3 yalnızca `20261019500000`'a kadar listeliyor; bu maddedeki liste esastır.
-  - Doğrulanamadı: canlı veritabanında `20261017000000` ve `20261018000000`'in durumu. Geçişler bu ortamda çalıştırılamaz.
-- [x] **Edge Functions yayımı** *[yapıldı 15 Ekim 2026: altı fonksiyon ACTIVE; ad-reward ve app-store-notifications JWT doğrulaması kapalı]*
+- [x] **Edge Functions yayımı** *[yapıldı 15 Ekim 2026: altı fonksiyon ACTIVE, ardından `owner-digest`; ad-reward ve app-store-notifications JWT doğrulaması kapalı]*
   - Yap: Mac'te Terminal, repo içinde `backend` klasöründe, `supabase login` ile kendi hesabınla giriş yaptıktan sonra komutları ayrı ayrı çalıştır:
     ```
     supabase functions deploy ai-image --project-ref efapupjvidyqhqdevmcu --use-api
@@ -78,19 +76,19 @@
   - Doğrulanamadı: canlı Apple doğrulaması bu ortamdan denenemedi.
 - [ ] **Kötüye kullanım runbook'u okundu** *[yalnızca sahip; yerelde doğrulandı]*
   - Yap: `backend/README.md` içindeki **Abuse runbook** (*Kötüye kullanım*) bölümünü oku. İlk gerçek günden önce SQL Editor'da `select public.ops_daily_summary();` çalıştır.
-  - Beklenen: AI'yi durdurmanın (`select public.ops_pause_ai('all', 2, 'neden');`), bloku kaldırmanın (`ops_unblock`) ve strike'ları okumanın (`ops_strikes`) nasıl yapılacağını biliyorsun. Sayılar: 3 strike 24 saatte 24 saatlik cool-down başlatır; 30 günde 3 cool-down install'ı bloklar; ücretsiz AI işleri günde 1.500'de, doğrulanmamış kurulumlar 200'de, tüm AI 8.000'de durur (UTC gün).
+  - Beklenen: AI'yi durdurmanın (`select public.ops_pause_ai('all', 2, 'neden');`), bloku kaldırmanın (`ops_unblock`) ve strike'ları okumanın (`ops_strikes`) nasıl yapılacağını biliyorsun. Sayılar: 3 strike 24 saatte 24 saatlik cool-down başlatır; 30 günde 3 cool-down install'ı bloklar; ücretsiz AI işleri günde 60'ta, doğrulanmamış kurulumlar 10'da, tüm AI 400'de durur (UTC gün; ücretli işlere her zaman yer kalır).
   - Sorun olursa: Bir `ops_*` fonksiyonu yoksa yukarıdaki geçişlerin tamamının uygulandığını kontrol et.
 - [x] **Claude güvenlik denetimi açık; XAI_SAFETY_MODEL ve FAL_KEY boş** *[yapıldı 15 Ekim 2026: log satırı `output check in force: xai + anthropic:claude-haiku-5-5`; gerçek düzenlemede fotoğraf ve sonuç denetimi geçti]*
   - Yap: Supabase › Edge Functions › Secrets'ta adlara bak: `ANTHROPIC_API_KEY` var; `XAI_SAFETY_MODEL` ve `FAL_KEY` yok. Claude Console'da (platform.claude.com) bakiye ve aylık harcama limiti olsun (`docs/SAHIP-YAPILACAKLAR.md` §1.11). `ai-image` yayımlandıktan sonra Edge Functions › `ai-image` › Logs'a bak.
   - Beklenen: Log'da `output check in force: xai + anthropic:claude-haiku-5-5`. Claude (`_shared/safety.ts`), düzenlenecek fotoğrafı görsel modele gitmeden önce ve her sonucu xAI'nin kendi denetiminden sonra denetler; denetim hata verirse, zaman aşımına uğrarsa, reddederse ya da beklenmeyen yanıt dönerse iş engellenir ve kredi iade edilir. İşaretlenen fotoğraf strike sayılmadan iade edilir (`input_blocked`); işaretlenen sonuç strike sayılır. `ANTHROPIC_API_KEY` ayarlıyken `XAI_SAFETY_MODEL` okunmaz.
   - Sorun olursa: Log'da yalnızca `xai` yazıyorsa anahtar eksiktir. Her düzenleme `photo_check_failed` ya da her sonuç `safety_check_failed` ile iade ediliyorsa Anthropic bakiyesine, limite ve anahtara bak; kısa neden `ai-image` Logs'taki uyarıda yazar.
   - Doğrulanamadı: Claude yolu yalnızca sahte yanıtlarla test edildi (`docs/AI-TODO.md` §5, risk 20); canlı API'de ilk deneme §3.4.
-- [ ] **xAI kredisi, harcama limiti ve API anahtarı** *[yalnızca sahip; açık: bakiyenin bittiği bildirildi]*
+- [ ] **xAI kredisi, harcama limiti ve API anahtarı** *[yalnızca sahip; açık: 14 Ekim'de 10 USD yüklendi ve gerçek düzenleme çalıştı; harcama limiti, yeni yükleme ve anahtar döndürme sahipte]*
   - Yap: console.x.ai › faturalandırma: kredi yükle, aylık harcama limiti belirle. Anahtar döndürülecekse: xAI'de yeni anahtar üret, Supabase'te `XAI_API_KEY` değerini yenisiyle değiştir, bir Magic Edit dene, sonra eski anahtarı xAI'de iptal et. Anahtarı hiçbir dosyaya, commit'e ya da sohbete yazma.
   - Beklenen: xAI'de bakiye ve limit var; Magic Edit gerçek sonuç verir (§3.4).
   - Sorun olursa: Bakiye bitmişse her AI işi başarısız olur ve kredi iade edilir (`docs/SAHIP-YAPILACAKLAR.md` §1.1 bu durumu bildiriyor). Bu madde kapanmadan §3'e geçme.
   - Doğrulanamadı: xAI bakiyesi, limit ve anahtarın döndürülüp döndürülmediği bu depodan görülemez.
-- [x] **Reklam birimleri (AdMob)** *[yapıldı 15 Ekim 2026: SSV doğrulandı ve kaydedildi, geçiş birimi oluşturuldu, hassas kategoriler engellendi; GDPR mesajını yayımlamak sahipte]*
+- [x] **Reklam birimleri (AdMob)** *[yapıldı 15 Ekim 2026: SSV doğrulandı ve kaydedildi, geçiş birimi oluşturuldu, hassas kategoriler engellendi, "Aybuke GDPR" mesajı yayımlandı; AdMob uygulamasını mağaza kaydına bağlamak onaydan sonra (SAHIP 3.7)]*
   - Yap: AdMob'da ödüllü birimi (`ca-app-pub-2292230772061554/1406702504`, ödül 1, öğe `credit`) aç. **Server-side verification** geri çağırma adresi: `https://efapupjvidyqhqdevmcu.supabase.co/functions/v1/ad-reward` (sorgu dizesi olmadan). **Verify URL**'yi çalıştır. Geçiş reklamı birimi "After save interstitial" (`ca-app-pub-2292230772061554/6797438012`) oluşturuldu ve kimliği `ios/App/Resources/AppConfig.json` içindeki `ads.interstitialUnitID` alanında; AdMob'daki sıklık sınırının günde 3 olduğunu kontrol et.
   - Beklenen: Verify URL doğrular. `ADMOB_REWARDED_AD_UNIT` ile aynı birim kimliği Supabase'te var; boşsa hiçbir ödül verilmez. `interstitialUnitID` dolu: Release derlemesinde ücretsiz 13+ üyelere, kayıt ya da paylaşım bittikten sonra doğal bir arada, uygulamanın kendi sınırlarıyla (`InterstitialPacing`: ilk 24 saat yok, 3. kayıttan sonra, 4 dakikada en çok 1, günde en çok 3) geçiş reklamı gösterilebilir. Pro'da, 13 yaş altında, Mac'te ve önizleme derlemelerinde gösterilmez.
   - Sorun olursa: Doğrulama başarısızsa `ad-reward` günlüğüne bak. Ödül kayıtları 30 gün sonra `sweep_ad_rewards` ile temizlenir.
@@ -99,12 +97,11 @@
   - Yap: Tarayıcıda aç: `https://aybuke.org`, `https://aybuke.org/legal/en/privacy-policy`, `https://aybuke.org/legal/tr/gizlilik-politikasi`, `https://aybuke.org/app-ads.txt` ve destek sayfası.
   - Beklenen: Hepsi açılır. `app-ads.txt` AdMob yayıncı satırını (`pub-2292230772061554`) içerir. Uygulamanın `websiteURL`, `privacyPolicyURL` ve `termsURL` değerleri aybuke.org'a işaret eder.
   - Sorun olursa: Açılmıyorsa Vercel dağıtımını ve alan adını kontrol et. Search Console site haritası ve IndexNow bildirimi (`docs/SAHIP-YAPILACAKLAR.md` §4) sahibe ait ve açık.
-  - Depoda: `28c16eb` (`pink-girls-redesign`) `AppConfig.json`'ı aybuke.org'a çevirdi; `origin/main`'de hâlâ `riosenbeq.github.io` adresleri var. Bu sürüm main'den çıkacaksa önce birleşmeli. `web/` (GitHub Pages kopyası) ve `web/app-ads.txt` origin/main'de. Site ayrı depoda (`RiosenBeq/aybuke`, Vercel).
-  - Doğrulanamadı: aybuke.org'un canlı yanıtı ve sitedeki `app-ads.txt` bu ortamdan açılamadı.
+  - Depoda: `AppConfig.json` aybuke.org'u gösteriyor (`28c16eb`, `origin/main`'de de). Site ayrı depoda (`RiosenBeq/aybuke`, Vercel).
 
 ### 1.2 TestFlight (internal testing)
 
-- [ ] **Derleme hazır ve sana dağıtıldı** *[yalnızca sahip; açık: yeni derleme yüklenmedi]*
+- [ ] **Derleme hazır ve sana dağıtıldı** *[yalnızca sahip; derlemeler yüklendi: iOS `20261015.1225`, Mac `20261015.1233`; iç grup "Aybuke Team" var; kendini ekleyip kurmak açık]*
   - Yap: App Store Connect › TestFlight › iOS'ta derleme "Ready to Test" olmalı. Kendini Internal Testing grubuna ekle; iPhone'da TestFlight uygulamasından **Install**.
   - Beklenen: İşleme 10–30 dk sürer; şifreleme sorusu çıkmaz (`ITSAppUsesNonExemptEncryption = NO`, `ios/Config/Info.plist`).
   - Sorun olursa: "Missing Compliance" ya da işleme hatası e-postasını not et.
@@ -250,13 +247,13 @@ Fiyatlar ABD mağazasında: Yıllık $39.99 (7 gün ücretsiz), Aylık $5.99 (il
 
 - [ ] **4.1 Paywall ürünleri yüklüyor** *[yalnızca sahip]*
   - Yap: Ücretsiz kullanıcıyken Explore'daki kredi hapına dokun.
-  - Beklenen: **Your photos, in their best light** (*Fotoğrafların, en güzel ışığında*) başlığı ve avantajlar. **Yearly** (*Yıllık*) önceden seçili, **BEST VALUE** (*EN AVANTAJLI*) rozetli; büyük yazıyla "… / year", altında "7 days free, then …/year · just …/month". **Monthly** (*Aylık*) **TRY IT** (*DENE*) rozetli, altında "First month $1.99, then $5.99/month · cancel anytime". **No weekly plans, ever.** (*Haftalık plan yok, asla.*) yazar. Altta **Restore** (*Geri yükle*), **Terms** (*Koşullar*), **Privacy** (*Gizlilik*) ve otomatik yenileme metni, sağ üstte X var. **Sign in** bu sürümde yoktur (§5). Terms ve Privacy uygulama içinde açılır.
+  - Beklenen: **Your photos, in their best light** (*Fotoğrafların, en güzel ışığında*) başlığı ve avantajlar. **Yearly** (*Yıllık*) önceden seçili, **BEST VALUE** (*EN AVANTAJLI*) rozetli; büyük yazıyla "… / year", altında "7 days free, then …/year · just …/month". **Monthly** (*Aylık*) **TRY IT** (*DENE*) rozetli, altında "First month $1.99, then $5.99/month · cancel anytime". **No weekly plans, ever.** (*Haftalık plan yok, asla.*) yazar. Altta **Restore** (*Geri yükle*), **Terms** (*Koşullar*), **Privacy** (*Gizlilik*) ve otomatik yenileme metni, sağ üstte X var. Giriş yapmadıysan **Sign in** de görünür (§5.1). Terms ve Privacy uygulama içinde açılır.
   - Sorun olursa: 10 saniye sonra "Couldn't reach the App Store. Check your connection." ve **Try again** (*Tekrar dene*) ya da "Subscriptions are unavailable right now." görünürse §1.1'i kontrol et ve ekran görüntüsü al.
 - [ ] **4.2 Pro Yearly ve 7 günlük ücretsiz deneme** *[yalnızca sahip; yerelde doğrulandı: `refresh_subscription` deneme kredisini bir kez verir]*
   - Yap: Yearly seçiliyken ekranı aşağı kaydır.
   - Beklenen: **How your free trial works** (*Ücretsiz deneme nasıl işler?*) kartında: **Today** (*Bugün*) "Unlock everything. No charge today.", **Day N** (*N. gün*) "We'll remind you before your trial ends.", **Day 7** "You'll be charged … on … unless you cancel before." Düğmede yalnızca **Continue** (*Devam et*) yazar; hemen altında düğme boyutunda "7 days free, then **$39.99**/year" (yinelenen fiyat kalın).
   - Yap: **Continue** → Apple penceresinde koşulları gör → onayla.
-  - Beklenen: "Welcome to Aybuke Pro ✦ Your free trial ends <tarih saat>." (*Aybuke Pro'ya hoş geldin ✦ Ücretsiz denemen … tarihinde bitiyor.*). Paywall kapanır; bu sürümde ardından hesap sayfası **açılmaz** (Sign in with Apple gizli, §5). Kredi hapında taç simgesi görünür. Settings › **Membership** (*Üyelik*): **Aybuke Pro**, "Free trial until …" (*Ücretsiz deneme … tarihine kadar*) ve **Manage subscription** (*Aboneliği yönet*).
+  - Beklenen: "Welcome to Aybuke Pro ✦ Your free trial ends <tarih saat>." (*Aybuke Pro'ya hoş geldin ✦ Ücretsiz denemen … tarihinde bitiyor.*). Paywall kapanır; giriş yapmadıysan kısa süre sonra hesap sayfası ("Keep your credits on every device") açılır, **Not now** ile kapanır (§5.1). Kredi hapında taç simgesi görünür. Settings › **Membership** (*Üyelik*): **Aybuke Pro**, "Free trial until …" (*Ücretsiz deneme … tarihine kadar*) ve **Manage subscription** (*Aboneliği yönet*).
   - Sunucu: `entitlements`'ta yeni satır (`environment` Sandbox, `trial_granted` true). Deneme ilk görüldüğünde **20** kredi bir kez verilir (`credits` 20 olur). Pro'da günlük ücretsiz kredi yoktur. Uygulama, onay vermemiş olsan da, bakiyeyi hemen sunucudan okur (yaklaşık 20 kredi, günlük 0).
   - Sorun olursa: "Purchase failed" (*Satın alma başarısız oldu*) metnini yaz; Pro görünmüyorsa Settings › Restore purchases dene ve not et.
 - [ ] **4.3 Deneme hatırlatması (zamanlama)** *[yerelde doğrulandı: `NotificationPlanner`, 26 saat]*
@@ -307,17 +304,25 @@ Fiyatlar ABD mağazasında: Yıllık $39.99 (7 gün ücretsiz), Aylık $5.99 (il
 
 ---
 
-## 5. Hesap: Sign in with Apple (bu sürümde gizli)
+## 5. Hesap: Sign in with Apple (1.0'da açık)
 
-`ios/App/Resources/AppConfig.json` içinde `"signInWithApple": false`. Kod duruyor (`AppModel.offersSignIn` bu değere bağlı); açmak bu tek değer, ama önce sunucuya `APPLE_SIGNIN_KEY_ID` ve `APPLE_SIGNIN_PRIVATE_KEY` eklenmeli (silmede token iptali, §12-3) ve App Privacy'de e-posta beyan edilmeli (§11).
+`ios/App/Resources/AppConfig.json` içinde `"signInWithApple": true`. Sunucuda `APPLE_SIGNIN_KEY_ID` (`36Q32XU57F`) ve `APPLE_SIGNIN_PRIVATE_KEY` ayarlı ve Apple'a karşı doğrulandı (15 Ekim 2026), bu yüzden silme token'ı iptal edebilir (§9.6). Pro her zaman Apple Hesabından (StoreKit), krediler sunucudaki hesaptan gelir. Bu bölümü aynı Apple Hesabıyla iki cihazda yap (iPhone ve iPad ya da Mac).
 
-- [ ] **5.1 Giriş noktası yok** *[yerelde doğrulandı: `AppModel.offersSignIn`; cihazda açık]*
-  - Yap: Settings'i aç; paywall'ın altına bak; bir kredi paketi ya da abonelik al.
-  - Beklenen: Settings'te **Account** (*Hesap*) bölümü yok, paywall'da **Sign in** yok, satın almadan sonra hesap sayfası açılmaz. Hiçbir yerde "Sign in with Apple" düğmesi görünmez. Satın almalar, krediler ve §9'daki silme aynen çalışır.
-- [ ] **5.2 Daha önce giriş yapmış test cihazı** (yalnızca eski bir TestFlight sürümünde giriş yaptıysan) *[yalnızca sahip]*
-  - Beklenen: Settings › Account yalnızca bu durumda görünür: **Signed in with Apple** ve **Sign out** (*Çıkış yap*). Çıkış yapınca bölüm kaybolur ve bir daha giriş seçeneği sunulmaz.
-- [ ] **5.3 Açıldığında** (sonraki bir sürüm, `signInWithApple: true`) *[açık: sonraki sürüm]*
-  - Beklenen: Hesap sayfası "Keep your credits on every device" der ve Pro için "Pro works wherever you use the same Apple Account" yazar (Pro, satın alan Apple Hesabından gelir; krediler hesaptan). Giriş sonrası "You're signed in ✨ Your credits now come with you." görünür.
+- [ ] **5.1 Giriş noktaları** *[yerelde doğrulandı: `AppModel.offersSignIn`; cihazda açık]*
+  - Yap: Settings'i aç; paywall'ın altına bak; giriş yapmadan bir kredi paketi al.
+  - Beklenen: Settings'te **Account** (*Hesap*) bölümünde Sign in with Apple düğmesi ve "Keep your credits when you switch or add a device. Pro stays with your Apple Account. Signing in is optional." yazısı; paywall'da **Sign in**; satın almadan kısa süre sonra "Keep your credits on every device" sayfası açılır, "Pro works wherever you use the same Apple Account" yazar ve **Not now** ile kapanır. Giriş hiçbir yerde zorunlu değil; satın almalar ve krediler girişsiz de çalışır.
+- [ ] **5.2 Giriş ve kredi birleştirme** *[yalnızca sahip]*
+  - Yap: Kredisi olan anonim hesapla (ör. 5.1'deki paketten sonra) Sign in with Apple ile giriş yap; e-postayı gizlemeyi seçebilirsin.
+  - Beklenen: "You're signed in ✨ Your credits now come with you." görünür ve bakiye aynı kalır: paket kredileri hesaba geçer (Apple hesabında önceden paket kredisi varsa toplanır), günlük ücretsiz krediler kuruluma bağlı kalır. Settings › Account: **Signed in with Apple** ve **Sign out** (*Çıkış yap*). Sunucu: `public.apple_accounts`'ta bu kullanıcı için token satırı, `public.merged_users`'ta birleşen anonim kimlik; `account` log'unda hata yok.
+  - Sorun olursa: "You're signed in, but your credits haven't moved to your account yet. We'll try again automatically." görünürse uygulamayı kapatıp aç (birleştirme açılışta yeniden denenir) ve `account` log'undaki satırı (ör. `apple code exchange failed`, `merge_accounts failed`) not et. Giriş hiç olmuyorsa Supabase › Authentication › Providers › Apple açık ve Client IDs'de `app.glowlit.ios` olmalı.
+- [ ] **5.3 İkinci cihaz** *[yalnızca sahip]*
+  - Yap: İkinci cihazda aynı Apple Hesabıyla giriş yap.
+  - Beklenen: Aynı kredi bakiyesi. Pro, aynı Apple Hesabıyla burada da görünür (gerekirse Settings › Restore purchases).
+- [ ] **5.4 Çıkış ve Apple tarafında kaldırma** *[yalnızca sahip]*
+  - Yap: Settings › Account › **Sign out** › onayla. Yeniden giriş yap; sonra iPhone'da Settings › [adın] › Sign-In & Security › **Sign in with Apple** listesinden Aybuke'yi kaldır ve uygulamaya dön.
+  - Beklenen: Çıkışta "Signed out. Sign in again anytime in Settings." görünür. Apple listesinden kaldırınca uygulama sessizce çıkış yapar (en geç bir sonraki açılışta).
+
+Silmede token iptali: §9.6.
 
 ---
 
@@ -480,20 +485,21 @@ Fiyatlar ABD mağazasında: Yıllık $39.99 (7 gün ücretsiz), Aylık $5.99 (il
 ## 9. Verilerimi ve hesabımı sil (en son yap)
 
 - [ ] **9.1 Silmeden önce not al** *[yalnızca sahip]*
-  - Yap: Supabase › Users'taki kullanıcı kimliğini, `credit_wallets` satırını ve RevenueCat'te bu kimliğin büyük harfli müşteri kaydını not et. (Yalnızca eski bir sürümde Apple ile giriş yaptıysan: iPhone'da Settings › [adın] › Sign-In & Security › **Sign in with Apple** listesinde Aybuke'yi gör.)
+  - Yap: Supabase › Users'taki kullanıcı kimliğini, `credit_wallets` satırını ve RevenueCat'te bu kimliğin büyük harfli müşteri kaydını not et. (§5'te giriş yaptıysan: iPhone'da Settings › [adın] › Sign-In & Security › **Sign in with Apple** listesinde Aybuke'yi gör.)
 - [ ] **9.2 Silme** *[yalnızca sahip]*
   - Yap: Settings › Privacy › **Delete my data & account** (*Verilerimi ve hesabımı sil*) → "Delete my data?" (*Verilerim silinsin mi?*) → **Delete my data** (*Verilerimi sil*).
   - Beklenen: Onay metni "Deletes your creations and your account with its credits from our servers, and resets every setting on this device. Subscriptions are managed by Apple and must be cancelled separately." İlerleme göstergesinden sonra "Your data has been deleted." (*Verilerin silindi.*) ve uygulama onboarding'in başına döner.
 - [ ] **9.3 Cihazda silinmesi gerekenler** *[yalnızca sahip]*
-  - Beklenen: My Works boş (Recently deleted dahil). Onay, yaş bandı, ilgi alanları, görünüm (Light'a döner), son istemler, bildirim tercihleri ve bekleyen bildirimler silinmiş (yalnızca Pro deneme hatırlatması kalır); Bildirim Merkezi'ndeki Aybuke bildirimleri de silinmiş. Live Activity kapanmış. Widget'lar "Make your first glow ✨" ve (Pro değilsen) 2 kredi gösterir. Settings'te Apple ile giriş yok; ipuçları ve tur sıfırlanmış.
+  - Beklenen: My Works boş (Recently deleted dahil). Onay, yaş bandı, ilgi alanları, görünüm (Light'a döner), son istemler, bildirim tercihleri ve bekleyen bildirimler silinmiş (yalnızca Pro deneme hatırlatması kalır); Bildirim Merkezi'ndeki Aybuke bildirimleri de silinmiş. Live Activity kapanmış. Widget'lar "Make your first glow ✨" ve (Pro değilsen) 2 kredi gösterir. Settings'te giriş yapılmamış görünür (Account bölümü yeniden Sign in with Apple sunar); ipuçları ve tur sıfırlanmış.
 - [ ] **9.4 Sunucuda silinmesi gerekenler** *[yalnızca sahip]*
   - Beklenen: Supabase › Users'ta kullanıcı yok. `credit_wallets`, `credit_ledger`, `jobs`, `entitlements`, `reports`, `apple_accounts` ve `merged_users` satırları silinmiş (cascade). Kullanıcıyla bağlantısı olmayan karma install kayıtları (`private.app_installs`, `private.strikes`, `private.cooldowns`) en çok 30 gün kalır (gizlilik politikası; `install_retention_days` = 30). Bu satırlarda kullanıcı kimliği bulunmamalı; kontrol et.
 - [ ] **9.5 RevenueCat** *[açık: `REVENUECAT_SECRET_KEY` yok]*
   - Beklenen, `REVENUECAT_SECRET_KEY` varken: müşteri RevenueCat'ten silinir (RevenueCat kuyruğa alır, birkaç dakika sürebilir) ve `pending_revenuecat_deletions` tablosunda bu kimlik için satır kalmaz.
   - Beklenen, anahtar yokken: silme yine tamamlanır; kimlik `pending_revenuecat_deletions` tablosunda bekler ve `account` log'unda "REVENUECAT_SECRET_KEY is not set: RevenueCat deletions wait in pending_revenuecat_deletions" görünür. Anahtar eklenince bir sonraki hesap silmede ya da saatlik `revenuecat-deletions` çağrısında satır silinir (§12-4).
-- [ ] **9.6 Apple ile Giriş token'ı** (yalnızca Apple ile giriş yapılmış bir hesapta; bu sürümde giriş gizli) *[açık: anahtarlar yok]*
-  - Beklenen: Aybuke, Sign in with Apple listesinden kalkar (Guideline 5.1.1(v)).
-  - Sorun olursa: `APPLE_SIGNIN_KEY_ID` / `APPLE_SIGNIN_PRIVATE_KEY` yoksa kalkmaz; `account` log'unda "Sign in with Apple token NOT revoked for deleted account" ya da "Sign in with Apple account deleted without a stored token to revoke" hatası görünür (§12-3). Silmenin kendisi yine tamamlanır.
+- [ ] **9.6 Apple ile Giriş token'ı** (§5'te giriş yapılmış hesapta) *[yalnızca sahip; anahtarlar ayarlı]*
+  - Yap: Girişli hesapla 9.2'yi uygula.
+  - Beklenen: Silme tamamlanır ve Aybuke, iPhone'da Settings › [adın] › Sign-In & Security › **Sign in with Apple** listesinden kalkar (Guideline 5.1.1(v)). Sunucuda token yoksa (girişte Apple'ın kodu alınamadıysa) uygulama silmeden önce Apple'ın onay penceresini bir kez daha açar; onaylayınca token iptal edilir. Pencereyi kapatırsan "Confirm with Apple to finish deleting your account." yazar ve **hiçbir şey silinmez**.
+  - Sorun olursa: `account` log'unda "Sign in with Apple token NOT revoked for deleted account" ya da "apple token revocation failed" varsa saati ve kullanıcı kimliğini not et (§12-3). Silmenin kendisi yine tamamlanır.
 - [ ] **9.7 Silinmemesi gerekenler** *[yalnızca sahip]*
   - Beklenen: Apple aboneliği sürer; iptali Settings › Apple Account › Subscriptions'tan yapılır. Pro aktifse uygulamada yeniden görünür ve onboarding sonunda paywall çıkmaz. Fotoğraflar'a kaydettiklerin ve uygulamanın dil seçimi durur.
 - [ ] **9.8 Çevrimdışı silme** *[yalnızca sahip]*
@@ -512,7 +518,7 @@ Fiyatlar ABD mağazasında: Yıllık $39.99 (7 gün ücretsiz), Aylık $5.99 (il
   - Not: Eski metin 900×640 yazıyordu; kod 960×660 kullanır. 900×640 yalnızca yakalama boyutudur (§10.9).
 - [ ] **10.2 Menü çubuğu** *[yerelde doğrulandı: `MacSupport.swift`; Mac'te açık]*
   - Yap: **Aybuke › Settings…** (⌘,) (*Ayarlar…*), **File › New Creation** (⌘N) (*Yeni Eser*), **File › Open Photo…** (⌘O) (*Fotoğraf Aç…*), **File › Open Video…** (⌥⌘O) (*Video Aç…*), **File › Save** (⌘S), **File › Close** (⌘W), **View › Hide Sidebar** (⌃⌘S) (*Kenar Çubuğunu Gizle*), **View** menüsünde Explore ⌘1, Create ⌘2, Edit ⌘3, My Works ⌘4, **Help › Contact support** (*Destekle iletişime geç*).
-  - Beklenen: New Creation Create sekmesini açar. Open Photo… fotoğraf seçiciyi, ardından Magic Edit'i açar. Contact support, hello@buaze.com adresine yeni e-posta açar. Save ve Close ekranda açık olan kapağa etki eder (Save yalnızca kaydedebilen kapaklarda açılır). ⌘W sayfaları, paywall'ı, Best shot'ı ve önce onay isteyen kapakları kapatır; **editör ve Retro Cam içinde hiçbir şey yapmaz** (§12-11). File › New Window yoktur. Onboarding, tur, bir sayfa ya da editör açıkken komutlar bilerek çalışmaz.
+  - Beklenen: New Creation Create sekmesini açar. Open Photo… fotoğraf seçiciyi, ardından Magic Edit'i açar. Contact support, hello@buaze.com adresine yeni e-posta açar. Save ve Close ekranda açık olan kapağa etki eder (Save yalnızca kaydedebilen kapaklarda açılır). ⌘W ekrandaki kapağı (editör, kolaj, video düzenleyici, Retro Cam; kaydedilmemiş iş varsa önce sorar), sonra sayfaları, paywall'ı ve Best shot'ı kapatır (§12-11). File › New Window yoktur. Onboarding, tur, bir sayfa ya da editör açıkken komutlar bilerek çalışmaz.
 - [ ] **10.3 Sürükle bırak** *[yalnızca sahip]*
   - Yap: Finder'dan bir JPEG, HEIC ya da RAW dosyasını pencereye sürükle.
   - Beklenen: "Drop a photo to edit it" (*Düzenlemek için bir fotoğraf bırak*) kaplaması görünür, sonra editör Magic Edit'te açılır (RAW'da "RAW photo developed with the best settings ✨"). Kolaj karşılama ekranında "Or drop photo files here" yazar.
@@ -526,7 +532,7 @@ Fiyatlar ABD mağazasında: Yıllık $39.99 (7 gün ücretsiz), Aylık $5.99 (il
   - Beklenen: Küçük resimler boş kalmaz (gerekirse uygulama öne gelince yeniden yüklenir) ve yeni kayıt çalışır.
   - Sorun olursa: Boş kalan kareleri ekran görüntüsüyle not et (ayrıca bkz. `docs/AI-TODO.md` §2).
 - [ ] **10.7 Satın alma ve hesap (evrensel satın alma)** *[yalnızca sahip]*
-  - Beklenen: iPhone'daki Pro, aynı Apple Hesabıyla Mac'te de görünür (gerekirse Settings › Restore purchases). Sign in with Apple gizli olduğu için kredi bakiyesi, iPhone'daki gibi, cihazda oluşturulan anonim hesaba bağlıdır (§5).
+  - Beklenen: iPhone'daki Pro, aynı Apple Hesabıyla Mac'te de görünür (gerekirse Settings › Restore purchases). Krediler, Sign in with Apple ile girince iPhone'dakiyle aynıdır (§5.3); girişsiz Mac'in kendi anonim hesabı vardır.
   - Doğrulanamadı: Mac'in ücretsiz kredisi iPhone'la aynı App Store kurulum kimliğini paylaşıp paylaşmadığı bu depodan görülemez; Mac'te ayrı bir ücretsiz kredi görünüyorsa not et.
 - [ ] **10.8 Mac'te olmayanlar** *[yalnızca sahip]*
   - Beklenen: Live Activity yoktur; "When my glow is ready" açıksa ve Aybuke arka plandaysa bildirim gelir (sessiz saatler dışında). Paylaşma ekranında **Stories** yerine **Share** açılır menüsü vardır. Dil seçimi: System Settings › General › Language & Region › Applications.
@@ -540,29 +546,31 @@ Fiyatlar ABD mağazasında: Yıllık $39.99 (7 gün ücretsiz), Aylık $5.99 (il
 
 ## 11. App Store Connect: gönderim öncesi kontroller (sahip)
 
+**15 Ekim 2026:** bu bölüm gönderimle kapandı; aşağıdaki işaretler o günün durumudur.
+
 Değerlerin hepsi: [`marketing/app-store-connect-setup.md`](marketing/app-store-connect-setup.md). App Review metni: [`marketing/app-store-listing.md`](marketing/app-store-listing.md).
 
-- [ ] **Derlemeler sürümlere bağlı** *[yalnızca sahip; açık]*
+- [x] **Derlemeler sürümlere bağlı** *[yapıldı 15 Ekim 2026: iOS `20261015.1225`, Mac `20261015.1233`]*
   - Yap: iOS 1.0 › Build ve macOS 1.0 › Build bölümünde bu testte kullandığın derlemeleri seç.
   - Beklenen: İkisi de seçili ve "Missing Compliance" uyarısı yok.
   - Not: Projede `MARKETING_VERSION = 1.0` (`ios/Glowlit.xcodeproj/project.pbxproj`, dört yer) ve App Store Connect'te sürüm "1.0"; eski "1.0.0" uyuşmazlığı artık geçerli değil (§12-6). Derleme listede görünmüyorsa App Store Connect'te sürüm numarasının 1.0 olduğunu kontrol et.
-- [ ] **Yeni iPhone ve Mac derlemelerinin App Store Connect adımları** *[yalnızca sahip; açık: yükleme yapılmadı]*
+- [x] **Yeni iPhone ve Mac derlemelerinin App Store Connect adımları** *[yapıldı 15 Ekim 2026: manuel imzalama ve altool ile yüklendi; yöntem `AGENTS.md` §6, 2. madde]*
   - Yap: 1) Disk: arşiv için yaklaşık 2 GB boş alan. 2) Gönderilecek commit için CI'ı kontrol et (`6f2959d` için yeşil; `28c16eb` için kayıt yok). 3) iPhone: `ASC_KEY_ID=<id> ASC_ISSUER_ID=<issuer> scripts/upload-app-store.sh`. 4) Mac: `PLATFORM=mac ASC_KEY_ID=<id> ASC_ISSUER_ID=<issuer> scripts/upload-app-store.sh`. 5) İşleme bitince (10–30 dk) derlemeleri yukarıdaki iOS 1.0 ve macOS 1.0 sayfalarına bağla.
   - Beklenen: İki derleme işlenmiş ve sürüm sayfalarında seçilebilir. Sürüm numarası 1.0 ile eşleşir.
   - Sorun olursa: Yükleme hatasını ve derleme numarasını not et.
   - Doğrulanamadı: yükleme ve App Store Connect durumu bu ortamdan görülemez. API anahtarı `~/.appstoreconnect/private_keys/` içinde kalır, commit'e girmez.
-- [ ] **Ekran görüntüleri** *[yalnızca sahip; açık]*
+- [x] **Ekran görüntüleri** *[yapıldı 15 Ekim 2026: 364 görüntü ve en-US iPhone uygulama önizlemesi yüklendi; aşağıdaki "Şu an" ve "Eski" notları o günden öncesine ait]*
   - Beklenen: 12 dilin her biri için iPhone 6.9" (1290×2796) 10, iPad 13" (2064×2752) 10 ve Mac (2880×1800) 8 görüntü; dosyalar `docs/marketing/app-store/<dil>/` altında (iPad `ipad/`, Mac `mac/` alt klasöründe; es-MX İspanyolca `es/` görüntülerini kullanır). Boş ya da yanlış dosya olmamalı.
   - Şu an: `docs/marketing/app-store/` içinde yalnızca `en` ve `tr` var; ikisinde de 9 iPhone, 9 iPad ve 8 Mac görüntüsü var. Diğer on dil yok; iPhone ve iPad için birer görüntü daha eksik. Mac yakalamaları henüz alınmadı (§10.9).
   - Eski: Depodaki `08-consent.jpg` görüntüleri (`en/`, `tr/`, `en/ipad/`, `tr/ipad/`) eski onay ekranını gösteriyor: giriş cümlesi yalnızca xAI'yi adlandırıyor, listede Anthropic (Claude) yerine fal.ai ("Checks results for safety") var ve 30 günlük silme maddesi yok. Hiçbir ekran görüntüsü yüklenmeden önce bu dördü (ve diğer dillerde ve Mac'te çekilecek onay ekranları) bu sürümün derlemesinden `-GLScreenshotScene consent` ile yeniden çekilip `scripts/marketing-images.py` ile yeniden üretilmeli; eskiler App Store Connect'e yüklenmez.
-- [ ] **Abonelikler ve paketler sürüme ekli** *[yalnızca sahip; açık]*
+- [x] **Abonelikler ve paketler sürüme ekli** *[yapıldı 15 Ekim 2026: grup, iki abonelik ve iki paket iOS 1.0 ile gönderildi; ilk abonelikler için Çin fiyatı (¥298 / ¥38) girildi, Çin satışta değil]*
   - Yap: iOS 1.0 sayfası › In-App Purchases and Subscriptions › Pro Yearly, Pro Monthly, 30 Credits ve 100 Credits'i ekle. İlk abonelik uygulama sürümüyle birlikte incelemeye gönderilmek zorundadır. macOS sayfasında da bu bölüm varsa aynılarını seç.
   - Beklenen: Her birinde inceleme ekran görüntüsü ve not var, durumları "Ready to Submit"; abonelik grubunun en-US ve tr adları dolu.
-  - Açık karar: Abonelik açıklamasındaki "80 kredi" yazısı kalsın mı, kaldırılsın mı (`docs/SAHIP-YAPILACAKLAR.md` §2.6).
+  - Karar verildi: abonelik açıklaması sayı içermiyor (`docs/SAHIP-YAPILACAKLAR.md` §2.6).
 - [ ] **Paid Apps Agreement Active** *[yalnızca sahip; açık]* (banka ve vergi bilgisi tamam)
-- [ ] **App Privacy yayında** *[yalnızca sahip; açık: iki karar]*
+- [x] **App Privacy yayında** *[yapıldı 15 Ekim 2026: 10 veri türü; kurulum hash'inin avukatça teyidi açık, SAHIP 6.1]*
   - Beklenen (`docs/marketing/app-store-connect-setup.md` §5): Kendi toplamamız, kullanıcıyla bağlı: Photos or Videos, Other User Content, User ID ve Purchase History (User ID ile Purchase History'de RevenueCat için Analytics da işaretli), ve ödül kayıtlarımız nedeniyle Advertising Data (App Functionality, Third-Party Advertising ve Analytics). Google Mobile Ads SDK'sı, kullanıcıyla bağlı olmayan ve izleme için kullanılmayan (Third-Party Advertising ve Analytics): Coarse Location, Device ID, Product Interaction, Advertising Data ve Performance Data. Izleme (tracking) yok.
-  - Açık karar 1, **Email Address**: `PrivacyInfo.xcprivacy` e-postayı listeliyor; kurulum dokümanı girişe kapalıyken beyan edilmeyebileceğini yazıyor. İkisini birbiriyle uyumlu yap (§12-15).
+  - **Email Address**: Apple ile giriş açık olduğu için beyan edilir (App Functionality, kullanıcıyla bağlı, izleme yok); `PrivacyInfo.xcprivacy` de listeliyor (§12-15).
   - Açık karar 2, kurulum kimliği: Ücretsiz krediler için kullanılan karma (salted hash) kurulum anahtarı ne kurulum dokümanında ne `PrivacyInfo.xcprivacy` içinde var. Veri türü ve kullanıcıyla ilişkisini karara bağla (§12-15).
   - Kontrol: Archive'dan Privacy Report al (Xcode › Organizer) ve yukarıdaki listeyle karşılaştır.
 - [ ] **Yaş derecelendirmesi** *[yalnızca sahip; açık: Age Assurance kararı]*
@@ -573,33 +581,33 @@ Değerlerin hepsi: [`marketing/app-store-connect-setup.md`](marketing/app-store-
   - Beklenen: Info.plist'te `ITSAppUsesNonExemptEncryption = NO` olduğu için soru gelmez. Gelirse yalnızca HTTPS (standart, muaf şifreleme) kullanıldığını yanıtla.
 - [ ] **Fiyat ve bulunabilirlik** *[yalnızca sahip]*
   - Beklenen: Free; **China mainland hariç** tüm ülkeler (174).
-- [ ] **Sürüm sayfası** *[yalnızca sahip; açık: URL kararı]*
-  - Beklenen: Açıklamanın sonunda Terms ve Privacy bağlantıları; anahtar kelimeler ve promosyon metni dolu. Support URL, Marketing URL ve Privacy Policy URL açılıyor. Gizlilik: `https://aybuke.org/legal/en/privacy-policy` ve `https://aybuke.org/legal/tr/gizlilik-politikasi`. Support ve Marketing URL: `https://aybuke.org` (kurulum dokümanı §2), HANDOFF'a göre `https://aybuke.org/support`; karar açık (`docs/SAHIP-YAPILACAKLAR.md` §2.4). macOS açıklamasında Lock Screen ve Dynamic Island satırları yok, iPhone/iPad yerine Mac yazıyor. Release: "Manually release this version" (öneri; §2.5). Telif satırı kararı da açık.
-- [ ] **Sunucu ön koşulları (§1.1):** Apple sign-in anahtarları (yalnızca girişi açarken), RevenueCat anahtarları, `ANTHROPIC_API_KEY` (Claude güvenlik denetimi; `FAL_KEY` ve `XAI_SAFETY_MODEL` boş) ve xAI Zero Data Retention tamam olmalı. *[açık]*
+- [x] **Sürüm sayfası** *[yapıldı 15 Ekim 2026: Support `https://aybuke.org/support`, Marketing `https://aybuke.org`, telif `2026 Okan Berk Manavoğlu`, yayın türü AFTER_APPROVAL]*
+  - Beklenen: Açıklamanın sonunda Terms ve Privacy bağlantıları; anahtar kelimeler ve promosyon metni dolu. Support URL, Marketing URL ve Privacy Policy URL açılıyor. Gizlilik: `https://aybuke.org/legal/en/privacy-policy` ve `https://aybuke.org/legal/tr/gizlilik-politikasi`. Support ve Marketing URL: `https://aybuke.org` (kurulum dokümanı §2), HANDOFF'a göre `https://aybuke.org/support`; karar açık (`docs/SAHIP-YAPILACAKLAR.md` §2.4). macOS açıklamasında Lock Screen ve Dynamic Island satırları yok, iPhone/iPad yerine Mac yazıyor. Release: iOS ve macOS'ta AFTER_APPROVAL (onaylanınca kendiliğinden yayın; SAHIP §2.5).
+- [x] **Sunucu ön koşulları (§1.1):** Apple ile giriş anahtarları, `ANTHROPIC_API_KEY` (Claude güvenlik denetimi; `FAL_KEY` ve `XAI_SAFETY_MODEL` boş) ve xAI Zero Data Retention tamam *[15 Ekim 2026]*. RevenueCat silme anahtarı isteğe bağlı ve yok (§9.5).
 
 ---
 
 ## 12. Koddan görülen riskler (testte özellikle bak)
 
-Bu sürümde düzeltilenler ve açık kalanlar. Canlıya alma sırası: önce `20261017000000` ve `20261018000000`'in durumu kontrol edilir (§1.1), sonra `20261019000000`–`20261024000002` uygulanır, ardından `ai-image`, `account`, `credits-redeem`, `report` ve `ad-reward` yayımlanır.
+Bu sürümde düzeltilenler ve açık kalanlar. Canlıya alma 15 Ekim 2026'da tamamlandı: migrasyonlar `20261029000002`'ye kadar, yedi fonksiyon yayında.
 
 1. **İşten sonra bakiye — tamam (kodda).** Bitmiş işlerin (başarılı, başarısız, iptal) yanıtı bakiyeyi taşır ve bakiye iş başlarken hemen gösterilir (`ai-image`, `job_balance`). Kontrol: §3.4, §3.6.
 2. **Live Activity metinleri — tamam (kodda).** Başlık ve alt satır widget kataloğundan (`ios/GlowlitWidgets/Localizable.xcstrings`) gelir. Doğrulanamadı: 12 dilin tamamının çevirisi ve Türkçe cihazda görünüm. Kontrol: Türkçe cihazda Dynamic Island (§7.2).
-3. **Sign in with Apple token iptali — açık.** `APPLE_SIGNIN_KEY_ID` ve `APPLE_SIGNIN_PRIVATE_KEY` (`backend/supabase/functions/_shared/apple-signin.ts` › `appleConfig()`) eklenmedi; bu yüzden giriş bu sürümde gizli (`signInWithApple: false`, §5). Eksik anahtar log'a hata olarak düşer ve silmeyi bozmaz. Karar: `docs/SAHIP-YAPILACAKLAR.md` §5.6 (isteğe bağlı).
+3. **Sign in with Apple token iptali — tamam (kodda ve sunucuda; cihazda açık).** `APPLE_SIGNIN_KEY_ID` ve `APPLE_SIGNIN_PRIVATE_KEY` (`backend/supabase/functions/_shared/apple-signin.ts` › `appleConfig()`) 15 Ekim 2026'da eklendi ve giriş 1.0'da açık (`signInWithApple: true`, §5). Token sunucuda yoksa silme Apple'dan yeni bir kod ister. Kontrol: §5 ve §9.6. Karar: `docs/SAHIP-YAPILACAKLAR.md` §5.6.
 4. **RevenueCat silme — açık (kuyrukta bekliyor).** `REVENUECAT_SECRET_KEY` (ve v2 anahtarı için `REVENUECAT_PROJECT_ID`; `_shared/revenuecat.ts` › `revenueCatKey()`) yokken silmeler `pending_revenuecat_deletions` tablosunda bekler; anahtar eklenince hesap silmede ve saatlik `POST /account/revenuecat-deletions` çağrısında gönderilir (zamanlama: `docs/SUPABASE-TODO.md` §3). Kontrol: §9.5. Karar: `docs/SAHIP-YAPILACAKLAR.md` §5.7 (isteğe bağlı).
-5. **Çıktı denetimi ve bağımsız Claude denetimi — tamam (kodda; canlıda açık).** Her sonuç önce tek bir çıktı denetiminden geçer (`_shared/moderation.ts`): xAI'nin kendi kararı (filtrelenen ya da eksik görsel işi engeller); fal.ai sınıflandırıcısı yalnızca `FAL_KEY` ile, o da girilmez. Bunun üstüne bağımsız denetim Claude'dur (`_shared/safety.ts`, `ANTHROPIC_API_KEY`, model `claude-haiku-5-5`): düzenlenecek fotoğraf görsel modele gitmeden ve her sonuç teslimden önce denetlenir. İkisi de fail-closed: denetim çalışamazsa sonuç gösterilmez ya da fotoğraf düzenlenmez ve kredi iade edilir. JPEG, PNG ve WebP dışındaki (örneğin HEIC) ya da base64 olarak 10 MB'ı aşan görseller Claude'a gönderilmeden engellenir; uygulama en çok 1536 piksellik JPEG gönderir, bu yüzden normal yüklemeler sığar. Onay ekranı Supabase, xAI ve Anthropic'i listeler (`consentVersion` 2). `XAI_SAFETY_MODEL` girilmez ve Claude varken okunmaz. Kontrol: §1.1 (Claude güvenlik denetimi maddesi) ve §3.4. Karar: `docs/SAHIP-YAPILACAKLAR.md` §5.8.
+5. **Çıktı denetimi ve bağımsız Claude denetimi — tamam (kodda ve canlıda, 15 Ekim 2026).** Her sonuç önce tek bir çıktı denetiminden geçer (`_shared/moderation.ts`): xAI'nin kendi kararı (filtrelenen ya da eksik görsel işi engeller); fal.ai sınıflandırıcısı yalnızca `FAL_KEY` ile, o da girilmez. Bunun üstüne bağımsız denetim Claude'dur (`_shared/safety.ts`, `ANTHROPIC_API_KEY`, model `claude-haiku-5-5`): düzenlenecek fotoğraf görsel modele gitmeden ve her sonuç teslimden önce denetlenir. İkisi de fail-closed: denetim çalışamazsa sonuç gösterilmez ya da fotoğraf düzenlenmez ve kredi iade edilir. JPEG, PNG ve WebP dışındaki (örneğin HEIC) ya da base64 olarak 10 MB'ı aşan görseller Claude'a gönderilmeden engellenir; uygulama en çok 1536 piksellik JPEG gönderir, bu yüzden normal yüklemeler sığar. Onay ekranı Supabase, xAI ve Anthropic'i listeler (`consentVersion` 2). `XAI_SAFETY_MODEL` girilmez ve Claude varken okunmaz. Kontrol: §1.1 (Claude güvenlik denetimi maddesi) ve §3.4. Karar: `docs/SAHIP-YAPILACAKLAR.md` §5.8.
 6. **Sürüm numarası — tamam.** `MARKETING_VERSION = 1.0` (`ios/Glowlit.xcodeproj/project.pbxproj`, dört yer), App Store Connect'te "1.0". Kontrol: §11.
 7. **Yeniden kurulum temiz değil — açık.** Oturum Keychain'de `kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly` ile saklanıyor (`ios/App/Services/Auth/Keychain.swift:22`) ve açılışta okunuyor (`ios/App/Services/Auth/AuthSessionManager.swift:23`). Uygulamayı silip kurmak eski anonim hesabı ve bakiyeyi geri getirir. Kontrol: §1.5.
 8. **Bağlantı kopunca iade — tamam (kodda; canlıda açık).** Uygulama geri çekilerek sormaya devam eder ve yalnızca 2 dakika yanıt alamazsa vazgeçer (`ios/Packages/AppCore/Sources/AppCore/BackendAPI.swift`, `offlineGrace` 120 sn). Sunucu, uygulamaya hiç ulaşmayan sonuçları bir saat sonra iade eder (`undelivered`), ulaşıp onaylanmayanları günde en fazla bir kez (`unconfirmed`; `settle_unconfirmed`, `20261017000000`). Kontrol: §3.6.
 9. **"Pro on all your devices" metni — tamam.** Hesap metinleri artık Pro'nun Apple Hesabından geldiğini söylüyor. Eski metnin anahtarı string kataloğunda duruyor ama Swift kodunda kullanılmıyor; yalnızca katalog temizliği kaldı. Pro yine yalnızca StoreKit'ten okunuyor.
 10. **Onay verilmeden bakiye — tamam (kodda).** Oturum varsa bakiye açılışta, öne gelişte ve satın almadan sonra onaydan bağımsız okunur; yalnızca okumak için hesap oluşturulmaz (`AppModel.refreshServerBalance`). Kontrol: onay vermeden kredi paketi al, uygulamayı kapatıp aç, bakiye paketi göstermeli.
-11. **Mac ⌘W editör ve Retro Cam'de — açık.** `closeActiveCover` yalnızca kolaj ve video düzenleyici tarafından ayarlanır; editör ve Retro Cam'de ⌘W hiçbir şey yapmaz (`ios/App/App/MacSupport.swift`, `ios/App/App/AppModel.swift`). Kontrol: §10.2. Kaynak: `docs/AI-TODO.md` §2 (4. madde).
-12. **İade ve iptal bildirimleri (App Store Server Notifications V2) — açık, lansman engeli.** Bu uç nokta yok; fonksiyon listesinde böyle bir fonksiyon yok. İade edilmiş ya da iptal edilmiş bir Pro aboneliği `expires_at`'a kadar Pro kalır. Kontrol: sandbox iadesi (uçtan uca test edilemiyor). Karar: `docs/SAHIP-YAPILACAKLAR.md` §5.2. Kaynak: `docs/AI-TODO.md` §1 (6. madde).
+11. **Mac ⌘W editör ve Retro Cam'de — tamam (kodda).** Close (⌘W) ekrandaki kapağı kendi kapatma düğmesiyle kapatır; editör, kolaj, video düzenleyici ve Retro Cam'in çekim incelemesi işi atmadan önce sorar (`AppModel.closeActiveCover`, her kapak kendisi ayarlar; `ios/App/App/MacSupport.swift`). Kontrol: §10.2.
+12. **İade ve iptal bildirimleri (App Store Server Notifications V2) — tamam (15 Ekim 2026).** `functions/app-store-notifications` yayında (migrasyon `20261025000000`); RevenueCat (proje ve uygulama artık "Aybuke") her bildirimi bu adrese iletir, App Store Connect RevenueCat'i göstermeye devam eder. İade ya da iptal edilen Pro hemen kapanır, iade edilen paketin kalan kredisi geri alınır. Kontrol: sandbox satın almasından sonra `app-store-notifications` log'unda 200. Karar: `docs/SAHIP-YAPILACAKLAR.md` §5.2, §2.14.
 13. **Paylaşılan adresler — karar açık.** Doğrulanmış bir App Store işlemi olmayan kurulumlarda üç strike, aynı ağ adresindeki herkesi cool-down'a sokar (`private.add_strike`, adres anahtarı). Okul ve operatörler adresi paylaşır. Kontrol: §1.1 (kötüye kullanım runbook'u; önce `ops_strikes` ile bakılır). Karar: `docs/SAHIP-YAPILACAKLAR.md` §5.3.
 14. **Deneme kredileri ilk ücretli aya geçiyor — karar açık.** Yıllık denemenin 20 kredisi, kullanılmadan kalırsa ilk ücretli dönemin 80 kredisine eklenir; toplam en çok 160 (`private.refresh_subscription`). Kontrol: §4.2 ve §4.4. Karar: `docs/SAHIP-YAPILACAKLAR.md` §5.1.
-15. **E-posta ve kurulum kimliği App Privacy'de — karar açık.** `PrivacyInfo.xcprivacy` e-postayı listeliyor; kurulum dokümanı girişe kadar beyan etmeyebileceğini söylüyor. Kurulum kimliği ise iki belgede de yok. Kontrol: §11, App Privacy. Kaynak: `docs/SAHIP-YAPILACAKLAR.md` §2.7; `docs/AI-TODO.md` §3 (8. madde).
+15. **E-posta ve kurulum kimliği App Privacy'de — e-posta tamam, kurulum kimliği avukatta.** Giriş açık olduğu için e-posta beyan edilir ve `PrivacyInfo.xcprivacy` de listeliyor; App Privacy 15 Ekim 2026'da yayımlandı. Kurulum kimliğinin (karma) beyanı avukatla teyit edilecek. Kaynak: `docs/SAHIP-YAPILACAKLAR.md` §2.7, §6.1.
 16. **Mac yazı tipi ve bölümler — açık.** Mac'e özgü kalıntılar (iPhone'da görünmez): yaklaşık 92 zincirli caption ve footnote yazı çağrısı SwiftUI'nin Mac boyutunu koruyor; 12 sabit yazı boyutu Mac'in metin ayarıyla ölçeklenmiyor; "See all" sayfası ile editörün Styles paneli şablon bağlam menüsüne sahip değil; kapak farkındalı araç çubuğu gizlemesi her bölüm yığınında kanıtlanmadı. Kontrol: §10 ve Mac'te ekran yakalamaları (§10.9). Kaynak: `docs/AI-TODO.md` §2 (3. madde ve izleyenler).
-17. **Fotoğraf kontrolü hata metni — açık.** Benzerlik kontrolü başarısız olduğunda metin sonucun gösterilmediğini söylüyor; fotoğraf kontrolü için yanıltıcı. Kontrol: §3.5 (başarısız tekrar). Kaynak: `docs/AI-TODO.md` §1 (11. madde).
+17. **Fotoğraf kontrolü hata metni — tamam (kodda).** Fotoğraf kontrolü çalışamadığında ayrı ve doğru bir mesaj gösterilir. Kontrol: §3.5 (başarısız tekrar).
 
 ---
 
@@ -622,8 +630,6 @@ Engelleyici mi: evet / hayır
 
 ## 14. Gönderim
 
-- [ ] §1.1 ve §11'deki maddelerin hepsi işaretli, §12'deki riskler için karar verilmiş (düzelt ya da bilerek kabul et).
-- [ ] Engelleyici olarak işaretlenen tüm sorunlar kapandı ya da sahip bunları açıkça kabul etti.
-- [ ] Sahip "Her şey hazır. Gönderelim mi?" sorusuna açıkça **evet** dedi. Onay gelmeden **Add for Review** ve **Submit for Review** yapılmaz.
+- [x] **Gönderildi (15 Ekim 2026):** iOS 1.0 ve macOS 1.0 WAITING_FOR_REVIEW, yayın türü AFTER_APPROVAL. Sonraki sürümlerde de aynı kural geçerli: §1.1 ve §11 işaretli, §12'deki riskler için karar verilmiş, engelleyiciler kapalı ve sahip "Her şey hazır. Gönderelim mi?" sorusuna açıkça **evet** demeden **Add for Review** ve **Submit for Review** yapılmaz.
 
 Kaynaklar (Apple): [Testing In-App Purchases with sandbox](https://developer.apple.com/documentation/storekit/testing-in-app-purchases-with-sandbox), [Subscription renewal rate in TestFlight](https://developer.apple.com/help/app-store-connect/test-a-beta-version/subscription-renewal-rate-in-testflight), [Manage Sandbox Apple Account settings](https://developer.apple.com/help/app-store-connect/test-in-app-purchases/manage-sandbox-apple-account-settings), [Testing age assurance in sandbox](https://developer.apple.com/documentation/storekit/testing-age-assurance-in-sandbox). Proje içi: [`NEXT-STEPS.md`](NEXT-STEPS.md), [`05-compliance.md`](05-compliance.md), [`SUPABASE-TODO.md`](SUPABASE-TODO.md), [`AI-TODO.md`](AI-TODO.md), [`SAHIP-YAPILACAKLAR.md`](SAHIP-YAPILACAKLAR.md), [`../backend/README.md`](../backend/README.md).
