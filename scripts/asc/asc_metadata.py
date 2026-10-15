@@ -1,25 +1,46 @@
 """Pushes docs/marketing/app-store-metadata.json to App Store Connect: name and
 subtitle (app info), description, keywords and promotional text (iOS and macOS
-1.0). The Mac description drops the iPhone-only bullets (widgets/Lock Screen/
-Dynamic Island and Siri/Control Center/Action button), found by similarity to
-the bullets the current Mac text already leaves out.
+1.0).
 
-    asc_metadata.py <repo> [--dry-run]
+The Mac description is made from the iOS one by `mac_description`, the same
+way every time: bullets about iPhone-only features (widgets, the Lock Screen,
+the Dynamic Island, Live Activities, Control Center, the Action button) go, a
+heading left without bullets gives way to the locale's `mac.section` (or goes
+too), and each `mac.replace` pair must match exactly once (Retro Cam without a
+flash, "iPhone, iPad and Mac", the Mac App Store's subscription path). A text
+that still names an iPhone-only feature, a flash, or no Mac stops the push.
+
+    asc_metadata.py <repo> [--dry-run]          checks, then pushes (or not)
+    asc_metadata.py <repo> --check [--show=ja]  offline checks only (no API);
+                                                --show prints that Mac text
 """
-import difflib
 import json
+import re
 import sys
 from pathlib import Path
 
-import asc
-
-REPO = Path(sys.argv[1])
-DRY = "--dry-run" in sys.argv
-META = json.loads((REPO / "docs/marketing/app-store-metadata.json").read_text(encoding="utf-8"))
+LIMITS = {"name": 30, "subtitle": 30, "keywords": 100, "promotionalText": 170, "description": 4000}
 APP_INFO = "8ac32843-da8f-4dc6-9e9f-f2eb04392678"
 IOS = "f3e190c1-151c-4828-a349-b2c348d4ec20"
 MAC = "62d912cf-8fd9-4165-a5ea-03529fd63aba"
-LIMITS = {"name": 30, "subtitle": 30, "keywords": 100, "promotionalText": 170, "description": 4000}
+
+# iPhone-only features as the 13 locales name them.
+IPHONE_ONLY = re.compile(
+    r"widget|Виджет|ウィジェット|위젯|小组件"
+    r"|Lock Screen|Kilitli Ekran|Tela Bloqueada|Layar Terkunci|ロック画面|잠금 화면|锁定屏幕"
+    r"|Dynamic Island|灵动岛|Live Activit"
+    r"|Control Center|Denetim Merkezi|Centro de control|Central de Controle|centre de contrôle"
+    r"|Kontrollzentrum|Centro di Controllo|Пункт управления|コントロールセンター|제어 센터|控制中心|Pusat Kontrol"
+    r"|Action button|Eylem düğmesi|botón Acción|botão de Ação|bouton Action|Aktionstaste|tasto Azione"
+    r"|кнопк\w* «Действие»|アクションボタン|동작 버튼|操作按钮|Tombol Tindakan",
+    re.IGNORECASE,
+)
+# The Mac has no camera flash.
+FLASH = re.compile(r"\bflash\b|flaş|Blitz|вспышк|フラッシュ|플래시|闪光灯", re.IGNORECASE)
+# Every locale's iOS path goes through its "Apple Account"; the Mac's starts in the App Store.
+IOS_SUBSCRIPTIONS = re.compile(r"›[^›\n]{0,15}Apple")
+MAC_SUBSCRIPTIONS = re.compile(r"App Store[^›\n]{0,15}›")
+BULLET = ("•", "-", "·")
 
 
 def check(locale, fields):
@@ -28,48 +49,145 @@ def check(locale, fields):
             raise SystemExit(f"{locale} {key} is {len(fields[key])} characters (limit {limit})")
 
 
-def localizations(version):
+def mac_description(locale, meta):
+    """The iOS description without iPhone-only features, in Mac words."""
+    mac = meta.get("mac")
+    if not mac:
+        raise SystemExit(f"{locale}: no \"mac\" block in app-store-metadata.json")
+    blocks, section_used = [], False
+    for block in meta["description"].split("\n\n"):
+        lines = block.split("\n")
+        bullets = [line for line in lines if line.startswith(BULLET)]
+        kept = [line for line in lines if not (line.startswith(BULLET) and IPHONE_ONLY.search(line))]
+        if bullets and not any(line.startswith(BULLET) for line in kept):
+            # Every bullet was iPhone-only: the heading goes too.
+            if mac.get("section") and not section_used:
+                blocks.append("\n".join(mac["section"]))
+                section_used = True
+            continue
+        blocks.append("\n".join(kept))
+    text = "\n\n".join(blocks)
+    for old, new in mac.get("replace", []):
+        count = text.count(old)
+        if count != 1:
+            raise SystemExit(f"{locale} mac: {old!r} appears {count} times in the description (expected once)")
+        text = text.replace(old, new)
+
+    problems = []
+    if mac.get("section") and not section_used:
+        problems.append("the Mac section found no iPhone-only section to replace")
+    for pattern, what in ((IPHONE_ONLY, "an iPhone-only feature"), (FLASH, "a flash")):
+        match = pattern.search(text)
+        if match:
+            problems.append(f"still names {what}: {match.group(0)!r}")
+    if "Mac" not in text:
+        problems.append("never says it runs on the Mac")
+    if any(("iPhone" in line or "iPad" in line) and "Mac" not in line for line in text.split("\n")):
+        problems.append("names iPhone or iPad without the Mac")
+    # iOS: Settings › Apple Account › Subscriptions; Mac: App Store › your name › …
+    if IOS_SUBSCRIPTIONS.search(text) or not MAC_SUBSCRIPTIONS.search(text):
+        problems.append("doesn't give the Mac App Store's subscription path")
+    if "\n\n\n" in text:
+        problems.append("has an empty section")
+    if problems:
+        raise SystemExit(f"{locale} mac description: " + "; ".join(problems))
+    return text
+
+
+def pro_names(repo):
+    """Names of Pro-only looks and styles, in English and each app language,
+    read from AppCore's catalogs and the app's string catalog. A name a free
+    item shares (the free Claymation look, the Pro Claymation style) is left out."""
+    core = repo / "ios/Packages/AppCore/Sources/AppCore"
+    pro, free = set(), set()
+    for file, kind, key in (("TemplateCatalog.swift", "PhotoTemplate(", "title"),
+                            ("StyleCatalog.swift", "ImageStyle(", "name")):
+        for chunk in (core / file).read_text(encoding="utf-8").split(kind)[1:]:
+            name = re.search(rf'{key}:\s*"([^"]+)"', chunk)
+            if name:
+                (pro if "isPro: true" in chunk else free).add(name.group(1))
+    strings = json.loads((repo / "ios/App/Resources/Localizable.xcstrings").read_text(encoding="utf-8"))["strings"]
+    names = {}
+    for english in pro - free:
+        names.setdefault("en", set()).add(english)
+        for language, unit in strings.get(english, {}).get("localizations", {}).items():
+            value = unit.get("stringUnit", {}).get("value")
+            if value:
+                names.setdefault(language, set()).add(value)
+    return names
+
+
+def check_pro_names(locale, description, names):
+    """Guideline 2.3.2: a line that names a Pro-only look or style says Pro."""
+    language = {"en-US": "en", "es-ES": "es", "es-MX": "es", "fr-FR": "fr", "de-DE": "de"}.get(locale, locale)
+    for line in description.split("\n"):
+        # Latin letters around a name make it another word ("Oil Paint" in "Oil Painting").
+        named = sorted(n for n in names.get("en", set()) | names.get(language, set())
+                       if re.search(rf"(?<![A-Za-z]){re.escape(n)}(?![A-Za-z])", line))
+        if named and "Pro" not in line:
+            raise SystemExit(f"{locale}: names Pro-only {', '.join(named)} without saying Pro: {line[:80]!r}")
+
+
+def build(repo, meta_all):
+    """Every locale's fields, checked; no network."""
+    names = pro_names(repo)
+    out = {}
+    for locale, meta in meta_all.items():
+        check_pro_names(locale, meta["description"], names)
+        info = {"name": meta["name"], "subtitle": meta["subtitle"]}
+        ios = {"description": meta["description"], "keywords": meta["keywords"],
+               "promotionalText": meta["promotionalText"]}
+        mac = dict(ios, description=mac_description(locale, meta))
+        for fields in (info, ios, mac):
+            check(locale, fields)
+            for key, value in fields.items():
+                if "Glowlit" in value:
+                    raise SystemExit(f"{locale} {key}: says Glowlit (the app is Aybuke)")
+        out[locale] = (info, ios, mac)
+    return out
+
+
+def check_listing(repo, meta_all):
+    """docs/marketing/app-store-listing.md shows the en-US and Turkish text as sent."""
+    listing = " ".join((repo / "docs/marketing/app-store-listing.md").read_text(encoding="utf-8").split())
+    for locale in ("en-US", "tr"):
+        for key in ("name", "subtitle", "promotionalText", "keywords", "description"):
+            if " ".join(meta_all[locale][key].split()) not in listing:
+                raise SystemExit(f"app-store-listing.md: the {locale} {key} differs from app-store-metadata.json")
+
+
+def localizations(asc, version):
     items, _ = asc.get_all(f"/v1/appStoreVersions/{version}/appStoreVersionLocalizations")
     return {i["attributes"]["locale"]: i for i in items}
 
 
-def mac_description(locale, ios_text, current_ios, current_mac):
-    """Drops the new text's lines that look like the bullets the current Mac text leaves out."""
-    removed = [line for line in current_ios.split("\n") if line.strip() and line not in current_mac.split("\n")]
-    if not removed:
-        return ios_text
-    kept = []
-    for line in ios_text.split("\n"):
-        similar = max((difflib.SequenceMatcher(None, line, r).ratio() for r in removed), default=0)
-        if line.strip().startswith(("•", "-", "·")) and similar > 0.55:
-            print(f"  mac {locale}: drops {line[:70]!r} ({similar:.2f})")
-            continue
-        kept.append(line)
-    return "\n".join(kept)
-
-
 def main():
+    repo = Path(sys.argv[1])
+    dry = "--dry-run" in sys.argv
+    meta_all = json.loads((repo / "docs/marketing/app-store-metadata.json").read_text(encoding="utf-8"))
+    built = build(repo, meta_all)
+    check_listing(repo, meta_all)
+    if "--check" in sys.argv:
+        for locale, (_, ios, mac) in built.items():
+            print(f"{locale}: description {len(ios['description'])}/{len(mac['description'])} (iOS/Mac)")
+        for arg in sys.argv:
+            if arg.startswith("--show="):
+                print(built[arg.split("=", 1)[1]][2]["description"])
+        print("check ok")
+        return
+
+    import asc  # needs requests + cryptography and the API key; the check doesn't
+
     info_locs, _ = asc.get_all(f"/v1/appInfos/{APP_INFO}/appInfoLocalizations")
-    ios_locs, mac_locs = localizations(IOS), localizations(MAC)
+    ios_locs, mac_locs = localizations(asc, IOS), localizations(asc, MAC)
     for item in info_locs:
         locale = item["attributes"]["locale"]
-        meta = META.get(locale)
-        if not meta:
+        if locale not in built:
             print("no metadata for", locale)
             continue
-        info = {"name": meta["name"], "subtitle": meta["subtitle"]}
-        check(locale, info)
-        ios_fields = {"description": meta["description"], "keywords": meta["keywords"],
-                      "promotionalText": meta["promotionalText"]}
-        check(locale, ios_fields)
-        mac_fields = dict(ios_fields)
-        if locale in mac_locs and locale in ios_locs:
-            mac_fields["description"] = mac_description(
-                locale, meta["description"],
-                ios_locs[locale]["attributes"].get("description") or "",
-                mac_locs[locale]["attributes"].get("description") or "")
+        info, ios_fields, mac_fields = built[locale]
         print(f"{locale}: name {info['name']!r}, description {len(ios_fields['description'])}/{len(mac_fields['description'])}")
-        if DRY:
+        if dry:
             continue
         asc.patch(f"/v1/appInfoLocalizations/{item['id']}", {"data": {
             "type": "appInfoLocalizations", "id": item["id"], "attributes": info}})
@@ -78,7 +196,8 @@ def main():
                 loc_id = locs[locale]["id"]
                 asc.patch(f"/v1/appStoreVersionLocalizations/{loc_id}", {"data": {
                     "type": "appStoreVersionLocalizations", "id": loc_id, "attributes": fields}})
-    print("done" if not DRY else "dry run ok")
+    print("done" if not dry else "dry run ok")
 
 
-main()
+if __name__ == "__main__":
+    main()
