@@ -57,7 +57,7 @@
     {"scene": "share-cover", "title": "Fais la *couverture*", "subtitle": "Couvertures de magazine, photomatons et cartes story"},
     {"scene": "collage", "title": "Ton photo\u00a0dump, *réussi*", "subtitle": "Collages de 2 à 9 photos ou carrousel sans coupure", "chip": "Gratuit"},
     {"scene": "consent", "title": "Tes photos, ton *choix*", "subtitle": "Ton accord d’abord, et tes photos n’entraînent jamais l’IA"},
-    {"scene": "paywall", "title": "Des prix *honnêtes*", "subtitle": "Pas de formule hebdo, packs sans fin, échecs remboursés", "chip": "Sans pub avec Pro"}
+    {"scene": "paywall", "title": "Des prix *honnêtes*", "subtitle": "Pas d’abo hebdo, packs sans expiration, échecs remboursés", "chip": "Sans pub avec Pro"}
   ],
   "de": [
     {"scene": "result", "title": "Sag’s,\nsieh es *strahlen*", "subtitle": "Zauber-Edit: Wunsch eintippen, schieben und vergleichen", "before": "Vorher", "after": "Nachher"},
@@ -225,7 +225,7 @@
       {"scene": "hideFaces", "title": "Береги *друзей*", "subtitle": "Размой, запикселизируй или закрой лица перед публикацией", "chip": "На твоём Mac"}
     ],
     "ja": [
-      {"scene": "home", "title": "Glowlitが*Mac*に登場", "subtitle": "ルック、マジック編集、無料ツールをひとつのウィンドウで"},
+      {"scene": "home", "title": "Aybukeが*Mac*に登場", "subtitle": "ルック、マジック編集、無料ツールをひとつのウィンドウで"},
       {"scene": "makeup", "title": "メイクは*遊び*", "subtitle": "メイクスタジオ：14のルックか、自分だけのミックス", "chip": "NEW"},
       {"scene": "result", "title": "伝えるだけで、*キラッと*変身", "subtitle": "変えたいことを書いて、ドラッグでビフォー・アフターを比較", "before": "ビフォー", "after": "アフター"},
       {"scene": "create", "title": "想像を*カタチ*に", "subtitle": "20のスタイルから選ぶか、「アイデアをもらう」をクリック"},
