@@ -24,13 +24,22 @@
 # 20261013.1530 so every upload is higher than the last; override it with
 # BUILD_NUMBER. scripts/check-release-config.py runs first and stops the
 # upload on release blockers (GL_PREVIEW_BUILD=1 for a preview build).
+#
+# SIGNING=account signs and uploads with the Apple Account signed in to Xcode
+# (Xcode › Settings › Accounts) instead of the API key. Use it when the key
+# can't provision: on 15 October 2026 xcodebuild answered "Authentication
+# failed" for an Admin team key that altool and the API accepted, so it
+# couldn't register the widget's bundle id or the App Group.
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+SIGNING="${SIGNING:-key}"
 
-: "${ASC_KEY_ID:?Set ASC_KEY_ID to the App Store Connect API key id}"
-: "${ASC_ISSUER_ID:?Set ASC_ISSUER_ID to the App Store Connect API issuer id}"
-KEY_PATH="${ASC_KEY_PATH:-$HOME/.appstoreconnect/private_keys/AuthKey_${ASC_KEY_ID}.p8}"
-[[ -f "$KEY_PATH" ]] || { echo "API key not found: $KEY_PATH" >&2; exit 1; }
+if [[ "$SIGNING" != account ]]; then
+  : "${ASC_KEY_ID:?Set ASC_KEY_ID to the App Store Connect API key id}"
+  : "${ASC_ISSUER_ID:?Set ASC_ISSUER_ID to the App Store Connect API issuer id}"
+  KEY_PATH="${ASC_KEY_PATH:-$HOME/.appstoreconnect/private_keys/AuthKey_${ASC_KEY_ID}.p8}"
+  [[ -f "$KEY_PATH" ]] || { echo "API key not found: $KEY_PATH" >&2; exit 1; }
+fi
 
 BUILD_NUMBER="${BUILD_NUMBER:-$(date +%Y%m%d).$((10#$(date +%H%M)))}"
 PLATFORM="${PLATFORM:-ios}"
@@ -46,12 +55,14 @@ ARCHIVE="$OUT/Glowlit.xcarchive"
 # the company details exist) set GL_PREVIEW_BUILD=1, and never submit that
 # build for review.
 python3 "$ROOT/scripts/check-release-config.py" --online
-AUTH=(
-  -allowProvisioningUpdates
-  -authenticationKeyPath "$KEY_PATH"
-  -authenticationKeyID "$ASC_KEY_ID"
-  -authenticationKeyIssuerID "$ASC_ISSUER_ID"
-)
+AUTH=(-allowProvisioningUpdates)
+if [[ "$SIGNING" != account ]]; then
+  AUTH+=(
+    -authenticationKeyPath "$KEY_PATH"
+    -authenticationKeyID "$ASC_KEY_ID"
+    -authenticationKeyIssuerID "$ASC_ISSUER_ID"
+  )
+fi
 
 rm -rf "$OUT"
 mkdir -p "$OUT"

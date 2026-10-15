@@ -338,7 +338,8 @@ done
 xcodebuild build -project ios/Glowlit.xcodeproj -scheme Glowlit -configuration Debug \
   -destination 'generic/platform=macOS,variant=Mac Catalyst' -derivedDataPath build/DerivedData \
   CODE_SIGN_IDENTITY=- CODE_SIGNING_REQUIRED=NO CODE_SIGN_ENTITLEMENTS="$SCR/mac.entitlements" \
-  "CODE_SIGN_ENTITLEMENTS[sdk=macosx*]=$SCR/mac.entitlements" -quiet && echo "MAC AD HOC OK"
+  -quiet && echo "MAC AD HOC OK"
+# Not: koşullu ayar ("CODE_SIGN_ENTITLEMENTS[sdk=macosx*]=…") komut satırında yol sanılır ve derleme düşer.
 MACAPP=build/DerivedData/Build/Products/Debug-maccatalyst/Glowlit.app
 
 # Pencere kimliği bulucu (Screen Recording izni gerekir)
@@ -404,6 +405,9 @@ setopt interactivecomments
 cd ~/Downloads/aybuke-app
 REPO=$PWD
 CAP=~/Desktop/aybuke-captures
+# Örnek fotoğrafları korumalı olmayan bir klasöre kopyala: ~/Downloads, ~/Desktop ve ~/Documents macOS'un
+# izinli (TCC) klasörleri; simülatördeki uygulama oradan dosya açarken izin bekler ve sahne boş kalır.
+SAMPLES=/private/tmp/aybuke-samples; mkdir -p $SAMPLES && cp docs/marketing/samples/*.jpg $SAMPLES/
 APP=build/DerivedData/Build/Products/Debug-iphonesimulator/Glowlit.app
 IPHONE=50703265-82EF-4CFE-B094-47FFB43025B0   # iPhone 17 Pro Max (bu Mac'te farklıysa 4. bölümdeki listeden)
 IPAD=0ADBB7F6-481C-4F00-AFD0-182E32E685E2     # iPad Pro 13-inch (M5)
@@ -435,7 +439,7 @@ shoot() {  # shoot <udid> <çıktı klasörü>
     for name in ${(k)scenes}; do
       xcrun simctl terminate "$udid" app.glowlit.ios 2>/dev/null
       xcrun simctl launch "$udid" app.glowlit.ios -GLScreenshotScene ${=scenes[$name]} \
-        -GLSamplePhotos "$REPO/docs/marketing/samples" -AppleLanguages "($lang)" -AppleLocale "${loc[$lang]}" >/dev/null
+        -GLSamplePhotos "$SAMPLES" -AppleLanguages "($lang)" -AppleLocale "${loc[$lang]}" >/dev/null
       sleep 8
       xcrun simctl io "$udid" screenshot "$out/$lang/$name.png"
     done
@@ -481,6 +485,13 @@ ls ~/.appstoreconnect/private_keys/AuthKey_${ASC_KEY_ID}.p8
 python3 scripts/check-release-config.py --online   # yayın engeli yoksa "passed"
 scripts/upload-app-store.sh                        # iOS
 PLATFORM=mac scripts/upload-app-store.sh           # Mac (aynı kayda)
+```
+
+**15 Ekim notu:** Bu Mac'te `xcodebuild`, Admin rolündeki ekip anahtarıyla profil oluştururken "Authentication failed" verdi (aynı anahtar `altool` ve `scripts/asc` ile çalışıyor). O gece App Group `group.app.glowlit.shared` ve widget kimliği `app.glowlit.ios.widgets` henüz yoktu. Çözüm: Xcode › Settings › Accounts'ta kendi Apple hesabınla giriş yap ve `SIGNING=account` ile yükle; Xcode otomatik imzalamada App Group'u, widget kimliğini ve profilleri kendisi oluşturur:
+
+```zsh
+SIGNING=account scripts/upload-app-store.sh
+SIGNING=account PLATFORM=mac scripts/upload-app-store.sh
 ```
 
 **Beklenen:** her biri "Uploaded Aybuke … build <tarih.saat>" ile biter; işlenmesi 10–30 dakika sürer (App Store Connect › TestFlight). `GL_PREVIEW_BUILD=1` ile yüklenen bir derlemeyi asla incelemeye gönderme. Şifreleme sorusu çıkmaz (`ITSAppUsesNonExemptEncryption` false).
