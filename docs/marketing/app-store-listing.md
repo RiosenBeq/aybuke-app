@@ -22,7 +22,7 @@ Rules followed: no prices in the name, subtitle or keywords; no other platforms,
 
     selfie,makeup,beauty,filter,aesthetic,headshot,anime,doll,restore,retouch,background,art,pink,y2k
 
-**Description** (3865/4000)
+**Description** (3871/4000)
 
 ```text
 Aybuke is the AI photo editor made for girls who glow. Type what you want to change, tap a trend, add an 80s or 90s effect or turn an idea into art, then share it to your Stories in one tap.
@@ -77,7 +77,7 @@ PRIVATE BY DEFAULT
 • Nothing goes to the cloud until you say yes
 • Effects and video edits never leave your device
 • Your photos are never used to train AI, never sold and never used for ads
-• Uploads aren't stored, and results are deleted from our servers as soon as they reach your device, within an hour at most
+• We don't store your uploads, and results are deleted from our servers as soon as they reach your device, within an hour at most
 • No account or email needed, and you can delete your data anytime in Settings
 • Every AI image carries an invisible "made with AI" label
 
@@ -98,22 +98,30 @@ Privacy Policy: {{PRIVACY_URL}}
 
 > Welcome to Aybuke ✨ Edit photos just by saying it, try 50+ one-tap looks, add free 80s & 90s effects, cut the silences out of your videos and create art from text. Share magazine covers, photo strips, before/after collages and story cards in one tap. Widgets, a Dynamic Island Live Activity, iPhone and iPad, 12 languages. Private by default, fair pricing, no weekly plan.
 
-**App Review notes** (2630/4000)
+**App Review notes** (3307/4000; sent to the iOS and macOS versions through the API on 15 October 2026)
 
 ```text
-Aybuke is an AI photo editor and image generator for iPhone and iPad. No login is required: the app creates an anonymous account with our backend when a cloud feature is first used (there is no sign-in in this version).
+Aybuke is an AI photo editor and image generator for iPhone, iPad and Mac. No login is needed, and there is no sign-in in this version: the app creates an anonymous account with our backend only when a cloud AI feature is first used (after consent) or a purchase is made.
 
 How to review:
-1. Onboarding ends with "Try Digicam '04 on your photo": pick a photo and the free on-device effect is applied (or tap "Skip for now"). "Keep editing" opens the editor on Effects; "Save to My Works" keeps the result. A soft paywall that can be closed with X follows (after the editor closes, if it was opened), then a short guided tour (Next or Skip); replay it from Settings > Show me around.
-2. Explore > tap "Try it on your photo" (Magic Edit) or any template. Seasonal looks (Halloween Oct 1-Nov 2, winter Dec 1-Jan 6, Galentine's Feb 1-14) get their own Explore row only in season; all of them are available all year in Edit > Styles. Before any photo or prompt is sent to the cloud, an explicit consent screen names the processor (xAI, which runs its Grok Imagine models). Tap "Allow AI processing". Choosing "Not now" keeps on-device features working.
-3. On-device features that never leave the device and need no consent or credits: Edit > Effects (80s to 2010s), Edit > Remove BG, Edit > Adjust (with Auto), Edit > Find your best shot, and Edit > Edit a video (auto-cut silences, effects, trim).
-4. Purchases: subscriptions (yearly with a 7-day free trial; monthly with a first-month introductory price for eligible users) and consumable credit packs are standard StoreKit 2 in-app purchases; please use a sandbox account. Restore is on the paywall and in Settings. The RevenueCat SDK only records purchases for analytics.
-5. Safety: prompts are filtered on device and on the server in all 12 app languages, and every result passes xAI's own moderation before the app can download it; a result it filters, or one that can't be checked, is blocked and its credit refunded. Templates preserve identity and never reshape bodies. Users can report any result (results screen > "..." > Report this image, or the flag in the editor); reports go to our backend for review.
-6. AI labelling: exported AI images carry IPTC DigitalSourceType metadata (EU AI Act Art. 50), and the share screen offers an optional visible "AI-edited" label.
-7. Account deletion: Settings > Delete my data & account (Guideline 5.1.1(v)).
-8. Privacy Policy, Terms of Use and Acceptable Use Policy are bundled in the app (Settings > Terms, privacy & legal) and published at the URLs in App Store Connect. The app is localized in 12 languages; the legal documents are in English and Turkish.
+1. Onboarding: a neutral age step (Apple's Declared Age Range on iOS 26, otherwise month and year), then interests. It ends with "Try Digicam '04 on your photo" (free, on the device). Under 13, only on-device tools are offered: no cloud AI, purchases or ads. A soft paywall (close it with X) and a short tour follow; replay the tour from Settings > Show me around.
+2. Cloud AI: Explore > "Try it on your photo" (Magic Edit), any look, Makeup Studio (makeup as play: color and sparkle only, never reshaping a face), or Create. Before any photo or prompt leaves the device, a consent screen names every processor: Supabase (our servers), xAI (its Grok Imagine models make the images) and Anthropic (its Claude model checks the photo before an edit and every result for safety). Tap "Allow AI processing". "Not now" keeps the on-device tools working.
+3. Credits: free members get 2 AI credits a day per App Store install, verified from StoreKit's signed AppTransaction (Sandbox and TestFlight installs are accepted). Pro includes 80 credits a month. Tapping a balance explains credits.
+4. Ads, only for free members 13+ on iPhone and iPad: when out of credits, "Watch a short ad · +1 credit" (at most 2 a day; the credit comes only from AdMob's signed server-side callback), and an occasional interstitial after a finished save or share (at most 3 a day, never inside the editor or before a result). Every ad request is non-personalised, teens get child-directed treatment, and the app never asks for tracking or reads the advertising identifier. No ads for Pro members, under 13 or on the Mac.
+5. On-device tools (no consent, no credits): Effects, Adjust, Crop, Cut out, Hide faces, Text & Stickers, Collage, Best shot, the video editor with captions, Retro Cam and Photo Booth.
+6. Purchases: two subscriptions (yearly with a 7-day free trial; monthly with a first-month introductory price) and two consumable credit packs, all StoreKit 2. Please use a Sandbox account. Restore is on the paywall and in Settings. The RevenueCat SDK only records purchases for analytics.
+7. Safety: prompts are filtered on the device and on the server in all 12 app languages (sexual, revealing, humiliating and body, face or skin reshaping requests are blocked). Claude checks the photo before an edit; every result passes xAI's moderation and the same independent Claude check before the app can download it. Anything flagged, or anything that can't be checked, is blocked and its credit refunded. Users can report any result (results screen > "..." > Report this image).
+8. AI labelling: exported AI images carry IPTC DigitalSourceType metadata, and the share screen offers an optional visible "AI-edited" label.
+9. Account deletion: Settings > Delete my data & account (Guideline 5.1.1(v)).
+10. The Privacy Policy, Terms of Use and Acceptable Use Policy are in the app (Settings > Terms, privacy & legal) and at aybuke.org. The app is localized in 12 languages; the legal documents are in English and Turkish.
 
-Contact: {{SUPPORT_EMAIL}}
+Contact: hello@buaze.com
+```
+
+For the macOS version the same text gets one more paragraph before the contact line:
+
+```text
+On the Mac: the same app (Mac Catalyst) with a sidebar and a menu bar; drop a photo on the window to edit it, and Retro Cam uses the Mac's camera. The Live Activity, Instagram Stories sharing and ads aren't offered on the Mac; everything else matches the iOS app.
 ```
 
 ## Türkçe (tr-TR)
@@ -134,7 +142,7 @@ Contact: {{SUPPORT_EMAIL}}
 
     selfie,makyaj,güzellik,filtre,estetik,vesikalık,anime,bebek,onarım,rötuş,arka plan,yapay zeka
 
-**Description** (3951/4000)
+**Description** (3955/4000)
 
 ```text
 Aybuke, ışıldayan kızlar için tasarlanmış yapay zekâlı fotoğraf editörü. Ne değişsin istiyorsan yaz, bir trende dokun, 80'ler ya da 90'lar efekti ekle veya bir fikri sanata dönüştür; sonra tek dokunuşla Hikâyene paylaş.
@@ -189,7 +197,7 @@ VARSAYILAN OLARAK GİZLİ
 • Sen "evet" demeden hiçbir şey buluta gitmez
 • Efektler ve video düzenlemeleri cihazından hiç çıkmaz
 • Fotoğrafların asla yapay zekâ eğitiminde kullanılmaz, satılmaz, reklam için kullanılmaz
-• Yüklenenler saklanmaz; sonuçlar cihazına ulaşır ulaşmaz, en geç bir saat içinde sunucularımızdan silinir
+• Yüklediklerini saklamayız; sonuçlar cihazına ulaşır ulaşmaz, en geç bir saat içinde sunucularımızdan silinir
 • Hesap veya e-posta gerekmez; verilerini Ayarlar'dan istediğin zaman silebilirsin
 • Her yapay zekâ görseli görünmez bir "yapay zekâ ile yapıldı" etiketi taşır
 

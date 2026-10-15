@@ -1,23 +1,25 @@
 """Gives the subscription group, both subscriptions and both credit packs a name
-and description in all 13 App Store locales (renamed to Aybuke)."""
+and description in all 13 App Store locales (renamed to Aybuke). The Pro
+description names no number on purpose: the server can retune the allowance
+without an App Store Connect change, and the paywall shows the current numbers."""
 import asc
 
 LOCALES = ["en-US", "tr", "es-ES", "es-MX", "pt-BR", "fr-FR", "de-DE", "it", "ru", "ja", "ko", "zh-Hans", "id"]
 
 PRO_DESC = {
-    "en-US": "80 credits a month, every look, best AI",
-    "tr": "Ayda 80 kredi, tüm görünümler, en iyi AI",
-    "es-ES": "80 créditos/mes, todos los looks, mejor IA",
-    "es-MX": "80 créditos/mes, todos los looks, mejor IA",
-    "pt-BR": "80 créditos/mês, todos os looks, melhor IA",
-    "fr-FR": "80 crédits par mois et tous les looks",
-    "de-DE": "80 Credits im Monat, alle Looks, beste KI",
-    "it": "80 crediti al mese e tutti i look",
-    "ru": "80 кредитов в месяц и все образы",
-    "ja": "毎月80クレジット、すべてのルック",
-    "ko": "매월 80 크레딧, 모든 룩",
-    "zh-Hans": "每月 80 点数，所有造型",
-    "id": "80 kredit sebulan, semua gaya, AI terbaik",
+    "en-US": "Monthly credits, every look, best-quality AI",
+    "tr": "Aylık krediler, tüm görünümler, en iyi AI",
+    "es-ES": "Créditos mensuales, todos los looks, mejor IA",
+    "es-MX": "Créditos mensuales, todos los looks, mejor IA",
+    "pt-BR": "Créditos mensais, todos os looks, melhor IA",
+    "fr-FR": "Crédits mensuels et tous les looks",
+    "de-DE": "Monatliche Credits, alle Looks, beste KI",
+    "it": "Crediti mensili e tutti i look",
+    "ru": "Ежемесячные кредиты и все образы",
+    "ja": "毎月のクレジット、すべてのルック",
+    "ko": "매월 크레딧, 모든 룩",
+    "zh-Hans": "每月点数，所有造型",
+    "id": "Kredit bulanan, semua gaya, AI terbaik",
 }
 YEARLY = {
     "en-US": "Aybuke Pro Yearly", "tr": "Aybuke Pro Yıllık", "es-ES": "Aybuke Pro Anual", "es-MX": "Aybuke Pro Anual",
