@@ -10,7 +10,7 @@
   "websiteURL": "https://aybuke.org",
   "instagramAppID": "",
   "revenueCatAPIKey": "appl_nMgLjPGSrACLwsGJMMoDmMXUvwS",
-  "signInWithApple": false,
+  "signInWithApple": true,
   "consentVersion": 2,
   "creditPolicy": {
     "freeDaily": 2,

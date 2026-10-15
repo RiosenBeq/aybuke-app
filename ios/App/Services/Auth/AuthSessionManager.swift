@@ -11,17 +11,22 @@ actor AuthSessionManager {
     /// The anonymous session from before Sign in with Apple, kept until its
     /// credits have been merged into the account (so a failed merge can retry).
     private var pendingMerge: AuthSession?
+    /// Apple's one-time authorization code, kept until /account/link took it,
+    /// so a failed link can hand it over on the next try.
+    private var pendingAppleCode: String?
     private var inFlight: Task<AuthSession, Error>?
     /// A refresh that never falls back to signing up (`existingAccessToken`).
     private var refreshInFlight: Task<AuthSession, Error>?
     private static let keychainKey = "auth.session"
     private static let pendingMergeKey = "auth.pendingMerge"
+    private static let pendingAppleCodeKey = "auth.pendingAppleCode"
 
     init(config: BackendConfiguration, session: URLSession = .shared) {
         self.config = config
         self.session = session
         self.current = Keychain.load(AuthSession.self, key: Self.keychainKey)
         self.pendingMerge = Keychain.load(AuthSession.self, key: Self.pendingMergeKey)
+        self.pendingAppleCode = Keychain.load(String.self, key: Self.pendingAppleCodeKey)
     }
 
     var userID: String? { current?.userID }
@@ -30,20 +35,47 @@ actor AuthSessionManager {
     var account: AuthSession? { current?.isAccount == true ? current : nil }
 
     /// Swaps the anonymous session for the Apple account. The anonymous session
-    /// is kept aside until `pendingAnonymousToken()` has been merged.
-    func signInWithApple(idToken: String, nonce: String) async throws {
+    /// is kept aside until `pendingAnonymousToken()` has been merged, and
+    /// Apple's code until `appleCode` has been handed over.
+    func signInWithApple(idToken: String, nonce: String, authorizationCode: String?) async throws {
+        var setAside: AuthSession?
         if current != nil, current?.isAccount != true {
             _ = try? await validAccessToken() // refreshes the anonymous session if needed
             if let anonymous = current, !anonymous.isAccount {
+                setAside = anonymous
                 pendingMerge = anonymous
                 Keychain.save(anonymous, key: Self.pendingMergeKey)
             }
         }
-        let request = try RequestFactory.signInWithApple(idToken: idToken, nonce: nonce, config: config)
-        let (data, response) = try await session.mappedData(for: request)
-        let account = try ResponseDecoder.decodeSession(data: data, statusCode: (response as? HTTPURLResponse)?.statusCode ?? 0)
-        current = account
-        Keychain.save(account, key: Self.keychainKey)
+        do {
+            let request = try RequestFactory.signInWithApple(idToken: idToken, nonce: nonce, config: config)
+            let (data, response) = try await session.mappedData(for: request)
+            let status = (response as? HTTPURLResponse)?.statusCode ?? 0
+            // Supabase turning Apple's token down isn't an expired session.
+            if (400..<500).contains(status), status != 429 { throw AccountSignInError.rejected }
+            let account = try ResponseDecoder.decodeSession(data: data, statusCode: status)
+            current = account
+            Keychain.save(account, key: Self.keychainKey)
+        } catch {
+            // Still anonymous: nothing waits to be merged.
+            if let setAside, pendingMerge == setAside { clearPendingMerge() }
+            throw error
+        }
+        if let authorizationCode {
+            pendingAppleCode = authorizationCode
+            Keychain.save(authorizationCode, key: Self.pendingAppleCodeKey)
+        }
+    }
+
+    /// Apple's authorization code from the last sign-in, until /account/link took it.
+    var appleCode: String? { pendingAppleCode }
+
+    /// The anonymous user's credits haven't been merged into the account yet.
+    var hasPendingMerge: Bool { pendingMerge != nil }
+
+    func clearAppleCode() {
+        pendingAppleCode = nil
+        Keychain.delete(key: Self.pendingAppleCodeKey)
     }
 
     /// A valid access token for the anonymous user waiting to be merged, if any.
@@ -126,6 +158,7 @@ actor AuthSessionManager {
         current = nil
         Keychain.delete(key: Self.keychainKey)
         clearPendingMerge()
+        clearAppleCode()
     }
 
     private static func refresh(_ refreshToken: String, config: BackendConfiguration, session: URLSession) async throws -> AuthSession {
@@ -140,5 +173,15 @@ actor AuthSessionManager {
         let (data, response) = try await session.mappedData(for: request)
         let status = (response as? HTTPURLResponse)?.statusCode ?? 0
         return try ResponseDecoder.decodeSession(data: data, statusCode: status)
+    }
+}
+
+/// Supabase didn't accept Apple's sign-in (the token, its nonce or the
+/// provider's setup), so she stays anonymous and nothing changed.
+enum AccountSignInError: LocalizedError {
+    case rejected
+
+    var errorDescription: String? {
+        String(localized: "Your Apple sign-in wasn't accepted, so nothing changed. Please try again.")
     }
 }

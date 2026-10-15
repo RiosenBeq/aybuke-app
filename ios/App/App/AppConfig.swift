@@ -131,9 +131,10 @@ struct AppConfig: Decodable {
     /// RevenueCat public SDK key ("appl_…"; safe to ship). Empty: RevenueCat off.
     var revenueCatAPIKey: String
     /// Offers Sign in with Apple (Settings › Account, the paywall's "Sign in",
-    /// the prompt after a purchase). Off until the backend can revoke Apple
-    /// tokens on deletion (APPLE_SIGNIN_KEY_ID / APPLE_SIGNIN_PRIVATE_KEY);
-    /// anonymous accounts, purchases, credits and Delete my data work either way.
+    /// the prompt after a purchase). On in AppConfig.json since 1.0, once the
+    /// backend could revoke Apple tokens on deletion (APPLE_SIGNIN_KEY_ID /
+    /// APPLE_SIGNIN_PRIVATE_KEY); defaults to off when the key is missing.
+    /// Anonymous accounts, purchases, credits and Delete my data work either way.
     var signInWithApple = false
     /// Bump to ask everyone for consent again (the processor list changing
     /// asks again by itself). 2: Anthropic joined as the safety check.

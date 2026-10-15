@@ -101,7 +101,7 @@ Privacy Policy: {{PRIVACY_URL}}
 **App Review notes** (3307/4000; sent to the iOS and macOS versions through the API on 15 October 2026)
 
 ```text
-Aybuke is an AI photo editor and image generator for iPhone, iPad and Mac. No login is needed, and there is no sign-in in this version: the app creates an anonymous account with our backend only when a cloud AI feature is first used (after consent) or a purchase is made.
+Aybuke is an AI photo editor and image generator for iPhone, iPad and Mac. No login is needed. Sign in with Apple is optional (Settings > Account, Sign in on the paywall, or the prompt after a purchase); it only lets credits follow the user to another device, and Pro always comes from the Apple Account's purchases. The app creates an anonymous account with our backend only when a cloud AI feature is first used (after consent) or a purchase is made.
 
 How to review:
 1. Onboarding: a neutral age step (Apple's Declared Age Range on iOS 26, otherwise month and year), then interests. It ends with "Try Digicam '04 on your photo" (free, on the device). Under 13, only on-device tools are offered: no cloud AI, purchases or ads. A soft paywall (close it with X) and a short tour follow; replay the tour from Settings > Show me around.
@@ -112,7 +112,7 @@ How to review:
 6. Purchases: two subscriptions (yearly with a 7-day free trial; monthly with a first-month introductory price) and two consumable credit packs, all StoreKit 2. Please use a Sandbox account. Restore is on the paywall and in Settings. The RevenueCat SDK only records purchases for analytics.
 7. Safety: prompts are filtered on the device and on the server in all 12 app languages (sexual, revealing, humiliating and body, face or skin reshaping requests are blocked). Claude checks the photo before an edit; every result passes xAI's moderation and the same independent Claude check before the app can download it. Anything flagged, or anything that can't be checked, is blocked and its credit refunded. Users can report any result (results screen > "..." > Report this image).
 8. AI labelling: exported AI images carry IPTC DigitalSourceType metadata, and the share screen offers an optional visible "AI-edited" label.
-9. Account deletion: Settings > Delete my data & account (Guideline 5.1.1(v)).
+9. Account deletion: Settings > Delete my data & account (Guideline 5.1.1(v)). For a Sign in with Apple account this also revokes the Apple token.
 10. The Privacy Policy, Terms of Use and Acceptable Use Policy are in the app (Settings > Terms, privacy & legal) and at aybuke.org. The app is localized in 12 languages; the legal documents are in English and Turkish.
 
 Contact: hello@buaze.com

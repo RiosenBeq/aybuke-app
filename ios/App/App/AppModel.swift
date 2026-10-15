@@ -228,7 +228,7 @@ final class AppModel {
             "credits.wallet.v2", "notifications.preferences.v1", "notifications.readyPingDeclined", "tour.seen.v1",
             PromptHistory.recentKey, PromptHistory.draftKey, AdCoordinator.pacingKey, AdCoordinator.usedKey,
         ] + legacyConsent
-        static let wipedKeychain = [appleUserID, "auth.session", "auth.pendingMerge"]
+        static let wipedKeychain = [appleUserID, "auth.session", "auth.pendingMerge", "auth.pendingAppleCode"]
     }
 
     init(container: ModelContainer, config: AppConfig = .current, defaults: UserDefaults = .standard) {
@@ -556,7 +556,11 @@ final class AppModel {
             let previouslyRequested = defaults.bool(forKey: Keys.deletionRequested)
             defaults.set(true, forKey: Keys.deletionRequested)
             do {
-                try await remote.deleteAccount(previouslyRequested: previouslyRequested)
+                try await deleteServerAccount(remote, previouslyRequested: previouslyRequested)
+            } catch AccountDeletionError.appleConfirmationNeeded {
+                // She closed Apple's sheet: nothing was deleted, and she can try again.
+                showToast("Confirm with Apple to finish deleting your account.", style: .info)
+                return
             } catch {
                 handle(error)
                 return
@@ -566,6 +570,27 @@ final class AppModel {
         await wipeLocalData()
         isSettingsPresented = false
         showToast("Your data has been deleted.", style: .success)
+    }
+
+    /// A Sign in with Apple account whose Apple token the server never got (the
+    /// one-time code expired or Apple refused it at sign-in) needs a fresh code,
+    /// so deleting it can revoke the token as Apple requires. Throws
+    /// `appleConfirmationNeeded` when she cancels Apple's sheet.
+    private func deleteServerAccount(_ remote: RemoteAIImageService, previouslyRequested: Bool) async throws {
+        do {
+            try await remote.deleteAccount(previouslyRequested: previouslyRequested)
+        } catch AccountDeletionError.appleConfirmationNeeded {
+            switch await AppleReauthorization.authorizationCode() {
+            case .code(let code):
+                try await remote.deleteAccount(previouslyRequested: previouslyRequested, authorizationCode: code)
+            case .canceled:
+                throw AccountDeletionError.appleConfirmationNeeded
+            case .unavailable:
+                // Apple can't answer here (no Apple ID on this device, an error):
+                // deleting her data comes first; the server logs the token it kept none of.
+                try await remote.deleteAccount(previouslyRequested: previouslyRequested, skipAppleRevoke: true)
+            }
+        }
     }
 
     /// Everything Aybuke keeps on this device, back to a fresh install. The
@@ -613,12 +638,12 @@ final class AppModel {
     var canUseAccounts: Bool { remote != nil }
 
     /// Sign in with Apple is offered: a backend, and `signInWithApple` in
-    /// AppConfig.json (off in this version, so no entry point shows; someone
-    /// already signed in still sees the account and can sign out).
+    /// AppConfig.json (on since 1.0; turned off, no entry point shows, and
+    /// someone already signed in still sees the account and can sign out).
     var offersSignIn: Bool { remote != nil && config.signInWithApple }
 
-    /// Reads the session, finishes a credit merge that failed earlier, and
-    /// signs out if the Apple ID stopped using Aybuke.
+    /// Reads the session, finishes a credit merge or code hand-over that failed
+    /// earlier, and signs out if the Apple ID stopped using Aybuke.
     func refreshAccount() async {
         guard let remote else { return }
         let account = await remote.account()
@@ -646,13 +671,20 @@ final class AppModel {
             handle(error)
             return
         }
+        // Signed in from here on, whatever the merge does: requests use the
+        // account, so the revoked-Apple-ID check needs the id now.
         Keychain.save(credential.user, key: Keys.appleUserID)
-        await refreshAccount()
+        await refreshAccount() // moves her credits and hands Apple's code over
         if let userID = await remote.existingUserID() { await RevenueCatBridge.identify(userID.uuidString) }
         await purchases.refreshEntitlements()
         credits.refresh(isPro: purchases.isPro, isTrial: purchases.trial != nil)
         await refreshServerBalance()
         syncWidgets()
+        if await remote.creditsWaitingToMove() {
+            // refreshAccount() tries again at every launch.
+            showToast("You're signed in, but your credits haven't moved to your account yet. We'll try again automatically.", style: .info)
+            return
+        }
         Haptics.success()
         showToast("You're signed in ✨ Your credits now come with you.", style: .success)
     }

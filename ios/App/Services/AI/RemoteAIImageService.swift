@@ -243,7 +243,10 @@ final class RemoteAIImageService: AIImageService {
     /// a new anonymous user would be the one deleted, while the real account
     /// stayed. `previouslyRequested` means an earlier attempt was sent, so a
     /// rejected session means that attempt worked and only its reply was lost.
-    func deleteAccount(previouslyRequested: Bool) async throws {
+    /// `authorizationCode` is a fresh Sign in with Apple code, sent after the
+    /// server answered `appleConfirmationNeeded`; `skipAppleRevoke` deletes
+    /// without one when Apple couldn't give a code.
+    func deleteAccount(previouslyRequested: Bool, authorizationCode: String? = nil, skipAppleRevoke: Bool = false) async throws {
         let token: String?
         do {
             token = try await auth.existingAccessToken()
@@ -257,7 +260,10 @@ final class RemoteAIImageService: AIImageService {
         guard let token else { return }
         // An anonymous user whose merge failed after Sign in with Apple goes too.
         let anonymous = await auth.pendingAnonymousToken()
-        let request = try RequestFactory.deleteAccount(config: config, accessToken: token, anonymousToken: anonymous)
+        let request = try RequestFactory.deleteAccount(
+            config: config, accessToken: token, anonymousToken: anonymous,
+            authorizationCode: authorizationCode, skipAppleRevoke: skipAppleRevoke
+        )
         let (data, response) = try await load(request)
         let status = (response as? HTTPURLResponse)?.statusCode ?? 0
         if status == 401, previouslyRequested {
@@ -265,7 +271,10 @@ final class RemoteAIImageService: AIImageService {
             return
         }
         guard (200..<300).contains(status) else {
-            throw ResponseDecoder.error(from: data, statusCode: status)
+            let error = ResponseDecoder.error(from: data, statusCode: status)
+            // Nothing was deleted: the server holds no Apple token to revoke.
+            if case .server(code: "apple_reauth_required", _) = error { throw AccountDeletionError.appleConfirmationNeeded }
+            throw error
         }
         await auth.signOut()
     }
@@ -283,26 +292,37 @@ final class RemoteAIImageService: AIImageService {
 
     // MARK: Sign in with Apple
 
-    /// Signs in with Apple, then moves the anonymous user's credits into the account.
+    /// Signs in with Apple. Throws only when that sign-in failed: from here on
+    /// requests use the account, and `linkAccount()` moves her credits and
+    /// hands Apple's code over (kept in the Keychain until it did).
     func signInWithApple(idToken: String, nonce: String, authorizationCode: String?) async throws {
-        try await auth.signInWithApple(idToken: idToken, nonce: nonce)
-        try await linkAccount(authorizationCode: authorizationCode)
+        try await auth.signInWithApple(idToken: idToken, nonce: nonce, authorizationCode: authorizationCode)
     }
 
-    /// Merges a leftover anonymous user into the account. Safe to retry.
-    func linkAccount(authorizationCode: String? = nil) async throws {
+    /// Hands Apple's code to the server and merges a leftover anonymous user
+    /// into the account. Safe to retry: both wait until the server took them.
+    func linkAccount() async throws {
         let anonymous = await auth.pendingAnonymousToken()
-        guard anonymous != nil || authorizationCode != nil else { return }
+        let code = await auth.appleCode
+        guard anonymous != nil || code != nil else { return }
         let token = try await auth.validAccessToken()
         let request = try RequestFactory.linkAccount(
-            anonymousToken: anonymous, authorizationCode: authorizationCode, config: config, accessToken: token
+            anonymousToken: anonymous, authorizationCode: code, config: config, accessToken: token
         )
         let (data, response) = try await load(request)
         let status = (response as? HTTPURLResponse)?.statusCode ?? 0
         guard (200..<300).contains(status) else {
             throw ResponseDecoder.error(from: data, statusCode: status)
         }
+        // Taken even when Apple refused it (the code lasts five minutes): with
+        // no token stored, deleting the account asks Apple for a fresh one.
+        await auth.clearAppleCode()
         await auth.clearPendingMerge()
+    }
+
+    /// Credits from before Sign in with Apple still wait to move into the account.
+    func creditsWaitingToMove() async -> Bool {
+        await auth.hasPendingMerge
     }
 
     /// The signed-in account (nil while anonymous).
@@ -376,11 +396,19 @@ final class RemoteAIImageService: AIImageService {
     }
 }
 
-/// Deleting an account whose session the server no longer accepts.
 enum AccountDeletionError: LocalizedError {
+    /// The server no longer accepts the session.
     case sessionRejected
+    /// A Sign in with Apple account the server holds no Apple token for:
+    /// nothing was deleted, and Apple has to confirm first (a fresh code).
+    case appleConfirmationNeeded
 
     var errorDescription: String? {
-        String(localized: "We couldn't confirm your account, so nothing was deleted. Please contact support and we'll delete it for you.")
+        switch self {
+        case .sessionRejected:
+            String(localized: "We couldn't confirm your account, so nothing was deleted. Please contact support and we'll delete it for you.")
+        case .appleConfirmationNeeded:
+            String(localized: "Confirm with Apple to finish deleting your account.")
+        }
     }
 }

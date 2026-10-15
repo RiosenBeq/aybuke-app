@@ -264,10 +264,10 @@ supabase functions deploy app-store-notifications --project-ref efapupjvidyqhqde
   - **Neden:** `legal/config.json` (`CONTACT_EMAIL`, `PRIVACY_EMAIL`); `ios/App/Resources/AppConfig.json` ve `ios/App/App/AppConfig.swift` (`supportEmail`); `web/index.html`; `docs/RELEASE-CHECKLIST.md` §11.
   - **Öneri:** Lansmandan önce karar ver. Değişirse hepsi tek seferde güncellenir; `check-release-config.py --online` yeni alan adının posta kaydını (MX) da kontrol eder.
 
-### 5.6 Apple ile giriş anahtarları (isteğe bağlı)
-- [ ] **Karar:** Apple ile girişi açmak için `APPLE_SIGNIN_KEY_ID` ve `APPLE_SIGNIN_PRIVATE_KEY` eklensin mi?
-  - **Neden:** `AGENTS.md`, "Accounts" (`signInWithApple` varsayılanı false); `backend/README.md`, "Accounts" (token iptali için gerekli).
-  - **Öneri:** Bu sürümde kapalı kalsın. Açılacaksa Apple Developer'da Sign in with Apple anahtarı (.p8) oluşturulur; içeriği yalnızca Supabase Secrets'a girilir. Açılmadan önce App Privacy'de e-posta beyanı yapılır ve giriş metinleri geri konur.
+### 5.6 Apple ile giriş
+- [x] **Karar verildi (15 Ekim 2026):** Apple ile giriş 1.0'da açık (`signInWithApple: true`, `AppConfig.json`). Anahtar 15 Ekim 2026'da oluşturuldu; Key ID `36Q32XU57F` gizli değildir. `APPLE_SIGNIN_KEY_ID` ve `APPLE_SIGNIN_PRIVATE_KEY` Supabase Secrets'ta; Apple'a karşı denendi (sahte kod `invalid_grant` döndü, yani istemci gizli anahtarı geçerli).
+  - **Neden:** Krediler başka cihaza taşınabilsin; Pro her zaman Apple Hesabı'nın satın alımlarından gelir. Hesap silme Apple token'ını iptal eder; sunucuda token yoksa uygulama silmeden önce Apple ile bir kez daha onay ister (`account` fonksiyonu, `AGENTS.md` "Accounts").
+  - **Kalan (sahip):** App Privacy'de e-posta beyanı (Contact Info > Email Address, hesap işlevi için, takip yok); Supabase > Authentication > Providers > Apple açık ve Client IDs'de `app.glowlit.ios`; `account` fonksiyonunun yeniden yayımlanması ve `20261027000000_account_tables_private.sql` migrasyonunun uygulanması (ajan yapamaz, canlı projeye dokunmaz).
 
 ### 5.7 RevenueCat v2 anahtarı (isteğe bağlı)
 - [ ] **Karar:** `REVENUECAT_SECRET_KEY` ve `REVENUECAT_PROJECT_ID=3e7e4f4a` eklensin mi?
@@ -313,7 +313,7 @@ supabase functions deploy app-store-notifications --project-ref efapupjvidyqhqde
 | App Store Connect | 2.2–2.8, 2.12 (sandbox), 2.13, 2.14 (yalnızca kontrol) |
 | Search Console ve IndexNow | 4.1, 4.2 |
 | Vercel ve alan adı | 2.1, 3.5 |
-| Apple Developer | 5.6 (isteğe bağlı) |
+| Apple Developer | 5.6 (yapıldı) |
 | RevenueCat | 2.14 (bildirim yönlendirme adresi), 5.7 (isteğe bağlı) |
 | Mac (Xcode, simülatör) | 2.9, 2.10, 2.11, 2.12 (Ask to Buy) |
 

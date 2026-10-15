@@ -906,6 +906,76 @@
         }
       }
     },
+    "Confirm with Apple to finish deleting your account." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bestätige mit Apple, um das Löschen deines Kontos abzuschließen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Confirma con Apple para terminar de eliminar tu cuenta."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Confirme avec Apple pour finir de supprimer ton compte."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Konfirmasi dengan Apple untuk menyelesaikan penghapusan akunmu."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conferma con Apple per completare l'eliminazione del tuo account."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アカウントの削除を完了するには、Appleで確認してください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "계정 삭제를 마치려면 Apple로 확인해 주세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Confirme com a Apple para terminar de excluir sua conta."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Подтверди через Apple, чтобы завершить удаление аккаунта."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hesabını silmeyi tamamlamak için Apple ile onayla."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "请通过 Apple 确认，以完成删除你的账户。"
+          }
+        }
+      }
+    },
     "Plus a free retry if it doesn't look like you, up to %lld a day" : {
       "comment" : "Paywall benefit, under “Failed edits are always refunded”. %lld is how many free retries a day.",
       "localizations" : {
@@ -1443,6 +1513,76 @@
         }
       }
     },
+    "You're signed in, but your credits haven't moved to your account yet. We'll try again automatically." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Du bist angemeldet, aber deine Credits sind noch nicht in deinem Konto. Wir versuchen es automatisch noch mal."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sesión iniciada, pero tus créditos aún no pasaron a tu cuenta. Lo volveremos a intentar automáticamente."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Connexion réussie, mais tes crédits n’ont pas encore été transférés sur ton compte. On réessaiera automatiquement."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kamu sudah masuk, tapi kreditmu belum pindah ke akunmu. Kami akan mencoba lagi secara otomatis."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Accesso effettuato, ma i tuoi crediti non sono ancora passati al tuo account. Riproveremo automaticamente."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "サインインしましたが、クレジットはまだアカウントに移っていません。自動でもう一度試します。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "로그인했지만 크레딧이 아직 계정으로 옮겨지지 않았어요. 자동으로 다시 시도할게요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Você entrou, mas seus créditos ainda não foram para a sua conta. Vamos tentar de novo automaticamente."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вход выполнен, но кредиты ещё не перенесены в твой аккаунт. Мы попробуем снова автоматически."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Giriş yaptın, ama kredilerin henüz hesabına taşınmadı. Otomatik olarak tekrar deneyeceğiz."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你已登录，但你的点数还没有转到你的账户。我们会自动重试。"
+          }
+        }
+      }
+    },
     "You've made a lot in a short time. Take a little break and try again later." : {
       "comment" : "Error message",
       "localizations" : {
@@ -1581,6 +1721,76 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "今天的免费重试次数已用完。"
+          }
+        }
+      }
+    },
+    "Your Apple sign-in wasn't accepted, so nothing changed. Please try again." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deine Anmeldung mit Apple wurde nicht angenommen, es hat sich also nichts geändert. Bitte versuch es noch mal."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tu inicio de sesión con Apple no se aceptó, así que no cambió nada. Inténtalo de nuevo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ta connexion avec Apple n’a pas été acceptée, donc rien n’a changé. Réessaie."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Masuk dengan Apple-mu tidak diterima, jadi tidak ada yang berubah. Silakan coba lagi."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Il tuo accesso con Apple non è stato accettato, quindi non è cambiato nulla. Riprova."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Appleでのサインインが受け付けられなかったため、何も変更されていません。もう一度お試しください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple 로그인이 승인되지 않아 아무것도 바뀌지 않았어요. 다시 시도해 주세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seu login com a Apple não foi aceito, então nada mudou. Tente novamente."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вход через Apple не был принят, поэтому ничего не изменилось. Попробуй ещё раз."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple ile girişin kabul edilmedi, bu yüzden hiçbir şey değişmedi. Lütfen tekrar dene."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你的 Apple 登录未被接受，因此没有任何更改。请重试。"
           }
         }
       }

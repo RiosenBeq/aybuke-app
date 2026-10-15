@@ -222,6 +222,14 @@ final class BackendAPITests: XCTestCase {
         let deleteBoth = try RequestFactory.deleteAccount(config: config, accessToken: "t", anonymousToken: "anon")
         let deleteBody = try XCTUnwrap(deleteBoth.httpBody.flatMap { try JSONSerialization.jsonObject(with: $0) as? [String: String] })
         XCTAssertEqual(deleteBody["anonymous_token"], "anon")
+
+        // After `apple_reauth_required`: a fresh Apple code, or none when Apple couldn't give one.
+        let deleteWithCode = try RequestFactory.deleteAccount(config: config, accessToken: "t", authorizationCode: "code")
+        let codeBody = try XCTUnwrap(deleteWithCode.httpBody.flatMap { try JSONSerialization.jsonObject(with: $0) as? [String: String] })
+        XCTAssertEqual(codeBody, ["authorization_code": "code"])
+        let deleteSkipping = try RequestFactory.deleteAccount(config: config, accessToken: "t", skipAppleRevoke: true)
+        let skipBody = try XCTUnwrap(deleteSkipping.httpBody.flatMap { try JSONSerialization.jsonObject(with: $0) as? [String: Bool] })
+        XCTAssertEqual(skipBody, ["skip_apple_revoke": true])
     }
 
     func testPollingScheduleBacksOff() {

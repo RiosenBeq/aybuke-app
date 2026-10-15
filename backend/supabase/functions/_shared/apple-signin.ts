@@ -71,25 +71,49 @@ async function clientSecret(config: AppleSignInConfig): Promise<string> {
   return `${header}.${claims}.${base64url(new Uint8Array(signature))}`;
 }
 
-/** Exchanges the app's authorization code for Apple's refresh token. Null when not configured or rejected. */
-export async function exchangeAuthorizationCode(code: string): Promise<string | null> {
+/** What Apple answered to an authorization code: the refresh token, or why there is none. */
+export type AppleCodeExchange =
+  | { refreshToken: string; error?: undefined }
+  | { refreshToken: null; error: string };
+
+/**
+ * Exchanges the app's one-time authorization code (valid for 5 minutes, usable
+ * once) for Apple's refresh token. `error` is Apple's error code (such as
+ * `invalid_grant`), `not_configured`, `http_<status>`, `network` or
+ * `no_refresh_token`; never a secret.
+ */
+export async function exchangeAuthorizationCode(code: string): Promise<AppleCodeExchange> {
   const config = appleConfig();
-  if (!config) return null;
-  const response = await fetch(`${APPLE_ID_URL}/auth/token`, {
-    method: "POST",
-    body: new URLSearchParams({
-      client_id: config.clientId,
-      client_secret: await clientSecret(config),
-      code,
-      grant_type: "authorization_code",
-    }),
-  });
-  if (!response.ok) {
-    console.warn("apple code exchange failed", response.status);
-    return null;
+  if (!config) return { refreshToken: null, error: "not_configured" };
+  let response: Response;
+  try {
+    response = await fetch(`${APPLE_ID_URL}/auth/token`, {
+      method: "POST",
+      body: new URLSearchParams({
+        client_id: config.clientId,
+        client_secret: await clientSecret(config),
+        code,
+        grant_type: "authorization_code",
+      }),
+    });
+  } catch (error) {
+    console.error("apple code exchange failed: network", error instanceof Error ? error.name : "");
+    return { refreshToken: null, error: "network" };
   }
-  const data = await response.json() as { refresh_token?: string };
-  return data.refresh_token ?? null;
+  const data = await response.json().catch(() => ({})) as { refresh_token?: unknown; error?: unknown };
+  if (!response.ok) {
+    // Apple's body is {"error": "invalid_grant" | "invalid_client" | ...}: a code, safe to log.
+    const error = typeof data.error === "string" && /^[a-z_]{1,40}$/.test(data.error)
+      ? data.error
+      : `http_${response.status}`;
+    console.error("apple code exchange failed", response.status, error);
+    return { refreshToken: null, error };
+  }
+  if (typeof data.refresh_token !== "string" || !data.refresh_token) {
+    console.error("apple code exchange returned no refresh token");
+    return { refreshToken: null, error: "no_refresh_token" };
+  }
+  return { refreshToken: data.refresh_token };
 }
 
 /** Revokes a refresh token so the app disappears from the user's Apple ID settings. Best effort. */
@@ -105,6 +129,10 @@ export async function revokeRefreshToken(token: string): Promise<boolean> {
       token_type_hint: "refresh_token",
     }),
   });
-  if (!response.ok) console.warn("apple token revocation failed", response.status);
+  if (!response.ok) {
+    const data = await response.json().catch(() => ({})) as { error?: unknown };
+    const error = typeof data.error === "string" && /^[a-z_]{1,40}$/.test(data.error) ? data.error : "";
+    console.error("apple token revocation failed", response.status, error);
+  }
   return response.ok;
 }

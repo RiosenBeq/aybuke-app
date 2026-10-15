@@ -560,11 +560,30 @@ public enum RequestFactory {
     /// Deletes the account and all server-side data (Guideline 5.1.1(v)); the
     /// server also revokes the Sign in with Apple token. `anonymousToken` is an
     /// anonymous user that was never merged after Sign in with Apple, so the
-    /// server deletes that user too.
-    public static func deleteAccount(config: BackendConfiguration, accessToken: String?, anonymousToken: String? = nil) throws -> URLRequest {
+    /// server deletes that user too. `authorizationCode` is a fresh Sign in with
+    /// Apple code for an account the server holds no Apple token for (it answers
+    /// `apple_reauth_required` otherwise); `skipAppleRevoke` deletes without one
+    /// when Apple couldn't give a code.
+    public static func deleteAccount(
+        config: BackendConfiguration, accessToken: String?, anonymousToken: String? = nil,
+        authorizationCode: String? = nil, skipAppleRevoke: Bool = false
+    ) throws -> URLRequest {
+        struct Body: Encodable {
+            let anonymousToken: String?
+            let authorizationCode: String?
+            let skipAppleRevoke: Bool?
+
+            enum CodingKeys: String, CodingKey {
+                case anonymousToken = "anonymous_token"
+                case authorizationCode = "authorization_code"
+                case skipAppleRevoke = "skip_apple_revoke"
+            }
+        }
         var request = try authorized(config: config, path: "functions/v1/account", method: "DELETE", query: [], accessToken: accessToken)
-        if let anonymousToken {
-            request.httpBody = try JSONEncoder().encode(["anonymous_token": anonymousToken])
+        if anonymousToken != nil || authorizationCode != nil || skipAppleRevoke {
+            request.httpBody = try JSONEncoder().encode(Body(
+                anonymousToken: anonymousToken, authorizationCode: authorizationCode, skipAppleRevoke: skipAppleRevoke ? true : nil
+            ))
         }
         return request
     }
