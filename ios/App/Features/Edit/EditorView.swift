@@ -677,7 +677,9 @@ struct EditorView: View {
         case .adjust?:
             AdjustPanel(
                 settings: $model.adjustments,
+                vibe: model.adjustVibe,
                 onAuto: { model.autoAdjust() },
+                onVibe: { model.pickVibe($0) },
                 onChange: { model.updateAdjustPreview() },
                 onReset: { model.resetAdjustments() },
                 onApply: { Task { await model.applyAdjustments() } }

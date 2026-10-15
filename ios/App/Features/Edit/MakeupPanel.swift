@@ -1,11 +1,12 @@
 import SwiftUI
 import AppCore
 
-/// Makeup Studio: one-tap looks, then a few simple choices (lips, eyes,
-/// cheeks, extras, hair color and how strong), tried on her photo as a Magic
-/// Edit with the same gates, credits, Likeness Lock and free retry
-/// (`EditorViewModel.run(.makeup, …)`). Makeup is play: a look only adds
-/// color, shine and sparkle, and her face, skin and features stay hers.
+/// Makeup Studio: one-tap looks, then a few simple choices (lips and their
+/// finish, eyes, cheeks, up to three extras, hair color and how strong),
+/// tried on her photo as a Magic Edit with the same gates, credits, Likeness
+/// Lock and free retry (`EditorViewModel.run(.makeup, …)`). Makeup is play: a
+/// look only adds color, shine and sparkle, and her face, skin and features
+/// stay hers.
 ///
 /// "Describe your vibe" turns her words into these choices with the
 /// server's writing help (`AppModel.suggestMakeup`); she checks them on the
@@ -184,7 +185,11 @@ struct MakeupPanel: View {
     @ViewBuilder
     private var choicesRow: some View {
         switch area {
-        case .lips: choices(MakeupLips.allCases, selected: recipe.lips) { recipe.lips = $0 }
+        case .lips:
+            VStack(spacing: 10) {
+                choices(MakeupLips.allCases, selected: recipe.lips) { recipe.lips = $0 }
+                finishRow
+            }
         case .eyes: choices(MakeupEyes.allCases, selected: recipe.eyes) { recipe.eyes = $0 }
         case .cheeks: choices(MakeupCheeks.allCases, selected: recipe.cheeks) { recipe.cheeks = $0 }
         case .extras: extrasRow
@@ -220,16 +225,86 @@ struct MakeupPanel: View {
         }
     }
 
-    /// Any number of extras.
+    /// Glossy, matte or shimmery, for a lip color ("As is" and clear gloss
+    /// take none). The label sits beside the control when both fit, above it
+    /// otherwise, like Intensity.
+    private var finishRow: some View {
+        ViewThatFits(in: .horizontal) {
+            HStack(spacing: 10) {
+                finishLabel
+                finishPicker
+            }
+            VStack(alignment: .leading, spacing: 6) {
+                finishLabel
+                finishPicker
+            }
+        }
+        .disabled(!recipe.lips.takesFinish)
+        .opacity(recipe.lips.takesFinish ? 1 : 0.45)
+    }
+
+    private var finishLabel: some View {
+        Text("Lip finish", comment: "Label of Makeup Studio's control for how a lip color looks: glossy, matte or shimmery")
+            .font(.legibleFootnote.weight(.semibold))
+            .foregroundStyle(Palette.textSecondary)
+            .fixedSize()
+            .accessibilityHidden(true)
+    }
+
+    private var finishPicker: some View {
+        Picker(selection: $recipe.lipFinish) {
+            ForEach(MakeupLipFinish.allCases) { finish in
+                Text(L10n.core(finish.name)).tag(finish)
+            }
+        } label: {
+            Text("Lip finish", comment: "Label of Makeup Studio's control for how a lip color looks: glossy, matte or shimmery")
+        }
+        .pickerStyle(.segmented)
+        .labelsHidden()
+    }
+
+    /// Up to three extras; the rest wait until one is off. The row starts at
+    /// the first one she has on.
     private var extrasRow: some View {
-        ChipRow {
-            ForEach(MakeupExtra.allCases) { extra in
-                MakeupChip(title: L10n.core(extra.name), swatches: extra.swatch.map { [$0] } ?? [],
-                           isSelected: recipe.extras.contains(extra), isToggle: true) {
-                    recipe.toggle(extra)
-                    Haptics.selection()
+        VStack(alignment: .leading, spacing: 6) {
+            if placement == .inspector {
+                FlowLayout {
+                    extraChips
+                }
+            } else {
+                ScrollViewReader { proxy in
+                    ScrollView(.horizontal) {
+                        HStack(spacing: 8) {
+                            extraChips
+                        }
+                    }
+                    .scrollIndicators(.hidden)
+                    .onAppear {
+                        if let first = MakeupExtra.allCases.first(where: recipe.extras.contains) {
+                            proxy.scrollTo(first.id, anchor: .center)
+                        }
+                    }
                 }
             }
+            Text("Up to \(MakeupRecipe.maxExtras) at a time",
+                 comment: "Under Makeup Studio's extras (face gems, glitter…): how many can be on at once")
+                .font(.legibleCaption)
+                .foregroundStyle(Palette.textSecondary)
+        }
+    }
+
+    private var extraChips: some View {
+        ForEach(MakeupExtra.allCases) { extra in
+            let isOn = recipe.extras.contains(extra)
+            let canAdd = isOn || recipe.hasRoomForExtras
+            MakeupChip(title: L10n.core(extra.name), swatches: extra.swatch.map { [$0] } ?? [],
+                       isSelected: isOn, isToggle: true) {
+                recipe.toggle(extra)
+                Haptics.selection()
+            }
+            .disabled(!canAdd)
+            .opacity(canAdd ? 1 : 0.45)
+            .id(extra.id)
         }
     }
 

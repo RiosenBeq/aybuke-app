@@ -1,7 +1,7 @@
 {
   "en": [
     {"scene": "result", "title": "Say it, watch it *glow*", "subtitle": "Magic Edit: type a change, slide to see before and after", "before": "Before", "after": "After"},
-    {"scene": "makeup", "title": "Makeup is *play*", "subtitle": "Makeup Studio: 14 looks or your own mix. You stay you", "chip": "New"},
+    {"scene": "makeup", "title": "Makeup is *play*", "subtitle": "Makeup Studio: 20 looks or your own mix. You stay you", "chip": "New"},
     {"scene": "home", "title": "50+ looks, one *tap* away", "subtitle": "Doll\u00a0Box, Y2K\u00a0Digicam, Bow\u00a0Era, pet portraits and more"},
     {"scene": "effects", "title": "12 retro effects, *free*", "subtitle": "VHS\u00a0'86, Disposable\u00a0'98, Digicam\u00a0'04 and more, no credits", "chip": "On your device"},
     {"scene": "textStickers", "title": "Stickers, text & *doodles*", "subtitle": "55 cute stickers, words in six fonts and a doodle pen", "chip": "Free"},
@@ -13,7 +13,7 @@
   ],
   "tr": [
     {"scene": "result", "title": "Söyle, *ışıldasın*", "subtitle": "Sihirli Düzenleme: değişikliği yaz, kaydır, farkı gör", "before": "Öncesi", "after": "Sonrası"},
-    {"scene": "makeup", "title": "Makyaj bir *oyun*", "subtitle": "Makyaj Stüdyosu: 14 görünüm ya da kendi karışımın", "chip": "Yeni"},
+    {"scene": "makeup", "title": "Makyaj bir *oyun*", "subtitle": "Makyaj Stüdyosu: 20 görünüm ya da kendi karışımın", "chip": "Yeni"},
     {"scene": "home", "title": "50+ trend, tek *dokunuşla*", "subtitle": "Doll\u00a0Box, Y2K\u00a0Digicam, evcil dost portreleri ve dahası"},
     {"scene": "effects", "title": "12 retro efekt, *ücretsiz*", "subtitle": "VHS\u00a0'86, Disposable\u00a0'98, Digicam\u00a0'04 ve dahası, kredisiz", "chip": "Cihazında"},
     {"scene": "textStickers", "title": "Çıkartma, yazı ve *karalama*", "subtitle": "55 tatlı çıkartma, altı yazı tipi ve karalama kalemi", "chip": "Ücretsiz"},
@@ -25,7 +25,7 @@
   ],
   "es": [
     {"scene": "result", "title": "Pídelo y mira cómo *brilla*", "subtitle": "Edición mágica: escribe un cambio y desliza para comparar", "before": "Antes", "after": "Después"},
-    {"scene": "makeup", "title": "El maquillaje es un *juego*", "subtitle": "Estudio de maquillaje: 14 looks o tu propia mezcla", "chip": "Nuevo"},
+    {"scene": "makeup", "title": "El maquillaje es un *juego*", "subtitle": "Estudio de maquillaje: 20 looks o tu propia mezcla", "chip": "Nuevo"},
     {"scene": "home", "title": "50+ looks a un *toque*", "subtitle": "Doll\u00a0Box, Y2K\u00a0Digicam, retratos de mascotas y mucho más"},
     {"scene": "effects", "title": "12 efectos retro, *gratis*", "subtitle": "VHS\u00a0'86, Disposable\u00a0'98, Digicam\u00a0'04 y más, sin créditos", "chip": "En tu dispositivo"},
     {"scene": "textStickers", "title": "Stickers y *garabatos*", "subtitle": "55 stickers monísimos, texto en seis fuentes y garabatos", "chip": "Gratis"},
@@ -37,7 +37,7 @@
   ],
   "pt-BR": [
     {"scene": "result", "title": "Peça e veja *brilhar*", "subtitle": "Edição Mágica: escreva a mudança e deslize para comparar", "before": "Antes", "after": "Depois"},
-    {"scene": "makeup", "title": "Maquiagem é *diversão*", "subtitle": "Estúdio de Maquiagem: 14 looks ou sua própria mistura", "chip": "Novo"},
+    {"scene": "makeup", "title": "Maquiagem é *diversão*", "subtitle": "Estúdio de Maquiagem: 20 looks ou sua própria mistura", "chip": "Novo"},
     {"scene": "home", "title": "50+ looks em um *toque*", "subtitle": "Doll\u00a0Box, Y2K\u00a0Digicam, retratos de pets e muito mais"},
     {"scene": "effects", "title": "12 efeitos retrô, *grátis*", "subtitle": "VHS\u00a0'86, Disposable\u00a0'98, Digicam\u00a0'04 e mais, sem créditos", "chip": "No seu aparelho"},
     {"scene": "textStickers", "title": "Figurinhas e *rabiscos*", "subtitle": "55 figurinhas fofas, texto em seis fontes e rabiscos", "chip": "Grátis"},
@@ -49,7 +49,7 @@
   ],
   "fr": [
     {"scene": "result", "title": "Dis-le, regarde-la *briller*", "subtitle": "Retouche magique\u00a0: écris un changement, glisse pour comparer", "before": "Avant", "after": "Après"},
-    {"scene": "makeup", "title": "Joue avec le *maquillage*", "subtitle": "Studio maquillage\u00a0: 14 looks ou ton mix, et tu restes toi", "chip": "Nouveau"},
+    {"scene": "makeup", "title": "Joue avec le *maquillage*", "subtitle": "Studio maquillage\u00a0: 20 looks ou ton mix, et tu restes toi", "chip": "Nouveau"},
     {"scene": "home", "title": "50+ looks en un *geste*", "subtitle": "Doll\u00a0Box, Y2K\u00a0Digicam, portraits d’animaux et bien plus"},
     {"scene": "effects", "title": "12 effets rétro, *gratuits*", "subtitle": "VHS\u00a0'86, Disposable\u00a0'98, Digicam\u00a0'04 et plus, sans crédits", "chip": "Sur ton appareil"},
     {"scene": "textStickers", "title": "Stickers, texte et *dessins*", "subtitle": "55 stickers trop mignons, six polices et un crayon à dessin", "chip": "Gratuit"},
@@ -61,7 +61,7 @@
   ],
   "de": [
     {"scene": "result", "title": "Sag’s,\nsieh es *strahlen*", "subtitle": "Zauber-Edit: Wunsch eintippen, schieben und vergleichen", "before": "Vorher", "after": "Nachher"},
-    {"scene": "makeup", "title": "Make-up zum *Spielen*", "subtitle": "Make-up-Studio: 14 Looks oder dein Mix. Du bleibst du", "chip": "Neu"},
+    {"scene": "makeup", "title": "Make-up zum *Spielen*", "subtitle": "Make-up-Studio: 20 Looks oder dein Mix. Du bleibst du", "chip": "Neu"},
     {"scene": "home", "title": "50+ Looks mit einem *Tipp*", "subtitle": "Doll\u00a0Box, Y2K-Digicam, Haustier-Porträts und mehr"},
     {"scene": "effects", "title": "12 Retro-Effekte, *gratis*", "subtitle": "VHS\u00a0'86, Disposable\u00a0'98, Digicam\u00a0'04 und mehr, ohne Credits", "chip": "Auf deinem Gerät"},
     {"scene": "textStickers", "title": "Sticker & *Kritzeleien*", "subtitle": "55 süße Sticker, sechs Schriften und ein Kritzelstift", "chip": "Gratis"},
@@ -73,7 +73,7 @@
   ],
   "it": [
     {"scene": "result", "title": "Dillo e guardala *brillare*", "subtitle": "Modifica magica: scrivi la modifica e scorri per confrontare", "before": "Prima", "after": "Dopo"},
-    {"scene": "makeup", "title": "Il make-up è un *gioco*", "subtitle": "Studio make-up: 14 look o il tuo mix. E resti sempre tu", "chip": "Nuovo"},
+    {"scene": "makeup", "title": "Il make-up è un *gioco*", "subtitle": "Studio make-up: 20 look o il tuo mix. E resti sempre tu", "chip": "Nuovo"},
     {"scene": "home", "title": "50+ look in un *tocco*", "subtitle": "Doll\u00a0Box, Digicam\u00a0Y2K, ritratti di animali e tanto altro"},
     {"scene": "effects", "title": "12 effetti retrò, *gratis*", "subtitle": "VHS\u00a0'86, Disposable\u00a0'98, Digicam\u00a0'04 e altri, senza crediti", "chip": "Sul tuo dispositivo"},
     {"scene": "textStickers", "title": "Sticker e *scarabocchi*", "subtitle": "55 sticker carinissimi, sei font e una penna per disegnare", "chip": "Gratis"},
@@ -85,7 +85,7 @@
   ],
   "ru": [
     {"scene": "result", "title": "Скажи — и фото *засияет*", "subtitle": "Волшебная правка: напиши, что изменить, и сравни до и после", "before": "До", "after": "После"},
-    {"scene": "makeup", "title": "Макияж — это *игра*", "subtitle": "Студия макияжа: 14 образов или свой микс. Ты остаёшься собой", "chip": "Новое"},
+    {"scene": "makeup", "title": "Макияж — это *игра*", "subtitle": "Студия макияжа: 20 образов или свой микс. Ты остаёшься собой", "chip": "Новое"},
     {"scene": "home", "title": "50+ образов в один *тап*", "subtitle": "Doll\u00a0Box, Y2K-мыльница, портреты питомцев и не только"},
     {"scene": "effects", "title": "Ретро-эффекты *бесплатно*", "subtitle": "12 эффектов от VHS\u00a0'86 до Rainbow\u00a0'17, без кредитов", "chip": "На устройстве"},
     {"scene": "textStickers", "title": "Стикеры, текст и *рисунки*", "subtitle": "55 милых стикеров, шесть шрифтов и кисть для рисования", "chip": "Бесплатно"},
@@ -97,7 +97,7 @@
   ],
   "ja": [
     {"scene": "result", "title": "伝えるだけで、*キラッと*変身", "subtitle": "マジック編集：変えたいことを書いて、スライドで比較", "before": "ビフォー", "after": "アフター"},
-    {"scene": "makeup", "title": "メイクは*遊び*", "subtitle": "メイクスタジオ：14のルックか、自分だけのミックス", "chip": "NEW"},
+    {"scene": "makeup", "title": "メイクは*遊び*", "subtitle": "メイクスタジオ：20のルックか、自分だけのミックス", "chip": "NEW"},
     {"scene": "home", "title": "50+のルックを*ワンタップ*で", "subtitle": "ドールボックス、Y2Kデジカメ、ペットの肖像画など"},
     {"scene": "effects", "title": "12のレトロ加工が*無料*", "subtitle": "VHS\u00a0'86、Disposable\u00a0'98、Digicam\u00a0'04など。クレジット不要", "chip": "端末内で処理"},
     {"scene": "textStickers", "title": "ステッカー、文字、*らくがき*", "subtitle": "かわいいステッカー55種、フォント6種、らくがきペン", "chip": "無料"},
@@ -109,7 +109,7 @@
   ],
   "ko": [
     {"scene": "result", "title": "말만 하면 *반짝* 변신", "subtitle": "매직 편집: 바꾸고 싶은 걸 쓰고, 밀어서 비교해 보세요", "before": "비포", "after": "애프터"},
-    {"scene": "makeup", "title": "메이크업은 *놀이*", "subtitle": "메이크업 스튜디오: 룩 14가지 또는 나만의 조합. 나는 그대로 나", "chip": "NEW"},
+    {"scene": "makeup", "title": "메이크업은 *놀이*", "subtitle": "메이크업 스튜디오: 룩 20가지 또는 나만의 조합. 나는 그대로 나", "chip": "NEW"},
     {"scene": "home", "title": "50+가지 룩을 *원탭*으로", "subtitle": "인형 박스, Y2K 디카, 반려동물 초상화 등 더 많이"},
     {"scene": "effects", "title": "레트로 효과 12가지, *무료*", "subtitle": "VHS\u00a0'86, Disposable\u00a0'98, Digicam\u00a0'04 등, 크레딧 필요 없음", "chip": "기기에서 처리"},
     {"scene": "textStickers", "title": "스티커, 텍스트, *낙서*까지", "subtitle": "귀여운 스티커 55종, 폰트 6종, 낙서 펜까지", "chip": "무료"},
@@ -121,7 +121,7 @@
   ],
   "zh-Hans": [
     {"scene": "result", "title": "说出改变，看它*焕发光彩*", "subtitle": "魔法编辑：写下想要的改变，滑动对比前后", "before": "之前", "after": "之后"},
-    {"scene": "makeup", "title": "化妆就是*好玩*", "subtitle": "妆容工作室：14 种妆容或自由搭配，你还是你", "chip": "新"},
+    {"scene": "makeup", "title": "化妆就是*好玩*", "subtitle": "妆容工作室：20 种妆容或自由搭配，你还是你", "chip": "新"},
     {"scene": "home", "title": "50+ 种造型，*一键*搞定", "subtitle": "盒装娃娃、Y2K CCD、宠物肖像等等"},
     {"scene": "effects", "title": "12 款复古特效，*免费*", "subtitle": "VHS\u00a0'86、Disposable\u00a0'98、Digicam\u00a0'04 等，不耗点数", "chip": "本机处理"},
     {"scene": "textStickers", "title": "贴纸、文字和*涂鸦*", "subtitle": "55 款可爱贴纸、6 种字体，还有涂鸦笔", "chip": "免费"},
@@ -133,7 +133,7 @@
   ],
   "id": [
     {"scene": "result", "title": "Bilang maumu, jadi *glowing*", "subtitle": "Edit Ajaib: tulis perubahannya, geser untuk membandingkan", "before": "Sebelum", "after": "Sesudah"},
-    {"scene": "makeup", "title": "Makeup itu *seru*", "subtitle": "Studio Makeup: 14 look atau racikanmu. Kamu tetap kamu", "chip": "Baru"},
+    {"scene": "makeup", "title": "Makeup itu *seru*", "subtitle": "Studio Makeup: 20 look atau racikanmu. Kamu tetap kamu", "chip": "Baru"},
     {"scene": "home", "title": "50+ look sekali *ketuk*", "subtitle": "Doll\u00a0Box, Y2K\u00a0Digicam, potret hewan peliharaan, dan lainnya"},
     {"scene": "effects", "title": "12 efek retro, *gratis*", "subtitle": "VHS\u00a0'86, Disposable\u00a0'98, Digicam\u00a0'04, tanpa kredit", "chip": "Di perangkatmu"},
     {"scene": "textStickers", "title": "Stiker, teks & *coretan*", "subtitle": "55 stiker gemas, enam font, dan pena coretan", "chip": "Gratis"},
@@ -146,7 +146,7 @@
   "mac": {
     "en": [
       {"scene": "home", "title": "Aybuke, now on your *Mac*", "subtitle": "Looks, Magic Edit and free tools in one window"},
-      {"scene": "makeup", "title": "Makeup is *play*", "subtitle": "Makeup Studio: 14 looks or your own mix. You stay you", "chip": "New"},
+      {"scene": "makeup", "title": "Makeup is *play*", "subtitle": "Makeup Studio: 20 looks or your own mix. You stay you", "chip": "New"},
       {"scene": "result", "title": "Say it, watch it *glow*", "subtitle": "Type a change, then drag to compare before and after", "before": "Before", "after": "After"},
       {"scene": "create", "title": "Dream it, *create* it", "subtitle": "Pick one of 20 styles, or click Inspire\u00a0me for an idea"},
       {"scene": "effects", "title": "12 retro effects, *free*", "subtitle": "VHS\u00a0'86 to Rainbow\u00a0'17, right on your Mac, no credits"},
@@ -156,7 +156,7 @@
     ],
     "tr": [
       {"scene": "home", "title": "Aybuke artık *Mac’te*", "subtitle": "Trendler, Sihirli Düzenleme ve ücretsiz araçlar bir arada"},
-      {"scene": "makeup", "title": "Makyaj bir *oyun*", "subtitle": "Makyaj Stüdyosu: 14 görünüm ya da kendi karışımın", "chip": "Yeni"},
+      {"scene": "makeup", "title": "Makyaj bir *oyun*", "subtitle": "Makyaj Stüdyosu: 20 görünüm ya da kendi karışımın", "chip": "Yeni"},
       {"scene": "result", "title": "Söyle, *ışıldasın*", "subtitle": "Değişikliği yaz, sürükle, öncesini ve sonrasını gör", "before": "Öncesi", "after": "Sonrası"},
       {"scene": "create", "title": "Hayal et, *yarat*", "subtitle": "20 stilden birini seç ya da İlham\u00a0ver’e tıkla"},
       {"scene": "effects", "title": "12 retro efekt, *ücretsiz*", "subtitle": "VHS\u00a0'86, Rainbow\u00a0'17 ve dahası, Mac’inde, kredisiz"},
@@ -166,7 +166,7 @@
     ],
     "es": [
       {"scene": "home", "title": "Aybuke, ahora en tu *Mac*", "subtitle": "Looks, Edición mágica y herramientas gratis en una ventana"},
-      {"scene": "makeup", "title": "El maquillaje es un *juego*", "subtitle": "Estudio de maquillaje: 14 looks o tu propia mezcla", "chip": "Nuevo"},
+      {"scene": "makeup", "title": "El maquillaje es un *juego*", "subtitle": "Estudio de maquillaje: 20 looks o tu propia mezcla", "chip": "Nuevo"},
       {"scene": "result", "title": "Pídelo y mira cómo *brilla*", "subtitle": "Escribe un cambio y arrastra para comparar antes y después", "before": "Antes", "after": "Después"},
       {"scene": "create", "title": "Imagínalo y *créalo*", "subtitle": "Elige uno de 20 estilos o haz clic en Inspírame"},
       {"scene": "effects", "title": "12 efectos retro, *gratis*", "subtitle": "De VHS\u00a0'86 a Rainbow\u00a0'17, en tu Mac y sin créditos"},
@@ -176,7 +176,7 @@
     ],
     "pt-BR": [
       {"scene": "home", "title": "Aybuke, agora no seu *Mac*", "subtitle": "Looks, Edição Mágica e ferramentas grátis numa só janela"},
-      {"scene": "makeup", "title": "Maquiagem é *diversão*", "subtitle": "Estúdio de Maquiagem: 14 looks ou sua própria mistura", "chip": "Novo"},
+      {"scene": "makeup", "title": "Maquiagem é *diversão*", "subtitle": "Estúdio de Maquiagem: 20 looks ou sua própria mistura", "chip": "Novo"},
       {"scene": "result", "title": "Peça e veja *brilhar*", "subtitle": "Escreva a mudança e arraste para comparar antes e depois", "before": "Antes", "after": "Depois"},
       {"scene": "create", "title": "Imagine e *crie*", "subtitle": "Escolha entre 20 estilos ou clique em Me\u00a0inspire"},
       {"scene": "effects", "title": "12 efeitos retrô, *grátis*", "subtitle": "De VHS\u00a0'86 a Rainbow\u00a0'17, no seu Mac e sem créditos"},
@@ -186,7 +186,7 @@
     ],
     "fr": [
       {"scene": "home", "title": "Aybuke arrive sur *Mac*", "subtitle": "Looks, Retouche magique et outils gratuits dans une fenêtre"},
-      {"scene": "makeup", "title": "Joue avec le *maquillage*", "subtitle": "Studio maquillage\u00a0: 14 looks ou ton mix, et tu restes toi", "chip": "Nouveau"},
+      {"scene": "makeup", "title": "Joue avec le *maquillage*", "subtitle": "Studio maquillage\u00a0: 20 looks ou ton mix, et tu restes toi", "chip": "Nouveau"},
       {"scene": "result", "title": "Dis-le, regarde-la *briller*", "subtitle": "Écris un changement, glisse pour comparer avant et après", "before": "Avant", "after": "Après"},
       {"scene": "create", "title": "Imagine-le, *crée-le*", "subtitle": "Choisis parmi 20 styles ou clique sur Inspire-moi"},
       {"scene": "effects", "title": "12 effets rétro, *gratuits*", "subtitle": "De VHS\u00a0'86 à Rainbow\u00a0'17, sur ton Mac, sans crédits"},
@@ -196,7 +196,7 @@
     ],
     "de": [
       {"scene": "home", "title": "Aybuke jetzt auf dem *Mac*", "subtitle": "Looks, Zauber-Edit und Gratis-Tools in einem Fenster"},
-      {"scene": "makeup", "title": "Make-up zum *Spielen*", "subtitle": "Make-up-Studio: 14 Looks oder dein Mix. Du bleibst du", "chip": "Neu"},
+      {"scene": "makeup", "title": "Make-up zum *Spielen*", "subtitle": "Make-up-Studio: 20 Looks oder dein Mix. Du bleibst du", "chip": "Neu"},
       {"scene": "result", "title": "Sag’s,\nsieh es *strahlen*", "subtitle": "Wunsch eintippen, Regler ziehen, vorher und nachher sehen", "before": "Vorher", "after": "Nachher"},
       {"scene": "create", "title": "Träum es, *erschaff* es", "subtitle": "Wähl einen von 20 Stilen oder klick auf Inspirier\u00a0mich"},
       {"scene": "effects", "title": "12 Retro-Effekte, *gratis*", "subtitle": "Von VHS\u00a0'86 bis Rainbow\u00a0'17, auf deinem Mac, ohne Credits"},
@@ -206,7 +206,7 @@
     ],
     "it": [
       {"scene": "home", "title": "Aybuke ora è su *Mac*", "subtitle": "Look, Modifica magica e strumenti gratis in una finestra"},
-      {"scene": "makeup", "title": "Il make-up è un *gioco*", "subtitle": "Studio make-up: 14 look o il tuo mix. E resti sempre tu", "chip": "Nuovo"},
+      {"scene": "makeup", "title": "Il make-up è un *gioco*", "subtitle": "Studio make-up: 20 look o il tuo mix. E resti sempre tu", "chip": "Nuovo"},
       {"scene": "result", "title": "Dillo e guardala *brillare*", "subtitle": "Scrivi la modifica e trascina per confrontare prima e dopo", "before": "Prima", "after": "Dopo"},
       {"scene": "create", "title": "Sognalo e *crealo*", "subtitle": "Scegli tra 20 stili o fai clic su Ispirami"},
       {"scene": "effects", "title": "12 effetti retrò, *gratis*", "subtitle": "Da VHS\u00a0'86 a Rainbow\u00a0'17, sul tuo Mac, senza crediti"},
@@ -216,7 +216,7 @@
     ],
     "ru": [
       {"scene": "home", "title": "Aybuke теперь на *Mac*", "subtitle": "Образы, Волшебная правка и бесплатные функции в одном окне"},
-      {"scene": "makeup", "title": "Макияж — это *игра*", "subtitle": "Студия макияжа: 14 образов или свой микс. Ты остаёшься собой", "chip": "Новое"},
+      {"scene": "makeup", "title": "Макияж — это *игра*", "subtitle": "Студия макияжа: 20 образов или свой микс. Ты остаёшься собой", "chip": "Новое"},
       {"scene": "result", "title": "Скажи — и фото *засияет*", "subtitle": "Напиши, что изменить, и сравни «до» и «после» слайдером", "before": "До", "after": "После"},
       {"scene": "create", "title": "Придумай и *создай*", "subtitle": "Выбери один из 20 стилей или нажми «Вдохнови\u00a0меня»"},
       {"scene": "effects", "title": "Ретро-эффекты *бесплатно*", "subtitle": "12 эффектов от VHS\u00a0'86 до Rainbow\u00a0'17 прямо на Mac"},
@@ -226,7 +226,7 @@
     ],
     "ja": [
       {"scene": "home", "title": "Aybukeが*Mac*に登場", "subtitle": "ルック、マジック編集、無料ツールをひとつのウィンドウで"},
-      {"scene": "makeup", "title": "メイクは*遊び*", "subtitle": "メイクスタジオ：14のルックか、自分だけのミックス", "chip": "NEW"},
+      {"scene": "makeup", "title": "メイクは*遊び*", "subtitle": "メイクスタジオ：20のルックか、自分だけのミックス", "chip": "NEW"},
       {"scene": "result", "title": "伝えるだけで、*キラッと*変身", "subtitle": "変えたいことを書いて、ドラッグでビフォー・アフターを比較", "before": "ビフォー", "after": "アフター"},
       {"scene": "create", "title": "想像を*カタチ*に", "subtitle": "20のスタイルから選ぶか、「アイデアをもらう」をクリック"},
       {"scene": "effects", "title": "12のレトロ加工が*無料*", "subtitle": "VHS\u00a0'86からRainbow\u00a0'17まで。Macの中で、クレジット不要"},
@@ -236,7 +236,7 @@
     ],
     "ko": [
       {"scene": "home", "title": "Aybuke, 이제 *Mac*에서", "subtitle": "룩, 매직 편집, 무료 도구를 한 창에서"},
-      {"scene": "makeup", "title": "메이크업은 *놀이*", "subtitle": "메이크업 스튜디오: 룩 14가지 또는 나만의 조합. 나는 그대로 나", "chip": "NEW"},
+      {"scene": "makeup", "title": "메이크업은 *놀이*", "subtitle": "메이크업 스튜디오: 룩 20가지 또는 나만의 조합. 나는 그대로 나", "chip": "NEW"},
       {"scene": "result", "title": "말만 하면 *반짝* 변신", "subtitle": "바꾸고 싶은 걸 쓰고 드래그해서 비포·애프터 비교", "before": "비포", "after": "애프터"},
       {"scene": "create", "title": "상상한 대로 *만들기*", "subtitle": "스타일 20가지 중에 고르거나 ‘아이디어 추천’을 클릭하세요"},
       {"scene": "effects", "title": "레트로 효과 12가지, *무료*", "subtitle": "VHS\u00a0'86부터 Rainbow\u00a0'17까지, Mac에서 크레딧 없이"},
@@ -246,7 +246,7 @@
     ],
     "zh-Hans": [
       {"scene": "home", "title": "Aybuke 现已登陆 *Mac*", "subtitle": "风格、魔法编辑和免费工具，一个窗口全搞定"},
-      {"scene": "makeup", "title": "化妆就是*好玩*", "subtitle": "妆容工作室：14 种妆容或自由搭配，你还是你", "chip": "新"},
+      {"scene": "makeup", "title": "化妆就是*好玩*", "subtitle": "妆容工作室：20 种妆容或自由搭配，你还是你", "chip": "新"},
       {"scene": "result", "title": "说出改变，看它*焕发光彩*", "subtitle": "写下想要的改变，拖动滑块对比前后", "before": "之前", "after": "之后"},
       {"scene": "create", "title": "想到就能*创作*", "subtitle": "从 20 种风格中选一个，或点击“给我灵感”"},
       {"scene": "effects", "title": "12 款复古特效，*免费*", "subtitle": "从 VHS\u00a0'86 到 Rainbow\u00a0'17，在 Mac 上不耗点数"},
@@ -256,7 +256,7 @@
     ],
     "id": [
       {"scene": "home", "title": "Aybuke kini hadir di *Mac*", "subtitle": "Look, Edit Ajaib, dan alat gratis dalam satu jendela"},
-      {"scene": "makeup", "title": "Makeup itu *seru*", "subtitle": "Studio Makeup: 14 look atau racikanmu. Kamu tetap kamu", "chip": "Baru"},
+      {"scene": "makeup", "title": "Makeup itu *seru*", "subtitle": "Studio Makeup: 20 look atau racikanmu. Kamu tetap kamu", "chip": "Baru"},
       {"scene": "result", "title": "Bilang maumu, jadi *glowing*", "subtitle": "Tulis perubahannya, lalu seret untuk melihat bedanya", "before": "Sebelum", "after": "Sesudah"},
       {"scene": "create", "title": "Bayangkan, lalu *ciptakan*", "subtitle": "Pilih satu dari 20 gaya, atau klik Beri\u00a0aku\u00a0ide"},
       {"scene": "effects", "title": "12 efek retro, *gratis*", "subtitle": "Dari VHS\u00a0'86 sampai Rainbow\u00a0'17, di Mac-mu, tanpa kredit"},

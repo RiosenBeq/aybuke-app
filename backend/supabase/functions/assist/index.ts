@@ -8,12 +8,12 @@
 //   magic    → 200 { "suggestions": [string] }  1–2 richer rewrites of her Create prompt, ≤ 300 characters each
 //   captions → 200 { "suggestions": [string] }  up to 4 captions about the vibe, never her looks, ≤ 120
 //              characters, 1–3 hashtags at most; context.format is the share design (story, cover, strip…)
-//   makeup   → 200 { "makeup": { "look", "lips", "eyes", "cheeks", "extras": [], "hair", "intensity" },
+//   makeup   → 200 { "makeup": { "look", "lips", "lipFinish", "eyes", "cheeks", "extras": [], "hair", "intensity" },
 //                    "note": string }
 //              Makeup Studio ids only (catalog.json's "makeup"; unknown ids are dropped). Every field is the
 //              final pick: a look comes with its whole recipe, with any part Claude chose on top and extras
-//              added to the look's; null means as is. `note` is one line in her language, or "" when it
-//              didn't pass the checks.
+//              added to the look's (3 at most); a lip finish only with lips; null means as is. `note` is one
+//              line in her language, or "" when it didn't pass the checks.
 //
 // Errors ({ "error": { "code", "message", … } }):
 //   400 bad_request         a body that doesn't follow the contract

@@ -693,6 +693,219 @@
         }
       }
     },
+    "Analog" : {
+      "comment" : "Name of a one-tap vibe in the editor's Adjust tool: it sets several light and color sliders at once",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Analog"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Analógico"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Argentique"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Analog"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Analogico"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "フィルム"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "필름"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Analógico"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Плёнка"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Analog"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "胶片"
+          }
+        }
+      }
+    },
+    "Berry Fairy" : {
+      "comment" : "Makeup Studio look name, on a chip in the editor. Keep trend names people use in English, such as Soft Glam or Y2K.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beerenfee"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hada mora"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fée mûre"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Peri Beri"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fata dei frutti di bosco"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ベリーフェアリー"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "베리 페어리"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fada Amora"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ягодная фея"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Böğürtlen Perisi"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "莓果仙子"
+          }
+        }
+      }
+    },
+    "Blue liner" : {
+      "comment" : "Makeup Studio choice in the editor: a lip color or lip finish, eye look, blush, extra, hair color or how strong the makeup is. “As is” leaves that part of the photo unchanged.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Blauer Liner"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delineado azul"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eye-liner bleu"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eyeliner biru"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eyeliner blu"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ブルーライン"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "블루 라이너"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delineado azul"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Синие стрелки"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mavi eyeliner"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "蓝色眼线"
+          }
+        }
+      }
+    },
     "Bought Pro or credits on another device?" : {
       "comment" : "Settings › Account for people who haven't bought anything on this device; a \"Sign in\" button follows it on the same row",
       "localizations" : {
@@ -764,6 +977,77 @@
         }
       }
     },
+    "Bronze shimmer" : {
+      "comment" : "Makeup Studio choice in the editor: a lip color or lip finish, eye look, blush, extra, hair color or how strong the makeup is. “As is” leaves that part of the photo unchanged.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bronze-Schimmer"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Brillo bronce"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Irisé bronze"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Shimmer perunggu"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Perlato bronzo"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ブロンズシマー"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "브론즈 쉬머"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Brilho bronze"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Бронзовое сияние"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bronz ışıltı"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "古铜珠光"
+          }
+        }
+      }
+    },
     "Checks photos and results for safety, and helps write prompts and captions (text only)" : {
       "comment" : "A company's role on the AI consent sheet and in Settings: Anthropic (Claude) checks photos and results for safety and writes ideas, prompts and captions from text",
       "localizations" : {
@@ -831,6 +1115,148 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "检查照片和结果的安全性，并协助撰写提示词和配文（仅文字）"
+          }
+        }
+      }
+    },
+    "Cherry Cola" : {
+      "comment" : "Makeup Studio look name, on a chip in the editor. Keep trend names people use in English, such as Soft Glam or Y2K.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cherry Cola"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cherry Cola"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cherry Cola"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cherry Cola"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cherry Cola"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "チェリーコーラ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "체리 콜라"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cherry Cola"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вишнёвая кола"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cherry Cola"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "樱桃可乐"
+          }
+        }
+      }
+    },
+    "Cherry cola" : {
+      "comment" : "Makeup Studio choice in the editor: a lip color or lip finish, eye look, blush, extra, hair color or how strong the makeup is. “As is” leaves that part of the photo unchanged.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kirsch-Cola"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cereza cola"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cerise cola"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ceri kola"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ciliegia cola"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "チェリーコーラ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "체리 콜라"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cereja cola"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вишнёвая кола"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vişneli kola"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "樱桃可乐色"
           }
         }
       }
@@ -1119,6 +1545,77 @@
         }
       }
     },
+    "Cobalt Pop" : {
+      "comment" : "Makeup Studio look name, on a chip in the editor. Keep trend names people use in English, such as Soft Glam or Y2K.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kobalt-Pop"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pop cobalto"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pop cobalt"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pop Kobalt"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pop cobalto"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "コバルトポップ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "코발트 팝"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pop Cobalto"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Кобальтовый поп"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kobalt Pop"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "钴蓝波普"
+          }
+        }
+      }
+    },
     "Confirm with Apple to finish deleting your account." : {
       "localizations" : {
         "de" : {
@@ -1185,6 +1682,77 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "请通过 Apple 确认，以完成删除你的账户。"
+          }
+        }
+      }
+    },
+    "Coquette Blush" : {
+      "comment" : "Makeup Studio look name, on a chip in the editor. Keep trend names people use in English, such as Soft Glam or Y2K.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Coquette-Rouge"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rubor coquette"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Blush coquette"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Blush Coquette"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Blush coquette"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "コケットチーク"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "코케트 블러셔"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Blush Coquette"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Coquette Blush"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Coquette Allığı"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "少女腮红"
           }
         }
       }
@@ -1331,6 +1899,219 @@
         }
       }
     },
+    "Dreamy" : {
+      "comment" : "Name of a one-tap vibe in the editor's Adjust tool: it sets several light and color sliders at once",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verträumt"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Soñador"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rêveur"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bak mimpi"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sognante"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ドリーミー"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "드리미"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sonhador"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Мечтательный"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rüya gibi"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "梦幻"
+          }
+        }
+      }
+    },
+    "Face pearls" : {
+      "comment" : "Makeup Studio choice in the editor: a lip color or lip finish, eye look, blush, extra, hair color or how strong the makeup is. “As is” leaves that part of the photo unchanged.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gesichtsperlen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Perlas faciales"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Perles visage"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mutiara wajah"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Perle viso"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "フェイスパール"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "페이스 펄"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pérolas no rosto"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Жемчужинки на лицо"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yüz incileri"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "面部珍珠"
+          }
+        }
+      }
+    },
+    "Fade" : {
+      "comment" : "Adjust slider: lifts the blacks for a faded, matte film look",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verblassen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desvanecer"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fondu"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pudar"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sbiadito"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "フェード"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "페이드"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esmaecer"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Выцветание"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solma"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "褪色"
+          }
+        }
+      }
+    },
     "Find a look for my vibe" : {
       "comment" : "Makeup Studio: the sparkle button next to the vibe field (accessibility label and tooltip)",
       "localizations" : {
@@ -1473,6 +2254,929 @@
         }
       }
     },
+    "Gloss" : {
+      "comment" : "Makeup Studio choice in the editor: a lip color or lip finish, eye look, blush, extra, hair color or how strong the makeup is. “As is” leaves that part of the photo unchanged.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Glänzend"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Brillante"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Brillant"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Glossy"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lucido"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "グロス"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "글로시"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gloss"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Глянцевый"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Parlak"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "水光"
+          }
+        }
+      }
+    },
+    "Glow" : {
+      "comment" : "Adjust slider: soft light that glows from the bright parts of the photo",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Leuchten"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Resplandor"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lueur"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pendar"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bagliore"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "グロー"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "글로우"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Luz suave"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Свечение"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Işıma"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "柔光"
+          }
+        }
+      }
+    },
+    "Golden" : {
+      "comment" : "Name of a one-tap vibe in the editor's Adjust tool: it sets several light and color sliders at once",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Golden"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dorado"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Doré"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keemasan"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dorato"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ゴールデン"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "골든"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dourado"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Золотой"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Altın ışık"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "金色"
+          }
+        }
+      }
+    },
+    "Grain" : {
+      "comment" : "Adjust slider: film grain texture",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Körnung"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grano"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grain"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Butiran"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grana"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "粒子"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "그레인"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Granulação"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Зерно"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gren"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "颗粒"
+          }
+        }
+      }
+    },
+    "Heart freckles" : {
+      "comment" : "Makeup Studio choice in the editor: a lip color or lip finish, eye look, blush, extra, hair color or how strong the makeup is. “As is” leaves that part of the photo unchanged.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Herz-Sommersprossen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pecas de corazón"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Taches de rousseur en cœur"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Freckles hati"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lentiggini a cuore"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ハートそばかす"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "하트 주근깨"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sardas de coração"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Веснушки-сердечки"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kalp çiller"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "爱心雀斑"
+          }
+        }
+      }
+    },
+    "Highlights" : {
+      "comment" : "Adjust slider: makes the brightest parts of the photo lighter or darker",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lichter"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Luces"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hautes lumières"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sorotan"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Luci"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ハイライト"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "하이라이트"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Realces"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Светлые участки"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vurgular"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "高光"
+          }
+        }
+      }
+    },
+    "Iridescent shine" : {
+      "comment" : "Makeup Studio choice in the editor: a lip color or lip finish, eye look, blush, extra, hair color or how strong the makeup is. “As is” leaves that part of the photo unchanged.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Irisierender Glanz"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Brillo iridiscente"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reflet irisé"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kilau pelangi"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Riflesso iridescente"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "オーロラツヤ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오로라 광채"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Brilho furta-cor"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Перламутровое сияние"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yanardöner parıltı"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "幻彩光泽"
+          }
+        }
+      }
+    },
+    "Left is pinker, right is more lilac." : {
+      "comment" : "Accessibility hint of the Tint slider in the editor's Adjust tool",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Links rosiger, rechts mehr Flieder."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A la izquierda, más rosa; a la derecha, más lila."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "À gauche plus rose, à droite plus lilas."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kiri lebih pink, kanan lebih lilac."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A sinistra più rosa, a destra più lilla."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "左はピンク寄り、右はライラック寄りです。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "왼쪽은 더 핑크, 오른쪽은 더 라일락이에요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "À esquerda, mais rosa; à direita, mais lilás."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Влево — розовее, вправо — сиреневее."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sol daha pembe, sağ daha leylak."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "向左更偏粉，向右更偏丁香紫。"
+          }
+        }
+      }
+    },
+    "Lip finish" : {
+      "comment" : "Label of Makeup Studio's control for how a lip color looks: glossy, matte or shimmery",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lippen-Finish"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Acabado"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fini"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Finish bibir"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Finish labbra"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "リップの質感"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "립 피니시"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Acabamento"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Финиш"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ruj dokusu"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "唇妆质地"
+          }
+        }
+      }
+    },
+    "Matte" : {
+      "comment" : "Makeup Studio choice in the editor: a lip color or lip finish, eye look, blush, extra, hair color or how strong the makeup is. “As is” leaves that part of the photo unchanged.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Matt"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mate"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mat"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Matte"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opaco"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "マット"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "매트"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Matte"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Матовый"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mat"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "哑光"
+          }
+        }
+      }
+    },
+    "Mermaid Shimmer" : {
+      "comment" : "Makeup Studio look name, on a chip in the editor. Keep trend names people use in English, such as Soft Glam or Y2K.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Meerjungfrau-Schimmer"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Brillo sirena"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Éclat sirène"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kilau Putri Duyung"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Riflessi sirena"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "マーメイドシマー"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "머메이드 쉬머"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Brilho Sereia"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сияние русалки"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deniz Kızı Işıltısı"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "美人鱼微光"
+          }
+        }
+      }
+    },
+    "Mermaid shimmer" : {
+      "comment" : "Makeup Studio choice in the editor: a lip color or lip finish, eye look, blush, extra, hair color or how strong the makeup is. “As is” leaves that part of the photo unchanged.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Meerjungfrauen-Schimmer"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Brillo sirena"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Irisé sirène"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Shimmer putri duyung"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Perlato sirena"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "マーメイドシマー"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "머메이드 쉬머"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Brilho sereia"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Русалочье сияние"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deniz kızı ışıltısı"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "美人鱼珠光"
+          }
+        }
+      }
+    },
+    "Moody" : {
+      "comment" : "Name of a one-tap vibe in the editor's Adjust tool: it sets several light and color sliders at once",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Düster"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sombrío"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sombre"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Syahdu"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cupo"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ムーディー"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "무디"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sombrio"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Атмосферный"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Loş"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "氛围感"
+          }
+        }
+      }
+    },
     "Plus a free retry if it doesn't look like you, up to %lld a day" : {
       "comment" : "Paywall benefit, under “Failed edits are always refunded”. %lld is how many free retries a day.",
       "localizations" : {
@@ -1540,6 +3244,290 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "如果不像你，还能免费重试（每天最多 %lld 次）"
+          }
+        }
+      }
+    },
+    "Rhinestones" : {
+      "comment" : "Makeup Studio choice in the editor: a lip color or lip finish, eye look, blush, extra, hair color or how strong the makeup is. “As is” leaves that part of the photo unchanged.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Strasssteine"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pedrería"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cristaux"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rhinestone"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Strass"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ラインストーン"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "라인스톤"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Strass"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Кристаллики"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kristal taşlar"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "水钻"
+          }
+        }
+      }
+    },
+    "Sets several sliders at once. Tap it again to take it off." : {
+      "comment" : "Accessibility hint of a one-tap vibe (Dreamy, Analog…) in the editor's Adjust tool",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stellt mehrere Regler auf einmal ein. Tipp noch mal, um ihn zu entfernen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ajusta varios controles a la vez. Tócalo otra vez para quitarlo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Règle plusieurs curseurs à la fois. Touche-le encore pour l’enlever."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mengatur beberapa penggeser sekaligus. Ketuk lagi untuk melepasnya."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Imposta più cursori insieme. Toccalo di nuovo per toglierlo."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "複数のスライダーを一度に設定します。もう一度タップすると解除できます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "여러 슬라이더를 한 번에 맞춰요. 다시 탭하면 해제돼요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ajusta vários controles de uma vez. Toque de novo para tirar."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Меняет сразу несколько ползунков. Коснись ещё раз, чтобы убрать."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Birkaç ayarı birden yapar. Kaldırmak için yeniden dokun."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "一次设置多个滑块。再点一次即可取消。"
+          }
+        }
+      }
+    },
+    "Shadows" : {
+      "comment" : "Adjust slider: makes the darkest parts of the photo lighter or darker",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schatten"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sombras"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ombres"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bayangan"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ombre"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "シャドウ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "그림자"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sombras"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Тени"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gölgeler"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "阴影"
+          }
+        }
+      }
+    },
+    "Shimmer" : {
+      "comment" : "Makeup Studio choice in the editor: a lip color or lip finish, eye look, blush, extra, hair color or how strong the makeup is. “As is” leaves that part of the photo unchanged.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schimmernd"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Irisado"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Irisé"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Shimmer"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Perlato"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "パール"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "쉬머"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cintilante"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Мерцающий"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Simli"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "珠光"
           }
         }
       }
@@ -1682,6 +3670,77 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "由 AI 助手 Claude 推荐。随意调整，然后试一试。"
+          }
+        }
+      }
+    },
+    "Sweetheart" : {
+      "comment" : "Makeup Studio look name, on a chip in the editor. Keep trend names people use in English, such as Soft Glam or Y2K.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Herzchen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Corazoncito"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Petit cœur"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hati Manis"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cuoricino"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "スイートハート"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "스위트하트"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Coraçãozinho"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сердечко"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tatlı Kalp"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "甜心"
           }
         }
       }
@@ -1892,6 +3951,77 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "无法读取这张照片，换一张试试吧。"
+          }
+        }
+      }
+    },
+    "Tint" : {
+      "comment" : "Adjust slider: a pink or lilac color cast over the photo",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Farbton"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Matiz"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Teinte"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rona"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tinta"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "色合い"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "색조"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Matiz"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Оттенок"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ton"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "色调"
           }
         }
       }
@@ -2148,6 +4278,148 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "解锁全部功能，免费试用期内含 %lld 个点数。今天不扣费。"
+          }
+        }
+      }
+    },
+    "Up to %lld at a time" : {
+      "comment" : "Under Makeup Studio's extras (face gems, glitter…): how many can be on at once",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bis zu %lld gleichzeitig"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hasta %lld a la vez"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jusqu’à %lld à la fois"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Maksimal %lld sekaligus"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fino a %lld alla volta"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "同時に%lld個まで"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "한 번에 %lld개까지"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Até %lld por vez"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "До %lld одновременно"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aynı anda en fazla %lld"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "最多同时选 %lld 个"
+          }
+        }
+      }
+    },
+    "Violet glitter" : {
+      "comment" : "Makeup Studio choice in the editor: a lip color or lip finish, eye look, blush, extra, hair color or how strong the makeup is. “As is” leaves that part of the photo unchanged.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Violetter Glitzer"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Glitter violeta"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paillettes violettes"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Glitter ungu"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Glitter viola"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "バイオレットラメ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "바이올렛 글리터"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Glitter violeta"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Фиолетовые блёстки"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mor sim"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "紫色闪粉"
           }
         }
       }
@@ -21510,7 +23782,7 @@
       }
     },
     "As is" : {
-      "comment" : "Makeup Studio choice on a chip in the editor: a lip color, eye look, blush, extra, hair color or how strong the makeup is. “As is” leaves that part of the photo unchanged.",
+      "comment" : "Makeup Studio choice in the editor: a lip color or lip finish, eye look, blush, extra, hair color or how strong the makeup is. “As is” leaves that part of the photo unchanged.",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -23555,7 +25827,7 @@
       }
     },
     "Berry" : {
-      "comment" : "Makeup Studio choice on a chip in the editor: a lip color, eye look, blush, extra, hair color or how strong the makeup is. “As is” leaves that part of the photo unchanged.",
+      "comment" : "Makeup Studio choice in the editor: a lip color or lip finish, eye look, blush, extra, hair color or how strong the makeup is. “As is” leaves that part of the photo unchanged.",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -24474,7 +26746,7 @@
       }
     },
     "Blue" : {
-      "comment" : "Makeup Studio choice on a chip in the editor: a lip color, eye look, blush, extra, hair color or how strong the makeup is. “As is” leaves that part of the photo unchanged.",
+      "comment" : "Makeup Studio choice in the editor: a lip color or lip finish, eye look, blush, extra, hair color or how strong the makeup is. “As is” leaves that part of the photo unchanged.",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -29205,7 +31477,7 @@
       }
     },
     "Cherry red" : {
-      "comment" : "Makeup Studio choice on a chip in the editor: a lip color, eye look, blush, extra, hair color or how strong the makeup is. “As is” leaves that part of the photo unchanged.",
+      "comment" : "Makeup Studio choice in the editor: a lip color or lip finish, eye look, blush, extra, hair color or how strong the makeup is. “As is” leaves that part of the photo unchanged.",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -30338,7 +32610,7 @@
       }
     },
     "Clear gloss" : {
-      "comment" : "Makeup Studio choice on a chip in the editor: a lip color, eye look, blush, extra, hair color or how strong the makeup is. “As is” leaves that part of the photo unchanged.",
+      "comment" : "Makeup Studio choice in the editor: a lip color or lip finish, eye look, blush, extra, hair color or how strong the makeup is. “As is” leaves that part of the photo unchanged.",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -32137,7 +34409,7 @@
       }
     },
     "Color liner" : {
-      "comment" : "Makeup Studio choice on a chip in the editor: a lip color, eye look, blush, extra, hair color or how strong the makeup is. “As is” leaves that part of the photo unchanged.",
+      "comment" : "Makeup Studio choice in the editor: a lip color or lip finish, eye look, blush, extra, hair color or how strong the makeup is. “As is” leaves that part of the photo unchanged.",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -33333,7 +35605,7 @@
       }
     },
     "Copper" : {
-      "comment" : "Makeup Studio choice on a chip in the editor: a lip color, eye look, blush, extra, hair color or how strong the makeup is. “As is” leaves that part of the photo unchanged.",
+      "comment" : "Makeup Studio choice in the editor: a lip color or lip finish, eye look, blush, extra, hair color or how strong the makeup is. “As is” leaves that part of the photo unchanged.",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -33895,7 +36167,7 @@
       }
     },
     "Coral" : {
-      "comment" : "Makeup Studio choice on a chip in the editor: a lip color, eye look, blush, extra, hair color or how strong the makeup is. “As is” leaves that part of the photo unchanged.",
+      "comment" : "Makeup Studio choice in the editor: a lip color or lip finish, eye look, blush, extra, hair color or how strong the makeup is. “As is” leaves that part of the photo unchanged.",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -42349,7 +44621,7 @@
       }
     },
     "Draped blush" : {
-      "comment" : "Makeup Studio choice on a chip in the editor: a lip color, eye look, blush, extra, hair color or how strong the makeup is. “As is” leaves that part of the photo unchanged.",
+      "comment" : "Makeup Studio choice in the editor: a lip color or lip finish, eye look, blush, extra, hair color or how strong the makeup is. “As is” leaves that part of the photo unchanged.",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -45650,7 +47922,7 @@
       }
     },
     "Face gems" : {
-      "comment" : "Makeup Studio choice on a chip in the editor: a lip color, eye look, blush, extra, hair color or how strong the makeup is. “As is” leaves that part of the photo unchanged.",
+      "comment" : "Makeup Studio choice in the editor: a lip color or lip finish, eye look, blush, extra, hair color or how strong the makeup is. “As is” leaves that part of the photo unchanged.",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -46003,7 +48275,7 @@
       }
     },
     "Faux freckles" : {
-      "comment" : "Makeup Studio choice on a chip in the editor: a lip color, eye look, blush, extra, hair color or how strong the makeup is. “As is” leaves that part of the photo unchanged.",
+      "comment" : "Makeup Studio choice in the editor: a lip color or lip finish, eye look, blush, extra, hair color or how strong the makeup is. “As is” leaves that part of the photo unchanged.",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -51807,7 +54079,7 @@
       "shouldTranslate" : false
     },
     "Glitter" : {
-      "comment" : "Makeup Studio choice on a chip in the editor: a lip color, eye look, blush, extra, hair color or how strong the makeup is. “As is” leaves that part of the photo unchanged.",
+      "comment" : "Makeup Studio choice in the editor: a lip color or lip finish, eye look, blush, extra, hair color or how strong the makeup is. “As is” leaves that part of the photo unchanged.",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -51878,7 +54150,7 @@
       }
     },
     "Glitter lid" : {
-      "comment" : "Makeup Studio choice on a chip in the editor: a lip color, eye look, blush, extra, hair color or how strong the makeup is. “As is” leaves that part of the photo unchanged.",
+      "comment" : "Makeup Studio choice in the editor: a lip color or lip finish, eye look, blush, extra, hair color or how strong the makeup is. “As is” leaves that part of the photo unchanged.",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -55335,7 +57607,7 @@
       }
     },
     "Honey blonde" : {
-      "comment" : "Makeup Studio choice on a chip in the editor: a lip color, eye look, blush, extra, hair color or how strong the makeup is. “As is” leaves that part of the photo unchanged.",
+      "comment" : "Makeup Studio choice in the editor: a lip color or lip finish, eye look, blush, extra, hair color or how strong the makeup is. “As is” leaves that part of the photo unchanged.",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -64905,7 +67177,7 @@
       }
     },
     "Mocha" : {
-      "comment" : "Makeup Studio choice on a chip in the editor: a lip color, eye look, blush, extra, hair color or how strong the makeup is. “As is” leaves that part of the photo unchanged.",
+      "comment" : "Makeup Studio choice in the editor: a lip color or lip finish, eye look, blush, extra, hair color or how strong the makeup is. “As is” leaves that part of the photo unchanged.",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -71872,7 +74144,7 @@
       }
     },
     "Pastel pink" : {
-      "comment" : "Makeup Studio choice on a chip in the editor: a lip color, eye look, blush, extra, hair color or how strong the makeup is. “As is” leaves that part of the photo unchanged.",
+      "comment" : "Makeup Studio choice in the editor: a lip color or lip finish, eye look, blush, extra, hair color or how strong the makeup is. “As is” leaves that part of the photo unchanged.",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -71943,7 +74215,7 @@
       }
     },
     "Pastel wash" : {
-      "comment" : "Makeup Studio choice on a chip in the editor: a lip color, eye look, blush, extra, hair color or how strong the makeup is. “As is” leaves that part of the photo unchanged.",
+      "comment" : "Makeup Studio choice in the editor: a lip color or lip finish, eye look, blush, extra, hair color or how strong the makeup is. “As is” leaves that part of the photo unchanged.",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -82619,7 +84891,7 @@
       }
     },
     "Rosy" : {
-      "comment" : "Makeup Studio choice on a chip in the editor: a lip color, eye look, blush, extra, hair color or how strong the makeup is. “As is” leaves that part of the photo unchanged.",
+      "comment" : "Makeup Studio choice in the editor: a lip color or lip finish, eye look, blush, extra, hair color or how strong the makeup is. “As is” leaves that part of the photo unchanged.",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -82690,7 +84962,7 @@
       }
     },
     "Rosy flush" : {
-      "comment" : "Makeup Studio choice on a chip in the editor: a lip color, eye look, blush, extra, hair color or how strong the makeup is. “As is” leaves that part of the photo unchanged.",
+      "comment" : "Makeup Studio choice in the editor: a lip color or lip finish, eye look, blush, extra, hair color or how strong the makeup is. “As is” leaves that part of the photo unchanged.",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -89276,7 +91548,7 @@
       }
     },
     "Smoky brown" : {
-      "comment" : "Makeup Studio choice on a chip in the editor: a lip color, eye look, blush, extra, hair color or how strong the makeup is. “As is” leaves that part of the photo unchanged.",
+      "comment" : "Makeup Studio choice in the editor: a lip color or lip finish, eye look, blush, extra, hair color or how strong the makeup is. “As is” leaves that part of the photo unchanged.",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -89559,7 +91831,7 @@
       }
     },
     "Soft" : {
-      "comment" : "Makeup Studio choice on a chip in the editor: a lip color, eye look, blush, extra, hair color or how strong the makeup is. “As is” leaves that part of the photo unchanged.",
+      "comment" : "Makeup Studio choice in the editor: a lip color or lip finish, eye look, blush, extra, hair color or how strong the makeup is. “As is” leaves that part of the photo unchanged.",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -89701,7 +91973,7 @@
       }
     },
     "Soft blush" : {
-      "comment" : "Makeup Studio choice on a chip in the editor: a lip color, eye look, blush, extra, hair color or how strong the makeup is. “As is” leaves that part of the photo unchanged.",
+      "comment" : "Makeup Studio choice in the editor: a lip color or lip finish, eye look, blush, extra, hair color or how strong the makeup is. “As is” leaves that part of the photo unchanged.",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -89985,7 +92257,7 @@
       }
     },
     "Soft pink" : {
-      "comment" : "Makeup Studio choice on a chip in the editor: a lip color, eye look, blush, extra, hair color or how strong the makeup is. “As is” leaves that part of the photo unchanged.",
+      "comment" : "Makeup Studio choice in the editor: a lip color or lip finish, eye look, blush, extra, hair color or how strong the makeup is. “As is” leaves that part of the photo unchanged.",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -90056,7 +92328,7 @@
       }
     },
     "Soft shimmer" : {
-      "comment" : "Makeup Studio choice on a chip in the editor: a lip color, eye look, blush, extra, hair color or how strong the makeup is. “As is” leaves that part of the photo unchanged.",
+      "comment" : "Makeup Studio choice in the editor: a lip color or lip finish, eye look, blush, extra, hair color or how strong the makeup is. “As is” leaves that part of the photo unchanged.",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -91538,7 +93810,7 @@
       }
     },
     "Star stickers" : {
-      "comment" : "Makeup Studio choice on a chip in the editor: a lip color, eye look, blush, extra, hair color or how strong the makeup is. “As is” leaves that part of the photo unchanged.",
+      "comment" : "Makeup Studio choice in the editor: a lip color or lip finish, eye look, blush, extra, hair color or how strong the makeup is. “As is” leaves that part of the photo unchanged.",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -93935,7 +96207,7 @@
       }
     },
     "Sun-kissed" : {
-      "comment" : "Makeup Studio choice on a chip in the editor: a lip color, eye look, blush, extra, hair color or how strong the makeup is. “As is” leaves that part of the photo unchanged.",
+      "comment" : "Makeup Studio choice in the editor: a lip color or lip finish, eye look, blush, extra, hair color or how strong the makeup is. “As is” leaves that part of the photo unchanged.",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -105612,7 +107884,7 @@
       }
     },
     "Vivid" : {
-      "comment" : "Makeup Studio choice on a chip in the editor: a lip color, eye look, blush, extra, hair color or how strong the makeup is. “As is” leaves that part of the photo unchanged.",
+      "comment" : "Makeup Studio choice in the editor: a lip color or lip finish, eye look, blush, extra, hair color or how strong the makeup is. “As is” leaves that part of the photo unchanged.",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -108145,7 +110417,7 @@
       }
     },
     "Winged liner" : {
-      "comment" : "Makeup Studio choice on a chip in the editor: a lip color, eye look, blush, extra, hair color or how strong the makeup is. “As is” leaves that part of the photo unchanged.",
+      "comment" : "Makeup Studio choice in the editor: a lip color or lip finish, eye look, blush, extra, hair color or how strong the makeup is. “As is” leaves that part of the photo unchanged.",
       "localizations" : {
         "de" : {
           "stringUnit" : {

@@ -14,6 +14,7 @@ export interface MakeupLook {
   id: string;
   name: string;
   lips: string;
+  lipFinish: string;
   eyes: string;
   cheeks: string;
   extras: string[];
@@ -24,11 +25,13 @@ export interface MakeupLook {
 export interface MakeupCatalog {
   looks: MakeupLook[];
   lips: MakeupOption[];
+  lipFinish: MakeupOption[];
   eyes: MakeupOption[];
   cheeks: MakeupOption[];
   extras: MakeupOption[];
   hair: MakeupOption[];
   intensity: MakeupOption[];
+  maxExtras: number;
   skinGuard: string;
 }
 
@@ -47,6 +50,7 @@ export const MAKEUP_SKIN_GUARD: string = MAKEUP.skinGuard;
 export interface MakeupPick {
   look: string | null;
   lips: string | null;
+  lipFinish: string | null;
   eyes: string | null;
   cheeks: string | null;
   extras: string[];
@@ -59,12 +63,16 @@ const ids = (options: { id: string }[]) => options.map((option) => option.id).fi
 export const MAKEUP_IDS = {
   look: ids(MAKEUP.looks),
   lips: ids(MAKEUP.lips),
+  lipFinish: ids(MAKEUP.lipFinish),
   eyes: ids(MAKEUP.eyes),
   cheeks: ids(MAKEUP.cheeks),
   extras: ids(MAKEUP.extras),
   hair: ids(MAKEUP.hair),
   intensity: ids(MAKEUP.intensity),
 };
+
+/** The most extras one pick holds (MakeupRecipe.maxExtras in the app). */
+export const MAX_EXTRAS: number = MAKEUP.maxExtras;
 
 const nullable = (values: string[]) => ({ anyOf: [{ type: "string", enum: values }, { type: "null" }] });
 
@@ -75,6 +83,7 @@ export function makeupSchema(): Record<string, unknown> {
     properties: {
       look: nullable(MAKEUP_IDS.look),
       lips: nullable(MAKEUP_IDS.lips),
+      lipFinish: nullable(MAKEUP_IDS.lipFinish),
       eyes: nullable(MAKEUP_IDS.eyes),
       cheeks: nullable(MAKEUP_IDS.cheeks),
       extras: { type: "array", items: { type: "string", enum: MAKEUP_IDS.extras } },
@@ -82,7 +91,7 @@ export function makeupSchema(): Record<string, unknown> {
       intensity: nullable(MAKEUP_IDS.intensity),
       note: { type: "string" },
     },
-    required: ["look", "lips", "eyes", "cheeks", "extras", "hair", "intensity", "note"],
+    required: ["look", "lips", "lipFinish", "eyes", "cheeks", "extras", "hair", "intensity", "note"],
     additionalProperties: false,
   };
 }
@@ -94,6 +103,7 @@ export function catalogText(): string {
   const looks = MAKEUP.looks.map((look) => {
     const parts = [
       look.lips !== AS_IS ? `lips ${look.lips}` : "",
+      look.lipFinish !== AS_IS ? `lipFinish ${look.lipFinish}` : "",
       look.eyes !== AS_IS ? `eyes ${look.eyes}` : "",
       look.cheeks !== AS_IS ? `cheeks ${look.cheeks}` : "",
       look.extras.length > 0 ? `extras ${look.extras.join(" + ")}` : "",
@@ -105,9 +115,10 @@ export function catalogText(): string {
     "Looks:",
     ...looks,
     `Lips: ${list(MAKEUP.lips)}`,
+    `Lip finishes (only with a lip color other than clearGloss): ${list(MAKEUP.lipFinish)}`,
     `Eyes: ${list(MAKEUP.eyes)}`,
     `Cheeks: ${list(MAKEUP.cheeks)}`,
-    `Extras: ${list(MAKEUP.extras)}`,
+    `Extras (at most ${MAX_EXTRAS}): ${list(MAKEUP.extras)}`,
     `Hair colors: ${list(MAKEUP.hair)}`,
     `Intensity: ${list(MAKEUP.intensity)}`,
   ].join("\n");
@@ -120,21 +131,23 @@ function known(value: unknown, allowed: string[]): string | null {
 /**
  * Claude's picks with every unknown id dropped. A look becomes its whole
  * recipe, with the parts Claude named on top and its extras added to the
- * look's, so every field is the final choice. Undefined when nothing known is
- * left (no look, no choice, no extra).
+ * look's (the look's first, at most MAX_EXTRAS in all), so every field is the
+ * final choice. A lip finish needs a lip color. Undefined when nothing known
+ * is left (no look, no choice, no extra).
  */
 export function readMakeupPick(value: unknown): MakeupPick | undefined {
   if (typeof value !== "object" || value === null || Array.isArray(value)) return undefined;
   const answer = value as Record<string, unknown>;
-  const extras = Array.isArray(answer.extras)
+  const named = Array.isArray(answer.extras)
     ? MAKEUP_IDS.extras.filter((id) => (answer.extras as unknown[]).includes(id))
     : [];
   const pick: MakeupPick = {
     look: known(answer.look, MAKEUP_IDS.look),
     lips: known(answer.lips, MAKEUP_IDS.lips),
+    lipFinish: known(answer.lipFinish, MAKEUP_IDS.lipFinish),
     eyes: known(answer.eyes, MAKEUP_IDS.eyes),
     cheeks: known(answer.cheeks, MAKEUP_IDS.cheeks),
-    extras,
+    extras: named.slice(0, MAX_EXTRAS),
     hair: known(answer.hair, MAKEUP_IDS.hair),
     intensity: known(answer.intensity, MAKEUP_IDS.intensity),
   };
@@ -142,12 +155,15 @@ export function readMakeupPick(value: unknown): MakeupPick | undefined {
   if (look) {
     const own = (id: string) => (id === AS_IS ? null : id);
     pick.lips ??= own(look.lips);
+    pick.lipFinish ??= own(look.lipFinish);
     pick.eyes ??= own(look.eyes);
     pick.cheeks ??= own(look.cheeks);
     pick.hair ??= own(look.hair);
     pick.intensity ??= own(look.intensity);
-    pick.extras = MAKEUP_IDS.extras.filter((id) => look.extras.includes(id) || pick.extras.includes(id));
+    const chosen = [...look.extras, ...named.filter((id) => !look.extras.includes(id))].slice(0, MAX_EXTRAS);
+    pick.extras = MAKEUP_IDS.extras.filter((id) => chosen.includes(id));
   }
+  if (pick.lips === null) pick.lipFinish = null;
   const anything = pick.look !== null || pick.lips !== null || pick.eyes !== null || pick.cheeks !== null ||
     pick.extras.length > 0 || pick.hair !== null;
   return anything ? pick : undefined;

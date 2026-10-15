@@ -2,9 +2,10 @@ import XCTest
 @testable import AppCore
 
 /// AppCore's English text is translated at runtime from the app's and the
-/// widgets' string catalogs (`L10n.core`). These keep every look, style and
-/// idea translated into all the app's languages, and every idea she can tap
-/// (which fills a prompt in her language) inside the content policy.
+/// widgets' string catalogs (`L10n.core`). These keep every look, style,
+/// idea, Makeup Studio choice and Adjust vibe translated into all the app's
+/// languages, and every idea she can tap (which fills a prompt in her
+/// language) inside the content policy.
 final class TranslationTests: XCTestCase {
     static let languages = ["tr", "es", "pt-BR", "fr", "de", "it", "ru", "ja", "ko", "zh-Hans", "id"]
 
@@ -48,7 +49,11 @@ final class TranslationTests: XCTestCase {
         // The widgets show look and collection names too.
         let names = TemplateCatalog.all.flatMap { [$0.title, $0.subtitle] }
             + TemplateCategory.allCases.map(\.title) + SeasonalTheme.allCases.map(\.rowTitle)
+        let makeup = MakeupStudio.presets.map(\.name) + MakeupLips.allCases.map(\.name) + MakeupLipFinish.allCases.map(\.name)
+            + MakeupEyes.allCases.map(\.name) + MakeupCheeks.allCases.map(\.name) + MakeupExtra.allCases.map(\.name)
+            + MakeupHair.allCases.map(\.name) + MakeupIntensity.allCases.map(\.name)
         let appOnly = StyleCatalog.all.map(\.name) + PromptBuilder.surprisePrompts + LookSuggester.allMagicEditIdeas
+            + makeup + AdjustVibes.all.map(\.name)
         for (catalog, keys, name) in [(app, names + appOnly, "app"), (widgets, names, "widgets")] {
             for key in Set(keys) {
                 let missing = Self.languages.filter { catalog.translations(of: key)[$0] == nil }

@@ -173,6 +173,23 @@ enum PerfBench {
             PerfProbe.log("effect \(effect.rawValue) previewFirst=\(fmt(cold)) preview=\(fmt(median(preview))) full=\(fmt(median(full)))")
         }
 
+        PerfProbe.log("effects done \(memory())")
+
+        // Adjust's vibes: the preview while she slides (first and later
+        // renders), the full-size Apply, and how far the preview is from it
+        // (both drawn at 600 px; 0–255 per channel).
+        for vibe in AdjustVibes.all {
+            let settings = vibe.applied(to: .neutral, replacing: nil)
+            let cold = timed { materialize(OnDeviceImageService.adjust(proxy, with: settings)) }
+            let preview = (0..<3).map { _ in timed { materialize(OnDeviceImageService.adjust(proxy, with: settings)) } }
+            let full = (0..<3).map { _ in timed { materialize(OnDeviceImageService.adjust(photo, with: settings)) } }
+            let match = meanDifference(OnDeviceImageService.adjust(proxy, with: settings), OnDeviceImageService.adjust(photo, with: settings))
+            let change = meanDifference(proxy, OnDeviceImageService.adjust(proxy, with: settings))
+            PerfProbe.log("adjust \(vibe.id) previewFirst=\(fmt(cold)) preview=\(fmt(median(preview))) full=\(fmt(median(full)))"
+                + " previewVsFull=\(match.map(fmt) ?? "-") vsOriginal=\(change.map(fmt) ?? "-")")
+        }
+        PerfProbe.log("adjust done \(memory())")
+
         // The Effects strip: every effect on a 240 px copy.
         let strip = timed {
             let source = ImageUtilities.normalized(photo, maxLongEdge: 240)
@@ -202,6 +219,9 @@ enum PerfBench {
         producers.append(("adjust", {
             OnDeviceImageService.adjust(photo, with: AdjustmentSettings(brightness: 0.04, contrast: 1.1, saturation: 1.15, warmth: 0.3, vignette: 0.3))
         }))
+        for vibe in AdjustVibes.all {
+            producers.append(("adjust.\(vibe.id)", { OnDeviceImageService.adjust(photo, with: vibe.applied(to: .neutral, replacing: nil)) }))
+        }
         producers.append(("crop", {
             var straighten = CropGeometry()
             straighten.angle = 4
@@ -226,6 +246,9 @@ enum PerfBench {
         producers.append(("effect.vhs.transparent", { RetroEffect.vhs.apply(to: cutoutLike, options: RetroEffect.Options(extra: true)) }))
         producers.append(("effect.instant.transparent", { RetroEffect.instant.apply(to: cutoutLike, options: RetroEffect.Options(extra: true)) }))
         producers.append(("effect.glamour.transparent", { RetroEffect.glamour.apply(to: cutoutLike, options: RetroEffect.Options(extra: true)) }))
+        producers.append(("adjust.analog.transparent", {
+            OnDeviceImageService.adjust(cutoutLike, with: (AdjustVibes.preset(id: "analog") ?? AdjustVibes.all[0]).applied(to: .neutral, replacing: nil))
+        }))
         producers.append(("crop.transparent", {
             var straighten = CropGeometry()
             straighten.angle = 4
@@ -296,6 +319,24 @@ enum PerfBench {
             UIBezierPath(ovalIn: CGRect(origin: .zero, size: size).insetBy(dx: size.width * 0.15, dy: size.height * 0.1)).addClip()
             photo.draw(at: .zero)
         }
+    }
+
+    /// Mean difference per channel (0–255) of two pictures drawn at the same size.
+    private static func meanDifference(_ a: UIImage, _ b: UIImage, longEdge: Int = 600) -> Double? {
+        guard let first = Reference.canonical(ImageUtilities.normalized(a, maxLongEdge: longEdge)),
+              let second = Reference.canonical(ImageUtilities.normalized(b, maxLongEdge: longEdge)),
+              first.width == second.width, first.height == second.height else { return nil }
+        var total = 0
+        first.data.withUnsafeBytes { one in
+            second.data.withUnsafeBytes { two in
+                let x = one.bindMemory(to: UInt8.self)
+                let y = two.bindMemory(to: UInt8.self)
+                for index in 0..<x.count where index % 4 != 3 {
+                    total += abs(Int(x[index]) - Int(y[index]))
+                }
+            }
+        }
+        return Double(total) / Double(first.width * first.height * 3)
     }
 
     /// Reads the pixels, so a lazily rendered image is counted where it's made.
@@ -390,7 +431,7 @@ enum PerfBench {
                           Double(differing) * 100 / Double(saved.count))
         }
 
-        private static func canonical(_ image: UIImage) -> (data: Data, width: Int, height: Int)? {
+        static func canonical(_ image: UIImage) -> (data: Data, width: Int, height: Int)? {
             guard let cgImage = image.cgImage, let space = CGColorSpace(name: CGColorSpace.displayP3) else { return nil }
             let width = cgImage.width, height = cgImage.height
             var data = Data(count: width * height * 4)

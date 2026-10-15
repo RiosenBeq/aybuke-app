@@ -50,9 +50,21 @@ final class OnDeviceImageService: AIImageService {
 
     static func adjust(_ image: UIImage, with settings: AdjustmentSettings) -> UIImage {
         guard let input = ImageFilters.ciImage(image) else { return image }
-        var adjusted = ImageFilters.adjust(input, with: settings)
-        // A photo stays opaque (a JPEG when saved); a cut-out keeps its transparency.
-        if !ImageUtilities.hasAlpha(image) { adjusted = adjusted.settingAlphaOne(in: input.extent) }
-        return ImageFilters.render(adjusted, extent: input.extent) ?? image
+        let extent = input.extent
+        guard ImageUtilities.hasAlpha(image) else {
+            // A photo stays opaque (a JPEG when saved).
+            let adjusted = ImageFilters.adjust(input, with: settings).settingAlphaOne(in: extent)
+            return ImageFilters.render(adjusted, extent: extent) ?? image
+        }
+        // A cut-out is adjusted as if it were opaque, then gets its own edges
+        // back, so glow, grain and the vignette never spill into the
+        // see-through parts.
+        let opaque = input.unpremultiplyingAlpha().settingAlphaOne(in: extent)
+        let adjusted = ImageFilters.adjust(opaque, with: settings)
+            .settingAlphaOne(in: extent)
+            .applyingFilter("CIBlendWithAlphaMask", parameters: [
+                kCIInputBackgroundImageKey: CIImage.empty(), kCIInputMaskImageKey: input,
+            ])
+        return ImageFilters.render(adjusted, extent: extent) ?? image
     }
 }

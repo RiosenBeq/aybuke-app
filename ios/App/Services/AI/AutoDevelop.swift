@@ -8,17 +8,15 @@ import AppCore
 /// RAW photos (ProRAW, DNG) are developed automatically when opened, since
 /// they look flat straight from the camera.
 enum AutoDevelop {
-    /// Settings for the Adjust sliders, from a 64 px sample of the photo.
+    /// The best light and colour for a photo, from a 64 px sample of it.
+    static func plan(for image: UIImage) -> AutoAdjustment {
+        AutoAdjust.plan(pixels: pixels(of: image))
+    }
+
+    /// Settings for the Adjust sliders: the plan's light and colour, with
+    /// every vibe slider at rest.
     static func settings(for image: UIImage) -> AdjustmentSettings {
-        let plan = AutoAdjust.plan(pixels: pixels(of: image))
-        return AdjustmentSettings(
-            brightness: plan.brightness,
-            contrast: plan.contrast,
-            saturation: plan.saturation,
-            warmth: plan.warmth,
-            sharpness: plan.sharpness,
-            vignette: 0
-        )
+        AdjustmentSettings(auto: plan(for: image))
     }
 
     static func isRAW(_ data: Data) -> Bool {

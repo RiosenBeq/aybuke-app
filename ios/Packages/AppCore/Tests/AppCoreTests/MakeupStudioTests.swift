@@ -2,13 +2,18 @@ import XCTest
 @testable import AppCore
 
 final class MakeupStudioTests: XCTestCase {
-    /// Every non-empty set of extras, in a fixed order.
+    /// Every set of one to three extras (the most a recipe holds), in a fixed order.
     private static let extraSets: [Set<MakeupExtra>] = {
         let all = MakeupExtra.allCases
         return (1..<(1 << all.count)).map { mask in
             Set(all.indices.filter { mask & (1 << $0) != 0 }.map { all[$0] })
-        }
+        }.filter { $0.count <= MakeupRecipe.maxExtras }
     }()
+
+    /// Every lip color with every finish it takes ("As is" and clear gloss take none).
+    private static let lipChoices: [(MakeupLips, MakeupLipFinish)] = MakeupLips.allCases.flatMap { lips in
+        (lips.takesFinish ? MakeupLipFinish.allCases : [.none]).map { (lips, $0) }
+    }
 
     private static let onlyMeSentence = "Only change the main person in front; keep everyone else exactly as they are."
 
@@ -30,6 +35,8 @@ final class MakeupStudioTests: XCTestCase {
         for preset in presets {
             XCTAssertTrue(preset.recipe.hasMakeup, preset.id)
             XCTAssertEqual(preset.recipe.hair, .none, "\(preset.id): a look never picks her hair color")
+            XCTAssertLessThanOrEqual(preset.recipe.extras.count, MakeupRecipe.maxExtras, preset.id)
+            XCTAssertTrue(preset.recipe.lips.takesFinish || preset.recipe.lipFinish == .none, preset.id)
             XCTAssertTrue((2...3).contains(preset.swatches.count), preset.id)
             for swatch in preset.swatches {
                 XCTAssertTrue(Self.isHexColor(swatch), "\(preset.id): \(swatch)")
@@ -72,6 +79,49 @@ final class MakeupStudioTests: XCTestCase {
         check(MakeupHair.allCases, hasNone: true)
         check(MakeupExtra.allCases, hasNone: false)
         XCTAssertEqual(MakeupIntensity.allCases.map(\.name), ["Soft", "Medium", "Vivid"])
+        XCTAssertEqual(MakeupLipFinish.allCases.map(\.name), ["As is", "Gloss", "Matte", "Shimmer"])
+    }
+
+    func testALipFinishNeedsALipColor() {
+        XCTAssertEqual(MakeupRecipe(lips: .clearGloss, lipFinish: .matte).lipFinish, .none, "clear gloss is already a finish")
+        XCTAssertEqual(MakeupRecipe(lipFinish: .gloss).lipFinish, .none)
+        var recipe = MakeupRecipe(lips: .berry, lipFinish: .shimmer)
+        XCTAssertEqual(recipe.lipFinish, .shimmer)
+        recipe.lips = .plum
+        XCTAssertEqual(recipe.lipFinish, .shimmer, "another color keeps the finish")
+        recipe.lips = .clearGloss
+        XCTAssertEqual(recipe.lipFinish, .none, "a choice without a finish clears it")
+        recipe.lipFinish = .matte
+        XCTAssertEqual(recipe.lipFinish, .none)
+        recipe.lips = .none
+        recipe.lipFinish = .gloss
+        XCTAssertEqual(recipe.lipFinish, .none)
+        XCTAssertEqual(MakeupRecipe(lips: .clearGloss, lipFinish: .matte), MakeupRecipe(lips: .clearGloss))
+        XCTAssertFalse(MakeupLips.none.takesFinish)
+        XCTAssertFalse(MakeupLips.clearGloss.takesFinish)
+        XCTAssertTrue(MakeupLips.allCases.dropFirst(2).allSatisfy(\.takesFinish))
+
+        let matte = MakeupStudio.instruction(for: MakeupRecipe(lips: .cherryCola, lipFinish: .matte))
+        XCTAssertTrue(matte.contains("Lips: a deep cherry-brown color with a soft matte finish, following the natural lip line."), matte)
+        let plain = MakeupStudio.instruction(for: MakeupRecipe(lips: .cherryCola))
+        XCTAssertTrue(plain.contains("Lips: a deep cherry-brown color, following the natural lip line."), plain)
+    }
+
+    func testExtrasStopAtThree() {
+        var recipe = MakeupRecipe(extras: [.glitter, .faceGems])
+        XCTAssertTrue(recipe.hasRoomForExtras)
+        recipe.toggle(.rhinestones)
+        XCTAssertEqual(recipe.extras, [.glitter, .faceGems, .rhinestones])
+        XCTAssertFalse(recipe.hasRoomForExtras)
+        recipe.toggle(.facePearls)
+        XCTAssertEqual(recipe.extras, [.glitter, .faceGems, .rhinestones], "a fourth waits for room")
+        recipe.toggle(.glitter)
+        recipe.toggle(.facePearls)
+        XCTAssertEqual(recipe.extras, [.faceGems, .rhinestones, .facePearls])
+        // More than three from anywhere else keeps the first three in the catalog's order.
+        XCTAssertEqual(MakeupRecipe(extras: Set(MakeupExtra.allCases)).extras, [.faceGems, .fauxFreckles, .starStickers])
+        recipe.extras = Set(MakeupExtra.allCases)
+        XCTAssertEqual(recipe.extras.count, MakeupRecipe.maxExtras)
     }
 
     func testRecipeStates() {
@@ -132,27 +182,36 @@ final class MakeupStudioTests: XCTestCase {
     }
 
     /// `PromptBuilder.sanitize` cuts after 800 characters, which would drop
-    /// the skin guard, so every recipe (with "Only edit me") must fit.
+    /// the skin guard, so every recipe (with "Only edit me") must fit. Each
+    /// part has a sentence of its own, so the longest request takes the
+    /// longest choice of every part; a few thousand sampled recipes check that.
     func testEveryRequestFitsWithoutBeingCut() {
-        var longest = ""
-        for lips in MakeupLips.allCases {
-            for eyes in MakeupEyes.allCases {
-                for cheeks in MakeupCheeks.allCases {
-                    for extras in [[]] + Self.extraSets {
-                        for hair in MakeupHair.allCases {
-                            for intensity in MakeupIntensity.allCases {
-                                let recipe = MakeupRecipe(lips: lips, eyes: eyes, cheeks: cheeks, extras: extras, hair: hair, intensity: intensity)
-                                let text = PromptBuilder.onlyMainPerson(MakeupStudio.instruction(for: recipe))
-                                if text.count > longest.count { longest = text }
-                            }
-                        }
-                    }
-                }
-            }
-        }
+        func length(_ recipe: MakeupRecipe) -> Int { MakeupStudio.instruction(for: recipe).count }
+        let lips = Self.lipChoices.max { length(MakeupRecipe(lips: $0.0, lipFinish: $0.1)) < length(MakeupRecipe(lips: $1.0, lipFinish: $1.1)) }!
+        let eyes = MakeupEyes.allCases.max { length(MakeupRecipe(eyes: $0)) < length(MakeupRecipe(eyes: $1)) }!
+        let cheeks = MakeupCheeks.allCases.max { length(MakeupRecipe(cheeks: $0)) < length(MakeupRecipe(cheeks: $1)) }!
+        let extras = Self.extraSets.max { length(MakeupRecipe(extras: $0)) < length(MakeupRecipe(extras: $1)) }!
+        let hair = MakeupHair.allCases.max { length(MakeupRecipe(lips: .rosy, hair: $0)) < length(MakeupRecipe(lips: .rosy, hair: $1)) }!
+        let intensity = MakeupIntensity.allCases.max { length(MakeupRecipe(lips: .rosy, intensity: $0)) < length(MakeupRecipe(lips: .rosy, intensity: $1)) }!
+        let worst = MakeupRecipe(lips: lips.0, lipFinish: lips.1, eyes: eyes, cheeks: cheeks, extras: extras, hair: hair, intensity: intensity)
+        let longest = PromptBuilder.onlyMainPerson(MakeupStudio.instruction(for: worst))
         XCTAssertLessThanOrEqual(longest.count, PromptBuilder.maxPromptLength, longest)
         XCTAssertEqual(PromptBuilder.sanitize(longest), longest)
         XCTAssertLessThanOrEqual(PromptBuilder.editInstruction(longest).count, 1000) // MAX_PROMPT_LENGTH on the server
+
+        var generator = SeededGenerator(seed: 2026_10_15)
+        for _ in 0..<3000 {
+            let pick = Self.lipChoices.randomElement(using: &generator)!
+            let recipe = MakeupRecipe(
+                lips: pick.0, lipFinish: pick.1,
+                eyes: MakeupEyes.allCases.randomElement(using: &generator)!,
+                cheeks: MakeupCheeks.allCases.randomElement(using: &generator)!,
+                extras: ([[]] + Self.extraSets).randomElement(using: &generator)!,
+                hair: MakeupHair.allCases.randomElement(using: &generator)!,
+                intensity: MakeupIntensity.allCases.randomElement(using: &generator)!
+            )
+            XCTAssertLessThanOrEqual(PromptBuilder.onlyMainPerson(MakeupStudio.instruction(for: recipe)).count, longest.count)
+        }
     }
 
     // MARK: Policy (the app and the server run the same lists)
@@ -181,17 +240,19 @@ final class MakeupStudioTests: XCTestCase {
         XCTAssertGreaterThan(longestTerm, 1)
         let edge = longestTerm - 1
 
-        enum Area { case eyes(MakeupEyes), lips(MakeupLips), cheeks(MakeupCheeks), extras(Set<MakeupExtra>) }
+        enum Area { case eyes(MakeupEyes), lips(MakeupLips, MakeupLipFinish), cheeks(MakeupCheeks), extras(Set<MakeupExtra>) }
         let areas: [[Area]] = [
             MakeupEyes.allCases.dropFirst().map(Area.eyes),
-            MakeupLips.allCases.dropFirst().map(Area.lips),
+            Self.lipChoices.filter { $0.0 != .none }.map(Area.lips),
             MakeupCheeks.allCases.dropFirst().map(Area.cheeks),
             Self.extraSets.map(Area.extras),
         ]
         func apply(_ area: Area, to recipe: inout MakeupRecipe) {
             switch area {
             case .eyes(let eyes): recipe.eyes = eyes
-            case .lips(let lips): recipe.lips = lips
+            case .lips(let lips, let finish):
+                recipe.lips = lips
+                recipe.lipFinish = finish
             case .cheeks(let cheeks): recipe.cheeks = cheeks
             case .extras(let extras): recipe.extras = extras
             }
@@ -256,8 +317,9 @@ final class MakeupStudioTests: XCTestCase {
     func testSampledCombinationsPassThePolicy() {
         var generator = SeededGenerator(seed: 2026_10_14)
         for _ in 0..<8 {
+            let lips = Self.lipChoices.randomElement(using: &generator)!
             var recipe = MakeupRecipe(
-                lips: MakeupLips.allCases.randomElement(using: &generator)!,
+                lips: lips.0, lipFinish: lips.1,
                 eyes: MakeupEyes.allCases.randomElement(using: &generator)!,
                 cheeks: MakeupCheeks.allCases.randomElement(using: &generator)!,
                 extras: Set(MakeupExtra.allCases.filter { _ in Bool.random(using: &generator) }),
@@ -291,13 +353,16 @@ final class MakeupStudioTests: XCTestCase {
         var names = MakeupStudio.presets.map(\.name)
         names += MakeupLips.allCases.map(\.name) + MakeupEyes.allCases.map(\.name) + MakeupCheeks.allCases.map(\.name)
         names += MakeupExtra.allCases.map(\.name) + MakeupHair.allCases.map(\.name) + MakeupIntensity.allCases.map(\.name)
+        names += MakeupLipFinish.allCases.map(\.name)
         for name in Set(names) {
             XCTAssertTrue(Set(ContentPolicy.words(in: name)).isDisjoint(with: unkind), name)
             XCTAssertTrue(ContentPolicy.evaluate(name, operation: .magicEdit).isAllowed, name)
         }
         // Every choice appears in one of these.
         var recipes = MakeupStudio.presets.map(\.recipe)
-        recipes.append(MakeupRecipe(lips: .rosy, eyes: .glitterLid, cheeks: .sunKissed, extras: Set(MakeupExtra.allCases), hair: .copper))
+        recipes.append(MakeupRecipe(lips: .rosy, eyes: .glitterLid, cheeks: .sunKissed, extras: [.faceGems, .glitter], hair: .copper))
+        recipes += MakeupExtra.allCases.map { MakeupRecipe(extras: [$0]) }
+        recipes += MakeupLipFinish.allCases.map { MakeupRecipe(lips: .berry, lipFinish: $0) }
         recipes += MakeupLips.allCases.map { MakeupRecipe(lips: $0, hair: .lilac) } + MakeupEyes.allCases.map { MakeupRecipe(eyes: $0) }
         recipes += MakeupCheeks.allCases.map { MakeupRecipe(cheeks: $0) } + MakeupHair.allCases.map { MakeupRecipe(hair: $0) }
         recipes += MakeupIntensity.allCases.map { MakeupRecipe(lips: .berry, intensity: $0) }

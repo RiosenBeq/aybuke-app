@@ -83,6 +83,8 @@ public struct AssistRequest: Encodable, Equatable, Sendable {
 public struct AssistMakeup: Decodable, Equatable, Sendable {
     public var look: String?
     public var lips: String?
+    /// `MakeupLipFinish` (gloss, matte, shimmer); servers before it was added leave it out.
+    public var lipFinish: String?
     public var eyes: String?
     public var cheeks: String?
     public var extras: [String]
@@ -90,13 +92,14 @@ public struct AssistMakeup: Decodable, Equatable, Sendable {
     public var intensity: String?
 
     enum CodingKeys: String, CodingKey {
-        case look, lips, eyes, cheeks, extras, hair, intensity
+        case look, lips, lipFinish, eyes, cheeks, extras, hair, intensity
     }
 
-    public init(look: String? = nil, lips: String? = nil, eyes: String? = nil, cheeks: String? = nil, extras: [String] = [],
-                hair: String? = nil, intensity: String? = nil) {
+    public init(look: String? = nil, lips: String? = nil, lipFinish: String? = nil, eyes: String? = nil, cheeks: String? = nil,
+                extras: [String] = [], hair: String? = nil, intensity: String? = nil) {
         self.look = look
         self.lips = lips
+        self.lipFinish = lipFinish
         self.eyes = eyes
         self.cheeks = cheeks
         self.extras = extras
@@ -110,6 +113,7 @@ public struct AssistMakeup: Decodable, Equatable, Sendable {
         func id(_ key: CodingKeys) -> String? { (try? container.decodeIfPresent(String.self, forKey: key)) ?? nil }
         look = id(.look)
         lips = id(.lips)
+        lipFinish = id(.lipFinish)
         eyes = id(.eyes)
         cheeks = id(.cheeks)
         hair = id(.hair)
@@ -227,11 +231,13 @@ extension MakeupStudio {
     /// (when it's one of ours) with every part it named on top. Ids this
     /// version doesn't know are left out; a part it didn't name stays as the
     /// look has it ("As is" without a look); a list of extras replaces the
-    /// look's; her hair color stays unless it named one. Nil when nothing in
-    /// the answer is ours, so her current picks stay.
+    /// look's (three at most); a lip finish needs a lip color that takes one;
+    /// her hair color stays unless it named one. Nil when nothing in the
+    /// answer is ours, so her current picks stay.
     public static func recipe(from answer: AssistMakeup, keepingHair hair: MakeupHair) -> MakeupRecipe? {
         let look = answer.look.flatMap { preset(id: $0) }
         let lips = answer.lips.flatMap(MakeupLips.init(rawValue:))
+        let finish = answer.lipFinish.flatMap(MakeupLipFinish.init(rawValue:))
         let eyes = answer.eyes.flatMap(MakeupEyes.init(rawValue:))
         let cheeks = answer.cheeks.flatMap(MakeupCheeks.init(rawValue:))
         let extras = Set(answer.extras.compactMap(MakeupExtra.init(rawValue:)))
@@ -239,6 +245,7 @@ extension MakeupStudio {
         guard look != nil || lips != nil || eyes != nil || cheeks != nil || !extras.isEmpty || newHair != nil else { return nil }
         var recipe = look?.recipe ?? MakeupRecipe()
         if let lips { recipe.lips = lips }
+        if let finish { recipe.lipFinish = finish }
         if let eyes { recipe.eyes = eyes }
         if let cheeks { recipe.cheeks = cheeks }
         if !extras.isEmpty { recipe.extras = extras }

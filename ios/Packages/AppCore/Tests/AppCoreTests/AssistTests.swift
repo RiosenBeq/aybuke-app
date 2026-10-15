@@ -210,6 +210,26 @@ final class AssistTests: XCTestCase {
         XCTAssertEqual(mixed, MakeupRecipe(lips: .mocha, eyes: .smokyBrown, extras: [.faceGems]))
     }
 
+    func testALipFinishAndExtrasComeBackAsTheAppAllowsThem() throws {
+        let decoded = try ResponseDecoder.decodeAssistMakeup(
+            data: Data(#"{"makeup":{"look":null,"lips":"berry","lipFinish":"gloss","extras":["glitter"]},"note":"Berry shine"}"#.utf8),
+            statusCode: 200
+        )
+        XCTAssertEqual(decoded.makeup, AssistMakeup(lips: "berry", lipFinish: "gloss", extras: ["glitter"]))
+        XCTAssertEqual(MakeupStudio.recipe(from: decoded.makeup, keepingHair: .none),
+                       MakeupRecipe(lips: .berry, lipFinish: .gloss, extras: [.glitter]))
+        // A finish on a look's color, a finish clear gloss can't take, and a finish alone.
+        let cola = try XCTUnwrap(MakeupStudio.recipe(from: AssistMakeup(look: "cherryCola", lipFinish: "matte"), keepingHair: .none))
+        XCTAssertEqual(cola.lips, .cherryCola)
+        XCTAssertEqual(cola.lipFinish, .matte)
+        XCTAssertEqual(MakeupStudio.recipe(from: AssistMakeup(lips: "clearGloss", lipFinish: "matte"), keepingHair: .none)?.lipFinish, MakeupLipFinish.none)
+        XCTAssertNil(MakeupStudio.recipe(from: AssistMakeup(lipFinish: "shimmer"), keepingHair: .none), "a finish needs lips")
+        // Never more than three extras.
+        let crowded = try XCTUnwrap(MakeupStudio.recipe(from: AssistMakeup(extras: ["rhinestones", "facePearls", "heartFreckles", "glitter"]),
+                                                        keepingHair: .none))
+        XCTAssertEqual(crowded.extras.count, MakeupRecipe.maxExtras)
+    }
+
     func testEveryLookComesBackAsItself() throws {
         for preset in MakeupStudio.presets {
             let recipe = try XCTUnwrap(MakeupStudio.recipe(from: AssistMakeup(look: preset.id), keepingHair: .honeyBlonde))

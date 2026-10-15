@@ -211,8 +211,8 @@ extension CloudWriter {
             ]]
         case .makeup:
             answer = [
-                "makeup": ["look": "coldGirl", "lips": "berry", "eyes": "glitterLid", "cheeks": NSNull(), "extras": ["glitter"],
-                           "hair": NSNull(), "intensity": "medium"],
+                "makeup": ["look": "coldGirl", "lips": "berry", "lipFinish": "gloss", "eyes": "glitterLid", "cheeks": NSNull(),
+                           "extras": ["glitter"], "hair": NSNull(), "intensity": "medium"],
                 "note": "A frosty, sparkly look for a winter party: berry lips, glittery lids and a cold-weather flush.",
             ]
         case nil:

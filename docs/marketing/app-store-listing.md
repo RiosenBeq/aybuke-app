@@ -29,7 +29,7 @@ Aybuke is the AI photo editor made for girls who glow. Say what you want to chan
 
 SAY IT. SEE IT.
 • Magic Edit: type "give me pink hair" or "put me in a pink dress" and watch it happen
-• Makeup Studio: 14 looks, or mix your own lips, eyes, blush, sparkle and hair color
+• Makeup Studio: 20 looks, or mix your own lips, eyes, blush, sparkle and hair color
 • Ideas for every photo, picked on your device, or tap Surprise me for a free effect
 • Brush to erase things (zoom in for tiny ones), or sharpen a blurry photo with Enhance
 • Every look is made to keep your face, skin tone and body just as they are. Doesn't look like you? Retry free
@@ -189,7 +189,7 @@ Aybuke, ışıldayan kızlar için yapılmış yapay zekâlı fotoğraf editör�
 
 SÖYLE, GÖR.
 • "Saçımı pembe yap" ya da "bana pembe bir elbise giydir" yaz, gerisini izle
-• Makyaj Stüdyosu: 14 stil ya da dudak, göz, allık, ışıltı ve saç rengini sen seç
+• Makyaj Stüdyosu: 20 stil ya da dudak, göz, allık, ışıltı ve saç rengini sen seç
 • Her fotoğrafa cihazında seçilen fikirler ya da ücretsiz bir efekt için Şaşırt beni
 • Fırçayla sil ya da bulanık fotoğrafı İyileştir ile netleştir
 • Her görünüm yüzünü, ten rengini ve vücudunu olduğu gibi korur. Sana benzemedi mi? Ücretsiz tekrar dene

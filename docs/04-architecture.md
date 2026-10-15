@@ -184,6 +184,8 @@ What changed, in order of effect:
 - **Explore:** each template card's art is one flattened layer (`drawingGroup`), rows build their cards lazily, cards compare by value, and the credit pill observes credits itself (a `_printChanges` pass showed all forty cards rebuilt after launch when the storefront and wallet arrived).
 - **Memory:** the photo insights cache no longer keeps closed photos alive (weak keys).
 
+Adjust's vibes (October 2026, bench lines `adjust <vibe>`): about 75 ms at preview size and 130 ms at full size (2048 px) in the simulator, like an effect. Every radius and grain size scales with the photo and the tone and tint map is a colour cube, so the preview and the full-size render, both drawn at 600 px, differ by 0.2–0.3 levels on average (a vibe itself changes 8–33).
+
 What didn't improve, or wasn't changed: launch time is dominated by loading system frameworks (~0.5 s before `main` in the simulator), SwiftData (~90 ms) and SwiftUI building the first screen, and stayed the same within the noise of this shared machine; `xctrace` hung when recording the simulator headless, so there is no Time Profiler breakdown. Explore's looping decorations (aurora, twinkles, glow sweep) use about 6% of one core while it sits idle; the aurora is 1–2 points of that and was kept as it looks. Opening the editor shows its first frame at about the same time (the extra copy moves work off the main thread rather than removing it). The bench's peak memory rose about 15 MB (the extra decoded copy while opening). Video export, captions and the app's size weren't changed; the probe can time an export with `-GLPerfVideo <clip>`.
 
 ## Testing & CI

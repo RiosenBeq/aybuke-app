@@ -35,6 +35,7 @@ struct MakeupLook: Encodable {
     let id: String
     let name: String
     let lips: String
+    let lipFinish: String
     let eyes: String
     let cheeks: String
     let extras: [String]
@@ -45,11 +46,15 @@ struct MakeupLook: Encodable {
 struct MakeupExport: Encodable {
     let looks: [MakeupLook]
     let lips: [MakeupOption]
+    /// Glossy, matte or shimmery, for a lip color (not "As is" or clear gloss).
+    let lipFinish: [MakeupOption]
     let eyes: [MakeupOption]
     let cheeks: [MakeupOption]
     let extras: [MakeupOption]
     let hair: [MakeupOption]
     let intensity: [MakeupOption]
+    /// The most extras a recipe holds.
+    let maxExtras: Int
     /// The last sentence of every makeup request: the server leaves those requests as the catalog wrote them.
     let skinGuard: String
 }
@@ -62,17 +67,20 @@ let makeup = MakeupExport(
     looks: MakeupStudio.presets.map { preset in
         MakeupLook(
             id: preset.id, name: preset.name,
-            lips: preset.recipe.lips.id, eyes: preset.recipe.eyes.id, cheeks: preset.recipe.cheeks.id,
+            lips: preset.recipe.lips.id, lipFinish: preset.recipe.lipFinish.id,
+            eyes: preset.recipe.eyes.id, cheeks: preset.recipe.cheeks.id,
             extras: MakeupExtra.allCases.filter(preset.recipe.extras.contains).map(\.id),
             hair: preset.recipe.hair.id, intensity: preset.recipe.intensity.id
         )
     },
     lips: options(MakeupLips.self),
+    lipFinish: MakeupLipFinish.allCases.map { MakeupOption(id: $0.id, name: $0.name) },
     eyes: options(MakeupEyes.self),
     cheeks: options(MakeupCheeks.self),
     extras: options(MakeupExtra.self),
     hair: options(MakeupHair.self),
     intensity: MakeupIntensity.allCases.map { MakeupOption(id: $0.id, name: $0.name) },
+    maxExtras: MakeupRecipe.maxExtras,
     skinGuard: MakeupStudio.skinGuard
 )
 

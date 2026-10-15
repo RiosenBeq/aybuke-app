@@ -1,11 +1,12 @@
 import Foundation
 
-// Makeup Studio: looks to try on a photo, made of a few simple choices (lips,
-// eyes, cheeks, extras, an optional hair color and how strong). Makeup here is
-// play and self-expression, never "fixing" a face: a request only adds color,
-// shine and sparkle, and always keeps her face, features, expression, skin
-// tone, skin texture, body and age exactly as they are. It runs as a Magic
-// Edit, so it goes through the same gates, guard and server checks.
+// Makeup Studio: looks to try on a photo, made of a few simple choices (lips
+// and their finish, eyes, cheeks, up to three extras, an optional hair color
+// and how strong). Makeup here is play and self-expression, never "fixing" a
+// face: a request only adds color, shine and sparkle, and always keeps her
+// face, features, expression, skin tone, skin texture, body and age exactly
+// as they are. It runs as a Magic Edit, so it goes through the same gates,
+// guard and server checks.
 //
 // Names are English; the app shows them with `L10n.core(_:)`, and
 // scripts/export-core-strings.py registers every name marked with `look` or
@@ -34,7 +35,7 @@ extension MakeupChoice where Self: RawRepresentable, RawValue == String {
 /// Lip color. Every color follows the natural lip line, so lips are never
 /// overlined or made to look fuller.
 public enum MakeupLips: String, MakeupChoice {
-    case none, clearGloss, softPink, rosy, cherryRed, berry, coral, plum, mocha
+    case none, clearGloss, softPink, rosy, cherryRed, cherryCola, berry, coral, plum, mocha
 
     public var name: String {
         switch self {
@@ -43,6 +44,7 @@ public enum MakeupLips: String, MakeupChoice {
         case .softPink: return option("Soft pink")
         case .rosy: return option("Rosy")
         case .cherryRed: return option("Cherry red")
+        case .cherryCola: return option("Cherry cola")
         case .berry: return option("Berry")
         case .coral: return option("Coral")
         case .plum: return option("Plum")
@@ -57,6 +59,7 @@ public enum MakeupLips: String, MakeupChoice {
         case .softPink: return "#E8A6B4"
         case .rosy: return "#D8627E"
         case .cherryRed: return "#C8102E"
+        case .cherryCola: return "#5C1A24"
         case .berry: return "#8E2A55"
         case .coral: return "#FF6F61"
         case .plum: return "#5E1B47"
@@ -71,10 +74,40 @@ public enum MakeupLips: String, MakeupChoice {
         case .softPink: return "a soft pink tint"
         case .rosy: return "a rosy pink color"
         case .cherryRed: return "a cherry-red color"
+        case .cherryCola: return "a deep cherry-brown color"
         case .berry: return "a berry color"
         case .coral: return "a bright coral color"
         case .plum: return "a deep plum color"
         case .mocha: return "a warm mocha-brown color"
+        }
+    }
+
+    /// A color can be glossy, matte or shimmery; "As is" and clear gloss can't.
+    public var takesFinish: Bool { self != .none && self != .clearGloss }
+}
+
+/// How a lip color looks: glossy, matte or shimmery. Only for a lip color
+/// (`MakeupLips.takesFinish`); "As is" asks for no finish.
+public enum MakeupLipFinish: String, CaseIterable, Identifiable, Sendable {
+    case none, gloss, matte, shimmer
+
+    public var id: String { rawValue }
+
+    public var name: String {
+        switch self {
+        case .none: return option("As is")
+        case .gloss: return option("Gloss")
+        case .matte: return option("Matte")
+        case .shimmer: return option("Shimmer")
+        }
+    }
+
+    var request: String? {
+        switch self {
+        case .none: return nil
+        case .gloss: return "a glossy finish"
+        case .matte: return "a soft matte finish"
+        case .shimmer: return "a fine shimmer finish"
         }
     }
 }
@@ -82,18 +115,23 @@ public enum MakeupLips: String, MakeupChoice {
 /// Eyeshadow or eyeliner. Liner follows the lash line; the eye's shape and
 /// size never change.
 public enum MakeupEyes: String, MakeupChoice {
-    case none, softShimmer, smokyBrown, pastelWash, glitterLid, sunset, wingedLiner, colorLiner
+    case none, softShimmer, bronzeShimmer, smokyBrown, pastelWash, mermaidShimmer, glitterLid, violetGlitter, sunset
+    case wingedLiner, colorLiner, blueLiner
 
     public var name: String {
         switch self {
         case .none: return option("As is")
         case .softShimmer: return option("Soft shimmer")
+        case .bronzeShimmer: return option("Bronze shimmer")
         case .smokyBrown: return option("Smoky brown")
         case .pastelWash: return option("Pastel wash")
+        case .mermaidShimmer: return option("Mermaid shimmer")
         case .glitterLid: return option("Glitter lid")
+        case .violetGlitter: return option("Violet glitter")
         case .sunset: return option("Sunset")
         case .wingedLiner: return option("Winged liner")
         case .colorLiner: return option("Color liner")
+        case .blueLiner: return option("Blue liner")
         }
     }
 
@@ -101,12 +139,16 @@ public enum MakeupEyes: String, MakeupChoice {
         switch self {
         case .none: return nil
         case .softShimmer: return "#EBD3B5"
+        case .bronzeShimmer: return "#A86A3D"
         case .smokyBrown: return "#7A5240"
         case .pastelWash: return "#C9B8F2"
+        case .mermaidShimmer: return "#7FD8D0"
         case .glitterLid: return "#E7C4F0"
+        case .violetGlitter: return "#9B6BD6"
         case .sunset: return "#FF9E6D"
         case .wingedLiner: return "#121212"
         case .colorLiner: return "#78C8F0"
+        case .blueLiner: return "#1F4FD8"
         }
     }
 
@@ -114,19 +156,24 @@ public enum MakeupEyes: String, MakeupChoice {
         switch self {
         case .none: return nil
         case .softShimmer: return "a soft champagne shimmer on the eyelids"
+        case .bronzeShimmer: return "a warm bronze shimmer on the eyelids"
         case .smokyBrown: return "smoky brown eyeshadow blended on the eyelids"
         case .pastelWash: return "a wash of pastel lilac and sky-blue eyeshadow on the eyelids"
+        case .mermaidShimmer: return "an aqua and lilac shimmer on the eyelids"
         case .glitterLid: return "sparkly glitter eyeshadow on the eyelids"
+        case .violetGlitter: return "sparkly violet glitter on the eyelids"
         case .sunset: return "a sunset blend of peach, coral and gold eyeshadow on the eyelids"
         case .wingedLiner: return "classic black winged eyeliner along the upper lash line"
         case .colorLiner: return "playful pastel rainbow eyeliner along the upper lash line"
+        case .blueLiner: return "bright cobalt-blue eyeliner along the upper lash line"
         }
     }
 }
 
-/// Blush: color only, never contour or a change of skin tone.
+/// Blush or a soft shine: color and light only, never contour or a change
+/// of skin tone.
 public enum MakeupCheeks: String, MakeupChoice {
-    case none, softBlush, drapedBlush, sunKissed, rosyFlush
+    case none, softBlush, drapedBlush, sunKissed, rosyFlush, iridescentShine
 
     public var name: String {
         switch self {
@@ -135,6 +182,7 @@ public enum MakeupCheeks: String, MakeupChoice {
         case .drapedBlush: return option("Draped blush")
         case .sunKissed: return option("Sun-kissed")
         case .rosyFlush: return option("Rosy flush")
+        case .iridescentShine: return option("Iridescent shine")
         }
     }
 
@@ -145,6 +193,7 @@ public enum MakeupCheeks: String, MakeupChoice {
         case .drapedBlush: return "#E9799A"
         case .sunKissed: return "#F5A26F"
         case .rosyFlush: return "#F28FA8"
+        case .iridescentShine: return "#DCD3F2"
         }
     }
 
@@ -155,13 +204,15 @@ public enum MakeupCheeks: String, MakeupChoice {
         case .drapedBlush: return "a rosy blush draped from the cheeks up toward the temples"
         case .sunKissed: return "a warm peach blush across the cheeks and nose bridge"
         case .rosyFlush: return "a cool rosy flush on the cheeks and the tip of the nose"
+        case .iridescentShine: return "a soft iridescent shine on the cheekbones"
         }
     }
 }
 
-/// Little extras, any number of them, painted or placed on top of the skin.
+/// Little extras, up to three at a time (`MakeupRecipe.maxExtras`), painted
+/// or placed on top of the skin.
 public enum MakeupExtra: String, MakeupChoice {
-    case faceGems, fauxFreckles, starStickers, glitter
+    case faceGems, fauxFreckles, starStickers, glitter, heartFreckles, facePearls, rhinestones
 
     public var name: String {
         switch self {
@@ -169,6 +220,9 @@ public enum MakeupExtra: String, MakeupChoice {
         case .fauxFreckles: return option("Faux freckles")
         case .starStickers: return option("Star stickers")
         case .glitter: return option("Glitter")
+        case .heartFreckles: return option("Heart freckles")
+        case .facePearls: return option("Face pearls")
+        case .rhinestones: return option("Rhinestones")
         }
     }
 
@@ -178,6 +232,9 @@ public enum MakeupExtra: String, MakeupChoice {
         case .fauxFreckles: return "#9C6644"
         case .starStickers: return "#FFD45C"
         case .glitter: return "#E8C8FF"
+        case .heartFreckles: return "#C8655A"
+        case .facePearls: return "#F3EEE6"
+        case .rhinestones: return "#CFE8FF"
         }
     }
 
@@ -187,6 +244,9 @@ public enum MakeupExtra: String, MakeupChoice {
         case .fauxFreckles: return "faux freckles across the nose and cheeks"
         case .starStickers: return "star stickers on the cheekbones"
         case .glitter: return "glitter on the cheekbones"
+        case .heartFreckles: return "tiny heart-shaped faux freckles on the cheeks"
+        case .facePearls: return "a few small pearls along the cheekbones"
+        case .rhinestones: return "a few sparkling rhinestones by the temples"
         }
     }
 }
@@ -255,21 +315,35 @@ public enum MakeupIntensity: String, CaseIterable, Identifiable, Sendable {
 
 /// Everything she picked: one look on a photo.
 public struct MakeupRecipe: Hashable, Sendable {
-    public var lips: MakeupLips
+    /// More would crowd her face (and the request).
+    public static let maxExtras = 3
+
+    /// A choice that takes no finish clears it.
+    public var lips: MakeupLips {
+        didSet { if !lips.takesFinish { lipFinish = .none } }
+    }
+    /// Always "As is" while the lips take no finish.
+    public var lipFinish: MakeupLipFinish {
+        didSet { if !lips.takesFinish, lipFinish != .none { lipFinish = .none } }
+    }
     public var eyes: MakeupEyes
     public var cheeks: MakeupCheeks
-    public var extras: Set<MakeupExtra>
+    /// At most `maxExtras`; more keeps the first ones in the catalog's order.
+    public var extras: Set<MakeupExtra> {
+        didSet { if extras.count > Self.maxExtras { extras = Self.capped(extras) } }
+    }
     public var hair: MakeupHair
     public var intensity: MakeupIntensity
 
     public init(
-        lips: MakeupLips = .none, eyes: MakeupEyes = .none, cheeks: MakeupCheeks = .none,
+        lips: MakeupLips = .none, lipFinish: MakeupLipFinish = .none, eyes: MakeupEyes = .none, cheeks: MakeupCheeks = .none,
         extras: Set<MakeupExtra> = [], hair: MakeupHair = .none, intensity: MakeupIntensity = .medium
     ) {
         self.lips = lips
+        self.lipFinish = lips.takesFinish ? lipFinish : .none
         self.eyes = eyes
         self.cheeks = cheeks
-        self.extras = extras
+        self.extras = Self.capped(extras)
         self.hair = hair
         self.intensity = intensity
     }
@@ -287,9 +361,21 @@ public struct MakeupRecipe: Hashable, Sendable {
         return recipe
     }
 
-    /// Adds or removes one extra.
+    /// Room for another extra.
+    public var hasRoomForExtras: Bool { extras.count < Self.maxExtras }
+
+    /// Adds or removes one extra; adding does nothing while three are on.
     public mutating func toggle(_ extra: MakeupExtra) {
-        if extras.contains(extra) { extras.remove(extra) } else { extras.insert(extra) }
+        if extras.contains(extra) {
+            extras.remove(extra)
+        } else if hasRoomForExtras {
+            extras.insert(extra)
+        }
+    }
+
+    static func capped(_ extras: Set<MakeupExtra>) -> Set<MakeupExtra> {
+        guard extras.count > maxExtras else { return extras }
+        return Set(MakeupExtra.allCases.filter(extras.contains).prefix(maxExtras))
     }
 }
 
@@ -311,33 +397,51 @@ public enum MakeupStudio {
         MakeupPreset(id: "softGlam", name: look("Soft Glam"),
                      recipe: MakeupRecipe(lips: .softPink, eyes: .smokyBrown, cheeks: .softBlush, intensity: .soft),
                      swatches: ["#B98068", "#F4A7A3", "#E8A6B4"]),
+        MakeupPreset(id: "cherryCola", name: look("Cherry Cola"),
+                     recipe: MakeupRecipe(lips: .cherryCola, lipFinish: .gloss, eyes: .bronzeShimmer),
+                     swatches: ["#5C1A24", "#A86A3D", "#D9A37E"]),
         MakeupPreset(id: "strawberryGirl", name: look("Strawberry Girl"),
                      recipe: MakeupRecipe(lips: .cherryRed, eyes: .softShimmer, cheeks: .rosyFlush, extras: [.fauxFreckles]),
                      swatches: ["#E2445C", "#F28FA8", "#9C6644"]),
+        MakeupPreset(id: "coquetteBlush", name: look("Coquette Blush"),
+                     recipe: MakeupRecipe(lips: .softPink, lipFinish: .gloss, cheeks: .softBlush, extras: [.facePearls], intensity: .soft),
+                     swatches: ["#F7C1D9", "#F4A7A3", "#F3EEE6"]),
         MakeupPreset(id: "cherryLips", name: look("Cherry Lips"),
                      recipe: MakeupRecipe(lips: .cherryRed, cheeks: .softBlush, intensity: .bold),
                      swatches: ["#C8102E", "#F4A7A3"]),
         MakeupPreset(id: "latte", name: look("Latte"),
                      recipe: MakeupRecipe(lips: .mocha, eyes: .smokyBrown),
                      swatches: ["#7A5240", "#8B5A44", "#E3C9A8"]),
+        MakeupPreset(id: "mermaidShimmer", name: look("Mermaid Shimmer"),
+                     recipe: MakeupRecipe(lips: .clearGloss, eyes: .mermaidShimmer, cheeks: .iridescentShine),
+                     swatches: ["#7FD8D0", "#C3A6E8", "#DCD3F2"]),
         MakeupPreset(id: "coldGirl", name: look("Cold Girl"),
                      recipe: MakeupRecipe(lips: .clearGloss, eyes: .softShimmer, cheeks: .rosyFlush),
                      swatches: ["#F28FA8", "#DCE6F5", "#F6E3EA"]),
         MakeupPreset(id: "glitterPop", name: look("Glitter Pop"),
                      recipe: MakeupRecipe(lips: .rosy, eyes: .glitterLid, cheeks: .softBlush, extras: [.glitter], intensity: .bold),
                      swatches: ["#FF5CA1", "#E7C4F0", "#FFD45C"]),
+        MakeupPreset(id: "berryFairy", name: look("Berry Fairy"),
+                     recipe: MakeupRecipe(lips: .berry, lipFinish: .shimmer, eyes: .violetGlitter, extras: [.rhinestones]),
+                     swatches: ["#8E2A55", "#9B6BD6", "#CFE8FF"]),
         MakeupPreset(id: "y2kFrost", name: look("Y2K Frost"),
                      recipe: MakeupRecipe(lips: .clearGloss, eyes: .pastelWash, extras: [.starStickers, .glitter]),
                      swatches: ["#BFD7FF", "#C9B8F2", "#F6E3EA"]),
         MakeupPreset(id: "graphicLiner", name: look("Graphic Liner"),
                      recipe: MakeupRecipe(lips: .softPink, eyes: .wingedLiner, intensity: .bold),
                      swatches: ["#121212", "#E8A6B4"]),
+        MakeupPreset(id: "cobaltPop", name: look("Cobalt Pop"),
+                     recipe: MakeupRecipe(lips: .softPink, lipFinish: .matte, eyes: .blueLiner, cheeks: .softBlush),
+                     swatches: ["#1F4FD8", "#E8A6B4", "#F4A7A3"]),
         MakeupPreset(id: "peachyDoll", name: look("Peachy Doll"),
                      recipe: MakeupRecipe(lips: .coral, eyes: .softShimmer, cheeks: .softBlush, intensity: .soft),
                      swatches: ["#FFB38A", "#FF6F61", "#F4A7A3"]),
         MakeupPreset(id: "festivalGems", name: look("Festival Gems"),
                      recipe: MakeupRecipe(lips: .clearGloss, eyes: .colorLiner, extras: [.faceGems, .glitter], intensity: .bold),
                      swatches: ["#78E1CD", "#A78BFA", "#FF5CA1"]),
+        MakeupPreset(id: "sweetheart", name: look("Sweetheart"),
+                     recipe: MakeupRecipe(lips: .rosy, lipFinish: .gloss, cheeks: .rosyFlush, extras: [.heartFreckles], intensity: .soft),
+                     swatches: ["#D8627E", "#F28FA8", "#C8655A"]),
         MakeupPreset(id: "balletBlush", name: look("Ballet Blush"),
                      recipe: MakeupRecipe(lips: .softPink, eyes: .softShimmer, cheeks: .drapedBlush, intensity: .soft),
                      swatches: ["#F7C1D9", "#E9799A", "#F8E0EA"]),
@@ -384,7 +488,10 @@ public enum MakeupStudio {
         if recipe.hasMakeup {
             sentences.append("Add makeup to the person in this photo as color, shine and sparkle on the real skin.")
             if let eyes = recipe.eyes.request { sentences.append("Eyes: \(eyes).") }
-            if let lips = recipe.lips.request { sentences.append("Lips: \(lips), following the natural lip line.") }
+            if let lips = recipe.lips.request {
+                let finish = recipe.lipFinish.request.map { " with \($0)" } ?? ""
+                sentences.append("Lips: \(lips)\(finish), following the natural lip line.")
+            }
             if let cheeks = recipe.cheeks.request { sentences.append("Cheeks: \(cheeks).") }
             let extras = MakeupExtra.allCases.filter(recipe.extras.contains).map(\.request)
             if !extras.isEmpty { sentences.append("Extras: \(list(extras)).") }

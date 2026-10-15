@@ -159,6 +159,7 @@ Deno.test("makeup: catalog ids only, a look comes whole, unknown ids are dropped
     makeup: {
       look: "cherryLips",
       lips: "cherryRed",
+      lipFinish: null,
       eyes: "glitterLid",
       cheeks: "softBlush",
       extras: ["starStickers"],
@@ -189,7 +190,16 @@ Deno.test("makeup: catalog ids only, a look comes whole, unknown ids are dropped
   const kept = await call(badNote.deps, { task: "makeup", locale: "en", text: "berry lips" });
   assert.equal(kept.status, 200);
   assert.deepEqual(kept.body, {
-    makeup: { look: null, lips: "berry", eyes: null, cheeks: null, extras: [], hair: null, intensity: "soft" },
+    makeup: {
+      look: null,
+      lips: "berry",
+      lipFinish: null,
+      eyes: null,
+      cheeks: null,
+      extras: [],
+      hair: null,
+      intensity: "soft",
+    },
     note: "",
   });
 

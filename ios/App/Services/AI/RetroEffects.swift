@@ -464,27 +464,9 @@ enum RetroEffect: String, CaseIterable, Identifiable {
         return lines.composited(over: image)
     }
 
-    /// Film grain: grey noise centred on 50% (neutral for soft light), so it
-    /// adds texture without darkening. Scaled with the photo, so previews and
-    /// full-size renders look alike.
+    /// Film grain, scaled with the photo, so previews and full-size renders look alike.
     private static func grain(over image: CIImage, amount: CGFloat, scale: CGFloat) -> CIImage {
-        guard let noise = CIFilter.randomGenerator().outputImage else { return image }
-        let spread = amount * 2
-        let offset = 0.5 - spread / 2
-        // The generator's alpha is random too; fix it at 1 first, or the colour
-        // matrix (which un-premultiplies) would blow the values up.
-        let gray = noise
-            .settingAlphaOne(in: CGRect(x: -1e6, y: -1e6, width: 2e6, height: 2e6))
-            .transformed(by: CGAffineTransform(scaleX: max(scale, 1), y: max(scale, 1)))
-            .applyingFilter("CIColorMatrix", parameters: [
-                "inputRVector": CIVector(x: 0, y: spread, z: 0, w: 0),
-                "inputGVector": CIVector(x: 0, y: spread, z: 0, w: 0),
-                "inputBVector": CIVector(x: 0, y: spread, z: 0, w: 0),
-                "inputAVector": CIVector(x: 0, y: 0, z: 0, w: 0),
-                "inputBiasVector": CIVector(x: offset, y: offset, z: offset, w: 1),
-            ])
-            .cropped(to: image.extent)
-        return gray.applyingFilter("CISoftLightBlendMode", parameters: [kCIInputBackgroundImageKey: image])
+        ImageFilters.filmGrain(over: image, amount: amount, scale: scale)
     }
 
     private static func lightLeak(over image: CIImage, color: CIColor, at point: CGPoint, radius: CGFloat, alpha: CGFloat = 0.55) -> CIImage {

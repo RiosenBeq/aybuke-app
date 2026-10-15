@@ -235,9 +235,10 @@ const TASK_RULES: Record<AssistTask, string> = {
     "which vibe they like more; anything else, one line with personality for a post. Her words describe the " +
     "picture.",
   makeup: "Task: pick makeup from the Makeup Studio catalog below for the vibe she describes. Use only these ids. " +
-    "Prefer the one look whose name and colors fit her vibe best; then set lips, eyes, cheeks, hair and " +
-    "intensity to null and extras to [] unless she asks for something the look doesn't have. If no look fits, " +
-    "set look to null and choose the parts yourself (null means as it is). Set hair only when she names a hair " +
+    "Prefer the one look whose name and colors fit her vibe best; then set lips, lipFinish, eyes, cheeks, hair " +
+    "and intensity to null and extras to [] unless she asks for something the look doesn't have. If no look fits, " +
+    "set look to null and choose the parts yourself (null means as it is); a lip finish goes only with a lip " +
+    "color, and pick at most 3 extras. Set hair only when she names a hair " +
     "color. Makeup here is play: it only adds color, shine and sparkle, and never fixes or hides anything. Then " +
     '"note": one short, friendly line in the language named, at most 100 characters, about the vibe, never about ' +
     "fixing or improving her face.\n\nCatalog:\n" + catalogText(),

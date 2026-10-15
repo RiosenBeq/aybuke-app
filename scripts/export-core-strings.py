@@ -99,11 +99,13 @@ def collect() -> tuple[list[tuple[str, str]], list[tuple[str, str]]]:
         app.append((text, "Example idea for creating an image, put in the prompt field"))
     for text in literals(r"\bidea\(" + LITERAL, read("LookSuggester.swift")):
         app.append((text, "Suggested Magic Edit request for her photo, shown on a chip in the editor"))
+    for text in literals(r"\bvibe\(" + LITERAL, read("Adjustments.swift")):
+        app.append((text, "Name of a one-tap vibe in the editor's Adjust tool: it sets several light and color sliders at once"))
     makeup = read("MakeupStudio.swift")
     for text in literals(r"\blook\(" + LITERAL, makeup):
         app.append((text, "Makeup Studio look name, on a chip in the editor. Keep trend names people use in English, such as Soft Glam or Y2K."))
     for text in literals(r"\boption\(" + LITERAL, makeup):
-        app.append((text, "Makeup Studio choice on a chip in the editor: a lip color, eye look, blush, extra, hair color or how strong the makeup is. “As is” leaves that part of the photo unchanged."))
+        app.append((text, "Makeup Studio choice in the editor: a lip color or lip finish, eye look, blush, extra, hair color or how strong the makeup is. “As is” leaves that part of the photo unchanged."))
 
     def clean(pairs: list[tuple[str, str]]) -> list[tuple[str, str]]:
         seen: set[str] = set()

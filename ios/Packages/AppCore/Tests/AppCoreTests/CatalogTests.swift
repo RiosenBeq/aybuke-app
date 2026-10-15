@@ -165,6 +165,9 @@ final class CatalogTests: XCTestCase {
         XCTAssertGreaterThanOrEqual(TemplateCatalog.all.filter { $0.season == nil }.count, 50)
         XCTAssertEqual(StyleCatalog.all.filter { $0 != StyleCatalog.auto }.count, 20)
         XCTAssertEqual(TemplateCatalog.categories.filter { $0 != .seasonal }.count, 8)
+        // AGENTS.md, docs, the screenshot captions and the App Store text in
+        // every locale say Makeup Studio has "20 looks".
+        XCTAssertEqual(MakeupStudio.presets.count, 20)
     }
 
     func testBestieLooksKeepEveryoneAsTheyAre() {

@@ -223,99 +223,47 @@ struct ErasePanel: View {
     }
 }
 
-/// Classic manual adjustments, rendered on device for free.
+/// Light, colour and vibe sliders with one-tap vibes above them, rendered on
+/// the device for free. A vibe only sets sliders, so she can tweak it.
 struct AdjustPanel: View {
     @Binding var settings: AdjustmentSettings
+    /// The vibe she picked, if any; its values are on the sliders.
+    let vibe: AdjustVibe?
     let onAuto: () -> Void
+    let onVibe: (AdjustVibe) -> Void
     let onChange: () -> Void
     let onReset: () -> Void
     let onApply: () -> Void
 
-    @State private var selected: Parameter = .brightness
+    @State private var selected: AdjustmentParameter
+    @Environment(\.editorPanelPlacement) private var placement
 
-    enum Parameter: String, CaseIterable, Identifiable {
-        case brightness, contrast, saturation, warmth, sharpness, vignette
-
-        var id: String { rawValue }
-
-        var title: String {
-            switch self {
-            case .brightness: return String(localized: "Brightness")
-            case .contrast: return String(localized: "Contrast")
-            case .saturation: return String(localized: "Saturation")
-            case .warmth: return String(localized: "Warmth")
-            case .sharpness: return String(localized: "Sharpness")
-            case .vignette: return String(localized: "Vignette")
-            }
+    init(settings: Binding<AdjustmentSettings>, vibe: AdjustVibe?, onAuto: @escaping () -> Void,
+         onVibe: @escaping (AdjustVibe) -> Void, onChange: @escaping () -> Void, onReset: @escaping () -> Void,
+         onApply: @escaping () -> Void) {
+        _settings = settings
+        self.vibe = vibe
+        self.onAuto = onAuto
+        self.onVibe = onVibe
+        self.onChange = onChange
+        self.onReset = onReset
+        self.onApply = onApply
+        var first = vibe?.lead ?? .brightness
+        #if DEBUG
+        // Screenshot QA: -GLAdjustParameter <slider> (e.g. tint) shows that slider.
+        if ScreenshotScene.current != nil, let name = UserDefaults.standard.string(forKey: "GLAdjustParameter"),
+           let parameter = AdjustmentParameter(rawValue: name) {
+            first = parameter
         }
-
-        var symbol: String {
-            switch self {
-            case .brightness: return "sun.max"
-            case .contrast: return "circle.lefthalf.filled"
-            case .saturation: return "drop"
-            case .warmth: return "thermometer.medium"
-            case .sharpness: return "triangle"
-            case .vignette: return "circle.dashed"
-            }
-        }
-
-        var range: ClosedRange<Double> {
-            switch self {
-            case .brightness: return -0.3...0.3
-            case .contrast: return 0.7...1.4
-            case .saturation: return 0...2
-            case .warmth: return -1...1
-            case .sharpness: return 0...1
-            case .vignette: return 0...1
-            }
-        }
-
-        var keyPath: WritableKeyPath<AdjustmentSettings, Double> {
-            switch self {
-            case .brightness: return \.brightness
-            case .contrast: return \.contrast
-            case .saturation: return \.saturation
-            case .warmth: return \.warmth
-            case .sharpness: return \.sharpness
-            case .vignette: return \.vignette
-            }
-        }
+        #endif
+        _selected = State(initialValue: first)
     }
 
     var body: some View {
         VStack(spacing: 12) {
-            ChipRow {
-                    Button(action: onAuto) {
-                        Label("Auto", systemImage: "wand.and.sparkles")
-                            .font(.subheadline.weight(.bold))
-                            .foregroundStyle(Palette.onAccent)
-                            .padding(.horizontal, 14)
-                            .frame(minHeight: 44)
-                            .background(Palette.accent, in: .chip)
-                    }
-                    .buttonStyle(.pressable)
-                    .accessibilityHint("Picks the best light and colour for this photo")
-                    ForEach(Parameter.allCases) { parameter in
-                        SelectableChip(title: LocalizedStringKey(parameter.title), symbolName: parameter.symbol, isSelected: selected == parameter) {
-                            selected = parameter
-                            Haptics.selection()
-                        }
-                    }
-            }
-
-            Slider(
-                value: Binding(
-                    get: { settings[keyPath: selected.keyPath] },
-                    set: { newValue in
-                        settings[keyPath: selected.keyPath] = newValue
-                        onChange()
-                    }
-                ),
-                in: selected.range
-            )
-            .tint(Palette.accent)
-            .accessibilityLabel(selected.title)
+            vibesRow
+            parametersRow
+            slider
 
             ButtonRow {
                 Button("Reset", action: onReset)
@@ -326,6 +274,141 @@ struct AdjustPanel: View {
                     .buttonStyle(.primary)
                     .disabled(settings.isNeutral)
             }
+        }
+        // A vibe turns to the slider it's about.
+        .onChange(of: vibe) { _, picked in
+            guard let picked else { return }
+            withAnimation(.snappy) { selected = picked.lead }
+        }
+    }
+
+    // MARK: Auto and vibes
+
+    private var vibesRow: some View {
+        ChipRow {
+            Button(action: onAuto) {
+                Label("Auto", systemImage: "wand.and.sparkles")
+                    .font(.subheadline.weight(.bold))
+                    .foregroundStyle(Palette.onAccent)
+                    .padding(.horizontal, 14)
+                    .frame(minHeight: 44)
+                    .background(Palette.accent, in: .chip)
+            }
+            .buttonStyle(.pressable)
+            .accessibilityHint("Picks the best light and colour for this photo")
+            ForEach(AdjustVibes.all) { item in
+                SelectableChip(title: LocalizedStringKey(L10n.core(item.name)), symbolName: item.symbolName, isSelected: vibe == item) {
+                    onVibe(item)
+                }
+                .accessibilityHint(Text("Sets several sliders at once. Tap it again to take it off.",
+                                        comment: "Accessibility hint of a one-tap vibe (Dreamy, Analog…) in the editor's Adjust tool"))
+            }
+        }
+    }
+
+    // MARK: Sliders
+
+    @ViewBuilder
+    private var parametersRow: some View {
+        if placement == .inspector {
+            FlowLayout {
+                parameterChips
+            }
+        } else {
+            ScrollViewReader { proxy in
+                ScrollView(.horizontal) {
+                    HStack(spacing: 8) {
+                        parameterChips
+                    }
+                }
+                .scrollIndicators(.hidden)
+                .onAppear { proxy.scrollTo(selected, anchor: .center) }
+                .onChange(of: selected) { _, parameter in
+                    withAnimation(.snappy) { proxy.scrollTo(parameter, anchor: .center) }
+                }
+            }
+        }
+    }
+
+    private var parameterChips: some View {
+        ForEach(AdjustmentParameter.allCases) { parameter in
+            SelectableChip(title: LocalizedStringKey(parameter.title), symbolName: parameter.symbol, isSelected: selected == parameter) {
+                selected = parameter
+                Haptics.selection()
+            }
+            .id(parameter)
+        }
+    }
+
+    private var slider: some View {
+        let value = Binding(
+            get: { settings[selected] },
+            set: { newValue in
+                settings[selected] = newValue
+                onChange()
+            }
+        )
+        return Group {
+            if selected == .tint {
+                // The two ends are colours: pink on the left, lilac on the right.
+                Slider(value: value, in: selected.range) {
+                    Text(selected.title)
+                } minimumValueLabel: {
+                    tintDot(Color(hex: 0xE58BA8))
+                } maximumValueLabel: {
+                    tintDot(Color(hex: 0xB49BE0))
+                }
+                .accessibilityHint(Text("Left is pinker, right is more lilac.",
+                                        comment: "Accessibility hint of the Tint slider in the editor's Adjust tool"))
+            } else {
+                Slider(value: value, in: selected.range)
+            }
+        }
+        .tint(Palette.accent)
+        .accessibilityLabel(selected.title)
+    }
+
+    private func tintDot(_ color: Color) -> some View {
+        Circle()
+            .fill(color)
+            .overlay(Circle().stroke(Palette.ink.opacity(0.12), lineWidth: 0.5))
+            .frame(width: 14, height: 14)
+            .accessibilityHidden(true)
+    }
+}
+
+private extension AdjustmentParameter {
+    var title: String {
+        switch self {
+        case .brightness: return String(localized: "Brightness")
+        case .contrast: return String(localized: "Contrast")
+        case .highlights: return String(localized: "Highlights", comment: "Adjust slider: makes the brightest parts of the photo lighter or darker")
+        case .shadows: return String(localized: "Shadows", comment: "Adjust slider: makes the darkest parts of the photo lighter or darker")
+        case .saturation: return String(localized: "Saturation")
+        case .warmth: return String(localized: "Warmth")
+        case .tint: return String(localized: "Tint", comment: "Adjust slider: a pink or lilac color cast over the photo")
+        case .glow: return String(localized: "Glow", comment: "Adjust slider: soft light that glows from the bright parts of the photo")
+        case .fade: return String(localized: "Fade", comment: "Adjust slider: lifts the blacks for a faded, matte film look")
+        case .grain: return String(localized: "Grain", comment: "Adjust slider: film grain texture")
+        case .vignette: return String(localized: "Vignette")
+        case .sharpness: return String(localized: "Sharpness")
+        }
+    }
+
+    var symbol: String {
+        switch self {
+        case .brightness: return "sun.max"
+        case .contrast: return "circle.lefthalf.filled"
+        case .highlights: return "sun.max.circle"
+        case .shadows: return "moon.circle"
+        case .saturation: return "drop"
+        case .warmth: return "thermometer.medium"
+        case .tint: return "swatchpalette"
+        case .glow: return "sun.haze"
+        case .fade: return "camera.filters"
+        case .grain: return "aqi.medium"
+        case .vignette: return "circle.dashed"
+        case .sharpness: return "triangle"
         }
     }
 }

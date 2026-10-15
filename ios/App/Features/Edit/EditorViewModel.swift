@@ -40,6 +40,8 @@ final class EditorViewModel {
     /// another look on that step starts again from the photo.
     @ObservationIgnored private var makeupBase: (version: Int, photo: UIImage)?
     var adjustments = AdjustmentSettings()
+    /// The vibe picked above the sliders, if any (its values are on them).
+    private(set) var adjustVibe: AdjustVibe?
     private(set) var adjustPreview: UIImage?
     var strokes: [MaskStroke] = []
     var brushSize: CGFloat = 0.07
@@ -147,6 +149,13 @@ final class EditorViewModel {
         if ScreenshotScene.current != nil, let id = UserDefaults.standard.string(forKey: "GLMakeupPreset"),
            let preset = MakeupStudio.preset(id: id) {
             makeup = preset.recipe
+        }
+        // Screenshot QA: -GLAdjustVibe dreamy|analog|moody|golden picks a vibe in Adjust.
+        if ScreenshotScene.current != nil, activeTool == .adjust, let id = UserDefaults.standard.string(forKey: "GLAdjustVibe"),
+           let vibe = AdjustVibes.preset(id: id) {
+            adjustments = vibe.applied(to: .neutral, replacing: nil)
+            adjustVibe = vibe
+            updateAdjustPreview()
         }
         #endif
         // Holds self weakly, so it ends at the first warning after the editor closes.
@@ -321,6 +330,7 @@ final class EditorViewModel {
         lastRequestID = nil
         strokes.removeAll()
         adjustments = .neutral
+        adjustVibe = nil
         adjustPreview = nil
         previewSource = nil
         prepareProxy()
@@ -567,15 +577,33 @@ final class EditorViewModel {
         }
     }
 
-    /// "Auto": the best light and colour for this photo, on the sliders.
+    /// "Auto": the best light and colour for this photo, on the sliders. The
+    /// vibe sliders stay as she has them, with her vibe still on top.
     func autoAdjust() {
         Task {
             let proxy = await previewProxy()
-            let settings = await Task.detached(priority: .userInitiated) { AutoDevelop.settings(for: proxy) }.value
-            withAnimation(.snappy) { adjustments = settings }
+            let plan = await Task.detached(priority: .userInitiated) { AutoDevelop.plan(for: proxy) }.value
+            withAnimation(.snappy) { adjustments = adjustments.applyingAuto(plan, vibe: adjustVibe) }
             updateAdjustPreview()
             Haptics.success()
         }
+    }
+
+    /// A vibe sets its sliders and nudges her contrast, saturation and
+    /// warmth; another one takes its place, and the same one again takes it
+    /// off. Every value lands on the sliders, so she can tweak it.
+    func pickVibe(_ vibe: AdjustVibe) {
+        withAnimation(.snappy) {
+            if adjustVibe == vibe {
+                adjustments = vibe.removed(from: adjustments)
+                adjustVibe = nil
+            } else {
+                adjustments = vibe.applied(to: adjustments, replacing: adjustVibe)
+                adjustVibe = vibe
+            }
+        }
+        updateAdjustPreview()
+        Haptics.selection()
     }
 
     // MARK: Effects (on-device)
@@ -697,6 +725,7 @@ final class EditorViewModel {
     func resetAdjustments() {
         previewTask?.cancel()
         adjustments = .neutral
+        adjustVibe = nil
         adjustPreview = nil
     }
 

@@ -20,7 +20,9 @@ enum ScreenshotScene: String, CaseIterable {
     /// Makeup Studio (`-GLEditorTool makeup`) takes `-GLMakeupPreset <id>`
     /// (a `MakeupStudio.presets` id) and `-GLMakeupCustomize lips|eyes|cheeks|extras|hair`;
     /// with `-GLAssistStub YES` it has "Describe your vibe", and
-    /// `-GLMakeupVibe "<words>"` asks it once.
+    /// `-GLMakeupVibe "<words>"` asks it once. Adjust (`-GLEditorTool adjust`)
+    /// takes `-GLAdjustVibe dreamy|analog|moody|golden` and
+    /// `-GLAdjustParameter <slider>` (an `AdjustmentParameter`, e.g. `tint`).
     case editor
     case effects
     /// The editor's "Ideas for this photo" row on the demo landscape.

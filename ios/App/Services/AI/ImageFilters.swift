@@ -2,20 +2,7 @@ import UIKit
 import Metal
 import CoreImage
 import CoreImage.CIFilterBuiltins
-
-/// Manual adjustments offered in the editor's Adjust panel.
-struct AdjustmentSettings: Equatable {
-    var brightness: Double = 0      // -0.3 … 0.3
-    var contrast: Double = 1        // 0.7 … 1.4
-    var saturation: Double = 1      // 0 … 2
-    var warmth: Double = 0          // -1 … 1
-    var sharpness: Double = 0       // 0 … 1
-    var vignette: Double = 0        // 0 … 1
-
-    static let neutral = AdjustmentSettings()
-
-    var isNeutral: Bool { self == .neutral }
-}
+import AppCore
 
 /// Core Image building blocks shared by the on-device tools and the offline
 /// demo engine. All functions are pure and safe to call off the main thread.
@@ -67,16 +54,25 @@ enum ImageFilters {
 
     // MARK: Adjust
 
+    /// The Adjust tool's sliders (`AdjustmentSettings`). Every size, radius and
+    /// colour map comes from AppCore (`AdjustRendering`, `ToneMap`) and scales
+    /// with the photo, so the 1200 px preview and the full-size render match.
+    /// Neutral sliders skip their filter, so photos without the vibe sliders
+    /// render as they always have.
     static func adjust(_ input: CIImage, with settings: AdjustmentSettings) -> CIImage {
         guard !settings.isNeutral else { return input }
+        let extent = input.extent
+        let longEdge = Double(max(extent.width, extent.height))
         var image = input
 
-        let colors = CIFilter.colorControls()
-        colors.inputImage = image
-        colors.brightness = Float(settings.brightness)
-        colors.contrast = Float(settings.contrast)
-        colors.saturation = Float(settings.saturation)
-        image = colors.outputImage ?? image
+        if settings.brightness != 0 || settings.contrast != 1 || settings.saturation != 1 {
+            let colors = CIFilter.colorControls()
+            colors.inputImage = image
+            colors.brightness = Float(settings.brightness)
+            colors.contrast = Float(settings.contrast)
+            colors.saturation = Float(settings.saturation)
+            image = colors.outputImage ?? image
+        }
 
         if settings.warmth != 0 {
             let temperature = CIFilter.temperatureAndTint()
@@ -87,6 +83,10 @@ enum ImageFilters {
             image = temperature.outputImage ?? image
         }
 
+        if settings.hasToneMap {
+            image = toneMap(image, settings: settings)
+        }
+
         if settings.sharpness > 0 {
             let sharpen = CIFilter.sharpenLuminance()
             sharpen.inputImage = image
@@ -94,14 +94,104 @@ enum ImageFilters {
             image = sharpen.outputImage ?? image
         }
 
-        if settings.vignette > 0 {
-            let vignette = CIFilter.vignette()
+        if let glow = AdjustRendering.glow(settings.glow, longEdge: longEdge) {
+            image = self.glow(image, glow)
+        }
+
+        if let plan = AdjustRendering.vignette(settings.vignette, width: Double(extent.width), height: Double(extent.height)) {
+            let vignette = CIFilter.vignetteEffect()
             vignette.inputImage = image
-            vignette.intensity = Float(settings.vignette)
-            vignette.radius = 1.6
+            vignette.center = CGPoint(x: extent.midX, y: extent.midY)
+            vignette.radius = Float(plan.radius)
+            vignette.intensity = Float(plan.intensity)
+            vignette.falloff = Float(plan.falloff)
             image = vignette.outputImage ?? image
         }
-        return image.cropped(to: input.extent)
+
+        // Last, so nothing blurs or sharpens it.
+        if let grain = AdjustRendering.grain(settings.grain, longEdge: longEdge) {
+            image = filmGrain(over: image.cropped(to: extent), amount: grain.amount, scale: grain.scale)
+        }
+        return image.cropped(to: extent)
+    }
+
+    /// Fade, highlights, shadows and tint as one colour cube on gamma-encoded
+    /// sRGB values (`ToneMap`).
+    private static func toneMap(_ image: CIImage, settings: AdjustmentSettings) -> CIImage {
+        let dimension = 32
+        let key = [settings.fade, settings.highlights, settings.shadows, settings.tint]
+        // The preview and Apply ask for the same cube; making one takes a moment.
+        let data: Data = cubeLock.withLock {
+            if let cached = cachedCube, cached.key == key { return cached.data }
+            let floats = ToneMap.cube(for: settings, dimension: dimension)
+            let data = floats.withUnsafeBufferPointer { Data(buffer: $0) }
+            cachedCube = (key, data)
+            return data
+        }
+        let cube = CIFilter.colorCubeWithColorSpace()
+        cube.inputImage = image
+        cube.cubeDimension = Float(dimension)
+        cube.cubeData = data
+        cube.colorSpace = CGColorSpace(name: CGColorSpace.sRGB)
+        return cube.outputImage ?? image
+    }
+
+    private static let cubeLock = NSLock()
+    nonisolated(unsafe) private static var cachedCube: (key: [Double], data: Data)?
+
+    /// Soft light: the tones above the threshold, blurred wide and screened
+    /// back over the photo (gamma-encoded, as an artist would blend it). Light
+    /// is only added on top, so skin keeps its texture.
+    private static func glow(_ image: CIImage, _ plan: AdjustRendering.Glow) -> CIImage {
+        let extent = image.extent
+        let encoded = image.applyingFilter("CILinearToSRGBToneCurve")
+        let threshold = CGFloat(plan.threshold)
+        let gain = 1 / (1 - threshold)
+        let lights = encoded
+            .applyingFilter("CIColorMatrix", parameters: [
+                "inputRVector": CIVector(x: gain, y: 0, z: 0, w: 0),
+                "inputGVector": CIVector(x: 0, y: gain, z: 0, w: 0),
+                "inputBVector": CIVector(x: 0, y: 0, z: gain, w: 0),
+                "inputBiasVector": CIVector(x: -threshold * gain, y: -threshold * gain, z: -threshold * gain, w: 0),
+            ])
+            .applyingFilter("CIColorClamp")
+        let strength = CGFloat(plan.strength)
+        let glow = lights
+            .clampedToExtent()
+            .applyingGaussianBlur(sigma: plan.radius)
+            .cropped(to: extent)
+            .applyingFilter("CIColorMatrix", parameters: [
+                "inputRVector": CIVector(x: strength, y: 0, z: 0, w: 0),
+                "inputGVector": CIVector(x: 0, y: strength, z: 0, w: 0),
+                "inputBVector": CIVector(x: 0, y: 0, z: strength, w: 0),
+            ])
+        return glow
+            .applyingFilter("CIScreenBlendMode", parameters: [kCIInputBackgroundImageKey: encoded])
+            .applyingFilter("CISRGBToneCurveToLinear")
+            .cropped(to: extent)
+    }
+
+    /// Film grain: grey noise centred on 50% (neutral for soft light), so it
+    /// adds texture without darkening. `scale` is the noise cell in pixels:
+    /// grow it with the photo and previews and full-size renders look alike.
+    static func filmGrain(over image: CIImage, amount: CGFloat, scale: CGFloat) -> CIImage {
+        guard let noise = CIFilter.randomGenerator().outputImage else { return image }
+        let spread = amount * 2
+        let offset = 0.5 - spread / 2
+        // The generator's alpha is random too; fix it at 1 first, or the colour
+        // matrix (which un-premultiplies) would blow the values up.
+        let gray = noise
+            .settingAlphaOne(in: CGRect(x: -1e6, y: -1e6, width: 2e6, height: 2e6))
+            .transformed(by: CGAffineTransform(scaleX: max(scale, 1), y: max(scale, 1)))
+            .applyingFilter("CIColorMatrix", parameters: [
+                "inputRVector": CIVector(x: 0, y: spread, z: 0, w: 0),
+                "inputGVector": CIVector(x: 0, y: spread, z: 0, w: 0),
+                "inputBVector": CIVector(x: 0, y: spread, z: 0, w: 0),
+                "inputAVector": CIVector(x: 0, y: 0, z: 0, w: 0),
+                "inputBiasVector": CIVector(x: offset, y: offset, z: offset, w: 1),
+            ])
+            .cropped(to: image.extent)
+        return gray.applyingFilter("CISoftLightBlendMode", parameters: [kCIInputBackgroundImageKey: image])
     }
 
     // MARK: Demo-only approximations
