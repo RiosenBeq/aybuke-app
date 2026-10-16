@@ -94,7 +94,7 @@ Deleting your account does **not** cancel an Apple subscription. To stop future 
 - **AI Enhance**: sharpen, upscale and restore a photo.
 - **Erase**: brush over an object to remove it.
 - **Create from text**: generate images from a text description, with a choice of styles and aspect ratios. With Pro, you can create up to 4 images at once.
-- **Writing help**: ideas for a new picture ("Inspire me"), a richer prompt ("Make it magic"), caption ideas and makeup picks for a vibe you describe, written by AI from the words you type, never from your photos. It's free and doesn't use credits. Suggestions are only ideas, and on devices with Apple Intelligence some may be written on your device instead.
+- **Writing help**: ideas for a new picture ("Inspire me"), a richer prompt ("Make it magic"), caption ideas and makeup picks for a vibe you describe, written by AI from the words you type (or, for a video you cut with Auto edit, up to 400 characters of its captions), never from your photos or videos. It's free and doesn't use credits. Suggestions are only ideas, and on devices with Apple Intelligence some may be written on your device instead.
 
 Some templates and styles are available only with Pro. We don't offer templates based on celebrities or other real people, and we don't offer body-reshaping or skin-lightening features.
 

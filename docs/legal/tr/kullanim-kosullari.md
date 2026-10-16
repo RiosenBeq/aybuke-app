@@ -96,7 +96,7 @@ Hesabınızı silmek Apple aboneliğinizi **iptal etmez**. Sonraki ödemeleri du
 - **AI Enhance**: Fotoğrafı netleştirme, büyütme ve restore etme.
 - **Erase**: Fırçayla üzerinden geçtiğiniz bir nesneyi kaldırma.
 - **Create from text**: Stil ve en-boy oranı seçenekleriyle, metin açıklamasından görsel üretme. Pro ile tek seferde 4 görsele kadar üretebilirsiniz.
-- **Yazım yardımı**: Yeni bir görsel için fikirler ("Inspire me"), daha zengin bir istem ("Make it magic"), açıklama metni önerileri ve anlattığınız havaya uygun makyaj önerileri; yapay zekâ bunları fotoğraflarınızdan değil, yazdığınız sözlerden yazar. Ücretsizdir ve kredi harcamaz. Öneriler yalnızca fikirdir; Apple Intelligence destekli cihazlarda bazıları bunun yerine cihazınızda yazılabilir.
+- **Yazım yardımı**: Yeni bir görsel için fikirler ("Inspire me"), daha zengin bir istem ("Make it magic"), açıklama metni önerileri ve anlattığınız havaya uygun makyaj önerileri; yapay zekâ bunları fotoğraflarınızdan veya videolarınızdan değil, yazdığınız sözlerden (Auto edit ile kestiğiniz bir video için altyazılarından en fazla 400 karakterden) yazar. Ücretsizdir ve kredi harcamaz. Öneriler yalnızca fikirdir; Apple Intelligence destekli cihazlarda bazıları bunun yerine cihazınızda yazılabilir.
 
 Bazı şablon ve stiller yalnızca Pro ile kullanılabilir. Ünlülere veya başka gerçek kişilere dayanan şablonlar sunmuyoruz; vücut şekillendirme (body reshaping) veya cilt rengini açma (skin lightening) özellikleri de sunmuyoruz.
 
