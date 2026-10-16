@@ -130,27 +130,15 @@ enum VideoEngine {
 
     /// Colours every frame with the effect and, when `showsExtra` is on, its
     /// overlay (date stamp, letterbox or camcorder display), then draws the
-    /// captions on top. Nil = no effect and no captions. `fps` sets the
-    /// camcorder timecode's frame count.
+    /// captions on top (`FrameStyler`). Nil = no effect and no captions.
+    /// `fps` sets the camcorder timecode's frame count.
     static func videoComposition(for asset: AVAsset, effect: RetroEffect?, showsExtra: Bool, fps: Double = 30,
                                  captions: CaptionTrack? = nil) async throws -> AVVideoComposition? {
-        guard effect != nil || captions != nil else { return nil }
-        let overlays = OverlayCache(effect: showsExtra && effect?.option?.worksOnVideo == true ? effect : nil)
-        let rate = CamcorderClock.frameRate(fps)
+        let styler = FrameStyler(effect: effect, showsExtra: showsExtra, fps: fps, captions: captions)
+        guard !styler.isEmpty else { return nil }
         return try await AVMutableVideoComposition.videoComposition(with: asset) { request in
             let source = request.sourceImage.clampedToExtent().cropped(to: request.sourceImage.extent)
-            var frame = effect.map { $0.grade(source).cropped(to: source.extent) } ?? source
-            if let overlay = overlays.overlay(for: source.extent) {
-                frame = overlay.composited(over: frame)
-            }
-            // The output timeline's time, so the preview and the export match.
-            if let camcorder = overlays.camcorder(for: source.extent) {
-                frame = camcorder.composite(over: frame, seconds: request.compositionTime.seconds, fps: rate)
-            }
-            if let captions {
-                frame = captions.composite(over: frame, seconds: request.compositionTime.seconds)
-            }
-            request.finish(with: frame, context: nil)
+            request.finish(with: styler.style(source, seconds: request.compositionTime.seconds), context: nil)
         }
     }
 
@@ -161,40 +149,9 @@ enum VideoEngine {
         return CamcorderClock.frameRate(Double(rate))
     }
 
-    /// Overlays are drawn once per frame size, not every frame.
     private struct ExportCanceller: @unchecked Sendable {
         let session: AVAssetExportSession
         func cancel() { session.cancelExport() }
-    }
-
-    private final class OverlayCache: @unchecked Sendable {
-        private let effect: RetroEffect?
-        private var cached: (CGRect, CIImage?)?
-        private var parts: (CGRect, CamcorderChrome.VideoParts)?
-        private let lock = NSLock()
-
-        init(effect: RetroEffect?) { self.effect = effect }
-
-        func overlay(for extent: CGRect) -> CIImage? {
-            guard let effect else { return nil }
-            lock.lock()
-            defer { lock.unlock() }
-            if let cached, cached.0 == extent { return cached.1 }
-            let layer = effect.videoOverlay(size: extent.size)?
-                .transformed(by: CGAffineTransform(translationX: extent.minX, y: extent.minY))
-            cached = (extent, layer)
-            return layer
-        }
-
-        func camcorder(for extent: CGRect) -> CamcorderChrome.VideoParts? {
-            guard effect?.option == .cameraInfo else { return nil }
-            lock.lock()
-            defer { lock.unlock() }
-            if let parts, parts.0 == extent { return parts.1 }
-            let made = CamcorderChrome.VideoParts(size: extent.size)
-            parts = (extent, made)
-            return made
-        }
     }
 
     // MARK: Export
@@ -202,12 +159,14 @@ enum VideoEngine {
     /// Renders `asset` into a temporary .mp4, reporting progress (0…1) on the
     /// main actor. Cancelling the calling task stops the export, throws
     /// `CancellationError` and leaves no file behind.
-    static func export(_ asset: AVAsset, videoComposition: AVVideoComposition?, progress: @escaping @MainActor (Double) -> Void = { _ in }) async throws -> URL {
+    static func export(_ asset: AVAsset, videoComposition: AVVideoComposition?, audioMix: AVAudioMix? = nil,
+                       progress: @escaping @MainActor (Double) -> Void = { _ in }) async throws -> URL {
         guard let session = AVAssetExportSession(asset: asset, presetName: AVAssetExportPresetHighestQuality) else {
             throw VideoError.exportFailed
         }
         let url = FileManager.default.temporaryDirectory.appendingPathComponent("Aybuke-\(UUID().uuidString.prefix(6)).mp4")
         session.videoComposition = videoComposition
+        session.audioMix = audioMix
         session.shouldOptimizeForNetworkUse = true
         do {
             if #available(iOS 18.0, *) {

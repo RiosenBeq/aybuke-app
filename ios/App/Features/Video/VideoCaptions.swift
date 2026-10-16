@@ -124,6 +124,23 @@ final class VideoCaptions {
         status = cues.isEmpty ? .idle : .done
     }
 
+    /// Waits until the captions being made are done (or failed, or cancelled).
+    func finishMaking() async {
+        await work?.value
+    }
+
+    /// Back to how they were before (Auto edit's Undo).
+    func restore(_ snapshot: Snapshot) {
+        cancel()
+        cues = snapshot.cues
+        isOn = snapshot.isOn
+        style = snapshot.look.style
+        position = snapshot.look.position
+        size = snapshot.look.size
+        heardNothing = false
+        status = cues.isEmpty ? .idle : .done
+    }
+
     // MARK: Editing
 
     private func index(of id: UUID) -> Int? { cues.firstIndex { $0.id == id } }
@@ -179,9 +196,15 @@ final class VideoCaptions {
     // MARK: Output
 
     /// The captions on the edited timeline, or nil when they're off.
-    func track(keeping ranges: [ClosedRange<Double>], overlay: RetroEffect?) -> CaptionTrack? {
+    /// `safeArea`: Auto edit's platform, whose buttons captions keep clear of.
+    func track(keeping ranges: [ClosedRange<Double>], overlay: RetroEffect?, safeArea: SafeArea? = nil) -> CaptionTrack? {
         guard isOn else { return nil }
-        return CaptionTrack(cues: CaptionTimeline.remap(cues, keeping: ranges), look: look, overlay: overlay)
+        return CaptionTrack(cues: CaptionTimeline.remap(cues, keeping: ranges), look: look, overlay: overlay, safeArea: safeArea)
+    }
+
+    /// What's said in the edited video, from its captions, in order.
+    func transcript(keeping ranges: [ClosedRange<Double>]) -> String {
+        CaptionTimeline.remap(cues, keeping: ranges).map(\.text).joined(separator: " ")
     }
 
     /// SubRip text timed to the edited video.

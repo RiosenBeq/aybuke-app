@@ -98,7 +98,9 @@ enum ScreenshotScene: String, CaseIterable {
     /// Captions: `-GLCaptions fixture|auto|listening|nospeech|denied|…`,
     /// `-GLCaptionStyle`, `-GLCaptionPosition`, `-GLCaptionSize`,
     /// `-GLCaptionsEditor YES`, `-GLVideoSeek <s>` (paused there), and
-    /// `-GLVideoSpeech YES` for a clip that talks.
+    /// `-GLVideoSpeech YES` for a clip that talks, `-GLVideoLandscape YES` for a
+    /// 16:9 one, and `-GLAutoEdit tiktok|reels|shorts` for Auto edit (more in
+    /// `VideoEditorView.applyScreenshotOptions`).
     case video
     /// Retro Cam on the demo-art fixture (the simulator has no camera):
     /// `-GLEffect <effect>`, `-GLCameraMode booth`, `-GLCameraTimer 3|10`,

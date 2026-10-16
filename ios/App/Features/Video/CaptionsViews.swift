@@ -182,8 +182,8 @@ struct CaptionsCard: View {
     }
 }
 
-/// Small capsule buttons inside the card.
-private struct CaptionPillButtonStyle: ButtonStyle {
+/// Small capsule buttons inside the Captions and Auto edit cards.
+struct CaptionPillButtonStyle: ButtonStyle {
     var prominent = false
 
     func makeBody(configuration: Configuration) -> some View {

@@ -105,6 +105,9 @@ final class CaptionTrack: @unchecked Sendable {
     let cues: [CaptionCue]
     let look: CaptionLook
     private let reserve: Reserve
+    /// Auto edit: the part of the frame a platform's own buttons and text
+    /// leave free (`SocialPlatform.safeArea`); captions stay inside it.
+    private let safeArea: SafeArea?
     private let lock = NSLock()
     private var canvas: CGSize = .zero
     private var cache: [Key: Drawn] = [:]
@@ -119,11 +122,12 @@ final class CaptionTrack: @unchecked Sendable {
     }
 
     /// Nil when nothing would show.
-    init?(cues: [CaptionCue], look: CaptionLook, overlay: RetroEffect?) {
+    init?(cues: [CaptionCue], look: CaptionLook, overlay: RetroEffect?, safeArea: SafeArea? = nil) {
         let shown = cues.filter { !$0.isBlank && $0.end > $0.start }.sorted { $0.start < $1.start }
         guard !shown.isEmpty else { return nil }
         self.cues = shown
         self.look = look
+        self.safeArea = safeArea
         switch overlay?.option {
         case .dateStamp?, .cameraInfo?: reserve = .stamp
         case .letterbox?: reserve = .letterbox
@@ -186,7 +190,8 @@ final class CaptionTrack: @unchecked Sendable {
         }
         lock.unlock()
         // Drawn outside the lock: the export renders frames on several threads.
-        guard let layout = CaptionDrawing(cue: cues[index], highlight: word >= 0 ? word : nil, look: look, reserve: reserve, canvas: size),
+        guard let layout = CaptionDrawing(cue: cues[index], highlight: word >= 0 ? word : nil, look: look, reserve: reserve,
+                                          safeArea: safeArea, canvas: size),
               let made = layout.render() else { return nil }
         lock.lock()
         defer { lock.unlock() }
@@ -270,6 +275,8 @@ private struct CaptionDrawing {
     let slots: [CGRect]
     let bounds: CGRect
     let canvas: CGSize
+    /// Where the lines are centred across the frame.
+    let centerX: CGFloat
 
     struct Line {
         let ctLine: CTLine
@@ -279,7 +286,8 @@ private struct CaptionDrawing {
         let text: String
     }
 
-    init?(cue: CaptionCue, highlight: Int?, look: CaptionLook, reserve: CaptionTrack.Reserve, canvas: CGSize, fontSize: CGFloat? = nil) {
+    init?(cue: CaptionCue, highlight: Int?, look: CaptionLook, reserve: CaptionTrack.Reserve, safeArea: SafeArea? = nil,
+          canvas: CGSize, fontSize: CGFloat? = nil) {
         let ranges = CaptionLayout.lineRanges(for: cue.text)
         guard !ranges.isEmpty, canvas.width > 1, canvas.height > 1 else { return nil }
         self.cue = cue
@@ -289,11 +297,14 @@ private struct CaptionDrawing {
         let source = cue.text as NSString
         let texts = ranges.map { source.substring(with: NSRange(location: $0.lowerBound, length: $0.count)) }
 
+        // Inside the platform's free area for Auto edit, else the whole frame.
+        let free = safeArea.map { $0.frame(width: Double(canvas.width), height: Double(canvas.height)) }
+        centerX = free.map { CGFloat($0.midX) } ?? canvas.width / 2
         var size = fontSize ?? min(canvas.width, canvas.height) * look.size.scale
         var font = look.style.font(size: size)
         var lines = Self.lines(texts, ranges: ranges, font: font)
         // Long lines shrink to fit rather than run off the frame.
-        let room = canvas.width * 0.88 - 2 * Self.padding(look.style).x * size
+        let room = (free.map { CGFloat($0.width) * 0.94 } ?? canvas.width * 0.88) - 2 * Self.padding(look.style).x * size
         if let widest = lines.map(\.width).max(), widest > room, widest > 0 {
             size *= room / widest
             font = look.style.font(size: size)
@@ -318,12 +329,18 @@ private struct CaptionDrawing {
         }
         let blockHeight = step * CGFloat(lines.count - 1) + slotHeight
         let top: CGFloat
-        switch look.position {
-        case .bottom: top = canvas.height - Self.bottomInset(canvas: canvas, reserve: reserve) - blockHeight
-        case .middle: top = (canvas.height - blockHeight) / 2
+        switch (look.position, free) {
+        case (.bottom, let free?):
+            // Just above the platform's caption and sound lines (and the
+            // effect's own stamp or bars, when those reach higher).
+            top = min(CGFloat(free.maxY) - size * 0.4, canvas.height - Self.bottomInset(canvas: canvas, reserve: reserve)) - blockHeight
+        case (.bottom, nil): top = canvas.height - Self.bottomInset(canvas: canvas, reserve: reserve) - blockHeight
+        case (.middle, let free?): top = CGFloat(free.midY) - blockHeight / 2
+        case (.middle, nil): top = (canvas.height - blockHeight) / 2
         }
+        let middle = self.centerX
         slots = lines.enumerated().map { index, line in
-            CGRect(x: (canvas.width - line.width) / 2 - pad.x * size, y: top + CGFloat(index) * step,
+            CGRect(x: middle - line.width / 2 - pad.x * size, y: top + CGFloat(index) * step,
                    width: line.width + 2 * pad.x * size, height: slotHeight)
         }
         let margin = size * 0.4
@@ -369,7 +386,7 @@ private struct CaptionDrawing {
     }
 
     private func origin(_ index: Int) -> CGPoint {
-        CGPoint(x: (canvas.width - lines[index].width) / 2, y: baseline(index))
+        CGPoint(x: centerX - lines[index].width / 2, y: baseline(index))
     }
 
     /// The caption as an image covering `bounds` (top-left origin).

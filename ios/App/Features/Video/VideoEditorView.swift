@@ -30,6 +30,8 @@ final class VideoEditorModel {
     private(set) var interruptedAction: ExportAction?
     private(set) var resultDuration: Double = 0
     @ObservationIgnored private var frameRate: Double = 30
+    /// Loudness per `VideoEngine.levelWindow`, for Auto edit.
+    @ObservationIgnored private(set) var levels: [Double] = []
 
     var cutSilences = false { didSet { scheduleRebuild() } }
     var effect: RetroEffect? {
@@ -48,9 +50,13 @@ final class VideoEditorModel {
     private(set) var isPlaying = false
     /// Automatic captions; their changes redraw the preview in place.
     let captions = VideoCaptions()
+    /// The vertical Auto edit, when she made one.
+    let autoEdit = VideoAutoEdit()
     @ObservationIgnored private var rebuildTask: Task<Void, Never>?
     @ObservationIgnored private var captionsTask: Task<Void, Never>?
     @ObservationIgnored private var currentComposition: AVMutableComposition?
+    /// The Auto edit build playing, so a caption change only redraws it.
+    @ObservationIgnored private var currentAutoBuild: AutoEditBuild?
     /// A seek still on its way, which a caption redraw mustn't undo.
     @ObservationIgnored private var seekTarget: CMTime?
     @ObservationIgnored private var loopObserver: NSObjectProtocol?
@@ -69,10 +75,12 @@ final class VideoEditorModel {
         let showsExtra: Bool
         let trim: ClosedRange<Double>
         let captions: VideoCaptions.Snapshot
+        let autoEdit: VideoAutoEdit.Edit?
     }
 
     private var edits: Edits {
-        Edits(cutSilences: cutSilences, effect: effect, showsExtra: showsExtra, trim: trim, captions: captions.snapshot)
+        Edits(cutSilences: cutSilences, effect: effect, showsExtra: showsExtra, trim: trim, captions: captions.snapshot,
+              autoEdit: autoEdit.edit)
     }
 
     init(url: URL) {
@@ -80,6 +88,7 @@ final class VideoEditorModel {
         player.isMuted = false
         player.actionAtItemEnd = .none
         captions.onChange = { [weak self] in self?.captionsChanged() }
+        autoEdit.onChange = { [weak self] in self?.scheduleRebuild() }
     }
 
     var hasSound: Bool { silencePlan != nil }
@@ -87,7 +96,7 @@ final class VideoEditorModel {
     /// Changes she'd lose by closing: anything but the untouched clip, unless
     /// exactly this version was already saved or shared.
     var hasUnsavedEdits: Bool {
-        let edited = cutSilences || effect != nil || trim != 0...max(duration, 0.1) || captions.shows
+        let edited = cutSilences || effect != nil || trim != 0...max(duration, 0.1) || captions.shows || autoEdit.edit != nil
         return edited && edits != savedEdits
     }
 
@@ -124,6 +133,7 @@ final class VideoEditorModel {
         }
         guard await rebuild() else { return failLoading() }
         let levels = (try? await VideoEngine.loudness(of: asset)) ?? []
+        self.levels = levels
         silencePlan = levels.isEmpty ? nil : SilenceCutter.plan(levels: levels, window: VideoEngine.levelWindow)
         isAnalyzing = false
         if cutSilences { await rebuild() }
@@ -138,9 +148,10 @@ final class VideoEditorModel {
         scheduleRebuild(delay: .milliseconds(250))
     }
 
-    /// The parts of the clip that make it into the video.
+    /// The parts of the clip that make it into the video: Auto edit's, or
+    /// the clip without its silences when she cut them, inside her trim.
     var keptRanges: [ClosedRange<Double>] {
-        let base = cutSilences ? (silencePlan?.keep ?? [0...duration]) : [0...duration]
+        let base = autoEdit.edit?.parts ?? (cutSilences ? (silencePlan?.keep ?? [0...duration]) : [0...duration])
         return base.compactMap { range in
             let lower = max(range.lowerBound, trim.lowerBound)
             let upper = min(range.upperBound, trim.upperBound)
@@ -161,14 +172,14 @@ final class VideoEditorModel {
     @discardableResult
     private func rebuild() async -> Bool {
         let ranges = keptRanges
-        guard !ranges.isEmpty, let composition = try? await VideoEngine.composition(of: asset, keeping: ranges) else { return false }
-        let videoComposition = try? await VideoEngine.videoComposition(for: composition, effect: effect, showsExtra: showsExtra, fps: frameRate,
-                                                                       captions: captionTrack(for: ranges))
+        guard !ranges.isEmpty, let output = try? await output(keeping: ranges) else { return false }
         guard !Task.isCancelled else { return true }
         resultDuration = ranges.reduce(0) { $0 + ($1.upperBound - $1.lowerBound) }
-        let item = AVPlayerItem(asset: composition)
-        item.videoComposition = videoComposition
-        currentComposition = composition
+        let item = AVPlayerItem(asset: output.composition)
+        item.videoComposition = output.videoComposition
+        item.audioMix = output.audioMix
+        currentComposition = output.composition
+        currentAutoBuild = output.autoBuild
         player.replaceCurrentItem(with: item)
         if let loopObserver { NotificationCenter.default.removeObserver(loopObserver) }
         loopObserver = NotificationCenter.default.addObserver(forName: .AVPlayerItemDidPlayToEndTime, object: item, queue: .main) { [weak self] _ in
@@ -185,9 +196,37 @@ final class VideoEditorModel {
         return true
     }
 
-    /// Captions drawn above the effect's own date stamp, display or bars.
+    /// What plays and what's saved: the stitched clip, how its frames are
+    /// drawn, and its sound.
+    private struct Output {
+        let composition: AVMutableComposition
+        let videoComposition: AVVideoComposition?
+        let audioMix: AVAudioMix?
+        let autoBuild: AutoEditBuild?
+    }
+
+    /// The plain edit in the clip's own shape, or the vertical Auto edit.
+    private func output(keeping ranges: [ClosedRange<Double>]) async throws -> Output {
+        let edit = autoEdit.edit, effect = effect, showsExtra = showsExtra, fps = frameRate, asset = asset
+        let captionTrack = captionTrack(for: ranges)
+        if let edit {
+            let build = try await AutoEditRenderer.build(asset, keeping: ranges)
+            let styler = FrameStyler(effect: effect, showsExtra: showsExtra, fps: fps, look: edit.look, captions: captionTrack)
+            return Output(composition: build.composition,
+                          videoComposition: AutoEditRenderer.videoComposition(for: build, framing: edit.framing, styler: styler),
+                          audioMix: build.audioMix, autoBuild: build)
+        }
+        let composition = try await VideoEngine.composition(of: asset, keeping: ranges)
+        let videoComposition = try await VideoEngine.videoComposition(for: composition, effect: effect, showsExtra: showsExtra, fps: fps,
+                                                                      captions: captionTrack)
+        return Output(composition: composition, videoComposition: videoComposition, audioMix: nil, autoBuild: nil)
+    }
+
+    /// Captions drawn above the effect's own date stamp, display or bars,
+    /// and clear of an Auto edit platform's buttons.
     private func captionTrack(for ranges: [ClosedRange<Double>]) -> CaptionTrack? {
-        captions.track(keeping: ranges, overlay: showsExtra && effect?.option?.worksOnVideo == true ? effect : nil)
+        captions.track(keeping: ranges, overlay: showsExtra && effect?.option?.worksOnVideo == true ? effect : nil,
+                       safeArea: autoEdit.edit?.platform.safeArea)
     }
 
     /// Captions changed: the playing item gets a new video composition, so
@@ -198,13 +237,28 @@ final class VideoEditorModel {
             // Typing in a caption settles before the redraw.
             try? await Task.sleep(for: .milliseconds(120))
             guard !Task.isCancelled, let composition = currentComposition, let item = player.currentItem else { return }
-            let videoComposition = try? await VideoEngine.videoComposition(for: composition, effect: effect, showsExtra: showsExtra, fps: frameRate,
-                                                                           captions: captionTrack(for: keptRanges))
+            // Auto edit just started or was undone: the rebuild on its way draws the captions.
+            guard (currentAutoBuild != nil) == (autoEdit.edit != nil) else { return }
+            let videoComposition: AVVideoComposition?
+            if let build = currentAutoBuild, let edit = autoEdit.edit {
+                let styler = FrameStyler(effect: effect, showsExtra: showsExtra, fps: frameRate, look: edit.look,
+                                         captions: captionTrack(for: keptRanges))
+                videoComposition = AutoEditRenderer.videoComposition(for: build, framing: edit.framing, styler: styler)
+            } else {
+                videoComposition = try? await VideoEngine.videoComposition(for: composition, effect: effect, showsExtra: showsExtra,
+                                                                           fps: frameRate, captions: captionTrack(for: keptRanges))
+            }
             guard !Task.isCancelled, item === player.currentItem else { return }
             item.videoComposition = videoComposition
             // A paused frame redraws only when asked.
             if !isPlaying { await player.seek(to: seekTarget ?? player.currentTime(), toleranceBefore: .zero, toleranceAfter: .zero) }
         }
+    }
+
+    /// Stops the preview for work that needs the GPU (Auto edit's look at the clip).
+    func pausePreview() {
+        player.pause()
+        isPlaying = false
     }
 
     func togglePlayback() {
@@ -215,7 +269,8 @@ final class VideoEditorModel {
     }
 
     /// Renders the final video and, for Save, writes it to Photos. Returns the
-    /// file for Share. Throws `CancellationError` when she cancels, and also
+    /// file for Share, and for an Auto edit's Save too (its post sheet can
+    /// share it). Throws `CancellationError` when she cancels, and also
     /// when leaving the app stopped the export: then `interruptedAction` is
     /// set and the view starts it again once she's back.
     func run(_ action: ExportAction, isRestart: Bool = false) async throws -> URL? {
@@ -244,14 +299,13 @@ final class VideoEditorModel {
         do {
             // Ask before the export, so a long render isn't wasted on a "no".
             if action == .save { try await VideoEngine.requestPhotosAccess() }
-            let ranges = keptRanges, effect = effect, showsExtra = showsExtra, fps = frameRate, asset = asset
-            let captionTrack = captionTrack(for: ranges)
+            let ranges = keptRanges
+            let keepsFile = autoEdit.edit != nil
             let task = Task<URL, Error> {
-                let composition = try await VideoEngine.composition(of: asset, keeping: ranges)
-                let videoComposition = try await VideoEngine.videoComposition(for: composition, effect: effect, showsExtra: showsExtra, fps: fps,
-                                                                              captions: captionTrack)
+                let output = try await self.output(keeping: ranges)
                 try Task.checkCancellation()
-                return try await VideoEngine.export(composition, videoComposition: videoComposition) { [weak self] value in
+                return try await VideoEngine.export(output.composition, videoComposition: output.videoComposition,
+                                                    audioMix: output.audioMix) { [weak self] value in
                     self?.exportProgress = value
                 }
             }
@@ -259,12 +313,17 @@ final class VideoEditorModel {
             if cancelledByUser { task.cancel() }
             let url = try await task.value
             if action == .save {
-                defer { try? FileManager.default.removeItem(at: url) }
-                try await VideoEngine.saveToPhotos(url)
+                do {
+                    try await VideoEngine.saveToPhotos(url)
+                } catch {
+                    try? FileManager.default.removeItem(at: url)
+                    throw error
+                }
+                if !keepsFile { try? FileManager.default.removeItem(at: url) }
             }
             savedEdits = edits
             restarts = 0
-            return action == .share ? url : nil
+            return action == .share || keepsFile ? url : nil
         } catch {
             // The Mac keeps rendering in the background, so a failure there is real.
             let stoppedByLeaving = !Platform.isMac && (leftAppDuringExport || VideoEngine.isInterruption(error)
@@ -292,6 +351,7 @@ final class VideoEditorModel {
     func stop() {
         player.pause()
         isPlaying = false
+        autoEdit.task?.cancel()
         captions.cancel()
         if let loopObserver { NotificationCenter.default.removeObserver(loopObserver) }
     }
@@ -319,8 +379,9 @@ private final class BackgroundTime {
     }
 }
 
-/// Simple video editing, free and on the iPhone: auto-cut silences, retro
-/// effects, trim, then save or share. No watermark, no ending clip.
+/// Simple video editing, free and on the device: auto-cut silences, retro
+/// effects, trim, captions and Auto edit's vertical cut, then save or share.
+/// No watermark, no ending clip.
 struct VideoEditorView: View {
     let source: VideoSource
 
@@ -332,6 +393,13 @@ struct VideoEditorView: View {
     /// The exported file on the share sheet, deleted when the sheet closes.
     @State private var sharedFile: URL?
     @State private var showDiscardAlert = false
+    @State private var showsAutoEditOptions = false
+    /// Auto edit's export sheet: the words to post it with, then Share.
+    @State private var postRequest: AutoEditPostSheet.Request?
+    /// Share video in that sheet: the share sheet opens once it's closed.
+    @State private var sharesAfterPost = false
+    /// The exported Auto edit the sheet can share, deleted when it's done with.
+    @State private var postFile: URL?
 
     init(source: VideoSource) {
         self.source = source
@@ -377,9 +445,25 @@ struct VideoEditorView: View {
                 GeneratingOverlay(title: String(localized: "Saving your video…"), progress: model.exportProgress,
                                   showsTips: false, onCancel: { model.cancelExport() })
                     .transition(.opacity)
+            } else if let phase = model.autoEdit.phase {
+                GeneratingOverlay(title: autoEditTitle(phase), progress: autoEditProgress(phase),
+                                  showsTips: false, onCancel: { model.cancelAutoEdit() })
+                    .transition(.opacity)
             }
         }
         .animation(.easeInOut(duration: 0.25), value: model.isExporting)
+        .animation(.easeInOut(duration: 0.25), value: model.autoEdit.isWorking)
+        .sheet(isPresented: $showsAutoEditOptions) {
+            AutoEditOptionsSheet(model: model)
+                .macSheet(.form)
+        }
+        .sheet(item: $postRequest, onDismiss: finishPost) { request in
+            AutoEditPostSheet(request: request, post: model.autoEdit.post, transcript: model.autoEditTranscript) {
+                sharesAfterPost = true
+            }
+            .environment(app)
+            .macSheet(.form)
+        }
         .alert("Discard your edits?", isPresented: $showDiscardAlert) {
             Button("Discard", role: .destructive) { close() }
             Button("Keep editing", role: .cancel) {}
@@ -389,7 +473,7 @@ struct VideoEditorView: View {
         .task {
             await model.load()
             #if DEBUG
-            applyScreenshotOptions()
+            await applyScreenshotOptions()
             #endif
         }
         // File › Save (⌘S) and File › Close (⌘W) on the Mac use this editor's
@@ -511,7 +595,14 @@ struct VideoEditorView: View {
                     .foregroundStyle(Palette.textSecondary)
                     .frame(maxWidth: .infinity, alignment: .leading)
             }
-            silenceCard
+            AutoEditCard(model: model, freeLeft: autoEditFreeLeft, canUpgrade: app.allowsPurchases,
+                         start: { platform in startAutoEdit(platform) },
+                         showOptions: { showsAutoEditOptions = true },
+                         showPost: { showPost(saved: false, file: nil) })
+            // Auto edit takes out the silences itself.
+            if model.autoEdit.edit == nil {
+                silenceCard
+            }
             CaptionsCard(model: model)
                 .tipSlot(.captions(inUse: model.captions.status != .idle), edge: .top)
             ScrollView(.horizontal) {
@@ -593,11 +684,20 @@ struct VideoEditorView: View {
             switch action {
             case .save:
                 Haptics.success()
-                app.showToast("Video saved to Photos ✨", style: .success)
+                // An Auto edit's export sheet says it's saved, with the words to post it with.
+                if model.autoEdit.edit != nil, let url {
+                    showPost(saved: true, file: url)
+                } else {
+                    app.showToast("Video saved to Photos ✨", style: .success)
+                }
             case .share:
                 guard let url else { return }
-                sharedFile = url
-                shareItems = ActivityItems(items: [url])
+                if model.autoEdit.edit != nil {
+                    showPost(saved: false, file: url)
+                } else {
+                    sharedFile = url
+                    shareItems = ActivityItems(items: [url])
+                }
             }
             // An ad, a rating request or the invite card may follow once the
             // video editor closes.
@@ -623,6 +723,8 @@ struct VideoEditorView: View {
     private func requestClose() {
         if model.isExporting {
             model.cancelExport()
+        } else if model.autoEdit.isWorking {
+            model.cancelAutoEdit()
         } else if model.hasUnsavedEdits {
             showDiscardAlert = true
         } else {
@@ -645,15 +747,114 @@ struct VideoEditorView: View {
         }
     }
 
+    // MARK: Auto edit
+
+    /// Free ones left today, for the card; nil with Pro or once this clip is counted.
+    private var autoEditFreeLeft: Int? {
+        app.purchases.isPro || model.autoEdit.isCounted ? nil : AutoEditQuota.remainingToday
+    }
+
+    /// One tap: Pro, a free one left today, or this clip already counted;
+    /// otherwise the paywall says why (or, under 13, when the next one comes).
+    private func startAutoEdit(_ platform: SocialPlatform, length: Double? = nil, look: AdjustVibe? = nil) {
+        guard !model.autoEdit.isWorking else { return }
+        let isPro = app.purchases.isPro
+        guard model.autoEdit.isCounted || AutoEditQuota.allows(isPro: isPro) else {
+            Haptics.tap()
+            if app.allowsPurchases {
+                app.presentPaywall(source: "auto_edit")
+            } else {
+                app.showToast("Your next free auto edit is ready tomorrow.", style: .info)
+            }
+            return
+        }
+        Haptics.tap()
+        model.autoEdit.task = Task {
+            let made = await model.makeAutoEdit(for: platform, length: length ?? model.autoEdit.edit?.length ?? SocialPlatform.defaultLength,
+                                                look: look ?? model.autoEdit.edit?.look)
+            guard made else { return }
+            if !model.autoEdit.isCounted {
+                if !isPro { AutoEditQuota.recordUse() }
+                model.autoEdit.isCounted = true
+            }
+            Haptics.success()
+        }
+    }
+
+    private func autoEditTitle(_ phase: VideoAutoEdit.Phase) -> String {
+        switch phase {
+        case .moments: return String(localized: "Finding the best moments…")
+        case .captions: return String(localized: "Adding captions…")
+        }
+    }
+
+    private func autoEditProgress(_ phase: VideoAutoEdit.Phase) -> Double? {
+        switch phase {
+        case .moments(let value): return value
+        case .captions:
+            if case .working(.listening(let value)) = model.captions.status { return value }
+            if case .working(.downloading(let value)) = model.captions.status { return value }
+            return nil
+        }
+    }
+
+    private func showPost(saved: Bool, file: URL?) {
+        guard let platform = model.autoEdit.edit?.platform else {
+            if let file { try? FileManager.default.removeItem(at: file) }
+            return
+        }
+        if let old = postFile, old != file { try? FileManager.default.removeItem(at: old) }
+        postFile = file
+        sharesAfterPost = false
+        postRequest = AutoEditPostSheet.Request(platform: platform, saved: saved, file: file)
+    }
+
+    /// The export sheet closed: Share video opens the share sheet with the
+    /// file (deleted when that closes); otherwise the file goes now.
+    private func finishPost() {
+        guard let file = postFile else {
+            sharesAfterPost = false
+            return
+        }
+        postFile = nil
+        if sharesAfterPost {
+            sharesAfterPost = false
+            sharedFile = file
+            shareItems = ActivityItems(items: [file])
+        } else {
+            try? FileManager.default.removeItem(at: file)
+        }
+    }
+
     #if DEBUG
     /// Screenshot scene `video`: `-GLEffect <effect>`, `-GLCutSilences YES`,
     /// and `-GLVideoAction save|share|close` to export or ask before closing.
-    private func applyScreenshotOptions() {
+    /// Auto edit: `-GLAutoEdit tiktok|reels|shorts` makes one (with
+    /// `-GLAutoEditLength 15|30|60|90` and `-GLAutoEditLook dreamy|golden|analog|moody`),
+    /// then `-GLAutoEditPanel options|post` opens its options or its export
+    /// sheet; `-GLAutoEditPhase moments|captions` pins its progress, and
+    /// `-GLAutoEditUsed YES` has today's free one spent (the paywall's reason).
+    private func applyScreenshotOptions() async {
         guard ScreenshotScene.current == .video, !model.loadFailed else { return }
         let defaults = UserDefaults.standard
         if let effect = defaults.string(forKey: "GLEffect").flatMap(RetroEffect.init(rawValue:)) { model.effect = effect }
         if defaults.bool(forKey: "GLCutSilences") { model.cutSilences = true }
         model.captions.applyScreenshotOptions(asset: model.asset, duration: model.duration)
+        if let phase = defaults.string(forKey: "GLAutoEditPhase") {
+            model.autoEdit.phase = phase == "captions" ? .captions : .moments(0.42)
+            return
+        }
+        if let platform = defaults.string(forKey: "GLAutoEdit").flatMap(SocialPlatform.init(rawValue:)) {
+            let length = defaults.double(forKey: "GLAutoEditLength")
+            startAutoEdit(platform, length: length > 0 ? length : nil,
+                          look: defaults.string(forKey: "GLAutoEditLook").flatMap(AdjustVibes.preset(id:)))
+            await model.autoEdit.task?.value
+            switch defaults.string(forKey: "GLAutoEditPanel") {
+            case "options"?: showsAutoEditOptions = true
+            case "post"?: showPost(saved: true, file: nil)
+            default: break
+            }
+        }
         // `-GLVideoSeek <seconds>`: paused on one frame, for caption shots.
         if defaults.object(forKey: "GLVideoSeek") != nil {
             let seconds = defaults.double(forKey: "GLVideoSeek")

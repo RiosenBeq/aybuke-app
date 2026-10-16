@@ -7,7 +7,8 @@ extension ScreenshotFixtures {
     /// video: the golden landscape panning, a bouncing dot and the source time
     /// printed on every frame (to compare with the camcorder timecode), over a
     /// tone with quiet gaps for "Auto-cut silences". `broken` writes a file
-    /// AVFoundation can't open.
+    /// AVFoundation can't open. `-GLVideoLandscape YES` makes it 16:9 with the
+    /// `portrait-a` sample walking from side to side, for Auto edit's framing.
     static func sampleVideo(seconds: Double, broken: Bool) async throws -> URL {
         let folder = FileManager.default.temporaryDirectory
         let output = folder.appendingPathComponent("glowlit-sample-\(UUID().uuidString).mov")
@@ -38,7 +39,10 @@ extension ScreenshotFixtures {
     private static func writeFrames(to url: URL, seconds: Double) async throws {
         // Long clips only need to exist, not to look smooth.
         let isLong = seconds > 30
-        let size = isLong ? CGSize(width: 270, height: 480) : CGSize(width: 540, height: 960)
+        let landscape = UserDefaults.standard.bool(forKey: "GLVideoLandscape")
+        var size = isLong ? CGSize(width: 270, height: 480) : CGSize(width: 540, height: 960)
+        if landscape { size = CGSize(width: size.height, height: size.width) }
+        let subject = portraitBefore
         let fps: Int32 = isLong ? 1 : 30
         let writer = try AVAssetWriter(outputURL: url, fileType: .mov)
         let input = AVAssetWriterInput(mediaType: .video, outputSettings: [
@@ -74,6 +78,12 @@ extension ScreenshotFixtures {
             let frame = renderer.image { _ in
                 let pan = (drawn.width - size.width) * (0.5 + 0.45 * sin(time / 2))
                 backdrop.draw(in: CGRect(x: -pan, y: (size.height - drawn.height) / 2, width: drawn.width, height: drawn.height))
+                if landscape {
+                    let height = size.height
+                    let width = height * subject.size.width / subject.size.height
+                    let center = size.width / 2 + size.width * 0.3 * sin(time * 0.6)
+                    subject.draw(in: CGRect(x: center - width / 2, y: 0, width: width, height: height))
+                }
                 UIColor(red: 0.97, green: 0.76, blue: 0.85, alpha: 1).setFill()
                 UIBezierPath(ovalIn: CGRect(x: size.width / 2 - 40, y: size.height * 0.62 + sin(time * 2) * 80, width: 80, height: 80)).fill()
                 (String(format: "%.1f s", time) as NSString).draw(at: CGPoint(x: 40, y: size.height * 0.45), withAttributes: attributes)

@@ -519,6 +519,8 @@ enum PaywallReason: Equatable {
     case moreImages
     /// "Remove it with Pro" in the share composer.
     case watermark
+    /// A free member's Auto edit for today is used (video editor).
+    case autoEdit
 
     /// Nil when she opened it herself (Settings, the credits sheet) or
     /// right after onboarding.
@@ -529,6 +531,8 @@ enum PaywallReason: Equatable {
             self = .moreImages
         } else if source == "share_watermark" {
             self = .watermark
+        } else if source == "auto_edit", !isPro {
+            self = .autoEdit
         } else if source.hasPrefix("template_"), let template = TemplateCatalog.template(id: String(source.dropFirst("template_".count))) {
             self = .proItem(L10n.core(template.title))
         } else if source.hasPrefix("style_"), case let id = String(source.dropFirst("style_".count)),
@@ -562,6 +566,10 @@ private struct ReasonCard: View {
                     Text("Free credits are back in \(Text(refill, style: .relative))")
                         .font(.legibleCaption)
                         .foregroundStyle(Palette.textSecondary)
+                } else if reason == .autoEdit {
+                    Text("Your next free auto edit is ready in \(Text(AutoEditAllowance.nextReset(after: .now), style: .relative))")
+                        .font(.legibleCaption)
+                        .foregroundStyle(Palette.textSecondary)
                 }
             }
             .fixedSize(horizontal: false, vertical: true)
@@ -580,6 +588,7 @@ private struct ReasonCard: View {
         case .proItem: return "crown.fill"
         case .moreImages: return "square.grid.2x2.fill"
         case .watermark: return "seal.fill"
+        case .autoEdit: return "wand.and.stars"
         }
     }
 
@@ -589,6 +598,7 @@ private struct ReasonCard: View {
         case .proItem(let name): return Text("\(name) is part of Pro")
         case .moreImages: return Text("Creating several images at once is part of Pro")
         case .watermark: return Text("Pro removes the small \(Brand.name) mark from AI results")
+        case .autoEdit: return Text("Unlimited auto edits are part of Pro")
         }
     }
 }
