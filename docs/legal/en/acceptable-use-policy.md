@@ -2,7 +2,7 @@
 
 # Acceptable Use & AI Content Policy
 
-Last updated: 15 October 2026
+Last updated: 16 October 2026
 
 > **In short**
 > - Only upload photos you're allowed to use, and only edit people who have agreed to it. For children, their parent or guardian must agree.

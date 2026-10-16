@@ -1,12 +1,12 @@
 # Terms of Use
 
-Last updated: 15 October 2026
+Last updated: 16 October 2026
 
 > **The short version.** This summary helps you find your way around. It doesn't replace the full Terms below.
 > - These Terms are a contract between you and Okan Berk Manavoğlu (individual developer), the developer of Aybuke. They are not a contract with Apple.
 > - You must be at least 13. If you're under 18 (or under the age of majority where you live), you need permission from a parent or legal guardian. Section 4 is written for you.
 > - We design Aybuke with teens in mind: no tracking, no public feeds, no personalised ads, and cloud AI only after you opt in.
-> - On-device tools are always free. Free users get free credits every day, can watch an optional ad for 1 more credit a few times a day, and see an occasional ad after saving; the app shows the current numbers. Pro has no ads. Pro subscriptions renew automatically until you cancel them in your Apple Account settings. Purchased credits never expire, but if Apple refunds a purchase, we take back what's left of it (section 9).
+> - On-device tools are always free. Free users get free credits every day, can watch an optional ad for 1 more credit, or for a one-time try of a Pro look or style, a few times a day, and see an occasional ad after saving; the app shows the current numbers. Pro has no ads. Pro subscriptions renew automatically until you cancel them in your Apple Account settings. Purchased credits never expire, but if Apple refunds a purchase, we take back what's left of it (section 9).
 > - You keep the rights in your photos and, as far as the law allows, you own your results. Only upload photos you're allowed to use, and only edit people who agree to it.
 > - No sexual content, nothing sexual involving anyone under 18, no bullying or body-shaming edits, and no deep fakes meant to deceive. Our [Acceptable Use & AI Content Policy](glowlit-legal://acceptableUse) has the details.
 > - AI can get things wrong. Your mandatory rights as a consumer are never affected.
@@ -54,7 +54,7 @@ This section is a plain-language summary for younger users. The rest of these Te
 - **Talk to a parent or guardian first.** You need their permission to use Aybuke. Talk to them before you buy anything or switch on cloud AI processing.
 - **Cloud AI may need their consent too.** In the EU and EEA, if you're under the age of digital consent in your country (between 13 and 16, depending on the country), a parent or guardian must give or approve consent for cloud AI processing. In Türkiye, if you're under 18, your parent or guardian should give or approve this consent. Read the consent screen together.
 - **Purchases go through Apple.** Purchases are charged to the Apple Account on your device. If you have a child account in Family Sharing, your parent or guardian may need to approve each purchase with "Ask to Buy". Never buy anything without permission.
-- **Ads are optional and never personalised.** Without Pro, you may see a few ads suitable for everyone: one you can choose to watch for 1 credit when you've run out (a few a day, as the app shows), and sometimes one after you save. You never have to watch one, and they're never based on what you do in other apps.
+- **Ads are optional and never personalised.** Without Pro, you may see a few ads suitable for everyone: one you can choose to watch for 1 credit when you've run out, or for a one-time try of a Pro look or style (a few a day, as the app shows), and sometimes one after you save. You never have to watch one, and they're never based on what you do in other apps.
 - **Only edit people who say yes.** Don't upload or edit photos of other people, especially other young people, without their permission. Never create anything sexual, humiliating or mean about anyone.
 - **Think before you share.** Your creations stay on your device unless you share them. Once something is online, it can be hard to take back.
 - **Help is here.** If something goes wrong, or someone uses Aybuke to hurt you, tell a trusted adult and report it to us (see the [AUP](glowlit-legal://acceptableUse)). Parents and guardians can contact us at [hello@buaze.com](mailto:hello@buaze.com), including to delete their child's data.
@@ -164,7 +164,7 @@ You can buy credit packs as consumable in-app purchases. Purchased credits:
 
 If Apple refunds a credit pack, we take back the credits from it that you haven't used yet: up to as many credits as the pack gave you come off your purchased credits. Credits you've already used stay used, and your balance never goes below zero. If Apple reverses the refund, we give those credits back.
 
-### Credits from ads
+### Credits and Pro tries from ads
 
 Without an active Pro subscription, when you're out of credits, you can choose to watch a short ad from Google AdMob for 1 credit, up to the number of times a day (UTC) that the app shows; the limit counts for your account and for your App Store download. Watching is always optional. The credit is added once Google confirms to our server that the ad played to the end; if it closes early, or Google doesn't confirm it, no credit is added. Credits from ads:
 
@@ -173,7 +173,9 @@ Without an active Pro subscription, when you're out of credits, you can choose t
 - can't be transferred to another person or account; and
 - may not be collected by automation, fake devices or anything else that isn't a real person watching the ad.
 
-Free members may also see an occasional ad after saving or sharing a finished creation, never while they're editing and at most 3 a day. Pro members see no ads. We may change how ads appear, or stop offering credits for ads, for future periods; this never reduces credits already in your balance.
+Without an active Pro subscription, you can also choose to watch a short ad for a one-time try of a Pro look or style (a Pro template, or a Pro style in Create from text), up to the number of times a day (UTC) that the app shows; this limit counts for your account and for your App Store download, separately from ads for credits. The try is offered while you have a credit to spend, because the creation uses 1 credit like any other. Once Google confirms that the ad played to the end, that look or style is unlocked for one creation started within 30 minutes, and for that creation's free Likeness Lock retry. If the creation fails or its credit is refunded, you get the try back for the rest of the 30 minutes. A Pro try isn't a Pro subscription, has no cash value, can't be transferred and may not be collected by automation, fake devices or anything else that isn't a real person watching the ad.
+
+Free members may also see an occasional ad after saving or sharing a finished creation, never while they're editing and at most 3 a day. Pro members see no ads. We may change how ads appear, or stop offering credits or Pro tries for ads, for future periods; this never reduces credits already in your balance.
 
 ### Fair use and limits
 

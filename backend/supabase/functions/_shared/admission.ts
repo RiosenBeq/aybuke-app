@@ -28,6 +28,9 @@ export const ADMISSION_MESSAGES: Record<string, string> = {
   app_transaction_invalid:
     "We couldn't confirm your download with the App Store, so free credits aren't available right now.",
   insufficient_credits: "You're out of credits.",
+  // admit_unlocked_job(): the try of this Pro look or style was used or ended
+  // between ai-image's check and admission (_shared/unlocks.ts).
+  pro_required: "This look or style is part of Pro.",
 };
 
 /** The refusal as an HTTP error, with Retry-After, `until` and the balance when known. */

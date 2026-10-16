@@ -41,6 +41,11 @@
 // the results records the delivery; a DELETE on a delivered job confirms the
 // app has the images and clears them right away. Results the app never
 // received are refunded (cancel_job(), settle_unconfirmed(), sweep_jobs()).
+//
+// A Pro look or style needs Pro, or a try of exactly that one a free member
+// watched a rewarded ad for (_shared/unlocks.ts, migration 20261101000000):
+// asked before anything else, then spent with the job by admit_unlocked_job(),
+// which wraps admit_job() in the same transaction.
 import type { SupabaseClient } from "npm:@supabase/supabase-js@2.117.3";
 import { admissionError, type AdmitResult } from "../_shared/admission.ts";
 import { type EntitlementStatus, type InstallProof, resolveEntitlement, verifyInstall } from "../_shared/apple.ts";
@@ -70,7 +75,8 @@ import {
   type SafetyVerdict,
 } from "../_shared/safety.ts";
 import { noteSafetyCheckError } from "../_shared/safety-breaker.ts";
-import { PRO_STYLES, templateRecipe } from "../_shared/templates.ts";
+import { templateRecipe } from "../_shared/templates.ts";
+import { admissionCall, proItemsFor, requireUnlock, unlockChecker } from "../_shared/unlocks.ts";
 import * as xai from "../_shared/xai.ts";
 import { holdWhilePending, isPending, waitSeconds } from "./long-poll.ts";
 import {
@@ -239,9 +245,6 @@ async function createJob(
   const image = op !== "text_to_image" ? requireImage(body.image, "Pick a photo first.") : undefined;
   const mask = op === "erase_object" ? requireImage(body.mask, "Brush over what you want to erase.") : undefined;
   const styleId = optionalString(body.style_id, 100);
-  if (styleId && PRO_STYLES.has(styleId) && !isPro) {
-    throw new HttpError(402, "pro_required", "This style is part of Pro.");
-  }
   const templateId = optionalString(body.template_id, 100);
   if (
     body.retry_of !== undefined && body.retry_of !== null &&
@@ -250,6 +253,18 @@ async function createJob(
     throw new HttpError(400, "bad_request", "Invalid retry.");
   }
   const retryOf = typeof body.retry_of === "string" ? body.retry_of : null;
+  const recipe = op === "restyle" ? templateRecipe(templateId ?? "") : undefined;
+  if (op === "restyle" && !recipe) {
+    throw new HttpError(400, "bad_request", "This style is no longer available. Update the app to see the latest.");
+  }
+  // A Pro look or style: Pro, or a try of exactly that one she watched an ad
+  // for. Asked before the prompt polish and before anything is booked; without
+  // one it's 402 pro_required, as it always was.
+  const unlock = await requireUnlock(
+    proItemsFor(isPro, styleId, recipe),
+    retryOf,
+    unlockChecker((fn, args) => db.rpc(fn, args), userId),
+  );
 
   const useXAI = provider() === "xai";
   if (useXAI && !xai.supports(op)) throw new HttpError(400, "bad_request", "Background removal runs on your device.");
@@ -261,12 +276,7 @@ async function createJob(
   }
   let endpoint = useXAI ? `xai/${xai.model(op)}` : fal.ENDPOINTS[op];
   let verdict: Verdict;
-  if (op === "restyle") {
-    const recipe = templateRecipe(templateId ?? "");
-    if (!recipe) {
-      throw new HttpError(400, "bad_request", "This style is no longer available. Update the app to see the latest.");
-    }
-    if (recipe.isPro && !isPro) throw new HttpError(402, "pro_required", "This template is part of Pro.");
+  if (recipe) {
     prompt = recipe.prompt;
     if (!useXAI) endpoint = recipe.endpoint ?? endpoint;
     verdict = evaluatePrompt(prompt, op);
@@ -294,7 +304,9 @@ async function createJob(
   // Restyle recipes carry their own identity clause, and enhance ignores the prompt.
   if (op === "magic_edit" && !prompt.endsWith(EDIT_GUARD)) prompt += EDIT_GUARD;
 
-  const { data, error } = await db.rpc("admit_job", {
+  // With a try, the same admission plus spending it (only then the wrapper, so
+  // every other job calls admit_job() exactly as before).
+  const admission = admissionCall(unlock, {
     p_user: userId,
     p_operation: op,
     p_endpoint: endpoint,
@@ -308,8 +320,9 @@ async function createJob(
     p_ip: ip ?? null,
     p_blocked_category: verdict.allowed ? null : verdict.category,
   });
+  const { data, error } = await db.rpc(admission.fn, admission.args);
   if (error || !data) {
-    console.error("admit_job failed", error?.message);
+    console.error(`${admission.fn} failed`, error?.message);
     throw new HttpError(500, "internal", "Couldn't start the job.");
   }
   const admitted = data as AdmitResult;

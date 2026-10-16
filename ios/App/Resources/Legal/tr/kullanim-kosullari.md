@@ -1,12 +1,12 @@
 # Kullanım Koşulları
 
-Son güncelleme: 15 Ekim 2026
+Son güncelleme: 16 Ekim 2026
 
 > **Kısaca.** Bu özet, metinde yolunuzu bulmanıza yardımcı olur; aşağıdaki Koşulların yerine geçmez.
 > - Bu Koşullar, sizinle Aybuke uygulamasının geliştiricisi Okan Berk Manavoğlu (bireysel geliştirici) arasında yapılan bir sözleşmedir. Apple bu sözleşmenin tarafı değildir.
 > - En az 13 yaşında olmalısınız. 18 yaşından küçükseniz velinizin veya vasinizin izni gerekir. 4. bölüm sizin için yazıldı.
 > - Aybuke uygulamasını gençleri düşünerek tasarlıyoruz: takip yok, herkese açık akış yok, kişiselleştirilmiş reklam yok; bulut yapay zekâ ancak siz onay verdikten sonra çalışır.
-> - Cihaz üzerindeki araçlar her zaman ücretsizdir. Ücretsiz kullanıcılar her gün ücretsiz kredi alır, günde birkaç kez isteğe bağlı bir reklam izleyerek 1 kredi daha kazanabilir ve kaydettikten sonra ara sıra bir reklam görür; güncel sayıları uygulama gösterir. Pro'da reklam yoktur. Pro abonelikleri, siz Apple Hesabı ayarlarınızdan iptal edene kadar otomatik olarak yenilenir. Satın aldığınız kredilerin süresi hiçbir zaman dolmaz; ancak Apple bir satın alımın ücretini iade ederse, o satın alımdan kalanı geri alırız (9. bölüm).
+> - Cihaz üzerindeki araçlar her zaman ücretsizdir. Ücretsiz kullanıcılar her gün ücretsiz kredi alır, günde birkaç kez isteğe bağlı bir reklam izleyerek 1 kredi daha ya da bir Pro görünümünü veya stilini bir kez deneme hakkı kazanabilir ve kaydettikten sonra ara sıra bir reklam görür; güncel sayıları uygulama gösterir. Pro'da reklam yoktur. Pro abonelikleri, siz Apple Hesabı ayarlarınızdan iptal edene kadar otomatik olarak yenilenir. Satın aldığınız kredilerin süresi hiçbir zaman dolmaz; ancak Apple bir satın alımın ücretini iade ederse, o satın alımdan kalanı geri alırız (9. bölüm).
 > - Fotoğraflarınız üzerindeki haklarınız sizde kalır; sonuçlar ise kanunun izin verdiği ölçüde size aittir. Yalnızca kullanma hakkınız olan fotoğrafları yükleyin ve yalnızca buna onay veren kişileri düzenleyin.
 > - Cinsel içerik, 18 yaşından küçükleri içeren her türlü cinsel içerik, zorbalık veya bedenle alay eden düzenlemeler ve aldatmaya yönelik deepfake yasaktır. Ayrıntılar için [Kabul Edilebilir Kullanım ve Yapay Zekâ İçerik Politikası](glowlit-legal://acceptableUse) metnine bakın.
 > - Yapay zekâ hata yapabilir. Tüketici olarak sahip olduğunuz emredici haklar hiçbir şekilde etkilenmez.
@@ -54,7 +54,7 @@ Bu bölüm, genç kullanıcılar için hazırlanmış sade bir özettir. Koşull
 - **Önce velinizle veya vasinizle konuşun.** Aybuke uygulamasını kullanmak için onların izni gerekir. Bir şey satın almadan veya bulut yapay zekâ işlemeyi açmadan önce onlarla konuşun.
 - **Bulut yapay zekâ için onların onayı da gerekebilir.** AB ve AEA'da, ülkenizdeki dijital rıza yaşının (ülkeye göre 13 ile 16 arası) altındaysanız, bulut yapay zekâ işlemeye ilişkin rızanın veliniz veya vasiniz tarafından verilmesi ya da onaylanması gerekir. Türkiye'de 18 yaşından küçükseniz bu açık rızanın veliniz veya vasiniz tarafından verilmesi ya da onaylanması gerekir. Onay ekranını birlikte okuyun.
 - **Satın alımlar Apple üzerinden yapılır.** Satın alımlar, cihazınızdaki Apple Hesabından tahsil edilir. Aile Paylaşımı'nda bir çocuk hesabınız varsa, her satın alımın veliniz veya vasiniz tarafından "Satın Alma İzni İste" (Ask to Buy) özelliğiyle onaylanması gerekebilir. İzin almadan hiçbir şey satın almayın.
-- **Reklamlar isteğe bağlıdır ve asla kişiselleştirilmez.** Pro'nuz yoksa herkese uygun birkaç reklam görebilirsiniz: krediniz bittiğinde 1 kredi için izlemeyi seçebileceğiniz bir reklam (uygulamanın gösterdiği gibi günde birkaç kez) ve bazen kaydettikten sonra bir reklam. Hiçbir reklamı izlemek zorunda değilsiniz ve reklamlar asla diğer uygulamalarda yaptıklarınıza dayanmaz.
+- **Reklamlar isteğe bağlıdır ve asla kişiselleştirilmez.** Pro'nuz yoksa herkese uygun birkaç reklam görebilirsiniz: krediniz bittiğinde 1 kredi için ya da bir Pro görünümünü veya stilini bir kez denemek için izlemeyi seçebileceğiniz bir reklam (uygulamanın gösterdiği gibi günde birkaç kez) ve bazen kaydettikten sonra bir reklam. Hiçbir reklamı izlemek zorunda değilsiniz ve reklamlar asla diğer uygulamalarda yaptıklarınıza dayanmaz.
 - **Yalnızca "evet" diyen kişileri düzenleyin.** Başkalarının, özellikle de diğer gençlerin fotoğraflarını izinleri olmadan yüklemeyin veya düzenlemeyin. Hiç kimse hakkında cinsel, aşağılayıcı veya kırıcı bir şey oluşturmayın.
 - **Paylaşmadan önce düşünün.** Oluşturduklarınız, siz paylaşmadıkça cihazınızda kalır. İnternete bir kez çıkan bir şeyi geri almak zor olabilir.
 - **Yardım her zaman var.** Bir şeyler ters giderse veya biri Aybuke uygulamasını size zarar vermek için kullanırsa, güvendiğiniz bir yetişkine anlatın ve durumu bize bildirin (bkz. [Politika](glowlit-legal://acceptableUse)). Veliler ve vasiler, çocuklarının verilerini sildirmek dahil her konuda [hello@buaze.com](mailto:hello@buaze.com) adresinden bize ulaşabilir.
@@ -164,7 +164,7 @@ Kredi paketlerini tüketilebilir (consumable) uygulama içi satın alım olarak 
 
 Apple bir kredi paketinin ücretini iade ederse, o paketten henüz kullanmadığınız kredileri geri alırız: paketin size verdiği sayıya kadar kredi, satın aldığınız kredilerden düşülür. Daha önce kullandığınız krediler kullanılmış olarak kalır ve bakiyeniz hiçbir zaman sıfırın altına düşmez. Apple iadeyi geri alırsa bu kredileri size geri veririz.
 
-### Reklamlardan krediler
+### Reklamlardan krediler ve Pro denemeleri
 
 Aktif bir Pro aboneliğiniz yoksa, krediniz bittiğinde Google AdMob'dan kısa bir reklam izleyerek uygulamanın gösterdiği günlük sayıya (UTC) kadar 1 kredi kazanmayı seçebilirsiniz; bu sınır hem hesabınız hem de App Store indirmeniz için geçerlidir. Reklam izlemek her zaman isteğe bağlıdır. Kredi, Google reklamın sonuna kadar oynatıldığını sunucumuza onayladığında eklenir; reklam erken kapanırsa veya Google onaylamazsa kredi eklenmez. Reklamlardan kazanılan krediler:
 
@@ -173,7 +173,9 @@ Aktif bir Pro aboneliğiniz yoksa, krediniz bittiğinde Google AdMob'dan kısa b
 - başka bir kişiye veya hesaba devredilemez; ve
 - otomasyonla, sahte cihazlarla veya reklamı gerçekten izleyen bir kişi dışında herhangi bir yolla toplanamaz.
 
-Ücretsiz üyeler, bitmiş bir çalışmayı kaydettikten veya paylaştıktan sonra ara sıra bir reklam da görebilir; düzenleme yaparken asla ve günde en fazla 3 kez. Pro üyeler reklam görmez. Reklamların nasıl gösterileceğini gelecek dönemler için değiştirebilir veya reklam karşılığı kredi sunmayı bırakabiliriz; bu, bakiyenizdeki kredileri asla azaltmaz.
+Aktif bir Pro aboneliğiniz yoksa, uygulamanın gösterdiği günlük sayıya (UTC) kadar, kısa bir reklam izleyerek bir Pro görünümünü veya stilini (bir Pro şablonu ya da Create from text'te bir Pro stil) bir kez denemeyi de seçebilirsiniz; bu sınır, reklam karşılığı kredilerden ayrı olarak hem hesabınız hem de App Store indirmeniz için geçerlidir. Deneme, harcayacak bir krediniz varken sunulur; çünkü o çalışma da her çalışma gibi 1 kredi kullanır. Google reklamın sonuna kadar oynatıldığını onayladığında, o görünüm veya stil 30 dakika içinde başlatılan tek bir çalışma ve o çalışmanın ücretsiz Likeness Lock tekrar denemesi için açılır. Çalışma başarısız olursa veya kredisi iade edilirse, deneme hakkınız 30 dakikanın kalanı için geri gelir. Pro denemesi bir Pro aboneliği değildir; nakit değeri taşımaz, devredilemez ve otomasyonla, sahte cihazlarla veya reklamı gerçekten izleyen bir kişi dışında herhangi bir yolla toplanamaz.
+
+Ücretsiz üyeler, bitmiş bir çalışmayı kaydettikten veya paylaştıktan sonra ara sıra bir reklam da görebilir; düzenleme yaparken asla ve günde en fazla 3 kez. Pro üyeler reklam görmez. Reklamların nasıl gösterileceğini gelecek dönemler için değiştirebilir veya reklam karşılığı kredi ya da Pro denemesi sunmayı bırakabiliriz; bu, bakiyenizdeki kredileri asla azaltmaz.
 
 ### Adil kullanım ve sınırlar
 
