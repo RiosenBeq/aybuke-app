@@ -26,7 +26,12 @@ iOS app ──► Supabase Auth (anonymous JWT; optional Sign in with Apple ID t
    ├─► DELETE /functions/v1/account             revoke the Apple token, delete user and all data (cascades)
    ├─► POST   /functions/v1/ad-reward           single-use token before a rewarded ad (free: a credit, or a Pro try)
    ├─► GET    /functions/v1/ad-reward?token=…   has AdMob confirmed it? (+ "N left today")
-   └─► DELETE /functions/v1/ad-reward?token=…   the ad closed early: the token's place comes back
+   ├─► DELETE /functions/v1/ad-reward?token=…   the ad closed early: the token's place comes back
+   ├─► POST   /functions/v1/polls               "Which vibe?" poll ──► pictures re-encoded → Claude checks both → private link
+   ├─► GET    /functions/v1/polls/mine          her live polls with their counts
+   └─► DELETE /functions/v1/polls?id=…          deletes a poll now
+
+aybuke.org/p/<id> (anon key) ──► GET /functions/v1/polls?id=…, /polls/image?…, POST /polls/vote, /polls/report
 
 AdMob ──► GET /functions/v1/ad-reward?…&signature=…&key_id=…   signed reward callback (SSV) → 1 credit or one Pro try, once
 Apple ──► POST /functions/v1/app-store-notifications             signed V2 notification → refund/revoke Pro, take back a refunded pack
@@ -95,9 +100,11 @@ Prices, latency and alternatives: [`docs/research/tech-and-compliance.md`](../do
    supabase functions deploy app-store-notifications --no-verify-jwt
    # The owner's daily digest: JWT check on, plus its own secret (see "Owner alerts").
    supabase functions deploy owner-digest
+   # "Which vibe?" polls: JWT check on (the poll page sends the anon key; see "Polls").
+   supabase functions deploy polls
    ```
    Then send Apple's notifications to it. App Store Connect takes one URL per environment, and this app's Production and Sandbox URLs (App Store Connect › App Information › App Store Server Notifications, Version 2) already point at RevenueCat. Leave them there and, in RevenueCat › Apps › Aybuke (App Store), set **Apple Server Notification Forwarding URL** to `https://<project-ref>.supabase.co/functions/v1/app-store-notifications`: RevenueCat passes each signed notification on unchanged, so both receive it, and the function checks Apple's signature as usual. Without RevenueCat, set that URL as the Production and Sandbox URLs in App Store Connect instead.
-6. **Schedule the sweepers** (`sweep_jobs` fails and refunds stuck jobs, refunds results the app never received, clears job outputs after 1 hour, deletes job rows after 30 days and reports after 12 months, App Store download hashes 30 days after last use (unless blocked), strikes and cool-downs after 30 days, IP counters and the writing-help counts (`private.assist_usage`) after a day and usage counters after 90 days; `sweep_ad_rewards` deletes reward tokens a day after they expire, reward records after 30 days and Pro tries (`private.ad_unlocks`) a day after they end; `sweep_app_store_notifications` deletes App Store notification records after 30 days and refund records in `private.refunded_transactions` as section 14 of the privacy policy says: a refunded subscription period 30 days after the later of the refund and the period's end, a reversed refund 30 days after the reversal, a refunded credit pack never): enable the `pg_cron` extension, then run
+6. **Schedule the sweepers** (`sweep_jobs` fails and refunds stuck jobs, refunds results the app never received, clears job outputs after 1 hour, deletes job rows after 30 days and reports after 12 months, App Store download hashes 30 days after last use (unless blocked), strikes and cool-downs after 30 days, IP counters and the writing-help counts (`private.assist_usage`) after a day and usage counters after 90 days, and polls (pictures, question, votes) once their 24 hours are up, poll report records after 30 days and poll counters after 2 days (daily poll numbers after 90); `sweep_ad_rewards` deletes reward tokens a day after they expire, reward records after 30 days and Pro tries (`private.ad_unlocks`) a day after they end; `sweep_app_store_notifications` deletes App Store notification records after 30 days and refund records in `private.refunded_transactions` as section 14 of the privacy policy says: a refunded subscription period 30 days after the later of the refund and the period's end, a reversed refund 30 days after the reversal, a refunded credit pack never): enable the `pg_cron` extension, then run
    ```sql
    select cron.schedule('sweep-jobs', '*/5 * * * *', 'select public.sweep_jobs()');
    select cron.schedule('sweep-ad-rewards', '17 * * * *', 'select public.sweep_ad_rewards()');
@@ -155,6 +162,8 @@ Then add the same `DIGEST_SECRET` as a repository secret on GitHub (Settings ›
 ## Reports
 
 `POST /report` stores a user's "Report this image" in `public.reports` (reason, optional details, the user's own job id) with a limit of 10 reports a day per user (`reports_per_day`). Review open reports in the Supabase dashboard (`status = 'open'`) and set `status` to `reviewed`, `actioned` or `dismissed`. Reports are deleted after 12 months by `sweep_jobs()`, or with the account.
+
+Reports from a poll page are separate: see "Polls" (`ops_poll_reports()`).
 
 ## Rewarded ads (AdMob server-side verification)
 
@@ -221,6 +230,69 @@ makeup   → 200 { "makeup": { "look", "lips", "eyes", "cheeks", "extras": [], "
 - **Model and cost:** `claude-haiku-5-5` (`ANTHROPIC_ASSIST_MODEL` to change it; it must take thinking turned off at low effort), through `_shared/claude-text.ts` with the safety check's client setup: a strict JSON schema, 400–900 output tokens at most. About **$0.0003 a call** (some 600–1,000 input tokens with the rules and, for makeup, the catalog, and 100–400 output tokens at $0.10 / $0.50 per million).
 - **Privacy:** nothing is stored; the logs carry the task, the language, the outcome, counts and the time taken (`{"fn":"assist","task":"magic","outcome":"ok","ms":850,"kept":2,…}`), never her words or Claude's. Anthropic keeps API inputs and outputs up to 30 days (flagged content up to 2 years), as the privacy policies say.
 
+## Polls ("Which vibe?" with friends)
+
+She shares two of her own pictures (A and B) and an optional question as a private link; friends open `https://aybuke.org/p/<poll_id>` in any browser and tap A or B; she sees the counts in the app. Link-only by design: no feed, no listing, no profiles, no comments, no names, `noindex` on the page. A poll lives **24 hours**, then the link answers 404 and `sweep_jobs()` deletes it (pictures, question, votes) within 5 minutes; she can delete it sooner, and deleting her account deletes her polls at once (`on delete cascade`). Polls aren't offered under 13 (the app's gate: the server can't know her age, so it requires a session and relies on the app). `functions/polls`, migration `20261102000000_polls.sql`; the page lives in the website repo (`RiosenBeq/aybuke`, `src/pages/p.html`, `public/assets/js/poll.js`).
+
+**Auth.** JWT verification stays on at the gateway (`supabase functions deploy polls`, no flag). The app sends her session; the page sends the public anon key (`supabaseAnonKey` in `ios/App/Resources/AppConfig.json`) as `Authorization: Bearer` and `apikey`. Routes that need her (`POST /polls`, `GET /polls/mine`, `DELETE /polls`) check the session with `requireUser`; a poll's picture URLs are signed by the function (HMAC-SHA256 keyed by the service role key, so nobody else can make or stretch one).
+
+**Contract** (the app's side is coded against this; errors are the usual `{ "error": { "code", "message", … } }`, with `retry_after` and `Retry-After` on 429/503 when known):
+
+```
+POST /functions/v1/polls                       her session; optional X-App-Transaction (as for credits)
+{ "question": "Which vibe for Friday?" | null,  at most 80 characters (grapheme clusters; emoji stay whole)
+  "images": ["data:image/jpeg;base64,…", "data:image/png;base64,…"],   exactly two: A, then B
+  "locale": "tr" }                              en, tr, es, pt-BR, fr, de, it, ru, ja, ko, zh-Hans, id (else en)
+→ 201 { "poll_id": "Ab3_Xy9-Kq2LmN0p", "share_url": "https://aybuke.org/p/Ab3_Xy9-Kq2LmN0p",
+        "expires_at": "…", "remaining_today": 2 }
+
+GET /functions/v1/polls?id=<poll_id>           anon key or her session; optional X-Poll-Voter: <voter code>
+→ 200 { "poll_id", "question", "locale", "created_at", "expires_at",
+        "images": { "a": "<signed URL>", "b": "<signed URL>" },
+        "image_sizes": { "a": { "width", "height" }, "b": { … } }, "urls_expire_at",
+        "is_creator": false, "my_vote": "a" | "b" | null, "votes": { "a": 3, "b": 5 } | null }
+   votes: only once this voter code has voted, or for the creator's own session.
+
+GET <signed URL> = /functions/v1/polls/image?id=…&side=a|b&exp=…&sig=…   same headers (the gateway needs them)
+→ 200 image/jpeg, Cache-Control: private, max-age=<until exp>. URLs end on the next full hour but one (or
+   when the poll ends), so they stay the same within an hour and browsers cache the pictures.
+
+POST /functions/v1/polls/vote   { "poll_id", "choice": "a" | "b", "voter": "<16–128 of A–Z a–z 0–9 - _>" }
+→ 200 { "votes": { "a", "b" }, "my_vote" }      voting again with the same code changes the vote
+
+POST /functions/v1/polls/report { "poll_id", "reason": "sexual" | "minor" | "bullying" | "privacy" | "harmful" | "other" }
+→ 200 { "reported": true, "taken_down": bool }
+
+GET /functions/v1/polls/mine                   her session; optional X-App-Transaction
+→ 200 { "polls": [ { "poll_id", "share_url", "question", "locale", "created_at", "expires_at",
+                     "status": "live" | "taken_down", "votes": { "a", "b" } } ], "remaining_today", "daily_cap" }
+
+DELETE /functions/v1/polls?id=<poll_id>        her session → 200 { "deleted": true }; 404 not_found when it isn't hers
+```
+
+Errors: 400 `bad_request` (a body or id outside the contract, a question over 80 characters); 401 `unauthorized`; 403 `install_blocked` (an owner block of her account or download); 403 `url_expired` (a picture URL that expired or was changed: fetch the poll again); 404 `not_found` (never made, ended, deleted or taken down: one answer for all); 413 `too_large` with `side` (a picture over 1.5 MB, 4,096 px a side or 6 MP; or a body over 4.5 MB); 422 `image_invalid` with `side` (not a JPEG or PNG, or unreadable; WebP and HEIC aren't accepted: send JPEG); 422 `content_blocked` with `category` (the question failed the prompt policy, with an edit's rules, so no rating or reshaping looks; counted, never a strike); 422 `image_blocked` with `sides` (Claude flagged a picture or wouldn't look at it); 429 `rate_limited`, 429 `cooldown` with `until`; 503 `safety_unavailable` (the check couldn't run, Claude isn't configured, or AI is paused for everyone: the attempt is given back).
+
+**Creating** (`handler.ts`): the body and the question are checked first (nothing counted for a 400, 413 or 422 `image_invalid` from the header), then `admit_poll()` refuses a block, a cool-down, AI paused for everyone, and the limits below, and counts the attempt (a blocked question too). Each picture is then decoded (jpeg-js 0.4.4, or `polls/png.ts`), turned upright from its EXIF orientation, put on white where transparent, shrunk to **720 px** on the long side (area average) and re-encoded as a baseline JPEG, 4:2:0, quality 78 (`polls/jpeg.ts`): no EXIF, no location, no XMP, only the colour profile. About 45–85 KB each and 0.1–0.3 s of CPU. Claude (`_shared/safety.ts`, the new `share` subject: a result's categories, substances and weapons included) checks each re-encoded picture on its own, fail closed: a flag or a refusal is 422 `image_blocked` (the attempt stays used; no strike, as for her photo before an edit, and never reported to the circuit breaker, since the sender picks the pictures), an error or a timeout 503 `safety_unavailable` (given back with `finish_poll_attempt()`). Only `anthropic` counts: without `ANTHROPIC_API_KEY` no poll is made (the `XAI_SAFETY_MODEL` fallback doesn't apply, because the privacy policies name Anthropic for polls). What Claude saw is what `create_poll()` stores. Logs: the route, the outcome, sizes and timings, the flagged categories; never a question, a poll id, a voter code or an address.
+
+**Limits** (`poll_policy()`; change them in a new migration): **3 polls a day** (UTC) per account and per App Store download, 10 creations an hour per address, 300 a day for everyone; 600 poll views, **200 picture loads** and 120 votes an hour per address; **600 picture loads per poll**, **2,000 a day** for everyone; 10 reports an hour per address. A refused request leaves its counts as they were. The picture caps are for the free plan's egress: a load sends about 60 KB to the browser and about 80 KB from Postgres to the function (base64), so 2,000 loads are roughly 0.3 GB.
+
+**Why a table, not Storage.** The pictures are `bytea` in `private.polls` (`storage external`). SQL can create a Storage bucket but can't delete its files (deleting `storage.objects` rows leaves the file behind, or is refused), and `pg_net` is off, so the 5-minute cron couldn't call the Storage API; in a table, the existing `sweep-jobs` cron and the account cascade delete everything on time, at the cost of the extra database hop above.
+
+**Votes and privacy.** The page makes a random voter code once and keeps it in localStorage (no cookie). The server keeps only `keyed_hash('poll_voter', poll id:code)`, so the same code can't be linked across polls, plus the choice and times. Addresses are salted hashes in counters (`private.poll_usage`, 2 days), never stored raw.
+
+**Reports.** `sexual` or `minor` take a poll down at once; any reason from 3 different addresses too (`private.poll_reporters`, salted, deleted with the poll). A taken-down poll answers 404 to everyone and shows as `taken_down` in her list; it's kept only until its 24 hours end, for review, then deleted like every poll. The owner's record (`private.poll_reports`: poll id, reason, time, the creator's user id and download hash, whether it took the poll down, a status) is kept 30 days, or deleted with her account; the reporter isn't in it.
+
+**Owner tools** (SQL editor, service role): `select public.ops_polls_summary();` (yesterday: made, blocked, votes, reports, takedowns, picture loads and MB, live now; the daily digest shows the same), `select * from public.ops_poll_reports(7);` (reported polls with reasons, state and creator), `select public.ops_poll_image('<poll_id>', 'a');` (a data URI to look at while it exists), `ops_take_down_poll('<poll_id>')`, `ops_restore_poll('<poll_id>')` (a mistaken takedown: reporters reset, open reports dismissed), `ops_set_poll_report_status('<poll_id>', 'reviewed' | 'actioned' | 'dismissed')`, and `ops_block(p_user => '<user id>')` or `ops_block(p_install => '<install key>')` for repeated abuse (a block stops new polls too).
+
+**Deploy** (the migration first; nothing else changes for the 1.0 app):
+
+```bash
+cd backend
+supabase db push                       # 20261102000000_polls.sql (sweep_jobs and merge_accounts are replaced too)
+supabase functions deploy polls        # JWT verification on
+supabase functions deploy owner-digest # the digest's poll section
+```
+
 ## Which AI key goes where
 
 - **Production (this backend):** the provider keys live only in Edge Function secrets (`XAI_API_KEY`, or `FAL_KEY`, and `ANTHROPIC_API_KEY` for the safety check, the prompt polish and writing help, in `.env`, then `supabase secrets set --env-file .env`; or paste them under Edge Functions → Secrets in the dashboard). They never ship in the app.
@@ -272,7 +344,7 @@ Owner tools run in the SQL editor (the service role). Clients have no access to 
 
 ```bash
 # Type-check, lint and format-check the Edge Functions (Deno 2)
-cd backend/supabase/functions && deno check */index.ts && deno lint && deno fmt --check && deno test _shared/ ad-reward/ app-store-notifications/ account/ owner-digest/ ai-image/ credits-redeem/ assist/
+cd backend/supabase/functions && deno check */index.ts && deno lint && deno fmt --check && deno test _shared/ ad-reward/ app-store-notifications/ account/ owner-digest/ ai-image/ credits-redeem/ assist/ polls/
 
 # Run the migration + ledger tests on a throwaway PostgreSQL 14+
 backend/scripts/test-db.sh
@@ -289,6 +361,7 @@ Live since 15 October 2026 (migrations through `20261029000002`, seven functions
 - [x] Add an App Store Server Notifications V2 endpoint to mark refunds/revocations (`entitlements.revoked`) immediately: `functions/app-store-notifications` (migration `20261025000000`), deployed and set as RevenueCat's Apple Server Notification Forwarding URL (setup step 5; in App Store Connect only without RevenueCat).
 - [x] Sign in with Apple: `APPLE_SIGNIN_KEY_ID` / `APPLE_SIGNIN_PRIVATE_KEY` set and checked against Apple, `signInWithApple` on in 1.0.
 - [ ] For 1.1 (Rewarded unlock): apply migration `20261101000000_rewarded_unlocks.sql`, then deploy `ai-image` and `ad-reward --no-verify-jwt`, before the app that offers Pro tries ships.
+- [ ] For 1.1 (Polls): apply migration `20261102000000_polls.sql`, then deploy `polls` (JWT verification on) and `owner-digest`, and check that `https://aybuke.org/p/<id>` opens a test poll, before the app that offers polls ships.
 - [ ] Add App Attest + DeviceCheck to stop free-credit farming across reinstalls (see research doc §3.4).
 - [ ] Confirm fal accepts data-URI inputs for every endpoint above; otherwise upload to a private bucket and pass 10-minute signed URLs.
 - [ ] Move polling to fal webhooks (Ed25519-signed) when traffic grows.

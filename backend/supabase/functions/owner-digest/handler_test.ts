@@ -3,7 +3,7 @@
 // with the summaries and Resend stubbed.
 import assert from "node:assert/strict";
 import type { RenderedMail } from "../_shared/owner-mail.ts";
-import { type DigestDeps, handleDigest, revenueCatSection, yesterday } from "./handler.ts";
+import { type DigestDeps, handleDigest, pollsSection, revenueCatSection, yesterday } from "./handler.ts";
 
 const NOW = new Date(Date.UTC(2026, 9, 15, 6, 0));
 const SECRET = "digest-secret-for-tests-0123456789";
@@ -202,4 +202,59 @@ Deno.test("with the key, the digest deletes first, then reports what is left; it
   }
   assert.ok(slow.sent[0].text.includes("Waiting: –"));
   assert.ok(!slow.sent[0].text.includes("Deleted automatically"));
+});
+
+Deno.test("the digest counts yesterday's polls, never their content, and points at open reports", async () => {
+  const { value, sent } = deps({ RESEND_API_KEY: "re_test", DIGEST_SECRET: SECRET });
+  const days: string[] = [];
+  value.polls = (day) => {
+    days.push(day);
+    return Promise.resolve({
+      day,
+      created: 12,
+      polls_cap: 300,
+      blocked_question: 2,
+      blocked_image: 1,
+      invalid_image: 0,
+      unavailable: 0,
+      votes: 87,
+      reports: 3,
+      takedowns: 1,
+      image_loads: 240,
+      image_loads_cap: 2000,
+      image_bytes: 15_204_352,
+      image_mb: 14.5,
+      live_now: 9,
+      taken_down_now: 1,
+      reports_open: 2,
+    });
+  };
+  assert.equal((await handleDigest(call({ "x-digest-secret": SECRET }), value)).status, 200);
+  assert.deepEqual(days, ["2026-10-14"]);
+  for (
+    const line of [
+      "WHICH VIBE? POLLS",
+      "Polls made vs cap: 12 / 300",
+      "Blocked: question · picture · unreadable: 2 · 1 · 0",
+      "Votes: 87",
+      "Reports · taken down: 3 · 1",
+      "Picture loads vs cap: 240 / 2,000",
+      "Picture egress (MB, to browsers): 14.5",
+      "select * from public.ops_poll_reports(7);",
+    ]
+  ) assert.ok(sent[0].text.includes(line), line);
+
+  const quiet = pollsSection({ created: 0, reports_open: 0 });
+  assert.ok(!quiet.rows.some((row) => row.label === "Review"), "nothing to review, no line");
+  assert.equal(pollsSection(undefined).rows[0].value, "– / –", "dashes when the summary is missing");
+
+  const down = deps({ RESEND_API_KEY: "re_test", DIGEST_SECRET: SECRET });
+  down.value.polls = () => Promise.reject(new Error("db down"));
+  const warn = console.warn;
+  console.warn = () => {};
+  try {
+    assert.equal((await handleDigest(call({ "x-digest-secret": SECRET }), down.value)).status, 200, "still sent");
+  } finally {
+    console.warn = warn;
+  }
 });

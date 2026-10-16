@@ -8,13 +8,14 @@ Son güncelleme: 16 Ekim 2026
 > - Yalnızca kullanma hakkınız olan fotoğrafları yükleyin ve yalnızca buna onay veren kişileri düzenleyin. Çocuklar için onayı velisi veya vasisi vermelidir.
 > - Cinsel içerik veya çıplaklık yok, "soyma" düzenlemesi yok; 18 yaşından küçük biriyle ilgili cinsel veya müstehcen hiçbir şey yok. Asla.
 > - Zorbalık, aşağılama veya bedenle alay eden düzenlemeler ve aldatmaya yönelik deepfake yok.
+> - Anketler bir vibe seçmek içindir (bir düzenleme, görünüm, kıyafet rengi veya arka plan); asla insanların bedenlerini, yüzlerini veya görünüşlerini puanlamak ya da iki kişiyi birbirine karşı yarıştırmak için değil.
 > - Yapay zekâ etiketlerini koruyun; kanun veya platform gerektirdiğinde içeriğin yapay zekâ ile yapıldığını belirtin.
 > - Güvenlik filtrelerimizi aşmaya veya ücretsiz kredileri kötüye kullanmaya çalışmayın.
-> - Sorunları uygulama içinden veya e-postayla bildirin. Hesabınızı kısıtlarsak itiraz edebilirsiniz; itirazınızı bir insan inceler.
+> - Sorunları uygulama içinden, anket sayfasından veya e-postayla bildirin. Hesabınızı kısıtlarsak itiraz edebilirsiniz; itirazınızı bir insan inceler.
 
 ## 1. Bu politika hakkında
 
-Bu politika [Kullanım Koşulları](kullanim-kosullari.md) metnimizin bir parçasıdır. Aybuke uygulamasına gönderdiğiniz her şeye (fotoğraflar, maskeler, istemler ve bildirimler) ve uygulamayla oluşturduğunuz her şeye, bu sonuçları nasıl paylaştığınız veya yayımladığınız dahil, uygulanır. Ayrıca içeriği nasıl denetlediğimizi, sorunları nasıl bildirebileceğinizi ve kararlarımıza nasıl itiraz edebileceğinizi açıklar.
+Bu politika [Kullanım Koşulları](kullanim-kosullari.md) metnimizin bir parçasıdır. Aybuke uygulamasına gönderdiğiniz her şeye (fotoğraflar, maskeler, istemler, anketler ve bildirimler) ve uygulamayla oluşturduğunuz her şeye, bu sonuçları nasıl paylaştığınız veya yayımladığınız dahil, uygulanır. Ayrıca içeriği nasıl denetlediğimizi, sorunları nasıl bildirebileceğinizi ve kararlarımıza nasıl itiraz edebileceğinizi açıklar.
 
 Bu politikada "içerik", hem gönderdiklerinizi (girdiler) hem de Aybuke uygulamasının sizin için oluşturduklarını (çıktılar) ifade eder.
 
@@ -83,6 +84,18 @@ Aybuke vücut şeklini değiştiren veya cildi açan özellikler sunmaz. Magic E
 - Kullanma hakkınız olmayan içeriği yüklemek veya sonuçları telif hakkını, markaları ya da diğer fikri mülkiyet haklarını ihlal edecek şekilde kullanmak.
 - Birinin adını, görüntüsünü veya benzerliğini, özellikle ticari amaçlarla, izni olmadan kullanmak.
 
+### "Hangi vibe?" anketleri
+
+Anketler, hangi düzenlemenin, görünümün, kıyafet renginin veya arka planın daha iyi durduğu gibi vibe'lar ve seçimler içindir. Bu bölümdeki her şey anketler için de geçerlidir; bir ankette şunları yapamazsınız:
+
+- çıplaklık, cinsel içerik veya açık kıyafet göstermek;
+- 18 yaşından küçük birini uygunsuz bir şekilde içeren herhangi bir şeye yer vermek;
+- insanların bedenlerini, yüzlerini veya çekiciliklerini puanlamak ya da karşılaştırmak veya iki farklı kişiyi birbirine karşı yarıştırmak;
+- birine zorbalık yapmak, onunla alay etmek veya onu utandırmak;
+- nefret, şiddet veya kendine zarar verme içeriğine yer vermek;
+- başkalarının görsellerini onların onayı olmadan (bir çocuk söz konusuysa velisinin veya vasisinin onayı olmadan) kullanmak ya da
+- sorunuza telefon numarası veya adres gibi kişisel bilgiler yazmak.
+
 ## 4. Yapay zekâ etiketleri, filigranlar ve açıklama
 
 - Yapay zekâ ile oluşturulan veya düzenlenen ve dışa aktardığınız her görsel makinece okunabilir köken üst verisi içerir (IPTC "Digital Source Type" alanı); yapay zekâ sağlayıcıları ayrıca SynthID gibi görünmez filigranlar ekleyebilir. Bir görselin nasıl yapıldığı konusunda kimseyi aldatmak için bu etiketleri veya filigranları Aybuke ile ya da başka bir araçla kaldırmayın, değiştirmeyin veya taklit etmeyin.
@@ -112,20 +125,22 @@ Birden çok katmanlı güvenlik önlemi kullanırız:
 4. **Bağımsız güvenlik kontrolü**: ikinci bir şirketin yapay zekâ modeli (Anthropic'in Claude modeli) düzenlemeden önce fotoğrafı ve her sonucu çıplaklık, cinsel içerik, küçükleri cinselleştiren her şey, ağır şiddet, kendine zarar verme ve nefret bakımından, her sonucu ayrıca alkol, tütün, elektronik sigara, uyuşturucu ve silah bakımından kontrol eder. İşaretlediği fotoğraf düzenlenmez, işaretlediği sonuç teslim edilmez; kontrolünü tamamlayamazsa da hiçbir şey teslim edilmez. Geri çevirdiği bir fotoğraf ve fotoğrafınızın yalnızca alkol, tütün, elektronik sigara, uyuşturucu veya silah nedeniyle geri çevirdiği bir düzenlemesi, molaya yol açan engellemeler arasında sayılmaz (aşağıda).
 5. **Tasarımdan güvenli özellikler**: şablonlarımız kimliği koruyacak şekilde tasarlanır, ünlülere veya gerçek kişilere dayalı şablonlar sunmayız ve vücut şeklini değiştiren ya da cildi açan özellikler sunmayız.
 6. Kullanıcılardan gelen **bildirimler** bir insan tarafından incelenir.
+7. **Anketler**, bağlantıları oluşturulmadan önce kontrol edilir: bağımsız güvenlik kontrolü (4. madde) iki görseli de alkol, tütün, elektronik sigara, uyuşturucu ve silah dahil orada sayılan her şey bakımından inceler; istem filtreleri (1. madde) de soruyu cinsel, açık giyimle ilgili, aşağılayıcı, görünüşü değiştirmeye veya bedeni puanlamaya yönelik sözler bakımından kontrol eder. Görsellerden biri işaretlenirse veya kontrol tamamlanamazsa anket oluşturulmaz. Anket oluşturulduktan sonra bildirimler onu yayından kaldırabilir (8. bölüm).
 
 Otomatik filtreler kusursuz değildir: zararsız talepleri engelleyebilir, zararlı olanları kaçırabilir. Engellenen veya başarısız olan üretimlerden asla ücret alınmaz.
 
-Sunucularımızdaki filtreler 24 saat içinde isteklerinizden veya sonuçlarınızdan 3'ünü engellerse bulut yapay zekâ, hesabınız ve App Store indirmeniz (doğrulanmış bir indirme yoksa ağ adresiniz) için 24 saat ara verir. Claude'un metin kontrolünün geri çevirdiği bir istek yalnızca yukarıdaki istem filtrelerinin kurallarına girdiğinde sayılır; yazım yardımı ise asla sayılmaz. 30 gün içinde 3 mola olursa, inceleyene kadar o indirme için bulut yapay zekâyı kapatırız. Cihaz üzerindeki özellikler çalışmaya devam eder. Bir molaya veya kapatmaya itiraz edebilirsiniz (9. bölüm).
+Sunucularımızdaki filtreler 24 saat içinde isteklerinizden veya sonuçlarınızdan 3'ünü engellerse bulut yapay zekâ, hesabınız ve App Store indirmeniz (doğrulanmış bir indirme yoksa ağ adresiniz) için 24 saat ara verir. Claude'un metin kontrolünün geri çevirdiği bir istek yalnızca yukarıdaki istem filtrelerinin kurallarına girdiğinde sayılır; yazım yardımı ve anketler ise asla sayılmaz. 30 gün içinde 3 mola olursa, inceleyene kadar o indirme için bulut yapay zekâyı kapatırız. Cihaz üzerindeki özellikler çalışmaya devam eder. Bir molaya veya kapatmaya itiraz edebilirsiniz (9. bölüm).
 
-Girdilerinizi saklamadığımız ve sonuçları bir saat içinde sunucularımızdan sildiğimiz için oluşturduklarınıza rutin olarak bakmayız. İnsan incelemesi, içerik bize bildirildiğinde veya bir karara itiraz ettiğinizde yapılır.
+Girdilerinizi saklamadığımız ve sonuçları bir saat içinde sunucularımızdan sildiğimiz için oluşturduklarınıza rutin olarak bakmayız. Bir anketi yalnızca 24 saati boyunca saklarız; anketlerin kendisini değil, yalnızca kaç anket yapıldığı veya bildirildiği gibi günlük toplamları görürüz. İnsan incelemesi, içerik bize bildirildiğinde veya bir karara itiraz ettiğinizde yapılır.
 
 ## 7. Yaptırımlar
 
 Bu politikayı ihlal ederseniz, ihlalin ağırlığına ve sıklığına göre şunları yapabiliriz:
 
 - talebi veya sonucu engellemek;
+- bir anketi yayından kaldırmak;
 - sizi uyarmak;
-- belirli özelliklere (örneğin bulut yapay zekâ özelliklerine) erişiminizi kaldırmak;
+- hesabınız veya App Store indirmeniz için belirli özelliklere (örneğin bulut yapay zekâ özelliklerine veya anketlere) erişimi kaldırmak;
 - hesabınızı geçici olarak askıya almak;
 - hesabınızı silmek ve
 - kanunun gerektirdiği veya izin verdiği hâllerde yasa dışı içeriği bildirmek ve ilgili bilgileri yetkili makamlar için muhafaza etmek.
@@ -140,6 +155,17 @@ Hesabınızı kısıtladığımızda, mümkünse uygulama içinde, ne yaptığı
 
 Bir sonuçta menüyü açıp **Report this image** seçeneğini seçin (editörde bayrak simgesine dokunun). Bir neden seçin ve dilerseniz ayrıntı ekleyin. Bildirimler, kötüye kullanımı incelememize ve filtrelerimizi geliştirmemize yardımcı olur. Bildirimleri [Gizlilik Politikası](gizlilik-politikasi.md) metninde açıklandığı üzere en fazla 12 ay saklarız.
 
+### Bir anketi bildirme
+
+Bir anketin bağlantısına sahip herkes, anket sayfasındaki bildirme bağlantısıyla, hesap açmadan anketi bildirebilir. Bir neden seçin: cinsel veya çıplak; bir çocuk risk altında olabilir; zorbalık veya kırıcı; beni (veya birini) izinsiz gösteriyor; şiddet, nefret veya kendine zarar verme; ya da başka bir şey. Anonim kalırsınız: farklı bildirenleri sayabilmek için yalnızca ağ adresinizin tuzlanmış bir özetini ve yalnızca anket var olduğu sürece saklarız.
+
+- Cinsel içerik veya risk altındaki bir çocukla ilgili bir bildirim anketi hemen yayından kaldırır.
+- Diğer nedenlerde anket, 3 farklı ağdan bildirim geldiğinde yayından kaldırılır.
+- Yayından kaldırılan bir anketi kimse açamaz; anketi yapan kişi, anketin kaldırıldığını uygulamada görür.
+- Kaldırılan bir anketi yalnızca 24 saati dolana kadar, inceleyebilmek için saklarız. Yanlışlıkla kaldırıldıysa geri açabilir ya da bu politikayı ihlal eden bir hesabı engellemek gibi 7. bölümdeki tedbirleri uygulayabiliriz. Ardından anket her anket gibi silinir.
+
+Anket bildirim kayıtlarını [Gizlilik Politikası](gizlilik-politikasi.md) metninde açıklandığı üzere 30 gün saklarız. Bir anketi, örneğin yasa dışı bir şey gösteriyorsa, e-postayla da bildirebilirsiniz (aşağıda).
+
 ### E-postayla bildirme
 
 Yasa dışı içeriği, sizi etkileyen bir Aybuke kötüye kullanımını (örneğin sizin sahte veya aşağılayıcı bir görseliniz) veya haklarınızın ihlalini bildirmek için [hello@buaze.com](mailto:hello@buaze.com) adresine şunları içeren bir e-posta gönderin:
@@ -153,7 +179,7 @@ Bildiriminizi aldığımızı teyit eder, hızlı ve özenle ele alır ve verdi�
 
 ### Başka yerlerde yayımlanan içerik
 
-Aybuke içinde herkese açık profil veya akış yoktur ve oluşturduklarınızı barındırmayız. Aybuke ile yapılmış bir görsel başka bir platformda yayımlandıysa, oradan kaldıramayacağımız için lütfen o platforma da bildirin.
+Aybuke içinde herkese açık profil veya akış yoktur ve bir anketin görselleri (yalnızca 24 saati boyunca) dışında oluşturduklarınızı barındırmayız. Aybuke ile yapılmış bir görsel başka bir platformda yayımlandıysa, oradan kaldıramayacağımız için lütfen o platforma da bildirin.
 
 ### Yardım almak
 
@@ -165,13 +191,13 @@ Aybuke içinde herkese açık profil veya akış yoktur ve oluşturduklarınız�
 
 ## 9. İtirazlar
 
-Bir talebi engellediğimizi, hesabınızı kısıtladığımızı veya bildiriminizi reddettiğimizi düşünüyor ve bunun hatalı olduğuna inanıyorsanız, konu satırına "İtiraz" yazarak [hello@buaze.com](mailto:hello@buaze.com) adresine e-posta gönderin. Lütfen şunları ekleyin:
+Bir talebi engellediğimizi, anketinizi yayından kaldırdığımızı, hesabınızı kısıtladığımızı veya bildiriminizi reddettiğimizi düşünüyor ve bunun hatalı olduğuna inanıyorsanız, konu satırına "İtiraz" yazarak [hello@buaze.com](mailto:hello@buaze.com) adresine e-posta gönderin. Lütfen şunları ekleyin:
 
 - ne olduğu ve ne zaman olduğu;
 - varsa uygulamada gördüğünüz mesaj ve
 - kararımızın neden yanlış olduğunu düşündüğünüz.
 
-Kararımızdan itibaren 6 ay içinde itiraz edebilirsiniz. İtirazınızı yalnızca otomatik bir sistem değil, bir insan inceler; sonucu ve gerekçelerini size gereksiz gecikme olmaksızın bildiririz. Hata yaptıysak kararı geri alır ve erişiminizi yeniden sağlarız.
+Kararımızdan itibaren 6 ay içinde itiraz edebilirsiniz. İtirazınızı yalnızca otomatik bir sistem değil, bir insan inceler; sonucu ve gerekçelerini size gereksiz gecikme olmaksızın bildiririz. Hata yaptıysak kararı geri alır ve erişiminizi yeniden sağlarız. Yayından kaldırılan bir anket, 24 saati dolduktan sonra silindiği için yalnızca bu süre bitmeden geri açılabilir.
 
 İtiraz etmeniz, mahkemeye veya yetkili bir makama başvurma hakkınızı etkilemez.
 

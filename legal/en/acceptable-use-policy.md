@@ -6,13 +6,14 @@ Last updated: {{EFFECTIVE_DATE}}
 > - Only upload photos you're allowed to use, and only edit people who have agreed to it. For children, their parent or guardian must agree.
 > - No sexual content or nudity, no "undressing" edits, and nothing sexual or suggestive involving anyone under 18. Ever.
 > - No bullying, humiliating or body-shaming edits, and no deep fakes meant to deceive.
+> - Polls are for picking a vibe (an edit, a look, an outfit colour or a background), never for rating people's bodies, faces or looks, or for putting two people against each other.
 > - Keep AI labels intact, and say that content is AI-made when the law or a platform requires it.
 > - Don't try to get around our safety filters or abuse free credits.
-> - Report problems in the app or by email. If we restrict your account, you can appeal and a human will review it.
+> - Report problems in the app, on a poll page or by email. If we restrict your account, you can appeal and a human will review it.
 
 ## 1. About this policy
 
-This policy is part of our [Terms of Use]({{LINK_TERMS}}). It applies to everything you submit to {{APP_NAME}} (photos, masks, prompts and reports) and to everything you create with it, including how you share or publish your results. It also explains how we moderate content, how you can report problems and how you can appeal our decisions.
+This policy is part of our [Terms of Use]({{LINK_TERMS}}). It applies to everything you submit to {{APP_NAME}} (photos, masks, prompts, polls and reports) and to everything you create with it, including how you share or publish your results. It also explains how we moderate content, how you can report problems and how you can appeal our decisions.
 
 In this policy, "content" means both what you submit (inputs) and what {{APP_NAME}} creates for you (outputs).
 
@@ -81,6 +82,18 @@ We have zero tolerance for this. We block such content, close the account, prese
 - Uploading content you don't have the right to use, or using results in a way that infringes copyright, trademarks or other intellectual property.
 - Using someone's name, image or likeness without their permission, especially for commercial purposes.
 
+### "Which vibe?" polls
+
+Polls are for vibes and choices, such as which edit, look, outfit colour or background works best. Everything in this section applies to polls, and in a poll you must not:
+
+- show nudity, sexual content or revealing clothing;
+- include anything that involves anyone under 18 in an inappropriate way;
+- rate or compare people's bodies, faces or attractiveness, or put two different people against each other;
+- bully, mock or shame anyone;
+- include hate, violence or self-harm;
+- use pictures of other people without their OK (for a child, their parent's or guardian's OK); or
+- put personal details, such as a phone number or an address, in your question.
+
 ## 4. AI labels, watermarks and disclosure
 
 - Every image you export that was created or edited with AI includes machine-readable provenance metadata (the IPTC "Digital Source Type" field), and AI providers may add invisible watermarks such as SynthID. Don't remove, alter or forge these labels or watermarks, with {{APP_NAME}} or any other tool, to deceive anyone about how an image was made.
@@ -110,20 +123,22 @@ We use several layers of safety measures:
 4. **An independent safety check**: an AI model from a second company (Anthropic's Claude) checks the photo before an edit and every result for nudity, sexual content, anything that sexualises minors, graphic violence, self-harm and hate, and every result also for alcohol, tobacco, vaping, drugs and weapons. A photo it flags isn't edited, and a result it flags isn't delivered; if it can't complete its check, nothing is delivered either. A photo it turns down doesn't count towards a pause (below), and neither does an edit of your photo it turns down only for alcohol, tobacco, vaping, drugs or weapons.
 5. **Safe-by-design features**: our templates are designed to preserve identity, we don't offer templates based on celebrities or real people, and we don't offer body-reshaping or skin-lightening features.
 6. **Reports** from users are reviewed by a human.
+7. **Polls** are checked before their link exists: the independent safety check (item 4) looks at both pictures for everything listed there, including alcohol, tobacco, vaping, drugs and weapons, and the prompt filters (item 1) check the question for sexual, revealing-clothing, humiliating, appearance-changing and body-rating words. If either picture is flagged, or the check can't be completed, no poll is made. Once a poll exists, reports can take it down (section 8).
 
 Automated filters aren't perfect. They can block harmless requests and miss harmful ones. Blocked or failed generations are never charged.
 
-When our servers' filters block 3 of your requests or results within 24 hours, cloud AI pauses for 24 hours for your account and your App Store download (or, without a verified download, your network address). A request Claude's text check turns down counts only when it falls under the prompt filters' rules above, and writing help never counts. After 3 pauses within 30 days, we switch cloud AI off for that download until we've reviewed it. On-device features keep working. You can appeal a pause or a switch-off (section 9).
+When our servers' filters block 3 of your requests or results within 24 hours, cloud AI pauses for 24 hours for your account and your App Store download (or, without a verified download, your network address). A request Claude's text check turns down counts only when it falls under the prompt filters' rules above, and writing help and polls never count. After 3 pauses within 30 days, we switch cloud AI off for that download until we've reviewed it. On-device features keep working. You can appeal a pause or a switch-off (section 9).
 
-We don't store your inputs, and results are deleted from our servers within an hour, so we don't routinely look at your creations. Human review happens when content is reported to us or when you appeal a decision.
+We don't store your inputs, and results are deleted from our servers within an hour, so we don't routinely look at your creations. We keep a poll only for its 24 hours, and we see only daily totals, such as how many polls were made or reported, not the polls themselves. Human review happens when content is reported to us or when you appeal a decision.
 
 ## 7. Enforcement
 
 If you break this policy, we may, depending on how serious the violation is and how often it happens:
 
 - block the request or the result;
+- take down a poll;
 - warn you;
-- remove your access to certain features, for example cloud AI features;
+- remove your access to certain features, for example cloud AI features or polls, for your account or your App Store download;
 - suspend your account temporarily;
 - delete your account; and
 - report illegal content, and preserve related information for the competent authorities, where the law requires or allows it.
@@ -138,6 +153,17 @@ When we restrict your account, we'll tell you, where possible in the app, what w
 
 On a result, open the menu and choose **Report this image**. Select a reason and, if you like, add details. Reports help us review misuse and improve our filters. We keep reports for up to 12 months, as described in our [Privacy Policy]({{LINK_PRIVACY}}).
 
+### Report a poll
+
+Anyone who has a poll's link can report the poll with the **Report** link on its page, without an account. Choose a reason: sexual or nude; a child could be at risk; bullying or mean; shows me (or someone) without permission; violence, hate or self-harm; or something else. You stay anonymous: we keep only a salted hash of your network address, while the poll exists, to count different reporters.
+
+- A report about sexual content or a child at risk takes the poll down at once.
+- For any other reason, the poll is taken down after reports from 3 different networks.
+- Nobody can open a poll that's been taken down, and the person who made it sees in the app that it was taken down.
+- We keep a taken-down poll only until its 24 hours end, so we can review it. We can restore it if it was taken down by mistake, or take the measures in section 7, such as blocking an account that breaks this policy. Then it's deleted like every poll.
+
+We keep poll report records for 30 days, as described in our [Privacy Policy]({{LINK_PRIVACY}}). You can also report a poll by email (below), for example if it shows something illegal.
+
 ### Report by email
 
 To report illegal content, misuse of {{APP_NAME}} that affects you (for example a fake or humiliating image of you), or an infringement of your rights, email [{{CONTACT_EMAIL}}](mailto:{{CONTACT_EMAIL}}) with:
@@ -151,7 +177,7 @@ We'll confirm that we received your report, handle it promptly and carefully, an
 
 ### Content published elsewhere
 
-{{APP_NAME}} has no public profiles or feeds, and we don't host your creations. If an image made with {{APP_NAME}} has been published on another platform, please also report it to that platform, because we can't remove it there.
+{{APP_NAME}} has no public profiles or feeds, and we don't host your creations, except the pictures of a poll for its 24 hours. If an image made with {{APP_NAME}} has been published on another platform, please also report it to that platform, because we can't remove it there.
 
 ### Getting help
 
@@ -163,13 +189,13 @@ We'll confirm that we received your report, handle it promptly and carefully, an
 
 ## 9. Appeals
 
-If you think we've blocked a request, restricted your account or rejected your report by mistake, email [{{CONTACT_EMAIL}}](mailto:{{CONTACT_EMAIL}}) with "Appeal" in the subject line. Please include:
+If you think we've blocked a request, taken down your poll, restricted your account or rejected your report by mistake, email [{{CONTACT_EMAIL}}](mailto:{{CONTACT_EMAIL}}) with "Appeal" in the subject line. Please include:
 
 - what happened and when;
 - the message you saw in the app, if any; and
 - why you think our decision was wrong.
 
-You can appeal within 6 months of our decision. A human, not only an automated system, will review your appeal, and we'll tell you the outcome and the reasons without undue delay. If we got it wrong, we'll reverse the decision and restore your access.
+You can appeal within 6 months of our decision. A human, not only an automated system, will review your appeal, and we'll tell you the outcome and the reasons without undue delay. If we got it wrong, we'll reverse the decision and restore your access. A poll that was taken down can only be restored before its 24 hours end, because after that it's deleted.
 
 Appealing doesn't affect your right to go to court or to contact a competent authority.
 

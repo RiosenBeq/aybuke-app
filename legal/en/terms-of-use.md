@@ -40,7 +40,7 @@ Your purchases are also subject to Apple's terms, such as the Apple Media Servic
 
 ## 3. Who can use {{APP_NAME}}
 
-- You must be at least {{MIN_AGE}} years old to use cloud AI features, create an account or make purchases. Children under 13 can use only the free tools that run on their device, which send nothing to us.
+- You must be at least {{MIN_AGE}} years old to use cloud AI features, make polls, create an account or make purchases. Children under 13 can use only the free tools that run on their device, which send nothing to us.
 - If you're under 18, or under the age of majority where you live, you may use {{APP_NAME}} only with the permission of a parent or legal guardian. Your parent or guardian must agree to these Terms on your behalf and is responsible for your use of the Service, including any purchases. Section 4 explains what this means in practice.
 - You may not use the Service if the law where you live prohibits it, or if we have previously banned you for breaking these Terms.
 - If you use {{APP_NAME}} on behalf of a business, you confirm that you're authorised to accept these Terms for that business.
@@ -56,14 +56,14 @@ This section is a plain-language summary for younger users. The rest of these Te
 - **Purchases go through Apple.** Purchases are charged to the Apple Account on your device. If you have a child account in Family Sharing, your parent or guardian may need to approve each purchase with "Ask to Buy". Never buy anything without permission.
 - **Ads are optional and never personalised.** Without Pro, you may see a few ads suitable for everyone: one you can choose to watch for 1 credit when you've run out, or for a one-time try of a Pro look or style (a few a day, as the app shows), and sometimes one after you save. You never have to watch one, and they're never based on what you do in other apps.
 - **Only edit people who say yes.** Don't upload or edit photos of other people, especially other young people, without their permission. Never create anything sexual, humiliating or mean about anyone.
-- **Think before you share.** Your creations stay on your device unless you share them. Once something is online, it can be hard to take back.
+- **Think before you share.** Your creations stay on your device unless you share them. Anyone who has a poll link can see its pictures, and friends can forward the link or take screenshots. Once something is online, it can be hard to take back.
 - **Help is here.** If something goes wrong, or someone uses {{APP_NAME}} to hurt you, tell a trusted adult and report it to us (see the [AUP]({{LINK_AUP}})). Parents and guardians can contact us at [{{PRIVACY_EMAIL}}](mailto:{{PRIVACY_EMAIL}}), including to delete their child's data.
 
 ## 5. Your account
 
 ### No sign-up
 
-{{APP_NAME}} doesn't ask you to sign up or give us your name or a password, and you don't need an email address. When you first use a cloud AI feature or your credit balance on our servers, the app automatically creates an anonymous account, identified by a random user ID, with our backend provider. The app stores the session tokens for this account in the Keychain on your device.
+{{APP_NAME}} doesn't ask you to sign up or give us your name or a password, and you don't need an email address. When you first use a cloud AI feature, polls or your credit balance on our servers, the app automatically creates an anonymous account, identified by a random user ID, with our backend provider. The app stores the session tokens for this account in the Keychain on your device.
 
 ### Optional Sign in with Apple
 
@@ -79,7 +79,7 @@ If you haven't signed in with Apple, access to your account depends on your devi
 
 ### Deleting your account
 
-You can delete your account at any time in **Settings → Delete my data & account**. This permanently deletes your server account and all server-side records linked to it (credit wallet, credit ledger, job records, entitlement records, ad reward records and reports), as well as the creations library on your device. A one-way hash of your App Store download, with that day's free credits and any safety pause (section 8), isn't linked to your account after deletion and is kept for a limited time only to prevent abuse, as our [Privacy Policy]({{LINK_PRIVACY}}) explains; so deleting your account doesn't reset free credits or a pause. If you signed in with Apple, we also revoke {{APP_NAME}}'s access to your Apple Account.
+You can delete your account at any time in **Settings → Delete my data & account**. This permanently deletes your server account and all server-side records linked to it (credit wallet, credit ledger, job records, entitlement records, ad reward records, polls and reports), as well as the creations library on your device. A one-way hash of your App Store download, with that day's free credits and any safety pause (section 8), isn't linked to your account after deletion and is kept for a limited time only to prevent abuse, as our [Privacy Policy]({{LINK_PRIVACY}}) explains; so deleting your account doesn't reset free credits or a pause. If you signed in with Apple, we also revoke {{APP_NAME}}'s access to your Apple Account.
 
 Any remaining credits, including purchased credits, are lost when you delete your account and cannot be restored or refunded. If you use a cloud AI feature again later, a new anonymous account is created.
 
@@ -110,9 +110,23 @@ If you edit a photo of a person and the result doesn't look like you (or the per
 
 Results you keep are stored only on your device, in the app's private storage. We don't keep a copy. If you delete the app, delete your creations or lose your device, your library may be lost. Save the results you want to keep to your Photos library.
 
+### Polls ("Which vibe?")
+
+If you're {{MIN_AGE}} or over, you can make a "Which vibe?" poll: you share two of your pictures (A and B), with a question if you like, as a private link, and friends tap the one they like best. They can vote in any browser, without the app or an account, and you see the results in the app.
+
+- **A private link.** A poll isn't listed anywhere: there's no feed, search, profile, comments or names. Anyone who has the link can see the two pictures and your question, and vote, until the poll ends. You decide whom to send it to.
+- **24 hours.** A poll ends 24 hours after you make it. The link then stops working, and within minutes the poll is deleted, with its pictures, question and votes. You can delete a poll sooner in the app.
+- **Checked first.** Before the link exists, our independent safety check looks at both pictures, and our safety filters check your question. If a picture is flagged, or the check can't be completed, no poll is made, and a question the filters turn down can't be used.
+- **Just for fun.** Votes are anonymous, and anyone who has the link can vote, so we can't verify the counts: they're only a fun indication of what people think.
+- **Your pictures.** Only use pictures you have the rights to, with the OK of everyone in them (section 11).
+- **Limits.** You can make up to 3 polls a day for each account and App Store download, and we limit votes, views, picture loads and reports per network address. We may pause polls for a while, for example to stop abuse.
+- **Reports.** Anyone who has the link can report a poll, and a reported poll may be taken down (section 14).
+
+Polls must follow our [AUP]({{LINK_AUP}}): they're for choosing a vibe, such as an edit, a look, an outfit colour or a background, never for rating people.
+
 ### No public profiles or feeds
 
-{{APP_NAME}} has no public profiles or feeds and doesn't publish your creations. They are shared only if you choose to share them (section 13).
+{{APP_NAME}} has no public profiles or feeds and doesn't publish your creations. They are shared only if you choose to share them (section 13), and a poll is a private link that only people who have it can open (see Polls above).
 
 ### AI providers
 
@@ -274,6 +288,8 @@ You grant us a limited, worldwide, non-exclusive, royalty-free licence to host, 
 - does not allow us to sell your inputs or use them for advertising; and
 - ends when the processing of your request is complete, except for information you include in a report you send us, and for the copies our safety-check provider keeps for a limited time, both as described in our Privacy Policy.
 
+When you make a poll, the same licence covers its two pictures and your question, and it also lets us show them to anyone who opens the poll's link. For a poll, the licence lasts until the poll is deleted (section 6), except for the copies our safety-check provider keeps for a limited time.
+
 ### Your results
 
 As between you and us, you own the outputs created for you, to the extent permitted by law. To the extent we have any rights in your outputs, we assign them to you.
@@ -288,11 +304,12 @@ You may use your outputs for any lawful purpose, including commercial purposes, 
 
 ### Your responsibilities
 
-You're responsible for your inputs and for how you use your outputs. You confirm that:
+You're responsible for your inputs, your polls and how you use your outputs. You confirm that:
 
 - you own your inputs or have all the rights and permissions needed to use them with {{APP_NAME}};
-- every person shown in a photo you upload (or, for a child, their parent or guardian) has agreed to their image being uploaded and edited in the way you intend; and
-- your inputs and your use of outputs comply with the law, these Terms and the AUP, and don't infringe anyone's rights, including copyright, trademark, privacy, publicity and personality rights.
+- every person shown in a photo you upload (or, for a child, their parent or guardian) has agreed to their image being uploaded and edited in the way you intend;
+- for a poll, you have the rights to both pictures, and everyone shown in them (or, for a child, their parent or guardian) has agreed to being shown in a poll that anyone with its link can see; and
+- your inputs, your polls and your use of outputs comply with the law, these Terms and the AUP, and don't infringe anyone's rights, including copyright, trademark, privacy, publicity and personality rights.
 
 ## 12. AI labels, watermarks and disclosure
 
@@ -316,6 +333,8 @@ You can share results with the share sheet (which on iPhone and iPad also offers
 
 When you share, the receiving service's own terms and privacy policy apply, and you're responsible for what you publish. Make sure everyone shown in an image, including a before-and-after image, agrees to it being shared.
 
+You can also share two of your pictures as a "Which vibe?" poll (section 6). Anyone who has a poll's link can see its pictures and your question, and vote, until the poll ends 24 hours later. Friends can take screenshots or forward the link to others, and we can't control copies made outside {{APP_NAME}}. So only share a poll with people you trust, and only with pictures that everyone in them is happy to share.
+
 ## 14. Acceptable use and safety
 
 You must follow the [AUP]({{LINK_AUP}}). In particular, you must not use {{APP_NAME}} to create, upload or share:
@@ -324,13 +343,14 @@ You must follow the [AUP]({{LINK_AUP}}). In particular, you must not use {{APP_N
 - any sexualised or suggestive content involving anyone under 18 (we have zero tolerance and report child sexual abuse material to the competent authorities where the law requires it);
 - photos of other people, especially minors, uploaded or edited without their consent (or, for a child, the consent of their parent or guardian);
 - bullying or humiliating edits, or body-altering edits intended to shame or deceive;
+- polls that rate or compare people's bodies, faces or attractiveness, or that put two different people against each other;
 - deep fakes intended to deceive, or content that impersonates real people or organisations;
 - hate, harassment, threats, violent extremism, content promoting self-harm, or content that facilitates illegal activity; or
 - content that infringes intellectual property, privacy or publicity rights.
 
 You must not try to get around our safety filters, abuse free credits, or access the Service through automation, scraping, reverse engineering or resold access, except where the law expressly allows it.
 
-Our safety systems may block a request or a result. Blocked requests are never charged. If you break the AUP, we may take the measures it describes, including suspending or deleting your account and reporting illegal content to the authorities.
+Our safety systems may block a request, a result or a poll. Blocked requests are never charged. We may take down a poll that breaks the AUP, and reports from people who have its link can take it down automatically (AUP section 8). If you break the AUP, we may take the measures it describes, including blocking your account or App Store download from cloud AI features or polls, suspending or deleting your account and reporting illegal content to the authorities.
 
 ## 15. Our intellectual property and your licence to use the app
 

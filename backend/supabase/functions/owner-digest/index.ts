@@ -19,6 +19,7 @@ Deno.serve((req) =>
     daily: (day) => rpc("ops_daily_summary", { p_day: day }),
     budget: () => rpc("ops_provider_budget", { p_provider: "xai" }),
     revenueCat: () => rpc("ops_revenuecat_pending", { p_limit: 20 }),
+    polls: (day) => rpc("ops_polls_summary", { p_day: day }),
     // The hourly retry needs pg_net, which is off: with the key set, the digest is the daily pass.
     deleteRevenueCat: revenueCatKey()
       ? () => processRevenueCatDeletions(databaseQueue(serviceClient()), { limit: 20 })

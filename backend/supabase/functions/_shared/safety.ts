@@ -44,7 +44,12 @@ export interface SafetyEnv {
   get(name: string): string | undefined;
 }
 
-export type SafetySubject = "photo" | "result";
+/**
+ * "photo": her photo before an edit. "result": an image the app is about to
+ * show. "share": a picture she shares with friends in a poll (functions/polls),
+ * checked like a result: other people see it.
+ */
+export type SafetySubject = "photo" | "result" | "share";
 
 export type SafetyProvider = "anthropic" | "xai";
 
@@ -85,7 +90,7 @@ export const RESULT_CATEGORIES = ["substances", "weapons"] as const;
 
 /** The categories a model may name for this subject; any other name fails the check, closed. */
 export function categoriesFor(subject: SafetySubject): readonly string[] {
-  return subject === "result" ? [...CATEGORIES, ...RESULT_CATEGORIES] : CATEGORIES;
+  return subject === "photo" ? CATEGORIES : [...CATEGORIES, ...RESULT_CATEGORIES];
 }
 
 export interface SafetyConfig {
@@ -121,9 +126,9 @@ const RESULT_CATEGORIES_TEXT = "; substances (alcohol, tobacco, vaping or drugs:
   "and bubble tea are fine); weapons (real or realistic guns, knives, swords or other weapons held, aimed or " +
   "used, or shown as the focus; kitchen knives used for food and obvious toys are fine)";
 
-/** The reviewer's instructions: for a photo as before, for a result with two more categories. */
+/** The reviewer's instructions: for a photo as before, for a result or a shared picture with two more categories. */
 export function systemPrompt(subject: SafetySubject): string {
-  const result = subject === "result";
+  const result = subject !== "photo";
   return "You review images for a photo app used by teenagers (13 and older). Flag an image only for these " +
     `categories: ${PHOTO_CATEGORIES_TEXT}${result ? RESULT_CATEGORIES_TEXT : ""}. Everyday clothing, swimwear ` +
     "in an ordinary beach or pool scene, makeup, costumes, cartoons and art styles are fine" +
@@ -149,9 +154,14 @@ function verdictSchema(subject: SafetySubject) {
 }
 
 function question(subject: SafetySubject): string {
-  return subject === "photo"
-    ? "This is the photo someone wants to edit. Classify it."
-    : "This is an AI-made image about to be shown. Classify it.";
+  switch (subject) {
+    case "photo":
+      return "This is the photo someone wants to edit. Classify it.";
+    case "result":
+      return "This is an AI-made image about to be shown. Classify it.";
+    case "share":
+      return "This is a picture someone wants to share with friends in a poll. Classify it.";
+  }
 }
 
 const failed = (detail: string): SafetyVerdict => ({ ok: false, reason: "check_failed", detail });

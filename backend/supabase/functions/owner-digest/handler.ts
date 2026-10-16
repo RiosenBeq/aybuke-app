@@ -2,7 +2,8 @@
 // yesterday's AI jobs, cost, breakers and safety (ops_daily_summary), the
 // image provider's estimated balance (ops_provider_budget) and the RevenueCat
 // customers of deleted accounts still waiting for deletion
-// (ops_revenuecat_pending, 20261029000002). With REVENUECAT_SECRET_KEY set the
+// (ops_revenuecat_pending, 20261029000002), and yesterday's polls
+// (ops_polls_summary, 20261102000000). With REVENUECAT_SECRET_KEY set the
 // digest first works through that queue itself; without it, the mail lists the
 // App User IDs to delete by hand in the RevenueCat dashboard and the line that
 // marks them done (ops_mark_revenuecat_deleted()).
@@ -42,6 +43,8 @@ export interface DigestDeps {
   budget?(): Promise<unknown>;
   /** public.ops_revenuecat_pending(): optional, the digest goes out without it. */
   revenueCat?(): Promise<unknown>;
+  /** public.ops_polls_summary(day): optional, the digest goes out without it. */
+  polls?(day: string): Promise<unknown>;
   /** Works through the RevenueCat deletion queue; only given while REVENUECAT_SECRET_KEY is set. */
   deleteRevenueCat?(): Promise<ProcessResult>;
   /** How long the digest waits for deleteRevenueCat (default REVENUECAT_WAIT_MS). */
@@ -118,6 +121,33 @@ export function revenueCatSection(pending: unknown, run?: ProcessResult): MailSe
   return { title: "RevenueCat deletions (deleted accounts)", rows };
 }
 
+/**
+ * Yesterday's "Which vibe?" polls: counts only (no poll ids, questions or
+ * pictures). Open reports point at ops_poll_reports(), where a reported poll
+ * can be reviewed until its 24 hours end.
+ */
+export function pollsSection(polls: unknown): MailSection {
+  const n = (key: string) => count(polls, key);
+  const rows: MailSection["rows"] = [
+    capRow("Polls made vs cap", n("created"), n("polls_cap")),
+    {
+      label: "Blocked: question · picture · unreadable",
+      value: joined(" · ", n("blocked_question"), n("blocked_image"), n("invalid_image")),
+    },
+    { label: "Check couldn't run (given back)", value: n("unavailable") },
+    { label: "Votes", value: n("votes") },
+    { label: "Reports · taken down", value: joined(" · ", n("reports"), n("takedowns")) },
+    capRow("Picture loads vs cap", n("image_loads"), n("image_loads_cap")),
+    { label: "Picture egress (MB, to browsers)", value: n("image_mb")?.toFixed(1) },
+    { label: "Live now · taken down now", value: joined(" · ", n("live_now"), n("taken_down_now")) },
+    { label: "Open reports", value: n("reports_open") },
+  ];
+  if ((n("reports_open") ?? 0) > 0) {
+    rows.push({ label: "Review", value: "select * from public.ops_poll_reports(7);" });
+  }
+  return { title: "Which vibe? polls", rows };
+}
+
 export function digestMail(
   day: string,
   members: unknown,
@@ -126,6 +156,7 @@ export function digestMail(
   budget?: unknown,
   revenueCat?: unknown,
   revenueCatRun?: ProcessResult,
+  polls?: unknown,
 ): OwnerMail {
   const jobs = record(daily, "jobs");
   const failures = Object.entries(record(daily, "failures_by_code"))
@@ -173,6 +204,7 @@ export function digestMail(
     },
     budgetSection(budget),
     revenueCatSection(revenueCat, revenueCatRun),
+    pollsSection(polls),
     {
       title: "Members",
       rows: [
@@ -233,6 +265,11 @@ export async function handleDigest(req: Request, deps: DigestDeps): Promise<Resp
   });
   // RevenueCat too: the automatic pass (key set) first, then what is still waiting.
   const revenueCat = revenueCatQueue(deps);
+  // And the polls: dashes when they can't be read.
+  const polls = deps.polls?.(day).catch((error) => {
+    console.warn("owner-digest: poll summary unavailable", error instanceof Error ? error.message : error);
+    return undefined;
+  });
   let members: unknown;
   let daily: unknown;
   try {
@@ -243,7 +280,9 @@ export async function handleDigest(req: Request, deps: DigestDeps): Promise<Resp
   }
 
   const { pending, run } = await revenueCat;
-  const result = await deps.send(renderOwnerMail(digestMail(day, members, daily, now, await budget, pending, run)));
+  const result = await deps.send(
+    renderOwnerMail(digestMail(day, members, daily, now, await budget, pending, run, await polls)),
+  );
   if (!result.sent) return failure(502, result.reason);
   return json({ ok: true, sent: true, day });
 }

@@ -221,3 +221,24 @@ Deno.test("only checks that couldn't run count as outages", () => {
   assert.ok(!isServiceFailure({ ok: true }));
   assert.ok(!isServiceFailure({ ok: false, reason: "flagged", categories: ["nudity"] }));
 });
+
+Deno.test("a picture shared in a poll is checked like a result, with its own question", () => {
+  const image = "data:image/jpeg;base64,/9j/4AAQ";
+  const body = buildRequest("grok-vision-test", image, "share") as {
+    messages: { content: unknown }[];
+    response_format: { json_schema: { schema: { properties: { categories: { items: { enum: string[] } } } } } };
+  };
+  assert.deepEqual(body.response_format.json_schema.schema.properties.categories.items.enum, [
+    ...CATEGORIES,
+    ...RESULT_CATEGORIES,
+  ]);
+  assert.equal(body.messages[0].content, systemPrompt("share"));
+  assert.equal(systemPrompt("share"), systemPrompt("result"));
+  const question = (body.messages[1].content as { type: string; text?: string }[]).find((part) => part.type === "text");
+  assert.equal(question?.text, "This is a picture someone wants to share with friends in a poll. Classify it.");
+  assert.deepEqual(parseVerdict(answer({ flagged: true, categories: ["weapons"] }), "share"), {
+    ok: false,
+    reason: "flagged",
+    categories: ["weapons"],
+  });
+});

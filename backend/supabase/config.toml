@@ -43,6 +43,14 @@ verify_jwt = false
 [functions.app-store-notifications]
 verify_jwt = false
 
+# "Which vibe?" polls. JWT verification stays on: the app sends her session,
+# the poll page on aybuke.org the public anon key (as Bearer and apikey), so
+# the gateway refuses anything without the project's key; the function checks
+# her session itself on the routes that need it, and signs its picture URLs.
+# Deploy with: supabase functions deploy polls
+[functions.polls]
+verify_jwt = true
+
 # The owner's daily digest mail. JWT verification stays on (the GitHub workflow
 # sends the anon key); the x-digest-secret header must equal DIGEST_SECRET.
 # Deploy with: supabase functions deploy owner-digest

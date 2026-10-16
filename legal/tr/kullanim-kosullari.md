@@ -40,7 +40,7 @@ Satın alımlarınıza ayrıca sizinle Apple arasında geçerli olan Apple koşu
 
 ## 3. Kimler kullanabilir?
 
-- Bulut yapay zekâ özelliklerini kullanmak, hesap oluşturmak veya satın alma yapmak için en az {{MIN_AGE}} yaşında olmalısınız. 13 yaşından küçük çocuklar yalnızca cihazlarında çalışan ve bize hiçbir şey göndermeyen ücretsiz araçları kullanabilir.
+- Bulut yapay zekâ özelliklerini kullanmak, anket yapmak, hesap oluşturmak veya satın alma yapmak için en az {{MIN_AGE}} yaşında olmalısınız. 13 yaşından küçük çocuklar yalnızca cihazlarında çalışan ve bize hiçbir şey göndermeyen ücretsiz araçları kullanabilir.
 - 18 yaşından küçükseniz veya bulunduğunuz yerin hukukuna göre ergin değilseniz, {{APP_NAME}} uygulamasını yalnızca velinizin veya vasinizin izniyle kullanabilirsiniz. Veliniz veya vasiniz bu Koşulları sizin adınıza kabul etmeli ve satın alımlar dahil Hizmeti kullanımınızdan sorumludur. Bunun pratikte ne anlama geldiğini 4. bölüm açıklar.
 - Bulunduğunuz yerin hukuku yasaklıyorsa veya bu Koşulları ihlal ettiğiniz için daha önce Hizmetten men edildiyseniz Hizmeti kullanamazsınız.
 - {{APP_NAME}} uygulamasını bir işletme adına kullanıyorsanız, bu Koşulları o işletme adına kabul etmeye yetkili olduğunuzu beyan edersiniz.
@@ -56,14 +56,14 @@ Bu bölüm, genç kullanıcılar için hazırlanmış sade bir özettir. Koşull
 - **Satın alımlar Apple üzerinden yapılır.** Satın alımlar, cihazınızdaki Apple Hesabından tahsil edilir. Aile Paylaşımı'nda bir çocuk hesabınız varsa, her satın alımın veliniz veya vasiniz tarafından "Satın Alma İzni İste" (Ask to Buy) özelliğiyle onaylanması gerekebilir. İzin almadan hiçbir şey satın almayın.
 - **Reklamlar isteğe bağlıdır ve asla kişiselleştirilmez.** Pro'nuz yoksa herkese uygun birkaç reklam görebilirsiniz: krediniz bittiğinde 1 kredi için ya da bir Pro görünümünü veya stilini bir kez denemek için izlemeyi seçebileceğiniz bir reklam (uygulamanın gösterdiği gibi günde birkaç kez) ve bazen kaydettikten sonra bir reklam. Hiçbir reklamı izlemek zorunda değilsiniz ve reklamlar asla diğer uygulamalarda yaptıklarınıza dayanmaz.
 - **Yalnızca "evet" diyen kişileri düzenleyin.** Başkalarının, özellikle de diğer gençlerin fotoğraflarını izinleri olmadan yüklemeyin veya düzenlemeyin. Hiç kimse hakkında cinsel, aşağılayıcı veya kırıcı bir şey oluşturmayın.
-- **Paylaşmadan önce düşünün.** Oluşturduklarınız, siz paylaşmadıkça cihazınızda kalır. İnternete bir kez çıkan bir şeyi geri almak zor olabilir.
+- **Paylaşmadan önce düşünün.** Oluşturduklarınız, siz paylaşmadıkça cihazınızda kalır. Bir anket bağlantısına sahip herkes anketin görsellerini görebilir; arkadaşlarınız da bağlantıyı başkalarına iletebilir veya ekran görüntüsü alabilir. İnternete bir kez çıkan bir şeyi geri almak zor olabilir.
 - **Yardım her zaman var.** Bir şeyler ters giderse veya biri {{APP_NAME}} uygulamasını size zarar vermek için kullanırsa, güvendiğiniz bir yetişkine anlatın ve durumu bize bildirin (bkz. [Politika]({{LINK_AUP}})). Veliler ve vasiler, çocuklarının verilerini sildirmek dahil her konuda [{{PRIVACY_EMAIL}}](mailto:{{PRIVACY_EMAIL}}) adresinden bize ulaşabilir.
 
 ## 5. Hesabınız
 
 ### Kayıt gerekmez
 
-{{APP_NAME}} sizden kayıt olmanızı veya adınızı ya da bir şifre vermenizi istemez; e-posta adresine de ihtiyacınız yoktur. Bir bulut yapay zekâ özelliğini veya sunucularımızdaki kredi bakiyenizi ilk kez kullandığınızda uygulama, arka uç (backend) hizmet sağlayıcımız nezdinde rastgele bir kullanıcı kimliğiyle tanımlanan anonim bir hesabı otomatik olarak oluşturur. Uygulama, bu hesabın oturum anahtarlarını cihazınızdaki Anahtar Zinciri'nde (Keychain) saklar.
+{{APP_NAME}} sizden kayıt olmanızı veya adınızı ya da bir şifre vermenizi istemez; e-posta adresine de ihtiyacınız yoktur. Bir bulut yapay zekâ özelliğini, anketleri veya sunucularımızdaki kredi bakiyenizi ilk kez kullandığınızda uygulama, arka uç (backend) hizmet sağlayıcımız nezdinde rastgele bir kullanıcı kimliğiyle tanımlanan anonim bir hesabı otomatik olarak oluşturur. Uygulama, bu hesabın oturum anahtarlarını cihazınızdaki Anahtar Zinciri'nde (Keychain) saklar.
 
 ### İsteğe bağlı Apple ile giriş
 
@@ -79,7 +79,7 @@ Apple ile giriş yapmadıysanız hesabınıza erişim cihazınıza bağlıdır. 
 
 ### Hesabınızı silme
 
-Hesabınızı istediğiniz zaman **Settings → Delete my data & account** (Ayarlar → Verilerimi ve hesabımı sil) yoluyla silebilirsiniz. Bu işlem, sunucudaki hesabınızı ve ona bağlı tüm sunucu kayıtlarını (kredi cüzdanı, kredi hareketleri, iş kayıtları, abonelik hakkı kayıtları, reklam ödül kayıtları ve raporlar) ve cihazınızdaki görsel kütüphanesini kalıcı olarak siler. Apple ile giriş yaptıysanız {{APP_NAME}} uygulamasının Apple Hesabınıza erişimini de iptal ederiz. App Store indirmenizin tek yönlü bir özeti (hash), o günün ücretsiz kredileri ve varsa bir güvenlik molasıyla (8. bölüm) birlikte, silme işleminden sonra hesabınıza bağlı kalmaz ve yalnızca kötüye kullanımı önlemek için [Gizlilik Politikası]({{LINK_PRIVACY}}) metninde açıklanan sınırlı süre boyunca saklanır; bu nedenle hesabınızı silmek ücretsiz kredileri veya bir molayı sıfırlamaz.
+Hesabınızı istediğiniz zaman **Settings → Delete my data & account** (Ayarlar → Verilerimi ve hesabımı sil) yoluyla silebilirsiniz. Bu işlem, sunucudaki hesabınızı ve ona bağlı tüm sunucu kayıtlarını (kredi cüzdanı, kredi hareketleri, iş kayıtları, abonelik hakkı kayıtları, reklam ödül kayıtları, anketler ve raporlar) ve cihazınızdaki görsel kütüphanesini kalıcı olarak siler. Apple ile giriş yaptıysanız {{APP_NAME}} uygulamasının Apple Hesabınıza erişimini de iptal ederiz. App Store indirmenizin tek yönlü bir özeti (hash), o günün ücretsiz kredileri ve varsa bir güvenlik molasıyla (8. bölüm) birlikte, silme işleminden sonra hesabınıza bağlı kalmaz ve yalnızca kötüye kullanımı önlemek için [Gizlilik Politikası]({{LINK_PRIVACY}}) metninde açıklanan sınırlı süre boyunca saklanır; bu nedenle hesabınızı silmek ücretsiz kredileri veya bir molayı sıfırlamaz.
 
 Hesabınızı sildiğinizde, satın aldığınız krediler dahil kalan tüm kredileriniz kaybolur; bunlar geri yüklenemez ve iade edilemez. Daha sonra bir bulut yapay zekâ özelliğini yeniden kullanırsanız yeni bir anonim hesap oluşturulur.
 
@@ -110,9 +110,23 @@ Bir kişinin fotoğrafını düzenlediğinizde sonuç size (veya fotoğraftaki k
 
 Sakladığınız sonuçlar yalnızca cihazınızda, uygulamanın özel depolama alanında tutulur; biz bunların bir kopyasını saklamayız. Uygulamayı silerseniz, oluşturduklarınızı silerseniz veya cihazınızı kaybederseniz kütüphaneniz kaybolabilir. Saklamak istediğiniz sonuçları Fotoğraflar arşivinize kaydedin.
 
+### Anketler ("Hangi vibe?")
+
+{{MIN_AGE}} yaş ve üzerindeyseniz bir "Hangi vibe?" anketi yapabilirsiniz: iki görselinizi (A ve B), isterseniz bir soruyla birlikte özel bir bağlantı olarak paylaşırsınız; arkadaşlarınız da daha çok beğendikleri görsele dokunur. Uygulama veya hesap olmadan, herhangi bir tarayıcıda oy verebilirler; sonuçları siz uygulamada görürsünüz.
+
+- **Özel bir bağlantı.** Anket hiçbir yerde listelenmez: akış, arama, profil, yorum veya isim yoktur. Bağlantıya sahip herkes, anket sona erene kadar iki görseli ve sorunuzu görebilir ve oy verebilir. Bağlantıyı kime göndereceğinize siz karar verirsiniz.
+- **24 saat.** Anket, yapıldıktan 24 saat sonra sona erer. Bağlantı o anda çalışmaz hâle gelir ve anket, görselleri, sorusu ve oylarıyla birlikte birkaç dakika içinde silinir. Bir anketi uygulamadan daha önce silebilirsiniz.
+- **Önce kontrol edilir.** Bağlantı oluşturulmadan önce bağımsız güvenlik kontrolümüz iki görseli de inceler, güvenlik filtrelerimiz de sorunuzu kontrol eder. Bir görsel işaretlenirse veya kontrol tamamlanamazsa anket oluşturulmaz; filtrelerin geri çevirdiği bir soru da kullanılamaz.
+- **Sadece eğlence için.** Oylar anonimdir ve bağlantıya sahip herkes oy verebilir; bu yüzden sayıları doğrulayamayız: sayılar, insanların ne düşündüğüne dair yalnızca eğlenceli bir fikir verir.
+- **Görselleriniz.** Yalnızca kullanma hakkınız olan ve içindeki herkesin onay verdiği görselleri kullanın (11. bölüm).
+- **Sınırlar.** Her hesap ve her App Store indirmesi için günde en fazla 3 anket yapabilirsiniz; ağ adresi başına oy, görüntüleme, görsel yükleme ve bildirim sayısını da sınırlarız. Örneğin kötüye kullanımı durdurmak için anketlere bir süre ara verebiliriz.
+- **Bildirme.** Bağlantıya sahip herkes bir anketi bildirebilir; bildirilen bir anket yayından kaldırılabilir (14. bölüm).
+
+Anketler [Politika]({{LINK_AUP}}) hükümlerine uymalıdır: bir düzenleme, görünüm, kıyafet rengi veya arka plan gibi bir vibe seçmek içindir; asla insanları puanlamak için değil.
+
 ### Herkese açık profil veya akış yok
 
-{{APP_NAME}} uygulamasında herkese açık profil veya akış yoktur ve oluşturduklarınızı biz yayımlamayız. Bunlar yalnızca siz paylaşmayı seçerseniz paylaşılır (13. bölüm).
+{{APP_NAME}} uygulamasında herkese açık profil veya akış yoktur ve oluşturduklarınızı biz yayımlamayız. Bunlar yalnızca siz paylaşmayı seçerseniz paylaşılır (13. bölüm); anket ise yalnızca bağlantısına sahip olanların açabildiği özel bir bağlantıdır (yukarıdaki Anketler bölümüne bakın).
 
 ### Yapay zekâ sağlayıcıları
 
@@ -274,6 +288,8 @@ Girdilerinizi barındırmamız, çoğaltmamız, iletmemiz, değiştirmemiz ve ba
 - girdilerinizi satmamıza veya reklam amacıyla kullanmamıza izin vermez; ve
 - talebinizin işlenmesi tamamlandığında sona erer; ancak bize gönderdiğiniz bir rapora eklediğiniz bilgiler ile güvenlik kontrolü sağlayıcımızın sınırlı bir süre sakladığı kopyalar, Gizlilik Politikası'nda açıklandığı şekilde saklanır.
 
+Bir anket yaptığınızda aynı lisans anketin iki görselini ve sorunuzu da kapsar; ayrıca bunları anketin bağlantısını açan herkese göstermemize de izin verir. Bir ankette lisans, güvenlik kontrolü sağlayıcımızın sınırlı bir süre sakladığı kopyalar dışında, anket silinene kadar sürer (6. bölüm).
+
 ### Sonuçlarınız
 
 Sizinle aramızdaki ilişkide, sizin için oluşturulan çıktılar kanunun izin verdiği ölçüde size aittir. Çıktılarınız üzerinde herhangi bir hakkımız bulunduğu ölçüde, FSEK md. 21-25'te sayılan işleme, çoğaltma, yayma, temsil ve umuma iletim hakları dahil bu hakları süre ve yer bakımından sınırsız ve bedelsiz olarak size devrederiz.
@@ -288,11 +304,12 @@ Lütfen dikkat edin:
 
 ### Sorumluluklarınız
 
-Girdilerinizden ve çıktılarınızı nasıl kullandığınızdan siz sorumlusunuz. Aşağıdakileri beyan ve taahhüt edersiniz:
+Girdilerinizden, anketlerinizden ve çıktılarınızı nasıl kullandığınızdan siz sorumlusunuz. Aşağıdakileri beyan ve taahhüt edersiniz:
 
 - girdilerinizin sahibi olduğunuzu veya bunları {{APP_NAME}} uygulamasıyla kullanmak için gereken tüm hak ve izinlere sahip olduğunuzu;
-- yüklediğiniz bir fotoğrafta görünen herkesin (bir çocuk söz konusuysa velisinin veya vasisinin), görüntüsünün yüklenmesine ve amaçladığınız şekilde düzenlenmesine onay verdiğini; ve
-- girdilerinizin ve çıktıları kullanımınızın mevzuata, bu Koşullara ve Politika'ya uygun olduğunu; telif hakkı, marka hakkı, özel hayatın gizliliği, kişilik hakları (Türk Medeni Kanunu md. 24) ve resim ve portreler üzerindeki haklar (FSEK md. 86) dahil hiç kimsenin haklarını ihlal etmediğini.
+- yüklediğiniz bir fotoğrafta görünen herkesin (bir çocuk söz konusuysa velisinin veya vasisinin), görüntüsünün yüklenmesine ve amaçladığınız şekilde düzenlenmesine onay verdiğini;
+- bir ankette, iki görseli kullanma hakkına sahip olduğunuzu ve görsellerde görünen herkesin (bir çocuk söz konusuysa velisinin veya vasisinin), bağlantısına sahip herkesin görebileceği bir ankette gösterilmeye onay verdiğini; ve
+- girdilerinizin, anketlerinizin ve çıktıları kullanımınızın mevzuata, bu Koşullara ve Politika'ya uygun olduğunu; telif hakkı, marka hakkı, özel hayatın gizliliği, kişilik hakları (Türk Medeni Kanunu md. 24) ve resim ve portreler üzerindeki haklar (FSEK md. 86) dahil hiç kimsenin haklarını ihlal etmediğini.
 
 ## 12. Yapay zekâ etiketleri, filigranlar ve açıklama
 
@@ -316,6 +333,8 @@ Sonuçlarınızı paylaşım menüsüyle (iPhone ve iPad'de Instagram Stories (H
 
 Paylaştığınızda içeriği alan hizmetin kendi koşulları ve gizlilik politikası geçerli olur ve yayımladığınız içerikten siz sorumlusunuz. Önce/sonra görselleri dahil, bir görselde yer alan herkesin paylaşıma onay verdiğinden emin olun.
 
+İki görselinizi bir "Hangi vibe?" anketi olarak da paylaşabilirsiniz (6. bölüm). Bir anketin bağlantısına sahip herkes, anket 24 saat sonra sona erene kadar görselleri ve sorunuzu görebilir ve oy verebilir. Arkadaşlarınız ekran görüntüsü alabilir veya bağlantıyı başkalarına iletebilir; {{APP_NAME}} dışında oluşan kopyaları kontrol edemeyiz. Bu yüzden bir anketi yalnızca güvendiğiniz kişilerle ve yalnızca içindeki herkesin paylaşılmasından memnun olduğu görsellerle paylaşın.
+
 ## 14. Kabul edilebilir kullanım ve güvenlik
 
 [Politika]({{LINK_AUP}}) hükümlerine uymanız gerekir. Özellikle {{APP_NAME}} uygulamasını aşağıdakileri oluşturmak, yüklemek veya paylaşmak için kullanamazsınız:
@@ -324,13 +343,14 @@ Paylaştığınızda içeriği alan hizmetin kendi koşulları ve gizlilik polit
 - 18 yaşından küçük herhangi bir kişiyi içeren cinselleştirilmiş veya cinsel çağrışımlı her türlü içerik (buna sıfır tolerans gösteririz ve çocukların cinsel istismarına ilişkin içerikleri mevzuatın gerektirdiği hallerde yetkili makamlara bildiririz);
 - başkalarının, özellikle küçüklerin, rızası (bir çocuk söz konusuysa velisinin veya vasisinin rızası) olmadan yüklenen veya düzenlenen fotoğrafları;
 - zorbalık içeren veya aşağılayıcı düzenlemeleri ya da utandırmak veya yanıltmak amacıyla vücudu değiştiren düzenlemeleri;
+- insanların bedenlerini, yüzlerini veya çekiciliklerini puanlayan ya da karşılaştıran veya iki farklı kişiyi birbirine karşı yarıştıran anketleri;
 - yanıltma amaçlı deepfake içerikleri veya gerçek kişi ya da kuruluşları taklit eden içerikleri;
 - nefret söylemi, taciz, tehdit, şiddet içeren aşırıcılık, kendine zarar vermeyi özendiren içerik veya yasa dışı faaliyetleri kolaylaştıran içerikleri; veya
 - fikri mülkiyet haklarını, özel hayatın gizliliğini veya kişilik haklarını ihlal eden içerikleri.
 
 Güvenlik filtrelerimizi aşmaya çalışamaz, ücretsiz kredileri kötüye kullanamaz, Hizmete otomasyon, veri kazıma (scraping), tersine mühendislik veya yeniden satılan erişim yoluyla erişemezsiniz; kanunun açıkça izin verdiği haller saklıdır.
 
-Güvenlik sistemlerimiz bir talebi veya sonucu engelleyebilir. Engellenen talepler için hiçbir zaman ücret alınmaz. Politika'yı ihlal ederseniz, hesabınızın askıya alınması veya silinmesi ve yasa dışı içeriğin yetkili makamlara bildirilmesi dahil, Politika'da açıklanan tedbirleri uygulayabiliriz.
+Güvenlik sistemlerimiz bir talebi, sonucu veya anketi engelleyebilir. Engellenen talepler için hiçbir zaman ücret alınmaz. Politika'ya aykırı bir anketi yayından kaldırabiliriz; bağlantıya sahip kişilerin bildirimleri de bir anketi otomatik olarak kaldırabilir (Politika, 8. bölüm). Politika'yı ihlal ederseniz, hesabınızın veya App Store indirmenizin bulut yapay zekâ özelliklerinden ya da anketlerden engellenmesi, hesabınızın askıya alınması veya silinmesi ve yasa dışı içeriğin yetkili makamlara bildirilmesi dahil, Politika'da açıklanan tedbirleri uygulayabiliriz.
 
 ## 15. Fikri mülkiyet haklarımız ve uygulamayı kullanma lisansınız
 
