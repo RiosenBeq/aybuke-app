@@ -171,7 +171,8 @@ struct EnhanceHintCard: View {
 
 /// Shown once on this device, the first time a photo needs a fix.
 enum EnhanceHint {
-    private static let key = "enhance.hintShown"
+    /// Delete my data removes it (`AppModel.Keys.wiped`).
+    static let key = "enhance.hintShown"
 
     static var wasShown: Bool { UserDefaults.standard.bool(forKey: key) }
 

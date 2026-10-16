@@ -297,7 +297,7 @@ final class AppModel {
             appearance, deletionRequested,
             "credits.wallet.v2", "notifications.preferences.v1", "notifications.readyPingDeclined", "tour.seen.v1",
             PromptHistory.recentKey, PromptHistory.draftKey, MyFiltersStore.key, AdCoordinator.pacingKey, AdCoordinator.usedKey,
-            PurchaseManager.purchasedKey, AutoEditQuota.key, PollsModel.storageKey, PollsModel.explainerKey,
+            PurchaseManager.purchasedKey, AutoEditQuota.key, PollsModel.storageKey, PollsModel.explainerKey, EnhanceHint.key,
         ] + legacyConsent
         static let wipedKeychain = [appleUserID, "auth.session", "auth.pendingMerge", "auth.pendingAppleCode"]
     }
