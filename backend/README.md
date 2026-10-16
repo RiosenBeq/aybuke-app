@@ -161,6 +161,49 @@ supabase secrets set OWNER_ALERT_FROM='Aybuke <alerts@buaze.com>'      # optiona
 
 Then add the same `DIGEST_SECRET` as a repository secret on GitHub (Settings › Secrets and variables › Actions, or `gh secret set DIGEST_SECRET`). Resend's default sender `onboarding@resend.dev` only delivers to the address of the Resend account itself; to send to another address or from your own, verify `buaze.com` under Resend › Domains and set `OWNER_ALERT_FROM`.
 
+## Admin API
+
+`functions/admin` (migration `20261105100000_admin_api.sql`) feeds the owner's admin page on aybuke.org (website repo `RiosenBeq/aybuke`). JWT verification stays on (`supabase functions deploy admin`, no flag): the page sends the public anon key as `Authorization: Bearer` and `apikey`, and every request carries `x-admin-token`. The function compares SHA-256 of the token with the secret `ADMIN_TOKEN_SHA256` (64 hex characters) in constant time; without it every call gets 503 `admin_disabled`. Then `admin_gate()` counts the request under a salted hash of the address (the last `x-forwarded-for` entry, as everywhere): **60 a minute** (429 `rate_limited`), and **5** wrong or missing tokens within **15 minutes** lock the address out for **15 minutes** (429 `locked_out`, even for the right token; the right token forgives earlier misses). Numbers: `public.admin_policy()`. If the gate can't be asked, everything is refused (503 `unavailable`). CORS answers only `https://aybuke.org`, `https://www.aybuke.org` and `http://localhost:<port>` (any other `Origin` gets 403 `origin_not_allowed`), and every answer carries `Cache-Control: no-store`.
+
+**Contract** (errors are the usual `{ "error": { "code", "message", "retry_after"? } }`, with `Retry-After` on 429):
+
+```
+GET  /functions/v1/admin/overview
+→ 200 { generated_at,
+        today:   ops_daily_summary(today UTC), top_installs/top_ips as [{ tag, jobs | requests }],
+        members: ops_members_summary(), budget: ops_provider_budget('xai'), polls: ops_polls_summary(today UTC),
+        ai:      { paused, scope?: "all" | "free", reason?, until? } }   a section that can't be read is null
+GET  /functions/v1/admin/moderation                                 the last 7 days
+→ 200 { poll_reports: [ops_poll_reports(7) with user and install as tags; poll_id stays],
+        reports:      [{ created_at, reason, details, status, operation, template_id, user, install,
+                         user_strikes_30d, install_strikes_30d, install_blocked }],   newest 50
+        strikes:      [{ install, users (up to 10 tags), user_count, strikes, prompt_strikes, output_strikes,
+                         categories, last_strike_at, cooldowns, cooldown_until, blocked }] }
+GET  /functions/v1/admin/audit
+→ 200 { entries: [{ at, action, target?, address, outcome }] }      newest 50
+POST /functions/v1/admin/action  { "action": "…", "target": "…" }   no other fields
+  pause_ai        target "all" (default) or "free": 24 hours, never shortening a longer pause (provider_billing)
+  resume_ai       target "all", "free" or none (both)
+  take_down_poll  target a poll id; restore_poll the same
+  block, unblock  target a tag: "i-<12 hex>" (an install) or "u-<12 hex>" (a user)
+→ 200 { ok: true, result: { …the ops_* answer without ids, outcome: "done" | "no_change" } }
+→ 400 bad_request (nothing changes, not audited), 404 not_found, 409 ambiguous (a tag that matches two)
+```
+
+**Tags, not ids.** Installs are `i-` and the first 12 hex characters of their key (already a salted hash; `ops_daily_summary()` shortens them the same way), users `u-` and 12 of `private.keyed_hash('admin_user', id)`, addresses `a-` and 12 of `private.keyed_hash('ip', address)` (the rate limits' key). Block and unblock find the install or user again among strikes, cool-downs, blocks, reports, poll reports and jobs, and act through `ops_block()` / `ops_unblock()` (reason `admin_page`). A last pass in the function drops id-named keys and replaces anything that looks like a UUID, a long hex key, an email or an IP address; logs carry the route, the outcome, the status and the time only. Every action (a not-found one too) is written to `private.admin_audit`: time, action, the target's tag (a poll as `p-` and its first 6 characters), the address's tag and the outcome, kept a year (`sweep_app_store_notifications()`, the daily sweep, deletes older rows, and the gate's counters after a day).
+
+**Setup** (apply the migration first). The token is 48 random bytes made on your Mac; only its SHA-256 goes to Supabase, and the token itself is never committed, printed or pasted into a ticket:
+
+```bash
+cd backend
+TOKEN="$(openssl rand -base64 48 | tr -d '\n')"
+supabase secrets set ADMIN_TOKEN_SHA256="$(printf '%s' "$TOKEN" | shasum -a 256 | cut -d' ' -f1)"
+printf '%s' "$TOKEN" | pbcopy && unset TOKEN       # paste it into your password manager now
+supabase functions deploy admin
+```
+
+To rotate, run the same lines again (the old token stops working); `supabase secrets unset ADMIN_TOKEN_SHA256` turns the API off (503).
+
 ## Reports
 
 `POST /report` stores a user's "Report this image" in `public.reports` (reason, optional details, the user's own job id) with a limit of 10 reports a day per user (`reports_per_day`). Review open reports in the Supabase dashboard (`status = 'open'`) and set `status` to `reviewed`, `actioned` or `dismissed`. Reports are deleted after 12 months by `sweep_jobs()`, or with the account.
@@ -401,7 +444,7 @@ Owner tools run in the SQL editor (the service role). Clients have no access to 
 
 ```bash
 # Type-check, lint and format-check the Edge Functions (Deno 2)
-cd backend/supabase/functions && deno check */index.ts && deno lint && deno fmt --check && deno test _shared/ ad-reward/ app-store-notifications/ account/ owner-digest/ ai-image/ credits-redeem/ assist/ polls/
+cd backend/supabase/functions && deno check */index.ts && deno lint && deno fmt --check && deno test _shared/ ad-reward/ app-store-notifications/ account/ owner-digest/ ai-image/ credits-redeem/ assist/ polls/ admin/
 
 # Run the migration + ledger tests on a throwaway PostgreSQL 14+
 backend/scripts/test-db.sh

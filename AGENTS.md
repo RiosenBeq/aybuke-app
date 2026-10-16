@@ -86,7 +86,7 @@ xcodebuild build -project ios/Glowlit.xcodeproj -scheme Glowlit -configuration D
 swift test --package-path ios/Packages/AppCore
 
 # Backend: Deno checks (CI) and SQL tests on a throwaway Postgres
-(cd backend/supabase/functions && deno fmt --check && deno lint && deno check ai-image/index.ts credits-redeem/index.ts account/index.ts report/index.ts ad-reward/index.ts app-store-notifications/index.ts owner-digest/index.ts assist/index.ts && deno test _shared/ ad-reward/ app-store-notifications/ account/ owner-digest/ ai-image/ credits-redeem/ assist/)
+(cd backend/supabase/functions && deno fmt --check && deno lint && deno check ai-image/index.ts credits-redeem/index.ts account/index.ts report/index.ts ad-reward/index.ts app-store-notifications/index.ts owner-digest/index.ts assist/index.ts polls/index.ts admin/index.ts && deno test _shared/ ad-reward/ app-store-notifications/ account/ owner-digest/ ai-image/ credits-redeem/ assist/ polls/ admin/)
 backend/scripts/test-db.sh
 
 # Generated files must stay in sync (CI checks both)

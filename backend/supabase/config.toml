@@ -56,3 +56,10 @@ verify_jwt = true
 # Deploy with: supabase functions deploy owner-digest
 [functions.owner-digest]
 verify_jwt = true
+
+# The owner's admin API for the admin page on aybuke.org. JWT verification
+# stays on (the page sends the public anon key); x-admin-token, compared by
+# its SHA-256 with ADMIN_TOKEN_SHA256, is the real check.
+# Deploy with: supabase functions deploy admin
+[functions.admin]
+verify_jwt = true

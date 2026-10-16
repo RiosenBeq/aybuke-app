@@ -8,6 +8,8 @@ Bu dosya, Aybuke'nin arka ucunu (Supabase projesi `efapupjvidyqhqdevmcu`, Frankf
 
 > **Bekliyor (Aybik'in yeni görevleri, 16 Ekim 2026):** `20261104000000_assist_kinds.sql` (`psql -1 -v ON_ERROR_STOP=1 -f …`): görünüm bulucu (`looks`), anket sorusu fikirleri (`poll_questions`), kart metni (`card_text`) ve uygulama soruları (`help`) için ayrı saatlik kovalar (`assist_kind_policy()`); ortak tavanlar aynı kalır. Önce bu migrasyon, sonra `supabase functions deploy assist` (JWT doğrulaması açık). Sıra ters olursa yeni görevler 503 döner, uygulama sessizce cihazdaki yedeğe geçer. Kontrol: `select * from public.assist_kind_policy('help');` → 20, 20, 100. Sözleşme: `backend/README.md`, "Assist".
 
+> **Bekliyor (yönetim sayfası API'si, 17 Ekim 2026):** `20261105100000_admin_api.sql` (`psql -1 -v ON_ERROR_STOP=1 -f …`): `admin_gate()` (adres başına dakikada 60 istek; 15 dakikada 5 yanlış jeton → 15 dakika kilit), `admin_moderation()`, `admin_action()`, `admin_audit_recent()` ve bir yıl tutulan `private.admin_audit`. Sonra `ADMIN_TOKEN_SHA256` gizli değeri (yalnız jetonun SHA-256'sı; jeton asla yazdırılmaz) ve `supabase functions deploy admin` (JWT doğrulaması açık). Kontrol: `select * from public.admin_policy();` → 60, 5, 15, 15, 24, 365. Sözleşme ve kurulum: `backend/README.md`, "Admin API".
+
 > **Kural:** Anahtar, şifre, service role anahtarı, `.p8` içeriği ve e-posta adresi bu dosyaya, bir commit'e ya da bir sohbete yazılmaz. Değerler yalnızca ilgili panele girilir. Proje kimliği ve AdMob birim kimlikleri herkese açıktır.
 
 ## §0 Önce kontrol
