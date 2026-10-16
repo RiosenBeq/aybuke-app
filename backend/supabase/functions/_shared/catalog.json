@@ -836,6 +836,114 @@
       "isPro" : false,
       "prompt" : "Re-render this photo as if it was taken with a full-frame DSLR camera and an 85mm f/1.4 portrait lens: a creamy, softly blurred background with round bokeh, soft natural window light or gentle studio light, crisp focus on the eyes and natural skin texture, no skin smoothing. Keep the pose, framing, age and outfit unchanged. Keep the outfit modest and age-appropriate, with sleeves and a high neckline. Keep the person's face, identity, skin tone, body shape and expression exactly the same.",
       "title" : "DSLR Portrait"
+    },
+    {
+      "id" : "eid-lanterns",
+      "isPro" : false,
+      "prompt" : "Turn this into a festive holiday-evening portrait: glowing brass lanterns with delicate geometric cutouts hanging around her, warm gold string lights, soft bokeh and a gentle golden glow. No writing. Keep her own outfit. Keep her hair and anything she wears on her head exactly as they are. Keep natural skin texture, no skin smoothing. Keep the outfit modest and age-appropriate, with sleeves and a high neckline. Keep the person's face, identity, skin tone, body shape and expression exactly the same.",
+      "title" : "Lantern Glow"
+    },
+    {
+      "id" : "eid-sweets",
+      "isPro" : true,
+      "prompt" : "Turn this into a bright festive-morning photo: a table with glass jars of holiday cookies, a bowl of colorful wrapped candies, a teapot with small tea glasses, fresh tulips and roses, and soft sunlight through lace curtains. Keep her own outfit. Keep her hair and anything she wears on her head exactly as they are. Match the lighting naturally. Keep natural skin texture, no skin smoothing. Keep the outfit modest and age-appropriate, with sleeves and a high neckline. Keep the person's face, identity, skin tone, body shape and expression exactly the same.",
+      "title" : "Festive Sweets"
+    },
+    {
+      "id" : "eid-courtyard",
+      "isPro" : false,
+      "prompt" : "Place the person in an elegant courtyard at golden hour: hanging lanterns, patterned tiles, a small fountain, potted roses and jasmine, and warm, soft light. Keep her own outfit. Keep her hair and anything she wears on her head exactly as they are. Match the lighting naturally. Keep natural skin texture, no skin smoothing. Keep the outfit modest and age-appropriate, with sleeves and a high neckline. Keep the person's face, identity, skin tone, body shape and expression exactly the same.",
+      "title" : "Courtyard Lanterns"
+    },
+    {
+      "id" : "eid-florals",
+      "isPro" : true,
+      "prompt" : "Turn this into a soft festive portrait framed by fresh flowers in cream, soft pink and gold, with gentle golden light, a few floating sparkles and a warm, elegant color grade. Keep her own outfit. Keep her hair and anything she wears on her head exactly as they are. Keep natural skin texture, no skin smoothing. Keep the outfit modest and age-appropriate, with sleeves and a high neckline. Keep the person's face, identity, skin tone, body shape and expression exactly the same.",
+      "title" : "Festive Florals"
+    },
+    {
+      "id" : "lunar-lanterns",
+      "isPro" : false,
+      "prompt" : "Turn this into a festive Lunar New Year evening photo: rows of glowing red-and-gold paper lanterns overhead, soft fireworks in the night sky, warm bokeh and a rich red-and-gold color grade. No writing on the lanterns. Keep her own outfit, or give her a modest festive outfit in red and gold. Keep her hair and anything she wears on her head exactly as they are. Keep natural skin texture, no skin smoothing. Keep the outfit modest and age-appropriate, with sleeves and a high neckline. Keep the person's face, identity, skin tone, body shape and expression exactly the same.",
+      "title" : "Lantern Night"
+    },
+    {
+      "id" : "plum-blossom",
+      "isPro" : true,
+      "prompt" : "Place the person beside branches of blooming pink and white plum blossoms on a bright, crisp morning, with red paper-cut decorations and gold sparkles softly out of focus and gentle light. No writing. Keep her own outfit. Keep her hair and anything she wears on her head exactly as they are. Match the lighting naturally. Keep natural skin texture, no skin smoothing. Keep the outfit modest and age-appropriate, with sleeves and a high neckline. Keep the person's face, identity, skin tone, body shape and expression exactly the same.",
+      "title" : "Plum Blossom"
+    },
+    {
+      "id" : "harvest-moon",
+      "isPro" : false,
+      "prompt" : "Turn this into an autumn evening photo under a huge glowing full moon over soft hills, with warm paper lanterns, silver grass and a soft palette of jade green, coral pink and golden yellow. Keep her own outfit. Keep her hair and anything she wears on her head exactly as they are. Match the lighting naturally. Keep natural skin texture, no skin smoothing. Keep the outfit modest and age-appropriate, with sleeves and a high neckline. Keep the person's face, identity, skin tone, body shape and expression exactly the same.",
+      "title" : "Harvest Moon"
+    },
+    {
+      "id" : "persimmon",
+      "isPro" : true,
+      "prompt" : "Place the person in a sunny autumn courtyard beside a persimmon tree heavy with ripe orange fruit, with a plate of colorful half-moon rice cakes on a low wooden table and warm afternoon light. Keep her own outfit. Keep her hair and anything she wears on her head exactly as they are. Match the lighting naturally. Keep natural skin texture, no skin smoothing. Keep the outfit modest and age-appropriate, with sleeves and a high neckline. Keep the person's face, identity, skin tone, body shape and expression exactly the same.",
+      "title" : "Persimmon Autumn"
+    },
+    {
+      "id" : "hanami-picnic",
+      "isPro" : false,
+      "prompt" : "Turn this into a sunny hanami picnic under blooming cherry blossom trees: a picnic blanket, a bento box, pink, white and green sweet dumplings on skewers, a flask of tea and petals drifting in the air. No alcohol. Keep her own outfit. Keep her hair and anything she wears on her head exactly as they are. Match the lighting naturally. Keep natural skin texture, no skin smoothing. Keep the outfit modest and age-appropriate, with sleeves and a high neckline. Keep the person's face, identity, skin tone, body shape and expression exactly the same.",
+      "title" : "Hanami Picnic"
+    },
+    {
+      "id" : "sakura-night",
+      "isPro" : true,
+      "prompt" : "Turn this into a night cherry-blossom photo: blossoms lit by soft paper lanterns, petals drifting in the air, glowing reflections on a quiet river and a dreamy pink-and-navy color grade. No writing on the lanterns. Keep her own outfit. Keep her hair and anything she wears on her head exactly as they are. Keep natural skin texture, no skin smoothing. Keep the outfit modest and age-appropriate, with sleeves and a high neckline. Keep the person's face, identity, skin tone, body shape and expression exactly the same.",
+      "title" : "Sakura Night"
+    },
+    {
+      "id" : "tanabata-wishes",
+      "isPro" : false,
+      "prompt" : "Turn this into a summer-evening Tanabata photo: tall bamboo branches hung with colorful paper wish strips and paper streamers, a starry sky with the Milky Way and soft lantern light. No readable writing. Keep her own outfit. Keep her hair and anything she wears on her head exactly as they are. Match the lighting naturally. Keep natural skin texture, no skin smoothing. Keep the outfit modest and age-appropriate, with sleeves and a high neckline. Keep the person's face, identity, skin tone, body shape and expression exactly the same.",
+      "title" : "Star Wishes"
+    },
+    {
+      "id" : "milky-way",
+      "isPro" : true,
+      "prompt" : "Turn this into a dreamy night portrait under a bright Milky Way: twinkling stars, a few soft shooting stars, a gentle blue-violet glow and tiny star sparkles in the air. Keep her own outfit and pose. Keep her hair and anything she wears on her head exactly as they are. Keep natural skin texture, no skin smoothing. Keep the outfit modest and age-appropriate, with sleeves and a high neckline. Keep the person's face, identity, skin tone, body shape and expression exactly the same.",
+      "title" : "Milky Way"
+    },
+    {
+      "id" : "carnaval-confetti",
+      "isPro" : false,
+      "prompt" : "Place the person at a sunny daytime street carnival: clouds of colorful confetti and paper streamers, bright flags and balloons, glitter sparkling in the air and a joyful, vivid color grade. Keep her own outfit, or give her a modest, colorful festival outfit. No alcohol. Keep her hair and anything she wears on her head exactly as they are. Keep natural skin texture, no skin smoothing. Keep the outfit modest and age-appropriate, with sleeves and a high neckline. Keep the person's face, identity, skin tone, body shape and expression exactly the same.",
+      "title" : "Carnaval Confetti"
+    },
+    {
+      "id" : "carnaval-mask",
+      "isPro" : true,
+      "prompt" : "Turn this into a festive carnival portrait: she holds a sparkly, colorful feathered carnival mask beside her face, with confetti, glitter and bright party lights behind her. Her face stays fully visible. Keep her own outfit. Keep her hair and anything she wears on her head exactly as they are. Keep natural skin texture, no skin smoothing. Keep the outfit modest and age-appropriate, with sleeves and a high neckline. Keep the person's face, identity, skin tone, body shape and expression exactly the same.",
+      "title" : "Mask & Glitter"
+    },
+    {
+      "id" : "festa-junina",
+      "isPro" : false,
+      "prompt" : "Turn this into a festa junina night: strings of colorful little paper flags overhead, warm string lights, a glowing bonfire at a safe distance in the background and a cheerful country-fair feel. Keep her own outfit. Keep her hair and anything she wears on her head exactly as they are. Match the lighting naturally. Keep natural skin texture, no skin smoothing. Keep the outfit modest and age-appropriate, with sleeves and a high neckline. Keep the person's face, identity, skin tone, body shape and expression exactly the same.",
+      "title" : "Arraiá Night"
+    },
+    {
+      "id" : "junina-sweets",
+      "isPro" : true,
+      "prompt" : "Place the person at a cozy festa junina sweets stand: corn cake, popcorn in paper cones, shiny red candy apples, peanut sweets, colorful little paper flags and warm string lights. No alcohol. Keep her own outfit. Keep her hair and anything she wears on her head exactly as they are. Match the lighting naturally. Keep natural skin texture, no skin smoothing. Keep the outfit modest and age-appropriate, with sleeves and a high neckline. Keep the person's face, identity, skin tone, body shape and expression exactly the same.",
+      "title" : "June Sweets"
+    },
+    {
+      "id" : "marigold-glow",
+      "isPro" : false,
+      "prompt" : "Turn this into a warm Día de Muertos evening portrait: bright orange marigold flowers all around, glowing candles, rows of colorful papel picado banners overhead and soft golden light. Decorations only: her face stays exactly as it is, with no face paint. No readable writing. Keep her own outfit. Keep her hair and anything she wears on her head exactly as they are. Keep natural skin texture, no skin smoothing. Keep the outfit modest and age-appropriate, with sleeves and a high neckline. Keep the person's face, identity, skin tone, body shape and expression exactly the same.",
+      "title" : "Marigold Glow"
+    },
+    {
+      "id" : "papel-picado",
+      "isPro" : true,
+      "prompt" : "Place the person on a sunny festive street decorated with rows of colorful papel picado banners, marigold garlands and brightly painted walls. Decorations only: her face stays exactly as it is, with no face paint. No readable writing. Keep her own outfit. Keep her hair and anything she wears on her head exactly as they are. Match the lighting naturally. Keep natural skin texture, no skin smoothing. Keep the outfit modest and age-appropriate, with sleeves and a high neckline. Keep the person's face, identity, skin tone, body shape and expression exactly the same.",
+      "title" : "Papel Picado"
     }
   ]
 }

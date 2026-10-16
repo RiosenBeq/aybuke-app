@@ -4,12 +4,17 @@ import AppCore
 /// Explore while a season is on, above its row: the season's banner. It goes
 /// when the season ends (`SeasonalTheme.current`), and there's no countdown
 /// or "last chance": the looks stay in the editor all year. Seasons with
-/// examples show them as instant prints, so the looks read at a glance.
+/// examples show them as instant prints, so the looks read at a glance; the
+/// local seasons show their drawn art (`SeasonArt`) along the trailing edge.
 struct SeasonHeroBanner: View {
     let theme: SeasonalTheme
     let action: () -> Void
     @Environment(\.dynamicTypeSize) private var typeSize
     @Environment(\.horizontalSizeClass) private var sizeClass
+
+    /// The local seasons' art runs the banner's full height at the trailing edge.
+    private var artWidth: CGFloat { sizeClass == .regular ? 280 : 150 }
+    private var showsArtAlongside: Bool { theme.isLocal && !typeSize.isAccessibilitySize }
 
     var body: some View {
         let palette = theme.bannerPalette
@@ -17,7 +22,7 @@ struct SeasonHeroBanner: View {
             content(palette)
                 .padding(20)
                 .background {
-                    // Overlays, so the fixed-size glow can't change the banner's size.
+                    // Overlays, so the fixed-size glow and art can't change the banner's size.
                     AuraFill(palette: palette)
                         .overlay(alignment: .topTrailing) {
                             Circle()
@@ -25,6 +30,15 @@ struct SeasonHeroBanner: View {
                                 .frame(width: 220, height: 220)
                                 .blur(radius: 44)
                                 .offset(x: 50, y: -70)
+                        }
+                        .overlay(alignment: .trailing) {
+                            if showsArtAlongside {
+                                SeasonArt(theme: theme)
+                                    .frame(width: artWidth)
+                                    // Flags, strings and the Milky Way fade in behind the words.
+                                    .mask(LinearGradient(stops: [.init(color: .clear, location: 0), .init(color: .black, location: 0.18)],
+                                                         startPoint: .leading, endPoint: .trailing))
+                            }
                         }
                 }
                 .clipShape(.card)
@@ -37,7 +51,26 @@ struct SeasonHeroBanner: View {
     @ViewBuilder
     private func content(_ palette: AuraPalette) -> some View {
         let examples = theme.examples
-        if examples.isEmpty {
+        if theme.isLocal {
+            if showsArtAlongside {
+                VStack(alignment: .leading, spacing: 8) {
+                    headline(palette)
+                    seeTheLooks(palette)
+                        .padding(.top, 4)
+                }
+                .frame(maxWidth: .infinity, minHeight: 132, alignment: .leading)
+                .padding(.trailing, artWidth - 16)
+            } else {
+                // The words get the whole width; the art goes above them.
+                VStack(alignment: .leading, spacing: 14) {
+                    SeasonArt(theme: theme)
+                        .frame(height: 130)
+                        .frame(maxWidth: .infinity)
+                    headline(palette)
+                    seeTheLooks(palette)
+                }
+            }
+        } else if examples.isEmpty {
             HStack(alignment: .center, spacing: 12) {
                 VStack(alignment: .leading, spacing: 8) {
                     headline(palette)
@@ -141,7 +174,9 @@ struct SeasonTeaserCard: View {
     @ViewBuilder
     private var prints: some View {
         let examples = upcoming.theme.examples
-        if examples.isEmpty {
+        if upcoming.theme.isLocal {
+            SeasonArtTile(theme: upcoming.theme)
+        } else if examples.isEmpty {
             SeasonPrints(theme: upcoming.theme, print: CGSize(width: 38, height: 50), count: 2)
         } else {
             VStack(spacing: 4) {
@@ -306,15 +341,67 @@ extension SeasonalTheme {
         case .galentines:
             return LocalizedStringResource("Happy *Galentine's*",
                                            comment: "Explore's banner in early February, Galentine's: a day to celebrate best friends. Keep one word between the asterisks: it's set in the accent font.")
+        case .eidAlFitr:
+            return LocalizedStringResource("Happy *Eid*",
+                                           comment: "Explore's banner during Eid al-Fitr (Ramazan Bayramı in Türkiye, Lebaran in Indonesia), shown there only. Use the greeting people use in your language. Keep one word between the asterisks: it's set in the accent font.")
+        case .eidAlAdha:
+            return LocalizedStringResource("Happy *Eid* al-Adha",
+                                           comment: "Explore's banner during Eid al-Adha (Kurban Bayramı in Türkiye, Iduladha in Indonesia), shown there only. Use the greeting people use in your language. Keep one word between the asterisks: it's set in the accent font.")
+        case .lunarNewYear:
+            return LocalizedStringResource("Happy *Lunar* New Year",
+                                           comment: "Explore's banner during Lunar New Year (Seollal in Korea, Spring Festival for Chinese speakers), shown there only. Keep one word between the asterisks: it's set in the accent font.")
+        case .chuseok:
+            return LocalizedStringResource("Happy *Chuseok*",
+                                           comment: "Explore's banner during Chuseok, Korea's autumn harvest holiday, shown in Korea only. Keep one word between the asterisks: it's set in the accent font.")
+        case .hanami:
+            return LocalizedStringResource("It's *hanami* season",
+                                           comment: "Explore's banner during cherry blossom season (hanami: picnics under the blossoms), shown in Japan only. Keep one word between the asterisks: it's set in the accent font.")
+        case .tanabata:
+            return LocalizedStringResource("Make a *wish*",
+                                           comment: "Explore's banner for Tanabata, Japan's star festival on July 7, when people write wishes on paper strips. Shown in Japan only. Keep one word between the asterisks: it's set in the accent font.")
+        case .carnaval:
+            return LocalizedStringResource("It's *Carnaval*",
+                                           comment: "Explore's banner during Carnaval, shown in Brazil only. Keep one word between the asterisks: it's set in the accent font.")
+        case .festaJunina:
+            return LocalizedStringResource("Festa *Junina* is here",
+                                           comment: "Explore's banner in June, for Brazil's festas juninas (paper flags, bonfires, sweets), shown in Brazil only. Keep one word between the asterisks: it's set in the accent font.")
+        case .diaDeMuertos:
+            return LocalizedStringResource("Día de *Muertos*",
+                                           comment: "Explore's banner on Día de Muertos (October 31 to November 2), shown in Mexico and Latin America. Use the festival's name; keep one word between the asterisks: it's set in the accent font.")
         }
     }
 
-    /// One of the template cards' auras.
+    /// One of the template cards' auras; the local seasons have their own.
     var bannerPalette: AuraPalette {
         switch self {
         case .halloween: return .nightGlam
         case .winter: return .mint
         case .galentines: return .bubblegum
+        case .eidAlFitr: return .eidNight
+        case .eidAlAdha: return .eidDay
+        case .lunarNewYear: return .lunarRed
+        case .chuseok: return .harvestNight
+        case .hanami: return .sakura
+        case .tanabata: return .starNight
+        case .carnaval: return .carnaval
+        case .festaJunina: return .arraia
+        case .diaDeMuertos: return .muertos
+        }
+    }
+
+    /// The local seasons' looks wear the season's colours on their cards.
+    var cardPalettes: [AuraPalette]? {
+        switch self {
+        case .halloween, .winter, .galentines: return nil
+        case .eidAlFitr: return [.eidNight, .eidDay]
+        case .eidAlAdha: return [.eidDay, .eidNight]
+        case .lunarNewYear: return [.lunarRed, .lunarGold]
+        case .chuseok: return [.harvestNight, .persimmonDay]
+        case .hanami: return [.sakura, .sakuraNight]
+        case .tanabata: return [.starNight, .tanzaku]
+        case .carnaval: return [.carnaval, .carnavalSun]
+        case .festaJunina: return [.arraia, .junina]
+        case .diaDeMuertos: return [.muertos, .cempasuchil]
         }
     }
 
@@ -326,7 +413,7 @@ extension SeasonalTheme {
         switch self {
         case .halloween: return ["SeasonExampleHalloween1", "SeasonExampleHalloween2", "SeasonExampleHalloween3"]
         case .winter: return ["SeasonExampleWinter1", "SeasonExampleWinter2", "SeasonExampleWinter3"]
-        case .galentines: return []
+        default: return []
         }
     }
 }

@@ -144,7 +144,9 @@ struct EditorIdeasRow: View {
     // MARK: Actions
 
     private func suggestions(for insight: PhotoInsight, rotation: Int) -> [LookSuggestion] {
-        let all = LookSuggester.suggest(for: insight, date: AppClock.now, freeEffects: Self.freeEffects, rotation: rotation)
+        let all = LookSuggester.suggest(
+            for: insight, date: AppClock.now, audience: app.seasonAudience, freeEffects: Self.freeEffects, rotation: rotation
+        )
         // Under 13 only the free on-device tools are offered, so no looks or
         // Magic Edit ideas (see AgeDefaults).
         guard !app.allowsCloudAI else { return all }

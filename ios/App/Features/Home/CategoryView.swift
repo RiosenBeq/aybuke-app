@@ -12,8 +12,14 @@ struct CategoryView: View {
 
     @Environment(AppModel.self) private var app
 
+    /// The season shown: the one asked for, or for the seasonal collection
+    /// itself, the one leading Explore today where she is.
+    private var shownSeason: SeasonalTheme? {
+        season ?? (category == .seasonal ? SeasonalTheme.current(on: AppClock.now, for: app.seasonAudience) : nil)
+    }
+
     private var templates: [PhotoTemplate] {
-        season?.looks ?? TemplateCatalog.templates(in: category, on: AppClock.now)
+        shownSeason?.looks ?? TemplateCatalog.templates(in: category, on: AppClock.now, for: app.seasonAudience)
     }
     /// Two columns on iPhone, up to eight on a big iPad in landscape; on
     /// the Mac, cards about as big as on Explore.
@@ -62,10 +68,10 @@ struct CategoryView: View {
         VStack(alignment: .leading, spacing: 8) {
             Text("Collection · \(templates.count) looks")
                 .eyebrowStyle()
-            Text(styled: season?.styledTitle ?? category.styledTitle, size: 31)
+            Text(styled: shownSeason?.styledTitle ?? category.styledTitle, size: 31)
                 .foregroundStyle(Palette.textPrimary)
                 .accessibilityAddTraits(.isHeader)
-            Text(season?.blurb ?? category.blurb)
+            Text(shownSeason?.blurb ?? category.blurb)
                 .font(.subheadline)
                 .foregroundStyle(Palette.textSecondary)
             // A tap on a look runs it on her photo right away, so the price
@@ -146,6 +152,15 @@ extension SeasonalTheme {
         case .halloween: return String(localized: "Cute and a little spooky.")
         case .winter: return String(localized: "Snow, sweaters and New Year sparkle.")
         case .galentines: return String(localized: "Pink brunches and photo booths with your besties.")
+        case .eidAlFitr: return String(localized: "Lanterns, sweets and soft gold light.")
+        case .eidAlAdha: return String(localized: "Courtyard lanterns, flowers and golden light.")
+        case .lunarNewYear: return String(localized: "Red lanterns, fireworks and plum blossoms.")
+        case .chuseok: return String(localized: "A full moon, persimmons and autumn colors.")
+        case .hanami: return String(localized: "Picnics under the blossoms and petals in the air.")
+        case .tanabata: return String(localized: "Paper wishes, bamboo and a sky full of stars.")
+        case .carnaval: return String(localized: "Confetti, glitter and color everywhere.")
+        case .festaJunina: return String(localized: "Paper flags, bonfire glow and June sweets.")
+        case .diaDeMuertos: return String(localized: "Marigolds, papel picado and candlelight.")
         }
     }
 }

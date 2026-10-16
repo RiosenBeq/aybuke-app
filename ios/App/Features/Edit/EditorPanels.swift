@@ -107,6 +107,8 @@ struct MagicEditPanel: View {
 /// One-tap templates inside the editor.
 struct StylesPanel: View {
     let isPro: Bool
+    /// Her region's seasons lead the looks while they're on.
+    var audience: SeasonAudience = .everyone
     let onSelect: (PhotoTemplate) -> Void
 
     @Environment(\.editorPanelPlacement) private var placement
@@ -130,7 +132,7 @@ struct StylesPanel: View {
     }
 
     private func cards(fillingWidth: Bool) -> some View {
-        ForEach(TemplateCatalog.editorOrder(on: AppClock.now)) { template in
+        ForEach(TemplateCatalog.editorOrder(on: AppClock.now, for: audience)) { template in
             Button {
                 select(template)
             } label: {

@@ -13,6 +13,9 @@ repo. Run them from this folder (`cd scripts/asc`).
   one with each locale's `mac` block (iPhone-only bullets out, its Mac section in,
   exact replacements); `--check` runs every check offline: limits, the Mac text,
   Pro looks named without "Pro", "Glowlit", and `app-store-listing.md` in sync.
+  `--season <id> [--dry-run]` pushes only the promotional text from each locale's
+  `promoBySeason` (a local season such as `eidAlFitr`, `lunarNewYear`, `carnaval`;
+  no review needed), and `--season default` puts the usual text back.
 - `asc_screenshots.py <repo> [--dry-run] [--only=en-US,tr] [--platform=ios|mac]`:
   replaces the screenshots with `docs/marketing/app-store/<lang>/` (iPhone), `ipad/`, `mac/`.
 - `iap_localize.py`: names and descriptions of the subscription group, both

@@ -744,7 +744,7 @@ struct EditorView: View {
                 model.run(.makeup, app: app)
             }
         case .styles?:
-            StylesPanel(isPro: app.purchases.isPro) { template in
+            StylesPanel(isPro: app.purchases.isPro, audience: app.seasonAudience) { template in
                 model.run(.styles, template: template, app: app)
             }
         case .enhance?:

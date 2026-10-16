@@ -109,16 +109,18 @@ public enum LookSuggester {
         for insight: PhotoInsight,
         date: Date,
         calendar: Calendar = .current,
+        audience: SeasonAudience = .everyone,
         catalog: [PhotoTemplate] = TemplateCatalog.all,
         freeEffects: [String],
         rotation: Int = 0
     ) -> [LookSuggestion] {
         let kind = insight.kind
-        let theme = SeasonalTheme.current(on: date, calendar: calendar)
+        let theme = SeasonalTheme.current(on: date, for: audience, calendar: calendar)
 
         let effects = rotated(effectIDs(for: kind, theme: theme).filter(freeEffects.contains), by: rotation)
         let templates = templateCandidates(
-            for: kind, theme: theme, date: date, calendar: calendar, catalog: catalog, variety: insight.variety
+            for: kind, theme: theme, date: date, calendar: calendar, catalog: catalog, audience: audience,
+            variety: insight.variety
         )
         let ideas = magicEditIdeas(for: kind, theme: theme, offset: insight.variety + rotation)
 
@@ -177,7 +179,7 @@ public enum LookSuggester {
     /// never leads.
     static func templateCandidates(
         for kind: PhotoKind, theme: SeasonalTheme?, date: Date, calendar: Calendar, catalog: [PhotoTemplate],
-        variety: Int = 0
+        audience: SeasonAudience = .everyone, variety: Int = 0
     ) -> [PhotoTemplate] {
         let preferred: [String]
         switch kind {
@@ -195,7 +197,9 @@ public enum LookSuggester {
         let byID = Dictionary(catalog.map { ($0.id, $0) }, uniquingKeysWith: { first, _ in first })
         var candidates = preferred.compactMap { byID[$0] }
         if kind.hasPeople, let theme {
-            let seasonal = catalog.filter { $0.season == theme && TemplateCatalog.isAvailable($0, on: date, calendar: calendar) }
+            let seasonal = catalog.filter {
+                $0.season == theme && TemplateCatalog.isAvailable($0, on: date, for: audience, calendar: calendar)
+            }
             candidates = seasonal + candidates
         }
         // Stable: keeps the order above within free and within Pro. Free
@@ -209,7 +213,8 @@ public enum LookSuggester {
     static func magicEditIdeas(for kind: PhotoKind, theme: SeasonalTheme?, offset: Int = 0) -> [String] {
         let base = rotated(baseIdeas(for: kind), by: offset)
         guard let theme, let seasonal = seasonalIdea(for: kind, theme: theme) else { return base }
-        return [seasonal] + base
+        // Some seasons lead with one of the kind's own ideas (cherry blossoms in spring).
+        return [seasonal] + base.filter { $0 != seasonal }
     }
 
     private static func baseIdeas(for kind: PhotoKind) -> [String] {
@@ -309,6 +314,16 @@ public enum LookSuggester {
         case (.galentines, .selfie), (.galentines, .group): return idea("Add floating pink hearts and a pastel sky")
         case (.galentines, .pet): return idea("Give my pet a tiny heart-shaped balloon")
         case (.galentines, _): return idea("Add floating pink hearts and soft pastel light")
+        case (.eidAlFitr, _), (.eidAlAdha, _): return idea("Add glowing lanterns and soft gold lights")
+        case (.lunarNewYear, _): return idea("Add red lanterns and soft fireworks in the sky")
+        case (.chuseok, _): return idea("Add a big glowing full moon and paper lanterns")
+        case (.hanami, .selfie): return idea("Put me in a cherry blossom street")
+        case (.hanami, .city): return idea("Add cherry blossom trees along the street")
+        case (.hanami, _): return idea("Add drifting cherry blossom petals")
+        case (.tanabata, _): return idea("Add a starry sky with the Milky Way")
+        case (.carnaval, _): return idea("Add colorful confetti and streamers")
+        case (.festaJunina, _): return idea("Add colorful paper flags and string lights")
+        case (.diaDeMuertos, _): return idea("Add orange marigolds and candlelight")
         }
     }
 

@@ -13,6 +13,17 @@ that still names an iPhone-only feature, a flash, or no Mac stops the push.
     asc_metadata.py <repo> [--dry-run]          checks, then pushes (or not)
     asc_metadata.py <repo> --check [--show=ja]  offline checks only (no API);
                                                 --show prints that Mac text
+    asc_metadata.py <repo> --season <id> [--dry-run]
+                                                only the promotional text: each
+                                                locale's `promoBySeason[<id>]`
+                                                (a local season of the app, such
+                                                as eidAlFitr or lunarNewYear), on
+                                                iOS and macOS; `--season default`
+                                                puts the usual text back after it
+
+Promotional text can change at any time without a review, so a local season
+can be announced where it's celebrated while it's on (SeasonCalendar.swift has
+the dates). Locales without text for that season are left as they are.
 """
 import json
 import re
@@ -41,6 +52,61 @@ FLASH = re.compile(r"\bflash\b|flaş|Blitz|вспышк|フラッシュ|플래�
 IOS_SUBSCRIPTIONS = re.compile(r"›[^›\n]{0,15}Apple")
 MAC_SUBSCRIPTIONS = re.compile(r"App Store[^›\n]{0,15}›")
 BULLET = ("•", "-", "·")
+
+
+def season_ids(repo):
+    """The app's seasons, as `SeasonalTheme` names them."""
+    source = (repo / "ios/Packages/AppCore/Sources/AppCore/TemplateCatalog.swift").read_text(encoding="utf-8")
+    body = source[source.index("public enum SeasonalTheme"):]
+    body = body[:body.index("public var rowTitle")]
+    return set(re.findall(r"^\s*case (\w+)$", body, flags=re.M))
+
+
+def check_seasons(repo, meta_all):
+    """`promoBySeason`: known seasons, within the limit, never Glowlit."""
+    known = season_ids(repo)
+    for locale, meta in meta_all.items():
+        for season, text in meta.get("promoBySeason", {}).items():
+            if season not in known:
+                raise SystemExit(f"{locale} promoBySeason: {season!r} isn't a season of the app ({', '.join(sorted(known))})")
+            check(locale, {"promotionalText": text})
+            if "Glowlit" in text:
+                raise SystemExit(f"{locale} promoBySeason {season}: says Glowlit (the app is Aybuke)")
+
+
+def season_argument():
+    for index, arg in enumerate(sys.argv):
+        if arg.startswith("--season="):
+            return arg.split("=", 1)[1]
+        if arg == "--season":
+            if index + 1 >= len(sys.argv) or sys.argv[index + 1].startswith("--"):
+                raise SystemExit("--season needs a season id (or default)")
+            return sys.argv[index + 1]
+    return None
+
+
+def push_season(meta_all, season, dry):
+    """Only the promotional text, for the locales that have one for `season`."""
+    texts = {locale: meta["promotionalText"] if season == "default" else meta.get("promoBySeason", {}).get(season)
+             for locale, meta in meta_all.items()}
+    texts = {locale: text for locale, text in texts.items() if text}
+    if not texts:
+        raise SystemExit(f"no locale has promotional text for {season!r}")
+    for locale, text in texts.items():
+        print(f"{locale}: {text}")
+    if dry:
+        print("dry run ok")
+        return
+
+    import asc  # needs requests + cryptography and the API key; the check doesn't
+
+    for locs in (localizations(asc, IOS), localizations(asc, MAC)):
+        for locale, text in texts.items():
+            if locale in locs:
+                loc_id = locs[locale]["id"]
+                asc.patch(f"/v1/appStoreVersionLocalizations/{loc_id}", {"data": {
+                    "type": "appStoreVersionLocalizations", "id": loc_id, "attributes": {"promotionalText": text}}})
+    print("done")
 
 
 def check(locale, fields):
@@ -167,12 +233,21 @@ def main():
     meta_all = json.loads((repo / "docs/marketing/app-store-metadata.json").read_text(encoding="utf-8"))
     built = build(repo, meta_all)
     check_listing(repo, meta_all)
+    check_seasons(repo, meta_all)
+    season = season_argument()
+    if season and "--check" not in sys.argv:
+        if season != "default" and season not in season_ids(repo):
+            raise SystemExit(f"{season!r} isn't a season of the app")
+        push_season(meta_all, season, dry)
+        return
     if "--check" in sys.argv:
         for locale, (_, ios, mac) in built.items():
             print(f"{locale}: description {len(ios['description'])}/{len(mac['description'])} (iOS/Mac)")
         for arg in sys.argv:
             if arg.startswith("--show="):
                 print(built[arg.split("=", 1)[1]][2]["description"])
+        seasons = sorted({s for meta in meta_all.values() for s in meta.get("promoBySeason", {})})
+        print(f"seasonal promotional text: {', '.join(seasons) or 'none'}")
         print("check ok")
         return
 

@@ -32,8 +32,8 @@ public enum TemplateCategory: String, Codable, CaseIterable, Sendable, Identifia
 extension TemplateCategory {
     /// Row heading on a given day: the seasonal row is named after the season
     /// that is on, so "Spooky season" never shows in spring.
-    public func title(on date: Date, calendar: Calendar = .current) -> String {
-        guard self == .seasonal, let theme = SeasonalTheme.current(on: date, calendar: calendar) else { return title }
+    public func title(on date: Date, for audience: SeasonAudience = .everyone, calendar: Calendar = .current) -> String {
+        guard self == .seasonal, let theme = SeasonalTheme.current(on: date, for: audience, calendar: calendar) else { return title }
         return theme.rowTitle
     }
 }
@@ -63,20 +63,24 @@ public struct SeasonWindow: Hashable, Codable, Sendable {
     }
 }
 
-/// Seasonal looks are promoted on Home only while their season is on. They
+/// Seasonal looks are promoted on Home only while their season is on (and,
+/// for the local ones, where it's celebrated: `SeasonCalendar.swift`). They
 /// stay reachable from the editor all year, so nothing in the app is hidden.
 public enum SeasonalTheme: String, Hashable, Codable, Sendable, CaseIterable {
+    // Everywhere.
     case halloween
     case winter
     case galentines
-
-    public var window: SeasonWindow {
-        switch self {
-        case .halloween: return SeasonWindow(startMonth: 10, startDay: 1, endMonth: 11, endDay: 2)
-        case .winter: return SeasonWindow(startMonth: 12, startDay: 1, endMonth: 1, endDay: 6)
-        case .galentines: return SeasonWindow(startMonth: 2, startDay: 1, endMonth: 2, endDay: 14)
-        }
-    }
+    // Where they're celebrated (`regions`).
+    case eidAlFitr
+    case eidAlAdha
+    case lunarNewYear
+    case chuseok
+    case hanami
+    case tanabata
+    case carnaval
+    case festaJunina
+    case diaDeMuertos
 
     /// Heading of the seasonal row while this season is on.
     public var rowTitle: String {
@@ -84,30 +88,16 @@ public enum SeasonalTheme: String, Hashable, Codable, Sendable, CaseIterable {
         case .halloween: return "Spooky season"
         case .winter: return "Cozy winter"
         case .galentines: return "Galentine's"
+        case .eidAlFitr: return "Eid al-Fitr"
+        case .eidAlAdha: return "Eid al-Adha"
+        case .lunarNewYear: return "Lunar New Year"
+        case .chuseok: return "Chuseok"
+        case .hanami: return "Hanami"
+        case .tanabata: return "Tanabata"
+        case .carnaval: return "Carnaval"
+        case .festaJunina: return "Festa Junina"
+        case .diaDeMuertos: return "Día de Muertos"
         }
-    }
-
-    public func isActive(on date: Date, calendar: Calendar = .current) -> Bool {
-        window.contains(date, calendar: calendar)
-    }
-
-    public static func current(on date: Date, calendar: Calendar = .current) -> SeasonalTheme? {
-        allCases.first { $0.isActive(on: date, calendar: calendar) }
-    }
-
-    /// The season that starts within `days` days, while no season is on: Home
-    /// teases it ("Coming soon") until its first day, when the season's own
-    /// row takes over. Nil during a season and further from the next one.
-    public static func upcoming(on date: Date, within days: Int = 14, calendar: Calendar = .current) -> UpcomingSeason? {
-        guard days >= 1, current(on: date, calendar: calendar) == nil else { return nil }
-        for ahead in 1...days {
-            guard let day = calendar.date(byAdding: .day, value: ahead, to: date) else { return nil }
-            // No season is on today, so the first day one is on is its first day.
-            if let theme = current(on: day, calendar: calendar) {
-                return UpcomingSeason(theme: theme, daysLeft: ahead)
-            }
-        }
-        return nil
     }
 }
 
@@ -175,6 +165,9 @@ public enum TemplateCatalog {
     public static let modestyClause = "Keep the outfit modest and age-appropriate, with sleeves and a high neckline."
     /// For pet looks: owners often hold their pet in the photo.
     public static let petClause = "Keep the animal's breed, markings, colors and face exactly the same. If a person is in the photo, keep them exactly the same too."
+    /// For the local seasons' looks: a headscarf, a hat or a bow stays, and
+    /// none is added, so a festive look never dresses her for a faith.
+    public static let headClause = "Keep her hair and anything she wears on her head exactly as they are."
 
     public static let all: [PhotoTemplate] = [
         // MARK: Trending
@@ -558,6 +551,137 @@ public enum TemplateCatalog {
             prompt: "Re-render this photo as if it was taken with a full-frame DSLR camera and an 85mm f/1.4 portrait lens: a creamy, softly blurred background with round bokeh, soft natural window light or gentle studio light, crisp focus on the eyes and natural skin texture, no skin smoothing. Keep the pose, framing, age and outfit unchanged. \(modestyClause) \(identityClause)",
             symbolName: "camera.fill", isNew: true
         ),
+
+        // MARK: Local seasons (1.1)
+        // Shown on Explore where each is celebrated (SeasonCalendar.swift).
+        // Decorations, light and food only: she keeps her own outfit (or a
+        // modest festive one), her hair and head covering, and her face.
+
+        // Eid al-Fitr: Ramazan Bayramı, Lebaran
+        PhotoTemplate(
+            id: "eid-lanterns", title: "Lantern Glow", subtitle: "Festive lights & soft gold",
+            category: .seasonal,
+            prompt: "Turn this into a festive holiday-evening portrait: glowing brass lanterns with delicate geometric cutouts hanging around her, warm gold string lights, soft bokeh and a gentle golden glow. No writing. Keep her own outfit. \(headClause) Keep natural skin texture, no skin smoothing. \(modestyClause) \(identityClause)",
+            symbolName: "lamp.ceiling.fill", isNew: true, season: .eidAlFitr, keepsLikeness: true
+        ),
+        PhotoTemplate(
+            id: "eid-sweets", title: "Festive Sweets", subtitle: "Cookies, candy & flowers",
+            category: .seasonal,
+            prompt: "Turn this into a bright festive-morning photo: a table with glass jars of holiday cookies, a bowl of colorful wrapped candies, a teapot with small tea glasses, fresh tulips and roses, and soft sunlight through lace curtains. Keep her own outfit. \(headClause) Match the lighting naturally. Keep natural skin texture, no skin smoothing. \(modestyClause) \(identityClause)",
+            symbolName: "cup.and.saucer.fill", isPro: true, isNew: true, season: .eidAlFitr, keepsLikeness: true
+        ),
+
+        // Eid al-Adha: Kurban Bayramı, Iduladha
+        PhotoTemplate(
+            id: "eid-courtyard", title: "Courtyard Lanterns", subtitle: "A golden-hour garden",
+            category: .seasonal,
+            prompt: "Place the person in an elegant courtyard at golden hour: hanging lanterns, patterned tiles, a small fountain, potted roses and jasmine, and warm, soft light. Keep her own outfit. \(headClause) Match the lighting naturally. Keep natural skin texture, no skin smoothing. \(modestyClause) \(identityClause)",
+            symbolName: "sun.horizon.fill", isNew: true, season: .eidAlAdha, keepsLikeness: true
+        ),
+        PhotoTemplate(
+            id: "eid-florals", title: "Festive Florals", subtitle: "Fresh flowers & soft gold",
+            category: .seasonal,
+            prompt: "Turn this into a soft festive portrait framed by fresh flowers in cream, soft pink and gold, with gentle golden light, a few floating sparkles and a warm, elegant color grade. Keep her own outfit. \(headClause) Keep natural skin texture, no skin smoothing. \(modestyClause) \(identityClause)",
+            symbolName: "camera.macro", isPro: true, isNew: true, season: .eidAlAdha, keepsLikeness: true
+        ),
+
+        // Lunar New Year: Seollal, Spring Festival
+        PhotoTemplate(
+            id: "lunar-lanterns", title: "Lantern Night", subtitle: "Red & gold lanterns",
+            category: .seasonal,
+            prompt: "Turn this into a festive Lunar New Year evening photo: rows of glowing red-and-gold paper lanterns overhead, soft fireworks in the night sky, warm bokeh and a rich red-and-gold color grade. No writing on the lanterns. Keep her own outfit, or give her a modest festive outfit in red and gold. \(headClause) Keep natural skin texture, no skin smoothing. \(modestyClause) \(identityClause)",
+            symbolName: "fireworks", isNew: true, season: .lunarNewYear, keepsLikeness: true
+        ),
+        PhotoTemplate(
+            id: "plum-blossom", title: "Plum Blossom", subtitle: "Spring blooms in red & gold",
+            category: .seasonal,
+            prompt: "Place the person beside branches of blooming pink and white plum blossoms on a bright, crisp morning, with red paper-cut decorations and gold sparkles softly out of focus and gentle light. No writing. Keep her own outfit. \(headClause) Match the lighting naturally. Keep natural skin texture, no skin smoothing. \(modestyClause) \(identityClause)",
+            symbolName: "camera.macro", isPro: true, isNew: true, season: .lunarNewYear, keepsLikeness: true
+        ),
+
+        // Chuseok
+        PhotoTemplate(
+            id: "harvest-moon", title: "Harvest Moon", subtitle: "A big glowing full moon",
+            category: .seasonal,
+            prompt: "Turn this into an autumn evening photo under a huge glowing full moon over soft hills, with warm paper lanterns, silver grass and a soft palette of jade green, coral pink and golden yellow. Keep her own outfit. \(headClause) Match the lighting naturally. Keep natural skin texture, no skin smoothing. \(modestyClause) \(identityClause)",
+            symbolName: "moon.fill", isNew: true, season: .chuseok, keepsLikeness: true
+        ),
+        PhotoTemplate(
+            id: "persimmon", title: "Persimmon Autumn", subtitle: "Ripe fruit & warm light",
+            category: .seasonal,
+            prompt: "Place the person in a sunny autumn courtyard beside a persimmon tree heavy with ripe orange fruit, with a plate of colorful half-moon rice cakes on a low wooden table and warm afternoon light. Keep her own outfit. \(headClause) Match the lighting naturally. Keep natural skin texture, no skin smoothing. \(modestyClause) \(identityClause)",
+            symbolName: "leaf.fill", isPro: true, isNew: true, season: .chuseok, keepsLikeness: true
+        ),
+
+        // Hanami
+        PhotoTemplate(
+            id: "hanami-picnic", title: "Hanami Picnic", subtitle: "A picnic under the blossoms",
+            category: .seasonal,
+            prompt: "Turn this into a sunny hanami picnic under blooming cherry blossom trees: a picnic blanket, a bento box, pink, white and green sweet dumplings on skewers, a flask of tea and petals drifting in the air. No alcohol. Keep her own outfit. \(headClause) Match the lighting naturally. Keep natural skin texture, no skin smoothing. \(modestyClause) \(identityClause)",
+            symbolName: "basket.fill", isNew: true, season: .hanami, keepsLikeness: true
+        ),
+        PhotoTemplate(
+            id: "sakura-night", title: "Sakura Night", subtitle: "Blossoms by lantern light",
+            category: .seasonal,
+            prompt: "Turn this into a night cherry-blossom photo: blossoms lit by soft paper lanterns, petals drifting in the air, glowing reflections on a quiet river and a dreamy pink-and-navy color grade. No writing on the lanterns. Keep her own outfit. \(headClause) Keep natural skin texture, no skin smoothing. \(modestyClause) \(identityClause)",
+            symbolName: "moon.stars.fill", isPro: true, isNew: true, season: .hanami, keepsLikeness: true
+        ),
+
+        // Tanabata
+        PhotoTemplate(
+            id: "tanabata-wishes", title: "Star Wishes", subtitle: "Bamboo & paper wishes",
+            category: .seasonal,
+            prompt: "Turn this into a summer-evening Tanabata photo: tall bamboo branches hung with colorful paper wish strips and paper streamers, a starry sky with the Milky Way and soft lantern light. No readable writing. Keep her own outfit. \(headClause) Match the lighting naturally. Keep natural skin texture, no skin smoothing. \(modestyClause) \(identityClause)",
+            symbolName: "star.fill", isNew: true, season: .tanabata, keepsLikeness: true
+        ),
+        PhotoTemplate(
+            id: "milky-way", title: "Milky Way", subtitle: "Under a river of stars",
+            category: .seasonal,
+            prompt: "Turn this into a dreamy night portrait under a bright Milky Way: twinkling stars, a few soft shooting stars, a gentle blue-violet glow and tiny star sparkles in the air. Keep her own outfit and pose. \(headClause) Keep natural skin texture, no skin smoothing. \(modestyClause) \(identityClause)",
+            symbolName: "sparkles", isPro: true, isNew: true, season: .tanabata, keepsLikeness: true
+        ),
+
+        // Carnaval
+        PhotoTemplate(
+            id: "carnaval-confetti", title: "Carnaval Confetti", subtitle: "Streamers & street party",
+            category: .seasonal,
+            prompt: "Place the person at a sunny daytime street carnival: clouds of colorful confetti and paper streamers, bright flags and balloons, glitter sparkling in the air and a joyful, vivid color grade. Keep her own outfit, or give her a modest, colorful festival outfit. No alcohol. \(headClause) Keep natural skin texture, no skin smoothing. \(modestyClause) \(identityClause)",
+            symbolName: "party.popper.fill", isNew: true, season: .carnaval, keepsLikeness: true
+        ),
+        PhotoTemplate(
+            id: "carnaval-mask", title: "Mask & Glitter", subtitle: "A sparkly carnival mask",
+            category: .seasonal,
+            prompt: "Turn this into a festive carnival portrait: she holds a sparkly, colorful feathered carnival mask beside her face, with confetti, glitter and bright party lights behind her. Her face stays fully visible. Keep her own outfit. \(headClause) Keep natural skin texture, no skin smoothing. \(modestyClause) \(identityClause)",
+            symbolName: "theatermasks.fill", isPro: true, isNew: true, season: .carnaval, keepsLikeness: true
+        ),
+
+        // Festa Junina
+        PhotoTemplate(
+            id: "festa-junina", title: "Arraiá Night", subtitle: "Paper flags & bonfire glow",
+            category: .seasonal,
+            prompt: "Turn this into a festa junina night: strings of colorful little paper flags overhead, warm string lights, a glowing bonfire at a safe distance in the background and a cheerful country-fair feel. Keep her own outfit. \(headClause) Match the lighting naturally. Keep natural skin texture, no skin smoothing. \(modestyClause) \(identityClause)",
+            symbolName: "flame.fill", isNew: true, season: .festaJunina, keepsLikeness: true
+        ),
+        PhotoTemplate(
+            id: "junina-sweets", title: "June Sweets", subtitle: "Corn cake, popcorn & candy apples",
+            category: .seasonal,
+            prompt: "Place the person at a cozy festa junina sweets stand: corn cake, popcorn in paper cones, shiny red candy apples, peanut sweets, colorful little paper flags and warm string lights. No alcohol. Keep her own outfit. \(headClause) Match the lighting naturally. Keep natural skin texture, no skin smoothing. \(modestyClause) \(identityClause)",
+            symbolName: "popcorn.fill", isPro: true, isNew: true, season: .festaJunina, keepsLikeness: true
+        ),
+
+        // Día de Muertos: decorations only, never skull face paint
+        PhotoTemplate(
+            id: "marigold-glow", title: "Marigold Glow", subtitle: "Cempasúchil & candlelight",
+            category: .seasonal,
+            prompt: "Turn this into a warm Día de Muertos evening portrait: bright orange marigold flowers all around, glowing candles, rows of colorful papel picado banners overhead and soft golden light. Decorations only: her face stays exactly as it is, with no face paint. No readable writing. Keep her own outfit. \(headClause) Keep natural skin texture, no skin smoothing. \(modestyClause) \(identityClause)",
+            symbolName: "camera.macro", isNew: true, season: .diaDeMuertos, keepsLikeness: true
+        ),
+        PhotoTemplate(
+            id: "papel-picado", title: "Papel Picado", subtitle: "Paper banners & marigolds",
+            category: .seasonal,
+            prompt: "Place the person on a sunny festive street decorated with rows of colorful papel picado banners, marigold garlands and brightly painted walls. Decorations only: her face stays exactly as it is, with no face paint. No readable writing. Keep her own outfit. \(headClause) Match the lighting naturally. Keep natural skin texture, no skin smoothing. \(modestyClause) \(identityClause)",
+            symbolName: "flag.fill", isPro: true, isNew: true, season: .diaDeMuertos, keepsLikeness: true
+        ),
     ]
 
     public static func templates(in category: TemplateCategory) -> [PhotoTemplate] {
@@ -575,32 +699,39 @@ public enum TemplateCatalog {
 
     // MARK: Seasons
 
-    /// Seasonal looks are available during their window; every other look all year.
-    public static func isAvailable(_ template: PhotoTemplate, on date: Date, calendar: Calendar = .current) -> Bool {
-        template.season?.isActive(on: date, calendar: calendar) ?? true
+    /// Seasonal looks are available during their season where she is; every
+    /// other look all year.
+    public static func isAvailable(
+        _ template: PhotoTemplate, on date: Date, for audience: SeasonAudience = .everyone, calendar: Calendar = .current
+    ) -> Bool {
+        template.season?.isActive(on: date, for: audience, calendar: calendar) ?? true
     }
 
-    public static func available(on date: Date, calendar: Calendar = .current) -> [PhotoTemplate] {
-        all.filter { isAvailable($0, on: date, calendar: calendar) }
+    public static func available(on date: Date, for audience: SeasonAudience = .everyone, calendar: Calendar = .current) -> [PhotoTemplate] {
+        all.filter { isAvailable($0, on: date, for: audience, calendar: calendar) }
     }
 
     /// The looks a Home row shows on a given day.
-    public static func templates(in category: TemplateCategory, on date: Date, calendar: Calendar = .current) -> [PhotoTemplate] {
-        templates(in: category).filter { isAvailable($0, on: date, calendar: calendar) }
+    public static func templates(
+        in category: TemplateCategory, on date: Date, for audience: SeasonAudience = .everyone, calendar: Calendar = .current
+    ) -> [PhotoTemplate] {
+        templates(in: category).filter { isAvailable($0, on: date, for: audience, calendar: calendar) }
     }
 
     /// Home rows on a given day, skipping empty ones (the seasonal row is off
     /// between seasons).
-    public static func categories(on date: Date, calendar: Calendar = .current) -> [TemplateCategory] {
-        TemplateCategory.allCases.filter { !templates(in: $0, on: date, calendar: calendar).isEmpty }
+    public static func categories(on date: Date, for audience: SeasonAudience = .everyone, calendar: Calendar = .current) -> [TemplateCategory] {
+        TemplateCategory.allCases.filter { !templates(in: $0, on: date, for: audience, calendar: calendar).isEmpty }
     }
 
-    /// Every look for the editor: seasonal looks that are on come first and
-    /// those out of season last, but none is ever locked away.
-    public static func editorOrder(on date: Date, calendar: Calendar = .current) -> [PhotoTemplate] {
-        let inSeason = all.filter { $0.season != nil && isAvailable($0, on: date, calendar: calendar) }
+    /// Every look for the editor: the looks of the seasons on for her come
+    /// first (the leading season's first), and every other seasonal look
+    /// last, but none is ever locked away.
+    public static func editorOrder(on date: Date, for audience: SeasonAudience = .everyone, calendar: Calendar = .current) -> [PhotoTemplate] {
+        let active = SeasonalTheme.active(on: date, for: audience, calendar: calendar)
+        let inSeason = active.flatMap { theme in all.filter { $0.season == theme } }
         let yearRound = all.filter { $0.season == nil }
-        let outOfSeason = all.filter { !isAvailable($0, on: date, calendar: calendar) }
+        let outOfSeason = all.filter { $0.season.map { !active.contains($0) } ?? false }
         return inSeason + yearRound + outOfSeason
     }
 }

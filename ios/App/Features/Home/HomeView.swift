@@ -8,7 +8,8 @@ struct HomeView: View {
     @ScaledMetric(relativeTo: .largeTitle) private var wordmarkHeight: CGFloat = 30
     @State private var legalDocument: LegalDocument?
     @State private var openCategory: TemplateCategory?
-    /// A season's looks before it starts (the Coming soon card).
+    /// A season's looks: from its banner or row, or before it starts (the
+    /// Coming soon card).
     @State private var previewSeason: SeasonalTheme?
     @State private var showInvite = false
     /// Mac: the page's width, for a hero row with Create beside Magic Edit.
@@ -307,17 +308,28 @@ struct HomeView: View {
         }
     }
 
-    @ViewBuilder
     private func templateRow(_ category: TemplateCategory) -> some View {
+        lookRow(title: category.title(on: AppClock.now), looks: TemplateCatalog.templates(in: category, on: AppClock.now)) {
+            openCategory = category
+        }
+    }
+
+    /// A season's own row, named after it.
+    private func seasonRow(_ theme: SeasonalTheme) -> some View {
+        lookRow(title: theme.rowTitle, looks: theme.looks) {
+            previewSeason = theme
+        }
+    }
+
+    @ViewBuilder
+    private func lookRow(title: String, looks: [PhotoTemplate], seeAll: @escaping () -> Void) -> some View {
         if Platform.isMac {
             VStack(alignment: .leading, spacing: 14) {
-                SectionHeader(title: LocalizedStringKey(category.title(on: AppClock.now)), actionTitle: "See all") {
-                    openCategory = category
-                }
+                SectionHeader(title: LocalizedStringKey(title), actionTitle: "See all", action: seeAll)
                 // The first eight looks, as many columns as the page fits.
                 LazyVGrid(columns: [GridItem(.adaptive(minimum: Self.macCardSize.width), spacing: 14, alignment: .top)],
                           alignment: .leading, spacing: 14) {
-                    ForEach(TemplateCatalog.templates(in: category, on: AppClock.now).prefix(8)) { template in
+                    ForEach(looks.prefix(8)) { template in
                         templateButton(template, size: Self.macCardSize)
                             .contextMenu {
                                 // Same entry point as a tap on the card.
@@ -331,39 +343,53 @@ struct HomeView: View {
             }
             .padding(.horizontal, Metrics.pageGutter)
         } else {
-            phoneTemplateRow(category)
+            phoneLookRow(title: title, looks: looks, seeAll: seeAll)
         }
     }
 
     /// Bigger cards on the Mac, where the grid has the room.
     private static let macCardSize = CGSize(width: 176, height: 234)
 
-    /// Right under the hero, so it's seen without scrolling: the season's
-    /// banner while it's on, a Coming soon card in the two weeks before it
-    /// starts, nothing otherwise. Hidden with every look under 13.
+    /// Right under the hero, so it's seen without scrolling: the banner of
+    /// the season leading Explore where she is (her local one first), and a
+    /// Coming soon card in the two weeks before a season that will lead (so
+    /// both, when hers comes during Halloween). Hidden with every look under 13.
     @ViewBuilder
     private var seasonBanner: some View {
         let now = AppClock.now
-        if let theme = SeasonalTheme.current(on: now) {
-            SeasonHeroBanner(theme: theme) {
-                Haptics.tap()
-                openCategory = .seasonal
-            }
-            .padding(.horizontal, Metrics.pageGutter)
-        } else if let upcoming = SeasonalTheme.upcoming(on: now) {
-            SeasonTeaserCard(upcoming: upcoming) {
-                Haptics.tap()
-                previewSeason = upcoming.theme
+        let audience = app.seasonAudience
+        let leading = SeasonalTheme.current(on: now, for: audience)
+        let upcoming = SeasonalTheme.upcoming(on: now, for: audience)
+        if leading != nil || upcoming != nil {
+            VStack(spacing: 12) {
+                if let leading {
+                    SeasonHeroBanner(theme: leading) {
+                        Haptics.tap()
+                        previewSeason = leading
+                    }
+                }
+                if let upcoming {
+                    SeasonTeaserCard(upcoming: upcoming) {
+                        Haptics.tap()
+                        previewSeason = upcoming.theme
+                    }
+                }
             }
             .padding(.horizontal, Metrics.pageGutter)
         }
     }
 
-    /// The seasonal row keeps its place among the categories while the season is on.
+    /// The seasonal rows keep their place among the categories while their
+    /// seasons are on: one per season, the one leading Explore first.
     @ViewBuilder
     private var seasonalArea: some View {
-        if SeasonalTheme.current(on: AppClock.now) != nil {
-            templateRow(.seasonal)
+        let seasons = SeasonalTheme.active(on: AppClock.now, for: app.seasonAudience)
+        if !seasons.isEmpty {
+            VStack(alignment: .leading, spacing: Metrics.sectionSpacing) {
+                ForEach(seasons, id: \.self) { theme in
+                    seasonRow(theme)
+                }
+            }
         }
     }
 
@@ -380,17 +406,17 @@ struct HomeView: View {
         .accessibilityHint(template.lookHint(isPro: app.purchases.isPro))
     }
 
-    private func phoneTemplateRow(_ category: TemplateCategory) -> some View {
+    private func phoneLookRow(title: String, looks: [PhotoTemplate], seeAll: @escaping () -> Void) -> some View {
         VStack(alignment: .leading, spacing: 14) {
-            SectionHeader(title: LocalizedStringKey(category.title(on: AppClock.now)), actionTitle: "See all") {
+            SectionHeader(title: LocalizedStringKey(title), actionTitle: "See all") {
                 Haptics.tap()
-                openCategory = category
+                seeAll()
             }
             .padding(.horizontal, Metrics.gutter)
             ScrollView(.horizontal) {
                 // Lazy: Explore has some forty cards, most of them off screen.
                 LazyHStack(spacing: 12) {
-                    ForEach(TemplateCatalog.templates(in: category, on: AppClock.now)) { template in
+                    ForEach(looks) { template in
                         Button {
                             Haptics.tap()
                             app.startEditing(tool: .styles, template: template)
@@ -539,9 +565,9 @@ struct HomeView: View {
         ]
         let boosted = app.interests.compactMap { preferred[$0] }
         let order = TemplateCategory.allCases
-        var categories = TemplateCatalog.categories(on: AppClock.now)
+        var categories = TemplateCatalog.categories(on: AppClock.now, for: app.seasonAudience)
         // Before a season starts, its place holds the Coming soon card.
-        if !categories.contains(.seasonal), SeasonalTheme.upcoming(on: AppClock.now) != nil {
+        if !categories.contains(.seasonal), SeasonalTheme.upcoming(on: AppClock.now, for: app.seasonAudience) != nil {
             categories.append(.seasonal)
         }
         return categories.sorted { lhs, rhs in

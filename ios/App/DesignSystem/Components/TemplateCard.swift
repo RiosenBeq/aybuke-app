@@ -111,6 +111,9 @@ struct TemplateCard: View, Equatable {
 extension PhotoTemplate {
     /// The card's aura: neighbours in the catalog never share one.
     var cardPalette: AuraPalette {
-        AuraPalette.at(TemplateCatalog.all.firstIndex(of: self) ?? 0)
+        if let season, let palettes = season.cardPalettes, let place = season.looks.firstIndex(of: self) {
+            return palettes[place % palettes.count]
+        }
+        return AuraPalette.at(TemplateCatalog.all.firstIndex(of: self) ?? 0)
     }
 }
