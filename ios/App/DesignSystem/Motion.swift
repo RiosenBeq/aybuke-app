@@ -13,6 +13,8 @@ enum Motion {
     static let appear = Animation.spring(response: 0.34, dampingFraction: 0.86)
     /// A tab or section coming to the front.
     static let tab = Animation.easeOut(duration: 0.26)
+    /// A bar filling to its value (poll votes).
+    static let fill = Animation.spring(response: 0.36, dampingFraction: 0.84)
 }
 
 /// Squishy press feedback for cards and tiles: scale down a little, spring back.
@@ -123,6 +125,55 @@ private struct RevealOnAppear: ViewModifier {
     }
 }
 
+/// Ideas, picks and helper results arriving: a quick fade and lift (about
+/// 0.3 s), staggered by `index` up to 0.16 s; a short fade with Reduce Motion.
+/// It plays as each new item appears, also inside a card that just appeared
+/// (where a transition wouldn't), and settles within about a third of a
+/// second, so nothing waits on it.
+private struct Arrival: ViewModifier {
+    let index: Int
+    @State private var isIn = false
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    func body(content: Content) -> some View {
+        content
+            .opacity(isIn ? 1 : 0)
+            .offset(y: isIn || reduceMotion ? 0 : 8)
+            .scaleEffect(isIn || reduceMotion ? 1 : 0.97)
+            .onAppear {
+                guard !isIn else { return }
+                let delay = min(Double(max(index, 0)) * 0.04, 0.16)
+                withAnimation(reduceMotion ? .easeOut(duration: 0.2) : Motion.appear.delay(delay)) { isIn = true }
+            }
+    }
+}
+
+/// A quick accent glint around a card as a helper's words land in it (a
+/// written prompt): opacity only, 0.12 s in and 0.34 s out, so it stays
+/// with Reduce Motion; nothing moves.
+private struct HelperGlint<Trigger: Equatable>: ViewModifier {
+    let trigger: Trigger
+    let cornerRadius: CGFloat
+
+    func body(content: Content) -> some View {
+        content.overlay {
+            RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                .strokeBorder(Palette.accent, lineWidth: 2)
+                .shadow(color: Palette.accent.opacity(0.45), radius: 8)
+                .keyframeAnimator(initialValue: 0.0, trigger: trigger) { glint, glow in
+                    glint.opacity(glow)
+                } keyframes: { _ in
+                    KeyframeTrack {
+                        CubicKeyframe(1, duration: 0.12)
+                        CubicKeyframe(0, duration: 0.34)
+                    }
+                }
+                .allowsHitTesting(false)
+                .accessibilityHidden(true)
+        }
+    }
+}
+
 /// A gentle twinkle: scale and opacity breathe forever, offset by `phase`.
 private struct Twinkle: ViewModifier {
     let phase: Double
@@ -160,6 +211,12 @@ private struct Floating: ViewModifier {
 
 extension View {
     func reveal(_ index: Int = 0) -> some View { modifier(RevealOnAppear(index: index)) }
+    /// A new idea, pick or helper result fading up into place (see `Arrival`).
+    func arrival(_ index: Int = 0) -> some View { modifier(Arrival(index: index)) }
+    /// One accent glint around a card each time `trigger` changes (see `HelperGlint`).
+    func helperGlint(_ trigger: some Equatable, cornerRadius: CGFloat = Metrics.cardRadius) -> some View {
+        modifier(HelperGlint(trigger: trigger, cornerRadius: cornerRadius))
+    }
     /// Button styles' press feedback (see `PressFeedback`).
     func pressFeedback(_ isPressed: Bool, scale: CGFloat = 0.95) -> some View {
         modifier(PressFeedback(isPressed: isPressed, scale: scale))

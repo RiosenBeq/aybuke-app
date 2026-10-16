@@ -32,10 +32,11 @@ struct PollsView: View {
                         if polls.records.isEmpty {
                             empty
                         }
-                        ForEach(polls.records) { record in
+                        ForEach(Array(polls.records.enumerated()), id: \.element.id) { index, record in
                             PollCard(record: record, now: now, isFocused: record.id == focus,
                                      isDeleting: deleting.contains(record.id),
                                      share: { share(record) }, delete: { pendingDelete = record })
+                                .arrival(index)
                                 .id(record.id)
                         }
                         Text("Polls end after 24 hours. Then the pictures, the question and the votes are deleted from our servers; this device keeps the last counts for a day.")
@@ -175,6 +176,7 @@ struct PollCard: View {
     let delete: () -> Void
 
     @Environment(AppModel.self) private var app
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var images: [PollSide: UIImage] = [:]
 
     private var isRemoved: Bool { record.status == .takenDown }
@@ -261,13 +263,17 @@ struct PollCard: View {
                 Text("\(votes) votes")
                     .font(.subheadline.weight(.semibold))
                     .foregroundStyle(Palette.textPrimary)
+                    .contentTransition(.numericText(value: Double(votes)))
                 Spacer(minLength: 4)
                 if let share {
                     Text(verbatim: share.formatted(.percent))
                         .font(.subheadline.monospacedDigit())
                         .foregroundStyle(Palette.textSecondary)
+                        .contentTransition(.numericText(value: Double(share)))
                 }
             }
+            // New votes roll in with the bar (a plain swap with Reduce Motion).
+            .animation(reduceMotion ? nil : Motion.fill, value: votes)
             PollBar(fraction: share.map { Double($0) / 100 } ?? 0, side: side)
         }
         .accessibilityElement(children: .ignore)
@@ -310,23 +316,31 @@ struct PollCard: View {
     }
 }
 
-/// A soft bar for one side's share of the votes.
+/// A soft bar for one side's share of the votes. It fills from empty as it
+/// first shows (B a beat after A) and glides to new counts; with Reduce
+/// Motion it's simply drawn at its value.
 struct PollBar: View {
     let fraction: Double
     let side: PollSide
+    @State private var hasFilled = false
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
+        let shown = hasFilled || reduceMotion ? fraction : 0
         GeometryReader { proxy in
             ZStack(alignment: .leading) {
                 Capsule().fill(Palette.surfaceRaised)
                 Capsule()
                     .fill(side == .a ? Palette.blush : Palette.auraLilac.opacity(0.7))
-                    .frame(width: max(fraction > 0 ? 8 : 0, proxy.size.width * fraction))
+                    .frame(width: max(shown > 0 ? 8 : 0, proxy.size.width * shown))
             }
         }
         .frame(height: 8)
-        .animation(reduceMotion ? nil : Motion.appear, value: fraction)
+        .animation(reduceMotion ? nil : Motion.fill, value: fraction)
+        .onAppear {
+            guard !hasFilled, !reduceMotion else { return }
+            withAnimation(Motion.fill.delay(side == .a ? 0.08 : 0.16)) { hasFilled = true }
+        }
         .accessibilityHidden(true)
     }
 }

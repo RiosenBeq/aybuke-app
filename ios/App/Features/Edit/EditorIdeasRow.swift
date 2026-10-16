@@ -97,9 +97,11 @@ struct EditorIdeasRow: View {
     @ViewBuilder
     private func chips(_ suggestions: [LookSuggestion]) -> some View {
         surpriseChip
-        // Up to three ideas next to "Surprise me".
-        ForEach(suggestions.prefix(3), id: \.self) { suggestion in
+            .arrival(0)
+        // Up to three ideas next to "Surprise me", arriving one after another.
+        ForEach(Array(suggestions.prefix(3).enumerated()), id: \.element) { index, suggestion in
             chip(for: suggestion)
+                .arrival(index + 1)
         }
     }
 

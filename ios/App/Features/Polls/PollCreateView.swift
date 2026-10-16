@@ -221,12 +221,12 @@ struct PollCreateView: View {
                         question = question == text ? "" : text
                     }
                 }
-                ForEach(aybikIdeas, id: \.self) { idea in
+                ForEach(Array(aybikIdeas.enumerated()), id: \.element) { index, idea in
                     SelectableChip(verbatim: idea, symbolName: "sparkles", isSelected: question == idea) {
                         Haptics.selection()
                         question = question == idea ? "" : idea
                     }
-                    .transition(reduceMotion ? .opacity : .opacity.combined(with: .scale(scale: 0.9)))
+                    .arrival(index)
                     .accessibilityHint(Text("Written by Aybik, our AI helper.", comment: "Under suggested words in the share composer. Aybik is the app's AI helper: keep the name Aybik."))
                 }
             }

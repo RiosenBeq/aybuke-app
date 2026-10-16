@@ -172,8 +172,9 @@ struct VibeFinderCard: View {
                     .foregroundStyle(Palette.accent)
                     .fixedSize(horizontal: false, vertical: true)
             case .picks(let picks, let writtenBy):
-                ForEach(picks, id: \.key) { pick in
+                ForEach(Array(picks.enumerated()), id: \.element.key) { index, pick in
                     row(pick)
+                        .arrival(index)
                 }
                 footnote(writtenBy == .cloud
                          ? Text("Picked by Aybik, our AI helper.", comment: "Explore, under the looks found for her vibe. Aybik is the app's AI helper: keep the name Aybik.")
@@ -184,8 +185,9 @@ struct VibeFinderCard: View {
                     .font(.legibleFootnote)
                     .foregroundStyle(Palette.textSecondary)
                     .fixedSize(horizontal: false, vertical: true)
-                ForEach(picks, id: \.key) { pick in
+                ForEach(Array(picks.enumerated()), id: \.element.key) { index, pick in
                     row(pick)
+                        .arrival(index)
                 }
             }
             Button {

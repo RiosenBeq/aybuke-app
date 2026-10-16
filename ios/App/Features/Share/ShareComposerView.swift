@@ -495,7 +495,7 @@ struct ShareComposerView: View {
                     .font(.legibleCaption)
                     .foregroundStyle(Palette.textSecondary)
             }
-            ForEach(captionIdeas, id: \.self) { idea in
+            ForEach(Array(captionIdeas.enumerated()), id: \.element) { index, idea in
                 Button {
                     copyCaptionIdea(idea)
                 } label: {
@@ -515,6 +515,7 @@ struct ShareComposerView: View {
                 }
                 .buttonStyle(.pressable)
                 .accessibilityLabel(Text("Copy caption: \(idea)"))
+                .arrival(index)
             }
             ideasFootnote
                 .font(.legibleCaption)

@@ -209,6 +209,7 @@ struct AskAybikView: View {
                     canBeWrongNote
                 }
                 .padding(.vertical, 6)
+                .arrival()
             }
             .listRowBackground(Palette.surface)
         case .blocked(let message):

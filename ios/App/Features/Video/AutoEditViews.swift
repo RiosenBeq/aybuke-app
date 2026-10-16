@@ -330,11 +330,12 @@ struct AutoEditPostSheet: View {
                     .font(.legibleCaption)
                     .foregroundStyle(Palette.textSecondary)
             }
-            ForEach(post.captions, id: \.self) { caption in
+            ForEach(Array(post.captions.enumerated()), id: \.element) { index, caption in
                 copyRow(caption) {
                     copy(post.clipboard(for: caption), toast: "Caption copied")
                 }
                 .accessibilityLabel(Text("Copy caption: \(caption)"))
+                .arrival(index)
             }
             footnote
                 .font(.legibleCaption)

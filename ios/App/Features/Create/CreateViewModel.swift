@@ -31,6 +31,9 @@ final class CreateViewModel {
     /// Text a model wrote, and which one, so the field can say so.
     private(set) var modelWrittenPrompt: String?
     private(set) var modelWriter: WrittenBy?
+    /// Moves each time "Inspire me" or "Make it magic" puts words in the
+    /// field, so the card can glint once as they land.
+    private(set) var writtenRevision = 0
     /// Unused model ideas from the last request, served before asking again.
     @ObservationIgnored private var queuedIdeas: [String] = []
     @ObservationIgnored private var queuedWriter: WrittenBy = .device
@@ -148,6 +151,7 @@ final class CreateViewModel {
     private func show(idea: String, writtenBy writer: WrittenBy?) {
         lastIdea = idea
         prompt = idea
+        writtenRevision += 1
         modelWrittenPrompt = writer == nil ? nil : idea
         modelWriter = writer
         undoPrompt = nil
@@ -156,6 +160,7 @@ final class CreateViewModel {
     private func apply(_ upgraded: String, replacing original: String, writtenBy writer: WrittenBy?) {
         guard upgraded != original else { return }
         prompt = upgraded
+        writtenRevision += 1
         modelWrittenPrompt = writer == nil ? nil : upgraded
         modelWriter = writer
         undoPrompt = original

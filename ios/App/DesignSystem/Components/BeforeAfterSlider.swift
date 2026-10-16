@@ -2,16 +2,30 @@ import SwiftUI
 import UIKit
 
 /// Drag the handle to compare the original (left) with the result (right).
-/// The single most-loved interaction in photo-enhancement apps.
+/// The single most-loved interaction in photo-enhancement apps. The first
+/// time a result shows here (an AI job, an Enhance fix, the first run) it
+/// wipes in from the right over her photo and the handle settles in the
+/// middle, which also shows that it moves; a touch stops it at once, and
+/// with Reduce Motion the handle simply starts in the middle.
 struct BeforeAfterSlider: View {
     let before: UIImage
     let after: UIImage
     var showsTransparencyGrid = false
 
-    @State private var position: CGFloat = 0.5
-    @State private var hasPeeked = false
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @State private var position: CGFloat
+    /// She took the handle: the reveal stops where it is.
+    @State private var isTouched = false
+    private let revealsResult: Bool
     @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
+
+    init(before: UIImage, after: UIImage, showsTransparencyGrid: Bool = false) {
+        self.before = before
+        self.after = after
+        self.showsTransparencyGrid = showsTransparencyGrid
+        let reveals = !UIAccessibility.isReduceMotionEnabled && !CompareReveal.played.contains(after)
+        revealsResult = reveals
+        _position = State(initialValue: reveals ? 1 : 0.5)
+    }
 
     var body: some View {
         GeometryReader { proxy in
@@ -49,6 +63,7 @@ struct BeforeAfterSlider: View {
             .gesture(
                 DragGesture(minimumDistance: 0)
                     .onChanged { value in
+                        isTouched = true
                         position = min(max(value.location.x / max(width, 1), 0), 1)
                     }
             )
@@ -56,6 +71,7 @@ struct BeforeAfterSlider: View {
             .accessibilityLabel("Before and after comparison")
             .accessibilityValue("\(Int(position * 100)) percent original")
             .accessibilityAdjustableAction { direction in
+                isTouched = true
                 switch direction {
                 case .increment: position = min(position + 0.1, 1)
                 case .decrement: position = max(position - 0.1, 0)
@@ -65,15 +81,15 @@ struct BeforeAfterSlider: View {
         }
         .aspectRatio(after.size.width / max(after.size.height, 1), contentMode: .fit)
         .task {
-            // A little "peek" so people discover the handle.
-            guard !hasPeeked, !reduceMotion else { return }
-            hasPeeked = true
-            try? await Task.sleep(for: .milliseconds(450))
-            withAnimation(.easeInOut(duration: 0.45)) { position = 0.3 }
-            try? await Task.sleep(for: .milliseconds(450))
-            withAnimation(.easeInOut(duration: 0.6)) { position = 0.7 }
-            try? await Task.sleep(for: .milliseconds(600))
-            withAnimation(.spring(response: 0.5, dampingFraction: 0.7)) { position = 0.5 }
+            // Once per result: the result wipes in, past the middle, then settles.
+            guard revealsResult, !CompareReveal.played.contains(after) else { return }
+            CompareReveal.played.add(after)
+            try? await Task.sleep(for: .milliseconds(120))
+            guard !Task.isCancelled, !isTouched else { return }
+            withAnimation(.spring(response: 0.34, dampingFraction: 0.86)) { position = 0.24 }
+            try? await Task.sleep(for: .milliseconds(380))
+            guard !Task.isCancelled, !isTouched else { return }
+            withAnimation(.spring(response: 0.32, dampingFraction: 0.74)) { position = 0.5 }
         }
     }
 
@@ -107,4 +123,11 @@ struct BeforeAfterSlider: View {
             .padding(.vertical, 4)
             .background(Palette.ink.opacity(reduceTransparency ? 0.9 : 0.65), in: .tag)
     }
+}
+
+/// Results that already wiped in, so going back to the comparison doesn't
+/// replay it (weak: a result that's gone leaves no trace).
+@MainActor
+private enum CompareReveal {
+    static let played = NSHashTable<UIImage>.weakObjects()
 }

@@ -16,6 +16,7 @@ Writes, from the chosen concept:
   docs/assets/brand/brand-board.png
   docs/assets/brand/wordmark{,-gradient}.{svg,png}  the "aybuke" logotype, ink and plum-pink-peach
   ios/App/Resources/Assets.xcassets/Wordmark.imageset/Wordmark.svg                 the same, a template vector
+  ios/App/DesignSystem/Components/WordmarkGlyphs.swift                              the same, per letter (the launch splash)
   ios/App/Resources/Assets.xcassets/LaunchIcon.imageset/LaunchIcon@{2,3}x.png      the launch screen's icon
   (--wordmark redraws only these and the brand board, from app-icon-1024.png)
 scripts/marketing-images.py puts app-icon-1024.png into web/assets/og-image.png
@@ -888,6 +889,7 @@ WORDMARK_GRADIENT = [(0, PLUM), (0.55, AURA_PINK), (1, AURA_PEACH)]
 # The app asset's natural height in points (it is drawn resized, as a vector).
 WORDMARK_POINTS = 60
 WORDMARK_SET = ROOT / "ios" / "App" / "Resources" / "Assets.xcassets" / "Wordmark.imageset"
+WORDMARK_SWIFT = ROOT / "ios" / "App" / "DesignSystem" / "Components" / "WordmarkGlyphs.swift"
 # The launch screen's icon, which the SwiftUI splash starts from: the same
 # picture at the same size, so the hand-over doesn't jump.
 LAUNCH_ICON_SET = ROOT / "ios" / "App" / "Resources" / "Assets.xcassets" / "LaunchIcon.imageset"
@@ -1161,22 +1163,30 @@ def wordmark_bounds(glyphs) -> tuple[float, float, float, float]:
     return (min(p[0] for p in points), min(p[1] for p in points), max(p[0] for p in points), max(p[1] for p in points))
 
 
-def wordmark_svg(glyphs, height: float, paint, comment: str) -> str:
-    """The wordmark `height` units tall, cropped to its ink; `paint` is a colour
-    or gradient stops (left to right, a little downhill)."""
+def wordmark_path_data(glyphs, height: float) -> tuple[float, list[str]]:
+    """The wordmark `height` units tall, cropped to its ink (y down): its width
+    and each letter's SVG path data (absolute M, L, Q, C and Z), the sparkle last."""
     x0, y0, x1, y1 = wordmark_bounds(glyphs)
     k = height / (y1 - y0)
-    width = (x1 - x0) * k
 
     def xy(p) -> str:
         return f"{(p[0] - x0) * k:.2f} {(y1 - p[1]) * k:.2f}"
 
-    data = []
+    letters = []
     for glyph in glyphs:
+        data = []
         for contour in glyph:
             data.append("M" + xy(contour[0][1]))
             data.extend(s[0] + " ".join(xy(p) for p in s[2:]) for s in contour)
             data.append("Z")
+        letters.append("".join(data))
+    return (x1 - x0) * k, letters
+
+
+def wordmark_svg(glyphs, height: float, paint, comment: str) -> str:
+    """The wordmark `height` units tall, cropped to its ink; `paint` is a colour
+    or gradient stops (left to right, a little downhill)."""
+    width, data = wordmark_path_data(glyphs, height)
     defs, fill = "", hex_color(paint) if isinstance(paint[0], int) else "url(#paint)"
     if fill == "url(#paint)":
         stops = "".join(f'<stop offset="{t:g}" stop-color="{hex_color(color)}"/>' for t, color in paint)
@@ -1185,6 +1195,28 @@ def wordmark_svg(glyphs, height: float, paint, comment: str) -> str:
     return (f'<svg xmlns="http://www.w3.org/2000/svg" width="{width:.2f}" height="{height:g}" '
             f'viewBox="0 0 {width:.2f} {height:g}">\n  <!-- {comment} -->\n{defs}'
             f'  <path fill="{fill}" d="{"".join(data)}"/>\n</svg>\n')
+
+
+def wordmark_swift(glyphs, height: float) -> str:
+    """The app's wordmark split per letter for the launch splash's write-on: the
+    same numbers as Wordmark.svg, one path string per letter."""
+    width, letters = wordmark_path_data(glyphs, height)
+    names = list(WORDMARK_TEXT) + ["sparkle"]
+    rows = "\n".join(f'        "{data}", // {name}' for data, name in zip(letters, names))
+    return f"""// Written by scripts/render-brand-assets.py (--wordmark); edit the script, not this file.
+import CoreGraphics
+
+/// The `Wordmark` vector split per letter, for the launch splash's
+/// write-on: the same outlines and numbers as Wordmark.svg (y down, cropped to
+/// its ink), each letter as SVG path data (absolute M, L, Q, C and Z), the
+/// sparkle last. `WordmarkGlyph` draws one of them.
+enum WordmarkGlyphs {{
+    static let size = CGSize(width: {width:.2f}, height: {height:g})
+    static let letters: [String] = [
+{rows}
+    ]
+}}
+"""
 
 
 def wordmark_image(glyphs, height: int, paint, padding: int = 0) -> Image.Image:
@@ -1267,6 +1299,8 @@ def render_wordmark(art: Image.Image) -> None:
     (WORDMARK_SET / "Wordmark.svg").write_text(wordmark_svg(glyphs, WORDMARK_POINTS, BLACK, note), encoding="utf-8")
     write_contents(WORDMARK_SET, [{"filename": "Wordmark.svg", "idiom": "universal"}],
                    {"preserves-vector-representation": True, "template-rendering-intent": "template"})
+    # The same letters one by one, for the launch splash.
+    WORDMARK_SWIFT.write_text(wordmark_swift(glyphs, WORDMARK_POINTS), encoding="utf-8")
     LAUNCH_ICON_SET.mkdir(parents=True, exist_ok=True)
     images = [{"idiom": "universal", "scale": "1x"}]
     for scale in (2, 3):

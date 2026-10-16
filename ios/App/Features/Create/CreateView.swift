@@ -298,6 +298,7 @@ struct CreateView: View {
             RoundedRectangle(cornerRadius: Metrics.cardRadius, style: .continuous)
                 .strokeBorder(isPromptFocused ? Palette.accent : Color.clear, lineWidth: 1.5)
         )
+        .helperGlint(model.writtenRevision)
     }
 
     /// Her last prompts, only while the box is empty. Kept on this device only.

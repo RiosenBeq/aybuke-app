@@ -320,12 +320,13 @@ struct ShareTextEditor: View {
     private func ideaChips(_ found: CardTextIdeas, for slot: ShareTextSlot) -> some View {
         VStack(alignment: .leading, spacing: 6) {
             FlowLayout(spacing: 6, lineSpacing: 6) {
-                ForEach(found.lines, id: \.self) { line in
+                ForEach(Array(found.lines.enumerated()), id: \.element) { index, line in
                     SelectableChip(verbatim: line, isSelected: drafts[slot] == line) {
                         Haptics.selection()
                         onPick(slot, line)
                     }
                     .accessibilityHint(Text("Puts these words on the design", comment: "Accessibility hint of a suggested line in the share composer"))
+                    .arrival(index)
                 }
             }
             Group {

@@ -136,7 +136,7 @@ The first brand used Golden Hour amber `#FF9A3D` (gradient `#FFC25C → #FF7A3D`
 
 ### Launch
 
-The launch screen is the petal colour with the app icon at 112 pt (with its soft plum shadow). The splash starts from that exact picture: the icon grows a little into a pink glow while the wordmark rises under it, then everything crossfades into the app, about 1.9 s in all, once per cold launch. With Reduce Motion it's a short hold and a fade; the Mac opens straight to its window.
+The launch screen is the petal colour with the app icon at 112 pt (with its soft plum shadow). The splash starts from that exact picture: the icon grows a little into a pink glow while the wordmark writes itself under it letter by letter (each letter rising softly into place), the sparkle after the "e" twinkles once, then everything crossfades into the app, about 2 s in all, once per cold launch. With Reduce Motion it's a short hold and a fade; the Mac opens straight to its window.
 
 ### Shape
 

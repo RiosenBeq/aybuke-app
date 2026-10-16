@@ -488,6 +488,7 @@ private struct MakeupVibeField: View {
                 .fixedSize(horizontal: false, vertical: true)
             }
             .accessibilityElement(children: .combine)
+            .arrival()
         case .message(let message):
             Label {
                 Text(verbatim: message)
