@@ -1,5 +1,5 @@
 {
-  "_comment" : "Generated from ios/Packages/AppCore (TemplateCatalog/StyleCatalog/MakeupStudio/EnhanceMode). Do not edit by hand: run scripts/export-catalog.sh.",
+  "_comment" : "Generated from ios/Packages/AppCore (TemplateCatalog/StyleCatalog/MakeupStudio/EnhanceMode/GlowCam) and scripts/export-catalog (the finder's effects). Do not edit by hand: run scripts/export-catalog.sh.",
   "enhanceModes" : [
     {
       "id" : "unblur",
@@ -22,6 +22,825 @@
       "prompt" : "Make this photo crisp and high-definition: recover fine, natural detail and clean edges, and remove compression artifacts and noise, so it still looks like a real photo. Keep real skin texture, freckles, moles, pores and blemishes; don't retouch or smooth the skin, and don't reshape the face or body. Keep the composition, colors, every person and their identity exactly the same."
     }
   ],
+  "finder" : {
+    "effects" : [
+      {
+        "about" : "an 80s home-video tape look with a date stamp",
+        "id" : "vhs",
+        "isPro" : false,
+        "name" : "VHS '86"
+      },
+      {
+        "about" : "a 90s disposable film camera with flash and a date stamp",
+        "id" : "disposable",
+        "isPro" : false,
+        "name" : "Disposable '98"
+      },
+      {
+        "about" : "sparkles and glints over the photo",
+        "id" : "kira",
+        "isPro" : false,
+        "name" : "Kira Kira"
+      },
+      {
+        "about" : "a Y2K pocket digital camera with a date stamp",
+        "id" : "digicam",
+        "isPro" : false,
+        "name" : "Digicam '04"
+      },
+      {
+        "about" : "an 80s instant film print",
+        "id" : "instant",
+        "isPro" : false,
+        "name" : "Instant '82"
+      },
+      {
+        "about" : "an 80s neon glow, for nights and city lights",
+        "id" : "neon",
+        "isPro" : false,
+        "name" : "Neon '84"
+      },
+      {
+        "about" : "a 2016 phone photo, with an optional white square border",
+        "id" : "throwback16",
+        "isPro" : false,
+        "name" : "Throwback '16"
+      },
+      {
+        "about" : "a 2006 camcorder with its REC display and timecode",
+        "id" : "camcorder06",
+        "isPro" : false,
+        "name" : "Camcorder '06"
+      },
+      {
+        "about" : "a 2009 toy camera with cross-processed colour",
+        "id" : "toyCam",
+        "isPro" : false,
+        "name" : "Toy Cam '09"
+      },
+      {
+        "about" : "2017's rainbow prism light",
+        "id" : "rainbow",
+        "isPro" : false,
+        "name" : "Rainbow '17"
+      },
+      {
+        "about" : "a 2012 DSLR portrait: real lens blur with round bokeh behind the subject",
+        "id" : "dslr12",
+        "isPro" : false,
+        "name" : "DSLR '12"
+      },
+      {
+        "about" : "a movie frame with letterbox bars and a subtitle",
+        "id" : "filmStill",
+        "isPro" : false,
+        "name" : "Film Still"
+      },
+      {
+        "about" : "tilt-shift that turns streets and wide views into a tiny model world",
+        "id" : "tinyWorld",
+        "isPro" : false,
+        "name" : "Tiny World"
+      }
+    ],
+    "enhance" : [
+      {
+        "about" : "less noise, crisper detail and balanced light, free on the device",
+        "cloud" : false,
+        "id" : "quickFix",
+        "isPro" : false,
+        "name" : "Quick fix"
+      },
+      {
+        "about" : "sharpens blurry shots",
+        "cloud" : true,
+        "id" : "unblur",
+        "isPro" : false,
+        "name" : "Unblur & sharpen"
+      },
+      {
+        "about" : "removes scratches, dust, creases and fading from old prints",
+        "cloud" : true,
+        "id" : "restore",
+        "isPro" : false,
+        "name" : "Restore old photo"
+      },
+      {
+        "about" : "brightens dark shots naturally",
+        "cloud" : true,
+        "id" : "lowLight",
+        "isPro" : false,
+        "name" : "Brighten low light"
+      },
+      {
+        "about" : "finer detail, up to twice the size",
+        "cloud" : true,
+        "id" : "hd",
+        "isPro" : false,
+        "name" : "HD 2×"
+      }
+    ],
+    "glow" : [
+      {
+        "about" : "clean, natural light",
+        "id" : "natural",
+        "isPro" : false,
+        "name" : "Natural"
+      },
+      {
+        "about" : "a soft, dreamy glow",
+        "id" : "dreamy",
+        "isPro" : false,
+        "name" : "Dreamy"
+      },
+      {
+        "about" : "warm golden-hour light",
+        "id" : "golden",
+        "isPro" : false,
+        "name" : "Golden"
+      },
+      {
+        "about" : "faded film colour with grain",
+        "id" : "analog",
+        "isPro" : false,
+        "name" : "Analog"
+      },
+      {
+        "about" : "deeper shadows and a moody grade",
+        "id" : "moody",
+        "isPro" : false,
+        "name" : "Moody"
+      }
+    ],
+    "looks" : [
+      {
+        "about" : "You, as a collectible doll",
+        "collection" : "trending",
+        "id" : "doll-box",
+        "isPro" : true,
+        "name" : "Doll Box"
+      },
+      {
+        "about" : "Collectible desk toy",
+        "collection" : "trending",
+        "id" : "figurine",
+        "isPro" : true,
+        "name" : "3D Figurine"
+      },
+      {
+        "about" : "2000s point-and-shoot",
+        "collection" : "trending",
+        "id" : "y2k",
+        "isPro" : false,
+        "name" : "Y2K Digicam"
+      },
+      {
+        "about" : "Hand-painted movie still",
+        "collection" : "trending",
+        "id" : "anime-film",
+        "isPro" : false,
+        "name" : "Anime Film"
+      },
+      {
+        "about" : "90s instant film",
+        "collection" : "trending",
+        "id" : "polaroid",
+        "isPro" : false,
+        "name" : "Bestie Polaroid"
+      },
+      {
+        "about" : "Pretty, natural makeup",
+        "collection" : "glowUp",
+        "id" : "soft-glam",
+        "isPro" : false,
+        "name" : "Soft Glam"
+      },
+      {
+        "about" : "Try pastel pink",
+        "collection" : "glowUp",
+        "id" : "pink-hair",
+        "isPro" : false,
+        "name" : "Pink Hair"
+      },
+      {
+        "about" : "Beauty-campaign lighting",
+        "collection" : "glowUp",
+        "id" : "glam",
+        "isPro" : false,
+        "name" : "Glam Studio"
+      },
+      {
+        "about" : "Salon-fresh volume",
+        "collection" : "glowUp",
+        "id" : "curls",
+        "isPro" : true,
+        "name" : "Bouncy Curls"
+      },
+      {
+        "about" : "Fresh, dewy & effortless",
+        "collection" : "glowUp",
+        "id" : "clean-girl",
+        "isPro" : true,
+        "name" : "Clean Girl"
+      },
+      {
+        "about" : "Satin bows & tulle",
+        "collection" : "aesthetic",
+        "id" : "ballet",
+        "isPro" : false,
+        "name" : "Ballet Core"
+      },
+      {
+        "about" : "Spring in full bloom",
+        "collection" : "aesthetic",
+        "id" : "cherry-blossom",
+        "isPro" : false,
+        "name" : "Cherry Blossom"
+      },
+      {
+        "about" : "Cozy latte vibes",
+        "collection" : "aesthetic",
+        "id" : "cafe",
+        "isPro" : false,
+        "name" : "Café Date"
+      },
+      {
+        "about" : "Sunny city getaway",
+        "collection" : "aesthetic",
+        "id" : "paris",
+        "isPro" : true,
+        "name" : "Paris Trip"
+      },
+      {
+        "about" : "Quiet-luxury editorial",
+        "collection" : "aesthetic",
+        "id" : "old-money",
+        "isPro" : true,
+        "name" : "Old Money"
+      },
+      {
+        "about" : "Enchanted & ethereal",
+        "collection" : "dreamy",
+        "id" : "fairy",
+        "isPro" : true,
+        "name" : "Fairy Princess"
+      },
+      {
+        "about" : "Warm sunset light",
+        "collection" : "dreamy",
+        "id" : "golden-glow",
+        "isPro" : false,
+        "name" : "Golden Hour Glow"
+      },
+      {
+        "about" : "Balloons & confetti",
+        "collection" : "dreamy",
+        "id" : "birthday",
+        "isPro" : false,
+        "name" : "Birthday Glam"
+      },
+      {
+        "about" : "Bring memories back",
+        "collection" : "dreamy",
+        "id" : "restore",
+        "isPro" : true,
+        "name" : "Restore Old Photo"
+      },
+      {
+        "about" : "Candle-lit Halloween",
+        "collection" : "seasonal",
+        "id" : "spooky",
+        "isPro" : true,
+        "name" : "Spooky Portrait",
+        "season" : "halloween"
+      },
+      {
+        "about" : "Cute & a little spooky",
+        "collection" : "seasonal",
+        "id" : "witchy",
+        "isPro" : false,
+        "name" : "Witchy Glam",
+        "season" : "halloween"
+      },
+      {
+        "about" : "Soft & dreamy",
+        "collection" : "art",
+        "id" : "watercolor",
+        "isPro" : false,
+        "name" : "Watercolor"
+      },
+      {
+        "about" : "Animated-movie you",
+        "collection" : "art",
+        "id" : "3d-cartoon",
+        "isPro" : false,
+        "name" : "3D Cartoon"
+      },
+      {
+        "about" : "Museum masterpiece",
+        "collection" : "art",
+        "id" : "oil-painting",
+        "isPro" : false,
+        "name" : "Oil Painting"
+      },
+      {
+        "about" : "Ink & halftone",
+        "collection" : "art",
+        "id" : "comic",
+        "isPro" : false,
+        "name" : "Comic Book"
+      },
+      {
+        "about" : "Stop-motion charm",
+        "collection" : "art",
+        "id" : "claymation",
+        "isPro" : false,
+        "name" : "Claymation"
+      },
+      {
+        "about" : "Pink neon nights",
+        "collection" : "art",
+        "id" : "neon-city",
+        "isPro" : true,
+        "name" : "Neon City"
+      },
+      {
+        "about" : "Shop-ready product shots",
+        "collection" : "business",
+        "id" : "product-studio",
+        "isPro" : true,
+        "name" : "Product Studio"
+      },
+      {
+        "about" : "LinkedIn-ready in seconds",
+        "collection" : "business",
+        "id" : "headshot",
+        "isPro" : true,
+        "name" : "Pro Headshot"
+      },
+      {
+        "about" : "Instant sunset",
+        "collection" : "business",
+        "id" : "golden-sky",
+        "isPro" : false,
+        "name" : "Golden Sky"
+      },
+      {
+        "about" : "Mall photo-studio glam",
+        "collection" : "trending",
+        "id" : "80s-studio",
+        "isPro" : false,
+        "name" : "80s Studio Portrait"
+      },
+      {
+        "about" : "Retro school-photo lasers",
+        "collection" : "trending",
+        "id" : "laser-yearbook",
+        "isPro" : true,
+        "name" : "Laser Yearbook '86"
+      },
+      {
+        "about" : "Mirror-ball sparkle",
+        "collection" : "trending",
+        "id" : "disco-79",
+        "isPro" : false,
+        "name" : "Disco '79"
+      },
+      {
+        "about" : "You, as a soft toy",
+        "collection" : "trending",
+        "id" : "plushie",
+        "isPro" : true,
+        "name" : "Plushie Me"
+      },
+      {
+        "about" : "A tiny vinyl you",
+        "collection" : "trending",
+        "id" : "bag-charm",
+        "isPro" : false,
+        "name" : "Bag Charm Mini"
+      },
+      {
+        "about" : "Painted like royalty",
+        "collection" : "pets",
+        "id" : "royal-pet",
+        "isPro" : false,
+        "name" : "Royal Pet Portrait"
+      },
+      {
+        "about" : "Collectible desk toy",
+        "collection" : "pets",
+        "id" : "pet-figurine",
+        "isPro" : false,
+        "name" : "Pet Figurine"
+      },
+      {
+        "about" : "One small step for paws",
+        "collection" : "pets",
+        "id" : "pet-astronaut",
+        "isPro" : false,
+        "name" : "Pet Astronaut"
+      },
+      {
+        "about" : "A tiny winter figurine",
+        "collection" : "seasonal",
+        "id" : "snow-globe",
+        "isPro" : true,
+        "name" : "Snow Globe Me",
+        "season" : "winter"
+      },
+      {
+        "about" : "Snowy-night flash photo",
+        "collection" : "seasonal",
+        "id" : "cozy-sweater",
+        "isPro" : false,
+        "name" : "Cozy Sweater Digicam",
+        "season" : "winter"
+      },
+      {
+        "about" : "Midnight flash & confetti",
+        "collection" : "seasonal",
+        "id" : "new-year",
+        "isPro" : false,
+        "name" : "New Year Confetti",
+        "season" : "winter"
+      },
+      {
+        "about" : "Besties at a pink café",
+        "collection" : "seasonal",
+        "id" : "galentines-brunch",
+        "isPro" : false,
+        "name" : "Galentine's Brunch",
+        "season" : "galentines"
+      },
+      {
+        "about" : "Bestie booth strip",
+        "collection" : "seasonal",
+        "id" : "heart-booth",
+        "isPro" : false,
+        "name" : "Heart Booth",
+        "season" : "galentines"
+      },
+      {
+        "about" : "Stage lights & confetti",
+        "collection" : "besties",
+        "id" : "concert-night",
+        "isPro" : true,
+        "name" : "Concert Night"
+      },
+      {
+        "about" : "Studio portrait, together",
+        "collection" : "pets",
+        "id" : "pet-studio",
+        "isPro" : false,
+        "name" : "Pet & Me Studio"
+      },
+      {
+        "about" : "Die-cut stickers of you",
+        "collection" : "trending",
+        "id" : "sticker-sheet",
+        "isPro" : false,
+        "name" : "Sticker Sheet"
+      },
+      {
+        "about" : "Sunny court, sporty fit",
+        "collection" : "aesthetic",
+        "id" : "tennis-club",
+        "isPro" : true,
+        "name" : "Tennis Club"
+      },
+      {
+        "about" : "Cap, gown & confetti",
+        "collection" : "dreamy",
+        "id" : "grad-day",
+        "isPro" : false,
+        "name" : "Grad Day"
+      },
+      {
+        "about" : "Beads, besties & sunshine",
+        "collection" : "besties",
+        "id" : "bracelet-club",
+        "isPro" : false,
+        "name" : "Bracelet Club"
+      },
+      {
+        "about" : "A shiny holo card of you",
+        "collection" : "trending",
+        "id" : "trading-card",
+        "isPro" : true,
+        "name" : "Holo Card"
+      },
+      {
+        "about" : "Matching fits, same vibe",
+        "collection" : "besties",
+        "id" : "twinning",
+        "isPro" : false,
+        "name" : "Twinning"
+      },
+      {
+        "about" : "Party hats & balloons",
+        "collection" : "pets",
+        "id" : "pet-party",
+        "isPro" : false,
+        "name" : "Pawty Time"
+      },
+      {
+        "about" : "Ink, sparkles & screentone",
+        "collection" : "art",
+        "id" : "manga",
+        "isPro" : false,
+        "name" : "Manga Panel"
+      },
+      {
+        "about" : "Greetings from the seaside",
+        "collection" : "aesthetic",
+        "id" : "postcard",
+        "isPro" : true,
+        "name" : "Travel Postcard"
+      },
+      {
+        "about" : "Ribbons, lace & pearls",
+        "collection" : "aesthetic",
+        "id" : "bow-era",
+        "isPro" : false,
+        "name" : "Bow Era"
+      },
+      {
+        "about" : "Pillow fort & fairy lights",
+        "collection" : "besties",
+        "id" : "sleepover",
+        "isPro" : false,
+        "name" : "Sleepover"
+      },
+      {
+        "about" : "Your pet, as a soft toy",
+        "collection" : "pets",
+        "id" : "plushie-pet",
+        "isPro" : true,
+        "name" : "Plushie Pet"
+      },
+      {
+        "about" : "Dreamy 35mm snapshot",
+        "collection" : "aesthetic",
+        "id" : "soft-film",
+        "isPro" : false,
+        "name" : "Soft Film"
+      },
+      {
+        "about" : "85mm lens, creamy bokeh",
+        "collection" : "dreamy",
+        "id" : "dslr-portrait",
+        "isPro" : false,
+        "name" : "DSLR Portrait"
+      },
+      {
+        "about" : "Festive lights & soft gold",
+        "collection" : "seasonal",
+        "id" : "eid-lanterns",
+        "isPro" : false,
+        "name" : "Lantern Glow",
+        "season" : "eidAlFitr"
+      },
+      {
+        "about" : "Cookies, candy & flowers",
+        "collection" : "seasonal",
+        "id" : "eid-sweets",
+        "isPro" : true,
+        "name" : "Festive Sweets",
+        "season" : "eidAlFitr"
+      },
+      {
+        "about" : "A golden-hour garden",
+        "collection" : "seasonal",
+        "id" : "eid-courtyard",
+        "isPro" : false,
+        "name" : "Courtyard Lanterns",
+        "season" : "eidAlAdha"
+      },
+      {
+        "about" : "Fresh flowers & soft gold",
+        "collection" : "seasonal",
+        "id" : "eid-florals",
+        "isPro" : true,
+        "name" : "Festive Florals",
+        "season" : "eidAlAdha"
+      },
+      {
+        "about" : "Red & gold lanterns",
+        "collection" : "seasonal",
+        "id" : "lunar-lanterns",
+        "isPro" : false,
+        "name" : "Lantern Night",
+        "season" : "lunarNewYear"
+      },
+      {
+        "about" : "Spring blooms in red & gold",
+        "collection" : "seasonal",
+        "id" : "plum-blossom",
+        "isPro" : true,
+        "name" : "Plum Blossom",
+        "season" : "lunarNewYear"
+      },
+      {
+        "about" : "A big glowing full moon",
+        "collection" : "seasonal",
+        "id" : "harvest-moon",
+        "isPro" : false,
+        "name" : "Harvest Moon",
+        "season" : "chuseok"
+      },
+      {
+        "about" : "Ripe fruit & warm light",
+        "collection" : "seasonal",
+        "id" : "persimmon",
+        "isPro" : true,
+        "name" : "Persimmon Autumn",
+        "season" : "chuseok"
+      },
+      {
+        "about" : "A picnic under the blossoms",
+        "collection" : "seasonal",
+        "id" : "hanami-picnic",
+        "isPro" : false,
+        "name" : "Hanami Picnic",
+        "season" : "hanami"
+      },
+      {
+        "about" : "Blossoms by lantern light",
+        "collection" : "seasonal",
+        "id" : "sakura-night",
+        "isPro" : true,
+        "name" : "Sakura Night",
+        "season" : "hanami"
+      },
+      {
+        "about" : "Bamboo & paper wishes",
+        "collection" : "seasonal",
+        "id" : "tanabata-wishes",
+        "isPro" : false,
+        "name" : "Star Wishes",
+        "season" : "tanabata"
+      },
+      {
+        "about" : "Under a river of stars",
+        "collection" : "seasonal",
+        "id" : "milky-way",
+        "isPro" : true,
+        "name" : "Milky Way",
+        "season" : "tanabata"
+      },
+      {
+        "about" : "Streamers & street party",
+        "collection" : "seasonal",
+        "id" : "carnaval-confetti",
+        "isPro" : false,
+        "name" : "Carnaval Confetti",
+        "season" : "carnaval"
+      },
+      {
+        "about" : "A sparkly carnival mask",
+        "collection" : "seasonal",
+        "id" : "carnaval-mask",
+        "isPro" : true,
+        "name" : "Mask & Glitter",
+        "season" : "carnaval"
+      },
+      {
+        "about" : "Paper flags & bonfire glow",
+        "collection" : "seasonal",
+        "id" : "festa-junina",
+        "isPro" : false,
+        "name" : "Arraiá Night",
+        "season" : "festaJunina"
+      },
+      {
+        "about" : "Corn cake, popcorn & candy apples",
+        "collection" : "seasonal",
+        "id" : "junina-sweets",
+        "isPro" : true,
+        "name" : "June Sweets",
+        "season" : "festaJunina"
+      },
+      {
+        "about" : "Cempasúchil & candlelight",
+        "collection" : "seasonal",
+        "id" : "marigold-glow",
+        "isPro" : false,
+        "name" : "Marigold Glow",
+        "season" : "diaDeMuertos"
+      },
+      {
+        "about" : "Paper banners & marigolds",
+        "collection" : "seasonal",
+        "id" : "papel-picado",
+        "isPro" : true,
+        "name" : "Papel Picado",
+        "season" : "diaDeMuertos"
+      }
+    ],
+    "styles" : [
+      {
+        "id" : "photo",
+        "isPro" : false,
+        "name" : "Photoreal"
+      },
+      {
+        "id" : "cinematic",
+        "isPro" : false,
+        "name" : "Cinematic"
+      },
+      {
+        "id" : "pastel",
+        "isPro" : false,
+        "name" : "Pastel Dream"
+      },
+      {
+        "id" : "anime",
+        "isPro" : false,
+        "name" : "Anime"
+      },
+      {
+        "id" : "kawaii",
+        "isPro" : false,
+        "name" : "Kawaii"
+      },
+      {
+        "id" : "3d",
+        "isPro" : false,
+        "name" : "3D Toon"
+      },
+      {
+        "id" : "fantasy",
+        "isPro" : true,
+        "name" : "Fantasy"
+      },
+      {
+        "id" : "watercolor",
+        "isPro" : false,
+        "name" : "Watercolor"
+      },
+      {
+        "id" : "oil",
+        "isPro" : true,
+        "name" : "Oil Paint"
+      },
+      {
+        "id" : "neon",
+        "isPro" : true,
+        "name" : "Neon Noir"
+      },
+      {
+        "id" : "sketch",
+        "isPro" : false,
+        "name" : "Sketch"
+      },
+      {
+        "id" : "pixel",
+        "isPro" : false,
+        "name" : "Pixel Art"
+      },
+      {
+        "id" : "clay",
+        "isPro" : true,
+        "name" : "Claymation"
+      },
+      {
+        "id" : "vintage",
+        "isPro" : false,
+        "name" : "Vintage Film"
+      },
+      {
+        "id" : "sticker",
+        "isPro" : false,
+        "name" : "Sticker"
+      },
+      {
+        "id" : "storybook",
+        "isPro" : false,
+        "name" : "Storybook"
+      },
+      {
+        "id" : "popart",
+        "isPro" : false,
+        "name" : "Pop Art"
+      },
+      {
+        "id" : "knit",
+        "isPro" : true,
+        "name" : "Cozy Knit"
+      },
+      {
+        "id" : "papercraft",
+        "isPro" : true,
+        "name" : "Paper Craft"
+      },
+      {
+        "id" : "diorama",
+        "isPro" : false,
+        "name" : "Diorama"
+      }
+    ]
+  },
   "makeup" : {
     "cheeks" : [
       {

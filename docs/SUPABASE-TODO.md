@@ -6,6 +6,8 @@ Bu dosya, Aybuke'nin arka ucunu (Supabase projesi `efapupjvidyqhqdevmcu`, Frankf
 >
 > **Uygulandı (güvenlik incelemesi, 16 Ekim 2026):** `20261103000000_assist_ceilings.sql` ve `20261103000001_poll_limits.sql` (her biri `psql -1`) canlıda; `assist`, `ai-image` (yerel mevsim görünümleriyle), `polls` ve `owner-digest` yeniden yayımlandı (JWT doğrulaması açık). Uçtan uca deneme: geçici bir anonim kullanıcıyla `assist` 200, `polls/mine` 200, ardından `DELETE /account` 200. Ayrıntı: `backend/README.md`, "Polls" altında "Security review fixes".
 
+> **Bekliyor (Aybik'in yeni görevleri, 16 Ekim 2026):** `20261104000000_assist_kinds.sql` (`psql -1 -v ON_ERROR_STOP=1 -f …`): görünüm bulucu (`looks`), anket sorusu fikirleri (`poll_questions`), kart metni (`card_text`) ve uygulama soruları (`help`) için ayrı saatlik kovalar (`assist_kind_policy()`); ortak tavanlar aynı kalır. Önce bu migrasyon, sonra `supabase functions deploy assist` (JWT doğrulaması açık). Sıra ters olursa yeni görevler 503 döner, uygulama sessizce cihazdaki yedeğe geçer. Kontrol: `select * from public.assist_kind_policy('help');` → 20, 20, 100. Sözleşme: `backend/README.md`, "Assist".
+
 > **Kural:** Anahtar, şifre, service role anahtarı, `.p8` içeriği ve e-posta adresi bu dosyaya, bir commit'e ya da bir sohbete yazılmaz. Değerler yalnızca ilgili panele girilir. Proje kimliği ve AdMob birim kimlikleri herkese açıktır.
 
 ## §0 Önce kontrol
