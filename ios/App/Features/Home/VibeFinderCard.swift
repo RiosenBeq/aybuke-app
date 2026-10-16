@@ -323,11 +323,19 @@ struct VibeFinderCard: View {
         switch outcome {
         case .blocked(let message):
             return message
-        case .picks(let picks, _), .favorites(let picks):
-            let names = picks.map { items[$0.key]?.name ?? $0.id }
-            return String(localized: "Found: \(names.formatted(.list(type: .and)))",
+        case .picks(let picks, _):
+            return String(localized: "Found: \(names(of: picks))",
                           comment: "VoiceOver, Explore's “Describe your vibe”: the looks and effects found, as a list of names")
+        case .favorites(let picks):
+            // Nothing matched: she hears what the screen says, not "Found".
+            let header = String(localized: "No match for those words yet. Some favorites to try:",
+                                comment: "Explore: nothing in the app matched her described vibe; a few popular looks and effects follow")
+            return "\(header) \(names(of: picks))"
         }
+    }
+
+    private func names(of picks: [LookFinder.Pick]) -> String {
+        picks.map { items[$0.key]?.name ?? $0.id }.formatted(.list(type: .and))
     }
 }
 

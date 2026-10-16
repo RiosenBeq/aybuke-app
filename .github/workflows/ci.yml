@@ -52,6 +52,8 @@ jobs:
         run: python3 scripts/build-legal.py --check
       - name: AppCore strings registered for translation
         run: python3 scripts/export-core-strings.py --check
+      - name: Aybik's help names match the app's strings
+        run: python3 scripts/export-help-names.py --check
       - name: Copy matches the code (no unsupported claims, device-neutral)
         run: python3 scripts/check-honest-copy.py
       - name: Credit numbers agree (server, AppConfig.json, AppCore)

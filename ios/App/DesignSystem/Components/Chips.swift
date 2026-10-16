@@ -22,13 +22,15 @@ struct SelectableChip: View {
                 }
                 // One line where the row has room (scrolling rows); where it
                 // hasn't (large text, long translations), the words wrap
-                // instead of pushing the screen wider than the window.
+                // instead of pushing the screen wider than the window. Her
+                // words and suggestions (verbatim, up to 80 characters) wrap
+                // in full, so she reads an option before she picks it.
                 ViewThatFits(in: .horizontal) {
                     titleText
                         .lineLimit(1)
                         .fixedSize(horizontal: true, vertical: false)
                     titleText
-                        .lineLimit(3)
+                        .lineLimit(verbatimTitle == nil ? 3 : nil)
                         .fixedSize(horizontal: false, vertical: true)
                 }
                 if isLocked {

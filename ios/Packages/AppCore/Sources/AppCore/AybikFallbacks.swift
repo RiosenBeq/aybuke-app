@@ -71,10 +71,10 @@ public struct HelpTopic: Equatable, Sendable, Identifiable {
 
     public static let all: [HelpTopic] = [
         HelpTopic(id: "credits", question: question("When do my free credits come back?"),
-                  answer: answer("Free credits come back every day. Tap your credit balance on Explore to see how many you have and when the next ones arrive. Pro comes with monthly credits instead."),
+                  answer: answer("Free credits come back every day. Tap your credit balance on Explore (on a Mac, in the sidebar) to see how many you have and when the next ones arrive. Pro comes with monthly credits instead."),
                   needsCloudAI: true),
         HelpTopic(id: "free", question: question("What can I do for free?"),
-                  answer: answer("Every tool that runs on your device is free and never uses credits: retro effects, Retro Cam and Retro Booth, Adjust, Crop, Cut out, Text & Stickers, Collage, Quick fix and the video editor (one Auto edit a day, unlimited with Pro)."),
+                  answer: answer("Every tool that runs on your device is free and never uses credits: retro effects, Retro Cam and Retro Booth, Adjust, Crop, Cut out, Text & Stickers, Collage, Quick fix and the video editor (one Auto edit a day)."),
                   needsCloudAI: false),
         HelpTopic(id: "polls", question: question("How do I delete a poll?"),
                   answer: answer("Open My Works and tap Your polls at the top. Pick the poll and tap Delete. Every poll also ends by itself after 24 hours, and then it's deleted."),
@@ -89,7 +89,7 @@ public struct HelpTopic: Equatable, Sendable, Identifiable {
                   answer: answer("Go to Settings › Membership › Manage subscription. Pro is billed through your Apple Account, so Apple takes care of canceling it."),
                   needsCloudAI: true),
         HelpTopic(id: "aybik", question: question("Who is Aybik?"),
-                  answer: answer("Aybik is our AI helper. It writes ideas, captions and answers from your words, never your photos, and only after you've turned on cloud AI. Its answers can be wrong."),
+                  answer: answer("Aybik is our AI helper. It writes ideas, captions and answers from your words, never your photos. It works once you've turned on cloud AI and used an AI feature, while you're online. Its answers can be wrong."),
                   needsCloudAI: true),
         HelpTopic(id: "delete", question: question("How do I delete my data?"),
                   answer: answer("Go to Settings › Privacy. Delete all creations removes the pictures saved in the app. Delete my data & account resets the app and deletes any account, credits and polls you have on our servers."),
@@ -106,16 +106,50 @@ public struct HelpTopic: Equatable, Sendable, Identifiable {
 
     /// The topics her question is closest to, best first (words of her
     /// question in the topic's question or answer), at most `limit`; empty
-    /// when none share a word. `localize` reads them in her language.
+    /// when none share a word. Question words ("how", "nasıl", "怎么"…) don't
+    /// count, so "How do I get a refund?" finds nothing rather than every
+    /// "How do I…". `localize` reads them in her language.
     public static func matching(_ text: String, in topics: [HelpTopic], localize: (String) -> String = { $0 },
                                 limit: Int = 3) -> [HelpTopic] {
         let items = topics.map { topic in
             LookFinder.Item(kind: .look, id: topic.id, name: localize(topic.question), about: localize(topic.answer),
                             words: [topic.question])
         }
-        let ids = LookFinder.localMatches(for: text, in: items, limit: limit, perKind: limit).map(\.id)
+        let ignoring = questionWords.union(sharedQuestionWords(localize: localize))
+        let ids = LookFinder.localMatches(for: text, in: items, limit: limit, perKind: limit, ignoring: ignoring).map(\.id)
         return ids.compactMap { id in topics.first { $0.id == id } }.prefix(limit).map { $0 }
     }
+
+    /// Words and character pairs that three or more of the questions share
+    /// in her language: how they're asked ("어떻게", "怎么", "bagaimana cara"),
+    /// not what they're about.
+    static func sharedQuestionWords(localize: (String) -> String) -> Set<String> {
+        var counts: [String: Int] = [:]
+        for topic in all {
+            let words = LookFinder.Words(LookFinder.fold(localize(topic.question)))
+            for word in Set(words.tokens).union(words.pairs) { counts[word, default: 0] += 1 }
+        }
+        return Set(counts.filter { $0.value >= 3 }.keys)
+    }
+
+    /// Question words and helpers of three letters or more (shorter ones never
+    /// count), folded, in the app's languages.
+    static let questionWords: Set<String> = [
+        "how", "what", "when", "where", "why", "who", "which", "can", "could", "are", "was", "were", "does", "did",
+        "will", "would", "should", "have", "has", "had", "don", "doesn", "isn", "not", "there", "please",
+        "nasil", "neden", "niye", "nicin", "nerede", "nereden", "hangi", "kim", "zaman", "nedir", "neler", "neleri",
+        "miyim", "misin", "mudur",
+        "cuando", "donde", "porque", "quien", "cual", "puedo", "puedes", "puede", "hay", "esta", "son", "mis", "tengo",
+        "quando", "onde", "quem", "qual", "posso", "pode", "sao", "meu", "meus", "minha", "minhas", "tenho",
+        "comment", "quand", "pourquoi", "qui", "quoi", "est", "puis", "peux", "peut", "mes", "mon", "suis",
+        "wie", "wann", "warum", "wer", "welche", "welcher", "kann", "ich", "meine", "meinen", "mein", "ist",
+        "sind", "werden", "wurde",
+        "come", "cosa", "perche", "chi", "dove", "quale", "puo", "sono", "mie", "miei", "mio",
+        "что", "когда", "почему", "кто", "где", "можно", "мои", "мой",
+        "bagaimana", "apa", "kapan", "kenapa", "mengapa", "siapa", "mana", "bisa", "cara", "apakah", "aku",
+        "怎么", "如何", "什么", "为什", "可以", "我的",
+        "어떻", "떻게", "해요", "어요", "있어", "무엇", "언제",
+    ]
 
     // Markers for scripts/export-core-strings.py.
     static func question(_ english: String) -> String { english }

@@ -9,7 +9,20 @@ import assert from "node:assert/strict";
 import { claudeAnswer, hangingFetch, mockClaude, withoutEnv } from "../_shared/claude-mock.ts";
 import { askForJson, type JsonAnswer, type JsonTask } from "../_shared/claude-text.ts";
 import { errorResponse } from "../_shared/http.ts";
-import { type Admission, type AssistDeps, handleAssist, hasLink, systemPrompt, tidyAnswer } from "./handler.ts";
+import {
+  type Admission,
+  type AssistDeps,
+  handleAssist,
+  hasLink,
+  HELP_NAMES,
+  LANGUAGES,
+  OPERATION,
+  screenAnswer,
+  systemPrompt,
+  tidyAnswer,
+  userMessage,
+} from "./handler.ts";
+import { evaluatePrompt } from "../_shared/policy.ts";
 import { FINDER_ITEMS, finderKeys } from "./finder.ts";
 import { HELP_FACTS, SUPPORT_URL } from "./help-facts.ts";
 
@@ -393,6 +406,45 @@ Deno.test("help: her words are a question, never instructions, and the facts sta
   for (const name of ["Claude", "Anthropic", "xAI", "Grok", "Supabase", "RevenueCat", "AdMob"]) {
     assert.ok(!HELP_FACTS.includes(name), `no ${name} in the facts`);
   }
+});
+
+Deno.test("help: an answer that repeats the facts passes the answer screening", async () => {
+  // The facts are what Claude repeats: a fact the policy blocks would throw the answer away (503).
+  for (const line of HELP_FACTS.split("\n").filter((line) => line.startsWith("- "))) {
+    assert.deepEqual(evaluatePrompt(line, OPERATION.help), { allowed: true }, line);
+    assert.ok(screenAnswer({ answer: line.slice(2), support: false }), line);
+  }
+  const blocked = HELP_FACTS.split("\n").find((line) => line.includes("are blocked"));
+  assert.ok(blocked);
+  const answers = [
+    `Some requests can't be made: ${blocked.slice(2, blocked.indexOf(" Good ideas"))} Try a hair colour or a scene.`,
+    "Pedidos para cambiar la forma de una cara o un cuerpo, o cualquier cosa que no sea para alguien de 13 años, se bloquean.",
+    "Les demandes qui changent la forme d'un visage ou d'un corps, ou qui ne conviennent pas à 13 ans, sont bloquées.",
+  ];
+  for (const answer of answers) {
+    const t = fake({ answer: ok({ answer, support: false }) });
+    const result = await call(t.deps, { task: "help", locale: "en", text: "Why was my request blocked?" });
+    assert.equal(result.status, 200, answer);
+  }
+});
+
+Deno.test("help: answers in other languages get the names her screen shows", () => {
+  const now = new Date("2026-10-16T12:00:00Z");
+  const turkish = userMessage({ task: "help", locale: "tr", text: "Anketi nasıl silerim?", context: {} }, now);
+  assert.ok(turkish.includes("My Works = Eserlerim"), turkish);
+  assert.ok(turkish.includes("Your polls = Anketlerin"));
+  assert.ok(turkish.indexOf("Names on her screen") < turkish.indexOf("<her_words>"), "before her words");
+  const english = userMessage({ task: "help", locale: "en", text: "How do I delete a poll?", context: {} }, now);
+  assert.ok(!english.includes("Names on her screen"));
+  const captions = userMessage({ task: "captions", locale: "tr", text: "plaj", context: {} }, now);
+  assert.ok(!captions.includes("Names on her screen"), "only for help");
+  // Every language but English has its list, and every name is one the facts use.
+  assert.deepEqual(Object.keys(HELP_NAMES).sort(), Object.keys(LANGUAGES).filter((code) => code !== "en").sort());
+  for (const [language, names] of Object.entries(HELP_NAMES)) {
+    assert.ok(Object.keys(names).length > 40, language);
+    for (const english of Object.keys(names)) assert.ok(HELP_FACTS.includes(english), `${english} (${language})`);
+  }
+  assert.ok(!systemPrompt("help").includes("as they are for feature names"), "feature names follow her screen");
 });
 
 // MARK: - Every new task

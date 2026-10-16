@@ -747,8 +747,9 @@ struct LibraryView: View {
     private func askFriends(_ items: [Creation]) {
         // What each one is (`pollHint`) stays on the device unless she asks
         // Aybik for question ideas.
+        let names = Self.pollHintNames
         let entries = items.filter { !missingFiles.contains($0.imageFileName) }
-            .map { (name: $0.imageFileName, provenance: $0.provenance, title: Self.pollHint(for: $0)) }
+            .map { (name: $0.imageFileName, provenance: $0.provenance, title: Self.pollHint(for: $0, names: names)) }
         guard entries.count == 2, !isWorking else { return }
         guard PollPair.allows(entries[0].provenance, entries[1].provenance) else {
             Haptics.error()
@@ -770,13 +771,26 @@ struct LibraryView: View {
     }
 
     /// What Aybik may hear about a creation for question ideas: a look's,
-    /// style's or effect's name, or her Create prompt; never a Magic Edit's
+    /// effect's or tool's name, or her Create prompt; never a Magic Edit's
     /// instruction, which can be about how she looks (as `Assist.captionHint`).
-    private static func pollHint(for creation: Creation) -> String {
-        if creation.operation == .magicEdit, let prompt = creation.prompt, creation.title == PromptBuilder.sanitize(prompt) {
-            return L10n.core(AIOperation.magicEdit.displayName)
-        }
-        return creation.title
+    /// The editor saves a typed edit titled with it and no prompt, so only
+    /// names the app gave a step go through (`Assist.pollHint`).
+    private static func pollHint(for creation: Creation, names: Set<String>) -> String? {
+        Assist.pollHint(title: creation.title, operation: creation.operation, prompt: creation.prompt,
+                        names: names, localize: { L10n.core($0) })
+    }
+
+    /// Every name a step can give a creation: the catalog's, the effects',
+    /// Enhance's and the on-device tools' (as the editor, Retro Cam and the
+    /// collage maker title them).
+    private static var pollHintNames: Set<String> {
+        var names = Assist.pollHintNames { L10n.core($0) }
+        names.formUnion(RetroEffect.allCases.map(\.title))
+        names.formUnion(EnhanceOption.allCases.map(\.title))
+        names.formUnion([String(localized: "Makeup Studio"), String(localized: "Hide faces"), String(localized: "Cut out"),
+                         String(localized: "Text & Stickers"), String(localized: "Adjusted photo"), String(localized: "Natural"),
+                         String(localized: "Collage"), String(localized: "Booth strip"), String(localized: "Booth grid")])
+        return names
     }
 
     private func edit(_ creation: Creation) {

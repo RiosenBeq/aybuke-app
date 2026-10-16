@@ -5569,73 +5569,73 @@
         }
       }
     },
-    "Aybik answers when cloud AI is on and you're online. Until then, the common questions below answer on your device." : {
-      "comment" : "Settings › Help › Ask Aybik when the AI helper is off (no cloud AI opt-in, offline or paused). Aybik is the app's AI helper: keep the name Aybik.",
+    "Aybik can't answer right now. The common questions below answer on your device." : {
+      "comment" : "Settings › Help › Ask Aybik when the AI helper is off (no cloud AI opt-in or account yet, offline or paused). Aybik is the app's AI helper: keep the name Aybik.",
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aybik antwortet, wenn die KI in der Cloud an ist und du online bist. Bis dahin antworten die häufigen Fragen unten auf deinem Gerät."
+            "value" : "Aybik kann gerade nicht antworten. Die häufigen Fragen unten antworten auf deinem Gerät."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aybik responde cuando la IA en la nube está activada y tienes conexión. Mientras tanto, las preguntas frecuentes de abajo responden en tu dispositivo."
+            "value" : "Aybik no puede responder ahora. Las preguntas frecuentes de abajo responden en tu dispositivo."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aybik répond quand l'IA dans le cloud est activée et que tu es en ligne. En attendant, les questions fréquentes ci-dessous répondent sur ton appareil."
+            "value" : "Aybik ne peut pas répondre pour le moment. Les questions fréquentes ci-dessous répondent sur ton appareil."
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aybik menjawab saat AI cloud aktif dan kamu online. Sampai saat itu, pertanyaan umum di bawah menjawab di perangkatmu."
+            "value" : "Aybik belum bisa menjawab sekarang. Pertanyaan umum di bawah menjawab di perangkatmu."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aybik risponde quando l'IA nel cloud è attiva e sei online. Nel frattempo, le domande frequenti qui sotto rispondono sul tuo dispositivo."
+            "value" : "Aybik ora non può rispondere. Le domande frequenti qui sotto rispondono sul tuo dispositivo."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aybikは、クラウドAIがオンでインターネットにつながっているときに答えます。それまでは、下のよくある質問がデバイス上で答えます。"
+            "value" : "Aybikは今答えられません。下のよくある質問がデバイス上で答えます。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aybik은 클라우드 AI가 켜져 있고 온라인일 때 답해요. 그전까지는 아래 자주 묻는 질문이 기기에서 답해 줘요."
+            "value" : "Aybik이 지금은 답할 수 없어요. 아래 자주 묻는 질문이 기기에서 답해 줘요."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "O Aybik responde quando a IA na nuvem está ativada e você está online. Até lá, as perguntas frequentes abaixo respondem no seu aparelho."
+            "value" : "O Aybik não consegue responder agora. As perguntas frequentes abaixo respondem no seu aparelho."
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aybik отвечает, когда облачный ИИ включён и ты в сети. А пока ответы на частые вопросы ниже есть прямо на устройстве."
+            "value" : "Aybik сейчас не может ответить. Ответы на частые вопросы ниже есть прямо на устройстве."
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aybik, bulutta yapay zekâ işleme açıkken ve internete bağlıyken yanıt verir. O zamana kadar aşağıdaki sık sorulan sorular cihazında yanıt verir."
+            "value" : "Aybik şu an yanıt veremiyor. Aşağıdaki sık sorulan sorular cihazında yanıt verir."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "开启云端 AI 并联网时，Aybik 才会回答。在此之前，下面的常见问题会在你的设备上解答。"
+            "value" : "Aybik 暂时无法回答。下面的常见问题会在你的设备上解答。"
           }
         }
       }
@@ -5853,73 +5853,73 @@
         }
       }
     },
-    "Aybik is our AI helper. It writes ideas, captions and answers from your words, never your photos, and only after you've turned on cloud AI. Its answers can be wrong." : {
+    "Aybik is our AI helper. It writes ideas, captions and answers from your words, never your photos. It works once you've turned on cloud AI and used an AI feature, while you're online. Its answers can be wrong." : {
       "comment" : "Settings › Help: the short answer to a common question. Use the names the app shows in this language for screens and buttons (Settings › Privacy, My Works, Your polls…).",
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aybik ist unser KI-Helfer. Er schreibt Ideen, Captions und Antworten aus deinen Worten, nie aus deinen Fotos, und erst, wenn du die KI in der Cloud eingeschaltet hast. Seine Antworten können falsch sein."
+            "value" : "Aybik ist unser KI-Helfer. Er schreibt Ideen, Captions und Antworten aus deinen Worten, nie aus deinen Fotos. Er hilft, sobald du die KI in der Cloud eingeschaltet und eine KI-Funktion benutzt hast, solange du online bist. Seine Antworten können falsch sein."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aybik es nuestro asistente de IA. Escribe ideas, textos y respuestas a partir de tus palabras, nunca de tus fotos, y solo después de que actives la IA en la nube. Sus respuestas pueden fallar."
+            "value" : "Aybik es nuestro asistente de IA. Escribe ideas, textos y respuestas a partir de tus palabras, nunca de tus fotos. Funciona cuando ya activaste la IA en la nube y usaste una función de IA, mientras tengas conexión. Sus respuestas pueden fallar."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aybik est notre assistant IA. Il écrit des idées, des légendes et des réponses à partir de tes mots, jamais de tes photos, et seulement après que tu as activé l'IA dans le cloud. Ses réponses peuvent être fausses."
+            "value" : "Aybik est notre assistant IA. Il écrit des idées, des légendes et des réponses à partir de tes mots, jamais de tes photos. Il fonctionne une fois que tu as activé l'IA dans le cloud et utilisé une fonction IA, quand tu es en ligne. Ses réponses peuvent être fausses."
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aybik adalah asisten AI kami. Aybik menulis ide, keterangan, dan jawaban dari kata-katamu, tidak pernah dari fotomu, dan hanya setelah kamu mengaktifkan AI cloud. Jawabannya bisa saja salah."
+            "value" : "Aybik adalah asisten AI kami. Aybik menulis ide, keterangan, dan jawaban dari kata-katamu, tidak pernah dari fotomu. Aybik bekerja setelah kamu mengaktifkan AI cloud dan memakai fitur AI, selama kamu online. Jawabannya bisa saja salah."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aybik è il nostro assistente IA. Scrive idee, didascalie e risposte a partire dalle tue parole, mai dalle tue foto, e solo dopo che hai attivato l'IA nel cloud. Le sue risposte possono essere sbagliate."
+            "value" : "Aybik è il nostro assistente IA. Scrive idee, didascalie e risposte a partire dalle tue parole, mai dalle tue foto. Funziona dopo che hai attivato l'IA nel cloud e usato una funzione IA, quando sei online. Le sue risposte possono essere sbagliate."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "AybikはAIアシスタントです。写真ではなくあなたの言葉から、アイデアやキャプション、回答を作ります。クラウドAIをオンにしたあとだけ使われます。回答が間違っていることもあります。"
+            "value" : "AybikはAIアシスタントです。写真ではなくあなたの言葉から、アイデアやキャプション、回答を作ります。クラウドAIをオンにしてAI機能を一度使ったあと、オンラインのときに使えます。回答が間違っていることもあります。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aybik은 우리 AI 도우미예요. 사진이 아니라 내 글을 바탕으로 아이디어, 캡션, 답변을 써요. 클라우드 AI를 켠 뒤에만 작동하고, 답변이 틀릴 수도 있어요."
+            "value" : "Aybik은 우리 AI 도우미예요. 사진이 아니라 내 글을 바탕으로 아이디어, 캡션, 답변을 써요. 클라우드 AI를 켜고 AI 기능을 한 번 쓴 뒤, 온라인일 때 작동해요. 답변이 틀릴 수도 있어요."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "O Aybik é nosso assistente de IA. Ele escreve ideias, legendas e respostas a partir das suas palavras, nunca das suas fotos, e só depois que você ativa a IA na nuvem. As respostas dele podem estar erradas."
+            "value" : "O Aybik é nosso assistente de IA. Ele escreve ideias, legendas e respostas a partir das suas palavras, nunca das suas fotos. Ele funciona depois que você ativa a IA na nuvem e usa um recurso de IA, quando você está online. As respostas dele podem estar erradas."
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aybik — наш ИИ-помощник. Он пишет идеи, подписи и ответы по твоим словам, никогда не по фото, и только после того, как ты включишь облачный ИИ. Его ответы могут быть неточными."
+            "value" : "Aybik — наш ИИ-помощник. Он пишет идеи, подписи и ответы по твоим словам, никогда не по фото. Он работает после того, как ты включишь облачный ИИ и воспользуешься ИИ-функцией, когда ты в сети. Его ответы могут быть неточными."
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aybik, yapay zekâ yardımcımız. Fotoğraflarından değil, sözlerinden fikirler, açıklamalar ve yanıtlar yazar; bunu da yalnızca bulutta yapay zekâ işlemeyi açtıktan sonra yapar. Yanıtları yanlış olabilir."
+            "value" : "Aybik, yapay zekâ yardımcımız. Fotoğraflarından değil, sözlerinden fikirler, açıklamalar ve yanıtlar yazar. Bulutta yapay zekâ işlemeyi açıp bir yapay zekâ özelliğini kullandıktan sonra, internete bağlıyken çalışır. Yanıtları yanlış olabilir."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aybik 是我们的 AI 助手。它根据你的文字（绝不是照片）撰写灵感、配文和回答，而且只在你开启云端 AI 后才会工作。它的回答可能有误。"
+            "value" : "Aybik 是我们的 AI 助手。它根据你的文字（绝不是照片）撰写灵感、配文和回答。开启云端 AI 并用过一次 AI 功能后，联网时即可使用。它的回答可能有误。"
           }
         }
       }
@@ -7980,6 +7980,77 @@
         }
       }
     },
+    "Closest answers: %@" : {
+      "comment" : "VoiceOver, Settings › Help › Ask Aybik: the common questions closest to hers, found on the device, as a list",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Passende Antworten: %@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Respuestas más cercanas: %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Réponses les plus proches : %@"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jawaban terdekat: %@"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Risposte più vicine: %@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "近い回答：%@"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "가장 가까운 답변: %@"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Respostas mais próximas: %@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Похожие ответы: %@"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En yakın yanıtlar: %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "最接近的回答：%@"
+          }
+        }
+      }
+    },
     "Collecting little moments like this one" : {
       "comment" : "Ready-made line for the Story card, under her photo (share composer, “Write it for me”). About the moment or the vibe, never about how anyone looks. At most 80 characters.",
       "localizations" : {
@@ -8761,73 +8832,73 @@
         }
       }
     },
-    "Every tool that runs on your device is free and never uses credits: retro effects, Retro Cam and Retro Booth, Adjust, Crop, Cut out, Text & Stickers, Collage, Quick fix and the video editor (one Auto edit a day, unlimited with Pro)." : {
+    "Every tool that runs on your device is free and never uses credits: retro effects, Retro Cam and Retro Booth, Adjust, Crop, Cut out, Text & Stickers, Collage, Quick fix and the video editor (one Auto edit a day)." : {
       "comment" : "Settings › Help: the short answer to a common question. Use the names the app shows in this language for screens and buttons (Settings › Privacy, My Works, Your polls…).",
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Jedes Tool, das auf deinem Gerät läuft, ist gratis und verbraucht nie Credits: Retro-Effekte, Retro Cam und Retro Booth, Anpassen, Zuschnitt, Freistellen, Text & Sticker, Collage, Schnellkorrektur und der Videoeditor (ein Auto-Schnitt pro Tag, unbegrenzt mit Pro)."
+            "value" : "Jedes Tool, das auf deinem Gerät läuft, ist gratis und verbraucht nie Credits: Retro-Effekte, Retro Cam und Retro Booth, Anpassen, Zuschnitt, Freistellen, Text & Sticker, Collage, Schnellkorrektur und der Videoeditor (ein Auto-Schnitt pro Tag)."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Todas las herramientas que funcionan en tu dispositivo son gratis y nunca usan créditos: efectos retro, Retro Cam y Retro Booth, Ajustar, Encuadrar, Recortar, Texto y stickers, Collage, Arreglo rápido y el editor de video (una edición automática al día, ilimitadas con Pro)."
+            "value" : "Todas las herramientas que funcionan en tu dispositivo son gratis y nunca usan créditos: efectos retro, Retro Cam y Retro Booth, Ajustar, Encuadrar, Recortar, Texto y stickers, Collage, Arreglo rápido y el editor de video (una edición automática al día)."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tous les outils qui fonctionnent sur ton appareil sont gratuits et n'utilisent jamais de crédits : effets rétro, Retro Cam et Retro Booth, Ajuster, Recadrer, Détourer, Texte et stickers, Collage, Correction rapide et le montage vidéo (un montage auto par jour, illimité avec Pro)."
+            "value" : "Tous les outils qui fonctionnent sur ton appareil sont gratuits et n'utilisent jamais de crédits : effets rétro, Retro Cam et Retro Booth, Ajuster, Recadrer, Détourer, Texte et stickers, Collage, Correction rapide et le montage vidéo (un montage auto par jour)."
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Semua alat yang berjalan di perangkatmu gratis dan tidak pernah memakai kredit: efek retro, Retro Cam dan Retro Booth, Sesuaikan, Pangkas, Potong, Teks & Stiker, Kolase, Perbaikan cepat, dan editor video (satu edit otomatis sehari, tanpa batas dengan Pro)."
+            "value" : "Semua alat yang berjalan di perangkatmu gratis dan tidak pernah memakai kredit: efek retro, Retro Cam dan Retro Booth, Sesuaikan, Pangkas, Potong, Teks & Stiker, Kolase, Perbaikan cepat, dan editor video (satu edit otomatis sehari)."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ogni strumento che funziona sul tuo dispositivo è gratis e non usa mai crediti: effetti retrò, Retro Cam e Retro Booth, Regola, Ritaglia, Scontorna, Testo e sticker, Collage, Correzione rapida e l'editor video (un montaggio automatico al giorno, illimitati con Pro)."
+            "value" : "Ogni strumento che funziona sul tuo dispositivo è gratis e non usa mai crediti: effetti retrò, Retro Cam e Retro Booth, Regola, Ritaglia, Scontorna, Testo e sticker, Collage, Correzione rapida e l'editor video (un montaggio automatico al giorno)."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "デバイス上で動くツールはすべて無料で、クレジットも使いません：レトロエフェクト、Retro CamとRetro Booth、調整、切り取り、切り抜き、テキスト＆ステッカー、コラージュ、クイック補正、動画編集（自動編集は1日1回、Proなら無制限）。"
+            "value" : "デバイス上で動くツールはすべて無料で、クレジットも使いません：レトロエフェクト、Retro CamとRetro Booth、調整、切り取り、切り抜き、テキスト＆ステッカー、コラージュ、クイック補正、動画編集（自動編集は1日1回）。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "기기에서 작동하는 도구는 모두 무료이고 크레딧을 쓰지 않아요: 레트로 효과, Retro Cam과 Retro Booth, 조절, 자르기, 누끼, 텍스트 & 스티커, 콜라주, 빠른 보정, 동영상 편집(자동 편집은 하루 1번, Pro는 무제한)."
+            "value" : "기기에서 작동하는 도구는 모두 무료이고 크레딧을 쓰지 않아요: 레트로 효과, Retro Cam과 Retro Booth, 조절, 자르기, 누끼, 텍스트 & 스티커, 콜라주, 빠른 보정, 동영상 편집(자동 편집은 하루 1번)."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Toda ferramenta que funciona no seu aparelho é grátis e nunca usa créditos: efeitos retrô, Retro Cam e Retro Booth, Ajustar, Cortar, Recortar, Texto e figurinhas, Colagem, Correção rápida e o editor de vídeo (uma edição automática por dia, ilimitadas com o Pro)."
+            "value" : "Toda ferramenta que funciona no seu aparelho é grátis e nunca usa créditos: efeitos retrô, Retro Cam e Retro Booth, Ajustar, Cortar, Recortar, Texto e figurinhas, Colagem, Correção rápida e o editor de vídeo (uma edição automática por dia)."
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Все инструменты, которые работают на устройстве, бесплатны и не тратят кредиты: ретро-эффекты, Retro Cam и Retro Booth, «Коррекция», «Обрезать», «Вырезать», «Текст и стикеры», «Коллаж», «Быстрое исправление» и видеоредактор (один автомонтаж в день, с Pro без ограничений)."
+            "value" : "Все инструменты, которые работают на устройстве, бесплатны и не тратят кредиты: ретро-эффекты, Retro Cam и Retro Booth, «Коррекция», «Обрезать», «Вырезать», «Текст и стикеры», «Коллаж», «Быстрое исправление» и видеоредактор (один автомонтаж в день)."
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cihazında çalışan her araç ücretsizdir ve hiç kredi kullanmaz: retro efektler, Retro Cam ve Retro Booth, Ayarla, Kırp, Dekupe, Yazı ve Çıkartma, Kolaj, Hızlı düzeltme ve video düzenleyici (günde bir otomatik kurgu, Pro ile sınırsız)."
+            "value" : "Cihazında çalışan her araç ücretsizdir ve hiç kredi kullanmaz: retro efektler, Retro Cam ve Retro Booth, Ayarla, Kırp, Dekupe, Yazı ve Çıkartma, Kolaj, Hızlı düzeltme ve video düzenleyici (günde bir otomatik kurgu)."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "在你设备上运行的工具全部免费，从不消耗点数：复古特效、Retro Cam 和 Retro Booth、调整、裁剪、抠图、文字和贴纸、拼图、快速修复以及视频编辑（每天一次自动剪辑，Pro 不限次数）。"
+            "value" : "在你设备上运行的工具全部免费，从不消耗点数：复古特效、Retro Cam 和 Retro Booth、调整、裁剪、抠图、文字和贴纸、拼图、快速修复以及视频编辑（每天一次自动剪辑）。"
           }
         }
       }
@@ -9399,73 +9470,73 @@
         }
       }
     },
-    "Free credits come back every day. Tap your credit balance on Explore to see how many you have and when the next ones arrive. Pro comes with monthly credits instead." : {
+    "Free credits come back every day. Tap your credit balance on Explore (on a Mac, in the sidebar) to see how many you have and when the next ones arrive. Pro comes with monthly credits instead." : {
       "comment" : "Settings › Help: the short answer to a common question. Use the names the app shows in this language for screens and buttons (Settings › Privacy, My Works, Your polls…).",
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gratis-Credits kommen jeden Tag zurück. Tippe in Entdecken auf dein Credit-Guthaben, um zu sehen, wie viele du hast und wann die nächsten kommen. Mit Pro bekommst du stattdessen monatliche Credits."
+            "value" : "Gratis-Credits kommen jeden Tag zurück. Tippe in Entdecken (auf einem Mac in der Seitenleiste) auf dein Credit-Guthaben, um zu sehen, wie viele du hast und wann die nächsten kommen. Mit Pro bekommst du stattdessen monatliche Credits."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Los créditos gratis vuelven cada día. Toca tu saldo de créditos en Explorar para ver cuántos tienes y cuándo llegan los siguientes. Con Pro, en cambio, recibes créditos cada mes."
+            "value" : "Los créditos gratis vuelven cada día. Toca tu saldo de créditos en Explorar (en un Mac, en la barra lateral) para ver cuántos tienes y cuándo llegan los siguientes. Con Pro, en cambio, recibes créditos cada mes."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Les crédits gratuits reviennent chaque jour. Touche ton solde de crédits dans Explorer pour voir combien il t'en reste et quand les prochains arrivent. Avec Pro, tu reçois plutôt des crédits chaque mois."
+            "value" : "Les crédits gratuits reviennent chaque jour. Touche ton solde de crédits dans Explorer (sur un Mac, dans la barre latérale) pour voir combien il t'en reste et quand les prochains arrivent. Avec Pro, tu reçois plutôt des crédits chaque mois."
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kredit gratis kembali setiap hari. Ketuk saldo kreditmu di Jelajahi untuk melihat jumlahnya dan kapan kredit berikutnya datang. Dengan Pro, kamu mendapat kredit bulanan sebagai gantinya."
+            "value" : "Kredit gratis kembali setiap hari. Ketuk saldo kreditmu di Jelajahi (di Mac, di bar samping) untuk melihat jumlahnya dan kapan kredit berikutnya datang. Dengan Pro, kamu mendapat kredit bulanan sebagai gantinya."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "I crediti gratuiti tornano ogni giorno. Tocca il saldo dei crediti in Esplora per vedere quanti ne hai e quando arrivano i prossimi. Con Pro ricevi invece crediti ogni mese."
+            "value" : "I crediti gratuiti tornano ogni giorno. Tocca il saldo dei crediti in Esplora (su un Mac, nella barra laterale) per vedere quanti ne hai e quando arrivano i prossimi. Con Pro ricevi invece crediti ogni mese."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "無料クレジットは毎日戻ります。「見つける」のクレジット残高をタップすると、残りの数と次に戻る時間を確認できます。Proでは代わりに毎月クレジットが付与されます。"
+            "value" : "無料クレジットは毎日戻ります。「見つける」（Macではサイドバー）のクレジット残高をタップすると、残りの数と次に戻る時間を確認できます。Proでは代わりに毎月クレジットが付与されます。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "무료 크레딧은 매일 다시 생겨요. 둘러보기에서 크레딧 잔액을 탭하면 몇 개 남았는지, 다음 크레딧이 언제 오는지 볼 수 있어요. Pro는 대신 매달 크레딧을 받아요."
+            "value" : "무료 크레딧은 매일 다시 생겨요. 둘러보기(Mac에서는 사이드바)에서 크레딧 잔액을 탭하면 몇 개 남았는지, 다음 크레딧이 언제 오는지 볼 수 있어요. Pro는 대신 매달 크레딧을 받아요."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Os créditos grátis voltam todo dia. Toque no seu saldo de créditos em Explorar para ver quantos você tem e quando chegam os próximos. Com o Pro, você recebe créditos mensais."
+            "value" : "Os créditos grátis voltam todo dia. Toque no seu saldo de créditos em Explorar (no Mac, na barra lateral) para ver quantos você tem e quando chegam os próximos. Com o Pro, você recebe créditos mensais."
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Бесплатные кредиты возвращаются каждый день. Нажми на баланс кредитов в разделе «Обзор», чтобы увидеть, сколько их у тебя и когда придут новые. С Pro вместо этого кредиты начисляются каждый месяц."
+            "value" : "Бесплатные кредиты возвращаются каждый день. Нажми на баланс кредитов в разделе «Обзор» (на Mac — в боковой панели), чтобы увидеть, сколько их у тебя и когда придут новые. С Pro вместо этого кредиты начисляются каждый месяц."
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ücretsiz krediler her gün yenilenir. Kaç kredin olduğunu ve yenilerinin ne zaman geleceğini görmek için Keşfet'teki kredi bakiyene dokun. Pro'da bunun yerine her ay kredi gelir."
+            "value" : "Ücretsiz krediler her gün yenilenir. Kaç kredin olduğunu ve yenilerinin ne zaman geleceğini görmek için Keşfet'teki (Mac'te kenar çubuğundaki) kredi bakiyene dokun. Pro'da bunun yerine her ay kredi gelir."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "免费点数每天恢复。在“探索”中轻点你的点数余额，就能看到还剩多少以及下次何时恢复。Pro 则改为每月发放点数。"
+            "value" : "免费点数每天恢复。在“探索”（在 Mac 上为边栏）中轻点你的点数余额，就能看到还剩多少以及下次何时恢复。Pro 则改为每月发放点数。"
           }
         }
       }

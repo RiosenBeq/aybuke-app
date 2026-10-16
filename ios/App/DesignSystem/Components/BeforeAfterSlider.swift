@@ -15,7 +15,6 @@ struct BeforeAfterSlider: View {
     @State private var position: CGFloat
     /// She took the handle: the reveal stops where it is.
     @State private var isTouched = false
-    private let revealsResult: Bool
     @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
 
     init(before: UIImage, after: UIImage, showsTransparencyGrid: Bool = false) {
@@ -23,7 +22,6 @@ struct BeforeAfterSlider: View {
         self.after = after
         self.showsTransparencyGrid = showsTransparencyGrid
         let reveals = !UIAccessibility.isReduceMotionEnabled && !CompareReveal.played.contains(after)
-        revealsResult = reveals
         _position = State(initialValue: reveals ? 1 : 0.5)
     }
 
@@ -80,10 +78,14 @@ struct BeforeAfterSlider: View {
             }
         }
         .aspectRatio(after.size.width / max(after.size.height, 1), contentMode: .fit)
-        .task {
-            // Once per result: the result wipes in, past the middle, then settles.
-            guard revealsResult, !CompareReveal.played.contains(after) else { return }
+        .task(id: ObjectIdentifier(after)) {
+            // Once per result, also when a new one takes the last one's place
+            // in the same comparison (another look, a free retry): the result
+            // wipes in, past the middle, then settles.
+            guard !UIAccessibility.isReduceMotionEnabled, !CompareReveal.played.contains(after) else { return }
             CompareReveal.played.add(after)
+            isTouched = false
+            position = 1
             try? await Task.sleep(for: .milliseconds(120))
             guard !Task.isCancelled, !isTouched else { return }
             withAnimation(.spring(response: 0.34, dampingFraction: 0.86)) { position = 0.24 }

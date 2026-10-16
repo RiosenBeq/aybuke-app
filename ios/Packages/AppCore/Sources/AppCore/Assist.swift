@@ -433,6 +433,30 @@ public enum Assist {
         captionHint(prompt: prompt, madeWithAI: madeWithAI) != captionHint(prompt: nil, madeWithAI: madeWithAI)
     }
 
+    /// What the poll question writer hears about a picture in My Works: her
+    /// Create prompt (Create keeps it with the creation), or the title when
+    /// it's one of `names` (a look's, effect's or tool's name); otherwise the
+    /// operation's name, or nothing. Never a Magic Edit's instruction: the
+    /// editor titles a typed edit with it and keeps no prompt, and it can be
+    /// about how she looks.
+    public static func pollHint(title: String, operation: AIOperation?, prompt: String?, names: Set<String>,
+                                localize: (String) -> String = { $0 }) -> String? {
+        if operation == .textToImage, let prompt, !title.isEmpty, title == PromptBuilder.sanitize(prompt) {
+            return title
+        }
+        if names.contains(title) { return title }
+        return operation.map { localize($0.displayName) }
+    }
+
+    /// The catalog's names a creation's title can be, in English and in her
+    /// language: looks, Makeup Studio's looks, Adjust's vibes and the AI
+    /// tools. The app adds its effects' and on-device tools' names.
+    public static func pollHintNames(localize: (String) -> String = { $0 }) -> Set<String> {
+        let english = TemplateCatalog.all.map(\.title) + MakeupStudio.presets.map(\.name)
+            + AdjustVibes.all.map(\.name) + AIOperation.allCases.map(\.displayName)
+        return Set(english + english.map(localize))
+    }
+
     /// At most `limit` characters, ending on a whole word where there is one.
     static func cut(_ text: String, to limit: Int) -> String {
         guard text.count > limit else { return text }

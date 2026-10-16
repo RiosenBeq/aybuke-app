@@ -8,6 +8,8 @@ struct CreateView: View {
     @FocusState private var isPromptFocused: Bool
     /// Mac: the page's width, to split it into the form and a preview.
     @State private var pageWidth: CGFloat = 0
+    /// The results page is going away so the prompt can take the cursor.
+    @State private var leavesResults = false
 
     /// The Mac keeps one model in its window, so a draft, a running job and
     /// its results survive switching sections.
@@ -64,11 +66,13 @@ struct CreateView: View {
                 app.pendingCreateStyle = nil
                 model.style = StyleCatalog.style(id: id)
             }
-            // File › New Creation on the Mac: the cursor goes to the prompt.
+            // File › New Creation on the Mac: the cursor goes to the prompt
+            // (once the results page has gone, when it was on top).
             .task(id: app.wantsPromptFocus) {
                 guard app.wantsPromptFocus else { return }
+                try? await Task.sleep(for: .milliseconds(leavesResults ? 550 : 150))
+                leavesResults = false
                 app.wantsPromptFocus = false
-                try? await Task.sleep(for: .milliseconds(150))
                 isPromptFocused = true
             }
             #if DEBUG
@@ -96,6 +100,15 @@ struct CreateView: View {
                 }
             }
             #endif
+        }
+        // A style from Explore's look finder, the Mac's Create card or File ›
+        // New Creation asks for the prompt: results left pushed over it when
+        // she went to another tab would hide the new style and the cursor.
+        // On the stack, so it runs while the results cover the page.
+        .onChange(of: app.wantsPromptFocus) { _, wants in
+            guard wants, model.showResults, !usesColumns else { return }
+            leavesResults = true
+            model.showResults = false
         }
         .modifier(MacPageWidthReader(width: $pageWidth))
         // Over the results too, so Regenerate shows the same progress.

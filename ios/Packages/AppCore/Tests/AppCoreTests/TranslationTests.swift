@@ -127,5 +127,14 @@ final class TranslationTests: XCTestCase {
                 XCTAssertEqual(Assist.screenedAnswer(text), text, "[\(language)] \(topic.id)")
             }
         }
+        // In every language a common question finds its own answer first,
+        // though the words they're all asked with ("nasıl", "怎么") don't count.
+        for language in ["en"] + Self.languages {
+            let localize = { (key: String) in language == "en" ? key : app.translations(of: key)[language] ?? key }
+            for topic in HelpTopic.all {
+                let found = HelpTopic.matching(localize(topic.question), in: HelpTopic.all, localize: localize)
+                XCTAssertEqual(found.first?.id, topic.id, "[\(language)] \(localize(topic.question))")
+            }
+        }
     }
 }

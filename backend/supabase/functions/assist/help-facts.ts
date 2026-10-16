@@ -20,19 +20,19 @@ Free tools (no credits, on the device, work offline, no watermark)
 - In Edit: retro effects (VHS '86, Disposable '98, Kira Kira, Digicam '04, Instant '82, Glamour '92, Neon '84, Throwback '16, Camcorder '06, Toy Cam '09, Rainbow '17, DSLR '12, Film Still) and Tiny World; Adjust (Auto, the vibes Dreamy, Analog, Moody and Golden, light and colour sliders; "Save as my filter" keeps up to 12 of her own filters); Crop; Cut out; Hide faces; Text & Stickers; Best shot; Enhance's Quick fix; "Surprise me" (a free effect). "Ideas for this photo" under the photo suggests effects, looks and edits that suit it.
 - Collage: 2 to 9 photos as a photo dump, or a carousel of 2 to 5 slides.
 - Video editor: trim, retro effects, cut silences, captions made on the device, and Auto edit (a vertical cut for TikTok, Instagram Reels or YouTube Shorts): one Auto edit a day free, unlimited with Pro.
-- Retro Cam: the effects live in the camera, Glow looks (Natural, Dreamy, Golden, Analog, Moody; light and colour only), a self-timer, and Photo Booth (4 shots, printed as a strip or a grid).
+- Retro Cam: the effects live in the camera, Glow looks (Natural, Dreamy, Golden, Analog, Moody; light and colour only), a self-timer, and Retro Booth (the Booth mode in Retro Cam: 4 shots, printed as a strip or a grid).
 - Home and Lock Screen widgets, Siri and Shortcuts work with the free tools.
 
 AI features (cloud: they need the internet, a one-time opt-in to cloud AI processing, and credits)
 - Magic Edit (say the change you want), one-tap looks (more than 50, in 8 collections; some are Pro), Makeup Studio, Enhance's AI fixes (Unblur & sharpen, Restore old photo, Brighten low light, HD 2×), Erase, and Create (a new picture from words, 20 styles, up to 4 pictures at once with Pro).
 - Each AI picture uses 1 credit (4 pictures in Create use 4). A job that fails, times out, is cancelled or is blocked by the safety checks is refunded automatically.
-- Likeness Lock: if a result doesn't look like her, she gets one free retry for that result, up to 3 free retries a day.
-- AI edits keep faces, bodies, skin tone, skin texture and age as they are. Requests to reshape a body or face, smooth or change skin, anything sexual or revealing, or mocking someone are blocked. Good ideas: hair colour, makeup colours, outfits, light, backgrounds, scenes. 3 blocked requests within 24 hours pause cloud AI on that download for 24 hours; the free tools keep working.
+- If an AI edit doesn't look like her, "Doesn't look like you? Retry free" under the result gives one free retry for that result, up to 3 free retries a day.
+- AI edits keep faces, bodies, skin tone, skin texture and age as they are. Requests to change the shape of a face or body, to change skin, for anything not right for a 13-year-old, or to mock someone are blocked. Good ideas: hair colour, makeup colours, outfits, light, backgrounds, scenes. 3 blocked requests within 24 hours pause cloud AI for 24 hours on every device of her Apple Account; the free tools keep working.
 - Free AI results carry a small mark; Pro removes it. AI results carry an invisible "made with AI" label in the file. Free tools add no mark and no label.
 
 Credits
-- Free: 2 AI credits a day for each App Store download of the app (not on a Pro subscription). At the start of each day (midnight UTC) they go back to 2; unused ones don't add up.
-- Tap the credit balance (the credit pill on Explore, or the balance under Create's button) to see her credits, when the free ones come back, what uses a credit and what is always free. Settings > Credits shows them too. An optional reminder, "When my free credits are back", is in Settings > Notifications.
+- Free: 2 AI credits a day for her Apple Account, shared by all her devices: reinstalling the app or adding a device doesn't add more (not on a Pro subscription). At the start of each day (midnight UTC) they go back to 2; unused ones don't add up.
+- Tap the credit balance (the credit pill on Explore, in the sidebar on a Mac, or the balance under Create's button) to see her credits, when the free ones come back, what uses a credit and what is always free. Settings > Credits shows them too. An optional reminder, "When my free credits are back", is in Settings > Notifications.
 - Out of credits on iPhone or iPad: "Watch a short ad · +1 credit", up to 2 a day.
 - Credits are spent in this order: the day's free credits, then Pro's monthly credits, then pack credits.
 
@@ -58,7 +58,7 @@ Polls ("Which vibe?" with friends)
 - Your polls is the row at the top of My Works: votes, time left, Share again and Delete (it asks first). An optional reminder, "When my poll is ending", is in Settings > Notifications. Polls aren't available under 13.
 
 Privacy and deleting
-- Photos go to the cloud only for AI features, only after she opts in, and are deleted from Aybuke's servers within an hour. They are never used to train AI. Free tools never upload anything.
+- Photos go to the cloud for AI features only after she opts in; a photo sent for an AI edit is deleted from Aybuke's servers within an hour. The two pictures of a poll stay on Aybuke's servers for the poll's 24 hours, then are deleted. Photos are never used to train AI. Free tools never upload anything.
 - Settings > Privacy > Cloud AI processing turns cloud AI on or off. The companies that process data are listed in Settings > Privacy > Providers and in the privacy policy (Settings > About > Terms, privacy & legal).
 - My Works stays on her device. A deleted creation waits in Recently deleted (in My Works) for 30 days, with Restore and Delete now.
 - Settings > Privacy > Delete all creations removes every picture saved in the app on this device (photos saved to her photo library stay there).

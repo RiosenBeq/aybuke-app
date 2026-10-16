@@ -29,6 +29,7 @@ import {
   readFinderPicks,
 } from "./finder.ts";
 import { HELP_FACTS, SUPPORT_URL } from "./help-facts.ts";
+import helpNames from "./help-names.json" with { type: "json" };
 
 export const TASKS = [
   "inspire",
@@ -377,8 +378,9 @@ const TASK_RULES: Record<AssistTask, string> = {
     "what the moment is; the look names the look or effect on her photo.",
   help: "Task: answer her question about the app from the facts below. One short, friendly answer in the language " +
     "named, at most 500 characters, plain text: no Markdown, no lists of more than 4 steps, no links other than " +
-    `${SUPPORT_URL}. Name screens and buttons as the facts do (Settings > Privacy…), in her language where the ` +
-    "word is a plain one (Settings, Privacy) and as they are for feature names (Magic Edit, Retro Cam, My Works). " +
+    `${SUPPORT_URL}. Name screens and buttons as her screen does: as the facts do in English (Settings > Privacy…), ` +
+    "and in another language exactly as the message's list of names on her screen gives them; a name the list " +
+    "doesn't give (Retro Cam, Retro Booth, Aybik, Pro, the effects' names) stays as it is. " +
     "If the facts don't answer it, say you're not sure and point her to Settings > About > Contact support or " +
     `${SUPPORT_URL}; never guess or invent a feature, a number, a price or a date. You can't see her account, ` +
     "credits, purchases, photos or polls, so for her own case (a missing purchase, a charge, a bug, a deleted " +
@@ -433,9 +435,21 @@ export function systemPrompt(task: AssistTask): string {
 /** Her text as material: it can't close the tag it sits in or open another. */
 const fenced = (text: string) => text.replaceAll("<", "‹").replaceAll(">", "›");
 
+/**
+ * The help facts' names for screens and buttons as the app shows them in each
+ * language (scripts/export-help-names.py, from the app's string catalog);
+ * names that read the same everywhere aren't listed.
+ */
+export const HELP_NAMES: Record<string, Record<string, string>> = helpNames.names;
+
 /** Her part of the conversation: the language, the date where it helps, the context, then her words. */
 export function userMessage(request: AssistRequest, now: Date): string {
   const lines = [`Language: ${LANGUAGES[request.locale]}`];
+  const names = request.task === "help" ? HELP_NAMES[request.locale] : undefined;
+  if (names) {
+    const list = Object.entries(names).map(([english, shown]) => `${english} = ${shown}`).join("; ");
+    lines.push(`Names on her screen (as the facts say them = as her app shows them): ${list}`);
+  }
   if (request.task === "inspire" || request.task === "looks") lines.push(`Today: ${now.toISOString().slice(0, 10)}`);
   if (request.kinds) lines.push(`Kinds she can use: ${request.kinds.join(", ")}`);
   if (request.slots) {

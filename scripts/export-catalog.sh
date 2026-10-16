@@ -16,3 +16,5 @@ swift run --package-path "$ROOT/scripts/export-catalog" -c release ExportCatalog
 mv "$CATALOG_TMP" "$SHARED/catalog.json"
 mv "$POLICY_TMP" "$SHARED/policy-terms.json"
 echo "Updated backend/supabase/functions/_shared/catalog.json and policy-terms.json"
+# The names of screens and buttons in each language for Aybik's help answers.
+python3 "$ROOT/scripts/export-help-names.py"

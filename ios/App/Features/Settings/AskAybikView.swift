@@ -89,8 +89,8 @@ struct AskAybikView: View {
                 (app.usesCloudWriter
                      ? Text("Aybik, our AI helper, gets only your question. The app doesn't keep it.",
                             comment: "Settings › Help › Ask Aybik: what the app's AI helper receives. Aybik is the app's AI helper: keep the name Aybik.")
-                     : Text("Aybik answers when cloud AI is on and you're online. Until then, the common questions below answer on your device.",
-                            comment: "Settings › Help › Ask Aybik when the AI helper is off (no cloud AI opt-in, offline or paused). Aybik is the app's AI helper: keep the name Aybik."))
+                     : Text("Aybik can't answer right now. The common questions below answer on your device.",
+                            comment: "Settings › Help › Ask Aybik when the AI helper is off (no cloud AI opt-in or account yet, offline or paused). Aybik is the app's AI helper: keep the name Aybik."))
                     .font(.legibleCaption)
                     .foregroundStyle(Palette.textTertiary)
                     .fixedSize(horizontal: false, vertical: true)
@@ -172,9 +172,33 @@ struct AskAybikView: View {
             if case .blocked = found { Haptics.error() } else { Haptics.success() }
             outcome = found
             asking = nil
-            if case .answer(let answer, _) = found {
-                AccessibilityNotification.Announcement(answer).post()
+            AccessibilityNotification.Announcement(announcement(for: found)).post()
+        }
+    }
+
+    /// What VoiceOver says when the outcome arrives: focus stays on Ask, so
+    /// she hears the answer, the refusal or the closest questions.
+    private func announcement(for outcome: HelpOutcome) -> String {
+        switch outcome {
+        case .answer(let answer, _):
+            return answer
+        case .blocked(let message):
+            return message
+        case .topics(let closest) where closest.isEmpty:
+            return app.usesCloudWriter
+                ? String(localized: "Aybik can't answer right now, and none of the common questions match. Try the list below or Help & Support.",
+                         comment: "Settings › Help › Ask Aybik: the AI helper didn't answer and nothing on the device matched her question. Aybik is the app's AI helper: keep the name Aybik.")
+                : String(localized: "None of the common questions match. Try the list below or Help & Support.",
+                         comment: "Settings › Help › Ask Aybik: nothing on the device matched her question (the AI helper is off)")
+        case .topics(let closest):
+            let questions = closest.map { L10n.core($0.question) }.formatted(.list(type: .and))
+            if app.usesCloudWriter {
+                let header = String(localized: "Aybik can't answer right now. These might help:",
+                                    comment: "Settings › Help › Ask Aybik: the AI helper didn't answer; the closest common questions follow. Aybik is the app's AI helper: keep the name Aybik.")
+                return "\(header) \(questions)"
             }
+            return String(localized: "Closest answers: \(questions)",
+                          comment: "VoiceOver, Settings › Help › Ask Aybik: the common questions closest to hers, found on the device, as a list")
         }
     }
 

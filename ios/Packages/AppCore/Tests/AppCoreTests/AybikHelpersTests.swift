@@ -171,11 +171,15 @@ final class AybikHelpersTests: XCTestCase {
 
     // MARK: On the device
 
-    private func items(_ kinds: Set<LookFinder.Kind> = Set(LookFinder.Kind.allCases)) -> [LookFinder.Item] {
+    /// The catalog as `AppModel.finderItems` builds it: under 13 (`cloudAI`
+    /// false) Enhance offers Quick fix only.
+    private func items(_ kinds: Set<LookFinder.Kind> = Set(LookFinder.Kind.allCases), cloudAI: Bool = true) -> [LookFinder.Item] {
         LookFinder.items(kinds: kinds, localize: { $0 }, effectName: { id in
             ["vhs": "VHS '86", "disposable": "Disposable '98", "digicam": "Digicam '04", "neon": "Neon '84",
              "tinyWorld": "Tiny World", "dslr12": "DSLR '12", "filmStill": "Film Still"][id]
-        }, enhance: { option in (option.rawValue, "Fix it") })
+        }, enhance: { option in
+            EnhanceOption.available(cloudAI: cloudAI).contains(option) ? (option.rawValue, "Fix a blurry, old or dark photo") : nil
+        })
     }
 
     func testTheDeviceMatchesHerWords() {
@@ -192,8 +196,13 @@ final class AybikHelpersTests: XCTestCase {
             XCTAssertLessThanOrEqual(mix.filter { $0.kind == kind }.count, 2)
         }
         // Under 13 only effects, Quick fix and Glow are there to find.
-        let free = items([.effect, .enhance, .glow])
+        let free = items([.effect, .enhance, .glow], cloudAI: false)
         XCTAssertFalse(LookFinder.localMatches(for: "birthday", in: free).contains { $0.kind == .look })
+        let fixes = LookFinder.localMatches(for: "blurry old photo", in: free)
+        XCTAssertTrue(fixes.contains { $0.key == "enhance:quickFix" }, "\(fixes.map(\.key))")
+        XCTAssertTrue(fixes.allSatisfy { $0.kind == .effect || $0.kind == .glow || $0.key == "enhance:quickFix" },
+                      "no AI fix under 13: \(fixes.map(\.key))")
+        XCTAssertTrue(LookFinder.localMatches(for: "blurry old photo", in: items([.enhance])).contains { $0.key == "enhance:unblur" })
     }
 
     func testStemsAndDenseScriptsMatch() {
@@ -243,6 +252,29 @@ final class AybikHelpersTests: XCTestCase {
         }
     }
 
+    func testPollIdeasNeverHearAMagicEditsInstruction() {
+        let names = Assist.pollHintNames().union(["Disposable '98", "Hide faces"])
+        // The editor saves a typed edit titled with her instruction and no prompt.
+        XCTAssertEqual(Assist.pollHint(title: "give me pink hair and freckles like my sister", operation: .magicEdit,
+                                       prompt: nil, names: names), "Magic Edit")
+        XCTAssertEqual(Assist.pollHint(title: "make me look older", operation: .eraseObject, prompt: nil, names: names), "Erase",
+                       "a later AI step keeps the old title")
+        XCTAssertNil(Assist.pollHint(title: "give me red hair", operation: nil, prompt: nil, names: names), "after Undo")
+        XCTAssertEqual(Assist.pollHint(title: "give me red hair", operation: .magicEdit, prompt: "give me red hair", names: names),
+                       "Magic Edit", "a prompt alone never lets an edit's words through")
+        // Names the app gave a step, and her Create prompt, go through.
+        let look = TemplateCatalog.all[0].title
+        XCTAssertEqual(Assist.pollHint(title: look, operation: .restyle, prompt: nil, names: names), look)
+        let makeup = MakeupStudio.presets[0].name
+        XCTAssertEqual(Assist.pollHint(title: makeup, operation: .magicEdit, prompt: nil, names: names), makeup)
+        XCTAssertEqual(Assist.pollHint(title: "Disposable '98", operation: nil, prompt: nil, names: names), "Disposable '98")
+        XCTAssertEqual(Assist.pollHint(title: "a cat in the snow", operation: .textToImage, prompt: "a cat in the snow",
+                                       names: names), "a cat in the snow")
+        XCTAssertEqual(Assist.pollHint(title: "Hide faces", operation: .magicEdit, prompt: nil, names: names), "Hide faces")
+        XCTAssertEqual(Assist.pollHint(title: "a dog", operation: .textToImage, prompt: nil, names: names,
+                                       localize: { $0 == "Create" ? "Oluştur" : $0 }), "Oluştur")
+    }
+
     func testHelpTopicsAnswerFromTheDevice() {
         let all = HelpTopic.topics(cloudAI: true)
         XCTAssertEqual(all, HelpTopic.all)
@@ -254,6 +286,11 @@ final class AybikHelpersTests: XCTestCase {
         XCTAssertEqual(HelpTopic.matching("delete a poll", in: all).first?.id, "polls")
         XCTAssertEqual(HelpTopic.matching("zzqx", in: all), [])
         XCTAssertFalse(HelpTopic.matching("cancel Pro", in: young).contains { $0.needsCloudAI })
+        // How she asks says nothing about what: no "How do I…" topic for a refund.
+        XCTAssertEqual(HelpTopic.matching("How do I get a refund?", in: all), [])
+        XCTAssertEqual(HelpTopic.matching("what can I do, why was it, who are you", in: all), [])
+        XCTAssertEqual(HelpTopic.matching("Who is Aybik?", in: all).first?.id, "aybik")
+        XCTAssertFalse(young.contains { $0.answer.contains("Pro") }, "under 13 nothing points to a purchase")
         for topic in all {
             XCTAssertNotNil(Assist.screenedAnswer(topic.answer), topic.id)
             XCTAssertEqual(ContentPolicy.evaluate(topic.question, operation: .textToImage), .allowed, topic.id)

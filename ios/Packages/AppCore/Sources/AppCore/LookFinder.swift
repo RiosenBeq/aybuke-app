@@ -201,8 +201,12 @@ public enum LookFinder {
     /// counts most, one in its line or collection less; in Chinese, Japanese
     /// and Korean, shared pairs of characters count. At most `perKind` of a
     /// kind, so a vibe gets a mix; free before Pro on a tie. Empty when nothing matches.
-    public static func localMatches(for text: String, in items: [Item], limit: Int = maxPicks, perKind: Int = 2) -> [Item] {
-        let hers = Words(fold(text))
+    /// Her words and character pairs in `ignoring` don't count.
+    public static func localMatches(for text: String, in items: [Item], limit: Int = maxPicks, perKind: Int = 2,
+                                    ignoring: Set<String> = []) -> [Item] {
+        var hers = Words(fold(text))
+        hers.tokens.removeAll { ignoring.contains($0) }
+        hers.pairs.subtract(ignoring)
         guard !hers.isEmpty else { return [] }
         let folded = fold(text)
         var scored: [(item: Item, score: Int, index: Int)] = []

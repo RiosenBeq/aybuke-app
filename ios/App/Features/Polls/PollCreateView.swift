@@ -289,6 +289,10 @@ struct PollCreateView: View {
             let fresh = ideas.filter { idea in !PollQuestion.presets.contains { L10n.core($0) == idea } }
             if fresh.isEmpty {
                 ideasUnavailable = true
+                AccessibilityNotification.Announcement(
+                    String(localized: "Aybik can't write ideas right now. Try one of these.",
+                           comment: "Ask friends sheet: the AI helper didn't answer; the ready-made questions stay. Aybik is the app's AI helper: keep the name Aybik.")
+                ).post()
             } else {
                 aybikIdeas = fresh
                 AccessibilityNotification.Announcement(fresh.joined(separator: ", ")).post()
