@@ -14,15 +14,15 @@ Rules followed: no prices in the name, subtitle or keywords; no other platforms,
 
     Glow-Ups, Trends & Video Edits
 
-**Promotional text** (162/170; can change anytime without review)
+**Promotional text** (154/170; can change anytime without review)
 
-> Free on your device: Retro Cam with a photo booth, collages and carousels, text & stickers and video captions. Plus 50+ one-tap looks and 2 free AI credits a day.
+> Glow in Retro Cam, one-tap vertical videos with Auto edit and Which vibe? polls with friends. Plus 20 makeup looks, 50+ looks and 2 free AI credits a day.
 
-**Keywords** (99/100; comma-separated, no spaces after commas)
+**Keywords** (97/100; comma-separated, no spaces after commas)
 
-    selfie,filter,makeup,aesthetic,y2k,retro,cam,booth,collage,sticker,vhs,art,anime,background,remover
+    selfie,filter,makeup,aesthetic,y2k,retro,cam,booth,collage,sticker,vhs,anime,background,dslr,poll
 
-**Description, iPhone and iPad** (3943/4000)
+**Description, iPhone and iPad** (3954/4000)
 
 ```text
 Aybuke is the AI photo editor made for girls who glow. Say what you want to change, tap a trend or turn an idea into art. The everyday tools are free and run right on your device.
@@ -30,29 +30,29 @@ Aybuke is the AI photo editor made for girls who glow. Say what you want to chan
 SAY IT. SEE IT.
 • Magic Edit: type "give me pink hair" or "put me in a pink dress" and watch it happen
 • Makeup Studio: 20 looks, or mix your own lips, eyes, blush, sparkle and hair color
-• Ideas for every photo, picked on your device, or tap Surprise me for a free effect
+• Aybik, our AI helper, writes ideas, prompts and captions with you. Or tap Surprise me for a free effect
 • Brush to erase things (zoom in for tiny ones), or sharpen a blurry photo with Enhance
 • Every look is made to keep your face, skin tone and body just as they are. Doesn't look like you? Retry free
 
 ONE TAP. A WHOLE NEW AESTHETIC.
 • 50+ one-tap looks (some need Pro), like Y2K Digicam, Ballet Core, Bow Era, Sleepover and pet portraits
 • Create from text in 20 styles, from Pastel Dream to Anime, with your recent prompts one tap away
-• Stuck? Inspire me has ideas. Supported devices add Image Playground and Make it magic with Apple Intelligence
 
-RETRO CAM & RETRO BOOTH
+RETRO CAM, GLOW & BOOTH
 • Shoot with live 80s, 90s and Y2K effects, a self-timer and flash
+• Glow: live looks, sparkle and a soft lip and blush tint. Light and color only, never retouching
 • Retro Booth: 4 shots with a 3-2-1 countdown, printed as a strip or a grid with the date
 
 FREE, RIGHT ON YOUR DEVICE
-• 13 retro effects from VHS '86 to Rainbow '17, many with date stamps, plus Tiny World tilt-shift
+• 13 retro effects from VHS '86 to DSLR '12 with real background blur, plus Tiny World tilt-shift
 • Collages and photo dumps from 2 to 9 photos, or a seamless carousel
 • Text & Stickers: words in six fonts, cute stickers and doodles
-• Video editor: auto captions in 5 styles (supported languages), auto-cut silences, retro effects and trim
+• Auto edit: one tap makes a 9:16 vertical video with your best moments and captions (one free a day). Plus auto captions in 5 styles, silence cuts, effects and trim
 • Cut out and refine the subject for a new background with a soft shadow, or make a sticker
-• Crop, straighten and adjust, or just tap Auto. RAW photos develop automatically
-• Best shot finds the selfie with the best light and focus. Never ranked by looks
+• Crop and straighten, tap Auto, or pick a vibe in Adjust and save up to 12 of your own filters
 
 MADE TO SHARE
+• Which vibe? polls: friends vote A or B on two pictures through a private link for 24 hours, no app needed
 • Story cards, before/after, photo strips, Which vibe? cards and Cover star covers, with caption ideas
 • Hide faces: blur or cover other people's faces in the editor, or blur them as you share
 
@@ -66,7 +66,6 @@ PRIVATE BY DEFAULT
 • Cloud results are deleted from our servers within an hour. My Works stays on your device, with a 30-day Recently deleted
 • No sign-up needed. Sign in with Apple only to take your credits to another device
 • Every AI image carries an invisible "made with AI" label
-• Notifications are opt-in and never come at night or during school hours. No streaks, no spam
 
 FAIR PRICING, NO WEEKLY PLANS
 • Free: 2 AI credits every day, and the on-device tools are always free
@@ -84,42 +83,51 @@ Terms: https://aybuke.org/legal/en/terms-of-use
 Privacy: https://aybuke.org/legal/en/privacy-policy
 ```
 
-**Description, Mac** (3863/4000): made by `asc_metadata.py` from the text above. The section about widgets, the Lock Screen, the Dynamic Island, Control Center and the Action button gives way to this one, and “Shoot with live 80s, 90s and Y2K effects, a self-timer and flash” → “Shoot with your Mac's camera, with live 80s, 90s and Y2K effects and a self-timer”; “works on iPhone and iPad” → “works on iPhone, iPad and Mac”; “in Settings › Apple Account › Subscriptions” → “in the App Store app › your name › Account Settings › Subscriptions”.
+**Description, Mac** (3874/4000): made by `asc_metadata.py` from the text above. The section about widgets, the Lock Screen, the Dynamic Island, Control Center and the Action button gives way to this one, and “Shoot with live 80s, 90s and Y2K effects, a self-timer and flash” → “Shoot with your Mac's camera, with live 80s, 90s and Y2K effects and a self-timer”; “works on iPhone and iPad” → “works on iPhone, iPad and Mac”; “in Settings › Apple Account › Subscriptions” → “in the App Store app › your name › Account Settings › Subscriptions”.
 
 ```text
 ON YOUR MAC
 • A sidebar, a menu bar with keyboard shortcuts, and drag and drop: drop a photo on the window to edit it
 ```
 
-**What's New** (225/4000; for the first update, as 1.0 has none)
-
-> Hello, glow ✨ This is the very first version of Aybuke! Say what to change, try 50+ one-tap looks, play with free 80s, 90s and Y2K effects, make quick video edits and share it all in one tap. We'd love to hear what you think.
-
-**App Review notes** (3878/4000; sent to the iOS and macOS versions through the API on 15 October 2026)
+**What's New** (529/4000; version 1.1, iOS and macOS)
 
 ```text
-Aybuke is an AI photo editor and image generator for iPhone, iPad and Mac. No login is needed. Sign in with Apple is optional (Settings > Account, Sign in on the paywall, or the prompt after a purchase); it only lets credits follow the user to another device, and Pro always comes from the Apple Account's purchases. The app creates an anonymous account with our backend only when a cloud AI feature is first used (after consent) or a purchase is made.
+Aybuke 1.1 is here ✨
+• Glow in Retro Cam: live looks, sparkle and a soft lip and blush tint
+• Auto edit: one tap makes a 9:16 vertical video with your best moments and captions (one free a day)
+• Which vibe? polls: friends vote between two pictures through a private link
+• The DSLR '12 effect and the DSLR Portrait look, with real background blur
+• Makeup Studio now has 20 looks
+• Vibes in Adjust, your own filters and cleaner Cut out edges
+• Aybik, our AI helper, writes ideas and captions with you
+Thanks for glowing with us!
+```
+
+**App Review notes** (3646/4000; the first App Store version, iOS and macOS; sent with `asc_metadata.py --review-notes`)
+
+```text
+Aybuke is an AI photo editor and image generator for iPhone, iPad and Mac. No login is needed. Sign in with Apple is optional (Settings > Account, or Sign in on the paywall) and only lets credits follow the user to another device; Pro always comes from the Apple Account. An anonymous backend account is created only when a cloud AI feature is first used (after consent) or a purchase is made.
 
 How to review:
-1. Onboarding: a neutral age step (Apple's Declared Age Range on iOS 26, otherwise month and year), then interests. It ends with "Try Digicam '04 on your photo" (free, on the device). Under 13, only on-device tools are offered: no cloud AI, purchases or ads. A soft paywall (close it with X) and a short tour follow; replay the tour from Settings > Show me around.
-2. Cloud AI: Explore > "Try it on your photo" (Magic Edit), any look, Makeup Studio (makeup as play: color and sparkle only, never reshaping a face), or Create. Before any photo or prompt leaves the device, a consent screen names every processor: Supabase (our servers), xAI (its Grok Imagine models make the images) and Anthropic (its Claude model checks the photo before an edit and every result for safety). Tap "Allow AI processing". "Not now" keeps the on-device tools working.
-3. Credits: free members get 2 AI credits a day per App Store install, verified from StoreKit's signed AppTransaction (Sandbox and TestFlight installs are accepted). Pro includes 80 credits a month. Tapping a balance explains credits. If AI says it's taking a short break, a daily cost cap was reached; it resets at 00:00 UTC.
-4. Ads, only for free members 13+ on iPhone and iPad: when out of credits, "Watch a short ad · +1 credit" (at most 2 a day; the credit comes only from AdMob's signed server-side callback), and an occasional interstitial after a finished save or share (not in the first 24 hours or before the 3rd save; at most 3 a day; never inside the editor or before a result). Ad requests are non-personalised, teens get child-directed treatment, and the app never asks for tracking or reads the advertising identifier. No ads for Pro members, under 13 or on the Mac.
-5. On-device tools (no consent, no credits): Effects, Adjust, Crop, Cut out, Hide faces, Text & Stickers, Collage, Best shot, the video editor with captions, Retro Cam and Retro Booth.
-6. Purchases: two subscriptions (yearly with a 7-day free trial; monthly with a first-month introductory price) and two consumable credit packs, all StoreKit 2. Please use a Sandbox account. Restore is on the paywall and in Settings. The RevenueCat SDK only records purchases for analytics.
-7. Safety: prompts are filtered on the device and on the server in all 12 app languages (sexual, revealing, humiliating and body, face or skin reshaping requests are blocked). Claude checks the photo before an edit; every result passes xAI's moderation and the same independent Claude check before the app can download it. Anything flagged, or anything that can't be checked, is blocked and its credit refunded. Users can report any result: Create results via "..." > Report this image, edits via the flag button beside the result.
-8. AI labelling: exported AI images carry IPTC DigitalSourceType metadata, and the share screen offers an optional visible "AI-edited" label.
-9. Account deletion: Settings > Delete my data & account (Guideline 5.1.1(v)). For a Sign in with Apple account this also revokes the Apple token.
-10. The Privacy Policy, Terms of Use and Acceptable Use Policy are in the app (Settings > Terms, privacy & legal) and at aybuke.org. The app is localized in 12 languages; the legal documents are in English and Turkish.
-11. Mac: the same app through Mac Catalyst, with a sidebar and menu bar; purchases are universal. No ads and no Live Activity on the Mac.
+1. Onboarding: a neutral age step (Declared Age Range on iOS 26, else month and year). Under 13 only on-device tools: no cloud AI, purchases or ads. A soft paywall (close with X) and a short tour follow.
+2. Cloud AI: Explore > "Try it on your photo" (Magic Edit), any look, Makeup Studio (color and sparkle only, never reshaping) or Create. First a consent screen names every processor: Supabase (our servers), xAI (Grok Imagine makes the images) and Anthropic, whose Claude model the app calls "Aybik, our AI helper": it checks photos, results and poll pictures for safety and suggests text. Tap "Allow AI processing"; "Not now" keeps the on-device tools working.
+3. Aybik writing help (text only, never a photo, no credits): Create > "Inspire me" or "Make it magic", Makeup Studio > "Describe your vibe", caption ideas on the share screen. Without consent the on-device writer or built-in lists answer.
+4. Which vibe? polls: My Works > Select two edits or creations > "Ask friends" (also on the share screen). The pictures pass the safety check, then a private link lets anyone vote A or B in a browser for 24 hours, anonymously; then everything is deleted. Results: My Works > Your polls. Questions that rate or compare looks are blocked; a reported poll is closed.
+5. On-device tools (no consent, no credits): Effects (incl. DSLR '12), Adjust, Crop, Cut out, Hide faces, Text & Stickers, Collage, Best shot, Retro Cam and Retro Booth. Glow: Retro Cam > "Glow" under the viewfinder; looks, Sparkle and a lip or blush tint, light and color only. Video: Edit > "Edit a video" > an Auto edit button makes a 9:16 cut with framing and captions (one a day free, then the paywall).
+6. Credits: 2 free AI credits a day per App Store install (verified from the signed AppTransaction; Sandbox and TestFlight count). Pro includes 80 a month. If AI says it's taking a short break, a daily cost cap was reached (resets 00:00 UTC).
+7. Ads (free members 13+, iPhone and iPad only): "Watch a short ad · +1 credit" when out of credits (2 a day, granted only by AdMob's signed server callback); "Try this look once · watch a short ad" on the paywall a Pro look or style opened (once a day, needs a credit; that one job then runs for 1 credit); an occasional interstitial after a finished save or share (never in the first 24 hours, in the editor or before a result; 3 a day at most). Non-personalised, child-directed treatment for teens, no tracking or advertising identifier.
+8. Purchases: two subscriptions (yearly with a 7-day trial; monthly with a first-month price) and two credit packs, StoreKit 2. Please use a Sandbox account. Restore is on the paywall and in Settings.
+9. Safety: prompts are filtered on the device and the server in 12 languages (sexual, revealing, humiliating and body, face or skin reshaping requests are blocked). Every result passes xAI's moderation and the Claude check; anything flagged or unchecked is blocked and refunded. Report via "..." > Report this image or the flag beside an edit.
+10. Exported AI images carry IPTC DigitalSourceType metadata. Account deletion: Settings > Delete my data & account (revokes the Apple token). Policies: Settings > Terms, privacy & legal, and aybuke.org.
 
 Contact: hello@buaze.com
 ```
 
-For the macOS version the same text gets one more paragraph before the contact line:
+For the macOS version the same text gets one more paragraph before the contact line (3870/4000 in all):
 
 ```text
-On the Mac: the same app (Mac Catalyst) with a sidebar and a menu bar; drop a photo on the window to edit it, and Retro Cam uses the Mac's camera. The Live Activity, Instagram Stories sharing and ads aren't offered on the Mac; everything else matches the iOS app.
+On the Mac: the same app (Mac Catalyst) with a sidebar and a menu bar; drop a photo on the window to edit it. Retro Cam and Glow use the Mac's camera. No Live Activity, Instagram Stories sharing, ads or Pro try on the Mac.
 ```
 
 **In-app purchase review notes** (sent with `scripts/asc/iap_review_notes.py`; each product's "Review Notes" in App Store Connect)
@@ -174,15 +182,15 @@ Purchases in TestFlight and in App Review run in the App Store sandbox and aren'
 
     Glow-up, retro efekt ve video
 
-**Promotional text** (168/170; can change anytime without review)
+**Promotional text** (163/170; can change anytime without review)
 
-> Cihazda ücretsiz: fotoğraf kabinli Retro Cam, kolaj ve kaydırmalı gönderi, yazı, çıkartma, video altyazısı. Ayrıca 50+ tek dokunuşla trend, günde 2 ücretsiz AI kredisi.
+> Retro Cam'de ışıma, Otomatik kurgu ile tek dokunuşta dikey video ve arkadaşlarınla Hangi vibe? anketleri. Ayrıca 20 makyaj görünümü ve günde 2 ücretsiz AI kredisi.
 
-**Keywords** (96/100; comma-separated, no spaces after commas)
+**Keywords** (95/100; comma-separated, no spaces after commas)
 
-    yapay zeka,selfie,filtre,makyaj,kolaj,kabin,kamera,arka plan,estetik,y2k,anime,sticker,vhs,silme
+    yapay zeka,selfie,filtre,makyaj,kolaj,kabin,kamera,arka plan,estetik,y2k,sticker,vhs,dslr,anket
 
-**Description, iPhone and iPad** (3990/4000)
+**Description, iPhone and iPad** (3994/4000)
 
 ```text
 Aybuke, ışıldayan kızlar için yapılmış yapay zekâlı fotoğraf editörü. Ne değişsin istiyorsan yaz, bir trende dokun ya da bir fikri sanata dönüştür. Günlük araçlar ücretsiz, doğrudan cihazında çalışır.
@@ -190,29 +198,29 @@ Aybuke, ışıldayan kızlar için yapılmış yapay zekâlı fotoğraf editör�
 SÖYLE, GÖR.
 • "Saçımı pembe yap" ya da "bana pembe bir elbise giydir" yaz, gerisini izle
 • Makyaj Stüdyosu: 20 stil ya da dudak, göz, allık, ışıltı ve saç rengini sen seç
-• Her fotoğrafa cihazında seçilen fikirler ya da ücretsiz bir efekt için Şaşırt beni
+• Yapay zekâ yardımcımız Aybik fikir, komut ve açıklama yazmana yardım eder; ücretsiz bir efekt için Şaşırt beni'ye dokun
 • Fırçayla sil ya da bulanık fotoğrafı İyileştir ile netleştir
 • Her görünüm yüzünü, ten rengini ve vücudunu olduğu gibi korur. Sana benzemedi mi? Ücretsiz tekrar dene
 
 TEK DOKUNUŞ, BAMBAŞKA BİR ESTETİK.
 • 50+ tek dokunuşluk görünüm (bazıları Pro'ya özel): Y2K Digicam, Ballet Core, Fiyonklu Günler, Pijama Partisi, evcil hayvan portreleri
 • Metinden görsel oluştur: Pastel Rüya'dan Anime'ye 20 stil; son komutların bir dokunuş uzağında
-• Desteklenen cihazlarda Image Playground ve Apple Intelligence ile Sihir kat da var
 
-RETRO CAM VE RETRO BOOTH
+RETRO CAM, IŞIMA VE BOOTH
 • Canlı 80'ler, 90'lar ve Y2K efektleriyle çek; zamanlayıcı ve flaş da var
+• Işıma: canlı görünümler, parıltı, hafif dudak ve allık tonu. Sadece ışık ve renk, asla rötuş yok
 • Retro Booth: 3-2-1 geri sayımlı 4 kare; tarihli şerit ya da ızgara olarak basılır
 
 ÜCRETSİZ, DOĞRUDAN CİHAZINDA
-• VHS '86'dan Rainbow '17'ye 13 retro efekt, çoğu tarih damgalı; üstüne Tiny World tilt-shift
+• VHS '86'dan gerçek arka plan bulanıklığıyla DSLR '12'ye 13 retro efekt; üstüne Tiny World tilt-shift
 • 2 ila 9 fotoğraftan kolaj ve photo dump ya da kesintisiz bir kaydırmalı gönderi
 • Yazı ve Çıkartma: altı yazı tipinde yazılar, tatlı çıkartmalar ve karalamalar
-• Video editörü: 5 stilde otomatik altyazı (desteklenen dillerde), sessizlik kesme, retro efekt, kısaltma
+• Otomatik kurgu: tek dokunuşla en iyi anlarından altyazılı 9:16 dikey video (günde bir ücretsiz). Ayrıca 5 stilde otomatik altyazı, sessizlik kesme, efekt ve kısaltma
 • Dekupe: nesneyi ayır, rötuşla; yumuşak gölgeli yeni arka plan ya da çıkartma yap
-• Kırp, düzelt ve ayarla ya da sadece Otomatik'e dokun. RAW fotoğraflar otomatik işlenir
-• En iyi kare, ışığı ve netliği en iyi selfie'yi bulur. Asla görünüşe göre sıralamaz
+• Kırp, düzelt, Otomatik'e dokun ya da Ayarla'da bir vibe seç; 12'ye kadar kendi filtreni kaydet
 
 PAYLAŞMAK İÇİN YAPILDI
+• Hangi vibe? anketleri: arkadaşların gizli bir bağlantıyla iki fotoğraf arasında 24 saat boyunca A ya da B der, uygulama gerekmez
 • Hikâye kartları, önce/sonra, fotoğraf şeritleri, “Hangi vibe?” kartları ve Kapak yıldızı kapakları; açıklama fikirleriyle
 • Yüzleri gizle: başkalarının yüzünü editörde bulanıklaştır ya da kapat, paylaşırken de bulanıklaştır
 
@@ -225,8 +233,6 @@ VARSAYILAN OLARAK GİZLİ
 • Fotoğrafların asla yapay zekâ eğitiminde, satışta ya da reklamda kullanılmaz
 • Buluttaki sonuçlar bir saat içinde sunucularımızdan silinir. Eserlerim cihazında kalır; 30 günlük Son silinenler de var
 • Üyelik gerekmez. Kredilerini başka cihaza taşımak için Apple ile Giriş Yap
-• Her yapay zekâ görseli görünmez bir "yapay zekâ ile yapıldı" etiketi taşır
-• Bildirimler isteğe bağlıdır; gece ve okul saatlerinde asla gelmez. Seri baskısı yok, spam yok
 
 ADİL FİYAT, HAFTALIK PLAN YOK
 • Ücretsiz: her gün 2 yapay zekâ kredisi; cihazdaki araçlar her zaman ücretsiz
@@ -244,17 +250,27 @@ Kullanım Koşulları: https://aybuke.org/legal/tr/kullanim-kosullari
 Gizlilik Politikası: https://aybuke.org/legal/tr/gizlilik-politikasi
 ```
 
-**Description, Mac** (3913/4000): made by `asc_metadata.py` from the text above. The section about widgets, the Lock Screen, the Dynamic Island, Control Center and the Action button gives way to this one, and “Canlı 80'ler, 90'lar ve Y2K efektleriyle çek; zamanlayıcı ve flaş da var” → “Mac'inin kamerasıyla canlı 80'ler, 90'lar ve Y2K efektleriyle çek; zamanlayıcı da var”; “iPhone ve iPad'de” → “iPhone, iPad ve Mac'te”; “Ayarlar › Apple Hesabı › Abonelikler'den” → “App Store uygulaması › adın › Hesap Ayarları › Abonelikler'den”.
+**Description, Mac** (3917/4000): made by `asc_metadata.py` from the text above. The section about widgets, the Lock Screen, the Dynamic Island, Control Center and the Action button gives way to this one, and “Canlı 80'ler, 90'lar ve Y2K efektleriyle çek; zamanlayıcı ve flaş da var” → “Mac'inin kamerasıyla canlı 80'ler, 90'lar ve Y2K efektleriyle çek; zamanlayıcı da var”; “iPhone ve iPad'de” → “iPhone, iPad ve Mac'te”; “Ayarlar › Apple Hesabı › Abonelikler'den” → “App Store uygulaması › adın › Hesap Ayarları › Abonelikler'den”.
 
 ```text
 MAC'İNDE
 • Kenar çubuğu, klavye kısayollu menü çubuğu ve sürükle bırak: düzenlemek için bir fotoğrafı pencereye bırak
 ```
 
-**What's New** (241/4000; for the first update, as 1.0 has none)
+**What's New** (653/4000; version 1.1, iOS and macOS)
 
-> Merhaba ışıltı ✨ Bu, Aybuke'nin ilk sürümü! Ne değişsin yaz, 50+ tek dokunuşluk görünümü dene, ücretsiz 80'ler, 90'lar ve Y2K efektleriyle oyna, videolarını hızlıca düzenle ve hepsini tek dokunuşla paylaş. Ne düşündüğünü duymayı çok isteriz.
-
+```text
+Aybuke 1.1 geldi ✨
+• Retro Cam'de ışıma: canlı görünümler, parıltı ve hafif dudak ve allık tonu
+• Otomatik kurgu: tek dokunuşla en iyi anlarından altyazılı 9:16 dikey video (günde bir ücretsiz)
+• Hangi vibe? anketleri: arkadaşların gizli bir bağlantıyla iki fotoğraf arasında oy versin
+• Gerçek arka plan bulanıklığıyla DSLR '12 efekti ve DSLR Portrait görünümü
+• Makyaj Stüdyosu'nda artık 20 görünüm var
+• Ayarla'da vibe'lar, kendi filtrelerin ve daha temiz Dekupe kenarları
+• Yapay zekâ yardımcımız Aybik fikir ve açıklama yazmana yardım ediyor
+• Ramazan ve Kurban Bayramı görünümleri, bayram günlerinde Keşfet'te
+Bizimle ışıldadığın için teşekkürler!
+```
 ## Product Page Optimization: alternatives to A/B test
 
 | Set | Subtitle (≤30) | Keyword focus |
