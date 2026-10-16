@@ -224,7 +224,8 @@ struct AutoEditOptionsSheet: View {
 }
 
 /// The export sheet for an Auto edit: the words to post it with (a title
-/// for Shorts, caption ideas, hashtags), each with Copy, then Share.
+/// for Shorts, caption ideas, hashtags), each with Copy, then Share. Ideas
+/// are written on the device; Claude writes some only when she asks.
 struct AutoEditPostSheet: View {
     struct Request: Identifiable {
         let id = UUID()
@@ -237,6 +238,7 @@ struct AutoEditPostSheet: View {
 
     let request: Request
     let post: AutoEditPostText
+    /// What she says in the video, from its captions; empty while they're off.
     let transcript: String
     let onShare: () -> Void
 
@@ -288,7 +290,7 @@ struct AutoEditPostSheet: View {
         }
         .tint(Palette.accent)
         .presentationBackground(Palette.background)
-        .task { await post.load(platform: request.platform, transcript: transcript, app: app) }
+        .task { await post.load(platform: request.platform, app: app) }
     }
 
     private func titleCard(_ title: String) -> some View {
@@ -314,7 +316,7 @@ struct AutoEditPostSheet: View {
                 Spacer()
                 Button {
                     Haptics.tap()
-                    Task { await post.load(platform: request.platform, transcript: transcript, app: app, fresh: true) }
+                    Task { await post.load(platform: request.platform, app: app, fresh: true) }
                 } label: {
                     Image(systemName: "arrow.clockwise")
                         .font(.subheadline.weight(.semibold))
@@ -338,10 +340,40 @@ struct AutoEditPostSheet: View {
                 .font(.legibleCaption)
                 .foregroundStyle(Palette.textTertiary)
                 .fixedSize(horizontal: false, vertical: true)
+            if app.usesCloudWriter {
+                askClaude
+            }
         }
         .padding(16)
         .cardStyle()
         .animation(.snappy, value: post.captions)
+    }
+
+    /// Claude writes only when she asks, and the note says what it gets.
+    private var askClaude: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Button {
+                Haptics.tap()
+                Task { await post.askClaude(platform: request.platform, transcript: transcript, app: app) }
+            } label: {
+                Label {
+                    Text("More ideas from Claude", comment: "Button under caption ideas: asks the server's writing help (Claude) for captions. Keep the name Claude.")
+                } icon: {
+                    Image(systemName: "sparkles")
+                }
+            }
+            .buttonStyle(.secondary)
+            .disabled(post.isLoading)
+            (Assist.sendsVideoWords(transcript: transcript)
+                ? Text("Claude, an AI helper, reads your video’s captions, never the video.",
+                       comment: "Under Auto edit's “More ideas from Claude” button while captions are on: what the writing help gets. Keep the name Claude.")
+                : Text("Claude, an AI helper, never gets your video or what you say in it.",
+                       comment: "Under Auto edit's “More ideas from Claude” button while captions are off: the writing help gets only the platform. Keep the name Claude."))
+                .font(.legibleCaption)
+                .foregroundStyle(Palette.textTertiary)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .padding(.top, 4)
     }
 
     private var hashtagsCard: some View {
@@ -362,7 +394,11 @@ struct AutoEditPostSheet: View {
     private var footnote: Text {
         let howTo = Platform.isMac ? Text("Click one to copy it with the hashtags.") : Text("Tap one to copy it with the hashtags.")
         switch post.writer {
-        case .cloud?: return Text("Written by Claude, an AI helper, from what you say in the video.") + Text(verbatim: " ") + howTo
+        case .cloud? where post.heardCaptions:
+            return Text("Written by Claude, an AI helper, from what you say in the video.") + Text(verbatim: " ") + howTo
+        case .cloud?:
+            return Text(Platform.isMac ? "Written by Claude, an AI helper. Click one to copy it with the hashtags."
+                                       : "Written by Claude, an AI helper. Tap one to copy it with the hashtags.")
         case .device?: return Text("Written on your device.") + Text(verbatim: " ") + howTo
         case nil: return howTo
         }

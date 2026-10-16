@@ -189,6 +189,30 @@ final class EditorPolishTests: XCTestCase {
         }
     }
 
+    func testThePhotoAtTikTokSizeKeepsClearOfItsButtons() throws {
+        // "TikTok, clear of its buttons and caption" is true of the Photo too.
+        let area = try XCTUnwrap(ShareLayout.photoArea(size: .tiktok))
+        let insets = ShareSize.tiktok.safeInsets
+        XCTAssertEqual(area, CanvasRect(x: insets.left, y: insets.top, width: 1080 - insets.left - insets.right,
+                                        height: 1920 - insets.top - insets.bottom))
+        for (width, height) in [(1080.0, 1920.0), (800.0, 1200.0), (1600.0, 900.0)] {
+            XCTAssertTrue(area.contains(ShareLayout.fit(width: width, height: height, in: area)), "\(width)×\(height)")
+        }
+        XCTAssertTrue(ShareLayout.showsBackdrop(imageWidth: 1080, imageHeight: 1920, size: .tiktok), "room around even a 9:16 photo")
+        // The AI label's room at the bottom matches the Photo's clear edge.
+        XCTAssertEqual(ShareLayout.labelReserve(size: .tiktok, isCard: false), insets.bottom)
+        // Every other size shows the photo edge to edge.
+        for size in ShareSize.allCases where size != .tiktok {
+            XCTAssertEqual(ShareLayout.photoInsets(size: size), ShareInsets(), size.id)
+            if let pixels = size.pixelSize {
+                XCTAssertEqual(ShareLayout.photoArea(size: size), CanvasRect(x: 0, y: 0, width: pixels.width, height: pixels.height), size.id)
+            } else {
+                XCTAssertNil(ShareLayout.photoArea(size: size))
+            }
+        }
+        XCTAssertFalse(ShareLayout.showsBackdrop(imageWidth: 1080, imageHeight: 1920, size: .story))
+    }
+
     func testABackdropShowsOnlyWhenThePhotoLeavesRoom() {
         XCTAssertTrue(ShareLayout.showsBackdrop(imageWidth: 800, imageHeight: 1200, size: .story))
         XCTAssertFalse(ShareLayout.showsBackdrop(imageWidth: 1080, imageHeight: 1350, size: .post))

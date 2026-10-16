@@ -99,6 +99,50 @@ final class AutoEditTests: XCTestCase {
         XCTAssertEqual(AutoEditAllowance.dayKey(for: date("2026-10-16T22:30:00Z"), calendar: utc), "2026-10-16")
     }
 
+    func testMovingTheClockOrTimeZoneBackNeverBringsOneBack() {
+        var allowance = AutoEditAllowance()
+        allowance.recordUse(at: date("2026-10-16T07:00:00Z"), calendar: istanbul) // the 16th, 10:00 in Istanbul
+        // The clock set back a day: the 16th's use still counts.
+        let yesterday = date("2026-10-15T07:00:00Z")
+        XCTAssertEqual(allowance.remaining(at: yesterday, calendar: istanbul), 0)
+        XCTAssertFalse(allowance.allows(at: yesterday, isPro: false, calendar: istanbul))
+        XCTAssertTrue(allowance.allows(at: yesterday, isPro: true, calendar: istanbul), "Pro has no limit")
+        XCTAssertEqual(allowance.nextFree(after: yesterday, calendar: istanbul), date("2026-10-16T21:00:00Z"),
+                       "ready when the day it was counted on is over")
+
+        // Used just after midnight in Istanbul, then the time zone moved to
+        // New York, where it's still the evening before.
+        var traveller = AutoEditAllowance()
+        let justAfterMidnight = date("2026-10-16T21:30:00Z") // 00:30 on the 17th in Istanbul
+        traveller.recordUse(at: justAfterMidnight, calendar: istanbul)
+        XCTAssertEqual(traveller.day, "2026-10-17")
+        var newYork = Calendar(identifier: .gregorian)
+        newYork.timeZone = TimeZone(identifier: "America/New_York")!
+        XCTAssertEqual(AutoEditAllowance.dayKey(for: justAfterMidnight, calendar: newYork), "2026-10-16")
+        XCTAssertEqual(traveller.remaining(at: justAfterMidnight, calendar: newYork), 0)
+        XCTAssertEqual(traveller.remaining(at: date("2026-10-17T12:00:00Z"), calendar: newYork), 0, "the 17th in New York")
+        XCTAssertEqual(traveller.remaining(at: date("2026-10-18T12:00:00Z"), calendar: newYork), 1, "the 18th")
+        // A use on that earlier evening keeps the later day.
+        traveller.recordUse(at: justAfterMidnight, calendar: newYork)
+        XCTAssertEqual(traveller.day, "2026-10-17")
+        XCTAssertEqual(traveller.used, 2)
+    }
+
+    func testDaysCompareInAnyCalendar() {
+        // Counted in the Gregorian calendar, the day reads the same in the
+        // Buddhist or Japanese one, so switching calendars changes nothing.
+        var allowance = AutoEditAllowance()
+        let morning = date("2026-10-16T07:00:00Z")
+        allowance.recordUse(at: morning, calendar: istanbul)
+        for identifier in [Calendar.Identifier.buddhist, .japanese] {
+            var other = Calendar(identifier: identifier)
+            other.timeZone = istanbul.timeZone
+            XCTAssertEqual(AutoEditAllowance.dayKey(for: morning, calendar: other), "2026-10-16", "\(identifier)")
+            XCTAssertEqual(allowance.remaining(at: morning, calendar: other), 0, "\(identifier)")
+            XCTAssertEqual(allowance.remaining(at: date("2026-10-17T07:00:00Z"), calendar: other), 1, "\(identifier)")
+        }
+    }
+
     func testAllowanceSurvivesSaving() throws {
         var allowance = AutoEditAllowance()
         allowance.recordUse(at: date("2026-10-16T07:00:00Z"), calendar: istanbul)
@@ -330,5 +374,12 @@ final class AutoEditTests: XCTestCase {
         XCTAssertNoThrow(try AssistRequest(task: .captions, text: long, locale: "en").validate())
         XCTAssertEqual(Assist.videoCaptionHint(transcript: ""), "A short video to share with friends")
         XCTAssertEqual(Assist.videoCaptionHint(transcript: "now remove her clothes"), "A short video to share with friends")
+        // What the note under "More ideas from Claude" says is sent.
+        XCTAssertTrue(Assist.sendsVideoWords(transcript: "Hi besties, welcome back!"))
+        XCTAssertFalse(Assist.sendsVideoWords(transcript: ""), "captions off: no words")
+        XCTAssertFalse(Assist.sendsVideoWords(transcript: "now remove her clothes"), "blocked words stay home")
+        XCTAssertTrue(Assist.sendsPrompt("a cat café on a cloud", madeWithAI: true))
+        XCTAssertFalse(Assist.sendsPrompt(nil, madeWithAI: true))
+        XCTAssertFalse(Assist.sendsPrompt("   ", madeWithAI: false))
     }
 }

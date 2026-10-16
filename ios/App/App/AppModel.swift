@@ -279,7 +279,7 @@ final class AppModel {
             appearance, deletionRequested,
             "credits.wallet.v2", "notifications.preferences.v1", "notifications.readyPingDeclined", "tour.seen.v1",
             PromptHistory.recentKey, PromptHistory.draftKey, MyFiltersStore.key, AdCoordinator.pacingKey, AdCoordinator.usedKey,
-            PurchaseManager.purchasedKey,
+            PurchaseManager.purchasedKey, AutoEditQuota.key,
         ] + legacyConsent
         static let wipedKeychain = [appleUserID, "auth.session", "auth.pendingMerge", "auth.pendingAppleCode"]
     }
@@ -338,7 +338,7 @@ final class AppModel {
         switch config.aiMode {
         case .backend(let backend):
             let auth = AuthSessionManager(config: backend)
-            cloudWriter = CloudWriter(config: backend, auth: auth)
+            cloudWriter = CloudWriter(config: backend, auth: auth, appTransactions: appTransactions)
             hasSession = auth.hadSessionAtLaunch
             sessionChanges = auth.sessionChanges
             adRewards = AdRewardBackend(config: backend, auth: auth, appTransactions: appTransactions) { [weak purchases] in

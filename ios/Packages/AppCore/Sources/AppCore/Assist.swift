@@ -217,6 +217,12 @@ public enum Assist {
         return madeWithAI ? "A picture made with AI, to share with friends" : "A photo to share with friends"
     }
 
+    /// Whether the caption writer would hear her prompt, not just a plain
+    /// line: what the share composer's note says before she asks.
+    public static func sendsPrompt(_ prompt: String?, madeWithAI: Bool) -> Bool {
+        captionHint(prompt: prompt, madeWithAI: madeWithAI) != captionHint(prompt: nil, madeWithAI: madeWithAI)
+    }
+
     /// At most `limit` characters, ending on a whole word where there is one.
     static func cut(_ text: String, to limit: Int) -> String {
         guard text.count > limit else { return text }
@@ -265,9 +271,13 @@ extension RequestFactory {
     public static let assistTimeout: TimeInterval = 10
 
     /// Writing help with her session's token. There's no anonymous variant:
-    /// a request without a session is never sent.
-    public static func assist(_ body: AssistRequest, config: BackendConfiguration, accessToken: String) throws -> URLRequest {
+    /// a request without a session is never sent. StoreKit's AppTransaction
+    /// goes along when the device has one: callers without a verified
+    /// install only share a small allowance on the server.
+    public static func assist(_ body: AssistRequest, config: BackendConfiguration, accessToken: String,
+                              appTransactionJWS: String? = nil) throws -> URLRequest {
         var request = try authorized(config: config, path: assistPath, method: "POST", query: [], accessToken: accessToken)
+        attach(entitlementJWS: nil, appTransactionJWS: appTransactionJWS, to: &request)
         request.timeoutInterval = assistTimeout
         request.httpBody = try JSONEncoder().encode(body)
         return request

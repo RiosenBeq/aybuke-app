@@ -562,6 +562,9 @@ private extension AdjustmentParameter {
 struct EffectsPanel: View {
     let thumbnails: [RetroEffect: UIImage]
     let selected: RetroEffect?
+    /// An effect still getting ready on the photo (DSLR '12 while Vision
+    /// looks for her): its tile shows progress.
+    var working: RetroEffect?
     @Binding var showsExtra: Bool
     @Binding var subtitle: String
     @Binding var lens: DSLRLens
@@ -669,7 +672,7 @@ struct EffectsPanel: View {
         Button {
             onSelect(effect)
         } label: {
-            EffectTile(effect: effect, thumbnail: thumbnails[effect], isSelected: selected == effect)
+            EffectTile(effect: effect, thumbnail: thumbnails[effect], isSelected: selected == effect, isWorking: working == effect)
         }
         .buttonStyle(.pressable)
         .macHoverLift(scale: 1.04)
@@ -681,6 +684,7 @@ private struct EffectTile: View {
     let effect: RetroEffect
     let thumbnail: UIImage?
     let isSelected: Bool
+    var isWorking = false
 
     var body: some View {
         VStack(spacing: 6) {
@@ -690,7 +694,9 @@ private struct EffectTile: View {
                     Image(uiImage: thumbnail)
                         .resizable()
                         .scaledToFill()
-                } else {
+                }
+                if thumbnail == nil || isWorking {
+                    if thumbnail != nil { Palette.white.opacity(0.45) }
                     ProgressView().tint(Palette.accent)
                 }
             }

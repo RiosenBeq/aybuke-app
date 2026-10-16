@@ -3668,6 +3668,290 @@
         }
       }
     },
+    "Claude, an AI helper, never gets your photo or your words." : {
+      "comment" : "Under the share composer's “More ideas from Claude” button: the writing help gets only the design's name. Keep the name Claude.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude, ein KI-Helfer, bekommt nie dein Foto oder deine Worte."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude, un asistente de IA, nunca recibe tu foto ni tus palabras."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude, un assistant IA, ne reçoit jamais ta photo ni tes mots."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude, asisten AI, tidak pernah menerima fotomu atau kata-katamu."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude, un assistente IA, non riceve mai la tua foto né le tue parole."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIアシスタントのClaudeは、写真もあなたの言葉も受け取りません。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI 도우미 Claude는 사진도, 내 글도 받지 않아요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Claude, um assistente de IA, nunca recebe sua foto nem suas palavras."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude — ИИ-помощник — никогда не получает твоё фото и твои слова."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bir yapay zekâ yardımcısı olan Claude, fotoğrafını ya da sözlerini asla almaz."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI 助手 Claude 绝不会收到你的照片，也不会收到你的文字。"
+          }
+        }
+      }
+    },
+    "Claude, an AI helper, never gets your video or what you say in it." : {
+      "comment" : "Under Auto edit's “More ideas from Claude” button while captions are off: the writing help gets only the platform. Keep the name Claude.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude, ein KI-Helfer, bekommt nie dein Video oder das, was du darin sagst."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude, un asistente de IA, nunca recibe tu video ni lo que dices en él."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude, un assistant IA, ne reçoit jamais ta vidéo ni ce que tu y dis."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude, asisten AI, tidak pernah menerima videomu atau apa yang kamu ucapkan di dalamnya."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude, un assistente IA, non riceve mai il tuo video né quello che ci dici."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIアシスタントのClaudeは、動画も動画で話した内容も受け取りません。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI 도우미 Claude는 동영상도, 동영상 속 내 말도 받지 않아요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Claude, um assistente de IA, nunca recebe seu vídeo nem o que você diz nele."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude — ИИ-помощник — никогда не получает твоё видео и то, что ты в нём говоришь."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bir yapay zekâ yardımcısı olan Claude, videonu ya da videoda söylediklerini asla almaz."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI 助手 Claude 绝不会收到你的视频，也不会收到你在视频里说的话。"
+          }
+        }
+      }
+    },
+    "Claude, an AI helper, reads your prompt, never the photo." : {
+      "comment" : "Under the share composer's “More ideas from Claude” button for a creation from a prompt: the writing help gets the prompt. Keep the name Claude.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude, ein KI-Helfer, liest deinen Prompt, nie das Foto."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude, un asistente de IA, lee tu prompt, nunca la foto."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude, un assistant IA, lit ton prompt, jamais la photo."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude, asisten AI, membaca prompt-mu, tidak pernah fotonya."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude, un assistente IA, legge il tuo prompt, mai la foto."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIアシスタントのClaudeはプロンプトを読みますが、写真は受け取りません。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI 도우미 Claude는 프롬프트를 읽지만, 사진은 절대 받지 않아요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Claude, um assistente de IA, lê seu prompt, nunca a foto."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude — ИИ-помощник — читает твой запрос, но никогда не получает фото."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bir yapay zekâ yardımcısı olan Claude, komutunu okur, fotoğrafı asla almaz."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI 助手 Claude 会读取你的提示词，但绝不会收到照片。"
+          }
+        }
+      }
+    },
+    "Claude, an AI helper, reads your video’s captions, never the video." : {
+      "comment" : "Under Auto edit's “More ideas from Claude” button while captions are on: what the writing help gets. Keep the name Claude.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude, ein KI-Helfer, liest die Untertitel deines Videos, nie das Video selbst."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude, un asistente de IA, lee los subtítulos de tu video, nunca el video."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude, un assistant IA, lit les sous-titres de ta vidéo, jamais la vidéo elle-même."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude, asisten AI, membaca subtitle videomu, tidak pernah videonya."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude, un assistente IA, legge i sottotitoli del tuo video, mai il video."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIアシスタントのClaudeは動画の字幕を読みますが、動画そのものは受け取りません。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI 도우미 Claude는 동영상 자막을 읽지만, 동영상은 절대 받지 않아요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Claude, um assistente de IA, lê as legendas do seu vídeo, nunca o vídeo."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude — ИИ-помощник — читает субтитры твоего видео, но никогда не получает само видео."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bir yapay zekâ yardımcısı olan Claude, videonun altyazılarını okur, videonun kendisini asla almaz."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI 助手 Claude 会读取视频的字幕，但绝不会收到视频本身。"
+          }
+        }
+      }
+    },
     "Click a person or thing to remove it" : {
       "comment" : "Erase on the Mac: hint while Pick a person is on",
       "localizations" : {
@@ -9762,6 +10046,77 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "氛围感"
+          }
+        }
+      }
+    },
+    "More ideas from Claude" : {
+      "comment" : "Button under caption ideas: asks the server's writing help (Claude) for captions. Keep the name Claude.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mehr Ideen von Claude"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Más ideas de Claude"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Plus d’idées de Claude"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ide lainnya dari Claude"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Altre idee da Claude"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claudeからもっとアイデアをもらう"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude에게 아이디어 더 받기"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mais ideias do Claude"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ещё идеи от Claude"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude'dan daha fazla fikir"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "向 Claude 要更多灵感"
           }
         }
       }

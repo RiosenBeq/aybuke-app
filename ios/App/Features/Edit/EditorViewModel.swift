@@ -51,7 +51,8 @@ final class EditorViewModel {
     private enum EraseMark: Equatable { case stroke, region(Int) }
     /// "Pick a person": a tap on the canvas picks instead of painting.
     private(set) var isPickingToErase = false
-    private(set) var isFindingSubjects = false
+    /// "Pick a person" waits for Vision (the panel shows an hourglass).
+    var isFindingSubjects: Bool { isPickingToErase && eraseSubjects == nil && isAnalyzingSubjects }
     /// What she can pick in Erase, once Vision has looked.
     private(set) var eraseSubjects: SubjectMasks?
     var brushSize: CGFloat = 0.07
@@ -92,6 +93,9 @@ final class EditorViewModel {
     @ObservationIgnored private var subtitleTask: Task<Void, Never>?
     private(set) var effectPreview: UIImage?
     private(set) var effectThumbnails: [RetroEffect: UIImage] = [:]
+    /// The step DSLR '12's tile was drawn for with Vision's answer; before
+    /// that it shows the centre-weighted blur.
+    @ObservationIgnored private var dslrTileVersion: Int?
     @ObservationIgnored private var effectTask: Task<Void, Never>?
 
     // Crop (on-device geometry)
@@ -119,8 +123,15 @@ final class EditorViewModel {
     /// Vision's subjects of the photo on the canvas, found once per step and
     /// shared by DSLR '12, Cut out and Erase's "Pick a person".
     @ObservationIgnored private var subjectJob: (version: Int, task: Task<Result<SubjectMasks, Error>, Never>)?
+    /// Vision's answer for a step: what it found, or nil for nobody and nothing.
+    @ObservationIgnored private var answeredSubjects: (version: Int, masks: SubjectMasks?)?
+    /// Vision is looking at this step's photo (Erase's hourglass, DSLR '12's tile).
+    private(set) var isAnalyzingSubjects = false
     @ObservationIgnored private var memoryWatcher: Task<Void, Never>?
     private(set) var historyVersion = 0
+    /// Moves when memory pressure drops redo, so Redo updates without
+    /// starting a new step (work for the photo on the canvas stays valid).
+    private(set) var redoRevision = 0
     static let historyLimit = 8
 
     init(launch: EditorLaunch) {
@@ -196,7 +207,7 @@ final class EditorViewModel {
     private func releaseRebuildableImages() {
         if !redoStack.isEmpty {
             redoStack.removeAll()
-            historyVersion += 1
+            redoRevision += 1
         }
         previewSource = nil
         if activeTool != .effects {
@@ -207,7 +218,7 @@ final class EditorViewModel {
     }
 
     var canUndo: Bool { historyVersion >= 0 && !undoStack.isEmpty }
-    var canRedo: Bool { historyVersion >= 0 && !redoStack.isEmpty }
+    var canRedo: Bool { historyVersion >= 0 && redoRevision >= 0 && !redoStack.isEmpty }
     var hasChanges: Bool { canUndo }
     var hasTransparency: Bool { ImageUtilities.hasAlpha(current) }
     var canRetryFree: Bool { retryRequestID != nil && !isProcessing && Date.now < retryDeadline }
@@ -357,7 +368,10 @@ final class EditorViewModel {
         clearMask()
         eraseSubjects = nil
         isPickingToErase = false
+        // The old photo's search may still run, but nothing waits for it.
         subjectJob = nil
+        answeredSubjects = nil
+        isAnalyzingSubjects = false
         adjustments = .neutral
         adjustVibe = nil
         adjustPreview = nil
@@ -582,10 +596,13 @@ final class EditorViewModel {
 
     // MARK: Subjects (on-device, Vision)
 
-    /// The photo's subjects, found once per step off the main actor.
+    /// The photo's subjects, found once per step off the main actor. Only an
+    /// answer is kept for the step (what Vision found, or that it found nobody
+    /// and nothing): a failure may pass, so the next try looks again.
     private func subjectAnalysis() async -> Result<SubjectMasks, Error> {
         if let subjectJob, subjectJob.version == historyVersion { return await subjectJob.task.value }
         let source = current
+        let version = historyVersion
         let task = Task.detached(priority: .userInitiated) { () -> Result<SubjectMasks, Error> in
             #if DEBUG
             // The Cut out scene's cartoon stands in for Vision unless -GLCutoutPhoto picks a sample.
@@ -596,8 +613,18 @@ final class EditorViewModel {
             #endif
             return Result { try SubjectMasks.analyze(source) }
         }
-        subjectJob = (historyVersion, task)
-        return await task.value
+        subjectJob = (version, task)
+        isAnalyzingSubjects = true
+        let result = await task.value
+        // Undo, Redo or a new step cleared it (or started another) meanwhile.
+        guard subjectJob?.task == task else { return result }
+        isAnalyzingSubjects = false
+        switch result {
+        case .success(let masks): answeredSubjects = (version, masks)
+        case .failure(AIServiceError.noSubjectFound): answeredSubjects = (version, nil)
+        case .failure: subjectJob = nil
+        }
+        return result
     }
 
     // MARK: Erase
@@ -628,13 +655,15 @@ final class EditorViewModel {
     func toggleErasePicking(app: AppModel) {
         isPickingToErase.toggle()
         Haptics.selection()
-        guard isPickingToErase, eraseSubjects == nil, !isFindingSubjects else { return }
+        // A search already running (Cut out's, DSLR '12's or an earlier tap's)
+        // is shared: this tap waits for its answer too.
+        guard isPickingToErase, eraseSubjects == nil else { return }
         let version = historyVersion
-        isFindingSubjects = true
         Task {
             let result = await subjectAnalysis()
-            guard version == historyVersion else { return }
-            isFindingSubjects = false
+            // Undo or Redo meanwhile turned picking off (and the hourglass with
+            // it); turned off by hand, it waits for the next time.
+            guard version == historyVersion, isPickingToErase, eraseSubjects == nil else { return }
             if case .success(let masks) = result, !masks.subjects.isEmpty {
                 eraseSubjects = masks
             } else {
@@ -737,25 +766,41 @@ final class EditorViewModel {
 
     // MARK: Effects (on-device)
 
+    /// Every tile without Vision's subject pass: DSLR '12's uses what Vision
+    /// already found for this step, else its centre-weighted blur, and is
+    /// drawn again once a tap on it has found her (`finishDSLRTile`).
     func loadEffectThumbnails() async {
         let image = current
         let version = historyVersion
         if effectThumbnails.isEmpty {
-            let quick = RetroEffect.allCases.filter { $0 != .dslr12 }
-            let thumbnails = await Task.detached(priority: .userInitiated) { RetroEffect.thumbnails(of: image, effects: quick) }.value
+            let answered = answeredSubjects?.version == version ? answeredSubjects : nil
+            let thumbnails = await Task.detached(priority: .userInitiated) {
+                RetroEffect.thumbnails(of: image, subjects: .known(answered?.masks))
+            }.value
             // A step taken meanwhile brings its own thumbnails.
             guard version == historyVersion else { return }
             effectThumbnails = thumbnails
+            dslrTileVersion = answered == nil ? nil : version
         }
-        // DSLR '12 waits for Vision's subjects, so its tile fills in a moment later.
-        guard effectThumbnails[.dslr12] == nil else { return }
-        let subjects = try? await subjectAnalysis().get()
-        guard version == historyVersion else { return }
-        let dslr = await Task.detached(priority: .userInitiated) {
-            RetroEffect.thumbnails(of: image, effects: [.dslr12], subjects: .known(subjects))
-        }.value
-        guard version == historyVersion else { return }
-        effectThumbnails.merge(dslr) { _, new in new }
+        finishDSLRTile()
+    }
+
+    /// DSLR '12's tile with what Vision found, once it has answered for this step.
+    private func finishDSLRTile() {
+        let version = historyVersion
+        guard dslrTileVersion != version, effectThumbnails[.dslr12] != nil,
+              let answered = answeredSubjects, answered.version == version else { return }
+        dslrTileVersion = version
+        // Nobody and nothing found: the centre-weighted tile is already right.
+        guard let masks = answered.masks else { return }
+        let image = current
+        Task {
+            let tile = await Task.detached(priority: .utility) {
+                RetroEffect.thumbnails(of: image, effects: [.dslr12], subjects: .known(masks))
+            }.value
+            guard version == historyVersion else { return }
+            effectThumbnails.merge(tile) { _, new in new }
+        }
     }
 
     private var effectOptions: RetroEffect.Options {
@@ -780,7 +825,9 @@ final class EditorViewModel {
         let options = effectOptions
         effectTask = Task {
             let proxy = await previewProxy()
+            // DSLR '12's first tap on a step runs Vision (its tile shows progress).
             let subjects = await subjects(for: effect)
+            if effect == .dslr12 { finishDSLRTile() }
             guard !Task.isCancelled else { return }
             let rendered = await Task.detached(priority: .userInitiated) { effect.apply(to: proxy, options: options, subjects: subjects) }.value
             guard !Task.isCancelled else { return }

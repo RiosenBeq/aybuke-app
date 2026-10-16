@@ -129,24 +129,37 @@ enum ShareRenderer {
         let provenance = payload.provenance
         guard aiLabel, provenance.carriesAIProvenance else { return rendered }
         let reservedBottom: CGFloat
+        // Clear of TikTok's left edge too, where a design keeps clear of its buttons.
+        var reservedLeft: CGFloat = 0
         switch format {
-        case .story: reservedBottom = ShareLayout.labelReserve(size: design.cardSize, isCard: true)
+        case .story:
+            reservedBottom = ShareLayout.labelReserve(size: design.cardSize, isCard: true)
+            reservedLeft = design.cardSize.safeInsets.left
         case .strip, .pick: reservedBottom = 300
         case .cover: reservedBottom = 70
-        case .photo: reservedBottom = ShareLayout.labelReserve(size: design.size, isCard: false)
+        case .photo:
+            reservedBottom = ShareLayout.labelReserve(size: design.size, isCard: false)
+            reservedLeft = ShareLayout.photoInsets(size: design.size).left
         case .beforeAfter: reservedBottom = 0
         }
-        return addAILabel(to: rendered, text: provenance.isFullyGenerated ? String(localized: "Made with AI") : String(localized: "AI-edited"), reservedBottom: reservedBottom)
+        return addAILabel(to: rendered, text: provenance.isFullyGenerated ? String(localized: "Made with AI") : String(localized: "AI-edited"),
+                          reservedBottom: reservedBottom, reservedLeft: reservedLeft)
     }
 
     private static func render(_ payload: SharePayload, format: ShareFormat, branded: Bool, showPrompt: Bool, design: ShareDesign) -> UIImage {
         let image = ImageUtilities.normalized(payload.image, maxLongEdge: 2048)
         switch format {
         case .photo:
-            // Sized for where she posts: the whole photo, the room around it filled.
-            guard let pixels = design.size.pixelSize else { return branded ? Watermark.apply(to: image) : image }
-            let padded = paddedPhoto(image, canvas: CGSize(width: pixels.width, height: pixels.height), backdrop: design.backdrop ?? .blur)
-            return branded ? Watermark.apply(to: padded) : padded
+            // Sized for where she posts: the whole photo, the room around it
+            // filled; at TikTok's size the photo and the mark keep clear of its buttons.
+            guard let pixels = design.size.pixelSize, let area = ShareLayout.photoArea(size: design.size) else {
+                return branded ? Watermark.apply(to: image) : image
+            }
+            let padded = paddedPhoto(image, canvas: CGSize(width: pixels.width, height: pixels.height), area: area,
+                                     backdrop: design.backdrop ?? .blur)
+            let insets = ShareLayout.photoInsets(size: design.size)
+            return branded ? Watermark.apply(to: padded, insets: UIEdgeInsets(top: insets.top, left: insets.left,
+                                                                              bottom: insets.bottom, right: insets.right)) : padded
         case .beforeAfter:
             guard let original = payload.original else { return branded ? Watermark.apply(to: image) : image }
             return beforeAfter(before: ImageUtilities.normalized(original, maxLongEdge: 2048), after: image, branded: branded)
@@ -173,7 +186,7 @@ enum ShareRenderer {
     /// An honest, visible "✦ AI-edited" pill in the bottom-left corner, for
     /// people who want their followers to know (on top of the invisible
     /// IPTC label every export already carries).
-    static func addAILabel(to image: UIImage, text: String, reservedBottom: CGFloat = 0) -> UIImage {
+    static func addAILabel(to image: UIImage, text: String, reservedBottom: CGFloat = 0, reservedLeft: CGFloat = 0) -> UIImage {
         let size = image.size
         let unit = min(size.width, size.height)
         return renderer(size, opaque: !ImageUtilities.hasAlpha(image)).image { _ in
@@ -185,7 +198,7 @@ enum ShareRenderer {
             let padding = CGSize(width: font.pointSize * 0.7, height: font.pointSize * 0.35)
             let margin = unit * 0.035
             let pill = CGRect(
-                x: margin,
+                x: reservedLeft + margin,
                 y: size.height - reservedBottom - margin - textSize.height - padding.height * 2,
                 width: textSize.width + padding.width * 2,
                 height: textSize.height + padding.height * 2
@@ -335,13 +348,13 @@ enum ShareRenderer {
 
     // MARK: Sizes and backgrounds
 
-    /// The whole photo in a size for where she posts, the room around it filled.
-    static func paddedPhoto(_ image: UIImage, canvas: CGSize, backdrop: ShareBackdrop) -> UIImage {
+    /// The whole photo in a size for where she posts, fitted in `area`
+    /// (`ShareLayout.photoArea`), the room around it filled.
+    static func paddedPhoto(_ image: UIImage, canvas: CGSize, area: CanvasRect, backdrop: ShareBackdrop) -> UIImage {
         renderer(canvas, opaque: true).image { context in
             let cg = context.cgContext
             drawBackdrop(backdrop, photo: image, canvas: canvas, context: cg) { brandGlow(cg, canvas: canvas) }
-            let frame = ShareLayout.fit(width: image.size.width, height: image.size.height,
-                                        in: CanvasRect(x: 0, y: 0, width: canvas.width, height: canvas.height))
+            let frame = ShareLayout.fit(width: image.size.width, height: image.size.height, in: area)
             image.draw(in: frame.cgRect)
         }
     }

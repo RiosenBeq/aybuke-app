@@ -62,9 +62,19 @@ final class AssistTests: XCTestCase {
         XCTAssertEqual(request.value(forHTTPHeaderField: "Content-Type"), "application/json")
         XCTAssertEqual(request.timeoutInterval, RequestFactory.assistTimeout)
         XCTAssertLessThanOrEqual(RequestFactory.assistTimeout, 15, "a slow answer falls back to the on-device writer")
-        XCTAssertNil(request.value(forHTTPHeaderField: RequestFactory.appTransactionHeader), "no credits, no install check")
+        XCTAssertNil(request.value(forHTTPHeaderField: RequestFactory.appTransactionHeader), "none on the device yet: sent without")
         let body = try XCTUnwrap(request.httpBody.flatMap { try JSONSerialization.jsonObject(with: $0) as? [String: Any] })
         XCTAssertEqual(body["task"] as? String, "inspire")
+
+        // The install proof, as with cloud jobs and rewarded ads.
+        let proven = try RequestFactory.assist(AssistRequest(task: .inspire, locale: "en"), config: config, accessToken: "user-jwt",
+                                               appTransactionJWS: "app-transaction-jws")
+        XCTAssertEqual(proven.value(forHTTPHeaderField: RequestFactory.appTransactionHeader), "app-transaction-jws")
+        XCTAssertEqual(proven.value(forHTTPHeaderField: "Authorization"), "Bearer user-jwt")
+        XCTAssertNil(proven.value(forHTTPHeaderField: RequestFactory.entitlementHeader), "no credits, no entitlement")
+        let empty = try RequestFactory.assist(AssistRequest(task: .inspire, locale: "en"), config: config, accessToken: "user-jwt",
+                                              appTransactionJWS: "")
+        XCTAssertNil(empty.value(forHTTPHeaderField: RequestFactory.appTransactionHeader))
     }
 
     func testLanguageCodes() {

@@ -811,6 +811,7 @@ struct EditorView: View {
             EffectsPanel(
                 thumbnails: model.effectThumbnails,
                 selected: model.effect,
+                working: model.effect == .dslr12 && model.isAnalyzingSubjects ? .dslr12 : nil,
                 showsExtra: Binding(
                     get: { model.effectExtra },
                     set: { value in

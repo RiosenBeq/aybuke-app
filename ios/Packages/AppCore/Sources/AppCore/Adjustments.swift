@@ -81,14 +81,20 @@ public struct AdjustmentSettings: Hashable, Sendable {
         set { self[keyPath: parameter.keyPath] = newValue }
     }
 
-    /// Every slider inside its range.
+    /// Every slider inside its range. A value a hair from its resting point
+    /// is the resting point: taking a vibe off after another one can leave
+    /// ±1e-17 behind, which would count as an invisible edit.
     public func clamped() -> AdjustmentSettings {
         var settings = self
         for parameter in AdjustmentParameter.allCases {
-            settings[parameter] = parameter.range.clamp(settings[parameter])
+            let value = parameter.range.clamp(settings[parameter])
+            settings[parameter] = abs(value - parameter.neutral) < Self.restTolerance ? parameter.neutral : value
         }
         return settings
     }
+
+    /// How close to its resting point a slider counts as at rest.
+    static let restTolerance = 1e-9
 
     /// Highlights, shadows, fade or tint: the tone and colour map (`ToneMap`).
     public var hasToneMap: Bool { highlights != 0 || shadows != 0 || fade != 0 || tint != 0 }

@@ -567,7 +567,7 @@ private struct ReasonCard: View {
                         .font(.legibleCaption)
                         .foregroundStyle(Palette.textSecondary)
                 } else if reason == .autoEdit {
-                    Text("Your next free auto edit is ready in \(Text(AutoEditAllowance.nextReset(after: .now), style: .relative))")
+                    Text("Your next free auto edit is ready in \(Text(AutoEditQuota.nextFree, style: .relative))")
                         .font(.legibleCaption)
                         .foregroundStyle(Palette.textSecondary)
                 }

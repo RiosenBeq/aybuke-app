@@ -119,7 +119,9 @@ enum PhotoLibrarySaver {
 /// Small corner wordmark on free-tier exports — a gentle viral loop. Paid
 /// exports never carry it, and the in-app preview never shows it.
 enum Watermark {
-    static func apply(to image: UIImage) -> UIImage {
+    /// In the bottom-right corner, inside `insets` (pixels): the edges an
+    /// app's own buttons cover, as on the Photo design at TikTok's size.
+    static func apply(to image: UIImage, insets: UIEdgeInsets = .zero) -> UIImage {
         ImageUtilities.draw(size: image.size, scale: image.scale, opaque: !ImageUtilities.hasAlpha(image),
                             colorSpace: image.cgImage?.colorSpace) { _ in
             image.draw(at: .zero)
@@ -138,7 +140,8 @@ enum Watermark {
             let text = "\(Brand.name) ✦" as NSString
             let size = text.size(withAttributes: attributes)
             let margin = fontSize * 0.9
-            text.draw(at: CGPoint(x: image.size.width - size.width - margin, y: image.size.height - size.height - margin),
+            text.draw(at: CGPoint(x: image.size.width - insets.right - size.width - margin,
+                                  y: image.size.height - insets.bottom - size.height - margin),
                       withAttributes: attributes)
         }
     }

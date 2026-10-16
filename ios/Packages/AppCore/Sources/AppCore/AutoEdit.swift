@@ -97,10 +97,13 @@ public struct FrameRect: Hashable, Sendable {
 
 /// Auto edit is part of Pro; free members get one a day on this device,
 /// counted by local calendar day, so the next one is ready at local midnight.
+/// A stored day later than today (the clock or the time zone moved back
+/// since) still counts as today, so moving them back never brings a free one
+/// back early.
 public struct AutoEditAllowance: Codable, Equatable, Sendable {
     public static let freePerDay = 1
 
-    /// The local day (yyyy-MM-dd) the uses were counted on.
+    /// The local day (yyyy-MM-dd, Gregorian) the uses were counted on.
     public var day: String?
     public var used: Int
 
@@ -111,8 +114,8 @@ public struct AutoEditAllowance: Codable, Equatable, Sendable {
 
     /// Free auto edits left today.
     public func remaining(at date: Date, calendar: Calendar = .current) -> Int {
-        let today = Self.dayKey(for: date, calendar: calendar)
-        return max(0, Self.freePerDay - (day == today ? used : 0))
+        guard let day, day >= Self.dayKey(for: date, calendar: calendar) else { return Self.freePerDay }
+        return max(0, Self.freePerDay - used)
     }
 
     public func allows(at date: Date, isPro: Bool, calendar: Calendar = .current) -> Bool {
@@ -121,16 +124,29 @@ public struct AutoEditAllowance: Codable, Equatable, Sendable {
 
     public mutating func recordUse(at date: Date, calendar: Calendar = .current) {
         let today = Self.dayKey(for: date, calendar: calendar)
-        if day != today {
+        if let day, day >= today {
+            // Today's, or a later day's that still counts: the later day stays.
+            used += 1
+        } else {
             day = today
-            used = 0
+            used = 1
         }
-        used += 1
     }
 
-    /// The local calendar day of `date`.
+    /// When the next free one is ready: the next local midnight, or the one
+    /// after the later day it was counted on.
+    public func nextFree(after date: Date, calendar: Calendar = .current) -> Date {
+        guard let day, day > Self.dayKey(for: date, calendar: calendar), let start = Self.start(ofDay: day, calendar: calendar) else {
+            return Self.nextReset(after: date, calendar: calendar)
+        }
+        return Self.nextReset(after: start, calendar: calendar)
+    }
+
+    /// The local calendar day of `date`, always in the Gregorian calendar
+    /// (in `calendar`'s time zone), so stored days compare in order whatever
+    /// calendar she uses.
     public static func dayKey(for date: Date, calendar: Calendar) -> String {
-        let parts = calendar.dateComponents([.year, .month, .day], from: date)
+        let parts = gregorian(in: calendar).dateComponents([.year, .month, .day], from: date)
         return String(format: "%04d-%02d-%02d", parts.year ?? 0, parts.month ?? 0, parts.day ?? 0)
     }
 
@@ -138,6 +154,19 @@ public struct AutoEditAllowance: Codable, Equatable, Sendable {
     public static func nextReset(after date: Date, calendar: Calendar = .current) -> Date {
         let start = calendar.startOfDay(for: date)
         return calendar.date(byAdding: .day, value: 1, to: start) ?? date.addingTimeInterval(86_400)
+    }
+
+    private static func gregorian(in calendar: Calendar) -> Calendar {
+        var gregorian = Calendar(identifier: .gregorian)
+        gregorian.timeZone = calendar.timeZone
+        return gregorian
+    }
+
+    /// Local midnight at the start of a stored day.
+    private static func start(ofDay key: String, calendar: Calendar) -> Date? {
+        let parts = key.split(separator: "-").compactMap { Int($0) }
+        guard parts.count == 3 else { return nil }
+        return gregorian(in: calendar).date(from: DateComponents(year: parts[0], month: parts[1], day: parts[2]))
     }
 }
 
@@ -695,6 +724,14 @@ extension Assist {
         if !words.isEmpty, ContentPolicy.evaluate(words, operation: AssistTask.captions.screeningOperation).isAllowed {
             return words
         }
-        return "A short video to share with friends"
+        return plainVideoHint
+    }
+
+    static let plainVideoHint = "A short video to share with friends"
+
+    /// Whether the caption writer would hear her words from the video, not
+    /// just the plain line: what the button's note and the footnote say.
+    public static func sendsVideoWords(transcript: String) -> Bool {
+        videoCaptionHint(transcript: transcript) != plainVideoHint
     }
 }

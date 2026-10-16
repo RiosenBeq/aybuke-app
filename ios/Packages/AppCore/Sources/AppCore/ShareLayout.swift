@@ -218,11 +218,29 @@ public enum ShareLayout {
     }
 
     /// Whether the photo leaves room around it at this size, so a
-    /// background shows (more than 1% apart in shape).
+    /// background shows (more than 1% apart in shape, or kept clear of an
+    /// app's buttons).
     public static func showsBackdrop(imageWidth: Double, imageHeight: Double, size: ShareSize) -> Bool {
         guard let pixels = size.pixelSize, imageWidth > 0, imageHeight > 0 else { return false }
+        // Kept clear of an app's buttons, the photo always has room around it.
+        guard photoInsets(size: size) == ShareInsets() else { return true }
         let ratio = (imageWidth / imageHeight) / (pixels.width / pixels.height)
         return abs(ratio - 1) > 0.01
+    }
+
+    /// The edges the Photo design keeps free: at TikTok's size its tabs,
+    /// button rail and caption, so the whole photo, the free mark and the AI
+    /// label stay clear of them. Stories and the feeds show it edge to edge.
+    public static func photoInsets(size: ShareSize) -> ShareInsets {
+        size == .tiktok ? size.safeInsets : ShareInsets()
+    }
+
+    /// Where the Photo design fits the whole photo; nil for the photo's own shape.
+    public static func photoArea(size: ShareSize) -> CanvasRect? {
+        guard let pixels = size.pixelSize else { return nil }
+        let insets = photoInsets(size: size)
+        return CanvasRect(x: insets.left, y: insets.top, width: pixels.width - insets.left - insets.right,
+                          height: pixels.height - insets.top - insets.bottom)
     }
 
     /// Room kept at the bottom for the visible AI label, clear of the app's

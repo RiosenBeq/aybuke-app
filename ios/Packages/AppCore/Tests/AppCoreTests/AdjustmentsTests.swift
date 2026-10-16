@@ -133,6 +133,24 @@ final class AdjustmentsTests: XCTestCase {
         XCTAssertEqual(switched.warmth, base.warmth - 0.1 + dreamy.shift(of: .warmth), accuracy: 1e-9)
     }
 
+    func testTakingAVibeOffAfterAnotherLeavesNothingBehind() throws {
+        // Adding and taking off the nudges left warmth at ±2.8e-17, which kept
+        // Reset, Apply and Save as my filter on for an invisible change.
+        for (first, second) in [("analog", "moody"), ("golden", "analog")] {
+            let a = try XCTUnwrap(AdjustVibes.preset(id: first))
+            let b = try XCTUnwrap(AdjustVibes.preset(id: second))
+            var settings = a.applied(to: .neutral, replacing: nil)
+            settings = b.applied(to: settings, replacing: a)
+            settings = b.removed(from: settings)
+            XCTAssertEqual(settings, .neutral, "\(first) → \(second) → \(second) off")
+            XCTAssertTrue(settings.isNeutral, "\(first) → \(second) → \(second) off")
+        }
+        // A real value next to the resting point stays hers.
+        var nudged = AdjustmentSettings()
+        nudged.warmth = 0.001
+        XCTAssertEqual(nudged.clamped().warmth, 0.001)
+    }
+
     // MARK: Rendering numbers
 
     func testBlurAndGrainGrowWithThePhoto() throws {

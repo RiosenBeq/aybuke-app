@@ -58,6 +58,11 @@ extension VideoEditorModel {
         pausePreview()
         autoEdit.phase = .moments(0)
         defer { autoEdit.phase = nil }
+        // How the clip is before this run: Undo goes back to it, and a cancel
+        // takes off captions made for it.
+        let before = VideoAutoEdit.Original(cutSilences: cutSilences, effect: effect, showsExtra: showsExtra,
+                                            trim: trim, captions: captions.snapshot)
+        var madeCaptions = false
         do {
             let analysis: AutoEditAnalyzer.Result
             if let cached = autoEdit.analysis {
@@ -85,13 +90,19 @@ extension VideoEditorModel {
             // made on the device now. A clip without speech goes on without.
             if captions.isWorking || (hasSound && captions.cues.isEmpty && captions.status == .idle) {
                 autoEdit.phase = .captions
-                if !captions.isWorking { captions.make(from: asset, duration: duration) }
+                if !captions.isWorking {
+                    captions.make(from: asset, duration: duration)
+                    madeCaptions = true
+                }
                 await captions.finishMaking()
             }
             try Task.checkCancellation()
             if autoEdit.edit == nil {
-                autoEdit.original = VideoAutoEdit.Original(cutSilences: cutSilences, effect: effect, showsExtra: showsExtra,
-                                                           trim: trim, captions: captions.snapshot)
+                // Captions made for the Auto edit come off with Undo; ones she
+                // was already making herself stay.
+                autoEdit.original = VideoAutoEdit.Original(cutSilences: before.cutSilences, effect: before.effect,
+                                                           showsExtra: before.showsExtra, trim: before.trim,
+                                                           captions: madeCaptions ? before.captions : captions.snapshot)
             }
             captions.style = platform.captionStyle
             captions.position = .bottom
@@ -105,6 +116,7 @@ extension VideoEditorModel {
             #endif
             return true
         } catch {
+            if madeCaptions { captions.restore(before.captions) }
             return false
         }
     }
@@ -156,16 +168,19 @@ extension VideoEditorModel {
         autoEdit.task?.cancel()
     }
 
-    /// What's said in the edited video, for the caption writer.
+    /// What's said in the edited video, for the caption writer: its captions,
+    /// and nothing while they're off.
     var autoEditTranscript: String {
-        captions.transcript(keeping: keptRanges)
+        guard captions.isOn else { return "" }
+        return captions.transcript(keeping: keptRanges)
     }
 }
 
 /// The free one a day, counted on this device (`AutoEditAllowance`).
 @MainActor
 enum AutoEditQuota {
-    private static let key = "autoEdit.allowance"
+    /// Delete my data removes it (`AppModel.Keys.wiped`).
+    nonisolated static let key = "autoEdit.allowance"
 
     #if DEBUG
     /// Screenshot scenes never spend or remember the real one;
@@ -200,6 +215,9 @@ enum AutoEditQuota {
 
     static var remainingToday: Int { allowance.remaining(at: .now) }
 
+    /// When the next free one is ready (the paywall's line).
+    static var nextFree: Date { allowance.nextFree(after: .now) }
+
     static func allows(isPro: Bool) -> Bool { allowance.allows(at: .now, isPro: isPro) }
 
     static func recordUse() {
@@ -209,10 +227,11 @@ enum AutoEditQuota {
     }
 }
 
-/// The words to post an Auto edit with: caption ideas from the server's
-/// writing help (Claude hears what she says in the video, up to 400
-/// characters), Apple's on-device writer or the hand-written list, their
-/// hashtags and, for Shorts, a title.
+/// The words to post an Auto edit with: caption ideas from Apple's
+/// on-device writer or the hand-written list, and, only when she taps "More
+/// ideas from Claude", the server's writing help (Claude hears the video's
+/// captions while they're on, up to 400 characters); their hashtags and, for
+/// Shorts, a title.
 @MainActor
 @Observable
 final class AutoEditPostText {
@@ -221,31 +240,46 @@ final class AutoEditPostText {
     private(set) var hashtags: [String] = []
     private(set) var title: String?
     private(set) var writer: WrittenBy?
+    /// Claude's ideas on screen came from what she says in the video.
+    private(set) var heardCaptions = false
     private(set) var isLoading = false
     private(set) var loadingWriter: WrittenBy?
-    @ObservationIgnored private var loaded: String?
+    @ObservationIgnored private var loaded: SocialPlatform?
 
-    /// Hand-written ideas show at once; a writer's replace them when one answers.
-    func load(platform: SocialPlatform, transcript: String, app: AppModel, fresh: Bool = false) async {
-        let key = platform.rawValue + "\n" + transcript
-        guard !isLoading, fresh || key != loaded else { return }
-        loaded = key
+    /// On the device only: hand-written ideas at once, the on-device
+    /// writer's when it answers. Nothing leaves the device.
+    func load(platform: SocialPlatform, app: AppModel, fresh: Bool = false) async {
+        guard !isLoading, fresh || platform != loaded else { return }
+        loaded = platform
         let pool = CuratedIdeas.for(.caption(look: nil, madeWithAI: false))
         let unseen = pool.filter { !captions.contains($0) }
         show(Array((unseen.count >= 3 ? unseen : pool).shuffled().prefix(3)), platform: platform, app: app, writer: nil)
-        let usesCloud = app.usesCloudWriter
-        guard usesCloud || app.writer.isAvailable else { return }
+        guard app.writer.isAvailable else { return }
         isLoading = true
         defer { isLoading = false }
-        if usesCloud {
-            loadingWriter = .cloud
-            let lines = await app.cloudVideoCaptions(transcript: transcript, platform: platform)
-            if !lines.isEmpty {
-                show(lines, platform: platform, app: app, writer: .cloud)
-                return
-            }
+        await writeOnDevice(platform: platform, app: app)
+    }
+
+    /// Her tap on "More ideas from Claude": the server's writing help hears
+    /// `transcript` (empty while captions are off: then a plain line) and the
+    /// platform. When it's off or fails, the on-device writer answers quietly.
+    func askClaude(platform: SocialPlatform, transcript: String, app: AppModel) async {
+        guard !isLoading else { return }
+        loaded = platform
+        isLoading = true
+        defer { isLoading = false }
+        loadingWriter = .cloud
+        let lines = await app.cloudVideoCaptions(transcript: transcript, platform: platform)
+        if !lines.isEmpty {
+            show(lines, platform: platform, app: app, writer: .cloud)
+            heardCaptions = Assist.sendsVideoWords(transcript: transcript)
+            return
         }
         guard app.writer.isAvailable else { return }
+        await writeOnDevice(platform: platform, app: app)
+    }
+
+    private func writeOnDevice(platform: SocialPlatform, app: AppModel) async {
         loadingWriter = .device
         let lines = await app.writer.ideas(.caption(look: nil, madeWithAI: false))
         if !lines.isEmpty { show(lines, platform: platform, app: app, writer: .device) }
@@ -256,6 +290,7 @@ final class AutoEditPostText {
         hashtags = PostText.hashtags(in: lines, adding: app.config.shareHashtags)
         title = platform.hasTitle ? lines.first.map(PostText.title(from:)) : nil
         self.writer = writer
+        heardCaptions = false
     }
 
     /// A caption with its hashtags, ready to paste.
@@ -265,10 +300,10 @@ final class AutoEditPostText {
 }
 
 extension AppModel {
-    /// Caption ideas for an Auto edit from the server's writing help: Claude
-    /// hears what she says in it (`Assist.videoCaptionHint`) and the
-    /// platform. None when writing help is off or fails, and never under 13
-    /// (`usesCloudWriter`).
+    /// Caption ideas for an Auto edit from the server's writing help, only
+    /// after she asked: Claude hears what she says in it while captions are
+    /// on (`Assist.videoCaptionHint`) and the platform. None when writing help
+    /// is off or fails, and never under 13 (`usesCloudWriter`).
     func cloudVideoCaptions(transcript: String, platform: SocialPlatform) async -> [String] {
         guard usesCloudWriter, let cloudWriter else { return [] }
         let request = AssistRequest(task: .captions, text: Assist.videoCaptionHint(transcript: transcript),

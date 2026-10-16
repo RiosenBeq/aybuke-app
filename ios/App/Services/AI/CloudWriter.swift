@@ -7,20 +7,26 @@ import AppCore
 /// your vibe". Text only, never a photo, and no credits.
 ///
 /// It uses only the session she already has (`existingAccessToken()`), so
-/// nobody gets an account for writing help. Every failure throws; the
-/// callers in `AppModel` fall back to Apple's on-device writer and the
-/// hand-written lists without a word, and screen every line on the device
+/// nobody gets an account for writing help, and sends StoreKit's
+/// AppTransaction like cloud jobs do: without a verified install the server
+/// only shares a small allowance. Every failure throws; the callers in
+/// `AppModel` fall back to Apple's on-device writer and the hand-written
+/// lists without a word, and screen every line on the device
 /// (`Assist.screened`) before she sees it.
 final class CloudWriter: Sendable {
     typealias Transport = @Sendable (URLRequest) async throws -> (Data, HTTPURLResponse?)
 
     private let config: BackendConfiguration
     private let accessToken: @Sendable () async throws -> String?
+    private let appTransaction: @Sendable () async -> String?
     private let transport: Transport
 
-    init(config: BackendConfiguration, auth: AuthSessionManager, session: URLSession = .shared) {
+    init(config: BackendConfiguration, auth: AuthSessionManager, appTransactions: AppTransactionProvider, session: URLSession = .shared) {
         self.config = config
         accessToken = { try await auth.existingAccessToken() }
+        // Usually read at launch already; writing help never waits long for
+        // it and goes without when StoreKit has none yet.
+        appTransaction = { await appTransactions.jws(waitingAtMost: .seconds(1)) }
         transport = { request in
             let (data, response) = try await session.mappedData(for: request)
             return (data, response as? HTTPURLResponse)
@@ -30,6 +36,7 @@ final class CloudWriter: Sendable {
     private init(config: BackendConfiguration, accessToken: @escaping @Sendable () async throws -> String?, transport: @escaping Transport) {
         self.config = config
         self.accessToken = accessToken
+        appTransaction = { nil }
         self.transport = transport
     }
 
@@ -51,7 +58,8 @@ final class CloudWriter: Sendable {
         try body.validate()
         // Refreshed if it expired, but never a new sign-up.
         guard let token = try await accessToken() else { throw AssistError.noSession }
-        return try await transport(RequestFactory.assist(body, config: config, accessToken: token))
+        let request = try RequestFactory.assist(body, config: config, accessToken: token, appTransactionJWS: await appTransaction())
+        return try await transport(request)
     }
 }
 
@@ -75,15 +83,23 @@ enum MakeupVibeOutcome: Equatable {
 
 extension AppModel {
     /// The server's writing help may be asked: cloud AI allowed for her age,
-    /// her consent, a session (it never makes one), a connection, and no rest
-    /// for her (`cloudPause`). Otherwise the on-device writer and the
-    /// hand-written lists answer, exactly as before.
+    /// her consent, a session (it never makes one), a connection, no rest
+    /// for her (`cloudPause`) and no pause of all cloud AI. Otherwise the
+    /// on-device writer and the hand-written lists answer, exactly as before.
     var usesCloudWriter: Bool {
-        guard cloudWriter != nil, allowsCloudAI, hasAIConsent, !isCloudOffline, cloudPause?.isActive() != true else { return false }
+        guard cloudWriter != nil, allowsCloudAI, hasAIConsent, !isCloudOffline, cloudPause?.isActive() != true,
+              !pausesWritingHelp else { return false }
         #if DEBUG
         if CloudWriter.isStubbed { return true }
         #endif
         return hasSession && !Self.staysOffServer
+    }
+
+    /// The owner's pause for all cloud AI, which the writing help keeps too
+    /// (a pause of free credits only leaves it on).
+    private var pausesWritingHelp: Bool {
+        guard let aiServicePause, aiServicePause.isActive() else { return false }
+        return !aiServicePause.freeOnly
     }
 
     /// The language the app shows, which the answer comes in.
@@ -116,9 +132,10 @@ extension AppModel {
         return upgraded.first.flatMap { $0 == idea ? nil : $0 }
     }
 
-    /// Caption ideas for the share composer, about the vibe: the writer hears
-    /// her Create prompt (`SharePayload.shareablePrompt`) or a plain line,
-    /// and the design she picked. None when writing help is off or fails.
+    /// Caption ideas for the share composer, about the vibe, only after she
+    /// asked: the writer hears her Create prompt (`SharePayload.shareablePrompt`)
+    /// or a plain line, and the design she picked. None when writing help is
+    /// off or fails.
     func cloudCaptions(prompt: String?, madeWithAI: Bool, format: String) async -> [String] {
         guard usesCloudWriter, let cloudWriter else { return [] }
         let request = AssistRequest(task: .captions, text: Assist.captionHint(prompt: prompt, madeWithAI: madeWithAI),

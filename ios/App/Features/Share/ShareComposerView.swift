@@ -372,9 +372,9 @@ struct ShareComposerView: View {
     }
 
     /// Three short captions about the vibe, never about how anyone looks:
-    /// from the server's writing help or Apple's on-device writer when one
-    /// answers, otherwise hand-written ones. Instagram can't prefill text, so
-    /// a tap copies one.
+    /// from Apple's on-device writer when it answers, otherwise hand-written
+    /// ones, and from the server's writing help (Claude) only when she asks.
+    /// Instagram can't prefill text, so a tap copies one.
     private var captionIdeasCard: some View {
         VStack(alignment: .leading, spacing: 10) {
             HStack {
@@ -422,10 +422,40 @@ struct ShareComposerView: View {
             ideasFootnote
                 .font(.legibleCaption)
                 .foregroundStyle(Palette.textTertiary)
+            if app.usesCloudWriter {
+                askClaude
+            }
         }
         .padding(16)
         .cardStyle()
         .animation(.snappy, value: captionIdeas)
+    }
+
+    /// Claude writes only when she asks, and the note says what it gets.
+    private var askClaude: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Button {
+                Haptics.tap()
+                Task { await askClaudeForCaptions() }
+            } label: {
+                Label {
+                    Text("More ideas from Claude", comment: "Button under caption ideas: asks the server's writing help (Claude) for captions. Keep the name Claude.")
+                } icon: {
+                    Image(systemName: "sparkles")
+                }
+            }
+            .buttonStyle(.secondary)
+            .disabled(isLoadingIdeas)
+            (Assist.sendsPrompt(payload.shareablePrompt, madeWithAI: madeWithAI)
+                ? Text("Claude, an AI helper, reads your prompt, never the photo.",
+                       comment: "Under the share composer's “More ideas from Claude” button for a creation from a prompt: the writing help gets the prompt. Keep the name Claude.")
+                : Text("Claude, an AI helper, never gets your photo or your words.",
+                       comment: "Under the share composer's “More ideas from Claude” button: the writing help gets only the design's name. Keep the name Claude."))
+                .font(.legibleCaption)
+                .foregroundStyle(Palette.textTertiary)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .padding(.top, 4)
     }
 
     /// Says who wrote the ideas, and how to copy one.
@@ -508,33 +538,43 @@ struct ShareComposerView: View {
 
     // MARK: Caption ideas
 
-    /// The server's writing help first (with the design she picked), then
-    /// Apple's on-device writer; the hand-written ideas stay when neither answers.
+    /// On the device only: hand-written ideas at once (a writer can take a
+    /// few seconds), different from the last set where possible, then Apple's
+    /// on-device writer's when it answers. Nothing leaves the device.
     private func loadCaptionIdeas() async {
         guard !isLoadingIdeas else { return }
         let context = OnDeviceWriter.IdeaContext.caption(look: nil, madeWithAI: madeWithAI)
-        // Hand-written ones show at once (a writer can take a few seconds),
-        // different from the last set where possible.
         let pool = CuratedIdeas.for(context)
         let unseen = pool.filter { !captionIdeas.contains($0) }
         captionIdeas = Array((unseen.count >= 3 ? unseen : pool).shuffled().prefix(3))
         ideasWriter = nil
-        let usesCloud = app.usesCloudWriter
-        guard usesCloud || app.writer.isAvailable else { return }
+        guard app.writer.isAvailable else { return }
         isLoadingIdeas = true
         defer { isLoadingIdeas = false }
-        if usesCloud {
-            loadingWriter = .cloud
-            let fresh = await app.cloudCaptions(prompt: payload.shareablePrompt, madeWithAI: madeWithAI, format: format.rawValue)
-            if !fresh.isEmpty {
-                captionIdeas = fresh
-                ideasWriter = .cloud
-                return
-            }
+        await writeIdeasOnDevice()
+    }
+
+    /// Her tap on "More ideas from Claude": the server's writing help hears
+    /// her Create prompt (or a plain line) and the design she picked. When
+    /// it's off or fails, the on-device writer answers quietly.
+    private func askClaudeForCaptions() async {
+        guard !isLoadingIdeas else { return }
+        isLoadingIdeas = true
+        defer { isLoadingIdeas = false }
+        loadingWriter = .cloud
+        let fresh = await app.cloudCaptions(prompt: payload.shareablePrompt, madeWithAI: madeWithAI, format: format.rawValue)
+        if !fresh.isEmpty {
+            captionIdeas = fresh
+            ideasWriter = .cloud
+            return
         }
         guard app.writer.isAvailable else { return }
+        await writeIdeasOnDevice()
+    }
+
+    private func writeIdeasOnDevice() async {
         loadingWriter = .device
-        let fresh = await app.writer.ideas(context)
+        let fresh = await app.writer.ideas(.caption(look: nil, madeWithAI: madeWithAI))
         if !fresh.isEmpty {
             captionIdeas = fresh
             ideasWriter = .device
