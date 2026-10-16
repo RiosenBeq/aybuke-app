@@ -240,17 +240,18 @@ final class PollsTests: XCTestCase {
             return [0xFF, marker, UInt8(length >> 8), UInt8(length & 0xFF)] + payload
         }
         let scan: [UInt8] = [0xFF, 0xDA, 0x00, 0x04, 0x01, 0x02, 0x11, 0x22, 0xFF, 0x00, 0xFF, 0xD0, 0x33, 0xFF, 0xD9]
-        let jpeg: [UInt8] = [0xFF, 0xD8]
-            + segment(0xE0, Array("JFIF\0".utf8) + [1, 1, 0, 0, 1, 0, 1, 0, 0])
-            + segment(0xE1, Array("Exif\0\0".utf8) + [0x4D, 0x4D, 0, 42])
-            + segment(0xE1, Array("http://ns.adobe.com/xap/1.0/\0".utf8) + Array("<x:xmpmeta/>".utf8))
-            + segment(0xED, Array("Photoshop 3.0\0".utf8))
-            + segment(0xE2, Array("ICC_PROFILE\0".utf8) + [1, 1])
-            + segment(0xFE, Array("a comment".utf8))
-            + [0xFF, 0xFF] + segment(0xDB, [0, 1, 2]) // with a fill byte
-            + segment(0xC0, [8, 0, 1, 0, 1, 1, 1, 0x11, 0])
-            + segment(0xC4, [0, 1])
-            + scan
+        // Built step by step: one long + chain is too slow to type-check on Linux.
+        var jpeg: [UInt8] = [0xFF, 0xD8]
+        jpeg += segment(0xE0, Array("JFIF\0".utf8) + [1, 1, 0, 0, 1, 0, 1, 0, 0])
+        jpeg += segment(0xE1, Array("Exif\0\0".utf8) + [0x4D, 0x4D, 0, 42])
+        jpeg += segment(0xE1, Array("http://ns.adobe.com/xap/1.0/\0".utf8) + Array("<x:xmpmeta/>".utf8))
+        jpeg += segment(0xED, Array("Photoshop 3.0\0".utf8))
+        jpeg += segment(0xE2, Array("ICC_PROFILE\0".utf8) + [1, 1])
+        jpeg += segment(0xFE, Array("a comment".utf8))
+        jpeg += [0xFF, 0xFF] + segment(0xDB, [0, 1, 2]) // with a fill byte
+        jpeg += segment(0xC0, [8, 0, 1, 0, 1, 1, 1, 0x11, 0])
+        jpeg += segment(0xC4, [0, 1])
+        jpeg += scan
         let stripped = try XCTUnwrap(JPEGMetadata.stripped(Data(jpeg)))
         XCTAssertEqual(JPEGMetadata.markers(in: stripped), [0xE0, 0xE2, 0xDB, 0xC0, 0xC4, 0xDA])
         XCTAssertEqual(Array(stripped.suffix(scan.count)), scan, "the scan is untouched")
