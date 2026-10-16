@@ -1,7 +1,10 @@
-"""Uploads the App Store screenshots in docs/marketing/app-store/<lang>/ (iPhone),
-<lang>/ipad/ and <lang>/mac/ to the iOS and macOS 1.0 versions, every locale.
+"""Replaces the App Store screenshots of every locale with docs/marketing/app-store/<lang>/
+(iPhone), <lang>/ipad/ and <lang>/mac/, on the iOS and macOS versions.
 
-    asc_screenshots.py <repo> [--dry-run] [--only en-US,tr] [--platform ios|mac]
+    asc_screenshots.py <repo> [--version 1.1] [--dry-run] [--only=en-US,tr] [--platform=ios|mac]
+
+--version takes a version string or a version id (see asc.resolve_versions); without
+it, each platform's editable version. --dry-run shows the records and the files.
 """
 import hashlib
 import sys
@@ -17,7 +20,6 @@ DRY = "--dry-run" in sys.argv
 ONLY = next((a.split("=", 1)[1].split(",") for a in sys.argv if a.startswith("--only=")), None)
 PLATFORM = next((a.split("=", 1)[1] for a in sys.argv if a.startswith("--platform=")), None)
 STORE = REPO / "docs/marketing/app-store"
-VERSIONS = {"ios": "f3e190c1-151c-4828-a349-b2c348d4ec20", "mac": "62d912cf-8fd9-4165-a5ea-03529fd63aba"}
 FOLDER = {"en-US": "en", "tr": "tr", "es-ES": "es", "es-MX": "es", "pt-BR": "pt-BR", "fr-FR": "fr", "de-DE": "de",
           "it": "it", "ru": "ru", "ja": "ja", "ko": "ko", "zh-Hans": "zh-Hans", "id": "id"}
 
@@ -59,9 +61,8 @@ def upload(set_id, path):
 
 def main():
     total = 0
-    for platform, version in VERSIONS.items():
-        if PLATFORM and platform != PLATFORM:
-            continue
+    versions = asc.resolve_versions(asc.version_spec(sys.argv), platforms=(PLATFORM,) if PLATFORM else ("ios", "mac"))
+    for platform, (version, _, _) in versions.items():
         locs, _ = asc.get_all(f"/v1/appStoreVersions/{version}/appStoreVersionLocalizations")
         for loc in locs:
             locale = loc["attributes"]["locale"]

@@ -81,3 +81,67 @@ def patch(path, body):
 
 def delete(path):
     return request("DELETE", path)
+
+
+# MARK: - Which version record a script works on
+
+APP_ID = "6822716008"  # Aybuke's Apple ID (AppConfig.json appStoreID)
+PLATFORMS = {"ios": "IOS", "mac": "MAC_OS"}
+# States in which a version's metadata, screenshots and previews can still change.
+EDITABLE = {"PREPARE_FOR_SUBMISSION", "DEVELOPER_REJECTED", "REJECTED", "METADATA_REJECTED", "INVALID_BINARY"}
+
+
+def version_spec(argv):
+    """`--version 1.1` (a version string, both platforms), `--version <id>` (one
+    record, its own platform) or a comma list of both; None without the flag."""
+    for index, arg in enumerate(argv):
+        if arg.startswith("--version="):
+            return arg.split("=", 1)[1]
+        if arg == "--version":
+            if index + 1 >= len(argv) or argv[index + 1].startswith("--"):
+                raise SystemExit("--version needs a version string (1.1) or a version id")
+            return argv[index + 1]
+    return None
+
+
+def _state(attributes):
+    return attributes.get("appVersionState") or attributes.get("appStoreState") or "?"
+
+
+def resolve_versions(spec=None, platforms=("ios", "mac")):
+    """{"ios"|"mac": (id, versionString, state)} for the version records to work
+    on: the ones `spec` names, else each platform's editable one. Stops when a
+    platform has none, or more than one editable record."""
+    chosen, strings = {}, []
+    for item in [s.strip() for s in (spec or "").split(",") if s.strip()]:
+        if len(item) == 36 and item.count("-") == 4:
+            data = get(f"/v1/appStoreVersions/{item}")["data"]
+            platform = next(k for k, v in PLATFORMS.items() if v == data["attributes"]["platform"])
+            chosen[platform] = (item, data["attributes"]["versionString"], _state(data["attributes"]))
+        else:
+            strings.append(item)
+    for platform in platforms:
+        if platform in chosen:
+            continue
+        versions, _ = get_all(f"/v1/apps/{APP_ID}/appStoreVersions", **{"filter[platform]": PLATFORMS[platform]})
+        if strings:
+            found = [v for v in versions if v["attributes"]["versionString"] in strings]
+        else:
+            found = [v for v in versions if _state(v["attributes"]) in EDITABLE]
+        if len(found) != 1:
+            listed = ", ".join(f"{v['attributes']['versionString']} {_state(v['attributes'])} {v['id']}" for v in versions)
+            raise SystemExit(f"{platform}: {len(found)} matching version records (want 1). Versions: {listed or 'none'}")
+        v = found[0]
+        chosen[platform] = (v["id"], v["attributes"]["versionString"], _state(v["attributes"]))
+    for platform, (vid, string, state) in sorted(chosen.items()):
+        flag = "" if state in EDITABLE else "  (not editable in this state)"
+        print(f"{platform}: version {string} {state} {vid}{flag}")
+    return {p: chosen[p] for p in platforms if p in chosen}
+
+
+def editable_app_info():
+    """The app info record that takes name and subtitle edits (the one not live)."""
+    infos, _ = get_all(f"/v1/apps/{APP_ID}/appInfos")
+    live = {"READY_FOR_SALE", "READY_FOR_DISTRIBUTION", "REPLACED_WITH_NEW_INFO"}
+    open_ = [i for i in infos if (i["attributes"].get("state") or i["attributes"].get("appStoreState")) not in live]
+    return (open_ or infos)[0]["id"]

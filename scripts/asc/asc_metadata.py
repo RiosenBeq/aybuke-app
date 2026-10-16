@@ -1,6 +1,13 @@
 """Pushes docs/marketing/app-store-metadata.json to App Store Connect: name and
-subtitle (app info), description, keywords and promotional text (iOS and macOS
-1.0).
+subtitle (the editable app info), description, keywords, promotional text and
+What's New (iOS and macOS), and with --review-notes the App Review notes from
+app-store-listing.md.
+
+Which version records: `--version 1.1` (the version string, on both platforms),
+`--version <version id>` (that record; a comma list for both), or by default
+each platform's editable version (prepare for submission, rejected, or
+developer-rejected). What's New is left out where App Store Connect refuses it
+(the app's first version).
 
 The Mac description is made from the iOS one by `mac_description`, the same
 way every time: bullets about iPhone-only features (widgets, the Lock Screen,
@@ -10,7 +17,10 @@ too), and each `mac.replace` pair must match exactly once (Retro Cam without a
 flash, "iPhone, iPad and Mac", the Mac App Store's subscription path). A text
 that still names an iPhone-only feature, a flash, or no Mac stops the push.
 
-    asc_metadata.py <repo> [--dry-run]          checks, then pushes (or not)
+    asc_metadata.py <repo> [--version 1.1] [--dry-run] [--review-notes]
+                                                checks, then pushes (or, with
+                                                --dry-run, shows the records and
+                                                what would change)
     asc_metadata.py <repo> --check [--show=ja]  offline checks only (no API);
                                                 --show prints that Mac text
     asc_metadata.py <repo> --season <id> [--dry-run]
@@ -30,10 +40,8 @@ import re
 import sys
 from pathlib import Path
 
-LIMITS = {"name": 30, "subtitle": 30, "keywords": 100, "promotionalText": 170, "description": 4000}
-APP_INFO = "8ac32843-da8f-4dc6-9e9f-f2eb04392678"
-IOS = "f3e190c1-151c-4828-a349-b2c348d4ec20"
-MAC = "62d912cf-8fd9-4165-a5ea-03529fd63aba"
+LIMITS = {"name": 30, "subtitle": 30, "keywords": 100, "promotionalText": 170, "description": 4000,
+          "whatsNew": 4000, "notes": 4000}
 
 # iPhone-only features as the 13 locales name them.
 IPHONE_ONLY = re.compile(
@@ -100,7 +108,8 @@ def push_season(meta_all, season, dry):
 
     import asc  # needs requests + cryptography and the API key; the check doesn't
 
-    for locs in (localizations(asc, IOS), localizations(asc, MAC)):
+    versions = asc.resolve_versions(asc.version_spec(sys.argv))
+    for locs in (localizations(asc, vid) for vid, _, _ in versions.values()):
         for locale, text in texts.items():
             if locale in locs:
                 loc_id = locs[locale]["id"]
@@ -202,8 +211,14 @@ def build(repo, meta_all):
         check_pro_names(locale, meta["description"], names)
         info = {"name": meta["name"], "subtitle": meta["subtitle"]}
         ios = {"description": meta["description"], "keywords": meta["keywords"],
-               "promotionalText": meta["promotionalText"]}
-        mac = dict(ios, description=mac_description(locale, meta))
+               "promotionalText": meta["promotionalText"], "whatsNew": meta["whatsNew"]}
+        mac = dict(ios, description=mac_description(locale, meta),
+                   promotionalText=meta["mac"].get("promotionalText", meta["promotionalText"]),
+                   whatsNew=meta["mac"].get("whatsNew", meta["whatsNew"]))
+        for key in ("promotionalText", "whatsNew"):
+            match = IPHONE_ONLY.search(mac[key]) or FLASH.search(mac[key])
+            if match:
+                raise SystemExit(f"{locale} mac {key}: names {match.group(0)!r}; give the locale's mac block a {key}")
         for fields in (info, ios, mac):
             check(locale, fields)
             for key, value in fields.items():
@@ -246,6 +261,8 @@ def main():
         for arg in sys.argv:
             if arg.startswith("--show="):
                 print(built[arg.split("=", 1)[1]][2]["description"])
+        for platform, text in review_notes(repo).items():
+            print(f"review notes {platform}: {len(text)}/4000")
         seasons = sorted({s for meta in meta_all.values() for s in meta.get("promoBySeason", {})})
         print(f"seasonal promotional text: {', '.join(seasons) or 'none'}")
         print("check ok")
@@ -253,8 +270,10 @@ def main():
 
     import asc  # needs requests + cryptography and the API key; the check doesn't
 
-    info_locs, _ = asc.get_all(f"/v1/appInfos/{APP_INFO}/appInfoLocalizations")
-    ios_locs, mac_locs = localizations(asc, IOS), localizations(asc, MAC)
+    versions = asc.resolve_versions(asc.version_spec(sys.argv))
+    app_info = asc.editable_app_info()
+    info_locs, _ = asc.get_all(f"/v1/appInfos/{app_info}/appInfoLocalizations")
+    locs = {platform: localizations(asc, vid) for platform, (vid, _, _) in versions.items()}
     for item in info_locs:
         locale = item["attributes"]["locale"]
         if locale not in built:
@@ -266,12 +285,69 @@ def main():
             continue
         asc.patch(f"/v1/appInfoLocalizations/{item['id']}", {"data": {
             "type": "appInfoLocalizations", "id": item["id"], "attributes": info}})
-        for locs, fields in ((ios_locs, ios_fields), (mac_locs, mac_fields)):
-            if locale in locs:
-                loc_id = locs[locale]["id"]
-                asc.patch(f"/v1/appStoreVersionLocalizations/{loc_id}", {"data": {
-                    "type": "appStoreVersionLocalizations", "id": loc_id, "attributes": fields}})
+        for platform, fields in (("ios", ios_fields), ("mac", mac_fields)):
+            if platform in locs and locale in locs[platform]:
+                patch_localization(asc, locs[platform][locale]["id"], fields)
+    for platform, (vid, _, _) in versions.items():
+        missing = sorted(set(built) - set(locs[platform]))
+        if missing:
+            print(f"{platform}: no localization yet for {', '.join(missing)} (add them in App Store Connect first)")
+    if "--review-notes" in sys.argv:
+        notes = review_notes(repo)
+        for platform, (vid, _, _) in versions.items():
+            print(f"{platform}: review notes {len(notes[platform])}/4000")
+            if not dry:
+                push_review_notes(asc, vid, notes[platform], versions)
     print("done" if not dry else "dry run ok")
+
+
+def patch_localization(asc, loc_id, fields):
+    """What's New can't be set on an app's first version: send the rest then."""
+    body = lambda attrs: {"data": {"type": "appStoreVersionLocalizations", "id": loc_id, "attributes": attrs}}
+    try:
+        asc.patch(f"/v1/appStoreVersionLocalizations/{loc_id}", body(fields))
+    except RuntimeError as error:
+        if "whatsNew" not in str(error):
+            raise
+        asc.patch(f"/v1/appStoreVersionLocalizations/{loc_id}", body({k: v for k, v in fields.items() if k != "whatsNew"}))
+        print("  (What's New not accepted for this version: left out)")
+
+
+def review_notes(repo):
+    """The App Review notes in app-store-listing.md: iOS, and the Mac's with its paragraph."""
+    md = (repo / "docs/marketing/app-store-listing.md").read_text(encoding="utf-8")
+    def block_after(marker):
+        start = md.index("```text\n", md.index(marker)) + len("```text\n")
+        return md[start:md.index("\n```", start)].strip()
+    ios = block_after("**App Review notes**")
+    mac_paragraph = block_after("For the macOS version the same text gets one more paragraph")
+    body, contact = ios.rsplit("\n\nContact:", 1)
+    notes = {"ios": ios, "mac": f"{body}\n\n{mac_paragraph}\n\nContact:{contact}"}
+    for platform, text in notes.items():
+        check(f"review notes {platform}", {"notes": text})
+    return notes
+
+
+def push_review_notes(asc, version_id, notes, versions):
+    detail = asc.get(f"/v1/appStoreVersions/{version_id}/appStoreReviewDetail").get("data")
+    if detail:
+        asc.patch(f"/v1/appStoreReviewDetails/{detail['id']}", {"data": {
+            "type": "appStoreReviewDetails", "id": detail["id"], "attributes": {"notes": notes}}})
+        return
+    # A new record: the contact details come from another version's review detail.
+    template = None
+    for other, _, _ in versions.values():
+        if other != version_id:
+            template = asc.get(f"/v1/appStoreVersions/{other}/appStoreReviewDetail").get("data")
+            if template:
+                break
+    if not template:
+        raise SystemExit("no App Review details to copy the contact from: fill them in App Store Connect once")
+    keep = ("contactFirstName", "contactLastName", "contactPhone", "contactEmail", "demoAccountRequired")
+    attributes = {k: template["attributes"].get(k) for k in keep if template["attributes"].get(k) is not None}
+    asc.post("/v1/appStoreReviewDetails", {"data": {
+        "type": "appStoreReviewDetails", "attributes": dict(attributes, notes=notes),
+        "relationships": {"appStoreVersion": {"data": {"type": "appStoreVersions", "id": version_id}}}}})
 
 
 if __name__ == "__main__":
