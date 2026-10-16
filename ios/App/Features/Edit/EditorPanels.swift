@@ -518,7 +518,7 @@ struct AdjustPanel: View {
                 case .noFace:
                     Text("No face found in this photo.", comment: "Adjust › Soft skin: the photo has no face to soften")
                 case .idle, .ready:
-                    Text("Gentle, and pores, freckles and moles stay.", comment: "Under Adjust's Soft skin slider")
+                    Text("Gentle: pores, freckles and moles stay.", comment: "Under Adjust's Soft skin slider")
                 }
             }
             .font(.legibleCaption)
