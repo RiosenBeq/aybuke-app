@@ -652,7 +652,7 @@ struct LibraryView: View {
                 return couldNotOpen()
             }
             Haptics.tap()
-            app.countHappyMoment()
+            app.noteFinishedExport(allowsAd: false)
             sharedFolder = export.folder
             shareItems = ActivityItems(items: export.files)
         }
@@ -955,7 +955,6 @@ struct CreationDetailView: View {
     let creation: Creation
 
     @Environment(AppModel.self) private var app
-    @Environment(\.requestReview) private var requestReview
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
     @State private var image: UIImage?
@@ -1114,9 +1113,6 @@ struct CreationDetailView: View {
         try? modelContext.save()
         if creation.isFavorite { Haptics.heartbeat() } else { Haptics.selection() }
         app.syncWidgets()
-        if creation.isFavorite, app.registerHappyMoment() {
-            requestReview()
-        }
     }
 
     private func share() {

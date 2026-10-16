@@ -1,16 +1,56 @@
 import Foundation
 
-// Gentle engagement: when to ask for a rating and which reminders to schedule.
-// Both are opt-in and conservative on purpose — the app is for teens and
+// Gentle engagement: when to ask for a rating or show the invite card, and which
+// reminders to schedule. All conservative on purpose — the app is for teens and
 // young women, so no streak pressure, no night-time pings, no nagging.
+
+// MARK: - Sessions
+
+/// Her visits: every launch starts one, and so does coming back after at least
+/// half an hour away. The first is for finding her way around, so neither the
+/// rating request nor the invite card ever comes in it.
+public struct EngagementSessions: Codable, Equatable, Sendable {
+    public private(set) var count: Int
+    /// When the app last went to the background; cleared when she's back.
+    public private(set) var backgroundedAt: Date?
+
+    public static let newSessionAfter: TimeInterval = 30 * 60
+
+    public init(count: Int = 0) {
+        self.count = count
+    }
+
+    public mutating func noteLaunch() {
+        count += 1
+        backgroundedAt = nil
+    }
+
+    public mutating func noteBackground(at date: Date) {
+        backgroundedAt = date
+    }
+
+    /// Back in front: a new session after long enough away (a clock set back
+    /// counts as no time away).
+    public mutating func noteForeground(at date: Date) {
+        if let backgroundedAt, date.timeIntervalSince(backgroundedAt) >= Self.newSessionAfter {
+            count += 1
+        }
+        backgroundedAt = nil
+    }
+
+    public var isFirstSession: Bool { count <= 1 }
+}
 
 // MARK: - Review prompts
 
-/// Asks for an App Store rating only after real happy moments (saving,
-/// sharing, hearting), never soon after something went wrong, never in the
-/// first days, and at most once per app version. iOS itself also caps the
-/// system prompt at three times a year.
+/// Asks for an App Store rating only after real happy moments (a finished save
+/// or share): from the third one on, never in her first session, never soon
+/// after something went wrong, at most once per app version and at most once
+/// every 60 days. iOS itself also caps the system prompt at three times a year.
+/// The app asks at a natural break (nothing else on screen, never during the
+/// tour), and never at the same break as the invite card or an ad.
 public struct ReviewPromptPolicy: Codable, Equatable, Sendable {
+    /// Finished saves and shares (the stored name predates that rule).
     public var happyMoments: Int
     public var firstSeen: Date
     public var lastPromptedVersion: String?
@@ -18,8 +58,7 @@ public struct ReviewPromptPolicy: Codable, Equatable, Sendable {
     public var lastSetback: Date?
 
     public static let minimumHappyMoments = 3
-    public static let minimumDaysSinceFirstSeen = 2.0
-    public static let minimumDaysBetweenPrompts = 120.0
+    public static let minimumDaysBetweenPrompts = 60.0
     public static let setbackCooldownHours = 72.0
 
     public init(firstSeen: Date) {
@@ -32,18 +71,14 @@ public struct ReviewPromptPolicy: Codable, Equatable, Sendable {
         lastSetback = date
     }
 
-    /// Counts a happy moment and returns true when this is the moment to ask.
-    public mutating func recordHappyMoment(at now: Date, appVersion: String) -> Bool {
+    /// A finished save or share.
+    public mutating func recordExport() {
         happyMoments += 1
-        guard shouldPrompt(now: now, appVersion: appVersion) else { return false }
-        lastPromptedVersion = appVersion
-        lastPromptDate = now
-        return true
     }
 
-    public func shouldPrompt(now: Date, appVersion: String) -> Bool {
-        guard happyMoments >= Self.minimumHappyMoments else { return false }
-        guard now.timeIntervalSince(firstSeen) >= Self.minimumDaysSinceFirstSeen * 86_400 else { return false }
+    /// A clock set back counts as "too soon", never as "long ago".
+    public func shouldPrompt(now: Date, appVersion: String, isFirstSession: Bool) -> Bool {
+        guard happyMoments >= Self.minimumHappyMoments, !isFirstSession else { return false }
         guard lastPromptedVersion != appVersion else { return false }
         if let last = lastPromptDate, now.timeIntervalSince(last) < Self.minimumDaysBetweenPrompts * 86_400 {
             return false
@@ -51,6 +86,81 @@ public struct ReviewPromptPolicy: Codable, Equatable, Sendable {
         if let setback = lastSetback, now.timeIntervalSince(setback) < Self.setbackCooldownHours * 3600 {
             return false
         }
+        return true
+    }
+
+    public mutating func notePrompted(at date: Date, appVersion: String) {
+        lastPromptedVersion = appVersion
+        lastPromptDate = date
+    }
+}
+
+// MARK: - Invite card
+
+/// "Loving Aybuke? Invite a friend": a small card after a finished save or
+/// share, rarer than the rating request. Never before the fifth one or in her
+/// first session; after that only once three more have followed and 14 days
+/// have passed, never soon after something went wrong, three times at most,
+/// and never again once she taps "Don't show again" or opens the invite from it.
+public struct InviteCardPacing: Codable, Equatable, Sendable {
+    public struct Rules: Equatable, Sendable {
+        public var minimumExports: Int
+        public var exportsBetween: Int
+        public var spacing: TimeInterval
+        public var maximumShows: Int
+        public var setbackCooldown: TimeInterval
+
+        public init(minimumExports: Int, exportsBetween: Int, spacing: TimeInterval, maximumShows: Int, setbackCooldown: TimeInterval) {
+            self.minimumExports = minimumExports
+            self.exportsBetween = exportsBetween
+            self.spacing = spacing
+            self.maximumShows = maximumShows
+            self.setbackCooldown = setbackCooldown
+        }
+
+        public static let standard = Rules(minimumExports: 5, exportsBetween: 3, spacing: 14 * 86_400, maximumShows: 3,
+                                           setbackCooldown: 72 * 3600)
+    }
+
+    public var exports: Int
+    public var exportsAtLastShow: Int
+    public var lastShown: Date?
+    public var shows: Int
+    /// "Don't show again", or she opened the invite from the card.
+    public var isRetired: Bool
+
+    public init(exports: Int = 0, exportsAtLastShow: Int = 0, lastShown: Date? = nil, shows: Int = 0, isRetired: Bool = false) {
+        self.exports = exports
+        self.exportsAtLastShow = exportsAtLastShow
+        self.lastShown = lastShown
+        self.shows = shows
+        self.isRetired = isRetired
+    }
+
+    public mutating func noteExport() {
+        exports += 1
+    }
+
+    public mutating func noteShown(at date: Date) {
+        lastShown = date
+        shows += 1
+        exportsAtLastShow = exports
+    }
+
+    public mutating func retire() {
+        isRetired = true
+    }
+
+    /// Whether the card may follow the save or share just counted. A clock set
+    /// back counts as "too soon".
+    public func isDue(at now: Date, isFirstSession: Bool, lastSetback: Date?, rules: Rules = .standard) -> Bool {
+        guard !isRetired, !isFirstSession, shows < rules.maximumShows, exports >= rules.minimumExports else { return false }
+        if let lastShown {
+            guard now.timeIntervalSince(lastShown) >= rules.spacing, exports - exportsAtLastShow >= rules.exportsBetween else {
+                return false
+            }
+        }
+        if let lastSetback, now.timeIntervalSince(lastSetback) < rules.setbackCooldown { return false }
         return true
     }
 }

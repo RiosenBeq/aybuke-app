@@ -28,8 +28,7 @@ struct PrimaryButtonStyle: ButtonStyle {
                         .background(isEnabled ? .clear : Palette.background, in: .button)
                 }
                 .shadow(color: Palette.ink.opacity(isEnabled ? 0.18 : 0), radius: 16, y: 8)
-                .scaleEffect(configuration.isPressed ? 0.97 : 1)
-                .animation(.spring(response: 0.25, dampingFraction: 0.7), value: configuration.isPressed)
+                .pressFeedback(configuration.isPressed, scale: 0.97)
         }
     }
 }
@@ -49,8 +48,7 @@ struct SecondaryButtonStyle: ButtonStyle {
             .padding(.horizontal, 18)
             .background(Palette.surface, in: .button)
             .overlay(RoundedRectangle.button.strokeBorder(Palette.strokeStrong, lineWidth: 1))
-            .scaleEffect(configuration.isPressed ? 0.97 : 1)
-            .animation(.spring(response: 0.25, dampingFraction: 0.7), value: configuration.isPressed)
+            .pressFeedback(configuration.isPressed, scale: 0.97)
     }
 }
 
@@ -69,8 +67,7 @@ struct IconButtonStyle: ButtonStyle {
             .frame(width: max(size, 44), height: max(size, 44))
             .contentShape(Circle())
             .macHoverLift()
-            .scaleEffect(configuration.isPressed ? 0.92 : 1)
-            .animation(.spring(response: 0.25, dampingFraction: 0.7), value: configuration.isPressed)
+            .pressFeedback(configuration.isPressed, scale: 0.92)
     }
 }
 
@@ -154,7 +151,7 @@ struct CostLabel: View {
             .font(.subheadline.weight(.bold))
             .padding(.horizontal, 8)
             .padding(.vertical, 3)
-            .background(Palette.onAccent.opacity(0.18), in: .tag)
+            .background(Palette.onAccent.opacity(0.18), in: .pill)
         }
     }
 }

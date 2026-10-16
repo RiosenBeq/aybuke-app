@@ -8,7 +8,6 @@ struct EditorView: View {
 
     @Environment(AppModel.self) private var app
     @Environment(\.dismiss) private var dismiss
-    @Environment(\.requestReview) private var requestReview
     @State private var model: EditorViewModel
     @State private var showDiscardAlert = false
     @State private var showReport = false
@@ -412,7 +411,7 @@ struct EditorView: View {
         .foregroundStyle(Palette.onAccent)
         .padding(.horizontal, showsText ? 16 : 0)
         .frame(minWidth: 44, minHeight: 44)
-        .background(Palette.accent, in: .chip)
+        .background(Palette.accent, in: .pill)
         .fixedSize()
     }
 
@@ -605,7 +604,7 @@ struct EditorView: View {
                         .foregroundStyle(Palette.textPrimary)
                         .padding(.horizontal, 12)
                         .padding(.vertical, 8)
-                        .background(Palette.blush, in: .chip)
+                        .background(Palette.blush, in: .pill)
                         .accessibilityLabel("Likeness check: still looks like you")
                         .transition(.scale.combined(with: .opacity))
                 }
@@ -880,11 +879,9 @@ struct EditorView: View {
                                         inheritedSourceType: provenance.storedSourceType)
                 app.showToast("Saved to Photos", style: .success)
                 Haptics.success()
-                if app.registerHappyMoment() {
-                    requestReview()
-                }
-                // Free members: an ad may follow once the editor closes, never inside it.
-                app.ads.noteFinishedExport()
+                // An ad, a rating request or the invite card may follow once
+                // the editor closes, never inside it.
+                app.noteFinishedExport()
             } catch {
                 app.handleSaveError(error, shareInstead: sharePayload)
             }

@@ -76,7 +76,7 @@ struct CreditPill: View {
             .foregroundStyle(Palette.onAccent)
             .padding(.horizontal, 12)
             .padding(.vertical, 7)
-            .background(Palette.accent, in: .chip)
+            .background(Palette.accent, in: .pill)
             // The pill stays small; the touch target doesn't.
             .frame(minWidth: 44, minHeight: 44)
             .contentShape(Rectangle())

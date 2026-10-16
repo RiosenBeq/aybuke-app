@@ -563,6 +563,7 @@ private struct MakeupChip: View {
             .background(isSelected ? Palette.primary : Palette.surface, in: .chip)
             // Blush on white is too faint to show selection alone (see SelectableChip).
             .overlay(RoundedRectangle.chip.strokeBorder(isSelected ? Palette.ink : Palette.stroke, lineWidth: isSelected ? 1.5 : 1))
+            .selectionPop(isSelected)
             .animation(Motion.press, value: isSelected)
         }
         .buttonStyle(.pressable)

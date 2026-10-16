@@ -409,8 +409,16 @@ enum InviteCard {
             UIImage(named: "BrandIcon")?.draw(in: icon)
             cg.restoreGState()
 
-            ShareRenderer.drawText(Brand.name, font: ShareRenderer.brandFont(112, weight: .heavy), color: .brandInk,
-                                   centeredIn: CGRect(x: 0, y: 506, width: canvas.width, height: 140))
+            // The wordmark, as on Explore (the name in Poppins if the asset is missing).
+            if let wordmark = UIImage(named: "Wordmark"), wordmark.size.height > 0 {
+                let height: CGFloat = 112
+                let width = height * wordmark.size.width / wordmark.size.height
+                wordmark.withTintColor(.brandInk, renderingMode: .alwaysOriginal)
+                    .draw(in: CGRect(x: (canvas.width - width) / 2, y: 520, width: width, height: height))
+            } else {
+                ShareRenderer.drawText(Brand.name, font: ShareRenderer.brandFont(112, weight: .heavy), color: .brandInk,
+                                       centeredIn: CGRect(x: 0, y: 506, width: canvas.width, height: 140))
+            }
             ShareRenderer.drawText(String(localized: "Make it glow"), font: ShareRenderer.accentFont(62), color: .brandInk,
                                    centeredIn: CGRect(x: 0, y: 638, width: canvas.width, height: 84))
 

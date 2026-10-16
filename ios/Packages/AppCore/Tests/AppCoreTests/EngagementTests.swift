@@ -12,31 +12,62 @@ final class EngagementTests: XCTestCase {
         calendar.date(from: DateComponents(year: year, month: month, day: day, hour: hour, minute: minute))!
     }
 
-    // MARK: Review prompts
+    // MARK: Sessions
 
-    func testReviewWaitsForEnoughHappyMomentsAndDays() {
-        let start = date(2026, 10, 1, 12)
-        var policy = ReviewPromptPolicy(firstSeen: start)
-        XCTAssertFalse(policy.recordHappyMoment(at: start, appVersion: "1.0"))
-        XCTAssertFalse(policy.recordHappyMoment(at: start, appVersion: "1.0"))
-        // Third happy moment, but still on day one.
-        XCTAssertFalse(policy.recordHappyMoment(at: start.addingTimeInterval(3600), appVersion: "1.0"))
-        XCTAssertTrue(policy.recordHappyMoment(at: date(2026, 10, 4, 12), appVersion: "1.0"))
-        // Once per version.
-        XCTAssertFalse(policy.recordHappyMoment(at: date(2026, 10, 5, 12), appVersion: "1.0"))
+    func testSessionsCountLaunchesAndLongBreaks() {
+        var sessions = EngagementSessions()
+        XCTAssertTrue(sessions.isFirstSession)
+        sessions.noteLaunch()
+        XCTAssertTrue(sessions.isFirstSession)
+        // A quick look at another app: the same session.
+        sessions.noteBackground(at: date(2026, 10, 1, 12))
+        sessions.noteForeground(at: date(2026, 10, 1, 12, 20))
+        XCTAssertEqual(sessions.count, 1)
+        // Half an hour away: a new one.
+        sessions.noteBackground(at: date(2026, 10, 1, 13))
+        sessions.noteForeground(at: date(2026, 10, 1, 13, 30))
+        XCTAssertEqual(sessions.count, 2)
+        XCTAssertFalse(sessions.isFirstSession)
+        // A clock set back is no time away; a relaunch always counts.
+        sessions.noteBackground(at: date(2026, 10, 2, 12))
+        sessions.noteForeground(at: date(2026, 10, 1, 12))
+        XCTAssertEqual(sessions.count, 2)
+        sessions.noteLaunch()
+        XCTAssertEqual(sessions.count, 3)
+        XCTAssertNil(sessions.backgroundedAt)
     }
 
-    func testReviewRespectsSetbacksAndSpacing() {
+    // MARK: Review prompts
+
+    func testReviewWaitsForThreeExportsAndASecondSession() {
+        var policy = ReviewPromptPolicy(firstSeen: date(2026, 10, 1, 12))
+        let now = date(2026, 10, 1, 15)
+        policy.recordExport()
+        policy.recordExport()
+        XCTAssertFalse(policy.shouldPrompt(now: now, appVersion: "1.1", isFirstSession: false))
+        policy.recordExport()
+        // The third, but still in her first session.
+        XCTAssertFalse(policy.shouldPrompt(now: now, appVersion: "1.1", isFirstSession: true))
+        XCTAssertTrue(policy.shouldPrompt(now: now, appVersion: "1.1", isFirstSession: false))
+        policy.notePrompted(at: now, appVersion: "1.1")
+        // Once per version.
+        XCTAssertFalse(policy.shouldPrompt(now: date(2027, 3, 1, 12), appVersion: "1.1", isFirstSession: false))
+    }
+
+    func testReviewRespectsSetbacksAndSixtyDays() {
         var policy = ReviewPromptPolicy(firstSeen: date(2026, 1, 1, 12))
         policy.happyMoments = 10
         policy.recordSetback(at: date(2026, 3, 1, 10))
-        XCTAssertFalse(policy.shouldPrompt(now: date(2026, 3, 2, 10), appVersion: "1.0"))
-        XCTAssertTrue(policy.shouldPrompt(now: date(2026, 3, 5, 10), appVersion: "1.0"))
+        XCTAssertFalse(policy.shouldPrompt(now: date(2026, 3, 2, 10), appVersion: "1.0", isFirstSession: false))
+        XCTAssertTrue(policy.shouldPrompt(now: date(2026, 3, 5, 10), appVersion: "1.0", isFirstSession: false))
 
-        XCTAssertTrue(policy.recordHappyMoment(at: date(2026, 3, 5, 10), appVersion: "1.0"))
+        policy.notePrompted(at: date(2026, 3, 5, 10), appVersion: "1.0")
         // A new version, but only a month later: too soon.
-        XCTAssertFalse(policy.shouldPrompt(now: date(2026, 4, 5, 10), appVersion: "1.1"))
-        XCTAssertTrue(policy.shouldPrompt(now: date(2026, 7, 10, 10), appVersion: "1.1"))
+        XCTAssertFalse(policy.shouldPrompt(now: date(2026, 4, 5, 10), appVersion: "1.1", isFirstSession: false))
+        XCTAssertFalse(policy.shouldPrompt(now: date(2026, 5, 3, 10), appVersion: "1.1", isFirstSession: false))
+        XCTAssertTrue(policy.shouldPrompt(now: date(2026, 5, 5, 10), appVersion: "1.1", isFirstSession: false))
+        // A clock set back is too soon, never long ago.
+        XCTAssertFalse(policy.shouldPrompt(now: date(2026, 2, 1, 10), appVersion: "1.1", isFirstSession: false))
     }
 
     func testReviewPolicyRoundTripsThroughJSON() throws {
@@ -45,6 +76,60 @@ final class EngagementTests: XCTestCase {
         policy.lastPromptedVersion = "1.0"
         let decoded = try JSONDecoder().decode(ReviewPromptPolicy.self, from: JSONEncoder().encode(policy))
         XCTAssertEqual(decoded, policy)
+    }
+
+    // MARK: Invite card
+
+    func testInviteCardWaitsForFiveExportsAndASecondSession() {
+        var pacing = InviteCardPacing()
+        let now = date(2026, 10, 1, 15)
+        for _ in 0..<4 { pacing.noteExport() }
+        XCTAssertFalse(pacing.isDue(at: now, isFirstSession: false, lastSetback: nil))
+        pacing.noteExport()
+        XCTAssertFalse(pacing.isDue(at: now, isFirstSession: true, lastSetback: nil))
+        XCTAssertTrue(pacing.isDue(at: now, isFirstSession: false, lastSetback: nil))
+        // Not soon after something went wrong.
+        XCTAssertFalse(pacing.isDue(at: now, isFirstSession: false, lastSetback: date(2026, 9, 30, 15)))
+        XCTAssertTrue(pacing.isDue(at: now, isFirstSession: false, lastSetback: date(2026, 9, 27, 15)))
+    }
+
+    func testInviteCardSpacingCapAndDontShowAgain() {
+        var pacing = InviteCardPacing(exports: 5)
+        pacing.noteShown(at: date(2026, 10, 1, 15))
+        // 14 days and three more exports, both.
+        for _ in 0..<3 { pacing.noteExport() }
+        XCTAssertFalse(pacing.isDue(at: date(2026, 10, 14, 15), isFirstSession: false, lastSetback: nil))
+        XCTAssertTrue(pacing.isDue(at: date(2026, 10, 15, 15), isFirstSession: false, lastSetback: nil))
+        var fewer = InviteCardPacing(exports: 5)
+        fewer.noteShown(at: date(2026, 10, 1, 15))
+        fewer.noteExport()
+        XCTAssertFalse(fewer.isDue(at: date(2026, 11, 1, 15), isFirstSession: false, lastSetback: nil))
+        // Three times at most.
+        pacing.noteShown(at: date(2026, 10, 15, 15))
+        for _ in 0..<3 { pacing.noteExport() }
+        pacing.noteShown(at: date(2026, 11, 1, 15))
+        for _ in 0..<3 { pacing.noteExport() }
+        XCTAssertEqual(pacing.shows, 3)
+        XCTAssertFalse(pacing.isDue(at: date(2027, 1, 1, 15), isFirstSession: false, lastSetback: nil))
+        // "Don't show again" is for good; a clock set back is too soon.
+        var retired = InviteCardPacing(exports: 9)
+        XCTAssertTrue(retired.isDue(at: date(2026, 10, 1, 15), isFirstSession: false, lastSetback: nil))
+        retired.retire()
+        XCTAssertFalse(retired.isDue(at: date(2026, 10, 1, 15), isFirstSession: false, lastSetback: nil))
+        var backwards = InviteCardPacing(exports: 9)
+        backwards.noteShown(at: date(2026, 10, 1, 15))
+        for _ in 0..<3 { backwards.noteExport() }
+        XCTAssertFalse(backwards.isDue(at: date(2026, 9, 1, 15), isFirstSession: false, lastSetback: nil))
+    }
+
+    func testEngagementStateRoundTripsThroughJSON() throws {
+        var pacing = InviteCardPacing(exports: 7)
+        pacing.noteShown(at: date(2026, 10, 1, 15))
+        XCTAssertEqual(try JSONDecoder().decode(InviteCardPacing.self, from: JSONEncoder().encode(pacing)), pacing)
+        var sessions = EngagementSessions()
+        sessions.noteLaunch()
+        sessions.noteBackground(at: date(2026, 10, 1, 15))
+        XCTAssertEqual(try JSONDecoder().decode(EngagementSessions.self, from: JSONEncoder().encode(sessions)), sessions)
     }
 
     // MARK: Notifications

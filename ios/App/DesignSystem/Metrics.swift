@@ -3,16 +3,19 @@ import SwiftUI
 enum Metrics {
     static let gutter: CGFloat = 16
     static let sectionSpacing: CGFloat = 28
-    /// Crisp corners, from big to small: cards and panels, buttons, controls
-    /// (fields, tiles, photos on a canvas), chips and pills, then tags and
-    /// badges. Every corner in the app comes from here (see the shapes below).
-    static let cardRadius: CGFloat = 14
-    static let buttonRadius: CGFloat = 12
-    static let controlRadius: CGFloat = 10
-    static let chipRadius: CGFloat = 8
-    static let tagRadius: CGFloat = 5
-    /// Template cards are square-edged like prints.
-    static let printRadius: CGFloat = 0
+    /// Friendly corners, soft but not bubbly, all continuous, from big to
+    /// small: sheets, cards and panels, buttons, controls (fields, tiles,
+    /// photos on a canvas), chips, then tags and badges. Pill-shaped buttons
+    /// and badges are capsules (`.pill`). Every corner in the app comes from
+    /// here (see the shapes below).
+    static let sheetRadius: CGFloat = 28
+    static let cardRadius: CGFloat = 20
+    static let buttonRadius: CGFloat = 16
+    static let controlRadius: CGFloat = 14
+    static let chipRadius: CGFloat = 10
+    static let tagRadius: CGFloat = 6
+    /// Template cards are prints: a print's small rounded corner.
+    static let printRadius: CGFloat = 6
     static let buttonHeight: CGFloat = 52
     /// Widest a column of content gets on iPad and in landscape.
     static let readableWidth: CGFloat = 820
@@ -41,6 +44,12 @@ extension Shape where Self == RoundedRectangle {
     static var control: RoundedRectangle { RoundedRectangle(cornerRadius: Metrics.controlRadius, style: .continuous) }
     static var chip: RoundedRectangle { RoundedRectangle(cornerRadius: Metrics.chipRadius, style: .continuous) }
     static var tag: RoundedRectangle { RoundedRectangle(cornerRadius: Metrics.tagRadius, style: .continuous) }
+    static var print: RoundedRectangle { RoundedRectangle(cornerRadius: Metrics.printRadius, style: .continuous) }
+}
+
+/// Pill-shaped buttons and badges (credits, "Try it", "Next"): `.background(Palette.accent, in: .pill)`.
+extension Shape where Self == Capsule {
+    static var pill: Capsule { Capsule(style: .continuous) }
 }
 
 /// White card on the petal canvas: a soft shadow in light mode, a hairline
@@ -90,9 +99,22 @@ extension View {
         if Platform.isMac {
             macSheet(.page)
         } else if #available(iOS 18.0, *) {
-            presentationSizing(.page)
+            presentationSizing(.page).sheetCorners()
         } else {
+            sheetCorners()
+        }
+    }
+
+    /// The scale's sheet corner on iOS 17 and 18. iOS 26 draws its own,
+    /// concentric with the screen; the Mac's sheets keep theirs.
+    @ViewBuilder
+    func sheetCorners() -> some View {
+        if #available(iOS 26, *) {
             self
+        } else if Platform.isMac {
+            self
+        } else {
+            presentationCornerRadius(Metrics.sheetRadius)
         }
     }
 
@@ -104,9 +126,9 @@ extension View {
         if Platform.isMac {
             macSheet(.form)
         } else if #available(iOS 18.0, *) {
-            presentationSizing(.page)
+            presentationSizing(.page).sheetCorners()
         } else {
-            self
+            sheetCorners()
         }
     }
 

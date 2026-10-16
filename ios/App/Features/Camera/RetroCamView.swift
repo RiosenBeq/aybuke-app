@@ -142,7 +142,7 @@ struct RetroCamView: View {
                     .foregroundStyle(.white)
                     .padding(.horizontal, 16)
                     .padding(.vertical, 10)
-                    .background(.black.opacity(0.55), in: .chip)
+                    .background(.black.opacity(0.55), in: .pill)
                     .padding(.bottom, 16)
                 }
             }
@@ -201,7 +201,7 @@ struct RetroCamView: View {
         }
         .padding(.horizontal, 12)
         .padding(.vertical, 8)
-        .background(.black.opacity(0.45), in: .chip)
+        .background(.black.opacity(0.45), in: .pill)
         .padding(.top, 14)
         .animation(.snappy, value: model.boothCount)
     }

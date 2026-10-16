@@ -23,7 +23,6 @@ struct ResultsView: View {
     }
 
     @Environment(AppModel.self) private var app
-    @Environment(\.requestReview) private var requestReview
     @State private var selection = 0
     @State private var showReport = false
     @State private var confirmRegenerate = false
@@ -277,10 +276,7 @@ struct ResultsView: View {
                 try await PhotoLibrarySaver.save(current, sourceType: provenance.sourceType, watermark: provenance.showsMark(isPro: app.purchases.isPro))
                 app.showToast("Saved to Photos", style: .success)
                 Haptics.success()
-                if app.registerHappyMoment() {
-                    requestReview()
-                }
-                app.ads.noteFinishedExport()
+                app.noteFinishedExport()
             } catch {
                 app.handleSaveError(error, shareInstead: sharePayload(for: current))
             }
@@ -302,10 +298,7 @@ struct ResultsView: View {
                 }
                 app.showToast("Saved to Photos", style: .success)
                 Haptics.success()
-                if app.registerHappyMoment() {
-                    requestReview()
-                }
-                app.ads.noteFinishedExport()
+                app.noteFinishedExport()
             } catch {
                 app.handleSaveError(error, shareInstead: current.map(sharePayload(for:)))
             }

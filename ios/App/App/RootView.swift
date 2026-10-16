@@ -1,9 +1,11 @@
 import SwiftUI
 import PhotosUI
+import StoreKit
 import AppCore
 
 struct RootView: View {
     @Environment(AppModel.self) private var app
+    @Environment(\.requestReview) private var requestReview
     @State private var pickerItem: PhotosPickerItem?
     @State private var videoItem: PhotosPickerItem?
 
@@ -68,7 +70,15 @@ struct RootView: View {
         .onOpenURL { url in
             if let link = GlowDeepLink(url: url) { app.handle(link) }
         }
+        // At a natural break after a finished save or share (`ReviewPromptPolicy`).
+        .onChange(of: app.reviewRequests) { _, _ in requestReview() }
         .tint(Palette.accent)
+        .overlay {
+            if app.isLaunchSplashVisible {
+                LaunchSplashView()
+                    .transition(LaunchSplash.exit)
+            }
+        }
     }
 }
 
@@ -79,17 +89,25 @@ struct MainTabView: View {
         @Bindable var app = app
         TabView(selection: $app.selectedTab) {
             HomeView()
+                .tabEntrance(app.selectedTab == .home)
+                .inviteCardSlot()
                 .tabItem { Label("Explore", systemImage: "sparkles") }
                 .tag(AppTab.home)
             if app.allowsCloudAI {
                 CreateView()
+                    .tabEntrance(app.selectedTab == .create)
+                    .inviteCardSlot()
                     .tabItem { Label("Create", systemImage: "wand.and.stars") }
                     .tag(AppTab.create)
             }
             EditHubView()
+                .tabEntrance(app.selectedTab == .edit)
+                .inviteCardSlot()
                 .tabItem { Label("Edit", systemImage: "photo.badge.plus") }
                 .tag(AppTab.edit)
             LibraryView()
+                .tabEntrance(app.selectedTab == .library)
+                .inviteCardSlot()
                 .tabItem { Label("My Works", systemImage: "square.grid.2x2") }
                 .tag(AppTab.library)
         }
@@ -97,6 +115,7 @@ struct MainTabView: View {
         .sheet(isPresented: $app.isSettingsPresented) {
             SettingsView()
                 .environment(app)
+                .sheetCorners()
         }
         .onChange(of: app.selectedTab) { _, _ in Haptics.selection() }
         .task {

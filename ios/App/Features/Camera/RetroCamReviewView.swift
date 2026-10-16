@@ -11,7 +11,6 @@ struct RetroCamReviewView: View {
     let onClose: () -> Void
 
     @Environment(AppModel.self) private var app
-    @Environment(\.requestReview) private var requestReview
     @State private var layout: BoothLayout = .strip
     @State private var caption = ""
     /// The caption that passed the content policy; only this one is printed.
@@ -81,7 +80,7 @@ struct RetroCamReviewView: View {
                     .foregroundStyle(.white)
                     .padding(.horizontal, 16)
                     .frame(minHeight: 44)
-                    .background(Color.white.opacity(0.14), in: .chip)
+                    .background(Color.white.opacity(0.14), in: .pill)
             }
             .buttonStyle(.pressable)
             Spacer()
@@ -290,9 +289,9 @@ struct RetroCamReviewView: View {
                 isSaved = true
                 app.showToast("Saved to Photos", style: .success)
                 Haptics.success()
-                if app.registerHappyMoment() {
-                    requestReview()
-                }
+                // No ad after Retro Cam; a rating request or the invite card
+                // may follow once the camera closes.
+                app.noteFinishedExport(allowsAd: false)
             } catch {
                 app.handleSaveError(error, shareInstead: payload)
             }

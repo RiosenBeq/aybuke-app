@@ -62,6 +62,7 @@ private struct ShareSizeChip: View {
             .foregroundStyle(isSelected ? Palette.onPrimary : Palette.textPrimary)
             .background(isSelected ? Palette.primary : Palette.surface, in: .chip)
             .overlay(RoundedRectangle.chip.strokeBorder(isSelected ? Palette.ink : Palette.stroke, lineWidth: isSelected ? 1.5 : 1))
+            .selectionPop(isSelected)
         }
         .buttonStyle(.pressable)
         .accessibilityElement(children: .ignore)
@@ -284,6 +285,7 @@ struct ShareTextEditor: View {
             .foregroundStyle(isSelected ? Palette.onPrimary : Palette.textPrimary)
             .background(isSelected ? Palette.primary : Palette.background, in: .chip)
             .overlay(RoundedRectangle.chip.strokeBorder(isSelected ? Palette.ink : Palette.stroke, lineWidth: isSelected ? 1.5 : 1))
+            .selectionPop(isSelected)
             .frame(minHeight: 44)
         }
         .buttonStyle(.pressable)

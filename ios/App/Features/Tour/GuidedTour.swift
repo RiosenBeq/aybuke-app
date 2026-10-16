@@ -282,7 +282,7 @@ struct TourOverlay: View {
             .foregroundStyle(Palette.onAccent)
             .padding(.horizontal, 18)
             .frame(minHeight: 44)
-            .background(Palette.accent, in: .chip)
+            .background(Palette.accent, in: .pill)
         }
         .buttonStyle(.pressable)
     }

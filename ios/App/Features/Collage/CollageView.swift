@@ -10,7 +10,6 @@ import AppCore
 struct CollageView: View {
     @Environment(AppModel.self) private var app
     @Environment(\.dismiss) private var dismiss
-    @Environment(\.requestReview) private var requestReview
     @State private var model = CollageModel()
     @State private var panel = CollagePanel.layout
     @State private var isPickerPresented = false
@@ -265,7 +264,7 @@ struct CollageView: View {
         .foregroundStyle(Palette.onAccent)
         .padding(.horizontal, showsText ? 16 : 0)
         .frame(minWidth: 44, minHeight: 44)
-        .background(Palette.accent, in: .chip)
+        .background(Palette.accent, in: .pill)
         .fixedSize()
     }
 
@@ -643,11 +642,9 @@ struct CollageView: View {
                 } else {
                     app.showToast("Saved to Photos", style: .success)
                 }
-                if app.registerHappyMoment() {
-                    requestReview()
-                }
-                // Free members: an ad may follow once the collage maker closes.
-                app.ads.noteFinishedExport()
+                // An ad, a rating request or the invite card may follow once
+                // the collage maker closes.
+                app.noteFinishedExport()
             } catch {
                 app.handleSaveError(error, onShareInstead: { share() })
             }
@@ -667,8 +664,7 @@ struct CollageView: View {
                 }
                 sharedFiles = files
                 shareItems = ActivityItems(items: files)
-                app.countHappyMoment()
-                app.ads.noteFinishedExport()
+                app.noteFinishedExport()
             } else if let image = await model.exportImage() {
                 app.share(SharePayload(image: image, operation: nil, inheritedSourceType: model.provenance.inheritedSourceType))
             }

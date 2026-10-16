@@ -40,7 +40,11 @@ struct GlowlitApp: App {
                 #endif
         }
         .onChange(of: scenePhase) { _, phase in
-            if phase == .active { app.becameActive() }
+            switch phase {
+            case .active: app.becameActive()
+            case .background: app.enteredBackground()
+            default: break
+            }
         }
         .modelContainer(container)
         #if targetEnvironment(macCatalyst)

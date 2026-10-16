@@ -593,16 +593,15 @@ struct VideoEditorView: View {
             switch action {
             case .save:
                 Haptics.success()
-                app.countHappyMoment()
                 app.showToast("Video saved to Photos ✨", style: .success)
             case .share:
                 guard let url else { return }
                 sharedFile = url
                 shareItems = ActivityItems(items: [url])
-                app.countHappyMoment()
             }
-            // Free members: an ad may follow once the video editor closes.
-            app.ads.noteFinishedExport()
+            // An ad, a rating request or the invite card may follow once the
+            // video editor closes.
+            app.noteFinishedExport()
         } catch {
             // Cancelled or stopped by leaving the app: no error, no setback.
             // No Photos access: offer Settings, or sharing the video instead.
@@ -689,9 +688,9 @@ private struct EffectChoice: View {
                     }
                 }
                 .frame(width: 62, height: 78)
-                .clipShape(RoundedRectangle(cornerRadius: Metrics.printRadius))
+                .clipShape(.print)
                 .overlay(
-                    RoundedRectangle(cornerRadius: Metrics.printRadius)
+                    RoundedRectangle.print
                         .strokeBorder(isSelected ? Palette.accent : Palette.stroke, lineWidth: isSelected ? 3 : 1)
                 )
                 Text(title)

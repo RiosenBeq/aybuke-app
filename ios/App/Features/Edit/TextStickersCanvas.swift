@@ -535,7 +535,7 @@ struct OverlayTextEditor: View {
                             .foregroundStyle(Palette.ink)
                             .padding(.horizontal, 18)
                             .frame(minHeight: 44)
-                            .background(Palette.blush, in: .chip)
+                            .background(Palette.blush, in: .pill)
                     }
                     .buttonStyle(.pressable)
                 }

@@ -14,6 +14,10 @@ Writes, from the chosen concept:
   docs/assets/brand/app-icon-1024.png
   docs/assets/brand/app-icon.svg       the same paths as vectors (a start for an Icon Composer file)
   docs/assets/brand/brand-board.png
+  docs/assets/brand/wordmark{,-gradient}.{svg,png}  the "aybuke" logotype, ink and plum-pink-peach
+  ios/App/Resources/Assets.xcassets/Wordmark.imageset/Wordmark.svg                 the same, a template vector
+  ios/App/Resources/Assets.xcassets/LaunchIcon.imageset/LaunchIcon@{2,3}x.png      the launch screen's icon
+  (--wordmark redraws only these and the brand board, from app-icon-1024.png)
 scripts/marketing-images.py puts app-icon-1024.png into web/assets/og-image.png
 (the link preview) the next time it runs.
 
@@ -39,7 +43,9 @@ downsampled for clean anti-aliasing; glows, soft light and the iridescent sweeps
 from __future__ import annotations
 
 import argparse
+import json
 import math
+import struct
 from pathlib import Path as FilePath
 
 from PIL import Image, ImageChops, ImageDraw, ImageFilter, ImageFont
@@ -862,6 +868,414 @@ def mac_icon(art: Image.Image) -> Image.Image:
     return out
 
 
+# MARK: - Wordmark and launch icon
+
+# The logotype: lowercase "aybuke" from Poppins Bold's own outlines, set tight,
+# every corner softened, and the icon's sparkle glinting just after the "e" (at
+# its shoulder, so it never reads as an accent). Font units (1000 per em), y up,
+# until written out.
+WORDMARK_CUT = "Bold"
+WORDMARK_TEXT = "aybuke"
+WORDMARK_TRACKING = -28
+WORDMARK_PAIRS = {"ay": -18, "yb": -10, "ke": -12}
+# Corner radii: convex corners (the terminals) and concave ones (where strokes join).
+WORDMARK_ROUNDING = (26, 10)
+# The sparkle: its radius as a share of the e's half-width, its gap after the e,
+# how far its centre sits above the e's top (in sparkle radii), and its waist
+# (smaller = thinner points), as in `sparkle()`.
+WORDMARK_SPARKLE = (0.38, 30, 0.15, 0.24)
+WORDMARK_GRADIENT = [(0, PLUM), (0.55, AURA_PINK), (1, AURA_PEACH)]
+# The app asset's natural height in points (it is drawn resized, as a vector).
+WORDMARK_POINTS = 60
+WORDMARK_SET = ROOT / "ios" / "App" / "Resources" / "Assets.xcassets" / "Wordmark.imageset"
+# The launch screen's icon, which the SwiftUI splash starts from: the same
+# picture at the same size, so the hand-over doesn't jump.
+LAUNCH_ICON_SET = ROOT / "ios" / "App" / "Resources" / "Assets.xcassets" / "LaunchIcon.imageset"
+LAUNCH_ICON_POINTS = 112
+LAUNCH_ICON_CANVAS = 184
+
+
+class FontOutlines:
+    """Just enough of a TrueType reader for glyph outlines (simple glyphs, a
+    format 4 cmap and advance widths), so the script needs nothing but Pillow."""
+
+    def __init__(self, path: FilePath) -> None:
+        self.data = data = path.read_bytes()
+        self.tables = {}
+        for index in range(self.u16(4)):
+            tag, _, offset, _ = struct.unpack(">4sIII", data[12 + 16 * index:28 + 16 * index])
+            self.tables[tag.decode("latin-1")] = offset
+        head, maxp, hhea, loca, hmtx = (self.tables[t] for t in ("head", "maxp", "hhea", "loca", "hmtx"))
+        long_offsets = self.i16(head + 50) == 1
+        glyphs, metrics = self.u16(maxp + 4), self.u16(hhea + 34)
+        self.loca = [self.u32(loca + 4 * i) if long_offsets else 2 * self.u16(loca + 2 * i) for i in range(glyphs + 1)]
+        self.advances = [self.u16(hmtx + 4 * min(i, metrics - 1)) for i in range(glyphs)]
+        self.glyph_ids = self.read_cmap()
+
+    def u16(self, offset: int) -> int:
+        return struct.unpack(">H", self.data[offset:offset + 2])[0]
+
+    def i16(self, offset: int) -> int:
+        return struct.unpack(">h", self.data[offset:offset + 2])[0]
+
+    def u32(self, offset: int) -> int:
+        return struct.unpack(">I", self.data[offset:offset + 4])[0]
+
+    def read_cmap(self) -> dict[int, int]:
+        base = self.tables["cmap"]
+        for index in range(self.u16(base + 2)):
+            platform, encoding = self.u16(base + 4 + 8 * index), self.u16(base + 6 + 8 * index)
+            table = base + self.u32(base + 8 + 8 * index)
+            if (platform, encoding) not in ((3, 1), (0, 3)) or self.u16(table) != 4:
+                continue
+            count = self.u16(table + 6) // 2
+            ends = table + 14
+            starts, deltas = ends + 2 * count + 2, ends + 4 * count + 2
+            ranges = deltas + 2 * count
+            ids = {}
+            for s in range(count):
+                start, end = self.u16(starts + 2 * s), self.u16(ends + 2 * s)
+                delta, range_offset = self.i16(deltas + 2 * s), self.u16(ranges + 2 * s)
+                for code in range(start, min(end, 0xFFFE) + 1):
+                    if range_offset:
+                        glyph = self.u16(ranges + 2 * s + range_offset + 2 * (code - start))
+                        ids[code] = (glyph + delta) & 0xFFFF if glyph else 0
+                    else:
+                        ids[code] = (code + delta) & 0xFFFF
+            return ids
+        raise ValueError("The font has no Unicode BMP cmap.")
+
+    def glyph(self, char: str) -> tuple[list[list[tuple[float, float, bool]]], int]:
+        """The character's contours as (x, y, on-curve) points, and its advance."""
+        glyph = self.glyph_ids[ord(char)]
+        start = self.tables["glyf"] + self.loca[glyph]
+        count = self.i16(start)
+        if count < 0:
+            raise ValueError(f"{char!r} is a composite glyph, which this reader doesn't handle.")
+        ends = [self.u16(start + 10 + 2 * i) for i in range(count)]
+        offset = start + 10 + 2 * count
+        offset += 2 + self.u16(offset)  # skip the hinting instructions
+        flags: list[int] = []
+        while len(flags) < (ends[-1] + 1 if ends else 0):
+            flag = self.data[offset]
+            offset += 1
+            flags.append(flag)
+            if flag & 8:  # repeated
+                flags.extend([flag] * self.data[offset])
+                offset += 1
+
+        def coordinates(short: int, same_or_positive: int) -> list[int]:
+            nonlocal offset
+            values, value = [], 0
+            for flag in flags:
+                if flag & short:
+                    value += self.data[offset] if flag & same_or_positive else -self.data[offset]
+                    offset += 1
+                elif not flag & same_or_positive:
+                    value += self.i16(offset)
+                    offset += 2
+                values.append(value)
+            return values
+
+        xs = coordinates(2, 16)
+        ys = coordinates(4, 32)
+        contours, first = [], 0
+        for end in ends:
+            contours.append([(xs[i], ys[i], bool(flags[i] & 1)) for i in range(first, end + 1)])
+            first = end + 1
+        return contours, self.advances[glyph]
+
+
+# Outline segments: ("L", p0, p1), ("Q", p0, c, p1) and ("C", p0, c1, c2, p1).
+
+def v_sub(a, b):
+    return (a[0] - b[0], a[1] - b[1])
+
+
+def v_add(a, b):
+    return (a[0] + b[0], a[1] + b[1])
+
+
+def v_scale(a, k: float):
+    return (a[0] * k, a[1] * k)
+
+
+def v_lerp(a, b, t: float):
+    return (a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t)
+
+
+def v_unit(a):
+    length = math.hypot(*a)
+    return (a[0] / length, a[1] / length) if length > 1e-9 else (0.0, 0.0)
+
+
+def segment_point(segment, t: float):
+    if segment[0] == "L":
+        return v_lerp(segment[1], segment[2], t)
+    if segment[0] == "Q":
+        p0, c, p1 = segment[1:]
+        return v_lerp(v_lerp(p0, c, t), v_lerp(c, p1, t), t)
+    p0, c1, c2, p1 = segment[1:]
+    a, b, c = v_lerp(p0, c1, t), v_lerp(c1, c2, t), v_lerp(c2, p1, t)
+    return v_lerp(v_lerp(a, b, t), v_lerp(b, c, t), t)
+
+
+def segment_direction(segment, t: float):
+    """Unit tangent at t (lines and quadratics; the corners never sit on cubics)."""
+    if segment[0] == "L":
+        return v_unit(v_sub(segment[2], segment[1]))
+    p0, c, p1 = segment[1], segment[2], segment[-1]
+    direction = v_add(v_scale(v_sub(c, p0), 1 - t), v_scale(v_sub(p1, c), t))
+    return v_unit(direction) if math.hypot(*direction) > 1e-9 else v_unit(v_sub(p1, p0))
+
+
+def segment_length(segment, t0: float = 0.0, t1: float = 1.0, steps: int = 24) -> float:
+    total, previous = 0.0, segment_point(segment, t0)
+    for i in range(1, steps + 1):
+        point = segment_point(segment, t0 + (t1 - t0) * i / steps)
+        total += math.hypot(*v_sub(point, previous))
+        previous = point
+    return total
+
+
+def trim_segment(segment, start: float, end: float):
+    """The segment without `start` units of length at its start and `end` at its end."""
+    def parameter(distance: float, from_end: bool) -> float:
+        lo, hi = 0.0, 1.0
+        for _ in range(28):
+            mid = (lo + hi) / 2
+            covered = segment_length(segment, mid, 1.0) if from_end else segment_length(segment, 0.0, mid)
+            if (covered > distance) == from_end:
+                lo = mid
+            else:
+                hi = mid
+        return (lo + hi) / 2
+
+    t0 = parameter(start, False) if start > 0 else 0.0
+    t1 = parameter(end, True) if end > 0 else 1.0
+    if segment[0] == "L":
+        return ("L", segment_point(segment, t0), segment_point(segment, t1))
+    # A quadratic's piece between t0 and t1 is a quadratic too (blossoming).
+    p0, c, p1 = segment[1:]
+
+    def blossom(u: float, w: float):
+        return v_lerp(v_lerp(p0, c, u), v_lerp(c, p1, u), w)
+
+    return ("Q", blossom(t0, t0), blossom(t0, t1), blossom(t1, t1))
+
+
+def contour_segments(points) -> list[tuple]:
+    """TrueType points to a closed run of lines and quadratics; two off-curve
+    points in a row imply an on-curve point halfway between them."""
+    if not any(on for _, _, on in points):
+        (ax, ay, _), (bx, by, _) = points[0], points[1]
+        points = [((ax + bx) / 2, (ay + by) / 2, True)] + points[1:] + points[:1]
+    first = next(i for i, p in enumerate(points) if p[2])
+    points = points[first:] + points[:first]
+    segments, current, control = [], points[0][:2], None
+    for x, y, on in points[1:] + points[:1]:
+        if on:
+            if control is not None:
+                segments.append(("Q", current, control, (x, y)))
+            elif (x, y) != current:
+                segments.append(("L", current, (x, y)))
+            current, control = (x, y), None
+        else:
+            if control is not None:
+                middle = ((control[0] + x) / 2, (control[1] + y) / 2)
+                segments.append(("Q", current, control, middle))
+                current = middle
+            control = (x, y)
+    return segments
+
+
+def round_corners(segments, convex: float, concave: float, threshold: float = 25) -> list[tuple]:
+    """Replaces every corner sharper than `threshold` degrees with a circular
+    arc (as a cubic) tangent to both sides. TrueType fills to the right of the
+    path, so a right turn is a convex corner (radius `convex`) and a left turn
+    a concave one (`concave`). Each side gives up at most 42% of its length."""
+    count = len(segments)
+    trims = [[0.0, 0.0] for _ in segments]
+    corners = {}
+    for i in range(count):
+        before, after = segments[i], segments[(i + 1) % count]
+        u, v = segment_direction(before, 1.0), segment_direction(after, 0.0)
+        turn = math.acos(max(-1.0, min(1.0, u[0] * v[0] + u[1] * v[1])))
+        radius = convex if u[0] * v[1] - u[1] * v[0] < 0 else concave
+        if math.degrees(turn) < threshold or radius <= 0:
+            continue
+        cut = min(radius * math.tan(turn / 2), 0.42 * segment_length(before), 0.42 * segment_length(after))
+        corners[i] = turn
+        trims[i][1] = cut
+        trims[(i + 1) % count][0] = cut
+    trimmed = [trim_segment(segment, *trims[i]) if any(trims[i]) else segment for i, segment in enumerate(segments)]
+    out = []
+    for i, segment in enumerate(trimmed):
+        out.append(segment)
+        if i in corners:
+            after = trimmed[(i + 1) % count]
+            start, end, turn = segment[-1], after[1], corners[i]
+            u, v = segment_direction(segment, 1.0), segment_direction(after, 0.0)
+            radius = math.hypot(*v_sub(end, start)) / (2 * math.sin(turn / 2))
+            arm = 4 / 3 * math.tan(turn / 4) * radius
+            out.append(("C", start, v_add(start, v_scale(u, arm)), v_sub(end, v_scale(v, arm)), end))
+    return out
+
+
+def sparkle_segments(center, r: float, waist: float) -> list[tuple]:
+    """`sparkle()` in font units (y up), running clockwise like an outer contour."""
+    cx, cy = center
+    k = waist * r
+    tips = [(cx, cy + r), (cx + r, cy), (cx, cy - r), (cx - r, cy)]
+    bends = [(cx + k, cy + k), (cx + k, cy - k), (cx - k, cy - k), (cx - k, cy + k)]
+    return [("Q", tips[i], bends[i], tips[(i + 1) % 4]) for i in range(4)]
+
+
+def flatten(segments, steps: int = 16) -> list[tuple[float, float]]:
+    points = []
+    for segment in segments:
+        n = 1 if segment[0] == "L" else steps
+        points.extend(segment_point(segment, i / n) for i in range(n))
+    return points
+
+
+def wordmark_glyphs() -> list[list[list[tuple]]]:
+    """Each letter (and the sparkle) as its contours, each a closed run of segments."""
+    font_file = FontOutlines(FONTS / f"Poppins-{WORDMARK_CUT}.ttf")
+    glyphs, x = [], 0
+    for index, char in enumerate(WORDMARK_TEXT):
+        contours, advance = font_file.glyph(char)
+        glyphs.append([round_corners(contour_segments([(px + x, py, on) for px, py, on in contour]), *WORDMARK_ROUNDING)
+                       for contour in contours])
+        x += advance + WORDMARK_TRACKING + WORDMARK_PAIRS.get(WORDMARK_TEXT[index:index + 2], 0)
+    e = [p for contour in glyphs[-1] for p in flatten(contour, 6)]
+    left, right, top = min(p[0] for p in e), max(p[0] for p in e), max(p[1] for p in e)
+    size, gap, rise, waist = WORDMARK_SPARKLE
+    r = (right - left) / 2 * size
+    glyphs.append([sparkle_segments((right + gap + r, top + rise * r), r, waist)])
+    return glyphs
+
+
+def wordmark_bounds(glyphs) -> tuple[float, float, float, float]:
+    points = [p for glyph in glyphs for contour in glyph for p in flatten(contour, 8)]
+    return (min(p[0] for p in points), min(p[1] for p in points), max(p[0] for p in points), max(p[1] for p in points))
+
+
+def wordmark_svg(glyphs, height: float, paint, comment: str) -> str:
+    """The wordmark `height` units tall, cropped to its ink; `paint` is a colour
+    or gradient stops (left to right, a little downhill)."""
+    x0, y0, x1, y1 = wordmark_bounds(glyphs)
+    k = height / (y1 - y0)
+    width = (x1 - x0) * k
+
+    def xy(p) -> str:
+        return f"{(p[0] - x0) * k:.2f} {(y1 - p[1]) * k:.2f}"
+
+    data = []
+    for glyph in glyphs:
+        for contour in glyph:
+            data.append("M" + xy(contour[0][1]))
+            data.extend(s[0] + " ".join(xy(p) for p in s[2:]) for s in contour)
+            data.append("Z")
+    defs, fill = "", hex_color(paint) if isinstance(paint[0], int) else "url(#paint)"
+    if fill == "url(#paint)":
+        stops = "".join(f'<stop offset="{t:g}" stop-color="{hex_color(color)}"/>' for t, color in paint)
+        defs = (f'  <defs><linearGradient id="paint" gradientUnits="userSpaceOnUse" x1="0" y1="0" '
+                f'x2="{width:.2f}" y2="{height * 0.5:.2f}">{stops}</linearGradient></defs>\n')
+    return (f'<svg xmlns="http://www.w3.org/2000/svg" width="{width:.2f}" height="{height:g}" '
+            f'viewBox="0 0 {width:.2f} {height:g}">\n  <!-- {comment} -->\n{defs}'
+            f'  <path fill="{fill}" d="{"".join(data)}"/>\n</svg>\n')
+
+
+def wordmark_image(glyphs, height: int, paint, padding: int = 0) -> Image.Image:
+    """The wordmark as an RGBA image `height` px tall (plus `padding` around it),
+    drawn at 4x: each letter's outer contours filled, then its counters cut."""
+    x0, y0, x1, y1 = wordmark_bounds(glyphs)
+    k = height * SCALE / (y1 - y0)
+    pad = padding * SCALE
+    size = (round((x1 - x0) * k) + 2 * pad, height * SCALE + 2 * pad)
+    alpha = Image.new("L", size, 0)
+    for glyph in glyphs:
+        layer = Image.new("L", size, 0)
+        draw = ImageDraw.Draw(layer)
+        polygons = [[((x - x0) * k + pad, (y1 - y) * k + pad) for x, y in flatten(contour)] for contour in glyph]
+        # Pixel y runs down, so an outer (clockwise in font units) contour has a positive area here.
+        area = [sum(a[0] * b[1] - b[0] * a[1] for a, b in zip(p, p[1:] + p[:1])) for p in polygons]
+        for polygon, a in sorted(zip(polygons, area), key=lambda item: item[1] <= 0):
+            draw.polygon(polygon, fill=255 if a > 0 else 0)
+        alpha = ImageChops.lighter(alpha, layer)
+    if isinstance(paint[0], int):
+        color = Image.new("RGBA", size, rgba(paint))
+    else:
+        ramp = Image.new("RGBA", (256, 1))
+        ramp.putdata([rgba(color_at(paint, i / 255)) for i in range(256)])
+        color = ramp.resize(size, Image.BICUBIC)
+    out = Image.new("RGBA", size, (0, 0, 0, 0))
+    out.paste(color, (0, 0), alpha)
+    return out.resize((size[0] // SCALE, size[1] // SCALE), Image.LANCZOS)
+
+
+def superellipse(side: float, exponent: float = 5.0, steps: int = 720) -> list[tuple[float, float]]:
+    """Apple's continuous-corner icon shape, closely: |x|^n + |y|^n = 1 across `side` px."""
+    half, points = side / 2, []
+    for i in range(steps):
+        t = 2 * math.pi * i / steps
+        c, s = math.cos(t), math.sin(t)
+        points.append((half + half * math.copysign(abs(c) ** (2 / exponent), c),
+                       half + half * math.copysign(abs(s) ** (2 / exponent), s)))
+    return points
+
+
+def launch_icon(art: Image.Image, scale: int) -> Image.Image:
+    """The icon as the launch screen shows it: a continuous-corner tile with a
+    soft plum shadow, centred on a transparent canvas, at `scale` px per point."""
+    side, canvas = LAUNCH_ICON_POINTS * scale, LAUNCH_ICON_CANVAS * scale
+    mask = Image.new("L", (side * SCALE, side * SCALE), 0)
+    ImageDraw.Draw(mask).polygon(superellipse(side * SCALE), fill=255)
+    mask = mask.resize((side, side), Image.LANCZOS)
+    tile = art.convert("RGBA").resize((side, side), Image.LANCZOS)
+    tile.putalpha(mask)
+    inset = (canvas - side) // 2
+    shadow = Image.new("L", (canvas, canvas), 0)
+    shadow.paste(mask, (inset, inset + 7 * scale))
+    shadow = shadow.filter(ImageFilter.GaussianBlur(9 * scale)).point(lambda value: round(value * 0.3))
+    out = Image.new("RGBA", (canvas, canvas), PLUM + (0,))
+    out.paste(Image.new("RGBA", (canvas, canvas), PLUM + (255,)), (0, 0), shadow)
+    out.alpha_composite(tile, (inset, inset))
+    return out
+
+
+def write_contents(folder: FilePath, images: list[dict], properties: dict | None = None) -> None:
+    contents = {"images": images, "info": {"author": "xcode", "version": 1}}
+    if properties:
+        contents["properties"] = properties
+    (folder / "Contents.json").write_text(json.dumps(contents, indent=2).replace('": ', '" : ') + "\n", encoding="utf-8")
+
+
+def render_wordmark(art: Image.Image) -> None:
+    """The wordmark (docs SVGs and PNGs, the app's vector asset) and the launch
+    screen's icon, drawn from `art` (the app icon at 1024 px)."""
+    glyphs = wordmark_glyphs()
+    note = "Aybuke wordmark: Poppins Bold outlines, tightened, corners rounded, with the icon's sparkle. " \
+           "Written by scripts/render-brand-assets.py; edit the script, not this file."
+    (BRAND / "wordmark.svg").write_text(wordmark_svg(glyphs, 120, INK, note), encoding="utf-8")
+    (BRAND / "wordmark-gradient.svg").write_text(wordmark_svg(glyphs, 120, WORDMARK_GRADIENT, note), encoding="utf-8")
+    wordmark_image(glyphs, 360, INK, padding=24).save(BRAND / "wordmark.png")
+    wordmark_image(glyphs, 360, WORDMARK_GRADIENT, padding=24).save(BRAND / "wordmark-gradient.png")
+    # The app tints it like text (ink, or light in dark mode): a template vector.
+    WORDMARK_SET.mkdir(parents=True, exist_ok=True)
+    (WORDMARK_SET / "Wordmark.svg").write_text(wordmark_svg(glyphs, WORDMARK_POINTS, BLACK, note), encoding="utf-8")
+    write_contents(WORDMARK_SET, [{"filename": "Wordmark.svg", "idiom": "universal"}],
+                   {"preserves-vector-representation": True, "template-rendering-intent": "template"})
+    LAUNCH_ICON_SET.mkdir(parents=True, exist_ok=True)
+    images = [{"idiom": "universal", "scale": "1x"}]
+    for scale in (2, 3):
+        launch_icon(art, scale).save(LAUNCH_ICON_SET / f"LaunchIcon@{scale}x.png")
+        images.append({"filename": f"LaunchIcon@{scale}x.png", "idiom": "universal", "scale": f"{scale}x"})
+    write_contents(LAUNCH_ICON_SET, images)
+    print("Rendered the wordmark and the launch icon.")
+
+
 # MARK: - Brand board and concept sheets
 
 def radial(size: int, center: tuple[float, float], radius: float, color: tuple, alpha: float) -> Image.Image:
@@ -914,7 +1328,7 @@ def brand_board(app_icon: Image.Image) -> Image.Image:
     board.paste(art, (ix, iy), mask)
 
     x = 600
-    draw.text((x, 150), "Aybuke", font=font("ExtraBold", 150), fill=INK)
+    board.alpha_composite(wordmark_image(wordmark_glyphs(), 132, INK), (x, 168))
     make = font("Bold", 64)
     draw.text((x + 4, 335), "Make it ", font=make, fill=INK)
     offset = draw.textlength("Make it ", font=make)
@@ -1030,6 +1444,7 @@ def render_app_icons(concept: str) -> None:
     default.resize((256, 256), Image.LANCZOS).save(WEB_ICON)
     brand_board(default).save(BRAND / "brand-board.png")
     print(f'Rendered app icons (concept {concept.upper()}, "{CONCEPTS[concept][0]}") and the brand board.')
+    render_wordmark(default)
 
 
 def main() -> None:
@@ -1038,9 +1453,15 @@ def main() -> None:
                         help=f"icon concept for every output (default: {CHOSEN}, the app's icon)")
     parser.add_argument("--concept-sheets", action="store_true",
                         help="only redraw the concept comparison images in docs/brand/icon-concepts/")
+    parser.add_argument("--wordmark", action="store_true",
+                        help="only redraw the wordmark, the launch icon and the brand board (from app-icon-1024.png)")
     args = parser.parse_args()
     if args.concept_sheets:
         render_concept_sheets()
+    elif args.wordmark:
+        art = Image.open(BRAND / "app-icon-1024.png").convert("RGB")
+        render_wordmark(art)
+        brand_board(art).save(BRAND / "brand-board.png")
     else:
         render_app_icons(args.concept)
 

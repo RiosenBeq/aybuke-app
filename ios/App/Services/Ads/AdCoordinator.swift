@@ -319,6 +319,13 @@ final class AdCoordinator {
         scheduleBreak(after: 0.8)
     }
 
+    /// The rating request or the invite card took this break: no ad on top
+    /// of it (this save's chance is gone; the pacing is unchanged).
+    func yieldBreak() {
+        breakTask?.cancel()
+        lastExport = nil
+    }
+
     private func scheduleBreak(after seconds: Double) {
         breakTask?.cancel()
         breakTask = Task { [weak self] in

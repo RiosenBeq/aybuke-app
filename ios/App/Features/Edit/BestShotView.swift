@@ -240,9 +240,9 @@ private struct ShotTile: View {
                     .resizable()
                     .scaledToFill()
             }
-            .clipShape(RoundedRectangle(cornerRadius: Metrics.printRadius))
+            .clipShape(.print)
             .overlay(
-                RoundedRectangle(cornerRadius: Metrics.printRadius)
+                RoundedRectangle.print
                     .strokeBorder(isSelected ? Palette.accent : Palette.stroke, lineWidth: isSelected ? 3 : 1)
             )
             .overlay(alignment: .bottomLeading) {

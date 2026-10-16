@@ -563,8 +563,7 @@ struct ShareComposerView: View {
             let asBackground = ShareLayout.isStoryShaped(width: rendered.size.width, height: rendered.size.height)
             let opened = await InstagramStories.share(rendered, asBackground: asBackground, sourceType: payload.provenance.sourceType, appID: appID)
             if opened {
-                app.countHappyMoment()
-                app.ads.noteFinishedExport()
+                app.noteFinishedExport()
             } else {
                 app.showToast("Couldn't open Instagram.", style: .error)
             }
@@ -591,10 +590,10 @@ struct ShareComposerView: View {
         do {
             try await PhotoLibrarySaver.save(rendered, sourceType: payload.provenance.sourceType, watermark: false)
             Haptics.success()
-            app.countHappyMoment()
             app.showToast("Saved to Photos", style: .success)
-            // Free members: an ad may follow once the composer closes.
-            app.ads.noteFinishedExport()
+            // An ad, a rating request or the invite card may follow once the
+            // composer closes.
+            app.noteFinishedExport()
         } catch {
             app.handle(error)
         }

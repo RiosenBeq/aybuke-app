@@ -42,9 +42,9 @@ struct TemplateCard: View, Equatable {
             .padding(12)
         }
         .frame(width: width, height: height)
-        .clipShape(RoundedRectangle(cornerRadius: Metrics.printRadius))
+        .clipShape(.print)
         .overlay(
-            RoundedRectangle(cornerRadius: Metrics.printRadius)
+            RoundedRectangle.print
                 .strokeBorder(Palette.stroke, lineWidth: 1)
         )
         .shadow(color: Palette.shadow, radius: 12, y: 6)

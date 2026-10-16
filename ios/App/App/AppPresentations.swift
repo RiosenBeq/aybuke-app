@@ -69,11 +69,19 @@ struct AppPresentations: ViewModifier {
             .sheet(item: Binding(
                 get: { isActive ? app.shareRequest : nil },
                 set: { app.shareRequest = $0 }
-            ), onDismiss: { app.ads.naturalBreak() }) { payload in
+            ), onDismiss: { app.naturalBreak() }) { payload in
                 ShareComposerView(payload: payload)
                     .environment(app)
                     .presentationDetents([.large])
                     .presentationBackground(Palette.background)
+                    .pageSheetSizing()
+            }
+            .sheet(isPresented: Binding(
+                get: { isActive && app.isInvitePresented },
+                set: { app.isInvitePresented = $0 }
+            )) {
+                InviteView()
+                    .environment(app)
                     .pageSheetSizing()
             }
             .alert(

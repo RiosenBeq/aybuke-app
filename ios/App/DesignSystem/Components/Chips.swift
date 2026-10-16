@@ -42,7 +42,8 @@ struct SelectableChip: View {
             // Blush on white is too faint to show selection alone, so the
             // selected chip always gets an ink edge as well.
             .overlay(RoundedRectangle.chip.strokeBorder(isSelected ? Palette.ink : Palette.stroke, lineWidth: isSelected ? 1.5 : 1))
-            .animation(Motion.press, value: isSelected)
+            .animation(Motion.select, value: isSelected)
+            .selectionPop(isSelected)
         }
         .buttonStyle(.pressable)
         .macHoverLift()
@@ -115,7 +116,8 @@ struct StyleTile: View {
                     .lineLimit(1)
             }
             .frame(width: Platform.isMac ? 92 : 80)
-            .animation(.snappy, value: isSelected)
+            .animation(Motion.select, value: isSelected)
+            .selectionPop(isSelected)
         }
         .buttonStyle(.pressable)
         .accessibilityLabel(name)

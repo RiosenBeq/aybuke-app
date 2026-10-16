@@ -76,11 +76,12 @@ private struct MacSections: View {
 
     var body: some View {
         let covered = app.isFullScreenCoverPresented
+        // Each section is built anew when picked, so it fades up as it appears.
         switch app.selectedTab {
-        case .home: HomeView().hidesMacToolbar(covered)
-        case .create: CreateView(model: createModel).hidesMacToolbar(covered)
-        case .edit: EditHubView().hidesMacToolbar(covered)
-        case .library: LibraryView().hidesMacToolbar(covered)
+        case .home: HomeView().hidesMacToolbar(covered).sectionEntrance().inviteCardSlot()
+        case .create: CreateView(model: createModel).hidesMacToolbar(covered).sectionEntrance().inviteCardSlot()
+        case .edit: EditHubView().hidesMacToolbar(covered).sectionEntrance().inviteCardSlot()
+        case .library: LibraryView().hidesMacToolbar(covered).sectionEntrance().inviteCardSlot()
         }
     }
 }

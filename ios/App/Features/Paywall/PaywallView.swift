@@ -889,7 +889,7 @@ struct CreditPackList: View {
                 .foregroundStyle(Palette.onAccent)
                 .padding(.horizontal, 14)
                 .padding(.vertical, 8)
-                .background(Palette.accent, in: .chip)
+                .background(Palette.accent, in: .pill)
             }
             .padding(14)
             .cardStyle()

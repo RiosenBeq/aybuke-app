@@ -107,7 +107,7 @@ The first brand used Golden Hour amber `#FF9A3D` (gradient `#FFC25C → #FF7A3D`
 
 | Role | Font | Notes |
 |---|---|---|
-| Wordmark, hero and screen titles | **Poppins** ExtraBold / Bold | Round, friendly geometric sans; reads well in all 12 app languages that use Latin or Cyrillic script |
+| Hero and screen titles (the wordmark is drawn from Poppins Bold, see below) | **Poppins** ExtraBold / Bold | Round, friendly geometric sans; reads well in all 12 app languages that use Latin or Cyrillic script |
 | Card titles, buttons | **Poppins** SemiBold / Medium | Calm, even forms at small sizes |
 | Everything else (body, prices, legal) | **SF Pro** | Dynamic Type, Bold Text, Apple legibility tuning |
 | Editorial accent (one word per headline: "watch it *glow*") | **New York Italic** (Apple system serif) | `Text(styled:size:)` sets `*words*` in the accent; scales with Dynamic Type |
@@ -121,20 +121,37 @@ The first brand used Golden Hour amber `#FF9A3D` (gradient `#FFC25C → #FF7A3D`
   - Unbounded: crypto association.
   - Inter and Geist: too close to SF Pro to add brand value.
   - Clash Display and Satoshi: not OFL.
-- **Sizes:** headlines are set a step below iOS's large title, so Poppins' wide forms don't shout: 30 pt for onboarding and paywall titles, 25–28 pt for screen titles, 23 pt for card headlines, 26 pt for the Home wordmark, 16 pt for buttons and card titles. At accessibility text sizes, layouts stack (the Home header puts its buttons above the name) instead of breaking words.
+- **Sizes:** headlines are set a step below iOS's large title, so Poppins' wide forms don't shout: 30 pt for onboarding and paywall titles, 25–28 pt for screen titles, 23 pt for card headlines, 16 pt for buttons and card titles; the Home wordmark is 30 pt tall and grows with Dynamic Type (up to 64 pt). At accessibility text sizes, layouts stack (the Home header puts its buttons above the name) instead of breaking words.
+
+### Wordmark
+
+![Wordmark](assets/brand/wordmark.png)
+
+![Wordmark, gradient](assets/brand/wordmark-gradient.png)
+
+- **The idea:** lowercase "aybuke", soft and round like the app: Poppins Bold's own outlines, set tight (−28 units a letter, a little more in "ay", "yb" and "ke"), every corner rounded (26 units at the terminals, 10 where strokes join), so it reads friendly rather than stamped. The signature is the icon's four-point sparkle, glinting just after the "e" at its shoulder, where it can't be read as an accent.
+- **Colour:** ink `#121212` on light grounds (light text on dark, as the app tints it); the plum → pink → peach gradient version is for marketing, share art and the website, never for UI text.
+- **In the app:** `BrandWordmark` draws the `Wordmark` vector (a template image, tinted like text) in the Home header (and so in the Mac's Explore) and the launch splash; the invite story card draws the same vector in ink. VoiceOver reads "Aybuke". The App Store name and every sentence still spell it "Aybuke".
+- **Files:** [`assets/brand/wordmark.svg`](assets/brand/wordmark.svg), [`wordmark-gradient.svg`](assets/brand/wordmark-gradient.svg) and their PNGs, the app's `Wordmark.imageset` and the launch screen's `LaunchIcon.imageset`, all written by `scripts/render-brand-assets.py --wordmark` (or a full run), with Pillow and a small TrueType reader, no other tools. The brand board uses it too.
+
+### Launch
+
+The launch screen is the petal colour with the app icon at 112 pt (with its soft plum shadow). The splash starts from that exact picture: the icon grows a little into a pink glow while the wordmark rises under it, then everything crossfades into the app, about 1.9 s in all, once per cold launch. With Reduce Motion it's a short hold and a fade; the Mac opens straight to its window.
 
 ### Shape
 
-Crisp corners, not bubbles (October 2026): one radius scale in [`Metrics.swift`](../ios/App/DesignSystem/Metrics.swift), with matching shapes (`.card`, `.button`, `.control`, `.chip`, `.tag`) so no view hard-codes a corner.
+Friendly corners, soft but not bubbly (October 2026, for 1.1; before that the scale was "crisp", 5–14 pt, with square prints): one continuous scale in [`Metrics.swift`](../ios/App/DesignSystem/Metrics.swift), with matching shapes (`.card`, `.button`, `.control`, `.chip`, `.tag`, `.print`, and `.pill` for capsules) so no view hard-codes a corner.
 
 | Shape | Radius | Used for |
 |---|---|---|
-| `card` | 14 pt | Cards, panels, sheets' inner cards, the tour card |
-| `button` | 12 pt | Primary and secondary buttons (52 pt tall), the editor's tool bar items |
-| `control` | 10 pt | Photos on a canvas, fields, tiles, icon squares |
-| `chip` | 8 pt | Chips, pills (credits, ideas, idea buttons), toasts |
-| `tag` | 5 pt | PRO/NEW badges, Before/After tags, small labels |
-| print | 0 | Template cards and collection pages: looks are prints |
+| sheet | 28 pt | Sheets on iOS 17 and 18 (`sheetCorners()`; iOS 26 draws its own) |
+| `card` | 20 pt | Cards, panels, toasts, the tour card, the invite card |
+| `button` | 16 pt | Primary and secondary buttons (52 pt tall), the editor's tool bar items |
+| `control` | 14 pt | Photos on a canvas, fields, tiles, icon squares |
+| `chip` | 10 pt | Selectable chips (filters, styles, ideas) |
+| `pill` | capsule | Pill buttons and badges: credits, "Try it on your photo", Next, Auto, Done, the invite card's button |
+| `tag` | 6 pt | PRO/NEW badges, Before/After tags, small labels |
+| `print` | 6 pt | Template cards, effect tiles and collection pages: looks are prints, with a print's small corner |
 
 Round shapes stay round where roundness is the meaning: icon buttons, the shutter, toggles, page dots and progress bars. Corners inside exported pictures (share cards, captions, stickers, collage captions) belong to the artwork, not to this scale.
 

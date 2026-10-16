@@ -74,7 +74,7 @@ struct CategoryView: View {
                 .font(.legibleCaption.weight(.semibold))
                 .foregroundStyle(Palette.textSecondary)
                 .padding(.top, 2)
-            Rectangle()
+            Capsule()
                 .fill(Palette.accent)
                 .frame(width: 44, height: 3)
                 .padding(.top, 6)

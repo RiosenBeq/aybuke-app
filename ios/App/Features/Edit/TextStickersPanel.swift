@@ -86,7 +86,7 @@ struct TextStyleRows: View {
                             .fixedSize()
                             .padding(.horizontal, 14)
                             .frame(minHeight: 44)
-                            .background(Palette.accent, in: .chip)
+                            .background(Palette.accent, in: .pill)
                     }
                     .buttonStyle(.pressable)
                 }
@@ -161,6 +161,7 @@ private struct FontChip: View {
                 .foregroundStyle(isSelected ? Palette.onPrimary : Palette.textPrimary)
                 .background(isSelected ? Palette.primary : Palette.surface, in: .chip)
                 .overlay(RoundedRectangle.chip.strokeBorder(isSelected ? Palette.ink : Palette.stroke, lineWidth: isSelected ? 1.5 : 1))
+                .selectionPop(isSelected)
         }
         .buttonStyle(.pressable)
         .accessibilityLabel(font.title)

@@ -214,6 +214,22 @@ final class AppModel {
     /// "Delete my data" is waiting for the server.
     private(set) var isDeletingData = false
     @ObservationIgnored private var reviewPolicy: ReviewPromptPolicy
+    /// "Loving Aybuke? Invite a friend" after a finished save or share.
+    @ObservationIgnored private var invitePacing: InviteCardPacing
+    /// Her visits (no rating request or invite card in the first).
+    @ObservationIgnored private var sessions: EngagementSessions
+    /// Goes up when it's the moment to ask for a rating: the root view asks StoreKit.
+    private(set) var reviewRequests = 0
+    /// The invite card is on screen, above the tab bar (`InvitePromptCard`).
+    private(set) var isInviteCardVisible = false
+    /// The invite (Glow together), opened from the invite card.
+    var isInvitePresented = false
+    /// The last finished save or share, until the next natural break decides
+    /// whether a rating request or the invite card follows it.
+    @ObservationIgnored private var lastExport: Date?
+    @ObservationIgnored private var askTask: Task<Void, Never>?
+    /// The cold-launch splash covers the first moments (`LaunchSplash`).
+    private(set) var isLaunchSplashVisible: Bool
     /// The last paywall or permission prompt; no rating prompt for 30 minutes after.
     @ObservationIgnored private var lastInterruption: Date?
     /// One paywall a session is enough: no onboarding one after another.
@@ -238,6 +254,8 @@ final class AppModel {
         static let interests = "onboarding.interests"
         static let successfulSaves = "stats.successfulSaves"
         static let reviewPolicy = "review.policy.v1"
+        static let invitePacing = "invite.card.v1"
+        static let sessions = "engagement.sessions.v1"
         static let appleUserID = "auth.appleUserID"
         static let appearance = "appearance"
         /// A delete request was sent; a later rejected session means it worked.
@@ -245,7 +263,8 @@ final class AppModel {
         /// What "Delete my data" removes (other owners' keys spelled out here
         /// so the list is complete in one place).
         static let wiped = [
-            onboarding, onboardingPaywallPending, consent, ageRecord, interests, successfulSaves, reviewPolicy, appearance, deletionRequested,
+            onboarding, onboardingPaywallPending, consent, ageRecord, interests, successfulSaves, reviewPolicy, invitePacing, sessions,
+            appearance, deletionRequested,
             "credits.wallet.v2", "notifications.preferences.v1", "notifications.readyPingDeclined", "tour.seen.v1",
             PromptHistory.recentKey, PromptHistory.draftKey, MyFiltersStore.key, AdCoordinator.pacingKey, AdCoordinator.usedKey,
             PurchaseManager.purchasedKey,
@@ -284,6 +303,14 @@ final class AppModel {
             fresh.happyMoments = defaults.integer(forKey: Keys.successfulSaves)
             self.reviewPolicy = fresh
         }
+        self.invitePacing = defaults.data(forKey: Keys.invitePacing)
+            .flatMap { try? JSONDecoder().decode(InviteCardPacing.self, from: $0) } ?? InviteCardPacing()
+        // Someone who finished onboarding in an earlier version isn't new:
+        // this launch is at least her second visit.
+        self.sessions = defaults.data(forKey: Keys.sessions)
+            .flatMap { try? JSONDecoder().decode(EngagementSessions.self, from: $0) }
+            ?? EngagementSessions(count: defaults.bool(forKey: Keys.onboarding) ? 1 : 0)
+        self.isLaunchSplashVisible = LaunchSplash.shouldShow
 
         let purchases = PurchaseManager(defaults: defaults)
         self.purchases = purchases
@@ -363,6 +390,8 @@ final class AppModel {
         if let scene = ScreenshotScene.current {
             applyScreenshotScene(scene)
         }
+        // `-GLInviteCard YES`: the invite card on screen (QA, screenshots).
+        if UserDefaults.standard.bool(forKey: "GLInviteCard") { isInviteCardVisible = true }
         #endif
     }
 
@@ -461,6 +490,8 @@ final class AppModel {
 
     /// Called once from the root view's `.task`.
     func start() async {
+        sessions.noteLaunch()
+        persistEngagement()
         watchNetwork()
         liveActivity.endLeftovers()
         Task { await TemporaryFiles.sweep() }
@@ -498,12 +529,31 @@ final class AppModel {
         await purchases.loadProducts()
         // She force-quit the editor she opened from onboarding.
         if defaults.bool(forKey: Keys.onboardingPaywallPending), hasCompletedOnboarding, !needsAgeStep, editorLaunch == nil {
+            while isLaunchSplashVisible { try? await Task.sleep(for: .milliseconds(100)) }
             offerOnboardingPaywall()
+        }
+    }
+
+    /// The splash is done (or a link, or leaving the app, cut it short): a
+    /// crossfade into the app, and the tour may start once it's gone.
+    func endLaunchSplash(animated: Bool = true) {
+        guard isLaunchSplashVisible else { return }
+        if animated {
+            withAnimation(.easeInOut(duration: LaunchSplash.fadeDuration)) { isLaunchSplashVisible = false }
+        } else {
+            isLaunchSplashVisible = false
+        }
+        guard hasCompletedOnboarding, !tour.hasSeen else { return }
+        Task {
+            try? await Task.sleep(for: .seconds(LaunchSplash.fadeDuration + 0.3))
+            offerTourIfNeeded()
         }
     }
 
     /// Back in the foreground: notification permission may have changed.
     func becameActive() {
+        sessions.noteForeground(at: Date())
+        persistEngagement()
         syncReminders()
         // A trial cancelled in Settings › Subscriptions loses its reminder.
         Task { await purchases.refreshEntitlements() }
@@ -513,6 +563,12 @@ final class AppModel {
             await refreshServerBalanceIfDue()
             syncWidgets()
         }
+    }
+
+    /// In the background: half an hour away starts a new session.
+    func enteredBackground() {
+        sessions.noteBackground(at: Date())
+        persistEngagement()
     }
 
     /// The trial reminder exists only while a trial runs and will renew.
@@ -662,6 +718,10 @@ final class AppModel {
         appearance = .light
         defaults.removeObject(forKey: Keys.appearance) // the didSet wrote it back
         reviewPolicy = ReviewPromptPolicy(firstSeen: Date())
+        invitePacing = InviteCardPacing()
+        sessions = EngagementSessions(count: 1)
+        isInviteCardVisible = false
+        lastExport = nil
         lastInterruption = nil
         isSignedIn = false
         accountEmail = nil
@@ -891,7 +951,7 @@ final class AppModel {
     /// purchase the account prompt comes first), offer the tour.
     func presentationEnded() {
         // A save in the editor, video editor or collage maker: its break is now.
-        ads.naturalBreak()
+        naturalBreak()
         guard hasCompletedOnboarding, !tour.hasSeen else { return }
         Task {
             try? await Task.sleep(for: .milliseconds(800))
@@ -908,7 +968,7 @@ final class AppModel {
         }
         #endif
         guard hasCompletedOnboarding, !needsAgeStep, !tour.hasSeen, !tour.isRunning, !isPresentingSomething,
-              !isSettingsPresented, !isPhotoPickerPresented, !isVideoPickerPresented else { return }
+              !isSettingsPresented, !isPhotoPickerPresented, !isVideoPickerPresented, !isLaunchSplashVisible else { return }
         startTour()
     }
 
@@ -1271,41 +1331,108 @@ final class AppModel {
         syncWidgets()
     }
 
-    // MARK: Ratings and reminders
+    // MARK: Ratings, the invite card and reminders
 
     static var appVersion: String {
         Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0"
     }
 
-    /// Saving or hearting a creation. Returns true when it's a good moment to
-    /// ask for a rating (see `ReviewPromptPolicy`).
-    func registerHappyMoment() -> Bool {
-        if let lastInterruption, Date().timeIntervalSince(lastInterruption) < 1800 {
-            countHappyMoment()
-            return false
-        }
-        let ask = reviewPolicy.recordHappyMoment(at: Date(), appVersion: Self.appVersion)
-        persistReviewPolicy()
-        return ask
+    /// A finished save or share (the editor, Create, the collage maker, the
+    /// video editor, the share composer, Retro Cam, My Works). It counts toward
+    /// the rating request and the invite card; at the next natural break one of
+    /// them may follow, or an ad (`allowsAd`: only after the saves and shares
+    /// listed for interstitials), never more than one.
+    func noteFinishedExport(allowsAd: Bool = true) {
+        reviewPolicy.recordExport()
+        invitePacing.noteExport()
+        persistEngagement()
+        if allowsAd { ads.noteFinishedExport() }
+        lastExport = Date()
+        // After the success toast has had its moment, a little before an ad would.
+        scheduleAsk(after: 1.5)
     }
 
-    /// Sharing counts as a happy moment too, but a share is never interrupted.
-    func countHappyMoment() {
-        reviewPolicy.happyMoments += 1
-        persistReviewPolicy()
+    /// A screen closed (the editor, video editor, collage maker, Retro Cam,
+    /// share composer): if a save just happened there, this is its break.
+    func naturalBreak() {
+        if lastExport != nil { scheduleAsk(after: 0.6) }
+        ads.naturalBreak()
     }
 
     /// A failed job, a report or a "doesn't look like you" retry: no rating
-    /// prompts for a few days.
+    /// request or invite card for a few days.
     func registerSetback() {
         reviewPolicy.recordSetback(at: Date())
-        persistReviewPolicy()
+        persistEngagement()
     }
 
-    private func persistReviewPolicy() {
-        if let data = try? JSONEncoder().encode(reviewPolicy) {
-            defaults.set(data, forKey: Keys.reviewPolicy)
+    /// The card's "Invite a friend": the invite opens, and the card's job is done.
+    func openInviteFromCard() {
+        invitePacing.retire()
+        persistEngagement()
+        hideInviteCard()
+        isInvitePresented = true
+    }
+
+    /// The card's close button, or "Don't show again" (`forGood`).
+    func dismissInviteCard(forGood: Bool) {
+        if forGood {
+            invitePacing.retire()
+            persistEngagement()
         }
+        hideInviteCard()
+    }
+
+    private func hideInviteCard() {
+        withAnimation(Motion.appear) { isInviteCardVisible = false }
+    }
+
+    private func scheduleAsk(after seconds: Double) {
+        askTask?.cancel()
+        askTask = Task { [weak self] in
+            try? await Task.sleep(for: .seconds(seconds))
+            guard !Task.isCancelled else { return }
+            self?.askIfDue()
+        }
+    }
+
+    /// The rating request or the invite card, if one is due, at a natural
+    /// break: nothing else on screen (no sheet, cover, picker, tour or
+    /// splash), and the app in front. Still in the editor: it waits for it to
+    /// close; three minutes later the moment has passed.
+    private func askIfDue() {
+        guard let exportedAt = lastExport else { return }
+        let now = Date()
+        guard now.timeIntervalSince(exportedAt) < 180 else {
+            lastExport = nil
+            return
+        }
+        guard acceptsCommands, tour.hasSeen, !isSettingsPresented, !isLaunchSplashVisible, !isInviteCardVisible,
+              !UIApplication.shared.isPresentingAnything, UIApplication.shared.applicationState == .active else { return }
+        lastExport = nil
+        #if DEBUG
+        if ScreenshotScene.current != nil { return }
+        #endif
+        let interrupted = lastInterruption.map { now.timeIntervalSince($0) < 1800 } ?? false
+        if !interrupted, reviewPolicy.shouldPrompt(now: now, appVersion: Self.appVersion, isFirstSession: sessions.isFirstSession) {
+            reviewPolicy.notePrompted(at: now, appVersion: Self.appVersion)
+            persistEngagement()
+            ads.yieldBreak()
+            reviewRequests += 1
+        } else if invitePacing.isDue(at: now, isFirstSession: sessions.isFirstSession, lastSetback: reviewPolicy.lastSetback) {
+            invitePacing.noteShown(at: now)
+            persistEngagement()
+            ads.yieldBreak()
+            withAnimation(Motion.appear) { isInviteCardVisible = true }
+            UIAccessibility.post(notification: .announcement, argument: String(localized: "Loving \(Brand.name)?"))
+        }
+    }
+
+    private func persistEngagement() {
+        let encoder = JSONEncoder()
+        if let data = try? encoder.encode(reviewPolicy) { defaults.set(data, forKey: Keys.reviewPolicy) }
+        if let data = try? encoder.encode(invitePacing) { defaults.set(data, forKey: Keys.invitePacing) }
+        if let data = try? encoder.encode(sessions) { defaults.set(data, forKey: Keys.sessions) }
     }
 
     /// Reschedules the opt-in reminders for the current credits.
@@ -1393,6 +1520,8 @@ final class AppModel {
     // MARK: Deep links (widgets, controls, Live Activities, Siri and Shortcuts)
 
     func handle(_ link: GlowDeepLink) {
+        // A link (a widget, a notification, Siri) goes straight where it points.
+        endLaunchSplash()
         guard hasCompletedOnboarding, !needsAgeStep, !isFullScreenCoverPresented else { return }
         isPaywallPresented = false
         outOfCredits = nil

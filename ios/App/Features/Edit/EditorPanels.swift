@@ -143,7 +143,7 @@ struct StylesPanel: View {
                     TemplateCard(template: template, width: 104, height: 136, showsLock: template.isPro && !isPro)
                 }
             }
-            .buttonStyle(.plain)
+            .buttonStyle(.pressable)
             .macHoverLift(scale: 1.03)
             .macTryLookMenu { select(template) }
         }
@@ -349,7 +349,7 @@ struct AdjustPanel: View {
                     .foregroundStyle(Palette.onAccent)
                     .padding(.horizontal, 14)
                     .frame(minHeight: 44)
-                    .background(Palette.accent, in: .chip)
+                    .background(Palette.accent, in: .pill)
             }
             .buttonStyle(.pressable)
             .accessibilityHint("Picks the best light and colour for this photo")
@@ -693,9 +693,9 @@ private struct EffectTile: View {
                 }
             }
             .frame(width: 76, height: 96)
-            .clipShape(RoundedRectangle(cornerRadius: Metrics.printRadius))
+            .clipShape(.print)
             .overlay(
-                RoundedRectangle(cornerRadius: Metrics.printRadius)
+                RoundedRectangle.print
                     .strokeBorder(isSelected ? Palette.accent : Palette.stroke, lineWidth: isSelected ? 3 : 1)
             )
             .overlay(alignment: .topLeading) {
@@ -715,6 +715,8 @@ private struct EffectTile: View {
                 .minimumScaleFactor(0.8)
         }
         .frame(width: 80)
+        .animation(Motion.select, value: isSelected)
+        .selectionPop(isSelected)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel("\(effect.title), \(effect.era)")
         .accessibilityAddTraits(isSelected ? [.isButton, .isSelected] : .isButton)

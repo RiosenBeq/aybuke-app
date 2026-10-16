@@ -166,7 +166,7 @@ struct LibraryTile: View {
                         .minimumScaleFactor(0.6)
                         .padding(.horizontal, 12)
                         .frame(minHeight: 28)
-                        .background(Palette.accent, in: .chip)
+                        .background(Palette.accent, in: .pill)
                         // A 44 pt target around the small button.
                         .padding(.vertical, 8)
                         .contentShape(Rectangle())

@@ -90,7 +90,7 @@ struct SeasonHeroBanner: View {
         .foregroundStyle(palette.isDark ? Palette.ink : Palette.blush)
         .padding(.horizontal, 14)
         .padding(.vertical, 9)
-        .background(palette.isDark ? Palette.blush : Palette.ink, in: .chip)
+        .background(palette.isDark ? Palette.blush : Palette.ink, in: .pill)
     }
 
     private func prints(_ examples: [String], palette: AuraPalette) -> some View {

@@ -4,6 +4,8 @@ import AppCore
 struct HomeView: View {
     @Environment(AppModel.self) private var app
     @Environment(\.dynamicTypeSize) private var typeSize
+    /// The wordmark grows with the text size, like the title it replaced.
+    @ScaledMetric(relativeTo: .largeTitle) private var wordmarkHeight: CGFloat = 30
     @State private var legalDocument: LegalDocument?
     @State private var openCategory: TemplateCategory?
     /// A season's looks before it starts (the Coming soon card).
@@ -153,10 +155,8 @@ struct HomeView: View {
     }
 
     private var headerTitle: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            Text(Brand.name)
-                .font(.display(26, weight: .heavy, relativeTo: .largeTitle))
-                .foregroundStyle(Palette.textPrimary)
+        VStack(alignment: .leading, spacing: 4) {
+            BrandWordmark(height: min(wordmarkHeight, 64))
                 .accessibilityAddTraits(.isHeader)
             Text("What are we glowing up today?")
                 .font(.accent(16, relativeTo: .subheadline))
@@ -199,7 +199,7 @@ struct HomeView: View {
                 .foregroundStyle(Palette.blush)
                 .padding(.horizontal, 14)
                 .padding(.vertical, 9)
-                .background(Palette.ink, in: .chip)
+                .background(Palette.ink, in: .pill)
                 .padding(.top, 6)
             }
             .padding(20)
