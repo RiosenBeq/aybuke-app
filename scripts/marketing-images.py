@@ -12,7 +12,9 @@ docs/marketing/screenshot-captions.json, captured with -GLScreenshotScene
   makeup.png        editor -GLEditorTool makeup (-GLMakeupPreset <id>)
   glowcam.png       camera -GLGlowLook golden -GLGlowSparkle YES -GLGlowLips rosy
                     -GLGlowCheeks softBlush -GLCameraSample portrait-a -GLCameraSteady YES
-                    -GLTintKeepsGoing YES -GLVisionFixtures <folder> (-GLCameraFixture YES on the Mac)
+                    -GLTintKeepsGoing YES -GLVisionFixtures <folder> (on the Mac add
+                    -GLCameraFixture YES -GLCameraAction shoot: the live preview there showed
+                    no tint in October 2026, the taken photo has it)
   home.png          home -GLDate 2026-08-20    (a day with no season or countdown anywhere)
   autoedit.png      video -GLVideoLandscape YES -GLCaptions fixture -GLAutoEdit tiktok
                     -GLAutoEditFraming fixture -GLAutoEditLook golden -GLVideoClean YES -GLVideoSeek 1.2
