@@ -38,11 +38,12 @@ enum ImageStore {
     /// "Unless open" lets a job that finishes after the device locks still
     /// write its file, which stays unreadable until the next unlock. The Mac
     /// uses "until first unlock": FileVault already encrypts its disk, and a
-    /// locked screen would otherwise leave My Works blank.
+    /// locked screen would otherwise leave My Works blank. Other pictures of
+    /// hers kept on the device (poll thumbnails) use the same class.
     #if targetEnvironment(macCatalyst)
-    private static let fileProtection: Data.WritingOptions = .completeFileProtectionUntilFirstUserAuthentication
+    static let fileProtection: Data.WritingOptions = .completeFileProtectionUntilFirstUserAuthentication
     #else
-    private static let fileProtection: Data.WritingOptions = .completeFileProtectionUnlessOpen
+    static let fileProtection: Data.WritingOptions = .completeFileProtectionUnlessOpen
     #endif
 
     /// PNG keeps transparency (cut-outs); everything else is stored as JPEG.

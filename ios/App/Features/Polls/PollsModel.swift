@@ -304,8 +304,9 @@ final class PollsModel {
             values.isExcludedFromBackup = true
             try? directory.setResourceValues(values)
         }
+        // Pictures of her: the library's protection class, not the system default.
         try? data.write(to: directory.appendingPathComponent(thumbnailKey(id, side)),
-                        options: [.atomic, .completeFileProtectionUntilFirstUserAuthentication])
+                        options: [.atomic, ImageStore.fileProtection])
     }
 
     private nonisolated static func removeThumbnails(of ids: [String]) {
