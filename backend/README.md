@@ -200,7 +200,7 @@ Instead of a credit, a free member (13+, iPhone and iPad, not Pro) can watch a r
 
 ```bash
 cd backend
-supabase db push                                  # 20261101000000_rewarded_unlocks.sql
+psql "$SUPABASE_DB_URL" -1 -v ON_ERROR_STOP=1 -f supabase/migrations/20261101000000_rewarded_unlocks.sql   # live since 16 Oct 2026
 supabase functions deploy ai-image                # JWT verification on, as before
 supabase functions deploy ad-reward --no-verify-jwt
 ```
@@ -288,7 +288,7 @@ Errors: 400 `bad_request` (a body or id outside the contract, a question over 80
 
 ```bash
 cd backend
-supabase db push                       # 20261102000000_polls.sql (sweep_jobs and merge_accounts are replaced too)
+psql "$SUPABASE_DB_URL" -1 -v ON_ERROR_STOP=1 -f supabase/migrations/20261102000000_polls.sql   # live since 16 Oct 2026; replaces sweep_jobs and merge_accounts too
 supabase functions deploy polls        # JWT verification on
 supabase functions deploy owner-digest # the digest's poll section
 ```

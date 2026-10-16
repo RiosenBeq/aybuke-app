@@ -2,7 +2,7 @@
 
 Bu dosya, Aybuke'nin arka ucunu (Supabase projesi `efapupjvidyqhqdevmcu`, Frankfurt) canlıya almak için kalan adımları listeler. Kod hazır: veritabanı geçişleri `backend/supabase/migrations/` klasöründe, Edge Functions `backend/supabase/functions/` klasöründe. Gerekçeler ve kötüye kullanım runbook'u: [`backend/README.md`](../backend/README.md). Sahibin yapacakları ve kararları [`docs/SAHIP-YAPILACAKLAR.md`](SAHIP-YAPILACAKLAR.md) listesinde; bu dosyadaki `§` numaraları o listenin atıfları için sabittir.
 
-> **Durum (15 Ekim 2026):** Arka uç canlı: migrasyonlar `20261029000002`'ye kadar uygulandı, yedi fonksiyon yayında (`owner-digest` dahil), gizli değerler ve üç cron işi tamam, RevenueCat yönlendirme adresi girildi; Supabase organizasyonu ve projesi "Aybuke" adını aldı. Aybuke 1.0 incelemede. Aşağıdaki kutular 14 Ekim'de yazıldı; liste artık yeniden kurulum ve kontrol için kayıttır. Güncel açık işler: [`SAHIP-YAPILACAKLAR.md`](SAHIP-YAPILACAKLAR.md).
+> **Durum (16 Ekim 2026):** Arka uç canlı: migrasyonlar `20261102000000`'ye (anketler) kadar uygulandı, dokuz fonksiyon yayında (`owner-digest`, `assist` ve `polls` dahil), gizli değerler ve üç cron işi tamam, RevenueCat yönlendirme adresi girildi; Supabase organizasyonu ve projesi "Aybuke" adını aldı. Aybuke 1.0 incelemede. Aşağıdaki kutular 14 Ekim'de yazıldı; liste artık yeniden kurulum ve kontrol için kayıttır. Güncel açık işler: [`SAHIP-YAPILACAKLAR.md`](SAHIP-YAPILACAKLAR.md).
 
 > **Kural:** Anahtar, şifre, service role anahtarı, `.p8` içeriği ve e-posta adresi bu dosyaya, bir commit'e ya da bir sohbete yazılmaz. Değerler yalnızca ilgili panele girilir. Proje kimliği ve AdMob birim kimlikleri herkese açıktır.
 
