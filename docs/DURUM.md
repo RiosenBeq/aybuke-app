@@ -18,6 +18,7 @@ Bu oturumun açık işleri. Bir sonraki devamda buradan başlayın; ayrıntı `A
 - **GitHub:** `main` = `63e4bc4` (CI yeşil). Sunucu: migrasyonlar `20261104000000`'e kadar canlı, `assist` güncel. xAI bakiye tahmini 7,83 $.
 - **Mağaza varlıkları hazır (repo):** 12 dilde iPhone/iPad/Mac ekran görüntüleri, İngilizce/Türkçe yıl boyu önizleme videoları (`docs/marketing/app-preview/`), 13 dilde metinler ve 1.1 inceleme notları; araçlar `--version 1.1` alır (`scripts/asc/README.md`).
 - **aybuke.org yenilendi** (site repo `c2b4e80`, `3183467`, `84cfc49`): harf harf wordmark, CSS telefon, karanlık mod, /photo-enhancer sayfası, yasal metinler eşit.
+- **aybuke.org kısaltıldı (17 Ekim):** 12 dilin ana sayfaları telefonda ~5.400–5.900 px (önce 9.300–12.400), masaüstünde ~6.100–6.400 px (önce 14.000–19.500); özellik sayfaları ~4.000–4.400 px; "Bölüme atla", "Başa dön", sabit üst barda logo, karanlık mod kontrastı; 11 dile kendi SSS sayfası (/tr/faq …); 144 sayfa 200, axe 0 sorun. Açık küçük iş: /aybik sayfası telefonda 4.604 px (hedef 4.500).
 
 ## Bekliyor
 
