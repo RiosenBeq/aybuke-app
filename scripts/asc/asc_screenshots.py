@@ -61,8 +61,14 @@ def upload(set_id, path):
 
 def main():
     total = 0
-    versions = asc.resolve_versions(asc.version_spec(sys.argv), platforms=(PLATFORM,) if PLATFORM else ("ios", "mac"))
+    versions = asc.resolve_versions(asc.version_spec(sys.argv), platforms=(PLATFORM,) if PLATFORM else ("ios", "mac"), dry=DRY)
     for platform, (version, _, _) in versions.items():
+        if version is None:  # dry run before the version exists: list the files
+            for locale, folder in FOLDER.items():
+                for display_type, files in sets_for(platform, folder):
+                    print(f"{platform} {locale} {display_type}: {len(files)} files")
+                    total += len(files)
+            continue
         locs, _ = asc.get_all(f"/v1/appStoreVersions/{version}/appStoreVersionLocalizations")
         for loc in locs:
             locale = loc["attributes"]["locale"]

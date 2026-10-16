@@ -3,11 +3,12 @@ subtitle (the editable app info), description, keywords, promotional text and
 What's New (iOS and macOS), and with --review-notes the App Review notes from
 app-store-listing.md.
 
-Which version records: `--version 1.1` (the version string, on both platforms),
-`--version <version id>` (that record; a comma list for both), or by default
-each platform's editable version (prepare for submission, rejected, or
-developer-rejected). What's New is left out where App Store Connect refuses it
-(the app's first version).
+Which version records: `--version 1.1` (the version string, on both platforms;
+created when it doesn't exist yet), `--version <version id>` (that record; a
+comma list for both), or by default each platform's editable version (prepare
+for submission, rejected, or developer-rejected). A locale the version lacks is
+added. What's New is left out where App Store Connect refuses it (an app's
+first version).
 
 The Mac description is made from the iOS one by `mac_description`, the same
 way every time: bullets about iPhone-only features (widgets, the Lock Screen,
@@ -108,8 +109,8 @@ def push_season(meta_all, season, dry):
 
     import asc  # needs requests + cryptography and the API key; the check doesn't
 
-    versions = asc.resolve_versions(asc.version_spec(sys.argv))
-    for locs in (localizations(asc, vid) for vid, _, _ in versions.values()):
+    versions = asc.resolve_versions(asc.version_spec(sys.argv), dry=dry)
+    for locs in (localizations(asc, vid) for vid, _, _ in versions.values() if vid):
         for locale, text in texts.items():
             if locale in locs:
                 loc_id = locs[locale]["id"]
@@ -270,10 +271,10 @@ def main():
 
     import asc  # needs requests + cryptography and the API key; the check doesn't
 
-    versions = asc.resolve_versions(asc.version_spec(sys.argv))
+    versions = asc.resolve_versions(asc.version_spec(sys.argv), dry=dry)
     app_info = asc.editable_app_info()
     info_locs, _ = asc.get_all(f"/v1/appInfos/{app_info}/appInfoLocalizations")
-    locs = {platform: localizations(asc, vid) for platform, (vid, _, _) in versions.items()}
+    locs = {platform: localizations(asc, vid) if vid else {} for platform, (vid, _, _) in versions.items()}
     for item in info_locs:
         locale = item["attributes"]["locale"]
         if locale not in built:
@@ -289,14 +290,18 @@ def main():
             if platform in locs and locale in locs[platform]:
                 patch_localization(asc, locs[platform][locale]["id"], fields)
     for platform, (vid, _, _) in versions.items():
-        missing = sorted(set(built) - set(locs[platform]))
-        if missing:
-            print(f"{platform}: no localization yet for {', '.join(missing)} (add them in App Store Connect first)")
+        for locale in sorted(set(built) - set(locs[platform])):
+            fields = built[locale][1 if platform == "ios" else 2]
+            print(f"{platform}: {'would add' if dry or not vid else 'adding'} the {locale} localization")
+            if not dry and vid:
+                asc.post("/v1/appStoreVersionLocalizations", {"data": {
+                    "type": "appStoreVersionLocalizations", "attributes": dict(fields, locale=locale),
+                    "relationships": {"appStoreVersion": {"data": {"type": "appStoreVersions", "id": vid}}}}})
     if "--review-notes" in sys.argv:
         notes = review_notes(repo)
         for platform, (vid, _, _) in versions.items():
             print(f"{platform}: review notes {len(notes[platform])}/4000")
-            if not dry:
+            if not dry and vid:
                 push_review_notes(asc, vid, notes[platform], versions)
     print("done" if not dry else "dry run ok")
 

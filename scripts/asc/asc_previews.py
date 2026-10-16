@@ -67,9 +67,12 @@ def upload(set_id, video):
 
 
 def main():
-    version, _, _ = asc.resolve_versions(asc.version_spec(sys.argv), platforms=("ios",))["ios"]
-    locs, _ = asc.get_all(f"/v1/appStoreVersions/{version}/appStoreVersionLocalizations")
-    by_locale = {loc["attributes"]["locale"]: loc for loc in locs}
+    version, _, _ = asc.resolve_versions(asc.version_spec(sys.argv), platforms=("ios",), dry=DRY)["ios"]
+    if version is None:  # dry run before the version exists
+        by_locale = {locale: None for locales in LOCALES.values() for locale in locales}
+    else:
+        locs, _ = asc.get_all(f"/v1/appStoreVersions/{version}/appStoreVersionLocalizations")
+        by_locale = {loc["attributes"]["locale"]: loc for loc in locs}
     for lang, locales in LOCALES.items():
         video = FOLDER / f"aybuke-app-preview-iphone-{lang}.mp4"
         if not video.exists():

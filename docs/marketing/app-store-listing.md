@@ -104,27 +104,32 @@ Aybuke 1.1 is here ✨
 Thanks for glowing with us!
 ```
 
-**App Review notes** (3646/4000; the first App Store version, iOS and macOS; sent with `asc_metadata.py --review-notes`)
+**App Review notes** (3565/4000; for the 1.1 update, iOS and macOS; sent with `asc_metadata.py --version 1.1 --review-notes`)
 
 ```text
-Aybuke is an AI photo editor and image generator for iPhone, iPad and Mac. No login is needed. Sign in with Apple is optional (Settings > Account, or Sign in on the paywall) and only lets credits follow the user to another device; Pro always comes from the Apple Account. An anonymous backend account is created only when a cloud AI feature is first used (after consent) or a purchase is made.
+Aybuke is an AI photo editor and image generator for iPhone, iPad and Mac. No login is needed; Sign in with Apple is optional (Settings > Account) and only lets credits follow the user to another device. An anonymous backend account is created only at the first consented cloud AI use or a purchase.
 
-How to review:
-1. Onboarding: a neutral age step (Declared Age Range on iOS 26, else month and year). Under 13 only on-device tools: no cloud AI, purchases or ads. A soft paywall (close with X) and a short tour follow.
-2. Cloud AI: Explore > "Try it on your photo" (Magic Edit), any look, Makeup Studio (color and sparkle only, never reshaping) or Create. First a consent screen names every processor: Supabase (our servers), xAI (Grok Imagine makes the images) and Anthropic, whose Claude model the app calls "Aybik, our AI helper": it checks photos, results and poll pictures for safety and suggests text. Tap "Allow AI processing"; "Not now" keeps the on-device tools working.
-3. Aybik writing help (text only, never a photo, no credits): Create > "Inspire me" or "Make it magic", Makeup Studio > "Describe your vibe", caption ideas on the share screen. Without consent the on-device writer or built-in lists answer.
-4. Which vibe? polls: My Works > Select two edits or creations > "Ask friends" (also on the share screen). The pictures pass the safety check, then a private link lets anyone vote A or B in a browser for 24 hours, anonymously; then everything is deleted. Results: My Works > Your polls. Questions that rate or compare looks are blocked; a reported poll is closed.
-5. On-device tools (no consent, no credits): Effects (incl. DSLR '12), Adjust, Crop, Cut out, Hide faces, Text & Stickers, Collage, Best shot, Retro Cam and Retro Booth. Glow: Retro Cam > "Glow" under the viewfinder; looks, Sparkle and a lip or blush tint, light and color only. Video: Edit > "Edit a video" > an Auto edit button makes a 9:16 cut with framing and captions (one a day free, then the paywall).
-6. Credits: 2 free AI credits a day per App Store install (verified from the signed AppTransaction; Sandbox and TestFlight count). Pro includes 80 a month. If AI says it's taking a short break, a daily cost cap was reached (resets 00:00 UTC).
-7. Ads (free members 13+, iPhone and iPad only): "Watch a short ad · +1 credit" when out of credits (2 a day, granted only by AdMob's signed server callback); "Try this look once · watch a short ad" on the paywall a Pro look or style opened (once a day, needs a credit; that one job then runs for 1 credit); an occasional interstitial after a finished save or share (never in the first 24 hours, in the editor or before a result; 3 a day at most). Non-personalised, child-directed treatment for teens, no tracking or advertising identifier.
-8. Purchases: two subscriptions (yearly with a 7-day trial; monthly with a first-month price) and two credit packs, StoreKit 2. Please use a Sandbox account. Restore is on the paywall and in Settings.
-9. Safety: prompts are filtered on the device and the server in 12 languages (sexual, revealing, humiliating and body, face or skin reshaping requests are blocked). Every result passes xAI's moderation and the Claude check; anything flagged or unchecked is blocked and refunded. Report via "..." > Report this image or the flag beside an edit.
-10. Exported AI images carry IPTC DigitalSourceType metadata. Account deletion: Settings > Delete my data & account (revokes the Apple token). Policies: Settings > Terms, privacy & legal, and aybuke.org.
+New in 1.1, and how to test it:
+A. Consent asks again: 1.1 gives Anthropic a second role, so people who agreed in 1.0 see the consent screen once more before their next cloud action. It names every processor: Supabase (our servers), xAI (Grok Imagine makes the images) and Anthropic, whose Claude model the app calls "Aybik, our AI helper": it checks photos, results and poll pictures for safety and suggests text. Tap "Allow AI processing"; "Not now" keeps every on-device tool working.
+B. Aybik writing help (text only, never a photo, no credits): Create > "Inspire me" or "Make it magic", Makeup Studio > "Describe your vibe", caption ideas on the share screen. Without consent the on-device writer or built-in lists answer.
+C. Glow (on the device): Explore > Retro Cam > "Glow" under the viewfinder. Pick Natural, Dreamy, Golden, Analog or Moody, tap Sparkle, and Makeup for a lip or blush tint. Light and color only: no smoothing, reshaping or skin-tone change.
+D. Auto edit (on the device): Edit > "Edit a video", pick a clip, then an Auto edit button. It makes a 9:16 cut with framing and captions. One a day is free, then the paywall explains Pro.
+E. Which vibe? polls: My Works > Select two edits or creations > "Ask friends" (also on the share screen). The pictures pass the safety check, then a private link lets anyone vote A or B in a browser for 24 hours, anonymously; then everything is deleted. Results: My Works > Your polls. Questions that rate or compare looks are blocked; a reported poll is closed.
+F. Pro try: a free member (13+, iPhone or iPad) who has a credit and taps a Pro look or style sees "Try this look once · watch a short ad" on the paywall, once a day. After the ad that one job runs for 1 credit.
+G. Also new: the DSLR '12 effect (on-device background blur) and the DSLR Portrait look, 20 Makeup Studio looks, Adjust vibes and saved filters, and seasonal looks shown on Explore where a holiday is celebrated.
+
+The essentials:
+1. Onboarding has a neutral age step. Under 13 only on-device tools: no cloud AI, purchases or ads.
+2. Credits: 2 free AI credits a day per App Store install (from the signed AppTransaction; Sandbox and TestFlight count); Pro includes 80 a month. "Taking a short break" means a daily cost cap was reached (resets 00:00 UTC).
+3. Ads (free members 13+, iPhone and iPad): "Watch a short ad · +1 credit" when out of credits (2 a day, granted only by AdMob's signed server callback), the Pro try above, and an occasional interstitial after a finished save or share (not in the first 24 hours, never in the editor; 3 a day at most). Non-personalised, child-directed for teens, no tracking or advertising identifier.
+4. Purchases: two subscriptions and two credit packs (StoreKit 2); please use a Sandbox account. Restore is on the paywall and in Settings.
+5. Safety: prompts and poll questions are filtered on the device and the server in 12 languages. Every result passes xAI's moderation and the Claude check; anything flagged or unchecked is blocked and refunded. Report via "..." > Report this image or the flag beside an edit.
+6. AI exports carry IPTC metadata. Delete everything: Settings > Delete my data & account. Policies: Settings > Terms, privacy & legal, and aybuke.org.
 
 Contact: hello@buaze.com
 ```
 
-For the macOS version the same text gets one more paragraph before the contact line (3870/4000 in all):
+For the macOS version the same text gets one more paragraph before the contact line (3789/4000 in all):
 
 ```text
 On the Mac: the same app (Mac Catalyst) with a sidebar and a menu bar; drop a photo on the window to edit it. Retro Cam and Glow use the Mac's camera. No Live Activity, Instagram Stories sharing, ads or Pro try on the Mac.

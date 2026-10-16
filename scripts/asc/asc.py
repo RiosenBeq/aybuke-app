@@ -108,10 +108,12 @@ def _state(attributes):
     return attributes.get("appVersionState") or attributes.get("appStoreState") or "?"
 
 
-def resolve_versions(spec=None, platforms=("ios", "mac")):
+def resolve_versions(spec=None, platforms=("ios", "mac"), dry=False):
     """{"ios"|"mac": (id, versionString, state)} for the version records to work
-    on: the ones `spec` names, else each platform's editable one. Stops when a
-    platform has none, or more than one editable record."""
+    on: the ones `spec` names, else each platform's editable one. A version
+    string with no record yet (`--version 1.1` after 1.0 is approved) gets one
+    created, release type "after approval" like 1.0 (with `dry`, only said; its
+    id is then None). Stops when a platform has no match or several."""
     chosen, strings = {}, []
     for item in [s.strip() for s in (spec or "").split(",") if s.strip()]:
         if len(item) == 36 and item.count("-") == 4:
@@ -126,6 +128,9 @@ def resolve_versions(spec=None, platforms=("ios", "mac")):
         versions, _ = get_all(f"/v1/apps/{APP_ID}/appStoreVersions", **{"filter[platform]": PLATFORMS[platform]})
         if strings:
             found = [v for v in versions if v["attributes"]["versionString"] in strings]
+            if not found and len(strings) == 1:
+                chosen[platform] = create_version(platform, strings[0], dry)
+                continue
         else:
             found = [v for v in versions if _state(v["attributes"]) in EDITABLE]
         if len(found) != 1:
@@ -134,6 +139,8 @@ def resolve_versions(spec=None, platforms=("ios", "mac")):
         v = found[0]
         chosen[platform] = (v["id"], v["attributes"]["versionString"], _state(v["attributes"]))
     for platform, (vid, string, state) in sorted(chosen.items()):
+        if vid is None:
+            continue
         flag = "" if state in EDITABLE else "  (not editable in this state)"
         print(f"{platform}: version {string} {state} {vid}{flag}")
     return {p: chosen[p] for p in platforms if p in chosen}
@@ -145,3 +152,17 @@ def editable_app_info():
     live = {"READY_FOR_SALE", "READY_FOR_DISTRIBUTION", "REPLACED_WITH_NEW_INFO"}
     open_ = [i for i in infos if (i["attributes"].get("state") or i["attributes"].get("appStoreState")) not in live]
     return (open_ or infos)[0]["id"]
+
+
+def create_version(platform, version_string, dry):
+    """A new App Store version record; App Store Connect copies the localizations
+    of the last version into it."""
+    if dry:
+        print(f"{platform}: version {version_string} doesn't exist yet: would create it")
+        return (None, version_string, "NEW")
+    created = post("/v1/appStoreVersions", {"data": {
+        "type": "appStoreVersions",
+        "attributes": {"platform": PLATFORMS[platform], "versionString": version_string, "releaseType": "AFTER_APPROVAL"},
+        "relationships": {"app": {"data": {"type": "apps", "id": APP_ID}}}}})["data"]
+    print(f"{platform}: created version {version_string} {created['id']}")
+    return (created["id"], version_string, _state(created["attributes"]))

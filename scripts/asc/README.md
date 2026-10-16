@@ -7,7 +7,8 @@ API (Python 3 with `requests` and `cryptography`). They read `ASC_KEY_ID` and
 repo. Run them from this folder (`cd scripts/asc`).
 
 Every script that changes a version takes `--version 1.1` (the version string, on
-iOS and macOS), `--version <version id>` (that record; a comma list for both), or
+iOS and macOS; created, with its missing locales, when it doesn't exist yet), `--version
+<version id>` (that record; a comma list for both), or
 by default each platform's editable version (`asc.resolve_versions`), and
 `--dry-run`, which shows the records it found and what it would send.
 
