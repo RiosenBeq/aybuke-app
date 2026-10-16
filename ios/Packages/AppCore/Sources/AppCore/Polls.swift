@@ -1,4 +1,7 @@
 import Foundation
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
 
 // "Which vibe?" polls with friends: she shares two of her own pictures (A
 // and B) and an optional question as a private link, friends vote on
