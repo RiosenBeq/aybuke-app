@@ -17042,7 +17042,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ardından görseller, sorun ve oylar silinir. Anketini daha erken de silebilirsin."
+            "value" : "Ardından görseller, anket sorusu ve oylar silinir. Anketini daha erken de silebilirsin."
           }
         },
         "zh-Hans" : {
@@ -21866,7 +21866,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sorun"
+            "value" : "Anket sorusu"
           }
         },
         "zh-Hans" : {
