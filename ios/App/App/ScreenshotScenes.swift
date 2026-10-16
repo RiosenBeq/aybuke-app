@@ -117,6 +117,16 @@ enum ScreenshotScene: String, CaseIterable {
     /// photos), `-GLCollageAI YES` (the first photo is marked as AI-made) and
     /// `-GLCollageExport YES` (writes the export to tmp/glowlit-collage-qa).
     case collage
+    /// "Your polls" over My Works with fixture polls (`-GLPollsFixture
+    /// live|results|ended|takendown|empty`, default `results`; with any scene
+    /// too, e.g. `library` for My Works' row). `-GLPollsCreate
+    /// explainer|form|send|ready` shows Ask friends instead (`send` and
+    /// `ready` send it to the fixtures), as do the `limit` and `blocked`
+    /// fixtures, which show their message; `-GLPollsQuestion "<words>"` fills
+    /// the question. `librarySelect -GLLibraryAction two|poll` picks two
+    /// creations (and opens Ask friends), `share -GLShareFormat pick` shows
+    /// the composer's Ask friends card.
+    case polls
     /// Explore with the Retro Cam tip. Other scenes show no tips unless
     /// `-GLTip retroCam|collage|textStickers|ideas|captions` asks for one
     /// (`edit` for collage and textStickers, `ideas`, `video` for captions).

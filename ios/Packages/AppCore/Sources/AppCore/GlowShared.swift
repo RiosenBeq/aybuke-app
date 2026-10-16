@@ -22,6 +22,8 @@ public enum GlowDeepLink: Equatable, Sendable {
     case retroCam
     case photoBooth
     case collage
+    /// One of her "Which vibe?" polls, in Your polls (never someone else's).
+    case poll(String)
 
     public static let scheme = "glowlit"
 
@@ -37,6 +39,7 @@ public enum GlowDeepLink: Equatable, Sendable {
         case .retroCam: return URL(string: "\(Self.scheme)://camera")!
         case .photoBooth: return URL(string: "\(Self.scheme)://camera/booth")!
         case .collage: return URL(string: "\(Self.scheme)://collage")!
+        case .poll(let id): return URL(string: "\(Self.scheme)://poll/\(id)")!
         }
     }
 
@@ -54,6 +57,7 @@ public enum GlowDeepLink: Equatable, Sendable {
         case ("camera", "booth"?): self = .photoBooth
         case ("collage", nil): self = .collage
         case ("template", let id?) where TemplateCatalog.template(id: id) != nil: self = .template(id)
+        case ("poll", let id?) where PollID.isValid(id) && path.count == 1: self = .poll(id)
         default: return nil
         }
     }

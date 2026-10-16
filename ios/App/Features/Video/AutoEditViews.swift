@@ -357,7 +357,7 @@ struct AutoEditPostSheet: View {
                 Task { await post.askClaude(platform: request.platform, transcript: transcript, app: app) }
             } label: {
                 Label {
-                    Text("More ideas from Claude", comment: "Button under caption ideas: asks the server's writing help (Claude) for captions. Keep the name Claude.")
+                    Text("More ideas from Aybik", comment: "Button under caption ideas: asks the app's AI helper (Aybik, the server's writing help) for captions. Aybik is the app's AI helper: keep the name Aybik.")
                 } icon: {
                     Image(systemName: "sparkles")
                 }
@@ -365,10 +365,10 @@ struct AutoEditPostSheet: View {
             .buttonStyle(.secondary)
             .disabled(post.isLoading)
             (Assist.sendsVideoWords(transcript: transcript)
-                ? Text("Claude, an AI helper, reads your video’s captions, never the video.",
-                       comment: "Under Auto edit's “More ideas from Claude” button while captions are on: what the writing help gets. Keep the name Claude.")
-                : Text("Claude, an AI helper, never gets your video or what you say in it.",
-                       comment: "Under Auto edit's “More ideas from Claude” button while captions are off: the writing help gets only the platform. Keep the name Claude."))
+                ? Text("Aybik, our AI helper, reads your video’s captions, never the video.",
+                       comment: "Under Auto edit's “More ideas from Aybik” button while captions are on: what the writing help gets. Aybik is the app's AI helper: keep the name Aybik.")
+                : Text("Aybik, our AI helper, never gets your video or what you say in it.",
+                       comment: "Under Auto edit's “More ideas from Aybik” button while captions are off: the writing help gets only the platform. Aybik is the app's AI helper: keep the name Aybik."))
                 .font(.legibleCaption)
                 .foregroundStyle(Palette.textTertiary)
                 .fixedSize(horizontal: false, vertical: true)
@@ -395,10 +395,10 @@ struct AutoEditPostSheet: View {
         let howTo = Platform.isMac ? Text("Click one to copy it with the hashtags.") : Text("Tap one to copy it with the hashtags.")
         switch post.writer {
         case .cloud? where post.heardCaptions:
-            return Text("Written by Claude, an AI helper, from what you say in the video.") + Text(verbatim: " ") + howTo
+            return Text("Written by Aybik, our AI helper, from what you say in the video.") + Text(verbatim: " ") + howTo
         case .cloud?:
-            return Text(Platform.isMac ? "Written by Claude, an AI helper. Click one to copy it with the hashtags."
-                                       : "Written by Claude, an AI helper. Tap one to copy it with the hashtags.")
+            return Text(Platform.isMac ? "Written by Aybik, our AI helper. Click one to copy it with the hashtags."
+                                       : "Written by Aybik, our AI helper. Tap one to copy it with the hashtags.")
         case .device?: return Text("Written on your device.") + Text(verbatim: " ") + howTo
         case nil: return howTo
         }

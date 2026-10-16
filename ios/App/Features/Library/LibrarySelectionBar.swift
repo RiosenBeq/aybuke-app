@@ -17,6 +17,8 @@ struct LibrarySelectionBar: View {
     let isWorking: Bool
     /// File names of the last few picked, oldest first.
     let stack: [String]
+    /// "Which vibe?" with exactly two picked: a poll with friends (13+).
+    var askFriends: (() -> Void)? = nil
     let perform: (Action) -> Void
 
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
@@ -92,6 +94,19 @@ struct LibrarySelectionBar: View {
                         Text(hint)
                             .font(.legibleCaption)
                             .foregroundStyle(Palette.textSecondary)
+                    } else if count == 2, !isRecentlyDeleted, let askFriends {
+                        Button(action: askFriends) {
+                            Label("Which vibe? Ask friends", systemImage: "person.2.fill")
+                                .font(.legibleCaption.weight(.semibold))
+                                .foregroundStyle(Palette.ink)
+                                .padding(.horizontal, 10)
+                                .padding(.vertical, 5)
+                                .background(Palette.blush, in: Capsule())
+                        }
+                        .buttonStyle(.pressable)
+                        .disabled(isWorking)
+                        .transition(.opacity)
+                        .accessibilityHint(Text("Makes a private link where friends vote for one of the two"))
                     }
                 }
             }

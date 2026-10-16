@@ -388,15 +388,29 @@ struct SettingsView: View {
                 })) {
                     VStack(alignment: .leading, spacing: 2) {
                         Text("Cloud AI processing")
-                        // The same list the consent sheet shows.
-                        ForEach(app.config.consentProcessors, id: \.self) { processor in
-                            Text("\(processor.name): \(processor.roleText)")
-                                .font(.legibleCaption)
-                                .foregroundStyle(Palette.textSecondary)
-                        }
+                        Text("Our servers and third-party AI providers process the photos and text you send.")
+                            .font(.legibleCaption)
+                            .foregroundStyle(Palette.textSecondary)
                     }
                 }
                 .tint(Palette.accent)
+                // What each one does, as on the consent sheet; the companies
+                // only in "Providers", collapsed (consent isn't given here).
+                ForEach(app.config.consentProcessors, id: \.self) { processor in
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(processor.title)
+                            .font(.subheadline.weight(.semibold))
+                        Text(processor.roleText)
+                            .font(.legibleCaption)
+                            .foregroundStyle(Palette.textSecondary)
+                    }
+                    .accessibilityElement(children: .combine)
+                }
+                DisclosureGroup("Providers") {
+                    Text(verbatim: AIProcessor.providersList(app.config.consentProcessors))
+                        .font(.legibleCaption)
+                        .foregroundStyle(Palette.textSecondary)
+                }
             }
             // Google's privacy options for ads (EEA, UK and Switzerland), once she has asked for an ad.
             if app.ads.showsPrivacyChoices {

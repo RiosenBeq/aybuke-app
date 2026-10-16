@@ -4,8 +4,9 @@ import SwiftUI
 /// third-party AI processing (App Store Review Guideline 5.1.2(i), GDPR).
 /// "Allow" and "Not now" carry the same weight: no nudge either way.
 struct AIConsentView: View {
-    /// Everyone who processes what she sends, named on the sheet. The lead
-    /// sentence points at this list rather than naming one company.
+    /// Everyone who processes what she sends. The list says what each one
+    /// is; the companies are named in one small line under it (Apple asks
+    /// for them before anything is shared), never in the headline copy.
     let processors: [AIProcessor]
     /// "an hour", "24 hours"…
     let retention: String
@@ -36,7 +37,7 @@ struct AIConsentView: View {
                     .foregroundStyle(Palette.textPrimary)
 
                 // Writing help (ideas, prompts, captions, makeup picks) sends text too.
-                Text("To create and edit images with AI and to help you write prompts and captions, we send the photo and text you choose to our servers and to the companies listed below, who process them for us.")
+                Text("To create and edit images with AI and to help you write prompts and captions, we send the photo and text you choose to our servers and to the third-party AI providers listed below, who process them for us.")
                     .font(.body)
                     .foregroundStyle(Palette.textSecondary)
                     .fixedSize(horizontal: false, vertical: true)
@@ -106,7 +107,8 @@ struct AIConsentView: View {
         }
     }
 
-    /// Names and roles; Create sends text only, so not "your photo".
+    /// What each one does; Create sends text only, so not "your photo".
+    /// The companies come last, in one small line.
     private var processorList: some View {
         VStack(alignment: .leading, spacing: 10) {
             Text("Who processes what you send")
@@ -114,7 +116,7 @@ struct AIConsentView: View {
                 .foregroundStyle(Palette.textPrimary)
             ForEach(processors, id: \.self) { processor in
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(verbatim: processor.name)
+                    Text(processor.title)
                         .font(.subheadline.weight(.semibold))
                         .foregroundStyle(Palette.textPrimary)
                     Text(processor.roleText)
@@ -124,6 +126,10 @@ struct AIConsentView: View {
                 }
                 .accessibilityElement(children: .combine)
             }
+            Text(verbatim: AIProcessor.providersLine(processors))
+                .font(.legibleCaption)
+                .foregroundStyle(Palette.textTertiary)
+                .fixedSize(horizontal: false, vertical: true)
         }
         .padding(14)
         .frame(maxWidth: .infinity, alignment: .leading)

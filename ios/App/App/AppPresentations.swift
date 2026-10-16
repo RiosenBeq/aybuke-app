@@ -76,6 +76,26 @@ struct AppPresentations: ViewModifier {
                     .presentationBackground(Palette.background)
                     .pageSheetSizing()
             }
+            .sheet(item: Binding(
+                get: { isActive ? app.pollsSheet : nil },
+                set: { app.pollsSheet = $0 }
+            )) { request in
+                PollsView(focus: request.focus)
+                    .environment(app)
+                    .presentationDetents([.large])
+                    .presentationBackground(Palette.background)
+                    .formSheetOnMacPageOnPad()
+            }
+            .sheet(item: Binding(
+                get: { isActive ? app.pollDraft : nil },
+                set: { app.pollDraft = $0 }
+            )) { draft in
+                PollCreateView(draft: draft, startsWithExplainer: !app.polls.hasSeenExplainer)
+                    .environment(app)
+                    .presentationDetents([.large])
+                    .presentationBackground(Palette.background)
+                    .formSheetOnMacPageOnPad()
+            }
             .sheet(isPresented: Binding(
                 get: { isActive && app.isInvitePresented },
                 set: { app.isInvitePresented = $0 }

@@ -262,7 +262,7 @@ struct CreateView: View {
                 HStack(spacing: 8) {
                     switch model.promptWriter {
                     case .cloud?:
-                        Label("Written by Claude, an AI helper", systemImage: "sparkles")
+                        Label("Written by Aybik, our AI helper", systemImage: "sparkles")
                             .labelStyle(WriterCaptionLabelStyle())
                     case .device?:
                         Label("Written on your device by Apple Intelligence", systemImage: "sparkles")

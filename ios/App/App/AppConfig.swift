@@ -13,35 +13,95 @@ enum AIMode {
     case demo
 }
 
-/// A company that processes what she sends to cloud AI, as listed on the
-/// consent sheet and in Settings. Names stay as they are; roles are
-/// translated in the app.
+/// A company that processes what she sends to cloud AI. Apple asks apps to
+/// say who gets the data before sharing it with a third-party AI (5.1.2(i)),
+/// so the consent sheet names them in one small footnote and Settings in a
+/// collapsed "Providers" row (`providersLine`); everywhere else the app says
+/// "our servers", "a third-party AI provider" or "Aybik, our AI helper",
+/// never a company. `name` is what the consent record compares, so it stays
+/// as stored.
 struct AIProcessor: Codable, Equatable, Hashable {
     enum Role: String, Codable {
         case servers, images, safety
         /// The safety check that also writes prompts, captions and makeup
-        /// picks from text (`assist`, `CloudWriter`): Anthropic since consent version 3.
+        /// picks from text (`assist`, `CloudWriter`): Aybik, the app's AI
+        /// helper, since consent version 3.
         case safetyAndWriting
 
         /// Checks photos and results: the consent sheet says how long it keeps them.
         var checksSafety: Bool { self == .safety || self == .safetyAndWriting }
+
+        /// The footnote names the AI providers first, then the servers.
+        fileprivate var footnoteOrder: Int {
+            switch self {
+            case .images: return 0
+            case .safety, .safetyAndWriting: return 1
+            case .servers: return 2
+            }
+        }
     }
 
     let name: String
     let role: Role
 
+    /// The company alone, without its product: "xAI (Grok Imagine)" → "xAI".
+    var displayName: String {
+        name.components(separatedBy: " (").first ?? name
+    }
+
+    /// The row's title on the consent sheet: what it is, never who.
+    var title: String {
+        switch role {
+        case .servers: return String(localized: "Our servers")
+        case .images: return String(localized: "AI image provider")
+        case .safety: return String(localized: "AI safety provider")
+        case .safetyAndWriting: return String(localized: "AI safety and writing provider")
+        }
+    }
+
     var roleText: String {
         switch role {
-        case .servers: return String(localized: "Our servers: your AI jobs and credits")
+        case .servers:
+            return String(localized: "Your AI jobs, credits and polls",
+                          comment: "What “Our servers” (the app's own backend) do, on the AI consent sheet: run her AI jobs, keep her credits and her “Which vibe?” polls with friends")
         case .images: return String(localized: "Creates and edits the images")
         // The independent check sees the photo before an edit and every
         // result; Create sends text only, so "photos you edit", not "your photo".
         case .safety: return String(localized: "Checks photos you edit and every result for safety")
-        // Writing help gets her words, never a photo.
+        // Writing help gets her words, never a photo; polls send two pictures to the check.
         case .safetyAndWriting:
-            return String(localized: "Checks photos and results for safety, and helps write prompts and captions (text only)",
-                          comment: "A company's role on the AI consent sheet and in Settings: Anthropic (Claude) checks photos and results for safety and writes ideas, prompts and captions from text")
+            return String(localized: "Powers Aybik, our AI helper: checks photos, results and poll pictures for safety, and helps write prompts and captions (text only)",
+                          comment: "Anthropic's role on the AI consent sheet: its AI model is behind Aybik (the app's AI helper), checks photos, results and the pictures of “Which vibe?” polls for safety, and writes ideas, prompts and captions from text. Keep the name Aybik.")
         }
+    }
+
+    /// Its part in a word or two, after its name in `providersLine`.
+    private var shortRole: String {
+        switch role {
+        case .servers: return String(localized: "servers")
+        case .images: return String(localized: "images")
+        case .safety: return String(localized: "safety checks")
+        case .safetyAndWriting: return String(localized: "safety checks and Aybik")
+        }
+    }
+
+    /// The companies and their parts: "xAI (images), Anthropic (safety
+    /// checks and Aybik), Supabase (servers)". Settings shows it in a
+    /// collapsed "Providers" row.
+    static func providersList(_ processors: [AIProcessor]) -> String {
+        processors.sorted { $0.role.footnoteOrder < $1.role.footnoteOrder }.map { processor in
+            String(localized: "\(processor.displayName) (\(processor.shortRole))",
+                   comment: "A company and what it does for the app, in the consent sheet's footnote and Settings' Providers row, e.g. “xAI (images)”. Use the language's own parentheses.")
+        }
+        .formatted(.list(type: .and, width: .narrow))
+    }
+
+    /// The consent sheet's footnote, the one place there the companies are
+    /// named: "Providers: xAI (images), Anthropic (safety checks and Aybik),
+    /// Supabase (servers)".
+    static func providersLine(_ processors: [AIProcessor]) -> String {
+        String(localized: "Providers: \(providersList(processors))",
+               comment: "Footnote under the AI consent sheet's list: the companies that process what she sends, e.g. “Providers: xAI (images), Anthropic (safety checks and Aybik), Supabase (servers)”")
     }
 }
 
@@ -166,7 +226,7 @@ struct AppConfig: Decodable {
     static let defaultProcessors = [
         AIProcessor(name: "Supabase", role: .servers),
         AIProcessor(name: "xAI (Grok Imagine)", role: .images),
-        AIProcessor(name: "Anthropic (Claude)", role: .safetyAndWriting),
+        AIProcessor(name: "Anthropic", role: .safetyAndWriting),
     ]
 
     static let current: AppConfig = load()

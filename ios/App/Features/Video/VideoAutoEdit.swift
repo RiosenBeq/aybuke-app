@@ -229,7 +229,7 @@ enum AutoEditQuota {
 
 /// The words to post an Auto edit with: caption ideas from Apple's
 /// on-device writer or the hand-written list, and, only when she taps "More
-/// ideas from Claude", the server's writing help (Claude hears the video's
+/// ideas from Aybik", the server's writing help (Claude hears the video's
 /// captions while they're on, up to 400 characters); their hashtags and, for
 /// Shorts, a title.
 @MainActor
@@ -260,7 +260,7 @@ final class AutoEditPostText {
         await writeOnDevice(platform: platform, app: app)
     }
 
-    /// Her tap on "More ideas from Claude": the server's writing help hears
+    /// Her tap on "More ideas from Aybik": the server's writing help hears
     /// `transcript` (empty while captions are off: then a plain line) and the
     /// platform. When it's off or fails, the on-device writer answers quietly.
     func askClaude(platform: SocialPlatform, transcript: String, app: AppModel) async {

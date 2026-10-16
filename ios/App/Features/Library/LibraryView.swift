@@ -205,6 +205,12 @@ struct LibraryView: View {
     private var grid: some View {
         let items = visible
         return ScrollView {
+            if app.offersPolls && app.polls.hasPolls && filter == .all && !isSelecting {
+                PollsEntryRow()
+                    .padding(.horizontal, Platform.isMac ? Self.gridMargin : 16)
+                    .padding(.top, 4)
+                    .transition(.opacity)
+            }
             filterChips
             if filter == .recentlyDeleted, !items.isEmpty {
                 Text("Creations stay here for 30 days, then they're deleted for good.")
@@ -491,6 +497,7 @@ struct LibraryView: View {
             allFavorite: !items.isEmpty && items.allSatisfy(\.isFavorite),
             isWorking: isWorking,
             stack: picked.suffix(3).map(\.imageFileName),
+            askFriends: app.offersPolls && filter != .recentlyDeleted ? { askFriends(picked) } : nil,
             perform: { handle($0, on: items) }
         )
         .padding(.horizontal, 12)
@@ -734,6 +741,31 @@ struct LibraryView: View {
         }
     }
 
+    /// Two creations as a "Which vibe?" poll with friends, A and B in the
+    /// order she picked them. Never her photo against its AI edit
+    /// (`PollPair`): friends vote on a vibe, not on her.
+    private func askFriends(_ items: [Creation]) {
+        let entries = items.filter { !missingFiles.contains($0.imageFileName) }
+            .map { (name: $0.imageFileName, provenance: $0.provenance) }
+        guard entries.count == 2, !isWorking else { return }
+        guard PollPair.allows(entries[0].provenance, entries[1].provenance) else {
+            Haptics.error()
+            app.showToast("Pick two edits or two creations, not a photo and its edit. Friends vote on the vibe, never on you.", style: .info)
+            return
+        }
+        isWorking = true
+        Task {
+            let images = await Task.detached(priority: .userInitiated) {
+                entries.map { ImageStore.decoded($0.name, maxPixel: PollPicture.maxLongEdge) }
+            }.value
+            isWorking = false
+            guard let a = images[0], let b = images[1] else { return couldNotOpen() }
+            Haptics.tap()
+            endSelecting()
+            app.pollDraft = PollDraft(a: a, b: b, provenanceA: entries[0].provenance, provenanceB: entries[1].provenance)
+        }
+    }
+
     private func edit(_ creation: Creation) {
         let provenance = creation.provenance
         let name = creation.imageFileName
@@ -820,6 +852,11 @@ struct LibraryView: View {
 
     private var emptyState: some View {
         VStack(spacing: 16) {
+            if app.offersPolls && app.polls.hasPolls {
+                PollsEntryRow()
+                    .frame(maxWidth: 420)
+                    .padding(.bottom, 8)
+            }
             emptyStateMessage
                 .tourAnchor(.library)
             Button("Create something") {
@@ -870,7 +907,9 @@ struct LibraryView: View {
         switch ScreenshotScene.current {
         case .librarySelect where !isSelecting && selection.isEmpty:
             isSelecting = true
-            selection.set(creations.enumerated().filter { [1, 2, 4].contains($0.offset) }.map(\.element.id))
+            // `two` and `poll` pick exactly two: "Which vibe? Ask friends".
+            let picks = ["two", "poll"].contains(action ?? "") ? [1, 2] : [1, 2, 4]
+            selection.set(creations.enumerated().filter { picks.contains($0.offset) }.map(\.element.id))
             guard let action else { return }
             Task {
                 try? await Task.sleep(for: .seconds(1))
@@ -879,6 +918,7 @@ struct LibraryView: View {
                 case "delete": moveToRecentlyDeleted(selected)
                 case "duplicate": if let first = selected.first { duplicate(first) }
                 case "collage": makeCollage(pickedInOrder)
+                case "poll": askFriends(pickedInOrder)
                 case "drag": simulateDrag(from: 0, to: 5)
                 case "selectAll": selection = selection.applying(visible.map(\.id), selected: true)
                 case "clear": selection.removeAll()

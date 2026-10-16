@@ -481,7 +481,7 @@ private struct MakeupVibeField: View {
                             .font(.legibleFootnote.weight(.semibold))
                             .foregroundStyle(Palette.textPrimary)
                     }
-                    Text("Suggested by Claude, an AI helper. Change anything, then try it.")
+                    Text("Suggested by Aybik, our AI helper. Change anything, then try it.")
                         .font(.legibleCaption)
                         .foregroundStyle(Palette.textSecondary)
                 }

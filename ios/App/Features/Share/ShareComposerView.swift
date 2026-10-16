@@ -37,6 +37,8 @@ struct ShareComposerView: View {
     @State private var textColor: OverlayColor?
     @State private var editsText = false
     @State private var textNotice: String?
+    /// "Which vibe?" on its way to a poll with friends.
+    @State private var pollDraft: PollDraft?
     @FocusState private var focusedSlot: ShareTextSlot?
 
     /// On-device edits are never branded; free cloud AI results are.
@@ -92,6 +94,10 @@ struct ShareComposerView: View {
                             .transition(.opacity)
                     }
                     destinations
+                    if format == .pick && app.offersPolls {
+                        askFriendsCard
+                            .transition(.opacity)
+                    }
                     if madeWithAI {
                         Toggle(isOn: $showsAILabel) {
                             VStack(alignment: .leading, spacing: 2) {
@@ -176,6 +182,14 @@ struct ShareComposerView: View {
             #endif
         }
         .shareSheet(item: $activityItems)
+        // Over the composer, so closing it comes back here.
+        .sheet(item: $pollDraft) { draft in
+            PollCreateView(draft: draft, startsWithExplainer: !app.polls.hasSeenExplainer)
+                .environment(app)
+                .presentationDetents([.large])
+                .presentationBackground(Palette.background)
+                .formSheetOnMacPageOnPad()
+        }
     }
 
     // MARK: Sections
@@ -345,6 +359,42 @@ struct ShareComposerView: View {
         .opacity(rendered == nil ? 0.5 : 1)
     }
 
+    /// "Which vibe?" as a poll: a private link where friends vote A or B.
+    /// The pictures are the design's two variations, with faces hidden when
+    /// she switched that on (never her original against its edit).
+    private var askFriendsCard: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Label {
+                Text("Let your friends pick")
+                    .font(.cardTitle)
+                    .foregroundStyle(Palette.textPrimary)
+            } icon: {
+                Image(systemName: "person.2.fill")
+                    .foregroundStyle(Palette.accent)
+            }
+            Text("Make a private link where friends vote A or B for 24 hours, no app needed.")
+                .font(.legibleFootnote)
+                .foregroundStyle(Palette.textSecondary)
+                .fixedSize(horizontal: false, vertical: true)
+            Button {
+                Task { await askFriends() }
+            } label: {
+                Label("Ask friends", systemImage: "paperplane.fill")
+            }
+            .buttonStyle(.primary)
+            .disabled(rendered == nil || isWorking)
+        }
+        .padding(16)
+        .cardStyle()
+    }
+
+    private func askFriends() async {
+        Haptics.tap()
+        let covered = await faces.covering(payload)
+        guard let pair = covered.pickPair else { return }
+        pollDraft = PollDraft(a: pair.a, b: pair.b, provenanceA: payload.provenance, provenanceB: payload.provenance)
+    }
+
     private var captionCard: some View {
         VStack(alignment: .leading, spacing: 10) {
             HStack {
@@ -439,7 +489,7 @@ struct ShareComposerView: View {
                 Task { await askClaudeForCaptions() }
             } label: {
                 Label {
-                    Text("More ideas from Claude", comment: "Button under caption ideas: asks the server's writing help (Claude) for captions. Keep the name Claude.")
+                    Text("More ideas from Aybik", comment: "Button under caption ideas: asks the app's AI helper (Aybik, the server's writing help) for captions. Aybik is the app's AI helper: keep the name Aybik.")
                 } icon: {
                     Image(systemName: "sparkles")
                 }
@@ -447,10 +497,10 @@ struct ShareComposerView: View {
             .buttonStyle(.secondary)
             .disabled(isLoadingIdeas)
             (Assist.sendsPrompt(payload.shareablePrompt, madeWithAI: madeWithAI)
-                ? Text("Claude, an AI helper, reads your prompt, never the photo.",
-                       comment: "Under the share composer's “More ideas from Claude” button for a creation from a prompt: the writing help gets the prompt. Keep the name Claude.")
-                : Text("Claude, an AI helper, never gets your photo or your words.",
-                       comment: "Under the share composer's “More ideas from Claude” button: the writing help gets only the design's name. Keep the name Claude."))
+                ? Text("Aybik, our AI helper, reads your prompt, never the photo.",
+                       comment: "Under the share composer's “More ideas from Aybik” button for a creation from a prompt: the writing help gets the prompt. Aybik is the app's AI helper: keep the name Aybik.")
+                : Text("Aybik, our AI helper, never gets your photo or your words.",
+                       comment: "Under the share composer's “More ideas from Aybik” button: the writing help gets only the design's name. Aybik is the app's AI helper: keep the name Aybik."))
                 .font(.legibleCaption)
                 .foregroundStyle(Palette.textTertiary)
                 .fixedSize(horizontal: false, vertical: true)
@@ -462,8 +512,8 @@ struct ShareComposerView: View {
     private var ideasFootnote: Text {
         switch ideasWriter {
         case .cloud?:
-            return Text(Platform.isMac ? "Written by Claude, an AI helper. Click one to copy it with the hashtags."
-                                       : "Written by Claude, an AI helper. Tap one to copy it with the hashtags.")
+            return Text(Platform.isMac ? "Written by Aybik, our AI helper. Click one to copy it with the hashtags."
+                                       : "Written by Aybik, our AI helper. Tap one to copy it with the hashtags.")
         case .device?:
             return Text(Platform.isMac ? "Written on your device. Click one to copy it with the hashtags."
                                        : "Written on your device. Tap one to copy it with the hashtags.")
@@ -554,7 +604,7 @@ struct ShareComposerView: View {
         await writeIdeasOnDevice()
     }
 
-    /// Her tap on "More ideas from Claude": the server's writing help hears
+    /// Her tap on "More ideas from Aybik": the server's writing help hears
     /// her Create prompt (or a plain line) and the design she picked. When
     /// it's off or fails, the on-device writer answers quietly.
     private func askClaudeForCaptions() async {

@@ -83,6 +83,53 @@ enum ImageExporter {
     }
 }
 
+extension ImageExporter {
+    /// A "Which vibe?" poll picture as friends will get it, through the
+    /// export path: the free mark where an export would have it, upright, at
+    /// most 1080 px on the long side, in sRGB on white, a JPEG with no
+    /// metadata at all (no EXIF, location, XMP or IPTC: the server would drop
+    /// them, but they never leave the device). Its small copy is what "Your
+    /// polls" shows. Call it off the main actor.
+    static func pollPicture(_ image: UIImage, watermark: Bool) -> (upload: Data, thumbnail: Data)? {
+        let target = PollPicture.targetSize(for: ImageUtilities.pixelSize(of: image))
+        var picture = srgbDrawing(of: image, size: target)
+        if watermark {
+            picture = Watermark.apply(to: picture)
+        }
+        guard let cgImage = picture.cgImage else { return nil }
+        var upload: Data?
+        for quality in PollPicture.qualities {
+            guard let encoded = plainJPEG(cgImage, quality: quality) else { continue }
+            upload = encoded
+            if encoded.count <= PollPicture.maxBytes { break }
+        }
+        guard let upload, PollPicture.isAccepted(byteCount: upload.count, size: target) else { return nil }
+        let small = srgbDrawing(of: picture, size: PollPicture.thumbnailSize(for: target))
+        guard let thumbnail = small.cgImage.flatMap({ plainJPEG($0, quality: 0.8) }) else { return nil }
+        return (upload, thumbnail)
+    }
+
+    /// Upright, at `size`, colour-matched into sRGB, see-through parts on white.
+    private static func srgbDrawing(of image: UIImage, size: PixelSize) -> UIImage {
+        let bounds = CGRect(x: 0, y: 0, width: size.width, height: size.height)
+        return ImageUtilities.draw(size: bounds.size, opaque: true, colorSpace: CGColorSpace(name: CGColorSpace.sRGB)) { context in
+            context.setFillColor(UIColor.white.cgColor)
+            context.fill(bounds)
+            image.draw(in: bounds)
+        }
+    }
+
+    /// A JPEG of `cgImage` and nothing else: ImageIO adds an EXIF block and
+    /// an IPTC one of its own, which `JPEGMetadata.stripped` takes out.
+    private static func plainJPEG(_ cgImage: CGImage, quality: Double) -> Data? {
+        let output = NSMutableData()
+        guard let destination = CGImageDestinationCreateWithData(output, UTType.jpeg.identifier as CFString, 1, nil) else { return nil }
+        CGImageDestinationAddImage(destination, cgImage, [kCGImageDestinationLossyCompressionQuality: quality] as CFDictionary)
+        guard CGImageDestinationFinalize(destination) else { return nil }
+        return JPEGMetadata.stripped(output as Data)
+    }
+}
+
 enum PhotoLibrarySaver {
     enum SaveError: LocalizedError {
         case denied

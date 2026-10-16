@@ -101,6 +101,8 @@ def collect() -> tuple[list[tuple[str, str]], list[tuple[str, str]]]:
         app.append((text, "Suggested Magic Edit request for her photo, shown on a chip in the editor"))
     for text in literals(r"\bvibe\(" + LITERAL, read("Adjustments.swift")):
         app.append((text, "Name of a one-tap vibe in the editor's Adjust tool: it sets several light and color sliders at once"))
+    for text in literals(r"\bpreset\(" + LITERAL, read("Polls.swift")):
+        app.append((text, "Ready-made question for a “Which vibe?” poll: her friends see it above her two pictures and vote A or B. Short and friendly (at most 80 characters)."))
     makeup = read("MakeupStudio.swift")
     for text in literals(r"\blook\(" + LITERAL, makeup):
         app.append((text, "Makeup Studio look name, on a chip in the editor. Keep trend names people use in English, such as Soft Glam or Y2K."))

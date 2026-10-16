@@ -146,6 +146,32 @@ final class GlowNotifier {
         UNUserNotificationCenter.current().add(UNNotificationRequest(identifier: "glowlit.job.\(UUID().uuidString)", content: content, trigger: nil))
     }
 
+    /// "Your poll ends in an hour": one reminder per poll, only while
+    /// notifications are allowed (it never asks), at the planner's times
+    /// (never at night or in school hours, or not at all), and never with her
+    /// question: it would sit on the Lock Screen.
+    func schedulePollReminder(id: String, expiresAt: Date) async {
+        await refreshAuthorization()
+        guard isAllowedBySystem, let date = NotificationPlanner.pollEnding(expiresAt: expiresAt, now: Date()) else { return }
+        let content = UNMutableNotificationContent()
+        content.title = String(localized: "Your poll ends in an hour ⏳")
+        content.body = Platform.isMac ? String(localized: "Click to see how your friends voted.")
+                                      : String(localized: "Tap to see how your friends voted.")
+        content.sound = .default
+        content.userInfo = ["link": GlowDeepLink.poll(id).url.absoluteString]
+        content.threadIdentifier = "glowlit.polls"
+        let parts = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute], from: date)
+        let trigger = UNCalendarNotificationTrigger(dateMatching: parts, repeats: false)
+        try? await UNUserNotificationCenter.current().add(UNNotificationRequest(identifier: Self.pollReminderID(id), content: content, trigger: trigger))
+    }
+
+    /// Her poll was deleted: no reminder for it.
+    func cancelPollReminder(id: String) {
+        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [Self.pollReminderID(id)])
+    }
+
+    private static func pollReminderID(_ id: String) -> String { "glowlit.poll-ending.\(id)" }
+
     /// The planner decides when; the words are in the user's language.
     private static func localizedCopy(for item: PlannedNotification, dailyCredits: Int) -> (title: String, body: String) {
         switch item.kind {

@@ -2,7 +2,7 @@ import XCTest
 @testable import AppCore
 
 final class ConsentTests: XCTestCase {
-    private let processors = ["Supabase", "xAI (Grok Imagine)", "Anthropic (Claude)"]
+    private let processors = ["Supabase", "xAI (Grok Imagine)", "Anthropic"]
 
     func testValidForSameVersionAndProcessorsInAnyOrder() {
         let record = AIConsentRecord(version: 2, acceptedAt: Date(), processors: processors)
@@ -47,7 +47,7 @@ final class ConsentTests: XCTestCase {
         }.joined()
         let companies = [
             "XAI_SAFETY_MODEL": Processor(name: "xAI (Grok Imagine)", role: "images"),
-            "ANTHROPIC_API_KEY": Processor(name: "Anthropic (Claude)", role: "safetyAndWriting"),
+            "ANTHROPIC_API_KEY": Processor(name: "Anthropic", role: "safetyAndWriting"),
         ]
         for (secret, processor) in companies where safety.contains(secret) {
             XCTAssertTrue(config.aiProcessors.contains(processor), "the backend reads \(secret): list \(processor.name)")
@@ -68,7 +68,7 @@ final class ConsentTests: XCTestCase {
         struct Config: Decodable { let consentVersion: Int; let aiProcessors: [Processor] }
         let config = try JSONDecoder().decode(
             Config.self, from: Data(contentsOf: RepositoryFile.url("ios/App/Resources/AppConfig.json")))
-        XCTAssertTrue(config.aiProcessors.contains(Processor(name: "Anthropic (Claude)", role: "safetyAndWriting")))
+        XCTAssertTrue(config.aiProcessors.contains(Processor(name: "Anthropic", role: "safetyAndWriting")))
         XCTAssertGreaterThanOrEqual(config.consentVersion, 3)
         let safetyOnly = AIConsentRecord(version: 2, acceptedAt: Date(), processors: config.aiProcessors.map(\.name))
         XCTAssertFalse(safetyOnly.isValid(currentVersion: config.consentVersion,

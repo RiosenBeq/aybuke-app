@@ -151,6 +151,10 @@ final class AppModel {
     }
     var consentRequest: ConsentRequest?
     var shareRequest: SharePayload?
+    /// "Your polls" (My Works, a poll link).
+    var pollsSheet: PollsSheetRequest?
+    /// Two creations from My Works on their way to a poll ("Ask friends").
+    var pollDraft: PollDraft?
     /// "Keep your credits on every device": offered after a purchase while
     /// Sign in with Apple is offered (`offersSignIn`).
     var isAccountPromptPresented = false
@@ -213,6 +217,8 @@ final class AppModel {
     let myFilters: MyFiltersStore
     /// Rewarded and interstitial ads for free members 13+ (see `AdCoordinator`).
     let ads: AdCoordinator
+    /// "Which vibe?" polls with friends, and what this device keeps of them.
+    let polls: PollsModel
 
     // MARK: Account (optional Sign in with Apple)
     /// A server session exists on this device, anonymous or signed in. Her
@@ -279,7 +285,7 @@ final class AppModel {
             appearance, deletionRequested,
             "credits.wallet.v2", "notifications.preferences.v1", "notifications.readyPingDeclined", "tour.seen.v1",
             PromptHistory.recentKey, PromptHistory.draftKey, MyFiltersStore.key, AdCoordinator.pacingKey, AdCoordinator.usedKey,
-            PurchaseManager.purchasedKey, AutoEditQuota.key,
+            PurchaseManager.purchasedKey, AutoEditQuota.key, PollsModel.storageKey, PollsModel.explainerKey,
         ] + legacyConsent
         static let wipedKeychain = [appleUserID, "auth.session", "auth.pendingMerge", "auth.pendingAppleCode"]
     }
@@ -333,12 +339,14 @@ final class AppModel {
 
         // Rewarded ads need the backend (and its session) to confirm the credit.
         var adRewards: AdRewardBackend?
+        var pollsBackend: PollsBackend?
         var cloudWriter: CloudWriter?
         var sessionChanges: AsyncStream<Bool>?
         switch config.aiMode {
         case .backend(let backend):
             let auth = AuthSessionManager(config: backend)
             cloudWriter = CloudWriter(config: backend, auth: auth, appTransactions: appTransactions)
+            pollsBackend = PollsBackend(config: backend, auth: auth, appTransactions: appTransactions)
             hasSession = auth.hadSessionAtLaunch
             sessionChanges = auth.sessionChanges
             adRewards = AdRewardBackend(config: backend, auth: auth, appTransactions: appTransactions) { [weak purchases] in
@@ -370,6 +378,12 @@ final class AppModel {
         if CloudWriter.isStubbed { cloudWriter = CloudWriter.stub() }
         #endif
         self.cloudWriter = cloudWriter
+        #if DEBUG
+        // Screenshot scenes never read or keep her polls (`-GLPollsFixture` shows some).
+        self.polls = PollsModel(backend: pollsBackend, defaults: ScreenshotScene.current == nil ? defaults : nil)
+        #else
+        self.polls = PollsModel(backend: pollsBackend, defaults: defaults)
+        #endif
         self.ads = AdCoordinator(config: config.ads, backend: adRewards)
         ads.app = self
         if let sessionChanges {
@@ -404,6 +418,13 @@ final class AppModel {
         }
         // `-GLInviteCard YES`: the invite card on screen (QA, screenshots).
         if UserDefaults.standard.bool(forKey: "GLInviteCard") { isInviteCardVisible = true }
+        // QA: `-GLPollsLiveDraft YES` opens Ask friends on two generated
+        // pictures without a scene, so the poll is made on the real backend.
+        if ScreenshotScene.current == nil, UserDefaults.standard.bool(forKey: "GLPollsLiveDraft") {
+            let art = ScreenshotFixtures.generatedArt(count: 2)
+            pollDraft = PollDraft(a: art[0], b: art[1], provenanceA: Provenance(operation: .textToImage),
+                                  provenanceB: Provenance(operation: .textToImage))
+        }
         #endif
     }
 
@@ -741,6 +762,9 @@ final class AppModel {
         GlowTips.eraseAll()
         prompts.reset()
         myFilters.reset()
+        polls.reset()
+        pollsSheet = nil
+        pollDraft = nil
         ads.reset()
         credits.resetAll()
         purchases.forgetPurchases()
@@ -1011,7 +1035,7 @@ final class AppModel {
 
     private var isPresentingSomething: Bool {
         isPaywallPresented || outOfCredits != nil || isFullScreenCoverPresented || consentRequest != nil
-            || shareRequest != nil || isAccountPromptPresented || isBestShotPresented
+            || shareRequest != nil || isAccountPromptPresented || isBestShotPresented || pollsSheet != nil || pollDraft != nil
     }
 
     /// Mac menu commands and dropped photos only act on the main screens:
@@ -1633,6 +1657,14 @@ final class AppModel {
         case .collage:
             selectedTab = .edit
             isCollagePresented = true
+        case .poll(let id):
+            // Never under 13, and only her own polls.
+            guard offersPolls else { return }
+            selectedTab = .library
+            // One sheet at a time: the link takes the place of what was open.
+            shareRequest = nil
+            pollDraft = nil
+            Task { await openPoll(id) }
         }
     }
 
@@ -1845,6 +1877,13 @@ extension AppModel {
     /// Puts the app into a deterministic state for screenshots (DEBUG only).
     func applyScreenshotScene(_ scene: ScreenshotScene) {
         credits.resetForScreenshots()
+        // `-GLPollsFixture live|results|ended|takendown|empty|limit|blocked`
+        // with any scene: her polls without the server (My Works' row too).
+        if let fixture = UserDefaults.standard.string(forKey: "GLPollsFixture") ?? (scene == .polls ? "results" : nil) {
+            polls.seedFixture(fixture, pictures: [ScreenshotFixtures.portraitPinkHair, ScreenshotFixtures.portraitSoftGlam,
+                                                  ScreenshotFixtures.beachPhoto, ScreenshotFixtures.goldenLandscape,
+                                                  ScreenshotFixtures.editorPhoto, ScreenshotFixtures.overcastLandscape])
+        }
         hasCompletedOnboarding = scene != .onboarding
         consentRecord = scene == .consent ? nil : AIConsentRecord(
             version: config.consentVersion, acceptedAt: Date(),
@@ -1917,6 +1956,20 @@ extension AppModel {
         case .library, .librarySelect, .libraryTrash:
             selectedTab = .library
             seedScreenshotLibrary(trash: scene == .libraryTrash)
+        case .polls:
+            selectedTab = .library
+            seedScreenshotLibrary()
+            // `-GLPollsCreate explainer|form|send|ready` (and the `limit` and
+            // `blocked` fixtures) show Ask friends instead of Your polls.
+            let create = UserDefaults.standard.string(forKey: "GLPollsCreate")
+            if create != nil || PollsModel.fixtureError(polls.fixture ?? "") != nil {
+                polls.hasSeenExplainer = create != "explainer"
+                // Two looks from one photo, as the share composer's "Which vibe?" pairs them.
+                pollDraft = PollDraft(a: ScreenshotFixtures.portraitPinkHair, b: ScreenshotFixtures.portraitSoftGlam,
+                                      provenanceA: Provenance(operation: .magicEdit), provenanceB: Provenance(operation: .magicEdit))
+            } else {
+                pollsSheet = PollsSheetRequest()
+            }
         case .editor:
             selectedTab = .home
             // `-GLEditorTool <tool>` opens another tool's panel (layout QA).

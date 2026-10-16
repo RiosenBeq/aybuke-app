@@ -10,6 +10,13 @@
   App Store text, review note or website page offers it.
 - No "no ads" promises: free members see ads (only Pro, under-13s and the
   Mac have none), so the old "no ads, no tracking" lines can't come back.
+- The app's AI helper is "Aybik" wherever people read about it: no
+  "Claude" in the app's string catalogs (current keys and every
+  translation), the App Store text, the screenshot captions or the legal
+  texts. No company names (Anthropic, xAI, Grok, Supabase) in the catalogs
+  or the App Store text either: the app names them only in the consent
+  sheet's and Settings' one small line, built from AppConfig.json, and the
+  legal texts list them where the law asks.
 
 String catalogs are skipped: they keep stale keys until the next
 translation pass. Run from anywhere: python3 scripts/check-honest-copy.py
@@ -57,6 +64,73 @@ SIGN_IN = re.compile(
 )
 
 
+# The model's name, never shown: people meet "Aybik", the app's AI helper.
+HELPER_MODEL = re.compile(r"Claude", re.IGNORECASE)
+# Companies stay out of the app's copy (AIProcessor.providersLine names them).
+COMPANY = re.compile(r"\bAnthropic\b|\bxAI\b|\bGrok\b|\bSupabase\b")
+HELPER_CATALOGS = [
+    "ios/App/Resources/Localizable.xcstrings",
+    "ios/App/Resources/InfoPlist.xcstrings",
+    "ios/App/Resources/AppShortcuts.xcstrings",
+    "ios/GlowlitWidgets/Localizable.xcstrings",
+]
+HELPER_JSON = ["docs/marketing/app-store-metadata.json", "docs/marketing/screenshot-captions.json"]
+HELPER_TEXTS = [("legal/en", "*.md"), ("legal/tr", "*.md"), ("ios/App/Resources/Legal", "*")]
+
+
+def strings_in(value):
+    """Every string in a JSON value (dictionary keys included)."""
+    if isinstance(value, str):
+        yield value
+    elif isinstance(value, dict):
+        for key, item in value.items():
+            yield key
+            yield from strings_in(item)
+    elif isinstance(value, list):
+        for item in value:
+            yield from strings_in(item)
+
+
+def naming_problem(text):
+    """Why `text` can't be shown, or None."""
+    if HELPER_MODEL.search(text):
+        return "says Claude: the app's AI helper is Aybik"
+    company = COMPANY.search(text)
+    if company:
+        return f"names {company.group(0)}: say our servers, a third-party AI provider or Aybik"
+    return None
+
+
+def helper_name_problems():
+    """'Claude' or a company where people read it. A catalog's stale keys
+    aren't shown; translator comments aren't either."""
+    problems = []
+    for path in HELPER_CATALOGS:
+        catalog = json.loads((ROOT / path).read_text(encoding="utf-8"))
+        for key, entry in catalog.get("strings", {}).items():
+            if entry.get("extractionState") == "stale":
+                continue
+            for text in [key, *strings_in(entry.get("localizations", {}))]:
+                problem = naming_problem(text)
+                if problem:
+                    problems.append(f"{path}: {key[:60]!r} {problem}")
+                    break
+    for path in HELPER_JSON:
+        data = json.loads((ROOT / path).read_text(encoding="utf-8"))
+        for text in strings_in(data):
+            problem = naming_problem(text)
+            if problem:
+                problems.append(f"{path}: {text[:60]!r} {problem}")
+    for base, pattern in HELPER_TEXTS:
+        for file in sorted((ROOT / base).rglob(pattern)):
+            if not file.is_file():
+                continue
+            for number, line in enumerate(file.read_text(encoding="utf-8").splitlines(), 1):
+                if HELPER_MODEL.search(line):
+                    problems.append(f"{file.relative_to(ROOT)}:{number}: says Claude: name the company (Anthropic) or Aybik")
+    return problems
+
+
 def files(base, pattern):
     if base == ".":
         return [ROOT / pattern]
@@ -98,6 +172,8 @@ def main():
             for number, line in enumerate(file.read_text(encoding="utf-8").splitlines(), 1):
                 if SIGN_IN.search(line):
                     problems.append(f"{file.relative_to(ROOT)}:{number}: offers sign-in, but {off}")
+
+    problems += helper_name_problems()
 
     if problems:
         print("\n".join(problems))
