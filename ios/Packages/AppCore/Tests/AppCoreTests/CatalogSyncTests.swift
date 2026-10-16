@@ -12,8 +12,14 @@ final class CatalogSyncTests: XCTestCase {
             let prompt: String
         }
 
+        struct Enhance: Decodable {
+            let id: String
+            let prompt: String
+        }
+
         let templates: [Recipe]
         let proStyles: [String]
+        let enhanceModes: [Enhance]
     }
 
     func testBackendCatalogMatchesApp() throws {
@@ -26,5 +32,10 @@ final class CatalogSyncTests: XCTestCase {
             XCTAssertEqual(server.isPro, app.isPro, app.id)
         }
         XCTAssertEqual(Set(catalog.proStyles), Set(StyleCatalog.all.filter(\.isPro).map(\.id)))
+        // The server writes every Enhance instruction from these.
+        XCTAssertEqual(catalog.enhanceModes.map(\.id), EnhanceMode.allCases.map(\.rawValue), "Run scripts/export-catalog.sh")
+        for (server, app) in zip(catalog.enhanceModes, EnhanceMode.allCases) {
+            XCTAssertEqual(server.prompt, app.prompt, "\(app.rawValue): run scripts/export-catalog.sh")
+        }
     }
 }

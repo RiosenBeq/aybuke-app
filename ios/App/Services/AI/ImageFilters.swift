@@ -44,6 +44,69 @@ enum ImageFilters {
         return sharpen.outputImage ?? image
     }
 
+    /// Enhance's free Quick fix (`QuickFixPlan`): noise reduction where
+    /// there's noise, Auto's light and colour, local contrast, luminance
+    /// sharpening and an optional upscale. Radii scale with the photo, so the
+    /// preview and the full-size Apply match.
+    static func quickFix(_ input: CIImage, plan: QuickFixPlan) -> CIImage {
+        let extent = input.extent
+        var image = input
+        if plan.noiseLevel > 0 {
+            let denoise = CIFilter.noiseReduction()
+            denoise.inputImage = image.clampedToExtent()
+            denoise.noiseLevel = Float(plan.noiseLevel)
+            denoise.sharpness = 0.4
+            image = denoise.outputImage?.cropped(to: extent) ?? image
+        }
+        image = adjust(image, with: AdjustmentSettings(auto: plan.light))
+        if plan.clarityIntensity > 0 {
+            let clarity = CIFilter.unsharpMask()
+            clarity.inputImage = image.clampedToExtent()
+            clarity.radius = Float(plan.clarityRadius)
+            clarity.intensity = Float(plan.clarityIntensity)
+            image = clarity.outputImage?.cropped(to: extent) ?? image
+        }
+        if plan.scale > 1.001 {
+            image = upscale(image.clampedToExtent(), factor: Float(plan.scale))
+        }
+        let sharpen = CIFilter.sharpenLuminance()
+        sharpen.inputImage = image
+        sharpen.sharpness = Float(plan.sharpness)
+        sharpen.radius = Float(plan.sharpenRadius * plan.scale)
+        let output = sharpen.outputImage ?? image
+        let target = CGRect(x: 0, y: 0, width: (extent.width * plan.scale).rounded(), height: (extent.height * plan.scale).rounded())
+        return output.cropped(to: target)
+    }
+
+    /// Adjust's Soft skin (`SoftSkin`, adults only): frequency separation on
+    /// the skin mask. A guided filter evens out the middle frequencies, the
+    /// finest band (pores, freckles) goes back on top, and the result is
+    /// blended in at most `SoftSkin.maxBlend` where the mask is white.
+    static func softSkin(_ input: CIImage, mask: CIImage, plan: SoftSkin.Plan) -> CIImage {
+        let extent = input.extent
+        let source = input.clampedToExtent()
+        let smoothed = input.applyingFilter("CIGuidedFilter", parameters: [
+            "inputGuideImage": input, kCIInputRadiusKey: plan.smoothingRadius, "inputEpsilon": plan.edgeThreshold,
+        ]).cropped(to: extent)
+        let base = source.applyingGaussianBlur(sigma: plan.textureSigma).cropped(to: extent)
+        // smoothed + (input − base): the even tone with the fine texture back.
+        let negativeBase = base.applyingFilter("CIColorMatrix", parameters: [
+            "inputRVector": CIVector(x: -1, y: 0, z: 0, w: 0),
+            "inputGVector": CIVector(x: 0, y: -1, z: 0, w: 0),
+            "inputBVector": CIVector(x: 0, y: 0, z: -1, w: 0),
+        ])
+        let texture = Matte.add(input, negativeBase)
+        let softened = Matte.add(smoothed, texture)
+        let weight = Matte.blur(Matte.scaled(mask, to: extent), plan.featherSigma).applyingFilter("CIColorMatrix", parameters: [
+            "inputRVector": CIVector(x: plan.blend, y: 0, z: 0, w: 0),
+            "inputGVector": CIVector(x: 0, y: plan.blend, z: 0, w: 0),
+            "inputBVector": CIVector(x: 0, y: 0, z: plan.blend, w: 0),
+        ])
+        return softened.applyingFilter("CIBlendWithMask", parameters: [
+            kCIInputBackgroundImageKey: input, kCIInputMaskImageKey: weight,
+        ]).cropped(to: extent)
+    }
+
     static func upscale(_ input: CIImage, factor: Float) -> CIImage {
         let lanczos = CIFilter.lanczosScaleTransform()
         lanczos.inputImage = input

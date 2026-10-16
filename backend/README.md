@@ -67,7 +67,7 @@ The wire contract is defined (and unit-tested) in
 |---|---|---|
 | `text_to_image` | `fal-ai/nano-banana-2` | 1K for free users, 2K for Pro |
 | `magic_edit`, `restyle` | `fal-ai/nano-banana-2/edit` | A/B identity-critical templates against `bytedance/seedream/v5/pro/edit` via `ENDPOINT_OVERRIDES` in `_shared/templates.ts` |
-| `enhance` | `fal-ai/seedvr/upscale/image` | ×2 generative restoration |
+| `enhance` | `fal-ai/seedvr/upscale/image` | ×2 generative restoration (fal's upscaler takes no instruction; on xAI each `enhance_mode` gets its own, from `_shared/enhance.ts`) |
 | `remove_background` | `fal-ai/birefnet/v2` | Server fallback only — the app does this on-device for free |
 | `erase_object` | `fal-ai/object-removal/mask` | White mask pixels are removed |
 

@@ -157,7 +157,7 @@ struct StylesPanel: View {
     }
 }
 
-/// Explanation + single action for Enhance and Remove Background.
+/// Explanation + single action (Cut out's start).
 struct OneTapPanel: View {
     let title: LocalizedStringKey
     let message: LocalizedStringKey
@@ -265,6 +265,9 @@ struct AdjustPanel: View {
     let onChange: () -> Void
     let onReset: () -> Void
     let onApply: () -> Void
+    /// Soft skin's slider: only for adults (nil hides it entirely).
+    let softSkin: Binding<Double>?
+    let softSkinState: EditorViewModel.SoftSkinState
 
     @State private var selected: AdjustmentParameter
     /// Naming a new filter, or renaming one of hers.
@@ -280,7 +283,8 @@ struct AdjustPanel: View {
 
     init(settings: Binding<AdjustmentSettings>, vibe: AdjustVibe?, myFilters: MyFiltersStore, onMyFilter: @escaping (MyFilter) -> Void,
          onAuto: @escaping () -> Void, onVibe: @escaping (AdjustVibe) -> Void, onChange: @escaping () -> Void,
-         onReset: @escaping () -> Void, onApply: @escaping () -> Void) {
+         onReset: @escaping () -> Void, onApply: @escaping () -> Void,
+         softSkin: Binding<Double>? = nil, softSkinState: EditorViewModel.SoftSkinState = .idle) {
         _settings = settings
         self.vibe = vibe
         self.myFilters = myFilters
@@ -290,6 +294,8 @@ struct AdjustPanel: View {
         self.onChange = onChange
         self.onReset = onReset
         self.onApply = onApply
+        self.softSkin = softSkin
+        self.softSkinState = softSkinState
         var first = vibe?.lead ?? .brightness
         #if DEBUG
         // Screenshot QA: -GLAdjustParameter <slider> (e.g. tint) shows that slider.
@@ -301,20 +307,27 @@ struct AdjustPanel: View {
         _selected = State(initialValue: first)
     }
 
+    /// Something to apply: a slider moved, or Soft skin turned up.
+    private var hasChanges: Bool { !settings.isNeutral || (softSkin?.wrappedValue ?? 0) > 0 }
+
     var body: some View {
         VStack(spacing: 12) {
             vibesRow
             parametersRow
             slider
+            // Adults only: its own slider under the light and colour ones, off until she moves it.
+            if let softSkin {
+                softSkinSlider(softSkin)
+            }
 
             ButtonRow {
                 Button("Reset", action: onReset)
                     .buttonStyle(.secondary)
-                    .disabled(settings.isNeutral)
+                    .disabled(!hasChanges)
             } primary: {
                 Button("Apply", action: onApply)
                     .buttonStyle(.primary)
-                    .disabled(settings.isNeutral)
+                    .disabled(!hasChanges)
             }
         }
         // A vibe turns to the slider it's about.
@@ -480,6 +493,37 @@ struct AdjustPanel: View {
                 Haptics.selection()
             }
             .id(parameter)
+        }
+    }
+
+    private func softSkinSlider(_ amount: Binding<Double>) -> some View {
+        VStack(alignment: .leading, spacing: 6) {
+            HStack(spacing: 10) {
+                Label {
+                    Text("Soft skin", comment: "Adjust slider for adults only: gently softens skin while keeping pores, freckles and moles")
+                } icon: {
+                    Image(systemName: "circle.hexagongrid")
+                }
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(Palette.textPrimary)
+                .fixedSize()
+                Slider(value: amount, in: 0...1)
+                    .tint(Palette.accent)
+                    .accessibilityLabel(Text("Soft skin", comment: "Adjust slider for adults only: gently softens skin while keeping pores, freckles and moles"))
+            }
+            Group {
+                switch softSkinState {
+                case .finding:
+                    Text("Finding skin…", comment: "Adjust › Soft skin: while the device finds the skin in the photo")
+                case .noFace:
+                    Text("No face found in this photo.", comment: "Adjust › Soft skin: the photo has no face to soften")
+                case .idle, .ready:
+                    Text("Gentle, and pores, freckles and moles stay.", comment: "Under Adjust's Soft skin slider")
+                }
+            }
+            .font(.legibleCaption)
+            .foregroundStyle(Palette.textSecondary)
+            .fixedSize(horizontal: false, vertical: true)
         }
     }
 

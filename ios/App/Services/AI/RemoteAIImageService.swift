@@ -369,7 +369,10 @@ final class RemoteAIImageService: AIImageService {
             // The server expands the template id into its own, up-to-date recipe.
             request.templateID = job.template?.id
             request.prompt = job.template == nil ? job.prompt : nil
-        case .enhance, .removeBackground, .eraseObject:
+        case .enhance:
+            // Only the mode's name: the server writes the instruction.
+            request.enhanceMode = job.enhanceMode ?? .unblur
+        case .removeBackground, .eraseObject:
             break
         }
 

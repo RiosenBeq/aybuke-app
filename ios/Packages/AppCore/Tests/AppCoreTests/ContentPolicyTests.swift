@@ -70,7 +70,7 @@ final class ContentPolicyTests: XCTestCase {
         let fixed = [
             PromptBuilder.editGuard, TemplateCatalog.identityClause, DirectAIPrompts.enhance,
             "Give me pink hair. Only change the main person in front; keep everyone else exactly as they are.",
-        ]
+        ] + EnhanceMode.allCases.map(\.prompt)
         for prompt in fixed {
             XCTAssertTrue(ContentPolicy.evaluate(prompt, operation: .magicEdit).isAllowed, prompt)
         }

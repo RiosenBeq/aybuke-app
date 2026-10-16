@@ -5,8 +5,8 @@ import AppCore
 
 /// Looks at a photo on device with Apple's Vision framework, for the editor's
 /// "Ideas for this photo". Nothing leaves the device and nothing here judges
-/// anyone: only what's in the picture (labels, how many faces, a pet) and how
-/// bright it is.
+/// anyone: only what's in the picture (labels, how many faces, a pet), how
+/// bright it is and whether it looks blurry, grainy or like an old print.
 @MainActor
 enum PhotoInsightsService {
     /// Keyed by the image object; the editor asks again after each step.
@@ -58,7 +58,9 @@ enum PhotoInsightsService {
             hasAnimal: animal != nil,
             animalKind: animal,
             isDark: averageLuminance(of: cgImage).map { $0 < 0.22 } ?? false,
-            isPortraitOrientation: cgImage.height > cgImage.width
+            isPortraitOrientation: cgImage.height > cgImage.width,
+            // Blur, noise, light and fading, for Enhance's suggestion.
+            quality: PhotoQuality.measure(cgImage)
         )
     }
 

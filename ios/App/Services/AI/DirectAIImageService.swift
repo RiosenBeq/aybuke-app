@@ -90,7 +90,7 @@ final class DirectAIImageService: AIImageService {
         case .restyle:
             return job.template?.prompt ?? PromptBuilder.sanitize(job.prompt ?? "")
         case .enhance:
-            return DirectAIPrompts.enhance
+            return (job.enhanceMode ?? .unblur).prompt
         case .eraseObject:
             switch config.provider {
             case .xai: return DirectAIPrompts.eraseWithMaskImages

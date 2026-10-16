@@ -124,7 +124,8 @@ public struct DirectAIInput: Equatable, Sendable {
 /// Instructions for tools that general image-edit models don't have as a
 /// dedicated endpoint.
 public enum DirectAIPrompts {
-    public static let enhance = "Enhance this photo: make it sharper and more detailed, reduce blur and noise, restore faces naturally and gently improve the lighting. Keep real skin texture, freckles, moles, pores and blemishes; don't retouch or smooth the skin, and don't reshape the face or body. Keep the composition, colors, every person and their identity exactly the same."
+    /// "Unblur & sharpen", the original AI Enhance; the other modes are `EnhanceMode.prompt`.
+    public static let enhance = EnhanceMode.unblur.prompt
 
     /// OpenAI applies the edit only inside the transparent mask area.
     public static let eraseWithMask = "Remove the object in the masked area and fill it naturally so it blends with the surroundings. Keep everything else unchanged."

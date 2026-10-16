@@ -43,6 +43,27 @@ final class EditorViewModel {
     /// The vibe picked above the sliders, if any (its values are on them).
     private(set) var adjustVibe: AdjustVibe?
     private(set) var adjustPreview: UIImage?
+    /// Adjust's Soft skin (0…1), only for adults: the editor sets
+    /// `allowsSoftSkin` from her age range, and without it the value is
+    /// never rendered. Off for every new step.
+    var softSkin = SoftSkin.defaultAmount
+    private(set) var allowsSoftSkin = false
+    private(set) var softSkinState: SoftSkinState = .idle
+    enum SoftSkinState { case idle, finding, ready, noFace }
+    /// The skin mask of a step (nil: no face found), and the one being made.
+    @ObservationIgnored private var skinMask: (version: Int, mask: CIImage?)?
+    @ObservationIgnored private var skinMaskJob: (version: Int, task: Task<CIImage?, Never>)?
+
+    // Enhance: the free Quick fix (previewed like an effect) or an AI fix.
+    private(set) var enhanceOption: EnhanceOption?
+    var enhanceAddsColor = false
+    var enhanceUpscales = false
+    private(set) var enhancePreview: UIImage?
+    /// The fix that suits the photo on the canvas ("Suggested" in the panel).
+    private(set) var enhanceSuggested: EnhanceOption?
+    /// Quick fix's inputs for a step: Auto's light and colour, and the photo's measures.
+    @ObservationIgnored private var enhanceInputs: (version: Int, light: AutoAdjustment, quality: PhotoQuality)?
+    @ObservationIgnored private var enhanceTask: Task<Void, Never>?
     private(set) var strokes: [MaskStroke] = []
     /// People and things she picked to erase ("Pick a person").
     private(set) var eraseRegions: [EraseRegion] = []
@@ -164,6 +185,7 @@ final class EditorViewModel {
         }
         if activeTool == .hideFaces { startHidingFaces(preselect: true) }
         prepareProxy()
+        if activeTool == .enhance { prepareEnhance() }
         #if DEBUG
         // Screenshot QA: -GLOverlayMode text|stickers|doodle picks the panel.
         if ScreenshotScene.current == .textStickers {
@@ -191,6 +213,17 @@ final class EditorViewModel {
             adjustVibe = vibe
             updateAdjustPreview()
         }
+        // Screenshot QA: -GLSoftSkin <0…1> moves Soft skin (shown with -GLAgeBand adult).
+        if ScreenshotScene.current != nil, activeTool == .adjust, UserDefaults.standard.object(forKey: "GLSoftSkin") != nil {
+            softSkin = min(1, max(0, UserDefaults.standard.double(forKey: "GLSoftSkin")))
+        }
+        // Screenshot QA: -GLEnhanceMode <EnhanceOption> picks a fix; -GLEnhanceColor YES turns on Add color.
+        if ScreenshotScene.current != nil, activeTool == .enhance {
+            enhanceAddsColor = UserDefaults.standard.bool(forKey: "GLEnhanceColor")
+            if let option = UserDefaults.standard.string(forKey: "GLEnhanceMode").flatMap(EnhanceOption.init(rawValue:)) {
+                selectEnhance(option, haptic: false)
+            }
+        }
         #endif
         // Holds self weakly, so it ends at the first warning after the editor closes.
         memoryWatcher = Task { [weak self] in
@@ -215,6 +248,7 @@ final class EditorViewModel {
             effectPreview = nil
         }
         if activeTool != .adjust { adjustPreview = nil }
+        if activeTool != .enhance { enhancePreview = nil }
     }
 
     var canUndo: Bool { historyVersion >= 0 && !undoStack.isEmpty }
@@ -233,6 +267,7 @@ final class EditorViewModel {
         case hideFaces
         case cutout
         case overlays
+        case quickFix
     }
 
     /// Read from the settings rather than the preview images: the first effect
@@ -244,7 +279,9 @@ final class EditorViewModel {
             guard let effect else { return nil }
             return .effect(effect, effectOptions)
         case .adjust?:
-            return adjustments.isNeutral ? nil : .adjust(adjustments)
+            return adjustments.isNeutral && effectiveSoftSkin == 0 ? nil : .adjust(adjustments)
+        case .enhance?:
+            return enhanceOption == .quickFix ? .quickFix : nil
         case .crop?:
             return crop.isIdentity ? nil : .crop(crop, cropAspect)
         case .hideFaces?:
@@ -270,6 +307,7 @@ final class EditorViewModel {
     var displayImage: UIImage {
         if isHoldingOriginal { return before }
         if activeTool == .adjust, let adjustPreview { return adjustPreview }
+        if activeTool == .enhance, enhanceOption == .quickFix, let enhancePreview { return enhancePreview }
         if activeTool == .effects, let effectPreview { return effectPreview }
         if activeTool == .hideFaces, let preview = faceHider.preview { return preview }
         return current
@@ -306,10 +344,12 @@ final class EditorViewModel {
         if activeTool == .hideFaces { faceHider.reset() }
         if activeTool == .removeBackground { cutout.reset() }
         if activeTool == .textStickers { overlays.reset() }
+        if activeTool == .enhance { clearEnhance() }
         isComparing = false
         activeTool = tool
         refreshCropProxy()
         if tool == .hideFaces { startHidingFaces(preselect: true) }
+        if tool == .enhance { prepareEnhance() }
         Haptics.selection()
     }
 
@@ -375,8 +415,19 @@ final class EditorViewModel {
         adjustments = .neutral
         adjustVibe = nil
         adjustPreview = nil
+        softSkin = SoftSkin.defaultAmount
+        skinMask = nil
+        skinMaskJob = nil
+        softSkinState = .idle
         previewSource = nil
         prepareProxy()
+        // The fixes belong to the photo they were measured on.
+        enhancePreview = nil
+        enhanceSuggested = nil
+        if activeTool == .enhance {
+            prepareEnhance()
+            if enhanceOption == .quickFix { updateQuickFixPreview() }
+        }
         crop = CropGeometry()
         cropAspect = .original
         if activeTool == .crop { refreshCropProxy() }
@@ -437,6 +488,9 @@ final class EditorViewModel {
         case .styles:
             guard let template else { return }
             job.template = template
+        case .enhance:
+            // Only the fix's name goes out: the server writes its instruction.
+            job.enhanceMode = enhanceOption?.mode(addingColor: enhanceAddsColor) ?? .unblur
         case .erase:
             guard hasEraseMask else {
                 app.showToast("Brush over what you want to remove.")
@@ -444,7 +498,7 @@ final class EditorViewModel {
             }
             let size = ImageUtilities.pixelSize(of: current)
             job.mask = MaskRenderer.render(strokes, regions: eraseRegions, size: CGSize(width: size.width, height: size.height))
-        case .enhance, .removeBackground, .adjust, .effects, .textStickers, .crop, .hideFaces:
+        case .removeBackground, .adjust, .effects, .textStickers, .crop, .hideFaces:
             break
         }
 
@@ -465,7 +519,13 @@ final class EditorViewModel {
             do {
                 let result = try await app.run(job, saveToLibrary: false)
                 guard let image = result.images.first else { return }
-                let edited = ImageUtilities.normalized(image)
+                var edited = ImageUtilities.normalized(image)
+                // An AI fix never comes back smaller than her photo (HD: up to twice it).
+                if job.operation == .enhance, let source = job.sourceImage {
+                    let mode = job.enhanceMode ?? .unblur
+                    let result = edited
+                    edited = await Task.detached(priority: .userInitiated) { Self.sizedEnhanceResult(result, source: source, mode: mode) }.value
+                }
                 // One Undo still goes back to her photo, not through every look.
                 if let replacedStep, replacedStep == historyVersion, let previous = undoStack.popLast() {
                     restore(previous)
@@ -708,11 +768,13 @@ final class EditorViewModel {
     func updateAdjustPreview() {
         previewTask?.cancel()
         let settings = adjustments
+        let amount = effectiveSoftSkin
         previewTask = Task {
             let proxy = await previewProxy()
+            let mask = amount > 0 ? await skinMaskForCurrentStep() : nil
             guard !Task.isCancelled else { return }
             let rendered = await Task.detached(priority: .userInitiated) {
-                OnDeviceImageService.adjust(proxy, with: settings)
+                OnDeviceImageService.adjust(proxy, with: settings, softSkin: mask.map { ($0, amount) })
             }.value
             guard !Task.isCancelled else { return }
             adjustPreview = rendered
@@ -922,17 +984,20 @@ final class EditorViewModel {
         adjustments = .neutral
         adjustVibe = nil
         adjustPreview = nil
+        softSkin = SoftSkin.defaultAmount
     }
 
     func applyAdjustments() async {
-        guard !adjustments.isNeutral, !isProcessing else { return }
+        let amount = effectiveSoftSkin
+        guard !adjustments.isNeutral || amount > 0, !isProcessing else { return }
         let settings = adjustments
         let source = current
         processingTitle = String(localized: "Applying adjustments…")
         isProcessingInCloud = false
         isProcessing = true
+        let mask = amount > 0 ? await skinMaskForCurrentStep() : nil
         let output = await Task.detached(priority: .userInitiated) {
-            OnDeviceImageService.adjust(source, with: settings)
+            OnDeviceImageService.adjust(source, with: settings, softSkin: mask.map { ($0, amount) })
         }.value
         isProcessing = false
         commit(output, operation: nil)
@@ -950,8 +1015,159 @@ final class EditorViewModel {
         case .hideFaces?: await applyHideFaces()
         case .cutout?: await applyCutout()
         case .overlays?: await applyOverlays()
+        case .quickFix?: await applyQuickFix()
         case nil: break
         }
+    }
+
+    // MARK: Soft skin (Adjust, adults only, on-device)
+
+    /// What's rendered: nothing unless her age range allows the slider.
+    private var effectiveSoftSkin: Double { allowsSoftSkin ? softSkin : 0 }
+
+    /// The editor sets this from her age range (`AgeDefaults.allowsSoftSkin`).
+    func setSoftSkinAllowed(_ allowed: Bool) {
+        guard allowed != allowsSoftSkin else { return }
+        allowsSoftSkin = allowed
+        if !allowed { softSkin = SoftSkin.defaultAmount }
+        if activeTool == .adjust, softSkin > 0 || !allowed { updateAdjustPreview() }
+    }
+
+    func softSkinChanged() {
+        softSkin = min(1, max(0, softSkin))
+        updateAdjustPreview()
+    }
+
+    /// The step's skin mask, made once off the main actor (nil: no face).
+    private func skinMaskForCurrentStep() async -> CIImage? {
+        let version = historyVersion
+        if let skinMask, skinMask.version == version { return skinMask.mask }
+        let task: Task<CIImage?, Never>
+        if let skinMaskJob, skinMaskJob.version == version {
+            task = skinMaskJob.task
+        } else {
+            let source = current
+            task = Task.detached(priority: .userInitiated) { SkinMask.make(for: source) }
+            skinMaskJob = (version, task)
+            softSkinState = .finding
+        }
+        let mask = await task.value
+        guard version == historyVersion else { return nil }
+        if skinMask?.version != version {
+            skinMask = (version, mask)
+            softSkinState = mask == nil ? .noFace : .ready
+        }
+        return mask
+    }
+
+    // MARK: Enhance
+
+    /// Quick fix can make this photo bigger (it's under the editor's size).
+    var canUpscale: Bool {
+        let size = ImageUtilities.pixelSize(of: current)
+        return EnhanceSizing.canUpscale(longEdge: Double(max(size.width, size.height)))
+    }
+
+    /// Measures the photo once per step, for Quick fix and the "Suggested" mark.
+    func prepareEnhance() {
+        Task {
+            guard let inputs = await enhanceMeasures() else { return }
+            enhanceSuggested = EnhanceAdvisor.suggestion(for: inputs.quality, cloudAI: true)?.option
+        }
+    }
+
+    private func enhanceMeasures() async -> (light: AutoAdjustment, quality: PhotoQuality)? {
+        let version = historyVersion
+        if let enhanceInputs, enhanceInputs.version == version { return (enhanceInputs.light, enhanceInputs.quality) }
+        let proxy = await previewProxy()
+        let measured = await Task.detached(priority: .userInitiated) {
+            (AutoDevelop.plan(for: proxy), PhotoQuality.measure(proxy) ?? PhotoQuality())
+        }.value
+        guard version == historyVersion else { return nil }
+        enhanceInputs = (version, measured.0, measured.1)
+        return measured
+    }
+
+    /// A tap on a fix: Quick fix shows on the photo at once; an AI fix waits
+    /// for its button. The same one again puts it down.
+    func selectEnhance(_ option: EnhanceOption, haptic: Bool = true) {
+        if enhanceOption == option {
+            clearEnhance()
+        } else {
+            enhanceOption = option
+            if option == .quickFix {
+                updateQuickFixPreview()
+            } else {
+                enhanceTask?.cancel()
+                enhancePreview = nil
+            }
+        }
+        if haptic { Haptics.selection() }
+    }
+
+    /// From a hint or an idea: Enhance with this fix picked.
+    func openEnhance(_ option: EnhanceOption) {
+        guard !isProcessing else { return }
+        Task {
+            if activeTool != .enhance {
+                await commitPending()
+                switchTool(to: .enhance)
+            }
+            if enhanceOption != option { selectEnhance(option) }
+        }
+    }
+
+    func clearEnhance() {
+        enhanceTask?.cancel()
+        enhanceOption = nil
+        enhancePreview = nil
+    }
+
+    private func updateQuickFixPreview() {
+        enhanceTask?.cancel()
+        enhanceTask = Task {
+            guard let inputs = await enhanceMeasures() else { return }
+            let proxy = await previewProxy()
+            guard !Task.isCancelled, enhanceOption == .quickFix else { return }
+            let size = ImageUtilities.pixelSize(of: proxy)
+            let plan = QuickFix.plan(light: inputs.light, noise: inputs.quality.noise, longEdge: Double(max(size.width, size.height)))
+            let rendered = await Task.detached(priority: .userInitiated) { OnDeviceImageService.quickFix(proxy, plan: plan) }.value
+            guard !Task.isCancelled, enhanceOption == .quickFix else { return }
+            enhancePreview = rendered
+        }
+    }
+
+    /// Quick fix at full size: free, on the device, one Undo takes it back.
+    func applyQuickFix() async {
+        guard enhanceOption == .quickFix, !isProcessing, let inputs = await enhanceMeasures() else { return }
+        let source = current
+        let size = ImageUtilities.pixelSize(of: source)
+        let plan = QuickFix.plan(light: inputs.light, noise: inputs.quality.noise, longEdge: Double(max(size.width, size.height)),
+                                 upscale: enhanceUpscales && canUpscale)
+        processingTitle = String(localized: "Fixing your photo…", comment: "While Enhance's free Quick fix runs")
+        isProcessingInCloud = false
+        isProcessing = true
+        let output = await Task.detached(priority: .userInitiated) { OnDeviceImageService.quickFix(source, plan: plan) }.value
+        isProcessing = false
+        clearEnhance()
+        commit(output, operation: nil)
+        lastStepTitle = EnhanceOption.quickFix.title
+        isComparing = true
+        celebration += 1
+        announceResult(comparing: true)
+        Haptics.success()
+    }
+
+    /// An AI fix at the size `EnhanceSizing` asks for (Lanczos, edges clamped).
+    nonisolated private static func sizedEnhanceResult(_ result: UIImage, source: UIImage, mode: EnhanceMode) -> UIImage {
+        let resultSize = ImageUtilities.pixelSize(of: result), sourceSize = ImageUtilities.pixelSize(of: source)
+        let resultLong = Double(max(resultSize.width, resultSize.height))
+        let target = EnhanceSizing.resultLongEdge(source: Double(max(sourceSize.width, sourceSize.height)), result: resultLong, mode: mode)
+        guard resultLong > 0, target > resultLong + 1, let input = ImageFilters.ciImage(result) else { return result }
+        let factor = target / resultLong
+        let rect = CGRect(x: 0, y: 0, width: (input.extent.width * factor).rounded(), height: (input.extent.height * factor).rounded())
+        let scaled = ImageFilters.upscale(input.clampedToExtent(), factor: Float(factor)).cropped(to: rect).settingAlphaOne(in: rect)
+        return ImageFilters.render(scaled, extent: rect) ?? result
     }
 
     // MARK: Crop (on-device, free)

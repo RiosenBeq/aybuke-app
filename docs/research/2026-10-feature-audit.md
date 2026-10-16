@@ -202,7 +202,7 @@ The server moderation stack and abuse operations must ship before the backend go
 | Idea | Why not |
 |---|---|
 | Celebrity or idol polaroids, photocards, "selfie with a star" | Fake encounters with real people: deepfake and likeness-rights risk (Apple 1.2); see the [Gulf News](https://gulfnews.com/world/offbeat/ai-trends-on-instagram-from-celebrity-polaroids-to-vintage-sarees-but-at-what-cost-1.500270899) coverage |
-| Skin smoothing, face slimming, body reshaping, skin lightening, teeth whitening, "glow-up" retouch | Hard rule; linked to lower body satisfaction in teens |
+| Skin smoothing, face slimming, body reshaping, skin lightening, teeth whitening, "glow-up" retouch | Hard rule; linked to lower body satisfaction in teens. Update 16 October 2026: the owner allowed one exception, an opt-in, gentle on-device Soft skin slider for adults (18+) only; teens still never see smoothing |
 | Public feed, likes, contests, voting, leaderboards, streaks | UGC moderation duties, contact from strangers, appearance comparison; streaks linked to problematic phone use |
 | Numeric ratings or OVR scores about people, "rate my fit", face-shape hairstyle advice, caricature exaggeration | Judgements of her face and body |
 | Open virtual try-on with garment uploads or full-body photos, AI dance, animate-my-selfie, lip-sync avatars | Full-body photos of minors, undressing and body-change risk, deepfakes of people's bodies |

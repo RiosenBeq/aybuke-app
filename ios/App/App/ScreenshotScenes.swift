@@ -23,7 +23,11 @@ enum ScreenshotScene: String, CaseIterable {
     /// with `-GLAssistStub YES` it has "Describe your vibe", and
     /// `-GLMakeupVibe "<words>"` asks it once. Adjust (`-GLEditorTool adjust`)
     /// takes `-GLAdjustVibe dreamy|analog|moody|golden` and
-    /// `-GLAdjustParameter <slider>` (an `AdjustmentParameter`, e.g. `tint`).
+    /// `-GLAdjustParameter <slider>` (an `AdjustmentParameter`, e.g. `tint`),
+    /// and with `-GLAgeBand adult` `-GLSoftSkin <0…1>` (Soft skin's slider).
+    /// Enhance (`-GLEditorTool enhance`) takes `-GLEnhanceMode <EnhanceOption>`
+    /// (`quickFix` previews it) and `-GLEnhanceColor YES`; `-GLEnhanceHint YES`
+    /// shows the one-time hint again. `-GLEditorPhoto <sample>` picks the photo.
     case editor
     case effects
     /// The editor's "Ideas for this photo" row on the demo landscape.
@@ -197,6 +201,25 @@ enum ScreenshotFixtures {
             masks.humans = boxes.filter { $0.count == 4 }.map { CGRect(x: $0[0], y: $0[1], width: $0[2], height: $0[3]) }
         }
         return masks.person == nil && masks.things.isEmpty ? nil : masks
+    }
+
+    /// `-GLVisionFixtures <folder>`: a sample photo's face landmarks found on
+    /// a Mac (`<folder>/<sample>/landmarks.json`, the format Retro Cam's
+    /// fixture reads, plus optional `leftEyebrow`/`rightEyebrow`), for Soft skin.
+    static func visionLandmarks(for image: UIImage) -> [FaceLandmarks]? {
+        guard let folder = UserDefaults.standard.string(forKey: "GLVisionFixtures"),
+              let name = sampleLock.withLock({ sampleNames[ObjectIdentifier(image)]?.name }) else { return nil }
+        let url = URL(fileURLWithPath: folder).appendingPathComponent(name, isDirectory: true).appendingPathComponent("landmarks.json")
+        guard let data = try? Data(contentsOf: url),
+              let faces = try? JSONDecoder().decode([[String: [[Double]]]].self, from: data), !faces.isEmpty else { return nil }
+        return faces.map { face in
+            func points(_ region: String) -> [FacePoint] {
+                (face[region] ?? []).filter { $0.count == 2 }.map { FacePoint(x: $0[0], y: $0[1]) }
+            }
+            return FaceLandmarks(outerLips: points("outerLips"), innerLips: points("innerLips"), leftEye: points("leftEye"),
+                                 rightEye: points("rightEye"), nose: points("nose"), faceContour: points("faceContour"),
+                                 leftEyebrow: points("leftEyebrow"), rightEyebrow: points("rightEyebrow"))
+        }
     }
 
     /// A flat, overcast lake landscape — the "before" photo.

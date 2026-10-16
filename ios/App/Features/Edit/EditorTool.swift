@@ -56,7 +56,7 @@ enum EditorTool: String, CaseIterable, Identifiable {
         case .styles: return Platform.isMac ? String(localized: "One-click looks") : String(localized: "One-tap looks")
         case .effects: return String(localized: "80s · Y2K · 2010s")
         case .textStickers: return String(localized: "Text, stickers, doodles")
-        case .enhance: return String(localized: "Sharpen & restore")
+        case .enhance: return String(localized: "Fix, sharpen & restore", comment: "Caption of the Enhance tool: a free quick fix plus AI unblur, old-photo restore, low light and HD")
         case .removeBackground: return String(localized: "Free · on-device")
         case .erase: return String(localized: "Brush to remove")
         case .adjust: return String(localized: "Light & color")
@@ -89,8 +89,13 @@ enum EditorTool: String, CaseIterable, Identifiable {
         }
     }
 
-    /// Sends the photo to cloud AI (needs consent and credits).
-    var usesCloudAI: Bool { operation.map { !$0.runsOnDevice } ?? false }
+    /// Only works with cloud AI (consent and credits), so it's hidden under
+    /// 13. Enhance isn't: its Quick fix is free and on the device, and its
+    /// AI fixes show only where cloud AI is allowed.
+    var usesCloudAI: Bool {
+        if self == .enhance { return false }
+        return operation.map { !$0.runsOnDevice } ?? false
+    }
 
     /// The tools offered: the free on-device ones only, when cloud AI isn't.
     static func available(cloudAI: Bool) -> [EditorTool] {

@@ -15,6 +15,8 @@ struct AIJob {
     var retryOf: String?
     /// Makeup Studio's look, sent as a Magic Edit whose prompt the app wrote.
     var makeup: MakeupRecipe?
+    /// Enhance's AI fix; the server writes its instruction (nil: Unblur).
+    var enhanceMode: EnhanceMode?
 
     /// Short human-readable title used in the library.
     var title: String {
@@ -26,6 +28,7 @@ struct AIJob {
         if let prompt, operation == .textToImage || operation == .magicEdit {
             return PromptBuilder.sanitize(prompt)
         }
+        if operation == .enhance, let enhanceMode { return enhanceMode.title }
         return operation.displayName
     }
 

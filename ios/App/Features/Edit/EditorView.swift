@@ -21,6 +21,8 @@ struct EditorView: View {
     @State private var isFocused = false
     @State private var ideasDismissed = false
     @State private var ideasShown = false
+    /// The one-time Enhance hint for a photo that looks blurry, grainy, dark or old.
+    @State private var enhanceHint: EnhanceSuggestion?
     /// Mac: the window's width, for the inspector beside the photo.
     @State private var editorWidth: CGFloat = 0
     @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
@@ -59,6 +61,8 @@ struct EditorView: View {
         .animation(.snappy, value: model.activeTool)
         .task {
             model.stampsDemoResults = app.isDemoMode
+            // Soft skin is for adults only.
+            model.setSoftSkinAllowed(app.ageDefaults.allowsSoftSkin)
             #if DEBUG
             if ScreenshotScene.current == .cutout { model.startCutout(app: app) }
             // Screenshot QA of "Pick a person": -GLErasePick x,y (normalized).
@@ -87,7 +91,9 @@ struct EditorView: View {
             }
             #endif
             await model.checkForOtherPeople()
+            await loadEnhanceHint()
         }
+        .onChange(of: app.ageDefaults.allowsSoftSkin) { _, allowed in model.setSoftSkinAllowed(allowed) }
         #if DEBUG || GL_PERF
         .onAppear { PerfProbe.editorAppeared() }
         #endif
@@ -197,6 +203,12 @@ struct EditorView: View {
                 if model.lastRequestID != nil && !model.isProcessing {
                     resultActions
                 }
+                if showsEnhanceHint, let enhanceHint {
+                    enhanceHintCard(enhanceHint)
+                        .padding(.horizontal, Metrics.gutter)
+                        .padding(.bottom, 6)
+                        .transition(.move(edge: .bottom).combined(with: .opacity))
+                }
                 if showsIdeas {
                     ideasRow
                         .padding(.horizontal, Metrics.gutter)
@@ -277,6 +289,10 @@ struct EditorView: View {
                     if model.lastRequestID != nil && !model.isProcessing {
                         resultActions
                     }
+                    if showsEnhanceHint, let enhanceHint {
+                        enhanceHintCard(enhanceHint)
+                            .transition(.opacity)
+                    }
                     if showsIdeas {
                         ideasRow
                     }
@@ -308,11 +324,45 @@ struct EditorView: View {
     /// Studio brings its own looks. Kept, disabled, while a job runs, so
     /// "Surprise me" remembers where it was.
     private var showsIdeas: Bool {
-        guard !ideasDismissed, model.lastRequestID == nil, !model.showsKindnessNote else { return false }
+        guard !ideasDismissed, model.lastRequestID == nil, !model.showsKindnessNote, !showsEnhanceHint else { return false }
         switch model.activeTool {
         case .crop?, .erase?, .hideFaces?, .removeBackground?, .textStickers?, .makeup?: return false
         default: return true
         }
+    }
+
+    // MARK: Enhance hint
+
+    /// Once on this device, not over the kindness note, a result or Enhance itself.
+    private var showsEnhanceHint: Bool {
+        enhanceHint != nil && !model.isProcessing && !model.showsKindnessNote && model.lastRequestID == nil
+            && model.activeTool != .enhance
+    }
+
+    private func enhanceHintCard(_ suggestion: EnhanceSuggestion) -> some View {
+        EnhanceHintCard(suggestion: suggestion) {
+            Haptics.tap()
+            withAnimation(.snappy) { enhanceHint = nil }
+            model.openEnhance(suggestion.option)
+        } onClose: {
+            withAnimation(.snappy) { enhanceHint = nil }
+        }
+        .onAppear { EnhanceHint.markShown() }
+    }
+
+    /// The photo she opened looks blurry, grainy, dark or like an old print:
+    /// the fix for it, the first time it happens (never during the tour).
+    private func loadEnhanceHint() async {
+        var forced = false
+        #if DEBUG
+        // Screenshot QA: -GLEnhanceHint YES shows it again.
+        forced = UserDefaults.standard.bool(forKey: "GLEnhanceHint")
+        if ScreenshotScene.current != nil, !forced { return }
+        #endif
+        guard forced || (!EnhanceHint.wasShown && GlowTips.isTourOver) else { return }
+        let insight = await PhotoInsightsService.insight(for: model.original)
+        guard let suggestion = EnhanceAdvisor.suggestion(for: insight.quality, cloudAI: app.allowsCloudAI) else { return }
+        withAnimation(.snappy) { enhanceHint = suggestion }
     }
 
     private var isTypingOverlayText: Bool {
@@ -748,14 +798,20 @@ struct EditorView: View {
                 model.run(.styles, template: template, app: app)
             }
         case .enhance?:
-            OneTapPanel(
-                title: "AI Enhance",
-                message: Platform.isMac ? "Unblur, sharpen details and restore faces in one click." : "Unblur, sharpen details and restore faces in one tap.",
-                buttonTitle: "Enhance",
-                cost: app.credits.cost(of: .enhance)
-            ) {
-                model.run(.enhance, app: app)
-            }
+            // The AI fixes only where cloud AI is allowed; Quick fix for everyone.
+            EnhancePanel(
+                options: EnhanceOption.available(cloudAI: app.allowsCloudAI),
+                selected: model.enhanceOption,
+                suggested: model.enhanceSuggested.map { app.allowsCloudAI ? $0 : .quickFix },
+                addsColor: $model.enhanceAddsColor,
+                upscales: $model.enhanceUpscales,
+                canUpscale: model.canUpscale,
+                cost: app.credits.cost(of: .enhance),
+                onSelect: { model.selectEnhance($0) },
+                onReset: { model.clearEnhance() },
+                onApplyQuickFix: { Task { await model.applyQuickFix() } },
+                onRunAI: { model.run(.enhance, app: app) }
+            )
         case .removeBackground?:
             CutoutPanel(
                 session: model.cutout,
@@ -794,7 +850,16 @@ struct EditorView: View {
                 onVibe: { model.pickVibe($0) },
                 onChange: { model.updateAdjustPreview() },
                 onReset: { model.resetAdjustments() },
-                onApply: { Task { await model.applyAdjustments() } }
+                onApply: { Task { await model.applyAdjustments() } },
+                // Adults only (AgeDefaults.allowsSoftSkin): no slider at all otherwise.
+                softSkin: model.allowsSoftSkin ? Binding(
+                    get: { model.softSkin },
+                    set: { value in
+                        model.softSkin = value
+                        model.softSkinChanged()
+                    }
+                ) : nil,
+                softSkinState: model.softSkinState
             )
         case .crop?:
             CropPanel(

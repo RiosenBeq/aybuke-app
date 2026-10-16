@@ -11,10 +11,12 @@ public struct PhotoInsight: Equatable, Sendable {
     public var animalKind: String?
     public var isDark: Bool
     public var isPortraitOrientation: Bool
+    /// Blur, noise, light and fading, for Enhance's suggestion (nil: not measured).
+    public var quality: PhotoQuality?
 
     public init(
         faceCount: Int = 0, labels: [String] = [], hasAnimal: Bool = false, animalKind: String? = nil,
-        isDark: Bool = false, isPortraitOrientation: Bool = false
+        isDark: Bool = false, isPortraitOrientation: Bool = false, quality: PhotoQuality? = nil
     ) {
         self.faceCount = faceCount
         self.labels = labels.map { $0.lowercased() }
@@ -22,6 +24,7 @@ public struct PhotoInsight: Equatable, Sendable {
         self.animalKind = animalKind?.lowercased()
         self.isDark = isDark
         self.isPortraitOrientation = isPortraitOrientation
+        self.quality = quality
     }
 
     /// A stable number from what the photo shows, so photos of the same kind
@@ -91,6 +94,9 @@ public enum LookSuggestion: Hashable, Sendable {
     case template(String)
     /// A Magic Edit request in English; show it with `L10n.core(_:)`.
     case magicEdit(prompt: String)
+    /// The photo looks blurry, noisy, dark or like an old print: the Enhance
+    /// option that fixes it (Quick fix without cloud AI).
+    case enhance(EnhanceOption)
 }
 
 /// Picks up to four ideas that fit a photo: a free effect first (it applies
@@ -112,7 +118,8 @@ public enum LookSuggester {
         audience: SeasonAudience = .everyone,
         catalog: [PhotoTemplate] = TemplateCatalog.all,
         freeEffects: [String],
-        rotation: Int = 0
+        rotation: Int = 0,
+        cloudAI: Bool = true
     ) -> [LookSuggestion] {
         let kind = insight.kind
         let theme = SeasonalTheme.current(on: date, for: audience, calendar: calendar)
@@ -125,6 +132,8 @@ public enum LookSuggester {
         let ideas = magicEditIdeas(for: kind, theme: theme, offset: insight.variety + rotation)
 
         var result: [LookSuggestion] = []
+        // A photo that needs fixing gets the fix first.
+        if let fix = EnhanceAdvisor.suggestion(for: insight.quality, cloudAI: cloudAI) { result.append(.enhance(fix.option)) }
         if let effect = effects.first { result.append(.effect(effect)) }
         if let template = templates.first { result.append(.template(template.id)) }
         if let idea = ideas.first { result.append(.magicEdit(prompt: idea)) }

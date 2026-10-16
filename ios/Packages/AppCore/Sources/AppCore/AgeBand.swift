@@ -111,6 +111,9 @@ public struct AgeDefaults: Equatable, Sendable {
     public var autoPaywall: Bool
     /// The consent sheet asks her to read it with a parent or guardian.
     public var requiresGuardianStep: Bool
+    /// Adjust's optional "Soft skin" slider (owner decision, 16 October
+    /// 2026): adults only, never for teens, unknown ages or under 13.
+    public var allowsSoftSkin: Bool
 
     /// Age of digital consent where it's above 13 (GDPR Art. 8 and similar
     /// laws; Türkiye per our policy), by StoreKit's three-letter storefront
@@ -126,11 +129,12 @@ public struct AgeDefaults: Equatable, Sendable {
     /// the protective defaults (Brazil's ECA Digital). Counsel to confirm.
     public static let selfDeclarationNotAccepted: Set<String> = ["BRA"]
 
-    public init(allowsCloudAI: Bool, allowsPurchases: Bool, autoPaywall: Bool, requiresGuardianStep: Bool) {
+    public init(allowsCloudAI: Bool, allowsPurchases: Bool, autoPaywall: Bool, requiresGuardianStep: Bool, allowsSoftSkin: Bool = false) {
         self.allowsCloudAI = allowsCloudAI
         self.allowsPurchases = allowsPurchases
         self.autoPaywall = autoPaywall
         self.requiresGuardianStep = requiresGuardianStep
+        self.allowsSoftSkin = allowsSoftSkin
     }
 
     /// The band the rules apply to: unknown until she answers, and where a
@@ -161,7 +165,7 @@ public struct AgeDefaults: Equatable, Sendable {
             let guardian = band == .teen13to15 || (band.minimumAge ?? 0) < consentAge
             self.init(allowsCloudAI: true, allowsPurchases: true, autoPaywall: false, requiresGuardianStep: guardian)
         case .adult:
-            self.init(allowsCloudAI: true, allowsPurchases: true, autoPaywall: true, requiresGuardianStep: false)
+            self.init(allowsCloudAI: true, allowsPurchases: true, autoPaywall: true, requiresGuardianStep: false, allowsSoftSkin: true)
         case .unknown:
             self.init(allowsCloudAI: true, allowsPurchases: true, autoPaywall: false, requiresGuardianStep: true)
         }
