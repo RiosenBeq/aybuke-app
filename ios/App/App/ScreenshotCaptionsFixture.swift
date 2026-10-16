@@ -12,12 +12,47 @@ extension ScreenshotFixtures {
                        text: words.map(\.0).joined(separator: " "),
                        words: words.map { CaptionWord(text: $0.0, start: $0.1, end: $0.2) })
         }
+        // `-GLVideoClean YES` (marketing captures): lines in the app's language.
+        if UserDefaults.standard.bool(forKey: "GLVideoClean") {
+            return marketingCaptions()
+        }
         return [
             cue([("Hi", 0.2, 0.45), ("besties,", 0.45, 0.95), ("welcome", 1.0, 1.35), ("back!", 1.35, 1.6), ("💖", 1.6, 1.7)]),
             cue([("Today", 2.0, 2.3), ("we're", 2.3, 2.5), ("trying", 2.5, 2.85), ("the", 2.85, 2.95), ("Camcorder", 2.95, 3.4), ("'06", 3.4, 3.7), ("look", 3.7, 3.95)]),
             cue([("Honestly,", 4.3, 4.8), ("it's", 4.85, 5.0), ("giving", 5.0, 5.3), ("2006", 5.3, 5.75), ("energy", 5.75, 6.0)]),
             cue([("Tell", 6.3, 6.5), ("me", 6.5, 6.6), ("what", 6.6, 6.8), ("you", 6.8, 6.95), ("think!", 6.95, 7.5)]),
         ]
+    }
+
+    /// Four vlog lines per app language, words spread evenly over the same
+    /// windows as the English cues (Chinese and Japanese join without spaces).
+    private static func marketingCaptions() -> [CaptionCue] {
+        let lines: [String: [String]] = [
+            "en": ["Hi besties, welcome back!", "Today it's a golden hour vlog", "Honestly, the light is unreal", "Tell me what you think!"],
+            "tr": ["Selam kızlar, tekrar hoş geldiniz!", "Bugün altın saat vlogu var", "Bu ışık gerçekten büyüleyici", "Yorumlarda buluşalım!"],
+            "es": ["¡Hola, chicas, bienvenidas!", "Hoy toca vlog de hora dorada", "La luz está de otro mundo", "¡Cuéntenme qué opinan!"],
+            "pt": ["Oi, meninas, bem-vindas de volta!", "Hoje é vlog da hora dourada", "Essa luz está perfeita", "Me contem o que acharam!"],
+            "fr": ["Coucou les copines, bienvenue", "Aujourd'hui, vlog à l'heure dorée", "Franchement, cette lumière est folle", "Dites-moi ce que vous en pensez"],
+            "de": ["Hallo ihr Lieben, willkommen zurück!", "Heute gibt's ein Golden-Hour-Vlog", "Ehrlich, dieses Licht ist magisch", "Sagt mir, wie ihr es findet!"],
+            "it": ["Ciao ragazze, bentornate!", "Oggi vlog all'ora d'oro", "Davvero, questa luce è magica", "Ditemi cosa ne pensate!"],
+            "ru": ["Привет, девочки, с возвращением!", "Сегодня влог в золотой час", "Честно, свет просто нереальный", "Напишите, как вам!"],
+            "ja": ["みんな おかえり！", "今日は ゴールデンアワーの Vlog", "光が ほんとに きれい", "感想 教えてね！"],
+            "ko": ["안녕 얘들아, 다시 왔어!", "오늘은 골든아워 브이로그", "빛이 진짜 너무 예뻐", "어떤지 댓글로 알려줘!"],
+            "zh": ["姐妹们 欢迎回来！", "今天是 黄金时刻 Vlog", "这光线 真的 绝了", "告诉我 你的想法！"],
+            "id": ["Hai bestie, selamat datang lagi!", "Hari ini vlog golden hour", "Jujur, cahayanya cantik banget", "Kasih tahu pendapat kalian!"],
+        ]
+        let language = String((Locale.preferredLanguages.first ?? "en").prefix(2))
+        let joined = language == "ja" || language == "zh"
+        let windows: [(Double, Double)] = [(0.2, 1.7), (2.0, 3.95), (4.3, 6.0), (6.3, 7.5)]
+        return zip(lines[language] ?? lines["en"]!, windows).map { line, window in
+            let words = line.split(separator: " ").map(String.init)
+            let step = (window.1 - window.0) / Double(words.count)
+            let timed = words.enumerated().map { index, word in
+                CaptionWord(text: word, start: window.0 + step * Double(index), end: window.0 + step * Double(index + 1))
+            }
+            return CaptionCue(start: window.0, end: window.1 + 0.25,
+                              text: words.joined(separator: joined ? "" : " "), words: timed)
+        }
     }
 
     /// `-GLVideoSpeech YES`: a few sentences in the system voice instead of

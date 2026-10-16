@@ -40,6 +40,7 @@ extension ScreenshotFixtures {
         // Long clips only need to exist, not to look smooth.
         let isLong = seconds > 30
         let landscape = UserDefaults.standard.bool(forKey: "GLVideoLandscape")
+        let clean = UserDefaults.standard.bool(forKey: "GLVideoClean")
         var size = isLong ? CGSize(width: 270, height: 480) : CGSize(width: 540, height: 960)
         if landscape { size = CGSize(width: size.height, height: size.width) }
         let subject = portraitBefore
@@ -84,9 +85,12 @@ extension ScreenshotFixtures {
                     let center = size.width / 2 + size.width * 0.3 * sin(time * 0.6)
                     subject.draw(in: CGRect(x: center - width / 2, y: 0, width: width, height: height))
                 }
-                UIColor(red: 0.97, green: 0.76, blue: 0.85, alpha: 1).setFill()
-                UIBezierPath(ovalIn: CGRect(x: size.width / 2 - 40, y: size.height * 0.62 + sin(time * 2) * 80, width: 80, height: 80)).fill()
-                (String(format: "%.1f s", time) as NSString).draw(at: CGPoint(x: 40, y: size.height * 0.45), withAttributes: attributes)
+                // `-GLVideoClean YES` (marketing captures): no dot and no time stamp.
+                if !clean {
+                    UIColor(red: 0.97, green: 0.76, blue: 0.85, alpha: 1).setFill()
+                    UIBezierPath(ovalIn: CGRect(x: size.width / 2 - 40, y: size.height * 0.62 + sin(time * 2) * 80, width: 80, height: 80)).fill()
+                    (String(format: "%.1f s", time) as NSString).draw(at: CGPoint(x: 40, y: size.height * 0.45), withAttributes: attributes)
+                }
             }
             guard let image = frame.cgImage, let pool = adaptor.pixelBufferPool,
                   let buffer = pixelBuffer(from: image, pool: pool) else { throw CocoaError(.fileWriteUnknown) }

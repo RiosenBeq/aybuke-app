@@ -101,6 +101,8 @@ enum ScreenshotScene: String, CaseIterable {
     /// `-GLVideoSpeech YES` for a clip that talks, `-GLVideoLandscape YES` for a
     /// 16:9 one, and `-GLAutoEdit tiktok|reels|shorts` for Auto edit (more in
     /// `VideoEditorView.applyScreenshotOptions`).
+    /// `-GLVideoClean YES` (marketing) drops the clip's dot and time stamp and
+    /// makes `-GLCaptions fixture` speak the app's language.
     case video
     /// Retro Cam on the demo-art fixture (the simulator has no camera):
     /// `-GLEffect <effect>`, `-GLCameraMode booth`, `-GLCameraTimer 3|10`,
