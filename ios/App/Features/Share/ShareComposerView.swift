@@ -37,6 +37,9 @@ struct ShareComposerView: View {
     @State private var textColor: OverlayColor?
     @State private var editsText = false
     @State private var textNotice: String?
+    /// "Write it for me": options per slot, and the slot being written for.
+    @State private var cardIdeas: [ShareTextSlot: CardTextIdeas] = [:]
+    @State private var writingSlot: ShareTextSlot?
     /// "Which vibe?" on its way to a poll with friends.
     @State private var pollDraft: PollDraft?
     @FocusState private var focusedSlot: ShareTextSlot?
@@ -245,7 +248,11 @@ struct ShareComposerView: View {
         if !format.textSlots.isEmpty {
             if editsText {
                 ShareTextEditor(slots: format.textSlots, drafts: $drafts, font: $textFont, color: $textColor, notice: textNotice,
-                                focus: $focusedSlot) {
+                                focus: $focusedSlot, ideas: cardIdeas, writingSlot: writingSlot, usesAybik: app.usesCloudWriter,
+                                onWrite: writeCardText, onPick: { slot, line in
+                                    drafts[slot] = line
+                                    commitTexts()
+                                }) {
                     commitTexts()
                     focusedSlot = nil
                     withAnimation(.snappy) { editsText = false }
@@ -268,6 +275,20 @@ struct ShareComposerView: View {
                 .buttonStyle(.pressable)
                 .transition(.opacity)
             }
+        }
+    }
+
+    /// "Write it for me": Aybik's options for the slot when writing help is
+    /// on (it reads what she typed there), else the hand-written lines.
+    private func writeCardText(_ slot: ShareTextSlot) {
+        guard writingSlot == nil else { return }
+        writingSlot = slot
+        let typed = drafts[slot] ?? ""
+        let design = format.rawValue
+        Task {
+            let found = await app.cardTextIdeas(for: slot, typed: typed, format: design)
+            cardIdeas[slot] = CardTextIdeas(lines: found.lines, writtenBy: found.writtenBy)
+            writingSlot = nil
         }
     }
 
@@ -392,7 +413,10 @@ struct ShareComposerView: View {
         Haptics.tap()
         let covered = await faces.covering(payload)
         guard let pair = covered.pickPair else { return }
-        pollDraft = PollDraft(a: pair.a, b: pair.b, provenanceA: payload.provenance, provenanceB: payload.provenance)
+        // Two variations of one creation: the same few words for both.
+        let hint = payload.shareablePrompt ?? payload.operation.map { L10n.core($0.displayName) }
+        pollDraft = PollDraft(a: pair.a, b: pair.b, provenanceA: payload.provenance, provenanceB: payload.provenance,
+                              hintA: hint, hintB: hint)
     }
 
     private var captionCard: some View {

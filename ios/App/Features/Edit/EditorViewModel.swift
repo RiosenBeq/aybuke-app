@@ -185,7 +185,10 @@ final class EditorViewModel {
         }
         if activeTool == .hideFaces { startHidingFaces(preselect: true) }
         prepareProxy()
-        if activeTool == .enhance { prepareEnhance() }
+        if activeTool == .enhance {
+            prepareEnhance()
+            if let option = launch.enhanceOption { selectEnhance(option, haptic: false) }
+        }
         #if DEBUG
         // Screenshot QA: -GLOverlayMode text|stickers|doodle picks the panel.
         if ScreenshotScene.current == .textStickers {

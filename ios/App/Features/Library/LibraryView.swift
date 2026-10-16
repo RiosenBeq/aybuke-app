@@ -715,7 +715,7 @@ struct LibraryView: View {
     /// (`Provenance.collage(of:)` reads the marking from each file).
     private func makeCollage(_ items: [Creation]) {
         let entries = items.filter { !missingFiles.contains($0.imageFileName) }
-            .map { (name: $0.imageFileName, provenance: $0.provenance) }
+            .map { (name: $0.imageFileName, provenance: $0.provenance, title: $0.title) }
         guard (CollageModel.minPhotos...CollageModel.maxPhotos).contains(entries.count), !isWorking else { return }
         let isPro = app.purchases.isPro
         let maxPixel = CollageImaging.decodeSize(forCount: entries.count)
@@ -762,7 +762,8 @@ struct LibraryView: View {
             guard let a = images[0], let b = images[1] else { return couldNotOpen() }
             Haptics.tap()
             endSelecting()
-            app.pollDraft = PollDraft(a: a, b: b, provenanceA: entries[0].provenance, provenanceB: entries[1].provenance)
+            app.pollDraft = PollDraft(a: a, b: b, provenanceA: entries[0].provenance, provenanceB: entries[1].provenance,
+                                      hintA: entries[0].title, hintB: entries[1].title)
         }
     }
 

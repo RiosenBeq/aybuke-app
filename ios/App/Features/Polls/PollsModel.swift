@@ -14,9 +14,17 @@ struct PollDraft: Identifiable {
     let provenanceA: Provenance
     let provenanceB: Provenance
 
+    /// What each picture is, in a few words (its title in My Works: a look,
+    /// an effect or her prompt), for Aybik's question ideas. Never sent with
+    /// the pictures, and only when she asks for ideas.
+    var hintA: String? = nil
+    var hintB: String? = nil
+
     var aiLabels: PollAILabels {
         PollAILabels(a: provenanceA.carriesAIProvenance, b: provenanceB.carriesAIProvenance)
     }
+
+    var hints: (a: String?, b: String?) { (hintA, hintB) }
 }
 
 /// "Your polls", opened from My Works or a `glowlit://poll/<id>` link.
