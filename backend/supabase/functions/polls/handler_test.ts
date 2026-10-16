@@ -176,6 +176,7 @@ Deno.test("create: re-encoded pictures, checked by Claude, stored; 201 with the 
   assert.deepEqual([b.width, b.height], [720, 540], "B turned upright from its EXIF orientation");
   assert.equal(t.called("finish_poll_attempt").length, 0);
   assert.equal(stored.p_app_transaction_id, "txn-1");
+  assert.deepEqual(stored.p_ai_sides, [], "no ai_sides: neither picture is labelled");
 
   const log = t.logs.find((entry) => entry.outcome === "created")!;
   assert.ok(log && typeof log.ms === "number" && Array.isArray(log.kb));
@@ -234,6 +235,30 @@ Deno.test("create: 400 for a body outside the contract, before anything counts",
   );
   assert.equal(fine.status, 201, "80 characters as she counts them (emoji included)");
   assert.equal(t.called("admit_poll").length, 1);
+});
+
+Deno.test("create: ai_sides says which pictures were edited with AI; anything else is 400 before counting", async () => {
+  const cases: [unknown, string[]][] = [[["b"], ["b"]], [["b", "a"], ["a", "b"]], [[], []], [null, []]];
+  for (const [aiSides, stored] of cases) {
+    const t = fake();
+    const result = await send(
+      t.deps,
+      request("POST", "/polls", { session: true, body: createBody({ ai_sides: aiSides }) }),
+    );
+    assert.equal(result.status, 201, JSON.stringify(aiSides));
+    assert.deepEqual(t.called("create_poll")[0].args.p_ai_sides, stored, JSON.stringify(aiSides));
+    assert.equal(t.logs.find((entry) => entry.outcome === "created")?.ai, stored.length, "the log counts them");
+  }
+  const t = fake();
+  for (const aiSides of ["a", ["c"], ["A"], ["a", "a"], ["a", "b", "a"], [1], [null], {}, { a: true }, true]) {
+    const result = await send(
+      t.deps,
+      request("POST", "/polls", { session: true, body: createBody({ ai_sides: aiSides }) }),
+    );
+    assert.equal(result.status, 400, JSON.stringify(aiSides));
+    assert.equal(result.body.error.code, "bad_request");
+  }
+  assert.equal(t.calls.length, 0, "nothing admitted or counted");
 });
 
 Deno.test("create: 413 for a picture over 1.5 MB or a huge body, 422 image_invalid naming the side", async () => {
@@ -433,6 +458,7 @@ Deno.test("view: the poll with signed picture URLs; no counts before voting", as
   assert.equal(body.my_vote, null);
   assert.equal(body.is_creator, false);
   assert.deepEqual(body.image_sizes, { a: { width: 540, height: 720 }, b: { width: 720, height: 540 } });
+  assert.deepEqual(body.ai, { a: false, b: false }, "no labels unless the database says so");
   assert.deepEqual(t.called("poll_view")[0].args, { p_poll: POLL, p_voter: VOTER, p_user: null, p_ip: "203.0.113.7" });
 
   // URLs end on the next full hour but one (11:00 + 1 h = 12:00 UTC), and verify.
@@ -467,6 +493,31 @@ Deno.test("view: a voter code that voted, and the creator's session, see the cou
   const odd = await send(t.deps, request("GET", `/polls?id=${POLL}`, { headers: { "X-Poll-Voter": "bad code!" } }));
   assert.equal(odd.status, 200);
   assert.equal(t.called("poll_view")[2].args.p_voter, null, "a malformed code is ignored");
+});
+
+Deno.test("view: ai says which pictures to label 'Edited with AI'", async () => {
+  const view = (ai: unknown) =>
+    fake({
+      rpc: {
+        poll_view: {
+          ok: true,
+          poll_id: POLL,
+          question: null,
+          locale: "en",
+          created_at: "2026-10-16T09:00:00+00:00",
+          expires_at: "2026-10-17T09:00:00+00:00",
+          sizes: { a: { width: 540, height: 720 }, b: { width: 720, height: 540 } },
+          ai,
+          is_creator: false,
+          my_vote: null,
+          votes: null,
+        },
+      },
+    });
+  const labelled = await send(view({ a: false, b: true }).deps, request("GET", `/polls?id=${POLL}`));
+  assert.deepEqual(labelled.body.ai, { a: false, b: true });
+  const odd = await send(view({ a: "yes", b: 1 }).deps, request("GET", `/polls?id=${POLL}`));
+  assert.deepEqual(odd.body.ai, { a: false, b: false }, "only true labels a picture");
 });
 
 Deno.test("view: picture URLs never outlive the poll", () => {
@@ -595,8 +646,11 @@ Deno.test("report: a known reason; says whether the poll came down", async () =>
 
 // MARK: - Her polls
 
-Deno.test("mine: her polls with their links; needs her session", async () => {
-  const polls = [{ poll_id: POLL, question: null, status: "live", votes: { a: 0, b: 2 } }];
+Deno.test("mine: her polls with their links and labels; needs her session", async () => {
+  const polls = [
+    { poll_id: POLL, question: null, status: "live", ai: { a: true, b: false }, votes: { a: 0, b: 2 } },
+    { poll_id: "Zz9_Xy9-Kq2LmN0p", question: "?", status: "taken_down", votes: { a: 1, b: 0 } },
+  ];
   const t = fake({
     rpc: { my_polls: { polls, remaining_today: 1, daily_cap: 3 } },
     install: { status: "verified", appTransactionId: "txn-9", environment: "Production" },
@@ -604,7 +658,10 @@ Deno.test("mine: her polls with their links; needs her session", async () => {
   const result = await send(t.deps, request("GET", "/polls/mine", { session: true }));
   assert.equal(result.status, 200);
   assert.deepEqual(result.body, {
-    polls: [{ ...polls[0], share_url: `${SHARE_BASE}${POLL}` }],
+    polls: [
+      { ...polls[0], share_url: `${SHARE_BASE}${POLL}` },
+      { ...polls[1], ai: { a: false, b: false }, share_url: `${SHARE_BASE}Zz9_Xy9-Kq2LmN0p` },
+    ],
     remaining_today: 1,
     daily_cap: 3,
   });

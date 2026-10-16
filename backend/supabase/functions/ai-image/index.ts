@@ -21,11 +21,13 @@
 // Every job goes through admit_job() (20261022): blocks, cool-downs, the
 // prompt policy's strikes, circuit breakers, rate limits, free retries and
 // the charge, in one transaction. Before it, a Magic Edit's or a creation's
-// words go to Claude once, text only (polish.ts, with ANTHROPIC_API_KEY): a
-// request it turns down is refused like a keyword block (a strike only in the
-// keyword policy's own categories), and an allowed one goes on as Claude's
-// clear English instruction, the edit guard after it. A polish that can't run
-// leaves her words as they are. Providers: xAI (default when XAI_API_KEY is
+// words go to Claude once, text only (polish.ts, with ANTHROPIC_ASSIST_API_KEY
+// or ANTHROPIC_API_KEY), but only for a job admit_job() could take
+// (job_admissible(), read-only) and within admit_assist()'s limits: a request
+// it turns down is refused like a keyword block (a strike only in the keyword
+// policy's own categories), and an allowed one goes on as Claude's clear
+// English instruction, the edit guard after it. A polish that can't run leaves
+// her words as they are. Providers: xAI (default when XAI_API_KEY is
 // set) or fal (AI_PROVIDER=fal). fal jobs are queued at fal and advanced while
 // the app polls; xAI answers in one request, which runs in the background
 // after the 202. When xAI refuses a job for billing, AI pauses for everyone
@@ -50,7 +52,7 @@ import type { SupabaseClient } from "npm:@supabase/supabase-js@2.117.3";
 import { admissionError, type AdmitResult } from "../_shared/admission.ts";
 import { type EntitlementStatus, type InstallProof, resolveEntitlement, verifyInstall } from "../_shared/apple.ts";
 import { requireUser, serviceClient } from "../_shared/auth.ts";
-import { askForJson, textHelperConfig } from "../_shared/claude-text.ts";
+import { askForJson, describeTextHelper, textHelperConfig } from "../_shared/claude-text.ts";
 import * as fal from "../_shared/fal.ts";
 import { corsHeaders, errorResponse, HttpError, json } from "../_shared/http.ts";
 import {
@@ -129,8 +131,7 @@ interface JobRow {
 
 const safety = safetyConfig();
 console.info(`output check in force: ${outputCheck()}${safety ? ` + ${safety.provider}:${safety.model}` : ""}`);
-const textHelper = polishOn() ? textHelperConfig() : undefined;
-console.info(`prompt polish: ${textHelper ? `anthropic:${textHelper.model}` : "off"}`);
+console.info(`prompt polish: ${describeTextHelper(polishOn() ? textHelperConfig() : undefined)}`);
 
 Deno.serve(async (req) => {
   // The wall clock that ends the function (background work included) runs from here.
@@ -289,7 +290,7 @@ async function createJob(
     const first = evaluatePrompt(raw, op);
     verdict = first.allowed ? evaluatePrompt(prompt, op) : first;
     if (verdict.allowed && (op === "magic_edit" || op === "text_to_image")) {
-      const polished = await polish(db, userId, ip, op, prompt);
+      const polished = await polish(db, { userId, ip, op, prompt, install, numOutputs, retryOf });
       if (polished.kind === "polished") {
         prompt = polished.prompt;
       } else if (polished.kind === "blocked") {
@@ -402,25 +403,51 @@ function background(work: Promise<void>): void {
 
 // MARK: - Prompt polish (Claude, text only; polish.ts)
 
-/** On with ANTHROPIC_API_KEY, unless PROMPT_POLISH=off. */
+/** On with ANTHROPIC_ASSIST_API_KEY or ANTHROPIC_API_KEY, unless PROMPT_POLISH=off. */
 function polishOn(): boolean {
   return Deno.env.get("PROMPT_POLISH")?.trim().toLowerCase() !== "off";
 }
 
+interface PolishRequest {
+  userId: string;
+  ip: string | undefined;
+  op: PolishOperation;
+  prompt: string;
+  install: InstallProof;
+  numOutputs: number;
+  retryOf: string | null;
+}
+
 /** Claude's look at her words before admission; any failure leaves them as they are. Logs no text. */
-async function polish(
-  db: SupabaseClient,
-  userId: string,
-  ip: string | undefined,
-  op: PolishOperation,
-  prompt: string,
-): Promise<PolishOutcome> {
+async function polish(db: SupabaseClient, request: PolishRequest): Promise<PolishOutcome> {
+  const { userId, ip, op, prompt, install } = request;
   const config = polishOn() ? textHelperConfig() : undefined;
   if (!config) return { kind: "skipped", reason: "off" };
+  const installArgs = {
+    p_app_transaction_id: install.status === "verified" ? install.appTransactionId ?? null : null,
+    p_install_status: install.status,
+  };
   const started = Date.now();
   const outcome = await polishPrompt(prompt, op, {
+    admissible: async () => {
+      const { data, error } = await db.rpc("job_admissible", {
+        p_user: userId,
+        p_operation: op,
+        p_outputs: request.numOutputs,
+        p_retry_of: request.retryOf,
+        ...installArgs,
+        p_ip: ip ?? null,
+      });
+      if (error) console.error("job_admissible failed", error.message);
+      return !error && (data as { ok?: unknown } | null)?.ok === true;
+    },
     admit: async () => {
-      const { data, error } = await db.rpc("admit_assist", { p_user: userId, p_ip: ip ?? null, p_kind: "polish" });
+      const { data, error } = await db.rpc("admit_assist", {
+        p_user: userId,
+        p_ip: ip ?? null,
+        p_kind: "polish",
+        ...installArgs,
+      });
       if (error) console.error("admit_assist failed", error.message);
       return !error && (data as { ok?: unknown } | null)?.ok === true;
     },

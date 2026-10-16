@@ -160,7 +160,7 @@ Bir anketin bağlantısına sahip herkes, anket sayfasındaki bildirme bağlant�
 - Cinsel içerik veya risk altındaki bir çocukla ilgili bir bildirim anketi hemen yayından kaldırır.
 - Diğer nedenlerde anket, 3 farklı ağdan bildirim geldiğinde yayından kaldırılır.
 - Yayından kaldırılan bir anketi kimse açamaz; anketi yapan kişi, anketin kaldırıldığını uygulamada görür.
-- Kaldırılan bir anketi yalnızca 24 saati dolana kadar, inceleyebilmek için saklarız. Yanlışlıkla kaldırıldıysa geri açabilir ya da bu politikayı ihlal eden bir hesabı engellemek gibi 7. bölümdeki tedbirleri uygulayabiliriz. Ardından anket her anket gibi silinir.
+- Kaldırılan bir anketi, yapan kişi onu bu sırada silse de, yalnızca 24 saati dolana kadar, inceleyebilmek için saklarız. Yanlışlıkla kaldırıldıysa geri açabilir ya da bu politikayı ihlal eden bir hesabı engellemek gibi 7. bölümdeki tedbirleri uygulayabiliriz. Ardından anket her anket gibi silinir.
 
 Anket bildirim kayıtlarını [Gizlilik Politikası]({{LINK_PRIVACY}}) metninde açıklandığı üzere 30 gün saklarız. Bir anketi, örneğin yasa dışı bir şey gösteriyorsa, e-postayla da bildirebilirsiniz (aşağıda).
 

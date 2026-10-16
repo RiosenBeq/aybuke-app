@@ -5,8 +5,9 @@
 // quality (measured on the marketing samples), egress the free plan keeps.
 //
 // Nothing else from the source survives: no EXIF (location, camera, dates),
-// no XMP, no comments. Only the colour profile is copied, so a Display P3
-// photo keeps its colours.
+// no XMP, no comments. A colour profile is embedded only when the caller
+// passes one: picture.ts passes a known Display P3 or sRGB profile and drops
+// any other (KNOWN_PROFILES), so a Display P3 photo keeps its colours.
 
 // MARK: - Tables
 

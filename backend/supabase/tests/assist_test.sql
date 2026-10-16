@@ -3,7 +3,14 @@
 -- allows 60 an hour per user and 200 an hour per address for each kind, and
 -- keeps only salted hashes, which sweep_jobs() deletes after a day. Run with
 -- backend/scripts/test-db.sh. Each block raises (ASSERT) on failure.
+--
+-- Since 20261103000000 the three-argument form is a request without install
+-- proof, under everyone's ceilings and the shared unverified cap: these tests
+-- clear those counts (private.assist_ceilings) before each request, so they
+-- check the per-user and per-address limits alone. assist_ceilings_test.sql
+-- checks the ceilings, the install buckets and the safety check's quiet time.
 \set ON_ERROR_STOP on
+update private.safety_breaker set last_error_at = null;
 
 do $$
 begin
@@ -26,6 +33,7 @@ begin
   perform public.ops_resume_ai();
   insert into auth.users (id) values (u);
   for i in 1..60 loop
+    delete from private.assist_ceilings;
     r := public.admit_assist(u, '203.0.113.9', 'assist');
     assert r = '{"ok": true}'::jsonb, format('request %s: %s', i, r);
   end loop;
@@ -36,6 +44,7 @@ begin
   r := public.admit_assist(u, '203.0.113.9', 'assist');
   assert r->>'code' = 'rate_limited', 'a refused request still counts';
 
+  delete from private.assist_ceilings;
   r := public.admit_assist(u, '203.0.113.9', 'polish');
   assert (r->>'ok')::boolean, format('the polish counts on its own: %s', r);
   r := public.admit_assist(u, null);
@@ -53,10 +62,12 @@ begin
   -- Last hour's requests don't count now.
   update private.assist_usage set hour = hour - interval '1 hour'
    where bucket = private.keyed_hash('assist_user', u::text);
+  delete from private.assist_ceilings;
   r := public.admit_assist(u, '203.0.113.9', 'assist');
   assert (r->>'ok')::boolean, format('a new hour: %s', r);
 
   delete from private.assist_usage;
+  delete from private.assist_ceilings;
   delete from auth.users where id = u;
 end $$;
 
@@ -70,12 +81,14 @@ begin
   insert into auth.users (id) select unnest(v_users);
   for k in 1..4 loop
     for i in 1..50 loop
+      delete from private.assist_ceilings;
       r := public.admit_assist(v_users[k], '198.51.100.7', 'assist');
       assert (r->>'ok')::boolean, format('user %s, request %s: %s', k, i, r);
     end loop;
   end loop;
   r := public.admit_assist(v_users[5], '198.51.100.7', 'assist');
   assert r->>'code' = 'rate_limited' and (r->>'status')::int = 429, format('201st from one address: %s', r);
+  delete from private.assist_ceilings;
   r := public.admit_assist(v_users[5], '198.51.100.8', 'assist');
   assert (r->>'ok')::boolean, format('another address: %s', r);
   r := public.admit_assist(v_users[5], '198.51.100.7', 'polish');
@@ -83,6 +96,7 @@ begin
 
   u := v_users[1];
   for i in 1..10 loop
+    delete from private.assist_ceilings;
     r := public.admit_assist(u, '', 'assist');
     assert (r->>'ok')::boolean, format('no address: %s', r);
   end loop;
@@ -90,6 +104,7 @@ begin
     'an empty address is never counted';
 
   delete from private.assist_usage;
+  delete from private.assist_ceilings;
   delete from auth.users where id = any (v_users);
 end $$;
 
@@ -143,6 +158,7 @@ begin
   delete from private.cooldowns where user_id = u;
   delete from private.blocks where user_id = u;
   delete from private.assist_usage;
+  delete from private.assist_ceilings;
   delete from auth.users where id = u;
 end $$;
 

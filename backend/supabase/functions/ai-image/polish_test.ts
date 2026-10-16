@@ -25,10 +25,20 @@ import {
 const edit = (words: string, onlyMe = false) =>
   `${words}${words.endsWith(".") ? "" : "."}${onlyMe ? ` ${ONLY_MAIN_PERSON}` : ""}${EDIT_GUARD}`;
 
-function stub(answer: JsonAnswer | (() => JsonAnswer), admitted: boolean | "throws" = true) {
+function stub(
+  answer: JsonAnswer | (() => JsonAnswer),
+  admitted: boolean | "throws" = true,
+  admissible: boolean | "throws" = true,
+) {
   const asked: JsonTask[] = [];
   let admissions = 0;
+  let looks = 0;
   const deps: PolishDeps = {
+    admissible: () => {
+      looks++;
+      if (admissible === "throws") return Promise.reject(new Error("db down"));
+      return Promise.resolve(admissible);
+    },
     admit: () => {
       admissions++;
       if (admitted === "throws") return Promise.reject(new Error("db down"));
@@ -39,7 +49,7 @@ function stub(answer: JsonAnswer | (() => JsonAnswer), admitted: boolean | "thro
       return Promise.resolve(typeof answer === "function" ? answer() : answer);
     },
   };
-  return { deps, asked, admissions: () => admissions };
+  return { deps, asked, admissions: () => admissions, looks: () => looks };
 }
 
 const verdict = (category: string, instruction = "") => ({ ok: true as const, value: { category, instruction } });
@@ -194,6 +204,33 @@ Deno.test("limited, resting or no database: Claude isn't asked; makeup and empty
   assert.equal(empty.asked.length, 0);
 });
 
+Deno.test("a job admit_job() couldn't take costs no Claude call and no place under the ceilings", async () => {
+  // No credits, paused, blocked, resting, a breaker or a rate limit: job_admissible() says no first.
+  const refused = stub(verdict("none", "never"), true, false);
+  assert.deepEqual(await polishPrompt(edit("pink hair"), "magic_edit", refused.deps), {
+    kind: "skipped",
+    reason: "not admissible",
+  });
+  assert.equal(refused.looks(), 1);
+  assert.equal(refused.admissions(), 0, "admit_assist isn't called, so nothing is counted");
+  assert.equal(refused.asked.length, 0, "Claude isn't asked");
+
+  const noDatabase = stub(verdict("none", "never"), true, "throws");
+  assert.deepEqual(await polishPrompt("a cat", "text_to_image", noDatabase.deps), {
+    kind: "skipped",
+    reason: "admission failed",
+  });
+  assert.equal(noDatabase.admissions() + noDatabase.asked.length, 0);
+
+  // Admissible: then the limits, then Claude, in that order.
+  const fine = stub(verdict("none", "A cat in a café"));
+  assert.equal((await polishPrompt("a cat", "text_to_image", fine.deps)).kind, "polished");
+  assert.deepEqual([fine.looks(), fine.admissions(), fine.asked.length], [1, 1, 1]);
+  const makeup = stub(verdict("none", "never"));
+  await polishPrompt(edit(`Add makeup. ${MAKEUP_SKIN_GUARD}`), "magic_edit", makeup.deps);
+  assert.equal(makeup.looks(), 0, "a makeup request isn't even looked at");
+});
+
 Deno.test("the log line names the outcome, never the text", async () => {
   const polished = await polishPrompt(
     "a secret garden",
@@ -212,6 +249,7 @@ Deno.test("through the SDK: text only, thinking off, low effort, the verdict sch
   const instruction = "Replace the background with a pink sunset sky over the sea. Keep her face and body the same";
   const api = mockClaude(() => claudeAnswer({ category: "none", instruction }));
   const live = (fetcher: typeof fetch, deadlineMs = 2_000): PolishDeps => ({
+    admissible: () => Promise.resolve(true),
     admit: () => Promise.resolve(true),
     ask: (task) => askForJson({ apiKey: "test-key", model: "claude-haiku-5-5" }, task, { deadlineMs, fetcher }),
   });

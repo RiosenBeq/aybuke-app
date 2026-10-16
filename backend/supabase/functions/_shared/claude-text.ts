@@ -6,23 +6,40 @@
 // or any image. Nothing here logs or returns her text; a failure is a short
 // detail ("timeout", "HTTP 529 overloaded_error", "refused"…).
 //
-// On whenever ANTHROPIC_API_KEY is set (the key the safety check uses);
+// On whenever ANTHROPIC_ASSIST_API_KEY or ANTHROPIC_API_KEY is set. The first
+// is optional: a key from a Claude Console workspace of its own, with its own
+// rate and spend limits, so writing help can never use up what the safety
+// checks need (they keep ANTHROPIC_API_KEY); without it, text help shares the
+// safety check's key, and admit_assist()'s ceilings keep it small.
 // ANTHROPIC_ASSIST_MODEL picks another model. Like the safety check, the
 // model must take thinking turned off at low effort (Claude Opus 5.5 and
 // Sonnet 5.5 don't, so every call would fail and the callers fall back).
 import Anthropic from "npm:@anthropic-ai/sdk@0.131.0";
 import { anthropicClient, anthropicFailure, DEFAULT_ANTHROPIC_MODEL, type SafetyEnv } from "./safety.ts";
 
+/** Where text help's key comes from: its own (optional), else the safety check's. */
+export const TEXT_HELPER_SECRETS = ["ANTHROPIC_ASSIST_API_KEY", "ANTHROPIC_API_KEY"] as const;
+export type TextHelperSecret = typeof TEXT_HELPER_SECRETS[number];
+
 export interface TextHelperConfig {
   apiKey: string;
   model: string;
+  /** The secret the key came from, for the start-up log (never the key). */
+  secret?: TextHelperSecret;
 }
 
-/** Claude's text help: on with ANTHROPIC_API_KEY, else off (undefined). */
+/** Claude's text help: on with ANTHROPIC_ASSIST_API_KEY or ANTHROPIC_API_KEY (in that order), else off. */
 export function textHelperConfig(env: SafetyEnv = Deno.env): TextHelperConfig | undefined {
-  const apiKey = env.get("ANTHROPIC_API_KEY")?.trim();
-  if (!apiKey) return undefined;
-  return { apiKey, model: env.get("ANTHROPIC_ASSIST_MODEL")?.trim() || DEFAULT_ANTHROPIC_MODEL };
+  for (const secret of TEXT_HELPER_SECRETS) {
+    const apiKey = env.get(secret)?.trim();
+    if (apiKey) return { apiKey, model: env.get("ANTHROPIC_ASSIST_MODEL")?.trim() || DEFAULT_ANTHROPIC_MODEL, secret };
+  }
+  return undefined;
+}
+
+/** "anthropic:<model> (<secret>)" or "off", for a start-up log line. */
+export function describeTextHelper(config: TextHelperConfig | undefined): string {
+  return config ? `anthropic:${config.model} (${config.secret ?? "ANTHROPIC_API_KEY"})` : "off";
 }
 
 /** One question with a JSON answer: the system prompt, her part as plain text, the answer's schema. */

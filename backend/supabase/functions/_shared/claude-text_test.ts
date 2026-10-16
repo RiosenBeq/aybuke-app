@@ -7,6 +7,7 @@ import { claudeAnswer, claudeError, hangingFetch, mockClaude, withoutEnv } from 
 import {
   askForJson,
   buildTextRequest,
+  describeTextHelper,
   type JsonTask,
   readJsonAnswer,
   type TextHelperConfig,
@@ -27,13 +28,35 @@ const ask = (fn: typeof fetch, deadlineMs = 2_000, maxRetries?: number) =>
   withoutEnv(() => askForJson(CONFIG, TASK, { deadlineMs, maxRetries, fetcher: fn }));
 
 Deno.test("text help is on with ANTHROPIC_API_KEY; ANTHROPIC_ASSIST_MODEL picks the model", () => {
-  assert.deepEqual(textHelperConfig(env({ ANTHROPIC_API_KEY: "key" })), { apiKey: "key", model: "claude-haiku-5-5" });
+  assert.deepEqual(textHelperConfig(env({ ANTHROPIC_API_KEY: "key" })), {
+    apiKey: "key",
+    model: "claude-haiku-5-5",
+    secret: "ANTHROPIC_API_KEY",
+  });
   assert.deepEqual(
     textHelperConfig(env({ ANTHROPIC_API_KEY: " key ", ANTHROPIC_ASSIST_MODEL: " claude-haiku-4-5 " })),
-    { apiKey: "key", model: "claude-haiku-4-5" },
+    { apiKey: "key", model: "claude-haiku-4-5", secret: "ANTHROPIC_API_KEY" },
   );
   assert.equal(textHelperConfig(env({ ANTHROPIC_API_KEY: " " })), undefined);
   assert.equal(textHelperConfig(env({ ANTHROPIC_ASSIST_MODEL: "claude-haiku-5-5" })), undefined);
+});
+
+Deno.test("ANTHROPIC_ASSIST_API_KEY, when set, is text help's own key; the safety check's key is the fallback", () => {
+  assert.deepEqual(textHelperConfig(env({ ANTHROPIC_API_KEY: "safety", ANTHROPIC_ASSIST_API_KEY: " writing " })), {
+    apiKey: "writing",
+    model: "claude-haiku-5-5",
+    secret: "ANTHROPIC_ASSIST_API_KEY",
+  });
+  assert.deepEqual(textHelperConfig(env({ ANTHROPIC_ASSIST_API_KEY: "writing" }))?.apiKey, "writing", "alone too");
+  assert.equal(
+    textHelperConfig(env({ ANTHROPIC_API_KEY: "safety", ANTHROPIC_ASSIST_API_KEY: "  " }))?.apiKey,
+    "safety",
+    "an empty one falls back",
+  );
+  const config = textHelperConfig(env({ ANTHROPIC_API_KEY: "safety", ANTHROPIC_ASSIST_API_KEY: "writing" }));
+  assert.equal(describeTextHelper(config), "anthropic:claude-haiku-5-5 (ANTHROPIC_ASSIST_API_KEY)");
+  assert.ok(!describeTextHelper(config).includes("writing"), "the log names the secret, never the key");
+  assert.equal(describeTextHelper(undefined), "off");
 });
 
 Deno.test("the request: text only, thinking off, low effort, the JSON schema, no sampling settings", () => {

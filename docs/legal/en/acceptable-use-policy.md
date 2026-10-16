@@ -162,7 +162,7 @@ Anyone who has a poll's link can report the poll with the **Report** link on its
 - A report about sexual content or a child at risk takes the poll down at once.
 - For any other reason, the poll is taken down after reports from 3 different networks.
 - Nobody can open a poll that's been taken down, and the person who made it sees in the app that it was taken down.
-- We keep a taken-down poll only until its 24 hours end, so we can review it. We can restore it if it was taken down by mistake, or take the measures in section 7, such as blocking an account that breaks this policy. Then it's deleted like every poll.
+- We keep a taken-down poll only until its 24 hours end, so we can review it, even if its maker deletes it in the meantime. We can restore it if it was taken down by mistake, or take the measures in section 7, such as blocking an account that breaks this policy. Then it's deleted like every poll.
 
 We keep poll report records for 30 days, as described in our [Privacy Policy](privacy-policy.md). You can also report a poll by email (below), for example if it shows something illegal.
 

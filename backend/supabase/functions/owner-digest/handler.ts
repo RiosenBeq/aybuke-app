@@ -124,12 +124,16 @@ export function revenueCatSection(pending: unknown, run?: ProcessResult): MailSe
 /**
  * Yesterday's "Which vibe?" polls: counts only (no poll ids, questions or
  * pictures). Open reports point at ops_poll_reports(), where a reported poll
- * can be reviewed until its 24 hours end.
+ * can be reviewed until its 24 hours end. The caps are poll_policy()'s and
+ * poll_backstops()' (20261103000001): attempts without a verified download
+ * share a small one, and picture loads count once per picture and address
+ * against the cap and every load against the egress backstop.
  */
 export function pollsSection(polls: unknown): MailSection {
   const n = (key: string) => count(polls, key);
   const rows: MailSection["rows"] = [
     capRow("Polls made vs cap", n("created"), n("polls_cap")),
+    capRow("Attempts without a verified download vs cap", n("unverified_attempts"), n("unverified_cap")),
     {
       label: "Blocked: question · picture · unreadable",
       value: joined(" · ", n("blocked_question"), n("blocked_image"), n("invalid_image")),
@@ -137,7 +141,8 @@ export function pollsSection(polls: unknown): MailSection {
     { label: "Check couldn't run (given back)", value: n("unavailable") },
     { label: "Votes", value: n("votes") },
     { label: "Reports · taken down", value: joined(" · ", n("reports"), n("takedowns")) },
-    capRow("Picture loads vs cap", n("image_loads"), n("image_loads_cap")),
+    capRow("Picture loads (once per picture and address) vs cap", n("image_loads_unique"), n("image_loads_cap")),
+    capRow("Picture loads (all) vs backstop", n("image_loads"), n("image_loads_raw_cap")),
     { label: "Picture egress (MB, to browsers)", value: n("image_mb")?.toFixed(1) },
     { label: "Live now · taken down now", value: joined(" · ", n("live_now"), n("taken_down_now")) },
     { label: "Open reports", value: n("reports_open") },

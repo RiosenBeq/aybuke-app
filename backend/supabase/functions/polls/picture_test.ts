@@ -1,6 +1,7 @@
 // deno test polls/
 // A poll picture's way: what the contract accepts before admission, then
-// decoding, orientation, flattening, shrinking and re-encoding without EXIF.
+// decoding, orientation, flattening, shrinking and re-encoding without EXIF,
+// keeping only a known Display P3 or sRGB colour profile.
 import assert from "node:assert/strict";
 import jpeg from "npm:jpeg-js@0.4.4";
 import { exifOrientation, iccProfile } from "./jpeg.ts";
@@ -8,6 +9,8 @@ import {
   base64,
   fittedSize,
   flattenOnWhite,
+  KNOWN_PROFILES,
+  knownProfile,
   MAX_PICTURE_BYTES,
   orient,
   preparePicture,
@@ -17,6 +20,7 @@ import {
 } from "./picture.ts";
 import { encodeJpeg } from "./jpeg.ts";
 import { jpegUri, makeJpeg, makePng, pixels, pngUri, withExif, withFrameSize } from "./test_images.ts";
+import { DISPLAY_P3_PROFILE, SRGB_PROFILE } from "./test_profiles.ts";
 
 const decode = (bytes: Uint8Array) => jpeg.decode(bytes, { useTArray: true, formatAsRGBA: true });
 
@@ -124,14 +128,44 @@ Deno.test("turns an EXIF-rotated photo upright and drops every bit of EXIF", asy
   assert.ok(!text.includes("Exif") && !text.includes("GPS"), "no EXIF segment, no tags");
 });
 
-Deno.test("keeps the colour profile of a JPEG and of a PNG", async () => {
-  const icc = Uint8Array.from({ length: 536 }, (_, i) => (i * 7) % 256);
-  const fromJpeg = await prepared(jpegUri(encodeJpeg(pixels(16, 16, () => [1, 2, 3]), 16, 16, { icc })));
-  assert.deepEqual(iccProfile(fromJpeg.jpeg), icc);
-  const fromPng = await prepared(
+const withProfile = async (icc: Uint8Array) => ({
+  jpeg: await prepared(jpegUri(encodeJpeg(pixels(16, 16, () => [1, 2, 3]), 16, 16, { icc }))),
+  png: await prepared(
     pngUri(await makePng({ width: 16, height: 16, colorType: 2, depth: 8, sample: () => [9, 9, 9], icc })),
-  );
-  assert.deepEqual(iccProfile(fromPng.jpeg), icc);
+  ),
+});
+
+Deno.test("keeps a Display P3 or sRGB profile byte for byte, from a JPEG and from a PNG", async () => {
+  for (const [name, icc] of [["Display P3", DISPLAY_P3_PROFILE], ["sRGB IEC61966-2.1", SRGB_PROFILE]] as const) {
+    assert.equal(await knownProfile(icc), icc, name);
+    const out = await withProfile(icc);
+    assert.deepEqual(iccProfile(out.jpeg.jpeg), icc, `${name} from a JPEG`);
+    assert.deepEqual(iccProfile(out.png.jpeg), icc, `${name} from a PNG`);
+  }
+  assert.deepEqual([...KNOWN_PROFILES.values()].sort(), ["Display P3", "sRGB IEC61966-2.1"]);
+});
+
+Deno.test("drops any other colour profile: the picture is stored without one, read as sRGB", async () => {
+  // A blob of the size of Display P3, a P3 profile with one byte changed (a
+  // crafted curve, say), and one cut short: none of them is a known profile.
+  const tampered = DISPLAY_P3_PROFILE.slice();
+  tampered[300] ^= 0x01;
+  const blobs = [
+    Uint8Array.from({ length: 536 }, (_, i) => (i * 7) % 256),
+    tampered,
+    SRGB_PROFILE.slice(0, SRGB_PROFILE.length - 1),
+  ];
+  for (const icc of blobs) {
+    assert.equal(await knownProfile(icc), undefined);
+    const out = await withProfile(icc);
+    assert.equal(iccProfile(out.jpeg.jpeg), undefined, "from a JPEG");
+    assert.equal(iccProfile(out.png.jpeg), undefined, "from a PNG");
+    const text = new TextDecoder("latin1").decode(out.jpeg.jpeg);
+    assert.ok(!text.includes("ICC_PROFILE"), "no APP2 profile segment at all");
+    assert.ok(near(decode(out.jpeg.jpeg).data, [1, 2, 3], 3), "the pixels themselves are untouched");
+  }
+  assert.equal(await knownProfile(undefined), undefined);
+  assert.equal(await knownProfile(new Uint8Array(0)), undefined);
 });
 
 Deno.test("a transparent PNG lands on white, and its text chunks are gone", async () => {

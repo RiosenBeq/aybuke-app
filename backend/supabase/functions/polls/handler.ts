@@ -6,8 +6,9 @@
 // Base /functions/v1/polls, JWT verification on at the gateway: the app sends
 // her session, the poll page (aybuke.org/p/<id>) the public anon key.
 //
-//   POST   /polls                 her session   create → 201 { poll_id, share_url, expires_at, remaining_today }
-//   GET    /polls?id=             anyone        the poll (+ X-Poll-Voter) → { …, images, votes once voted }
+//   POST   /polls                 her session   create (+ ai_sides) → 201 { poll_id, share_url, expires_at,
+//                                                remaining_today }
+//   GET    /polls?id=             anyone        the poll (+ X-Poll-Voter) → { …, images, ai, votes once voted }
 //   GET    /polls/image?…&sig=    anyone        one picture (a signed URL from GET /polls) → image/jpeg
 //   POST   /polls/vote            anyone        { poll_id, choice, voter } → { votes, my_vote }
 //   POST   /polls/report          anyone        { poll_id, reason } → { reported, taken_down }
@@ -175,12 +176,37 @@ async function readJson(req: Request, maxBytes: number, tooLarge: () => HttpErro
   return body as Record<string, unknown>;
 }
 
+export type Side = "a" | "b";
+
 export interface CreateRequest {
   question: string | null;
   /** The question as sent, for the policy (it also checks what sanitizing removed). */
   rawQuestion: string;
   pictures: [Screened, Screened];
   locale: string;
+  /** The pictures the app says were edited with AI (their Provenance): the page labels them. */
+  aiSides: Side[];
+}
+
+/**
+ * ai_sides as the contract has it: absent or null for none, else an array of
+ * "a" and "b", each at most once (in any order). Anything else is 400.
+ */
+export function parseAiSides(value: unknown): Side[] {
+  if (value === undefined || value === null) return [];
+  if (!Array.isArray(value) || value.length > 2) throw fail(400, "bad_request");
+  const sides: Side[] = [];
+  for (const side of value) {
+    if ((side !== "a" && side !== "b") || sides.includes(side)) throw fail(400, "bad_request");
+    sides.push(side);
+  }
+  return sides.sort();
+}
+
+/** "ai" as the routes answer it: a boolean per side, false unless the database says true. */
+export function aiLabels(value: unknown): Record<Side, boolean> {
+  const labels = typeof value === "object" && value !== null ? value as Record<string, unknown> : {};
+  return { a: labels.a === true, b: labels.b === true };
 }
 
 /** Invisible characters that can hide or reorder text; ZWJ and variation selectors stay (emoji need them). */
@@ -207,6 +233,7 @@ export function cleanQuestion(raw: string): string {
 export function parseCreate(body: Record<string, unknown>): CreateRequest {
   const { images, question, locale } = body;
   if (!Array.isArray(images) || images.length !== 2) throw fail(400, "bad_request");
+  const aiSides = parseAiSides(body.ai_sides);
   if (question !== undefined && question !== null && typeof question !== "string") throw fail(400, "bad_request");
   const rawQuestion = typeof question === "string" ? question : "";
   const cleaned = cleanQuestion(rawQuestion);
@@ -221,7 +248,7 @@ export function parseCreate(body: Record<string, unknown>): CreateRequest {
     }
     return screened;
   }) as [Screened, Screened];
-  return { question: cleaned || null, rawQuestion, pictures, locale: normalizeLocale(locale) };
+  return { question: cleaned || null, rawQuestion, pictures, locale: normalizeLocale(locale), aiSides };
 }
 
 /**
@@ -334,6 +361,7 @@ async function create(req: Request, deps: PollsDeps): Promise<Response> {
     p_a_height: pictures[0].height,
     p_b_width: pictures[1].width,
     p_b_height: pictures[1].height,
+    p_ai_sides: request.aiSides,
     p_app_transaction_id: attempt.p_app_transaction_id,
     p_install_status: attempt.p_install_status,
   });
@@ -349,6 +377,7 @@ async function create(req: Request, deps: PollsDeps): Promise<Response> {
     kb: pictures.map((p) => Math.round(p.jpeg.length / 1024)),
     question: request.question !== null,
     locale: request.locale,
+    ai: request.aiSides.length,
   });
   return json({
     poll_id: created.poll_id,
@@ -384,6 +413,7 @@ async function view(req: Request, deps: PollsDeps, url: URL): Promise<Response> 
         b: await pictureUrl(key, deps.publicBase, id, "b", expires),
       },
       image_sizes: poll.sizes,
+      ai: aiLabels(poll.ai),
       urls_expire_at: new Date(expires * 1000).toISOString(),
       is_creator: poll.is_creator === true,
       my_vote: poll.my_vote ?? null,
@@ -459,7 +489,7 @@ async function mine(req: Request, deps: PollsDeps): Promise<Response> {
   const polls = Array.isArray(result.polls) ? result.polls as Record<string, unknown>[] : [];
   return json(
     {
-      polls: polls.map((poll) => ({ ...poll, share_url: SHARE_BASE + String(poll.poll_id) })),
+      polls: polls.map((poll) => ({ ...poll, ai: aiLabels(poll.ai), share_url: SHARE_BASE + String(poll.poll_id) })),
       remaining_today: result.remaining_today,
       daily_cap: result.daily_cap,
     },

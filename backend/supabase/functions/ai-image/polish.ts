@@ -13,10 +13,13 @@
 // admit_job as a blocked category, exactly as a keyword block. Any other
 // category is refused before admission, without a strike or a charge.
 //
-// Polish never blocks a job by failing: when the user is limited or resting
-// (admit_assist(), 'polish'), Claude errors, times out (6 s), refuses or
-// answers outside the schema, or the instruction is too long or fails the
-// keyword policy, the job goes on with her own words. The keyword policy, the
+// Polish never blocks a job by failing: when admit_job() couldn't take the job
+// anyway (job_admissible(): paused, blocked or resting, a breaker or rate
+// limit, nothing to pay with; then Claude isn't asked at all), when the user
+// is limited or Claude is left to the safety checks (admit_assist(),
+// 'polish'), when Claude errors, times out (6 s), refuses or answers outside
+// the schema, or the instruction is too long or fails the keyword policy, the
+// job goes on with her own words. The keyword policy, the
 // edit guard (appended after the polished text) and the fail-closed photo and
 // result checks apply either way. Catalog-written requests stay as they are:
 // templates never come here, and a makeup request (MakeupStudio.skinGuard)
@@ -63,7 +66,10 @@ export type PolishOutcome =
   | { kind: "skipped"; reason: string };
 
 export interface PolishDeps {
-  /** admit_assist(…, 'polish'): false when she's over the hourly limit, AI is paused or she's resting or blocked. */
+  /** job_admissible() (read-only): false when admit_job() would refuse this job now, so Claude isn't asked. */
+  admissible(): Promise<boolean>;
+  /** admit_assist(…, 'polish'): false when she's over a limit or a ceiling, AI is paused, a safety check just
+   * failed, or she's resting or blocked. */
   admit(): Promise<boolean>;
   ask(task: JsonTask): Promise<JsonAnswer>;
 }
@@ -166,6 +172,8 @@ export async function polishPrompt(
   if (parts.makeup) return { kind: "skipped", reason: "makeup" };
   if (!parts.words) return { kind: "skipped", reason: "empty" };
   try {
+    // A job admit_job() would refuse anyway costs no Claude call (and no place under the ceilings).
+    if (!await deps.admissible()) return { kind: "skipped", reason: "not admissible" };
     if (!await deps.admit()) return { kind: "skipped", reason: "limited" };
   } catch {
     return { kind: "skipped", reason: "admission failed" };

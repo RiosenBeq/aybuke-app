@@ -1,7 +1,10 @@
 // A poll picture, from the app's data URI to what friends see: a JPEG of at
 // most 720 px on the long side, upright, on white where it was transparent,
-// with its colour profile and nothing else (no EXIF, so no location, camera
-// or dates). Claude checks this version, the only one that is stored.
+// with nothing else (no EXIF, so no location, camera or dates) but a standard
+// colour profile when it had one: Display P3 or sRGB IEC61966-2.1, recognised
+// by the SHA-256 of their exact bytes (KNOWN_PROFILES). Any other profile is
+// dropped: a crafted one could make browsers show colours, or a picture,
+// Claude never saw. Claude checks this version, the only one that is stored.
 //
 //   screenPicture()   cheap, before admission: the data URI, the real type
 //                     (JPEG or PNG), at most 1.5 MB, at most 4,096 px a side
@@ -24,6 +27,23 @@ export const MAX_PICTURE_PIXELS = 6_000_000;
 export const OUTPUT_SIDE = 720;
 export const OUTPUT_QUALITY = 78;
 const MAX_ICC_BYTES = 65_536;
+
+/**
+ * The colour profiles a picture may keep, by the SHA-256 (hex) of their bytes,
+ * exactly as Apple ships them (polls/test_profiles.ts has the bytes).
+ */
+export const KNOWN_PROFILES: ReadonlyMap<string, string> = new Map([
+  ["0ff6958f98684c61f6bbdce1368ddeaf3873baf84545baba482e920d92a914c0", "Display P3"],
+  ["2b3aa1645779a9e634744faf9b01e9102b0c9b88fd6deced7934df86b949af7e", "sRGB IEC61966-2.1"],
+]);
+
+/** The profile when it's one of KNOWN_PROFILES, byte for byte; else undefined (the picture is read as sRGB). */
+export async function knownProfile(icc: Uint8Array | undefined): Promise<Uint8Array | undefined> {
+  if (!icc || icc.length === 0 || icc.length > MAX_ICC_BYTES) return undefined;
+  const digest = new Uint8Array(await crypto.subtle.digest("SHA-256", new Uint8Array(icc)));
+  const hex = Array.from(digest, (byte) => byte.toString(16).padStart(2, "0")).join("");
+  return KNOWN_PROFILES.has(hex) ? icc : undefined;
+}
 
 export interface Picture {
   jpeg: Uint8Array;
@@ -230,7 +250,7 @@ export async function preparePicture(screened: Screened): Promise<{ ok: true; pi
       const decoded = await decodePng(bytes, { maxSide: MAX_PICTURE_SIDE, maxPixels: MAX_PICTURE_PIXELS });
       if (decoded.hasAlpha) flattenOnWhite(decoded.data);
       pixels = decoded;
-      icc = decoded.icc && decoded.icc.length <= MAX_ICC_BYTES ? decoded.icc : undefined;
+      icc = decoded.icc;
     }
   } catch (error) {
     const reason = error instanceof PngError || error instanceof Error ? error.message : "unreadable";
@@ -241,7 +261,8 @@ export async function preparePicture(screened: Screened): Promise<{ ok: true; pi
   }
   const target = fittedSize(pixels.width, pixels.height);
   const upright = orient(shrink(pixels, target.width, target.height), orientation);
-  const encoded = encodeJpeg(upright.data, upright.width, upright.height, { quality: OUTPUT_QUALITY, icc });
+  const profile = await knownProfile(icc);
+  const encoded = encodeJpeg(upright.data, upright.width, upright.height, { quality: OUTPUT_QUALITY, icc: profile });
   return { ok: true, picture: { jpeg: encoded, width: upright.width, height: upright.height } };
 }
 

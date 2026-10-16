@@ -72,15 +72,15 @@ export interface AssistRequest {
   context: AssistContext;
 }
 
-/** What admit_assist() answers (20261031000000). */
+/** What admit_assist() answers (20261031000000, 20261103000000). */
 export type Admission =
   | { ok: true }
   | { ok: false; code: string; status: number; retry_after?: number };
 
 export interface AssistDeps {
-  /** Claude's text help is on (ANTHROPIC_API_KEY is set). */
+  /** Claude's text help is on (ANTHROPIC_ASSIST_API_KEY or ANTHROPIC_API_KEY is set). */
   enabled: boolean;
-  /** The limits and switches for this user and address; null when the database couldn't answer. */
+  /** The limits, ceilings and switches for this user, install and address; null when the database couldn't answer. */
   admit(): Promise<Admission | null>;
   ask(task: JsonTask): Promise<JsonAnswer>;
   now(): Date;

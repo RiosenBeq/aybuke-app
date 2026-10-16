@@ -18,20 +18,30 @@
 // Errors ({ "error": { "code", "message", … } }):
 //   400 bad_request         a body that doesn't follow the contract
 //   422 content_blocked     her words failed the prompt policy; `category` names it. No strike.
-//   429 rate_limited        60 an hour per user, 200 an hour per network address (admit_assist(),
-//                           20261031000000); `retry_after` in seconds
-//   503 assist_unavailable  ANTHROPIC_API_KEY unset, AI paused by the owner, a block or cool-down on her
-//                           account, Claude failed or took over 8 s, or nothing it wrote passed the checks.
+//   429 rate_limited        60 an hour per user, per verified App Store install and 200 per network address
+//                           (admit_assist(), assist_policy(), 20261103000000); `retry_after` in seconds
+//   503 assist_unavailable  no Anthropic key, AI paused, a result safety check failed in the last 5 minutes
+//                           (Claude is left to the safety checks), a block or cool-down on her account or
+//                           install, a ceiling reached (everyone: 20 a minute, 200 an hour, 1,000 a day;
+//                           without a verified install: 30 an hour shared), Claude failed or took over 8 s,
+//                           or nothing it wrote passed the checks. `retry_after` when the wait is known.
 //                           The app falls back to its on-device writer and its own lists.
+//
+// Headers: Authorization (her session) and, optionally, X-App-Transaction
+// (StoreKit's signed AppTransaction, verified as for ai-image: _shared/apple.ts).
+// Without a verified install she shares the small unverified cap.
 //
 // Needs her session (verify_jwt, then requireUser); costs no credits. Every
 // line Claude writes passes the prompt policy before it's returned. The logs
 // carry counts and timings only, never her words or Claude's.
+import { verifyInstall } from "../_shared/apple.ts";
 import { requireUser, serviceClient } from "../_shared/auth.ts";
-import { askForJson, textHelperConfig } from "../_shared/claude-text.ts";
+import { askForJson, describeTextHelper, textHelperConfig } from "../_shared/claude-text.ts";
 import { corsHeaders, errorResponse, HttpError } from "../_shared/http.ts";
 import { clientIp } from "../_shared/input.ts";
 import { type Admission, ASSIST_DEADLINE_MS, handleAssist, readJsonBody } from "./handler.ts";
+
+console.info(`assist: ${describeTextHelper(textHelperConfig())}`);
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -45,7 +55,15 @@ Deno.serve(async (req) => {
     return await handleAssist({
       enabled: config !== undefined,
       admit: async () => {
-        const { data, error } = await db.rpc("admit_assist", { p_user: user.id, p_ip: ip ?? null, p_kind: "assist" });
+        // Only once her words passed the policy: Apple's signature is checked as ai-image checks it.
+        const install = await verifyInstall(req.headers.get("x-app-transaction"));
+        const { data, error } = await db.rpc("admit_assist", {
+          p_user: user.id,
+          p_ip: ip ?? null,
+          p_kind: "assist",
+          p_app_transaction_id: install.status === "verified" ? install.appTransactionId ?? null : null,
+          p_install_status: install.status,
+        });
         if (error || !data) {
           console.error("admit_assist failed", error?.message);
           return null;

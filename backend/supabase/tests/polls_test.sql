@@ -71,7 +71,8 @@ language sql as $$
 $$;
 
 -- Admission: 3 a day per user, the attempt counts, a blocked question counts
--- too (no strike), and only salted hashes are kept.
+-- too (no strike; since 20261103000001 apart from today's polls for everyone),
+-- and only salted hashes are kept.
 do $$
 declare
   u uuid := gen_random_uuid();
@@ -96,8 +97,11 @@ begin
     'a refused request leaves the count as it was';
   assert (select count from private.poll_usage
            where kind = 'create_ip' and bucket = private.keyed_hash('ip', '203.0.113.20')) = 3, 'the address too';
-  assert (select attempts from private.poll_daily where day = private.poll_today()) = 3, 'three attempts counted';
+  assert (select attempts from private.poll_daily where day = private.poll_today()) = 2,
+    'two attempts toward today''s polls: the blocked question counts apart (20261103000001)';
   assert (select blocked_question from private.poll_daily where day = private.poll_today()) = 1, 'one blocked';
+  assert (select unverified_attempts from private.poll_daily where day = private.poll_today()) = 3,
+    'all three without a verified install';
   assert not exists (select 1 from private.poll_usage where bucket in (u::text, '203.0.113.20')),
     'no raw user id or address';
 
@@ -351,16 +355,17 @@ begin
   assert r->>'code' = 'rate_limited' and (r->>'status')::int = 429, format('poll cap: %s', r);
   update private.polls set image_loads = 0 where id = v_id;
 
-  -- 200 an hour per address.
-  update private.poll_usage set count = 200 where kind = 'image_ip' and bucket = private.keyed_hash('ip', '203.0.113.70');
+  -- 60 an hour per address (200 until 20261103000001).
+  update private.poll_usage set count = 60 where kind = 'image_ip' and bucket = private.keyed_hash('ip', '203.0.113.70');
   assert public.poll_image(v_id, 'a', '203.0.113.70')->>'code' = 'rate_limited', 'address cap';
   assert (public.poll_image(v_id, 'a', '203.0.113.71')->>'ok')::boolean, 'another address';
 
-  -- 2,000 a day for everyone.
-  update private.poll_daily set image_loads = 2000 where day = private.poll_today();
+  -- 2,000 a day for everyone, once per picture and address (20261103000001).
+  update private.poll_daily set image_loads_unique = 2000 where day = private.poll_today();
   r := public.poll_image(v_id, 'a', '203.0.113.72');
   assert r->>'code' = 'rate_limited' and (r->>'until')::timestamptz = private.next_utc_day(), format('day cap: %s', r);
-  update private.poll_daily set image_loads = 0 where day = private.poll_today();
+  assert (public.poll_image(v_id, 'a', '203.0.113.71')->>'ok')::boolean, 'a picture this address already loaded';
+  update private.poll_daily set image_loads_unique = 0, image_loads = 0 where day = private.poll_today();
 
   update private.polls set taken_down_at = now() where id = v_id;
   assert public.poll_image(v_id, 'a')->>'code' = 'not_found', 'never once taken down';
@@ -488,6 +493,10 @@ begin
   assert not exists (select 1 from private.poll_votes where poll_id = v_live), 'with its votes';
   assert public.delete_poll(v_live, u) = '{"deleted": false}'::jsonb, 'once';
   assert public.delete_poll(v_down, u) = '{"deleted": true}'::jsonb, 'a taken-down one too';
+  -- 20261103000001: out of her list, kept for review until its 24 hours end.
+  assert exists (select 1 from private.polls where id = v_down and hidden_at is not null), 'kept for review';
+  assert public.my_polls(u)->'polls' = '[]'::jsonb, 'not in her list';
+  assert public.delete_poll(v_down, u) = '{"deleted": false}'::jsonb, 'once too';
 
   delete from private.poll_daily;
   delete from auth.users where id in (u, other);

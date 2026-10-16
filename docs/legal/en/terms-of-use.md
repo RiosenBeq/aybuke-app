@@ -117,7 +117,7 @@ Results you keep are stored only on your device, in the app's private storage. W
 If you're 13 or over, you can make a "Which vibe?" poll: you share two of your pictures (A and B), with a question if you like, as a private link, and friends tap the one they like best. They can vote in any browser, without the app or an account, and you see the results in the app.
 
 - **A private link.** A poll isn't listed anywhere: there's no feed, search, profile, comments or names. Anyone who has the link can see the two pictures and your question, and vote, until the poll ends. You decide whom to send it to.
-- **24 hours.** A poll ends 24 hours after you make it. The link then stops working, and within minutes the poll is deleted, with its pictures, question and votes. You can delete a poll sooner in the app.
+- **24 hours.** A poll ends 24 hours after you make it. The link then stops working, and within minutes the poll is deleted, with its pictures, question and votes. You can delete a poll sooner in the app (one taken down after a report is kept, closed to everyone, until its 24 hours end, so we can review it; see the Privacy Policy).
 - **Checked first.** Before the link exists, our independent safety check looks at both pictures, and our safety filters check your question. If a picture is flagged, or the check can't be completed, no poll is made, and a question the filters turn down can't be used.
 - **Just for fun.** Votes are anonymous, and anyone who has the link can vote, so we can't verify the counts: they're only a fun indication of what people think.
 - **Your pictures.** Only use pictures you have the rights to, with the OK of everyone in them (section 11).
