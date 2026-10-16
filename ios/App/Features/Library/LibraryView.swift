@@ -745,8 +745,10 @@ struct LibraryView: View {
     /// order she picked them. Never her photo against its AI edit
     /// (`PollPair`): friends vote on a vibe, not on her.
     private func askFriends(_ items: [Creation]) {
+        // What each one is (`pollHint`) stays on the device unless she asks
+        // Aybik for question ideas.
         let entries = items.filter { !missingFiles.contains($0.imageFileName) }
-            .map { (name: $0.imageFileName, provenance: $0.provenance) }
+            .map { (name: $0.imageFileName, provenance: $0.provenance, title: Self.pollHint(for: $0)) }
         guard entries.count == 2, !isWorking else { return }
         guard PollPair.allows(entries[0].provenance, entries[1].provenance) else {
             Haptics.error()
@@ -762,8 +764,19 @@ struct LibraryView: View {
             guard let a = images[0], let b = images[1] else { return couldNotOpen() }
             Haptics.tap()
             endSelecting()
-            app.pollDraft = PollDraft(a: a, b: b, provenanceA: entries[0].provenance, provenanceB: entries[1].provenance)
+            app.pollDraft = PollDraft(a: a, b: b, provenanceA: entries[0].provenance, provenanceB: entries[1].provenance,
+                                      hintA: entries[0].title, hintB: entries[1].title)
         }
+    }
+
+    /// What Aybik may hear about a creation for question ideas: a look's,
+    /// style's or effect's name, or her Create prompt; never a Magic Edit's
+    /// instruction, which can be about how she looks (as `Assist.captionHint`).
+    private static func pollHint(for creation: Creation) -> String {
+        if creation.operation == .magicEdit, let prompt = creation.prompt, creation.title == PromptBuilder.sanitize(prompt) {
+            return L10n.core(AIOperation.magicEdit.displayName)
+        }
+        return creation.title
     }
 
     private func edit(_ creation: Creation) {

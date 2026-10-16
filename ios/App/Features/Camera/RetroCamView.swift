@@ -50,6 +50,12 @@ struct RetroCamView: View {
                 app.retroCamStartsInBooth = false
                 model.mode = .booth
             }
+            // A Glow look from Explore's look finder.
+            if let look = app.retroCamGlowLook {
+                app.retroCamGlowLook = nil
+                model.select(.glow)
+                model.selectGlow(AdjustVibes.preset(id: look))
+            }
             await model.prepare()
             #if DEBUG
             await model.applyScreenshotOptions(app: app)

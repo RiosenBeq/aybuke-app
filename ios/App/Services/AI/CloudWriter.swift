@@ -2,9 +2,11 @@ import Foundation
 import AppCore
 
 /// Writing help from the server (`POST /functions/v1/assist`, the contract
-/// in AppCore's `Assist.swift`): Anthropic's Claude writes Create's ideas and
-/// prompt upgrades, share captions and Makeup Studio's picks for "Describe
-/// your vibe". Text only, never a photo, and no credits.
+/// in AppCore's `Assist.swift`), shown as Aybik: Anthropic's Claude writes
+/// Create's ideas and prompt upgrades, share captions, Makeup Studio's picks
+/// for "Describe your vibe", Explore's look finder, poll question ideas,
+/// share card text and Settings' Ask Aybik answers. Text only, never a
+/// photo, and no credits.
 ///
 /// It uses only the session she already has (`existingAccessToken()`), so
 /// nobody gets an account for writing help, and sends StoreKit's
@@ -51,6 +53,27 @@ final class CloudWriter: Sendable {
     func makeup(for request: AssistRequest) async throws -> AssistMakeupReply {
         let (data, response) = try await send(request)
         return try ResponseDecoder.decodeAssistMakeup(
+            data: data, statusCode: response?.statusCode ?? 0, retryAfter: response?.value(forHTTPHeaderField: "Retry-After"))
+    }
+
+    /// The look finder's picks, not screened yet.
+    func looks(for request: AssistRequest) async throws -> [LookFinder.Pick] {
+        let (data, response) = try await send(request)
+        return try ResponseDecoder.decodeAssistPicks(
+            data: data, statusCode: response?.statusCode ?? 0, retryAfter: response?.value(forHTTPHeaderField: "Retry-After"))
+    }
+
+    /// Card text options per share slot, not screened yet.
+    func cards(for request: AssistRequest) async throws -> AssistCardReply {
+        let (data, response) = try await send(request)
+        return try ResponseDecoder.decodeAssistCards(
+            data: data, statusCode: response?.statusCode ?? 0, retryAfter: response?.value(forHTTPHeaderField: "Retry-After"))
+    }
+
+    /// Ask Aybik's answer, not screened yet.
+    func help(for request: AssistRequest) async throws -> AssistHelpReply {
+        let (data, response) = try await send(request)
+        return try ResponseDecoder.decodeAssistHelp(
             data: data, statusCode: response?.statusCode ?? 0, retryAfter: response?.value(forHTTPHeaderField: "Retry-After"))
     }
 
@@ -174,6 +197,148 @@ extension AppModel {
     }
 }
 
+/// What Explore's "Describe your vibe" came to.
+enum LookFinderOutcome: Equatable {
+    /// Up to three picks, and who chose them (`.device` for the keyword match).
+    case picks([LookFinder.Pick], writtenBy: WrittenBy)
+    /// Nothing matched on the device: favorites to start with instead.
+    case favorites([LookFinder.Pick])
+    /// Her words aren't allowed: why, in her language.
+    case blocked(String)
+}
+
+/// What Ask Aybik came to.
+enum HelpOutcome: Equatable {
+    /// Aybik's answer; `support` when it points her to support.
+    case answer(String, support: Bool)
+    /// Her question isn't allowed: why, in her language.
+    case blocked(String)
+    /// Aybik couldn't answer (off, offline, paused, an error): the common
+    /// questions closest to hers, none when nothing matched.
+    case topics([HelpTopic])
+}
+
+extension AppModel {
+    /// The kinds of item she can open: looks and styles need cloud AI (13+),
+    /// Glow needs a camera, effects and Quick fix are for everyone.
+    var finderKinds: Set<LookFinder.Kind> {
+        var kinds: Set<LookFinder.Kind> = [.effect, .enhance]
+        if allowsCloudAI { kinds.formUnion([.look, .style]) }
+        if RetroCam.isAvailable { kinds.insert(.glow) }
+        return kinds
+    }
+
+    /// The catalog in her language, for the keyword match on the device.
+    var finderItems: [LookFinder.Item] {
+        let cloud = allowsCloudAI
+        return LookFinder.items(
+            kinds: finderKinds, localize: { L10n.core($0) },
+            effectName: { RetroEffect(rawValue: $0)?.title },
+            enhance: { option in
+                guard EnhanceOption.available(cloudAI: cloud).contains(option) else { return nil }
+                return (option.title, option.caption)
+            })
+    }
+
+    /// Explore's "Describe your vibe": her words pass the photo rules here
+    /// first; then Aybik picks from the catalog when writing help is on, and
+    /// otherwise (or when it fails) the device matches her words against the
+    /// catalog's names, with favorites when nothing matches. Never under 13
+    /// on the server.
+    func findLooks(for vibe: String) async -> LookFinderOutcome {
+        let words = PromptBuilder.sanitize(vibe)
+        let items = finderItems
+        let favorites = LookFinder.favorites(in: items).map(\.pick)
+        guard !words.isEmpty else { return .favorites(favorites) }
+        if case .blocked(let reason, _) = ContentPolicy.evaluate(words, operation: .magicEdit) {
+            return .blocked(L10n.core(reason))
+        }
+        let kinds = finderKinds
+        if usesCloudWriter, let cloudWriter, words.count <= AssistRequest.maxTextLength {
+            let request = AssistRequest(task: .looks, text: words, locale: writingLanguage,
+                                        kinds: LookFinder.Kind.allCases.filter(kinds.contains))
+            do {
+                let picks = LookFinder.usable(try await cloudWriter.looks(for: request), kinds: kinds) { pick in
+                    pick.kind != .effect || RetroEffect(rawValue: pick.id) != nil
+                }
+                if !picks.isEmpty { return .picks(picks, writtenBy: .cloud) }
+            } catch AssistError.contentBlocked(let category) {
+                if let message = Self.blockedMessage(category) { return .blocked(message) }
+            } catch {}
+        }
+        let matches = LookFinder.localMatches(for: words, in: items).map(\.pick)
+        return matches.isEmpty ? .favorites(favorites) : .picks(matches, writtenBy: .device)
+    }
+
+    /// "Ideas from Aybik" in Ask friends: up to four questions for the poll,
+    /// from what she typed (only those words) and what pictures A and B are
+    /// (their titles, `PollDraft.hints`); none when writing help is off or
+    /// fails, and the presets stay.
+    func pollQuestionIdeas(typed: String, draft: PollDraft) async -> [String] {
+        guard usesCloudWriter, offersPolls, let cloudWriter else { return [] }
+        let words = PromptBuilder.sanitize(typed)
+        guard words.count <= AssistRequest.maxTextLength else { return [] }
+        if !words.isEmpty, !ContentPolicy.evaluate(words, operation: .magicEdit).isAllowed { return [] }
+        // A title that wouldn't pass the photo rules stays on the device.
+        func hint(_ title: String?) -> String? {
+            guard let title, ContentPolicy.evaluate(title, operation: .magicEdit).isAllowed else { return nil }
+            return title
+        }
+        let request = AssistRequest(task: .pollQuestions, text: words, locale: writingLanguage,
+                                    context: AssistContext(a: hint(draft.hints.a), b: hint(draft.hints.b)))
+        guard let lines = try? await cloudWriter.suggestions(for: request) else { return [] }
+        return Assist.screenedQuestions(lines)
+    }
+
+    /// "Write it for me" for one share text slot: Aybik's options when
+    /// writing help is on (it hears what she typed there, if anything, and
+    /// the design), else the hand-written lines, shuffled. Every option fits
+    /// the slot and passes the photo rules on the device.
+    func cardTextIdeas(for slot: ShareTextSlot, typed: String, format: String) async -> (lines: [String], writtenBy: WrittenBy?) {
+        let words = PromptBuilder.sanitize(typed)
+        let typedIsFine = words.isEmpty || ContentPolicy.evaluate(words, operation: .magicEdit).isAllowed
+        if usesCloudWriter, let cloudWriter, typedIsFine {
+            let request = AssistRequest(task: .cardText, text: words, locale: writingLanguage,
+                                        context: AssistContext(format: format), slots: [slot])
+            if let reply = try? await cloudWriter.cards(for: request) {
+                let lines = Assist.screenedCardLines(reply.slots[slot] ?? [], for: slot)
+                if !lines.isEmpty { return (lines, .cloud) }
+            }
+        }
+        let curated = CardLines.lines(for: slot).map { L10n.core($0) }.shuffled()
+        return (Assist.screenedCardLines(curated, for: slot), nil)
+    }
+
+    /// Ask Aybik: her question passes Create's rules here first; Aybik
+    /// answers from the server's facts when writing help is on, and
+    /// otherwise the closest common questions answer. Nothing is kept.
+    func askAybik(_ question: String) async -> HelpOutcome {
+        let words = PromptBuilder.sanitize(question)
+        let topics = HelpTopic.topics(cloudAI: allowsCloudAI)
+        guard !words.isEmpty else { return .topics(topics) }
+        if case .blocked(let reason, _) = ContentPolicy.evaluate(words, operation: .textToImage) {
+            return .blocked(L10n.core(reason))
+        }
+        if usesCloudWriter, let cloudWriter, words.count <= AssistRequest.maxTextLength {
+            let request = AssistRequest(task: .help, text: words, locale: writingLanguage)
+            do {
+                let reply = try await cloudWriter.help(for: request)
+                if let answer = Assist.screenedAnswer(reply.answer) { return .answer(answer, support: reply.support) }
+            } catch AssistError.contentBlocked(let category) {
+                if let message = Self.blockedMessage(category) { return .blocked(message) }
+            } catch {}
+        }
+        return .topics(HelpTopic.matching(words, in: topics, localize: { L10n.core($0) }))
+    }
+
+    /// The server's policy reason for a `content_blocked`, in her language.
+    private static func blockedMessage(_ category: String?) -> String? {
+        guard let category = category.flatMap(PolicyCategory.init(rawValue:)),
+              case .blocked(let reason, _) = ContentPolicy.verdict(for: category) else { return nil }
+        return L10n.core(reason)
+    }
+}
+
 #if DEBUG
 extension CloudWriter {
     /// `-GLAssistStub YES`: canned answers without a server or a session, so
@@ -195,13 +360,13 @@ extension CloudWriter {
         return CloudWriter(config: config, accessToken: { "stub-session" }) { request in
             try await Task.sleep(for: .milliseconds(700))
             let body = request.httpBody.flatMap { try? JSONSerialization.jsonObject(with: $0) as? [String: Any] } ?? [:]
-            let (status, json) = Self.stubAnswer(task: body["task"] as? String, text: body["text"] as? String, mode: mode)
+            let (status, json) = Self.stubAnswer(task: body["task"] as? String, text: body["text"] as? String, body: body, mode: mode)
             let response = HTTPURLResponse(url: request.url!, statusCode: status, httpVersion: nil, headerFields: nil)
             return (Data(json.utf8), response)
         }
     }
 
-    private static func stubAnswer(task: String?, text: String?, mode: String) -> (Int, String) {
+    private static func stubAnswer(task: String?, text: String?, body: [String: Any], mode: String) -> (Int, String) {
         switch mode {
         case "fail": return (503, #"{"error":{"code":"assist_unavailable"}}"#)
         case "blocked": return (422, #"{"error":{"code":"content_blocked","category":"revealingClothing"}}"#)
@@ -231,6 +396,37 @@ extension CloudWriter {
                 "makeup": ["look": "coldGirl", "lips": "berry", "lipFinish": "gloss", "eyes": "glitterLid", "cheeks": NSNull(),
                            "extras": ["glitter"], "hair": NSNull(), "intensity": "medium"],
                 "note": "A frosty, sparkly look for a winter party: berry lips, glittery lids and a cold-weather flush.",
+            ]
+        case .looks:
+            answer = ["picks": [
+                ["kind": "look", "id": "birthday", "reason": "Balloons and confetti for a birthday to remember"],
+                ["kind": "effect", "id": "disposable", "reason": "A 90s film flash for picnic snapshots"],
+                ["kind": "glow", "id": "golden", "reason": "Warm golden-hour light by the water"],
+            ]]
+        case .pollQuestions:
+            answer = ["suggestions": [
+                "Which one feels more like summer? ☀️",
+                "Sunset glow or city lights?",
+                "Which vibe for my weekend post?",
+                "Pink or lilac background?",
+            ]]
+        case .cardText:
+            let slots = body["slots"] as? [String] ?? []
+            var cards: [String: [String]] = [:]
+            for slot in slots {
+                switch slot {
+                case "storyLine": cards[slot] = ["Sunshine, snacks and my favorite people", "A little picnic, a lot of laughs"]
+                case "coverMasthead": cards[slot] = ["PICNIC", "SUNNY"]
+                case "coverHeadline": cards[slot] = ["The picnic issue", "Sunny days only"]
+                case "stripCaption": cards[slot] = ["Picnic club", "Sunny squad"]
+                default: break
+                }
+            }
+            answer = ["slots": cards]
+        case .help:
+            answer = [
+                "answer": "Your free credits come back every day at midnight UTC. Tap the credit pill on Explore to see when the next ones arrive.\n\nPro comes with monthly credits instead, and pack credits never expire.",
+                "support": false,
             ]
         case nil:
             return (400, #"{"error":{"code":"bad_request"}}"#)

@@ -79,6 +79,9 @@ enum ScreenshotScene: String, CaseIterable {
     case bestShot
     /// Settings › Feel good.
     case feelGood
+    /// Settings › Help › Ask Aybik; `-GLAskAybik "<question>"` asks it once
+    /// (with `-GLAssistStub YES` for a canned answer).
+    case askAybik
     /// The age step shown once to people who finished onboarding before it.
     case age
     /// Hide faces on a group of cartoon figures, with every friend covered.

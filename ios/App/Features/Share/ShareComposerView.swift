@@ -37,6 +37,13 @@ struct ShareComposerView: View {
     @State private var textColor: OverlayColor?
     @State private var editsText = false
     @State private var textNotice: String?
+    /// "Write it for me": options per slot, and the slot being written for.
+    @State private var cardIdeas: [ShareTextSlot: CardTextIdeas] = [:]
+    @State private var writingSlot: ShareTextSlot?
+    /// The request for that slot and what the box held then: typing there
+    /// again, or leaving, cancels it.
+    @State private var cardWriting: Task<Void, Never>?
+    @State private var cardAskedWith = ""
     /// "Which vibe?" on its way to a poll with friends.
     @State private var pollDraft: PollDraft?
     @FocusState private var focusedSlot: ShareTextSlot?
@@ -148,7 +155,16 @@ struct ShareComposerView: View {
         .onChange(of: format) { _, newFormat in
             textNotice = nil
             if newFormat.textSlots.isEmpty { editsText = false }
+            if let slot = writingSlot, !newFormat.textSlots.contains(slot) { cancelCardText() }
         }
+        // She typed in the box Aybik is writing for: its options for the old words aren't wanted.
+        .onChange(of: drafts) { _, newDrafts in
+            if let slot = writingSlot, (newDrafts[slot] ?? "") != cardAskedWith { cancelCardText() }
+        }
+        .onChange(of: editsText) { _, edits in
+            if !edits { cancelCardText() }
+        }
+        .onDisappear(perform: cancelCardText)
         .task {
             app.writer.prewarm()
             await loadCaptionIdeas()
@@ -245,7 +261,11 @@ struct ShareComposerView: View {
         if !format.textSlots.isEmpty {
             if editsText {
                 ShareTextEditor(slots: format.textSlots, drafts: $drafts, font: $textFont, color: $textColor, notice: textNotice,
-                                focus: $focusedSlot) {
+                                focus: $focusedSlot, ideas: cardIdeas, writingSlot: writingSlot, usesAybik: app.usesCloudWriter,
+                                onWrite: writeCardText, onPick: { slot, line in
+                                    drafts[slot] = line
+                                    commitTexts()
+                                }) {
                     commitTexts()
                     focusedSlot = nil
                     withAnimation(.snappy) { editsText = false }
@@ -269,6 +289,30 @@ struct ShareComposerView: View {
                 .transition(.opacity)
             }
         }
+    }
+
+    /// "Write it for me": Aybik's options for the slot when writing help is
+    /// on (it reads what she typed there), else the hand-written lines.
+    private func writeCardText(_ slot: ShareTextSlot) {
+        guard writingSlot == nil else { return }
+        writingSlot = slot
+        let typed = drafts[slot] ?? ""
+        cardAskedWith = typed
+        let design = format.rawValue
+        cardWriting = Task {
+            let found = await app.cardTextIdeas(for: slot, typed: typed, format: design)
+            guard !Task.isCancelled else { return }
+            cardIdeas[slot] = CardTextIdeas(lines: found.lines, writtenBy: found.writtenBy)
+            writingSlot = nil
+            cardWriting = nil
+            AccessibilityNotification.Announcement(found.lines.joined(separator: ", ")).post()
+        }
+    }
+
+    private func cancelCardText() {
+        cardWriting?.cancel()
+        cardWriting = nil
+        writingSlot = nil
     }
 
     /// Draws what she typed once it passes the same rules as text on a
@@ -392,7 +436,10 @@ struct ShareComposerView: View {
         Haptics.tap()
         let covered = await faces.covering(payload)
         guard let pair = covered.pickPair else { return }
-        pollDraft = PollDraft(a: pair.a, b: pair.b, provenanceA: payload.provenance, provenanceB: payload.provenance)
+        // Two variations of one creation: the same few words for both.
+        let hint = payload.shareablePrompt ?? payload.operation.map { L10n.core($0.displayName) }
+        pollDraft = PollDraft(a: pair.a, b: pair.b, provenanceA: payload.provenance, provenanceB: payload.provenance,
+                              hintA: hint, hintB: hint)
     }
 
     private var captionCard: some View {

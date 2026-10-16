@@ -15,6 +15,10 @@ enum AppTab: Hashable {
 struct EditorRequest: Equatable {
     var tool: EditorTool?
     var template: PhotoTemplate?
+    /// An effect to preview as the editor opens (Explore's look finder).
+    var effect: RetroEffect?
+    /// An Enhance option to pick as the editor opens (Explore's look finder).
+    var enhance: EnhanceOption?
 }
 
 struct EditorLaunch: Identifiable {
@@ -26,8 +30,10 @@ struct EditorLaunch: Identifiable {
     var prompt: String?
     /// An already-applied result to show in compare mode (screenshots).
     var previewResult: UIImage?
-    /// An effect to preview right away (screenshots).
+    /// An effect to preview right away (Explore's look finder, screenshots).
     var previewEffect: RetroEffect?
+    /// An Enhance option to pick right away (Explore's look finder).
+    var enhanceOption: EnhanceOption?
     /// A crop shape and straighten angle to start from (screenshots).
     var cropAspect: CropAspect?
     var cropAngle: Double = 0
@@ -176,6 +182,12 @@ final class AppModel {
     /// Retro Cam opens in Photo Booth mode (Siri, Shortcuts, a control);
     /// the camera clears it when it starts.
     @ObservationIgnored var retroCamStartsInBooth = false
+    /// Retro Cam opens on this Glow look (`natural` or a `GlowCam.vibeIDs`
+    /// id) once: Explore's look finder.
+    @ObservationIgnored var retroCamGlowLook: String?
+    /// Create picks this style (`ImageStyle.id`) when it comes to the front:
+    /// Explore's look finder.
+    var pendingCreateStyle: String?
     var toast: ToastMessage?
     /// "Photos access is off" with Open Settings (and Share instead).
     var photosAccessRequest: PhotosAccessRequest?
@@ -1539,7 +1551,7 @@ final class AppModel {
 
     // MARK: Editor routing
 
-    func startEditing(tool: EditorTool? = nil, template: PhotoTemplate? = nil) {
+    func startEditing(tool: EditorTool? = nil, template: PhotoTemplate? = nil, effect: RetroEffect? = nil, enhance: EnhanceOption? = nil) {
         let template = allowsCloudAI ? template : nil
         let tool = permittedTool(tool)
         if let template, template.isPro, !purchases.isPro, !ads.hasActiveTry(for: .template(template.id)) {
@@ -1549,8 +1561,38 @@ final class AppModel {
             })
             return
         }
-        pendingEditorRequest = EditorRequest(tool: tool, template: template)
+        // An AI fix needs cloud AI: under 13 the free Quick fix stands in.
+        let enhance = enhance.map { EnhanceOption.available(cloudAI: allowsCloudAI).contains($0) ? $0 : .quickFix }
+        pendingEditorRequest = EditorRequest(tool: tool, template: template, effect: tool == .effects ? effect : nil,
+                                             enhance: tool == .enhance ? enhance : nil)
         isPhotoPickerPresented = true
+    }
+
+    /// A pick from Explore's look finder, opened in one tap: a look or an
+    /// effect or Enhance option in the editor (after the photo picker), a
+    /// style in Create, a Glow look in Retro Cam. The usual gates apply
+    /// where it goes (a Pro look's paywall, consent and credits at Try it).
+    func open(_ pick: LookFinder.Pick) {
+        switch pick.kind {
+        case .look:
+            guard let template = TemplateCatalog.template(id: pick.id) else { return }
+            startEditing(tool: .styles, template: template)
+        case .style:
+            guard allowsCloudAI else { return }
+            pendingCreateStyle = pick.id
+            selectedTab = .create
+            wantsPromptFocus = true
+        case .effect:
+            guard let effect = RetroEffect(rawValue: pick.id) else { return }
+            startEditing(tool: .effects, effect: effect)
+        case .enhance:
+            guard let option = EnhanceOption(rawValue: pick.id) else { return }
+            startEditing(tool: .enhance, enhance: option)
+        case .glow:
+            guard RetroCam.isAvailable else { return }
+            retroCamGlowLook = pick.id
+            isRetroCamPresented = true
+        }
     }
 
     func openEditor(with image: UIImage, tool: EditorTool? = nil, template: PhotoTemplate? = nil, provenance: Provenance = .none,
@@ -1603,6 +1645,7 @@ final class AppModel {
             throw AIServiceError.invalidRequest(String(localized: "That file isn't a supported photo."))
         }
         editorLaunch = EditorLaunch(image: image, tool: permittedTool(request.tool), template: allowsCloudAI ? request.template : nil,
+                                    previewEffect: request.effect, enhanceOption: request.enhance,
                                     provenance: Provenance(inheritedSourceType: sourceType))
         if isRAW {
             showToast("RAW photo developed with the best settings ✨", style: .success)
@@ -1900,7 +1943,7 @@ extension AppModel {
             ageRecord = AgeRecord(band: .adult, source: .apple, setAt: Date())
         }
         switch scene {
-        case .onboarding, .home, .settings, .legal, .invite, .tour, .collection, .feelGood, .age, .tips:
+        case .onboarding, .home, .settings, .legal, .invite, .tour, .collection, .feelGood, .askAybik, .age, .tips:
             selectedTab = .home
         case .bestShot:
             selectedTab = .home

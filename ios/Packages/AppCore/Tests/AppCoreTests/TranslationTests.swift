@@ -90,4 +90,42 @@ final class TranslationTests: XCTestCase {
             }
         }
     }
+
+    /// What the app says on its own when Aybik can't (the look finder's
+    /// lines, "Write it for me"'s ready-made lines, Ask Aybik's common
+    /// questions) is translated, and in every language passes the rules the
+    /// server's own lines pass: the photo rules next to her photo, each text
+    /// box's length, and Create's rules and the answer screening for help.
+    func testAybikFallbacksAreTranslatedAndSafe() throws {
+        let app = try load("App/Resources/Localizable.xcstrings")
+        let finder = LookFinder.effects.map(\.about) + LookFinder.glowLooks.map(\.about) + [LookFinder.styleAbout]
+        let help = HelpTopic.all.flatMap { [$0.question, $0.answer] }
+        for key in Set(finder + CardLines.all + help) {
+            let missing = Self.languages.filter { app.translations(of: key)[$0] == nil }
+            XCTAssertEqual(missing, [], "\"\(key)\" needs translating")
+        }
+        func everyLanguage(_ key: String) -> [(String, String)] {
+            [("en", key)] + app.translations(of: key).sorted { $0.key < $1.key }.map { ($0.key, $0.value) }
+        }
+        for key in finder {
+            for (language, text) in everyLanguage(key) {
+                XCTAssertEqual(Assist.screenedShown([text], maxLength: LookFinder.maxReasonLength, limit: 1), [text], "[\(language)] \(text)")
+            }
+        }
+        for slot in ShareTextSlot.allCases {
+            for key in CardLines.lines(for: slot) {
+                for (language, text) in everyLanguage(key) {
+                    XCTAssertEqual(Assist.screenedCardLines([text], for: slot), [text], "[\(language)] \(slot): \(text)")
+                }
+            }
+        }
+        for topic in HelpTopic.all {
+            for (language, text) in everyLanguage(topic.question) {
+                XCTAssertEqual(ContentPolicy.evaluate(text, operation: .textToImage), .allowed, "[\(language)] \(text)")
+            }
+            for (language, text) in everyLanguage(topic.answer) {
+                XCTAssertEqual(Assist.screenedAnswer(text), text, "[\(language)] \(topic.id)")
+            }
+        }
+    }
 }

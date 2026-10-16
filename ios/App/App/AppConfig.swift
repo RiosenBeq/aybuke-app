@@ -361,6 +361,11 @@ struct AppConfig: Decodable {
 
     var supportURL: URL? { URL(string: "mailto:\(supportEmail)") }
 
+    /// The website's Help & Support page (Ask Aybik's note), when there's a website.
+    var supportPageURL: URL? {
+        URL(string: websiteURL).flatMap { $0.scheme == "https" ? $0.appending(path: "support") : nil }
+    }
+
     var appStoreURL: URL? {
         guard !appStoreID.isEmpty else { return nil }
         return URL(string: "https://apps.apple.com/app/id\(appStoreID)")

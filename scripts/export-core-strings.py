@@ -108,6 +108,22 @@ def collect() -> tuple[list[tuple[str, str]], list[tuple[str, str]]]:
         app.append((text, "Makeup Studio look name, on a chip in the editor. Keep trend names people use in English, such as Soft Glam or Y2K."))
     for text in literals(r"\boption\(" + LITERAL, makeup):
         app.append((text, "Makeup Studio choice in the editor: a lip color or lip finish, eye look, blush, extra, hair color or how strong the makeup is. “As is” leaves that part of the photo unchanged."))
+    for text in literals(r"\babout\(" + LITERAL, read("LookFinder.swift")):
+        app.append((text, "Explore’s “Describe your vibe”: one line about a retro effect, a Glow look in Retro Cam or a Create style, shown under its name when it’s suggested. About the picture’s look, never about how someone looks. Keep effect names and Retro Cam as they are."))
+    fallbacks = read("AybikFallbacks.swift")
+    slot_notes = {
+        "storyLine": "Ready-made line for the Story card, under her photo (share composer, “Write it for me”). About the moment or the vibe, never about how anyone looks. At most 80 characters.",
+        "masthead": "Ready-made big title for the magazine cover (share composer, “Write it for me”), in capitals where the script has them. One short word: at most 10 characters.",
+        "headline": "Ready-made headline for the magazine cover (share composer, “Write it for me”). About the moment or the vibe, never about how anyone looks. At most 40 characters.",
+        "stripCaption": "Ready-made caption under a photo booth strip (share composer, “Write it for me”). At most 24 characters.",
+    }
+    for marker, note in slot_notes.items():
+        for text in literals(r"\b" + marker + r"\(" + LITERAL, fallbacks):
+            app.append((text, note))
+    for text in literals(r"\bquestion\(" + LITERAL, fallbacks):
+        app.append((text, "Settings › Help: a common question about the app, as she would ask it"))
+    for text in literals(r"\banswer\(" + LITERAL, fallbacks):
+        app.append((text, "Settings › Help: the short answer to a common question. Use the names the app shows in this language for screens and buttons (Settings › Privacy, My Works, Your polls…)."))
 
     def clean(pairs: list[tuple[str, str]]) -> list[tuple[str, str]]:
         seen: set[str] = set()

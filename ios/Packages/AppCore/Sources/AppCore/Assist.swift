@@ -17,14 +17,31 @@ public enum AssistTask: String, Codable, CaseIterable, Sendable {
     case captions
     /// Makeup Studio's "Describe your vibe": Makeup Studio ids for her words.
     case makeup
+    /// Explore's "Describe your vibe": up to three catalog items (`LookFinder`).
+    case looks
+    /// "Ideas from Aybik" in a poll's Ask friends sheet.
+    case pollQuestions = "poll_questions"
+    /// "Write it for me" for the share composer's text slots.
+    case cardText = "card_text"
+    /// Settings › Help › Ask Aybik: an answer about the app.
+    case help
 
     /// The policy rules every line it writes must pass on the device before
-    /// she sees it. Captions and makeup notes are about someone's photo, so
-    /// they get the stricter photo rules, as the on-device writer's do.
+    /// she sees it. Captions, makeup notes, look reasons, poll questions and
+    /// card text go with someone's photo, so they get the stricter photo
+    /// rules, as the on-device writer's do; help answers Create's.
     public var screeningOperation: AIOperation {
         switch self {
-        case .inspire, .magic: return .textToImage
-        case .captions, .makeup: return .magicEdit
+        case .inspire, .magic, .help: return .textToImage
+        case .captions, .makeup, .looks, .pollQuestions, .cardText: return .magicEdit
+        }
+    }
+
+    /// Whether the server needs her words for it.
+    public var needsText: Bool {
+        switch self {
+        case .inspire, .pollQuestions, .cardText: return false
+        case .magic, .captions, .makeup, .looks, .help: return true
         }
     }
 }
@@ -35,14 +52,31 @@ public struct AssistContext: Codable, Equatable, Sendable {
     public var style: String?
     /// The share design she picked (`photo`, `beforeAfter`, `story`, `cover`, `strip`, `pick`).
     public var format: String?
-    /// The Makeup Studio look she has on (`MakeupPreset.id`).
+    /// The Makeup Studio look she has on (`MakeupPreset.id`), or for card
+    /// text the look or effect on her photo.
     public var look: String?
+    /// Poll question ideas: what picture A and picture B are (a look, a
+    /// style, an effect or the title of the creation), never the pictures.
+    public var a: String?
+    public var b: String?
 
-    public init(style: String? = nil, format: String? = nil, look: String? = nil) {
-        self.style = style
-        self.format = format
-        self.look = look
+    /// The server's limit on each value, in characters.
+    public static let maxValueLength = 100
+
+    public init(style: String? = nil, format: String? = nil, look: String? = nil, a: String? = nil, b: String? = nil) {
+        func clean(_ value: String?) -> String? {
+            let words = value.map { PromptBuilder.normalized($0).trimmingCharacters(in: .whitespaces) }
+            guard let words, !words.isEmpty else { return nil }
+            return Assist.cut(words, to: Self.maxValueLength)
+        }
+        self.style = clean(style)
+        self.format = clean(format)
+        self.look = clean(look)
+        self.a = clean(a)
+        self.b = clean(b)
     }
+
+    var values: [String] { [style, format, look, a, b].compactMap { $0 } }
 }
 
 /// The body of `POST /functions/v1/assist`.
@@ -51,29 +85,55 @@ public struct AssistRequest: Encodable, Equatable, Sendable {
     public static let maxTextLength = 400
 
     public var task: AssistTask
-    /// Her words: optional for `inspire`, needed by the others. Whitespace
-    /// is collapsed, and text with nothing in it counts as none.
+    /// Her words: optional for `inspire`, `poll_questions` and `card_text`,
+    /// needed by the others (`AssistTask.needsText`). Whitespace is
+    /// collapsed, and text with nothing in it counts as none.
     public var text: String?
     /// The language the app shows (`Assist.languageCode(for:)`): the answer comes in it.
     public var locale: String
     /// Always sent, even empty.
     public var context: AssistContext
+    /// `looks`: the kinds of item she can use (all five when nil).
+    public var kinds: [LookFinder.Kind]?
+    /// `card_text`: the slots to write for.
+    public var slots: [ShareTextSlot]?
 
-    public init(task: AssistTask, text: String? = nil, locale: String, context: AssistContext = AssistContext()) {
+    public init(task: AssistTask, text: String? = nil, locale: String, context: AssistContext = AssistContext(),
+                kinds: [LookFinder.Kind]? = nil, slots: [ShareTextSlot]? = nil) {
         self.task = task
         let words = text.map { PromptBuilder.normalized($0).trimmingCharacters(in: .whitespaces) }
         self.text = words?.isEmpty == false ? words : nil
         self.locale = locale
         self.context = context
+        // Each once, in the contract's order, as the server reads them.
+        self.kinds = kinds.map { list in LookFinder.Kind.allCases.filter(list.contains) }
+        self.slots = slots.map { list in ShareTextSlot.allCases.filter(list.contains) }
+    }
+
+    enum CodingKeys: String, CodingKey { case task, text, locale, context, kinds, slots }
+
+    /// `kinds` only for `looks` and `slots` only for `card_text`.
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(task, forKey: .task)
+        try container.encodeIfPresent(text, forKey: .text)
+        try container.encode(locale, forKey: .locale)
+        try container.encode(context, forKey: .context)
+        if task == .looks { try container.encodeIfPresent(kinds?.map(\.rawValue), forKey: .kinds) }
+        if task == .cardText { try container.encodeIfPresent(slots?.map(\.rawValue), forKey: .slots) }
     }
 
     /// Mirrors the server's `bad_request` checks, so the app never asks in
     /// vain: text where the task needs it, at most `maxTextLength`
-    /// characters, and a language the app speaks.
+    /// characters, a language the app speaks, context values of at most 100
+    /// characters, kinds that aren't empty, and one to four slots for card text.
     public func validate() throws {
-        if task != .inspire && text == nil { throw AssistError.badRequest }
+        if task.needsText && text == nil { throw AssistError.badRequest }
         if let text, text.count > Self.maxTextLength { throw AssistError.badRequest }
         guard Assist.languages.contains(locale) else { throw AssistError.badRequest }
+        if context.values.contains(where: { $0.count > AssistContext.maxValueLength }) { throw AssistError.badRequest }
+        if task == .looks, let kinds, kinds.isEmpty { throw AssistError.badRequest }
+        if task == .cardText, slots?.isEmpty ?? true { throw AssistError.badRequest }
     }
 }
 
@@ -143,6 +203,50 @@ public struct AssistMakeupReply: Decodable, Equatable, Sendable {
     }
 }
 
+/// `200 { "slots": { "<slot>": [string] } }`: options per share text slot,
+/// not screened yet. Slots this version doesn't know are left out.
+public struct AssistCardReply: Decodable, Equatable, Sendable {
+    public var slots: [ShareTextSlot: [String]]
+
+    public init(slots: [ShareTextSlot: [String]]) {
+        self.slots = slots
+    }
+
+    enum CodingKeys: String, CodingKey { case slots }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        let raw = try container.decode([String: [String?]?].self, forKey: .slots)
+        var slots: [ShareTextSlot: [String]] = [:]
+        for (key, lines) in raw {
+            guard let slot = ShareTextSlot(rawValue: key) else { continue }
+            slots[slot] = (lines ?? []).compactMap { $0 }
+        }
+        self.slots = slots
+    }
+}
+
+/// `200 { "answer": "…", "support": true }`: Ask Aybik's answer, not screened yet.
+public struct AssistHelpReply: Decodable, Equatable, Sendable {
+    public var answer: String
+    /// The answer points her to support (or Feel good): the screen offers it.
+    public var support: Bool
+
+    public init(answer: String, support: Bool) {
+        self.answer = answer
+        self.support = support
+    }
+
+    enum CodingKeys: String, CodingKey { case answer, support }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        answer = try container.decode(String.self, forKey: .answer)
+        // When in doubt, offer support.
+        support = (try? container.decodeIfPresent(Bool.self, forKey: .support)) ?? true
+    }
+}
+
 /// Why writing help didn't answer. Never shown as such: the app falls back
 /// to Apple's on-device writer and its own hand-written lists.
 public enum AssistError: Error, Equatable, Sendable {
@@ -203,6 +307,112 @@ public enum Assist {
             kept.append(text)
         }
         return kept
+    }
+
+    /// Lines people read next to her photo (a look's reason, a poll question,
+    /// card text), tidied as the server tidies them: NFC, control characters
+    /// as spaces, hidden characters removed, whitespace collapsed, no list
+    /// markers or wrapping quotes, emoji as written. Each passes the photo
+    /// rules as shown and as a prompt would be cleaned up, holds no link,
+    /// e-mail address or @handle, fits `maxLength`, comes once, and at most
+    /// `limit` are kept. (The server also drops lines about bodies, faces,
+    /// skin, weight or rating looks, in every language.)
+    public static func screenedShown(_ lines: [String], maxLength: Int, limit: Int) -> [String] {
+        var seen = Set<String>()
+        var kept: [String] = []
+        for line in lines where kept.count < limit {
+            let text = tidyShown(line)
+            guard !text.isEmpty, text.count <= maxLength, !hasLink(text),
+                  [text, PollQuestion.serverSanitized(text)].allSatisfy({ ContentPolicy.evaluate($0, operation: .magicEdit).isAllowed }),
+                  seen.insert(text.lowercased()).inserted else { continue }
+            kept.append(text)
+        }
+        return kept
+    }
+
+    /// Poll question ideas she may tap: shown lines that also pass the
+    /// poll's own question check (`PollQuestion.check`), as friends will read them.
+    public static func screenedQuestions(_ lines: [String], limit: Int = 4) -> [String] {
+        screenedShown(lines, maxLength: PollQuestion.maxLength, limit: .max).compactMap { line -> String? in
+            guard case .ok(let question?) = PollQuestion.check(line) else { return nil }
+            return question
+        }
+        .prefix(limit)
+        .map { $0 }
+    }
+
+    /// Card text options for `slot`: shown lines within the slot's length (a
+    /// longer one is dropped, never cut mid-word), on one line as the slot draws them.
+    public static func screenedCardLines(_ lines: [String], for slot: ShareTextSlot, limit: Int = 4) -> [String] {
+        screenedShown(lines, maxLength: slot.maxLength, limit: limit).map(slot.clean)
+    }
+
+    /// The longest answer Ask Aybik shows, in characters.
+    public static let maxAnswerLength = 600
+
+    /// Ask Aybik's answer as it may be shown, or nil: plain text in short
+    /// paragraphs (Markdown marks removed), at most `maxAnswerLength`
+    /// characters, allowed by Create's rules, naming no AI company, with no
+    /// e-mail address and no web address but the support page's and the
+    /// helpline finder's (the server's own checks, again on the device).
+    public static func screenedAnswer(_ answer: String) -> String? {
+        let paragraphs = answer.precomposedStringWithCanonicalMapping
+            .replacingOccurrences(of: "\r\n", with: "\n")
+            .components(separatedBy: "\n")
+            .map { line -> String in
+                // As shown (NFC, hidden characters out): full-width punctuation stays for Chinese and Japanese.
+                var text = PollQuestion.cleaned(line)
+                for mark in ["**", "__", "`"] { text = text.replacingOccurrences(of: mark, with: "") }
+                while text.hasPrefix("#") || text.hasPrefix(">") { text = String(text.dropFirst()) }
+                return text.trimmingCharacters(in: .whitespaces)
+            }
+        var text = paragraphs.joined(separator: "\n")
+        while text.contains("\n\n\n") { text = text.replacingOccurrences(of: "\n\n\n", with: "\n\n") }
+        text = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        let oneLine = text.replacingOccurrences(of: "\n", with: " ")
+        guard !text.isEmpty, text.count <= maxAnswerLength,
+              [oneLine, PromptBuilder.normalized(oneLine)].allSatisfy({ ContentPolicy.evaluate($0, operation: .textToImage).isAllowed }),
+              !matches(companyPattern, in: text), !matches(emailPattern, in: text) else { return nil }
+        for host in webHosts(in: text) where !allowedAnswerHosts.contains(host) { return nil }
+        return text
+    }
+
+    // MARK: Shown text
+
+    /// Invisible characters that can hide or reorder text (as polls' `PollQuestion.cleaned`).
+    static func tidyShown(_ line: String) -> String {
+        var text = PollQuestion.cleaned(line)
+        let markers = try? NSRegularExpression(pattern: #"^(?:\d{1,2}[.)]|[-•*])\s+"#)
+        if let markers {
+            text = markers.stringByReplacingMatches(in: text, range: NSRange(text.startIndex..., in: text), withTemplate: "")
+        }
+        let quotes = CharacterSet(charactersIn: "\"“”«»„")
+        return text.trimmingCharacters(in: quotes).trimmingCharacters(in: .whitespaces)
+    }
+
+    private static let linkPattern =
+        #"(?:https?://|www\.)\S|[\p{L}\p{N}._%+-]+@[\p{L}\p{N}-]+\.\p{L}|(?:^|\s)@[\p{L}\p{N}_]|\b[a-z0-9-]+\.(?:com|net|org|io|app|co|me|ly|gg|tv|link)\b"#
+    private static let companyPattern = #"\b(?:claude|anthropic|x\.?ai|grok|supabase|openai|chatgpt|gpt-?\d*|gemini|revenuecat|admob)\b"#
+    private static let emailPattern = #"[\p{L}\p{N}._%+-]+@[\p{L}\p{N}-]+\.\p{L}"#
+    private static let allowedAnswerHosts: Set<String> = ["aybuke.org", "www.aybuke.org", "findahelpline.com", "www.findahelpline.com"]
+
+    /// A link, an e-mail address, an @handle or a bare web address.
+    public static func hasLink(_ text: String) -> Bool {
+        matches(linkPattern, in: text)
+    }
+
+    private static func matches(_ pattern: String, in text: String) -> Bool {
+        guard let regex = try? NSRegularExpression(pattern: pattern, options: [.caseInsensitive]) else { return true }
+        return regex.firstMatch(in: text, range: NSRange(text.startIndex..., in: text)) != nil
+    }
+
+    /// The hosts of the web addresses in `text`, lowercased.
+    private static func webHosts(in text: String) -> [String] {
+        let pattern = #"\b(?:https?://)?((?:[a-z0-9-]+\.)+[a-z]{2,})(?:/[^\s)]*)?"#
+        guard let regex = try? NSRegularExpression(pattern: pattern, options: [.caseInsensitive]) else { return [] }
+        return regex.matches(in: text, range: NSRange(text.startIndex..., in: text)).compactMap { match in
+            Range(match.range(at: 1), in: text).map { text[$0].lowercased() }
+        }
     }
 
     /// What the caption writer hears about the picture: her Create prompt
@@ -311,6 +521,31 @@ extension ResponseDecoder {
         guard let reply = try? JSONDecoder().decode(AssistMakeupReply.self, from: data) else {
             throw AssistError.invalidResponse
         }
+        return reply
+    }
+
+    /// `200 { "picks": [{ "kind", "id", "reason" }] }` for the look finder; a
+    /// pick of a kind this version doesn't know is left out. Throws
+    /// `AssistError` otherwise. Not screened yet (`LookFinder.usable`).
+    public static func decodeAssistPicks(data: Data, statusCode: Int, retryAfter: String? = nil) throws -> [LookFinder.Pick] {
+        try decodeAssist(LookFinder.Reply.self, data: data, statusCode: statusCode, retryAfter: retryAfter).picks
+    }
+
+    /// `200 { "slots": { "<slot>": [string] } }` for card text.
+    public static func decodeAssistCards(data: Data, statusCode: Int, retryAfter: String? = nil) throws -> AssistCardReply {
+        try decodeAssist(AssistCardReply.self, data: data, statusCode: statusCode, retryAfter: retryAfter)
+    }
+
+    /// `200 { "answer": "…", "support": bool }` for Ask Aybik.
+    public static func decodeAssistHelp(data: Data, statusCode: Int, retryAfter: String? = nil) throws -> AssistHelpReply {
+        try decodeAssist(AssistHelpReply.self, data: data, statusCode: statusCode, retryAfter: retryAfter)
+    }
+
+    private static func decodeAssist<Reply: Decodable>(_ type: Reply.Type, data: Data, statusCode: Int, retryAfter: String?) throws -> Reply {
+        guard (200..<300).contains(statusCode) else {
+            throw assistError(from: data, statusCode: statusCode, retryAfter: retryAfter)
+        }
+        guard let reply = try? JSONDecoder().decode(Reply.self, from: data) else { throw AssistError.invalidResponse }
         return reply
     }
 

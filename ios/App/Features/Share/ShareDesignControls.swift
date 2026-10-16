@@ -192,15 +192,31 @@ extension ShareBackdrop {
 
 // MARK: - Text
 
+/// Options "Write it for me" brought for one text slot, and who wrote them
+/// (nil: the hand-written lines).
+struct CardTextIdeas: Equatable {
+    var lines: [String]
+    var writtenBy: WrittenBy?
+}
+
 /// Her words on the design: a field per text, a font and a colour. Every
 /// word goes through the same rules as text on a photo before it's drawn.
+/// "Write it for me" brings options for a slot (Aybik's, or hand-written
+/// ones); a tap puts one in the field.
 struct ShareTextEditor: View {
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     let slots: [ShareTextSlot]
     @Binding var drafts: [ShareTextSlot: String]
     @Binding var font: OverlayFont?
     @Binding var color: OverlayColor?
     let notice: String?
     var focus: FocusState<ShareTextSlot?>.Binding
+    var ideas: [ShareTextSlot: CardTextIdeas] = [:]
+    var writingSlot: ShareTextSlot?
+    /// Aybik may write: the note says what it gets.
+    var usesAybik = false
+    var onWrite: (ShareTextSlot) -> Void = { _ in }
+    var onPick: (ShareTextSlot, String) -> Void = { _, _ in }
     let onDone: () -> Void
 
     static let colors: [OverlayColor] = [.white, .ink, .blush, .pink, .lilac, .butter, .mint]
@@ -218,9 +234,13 @@ struct ShareTextEditor: View {
             }
             ForEach(slots, id: \.self) { slot in
                 VStack(alignment: .leading, spacing: 6) {
-                    slot.label
-                        .font(.legibleFootnote.weight(.semibold))
-                        .foregroundStyle(Palette.textSecondary)
+                    HStack(alignment: .firstTextBaseline, spacing: 8) {
+                        slot.label
+                            .font(.legibleFootnote.weight(.semibold))
+                            .foregroundStyle(Palette.textSecondary)
+                        Spacer(minLength: 4)
+                        writeButton(for: slot)
+                    }
                     TextField(text: binding(for: slot), axis: slot.allowsLineBreak ? .vertical : .horizontal) {
                         Text(slot.placeholder)
                     }
@@ -232,7 +252,18 @@ struct ShareTextEditor: View {
                     .padding(.horizontal, 14)
                     .padding(.vertical, 11)
                     .background(Palette.background, in: .control)
+                    if let found = ideas[slot], !found.lines.isEmpty {
+                        ideaChips(found, for: slot)
+                            .transition(reduceMotion ? .opacity : .opacity.combined(with: .move(edge: .top)))
+                    }
                 }
+            }
+            if usesAybik {
+                Text("Aybik, our AI helper, reads what you typed in the box, never the photo.",
+                     comment: "Share composer, under the text boxes: what “Write it for me” sends to the app's AI helper. Aybik is the app's AI helper: keep the name Aybik.")
+                    .font(.legibleCaption)
+                    .foregroundStyle(Palette.textTertiary)
+                    .fixedSize(horizontal: false, vertical: true)
             }
             if let notice {
                 Label(notice, systemImage: "exclamationmark.circle.fill")
@@ -256,6 +287,57 @@ struct ShareTextEditor: View {
         .padding(16)
         .cardStyle()
         .animation(.snappy, value: notice)
+        .animation(reduceMotion ? .easeInOut(duration: 0.2) : .snappy, value: ideas)
+    }
+
+    private func writeButton(for slot: ShareTextSlot) -> some View {
+        let isWriting = writingSlot == slot
+        return Button {
+            Haptics.tap()
+            onWrite(slot)
+        } label: {
+            HStack(spacing: 5) {
+                if isWriting {
+                    ProgressView()
+                        .controlSize(.mini)
+                } else {
+                    Image(systemName: "sparkles")
+                        .accessibilityHidden(true)
+                }
+                Text("Write it for me", comment: "Share composer: a button beside a text box that suggests words for it (the app's AI helper or ready-made lines)")
+            }
+            .font(.legibleFootnote.weight(.bold))
+            .foregroundStyle(Palette.accent)
+            .frame(minHeight: 32)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.pressable)
+        .disabled(writingSlot != nil)
+        .accessibilityLabel(Text("Write it for me: \(slot.label)", comment: "Accessibility label of the share composer's “Write it for me” button; the placeholder is the text box's name (Your words, Title, Headline, Caption)"))
+        .accessibilityValue(isWriting ? Text("Writing…") : Text(verbatim: ""))
+    }
+
+    private func ideaChips(_ found: CardTextIdeas, for slot: ShareTextSlot) -> some View {
+        VStack(alignment: .leading, spacing: 6) {
+            FlowLayout(spacing: 6, lineSpacing: 6) {
+                ForEach(found.lines, id: \.self) { line in
+                    SelectableChip(verbatim: line, isSelected: drafts[slot] == line) {
+                        Haptics.selection()
+                        onPick(slot, line)
+                    }
+                    .accessibilityHint(Text("Puts these words on the design", comment: "Accessibility hint of a suggested line in the share composer"))
+                }
+            }
+            Group {
+                if found.writtenBy == .cloud {
+                    Text("Written by Aybik, our AI helper.", comment: "Under suggested words in the share composer. Aybik is the app's AI helper: keep the name Aybik.")
+                } else {
+                    Text("Ready-made ideas to start with.", comment: "Under suggested words in the share composer when they are the app's own lines")
+                }
+            }
+            .font(.legibleCaption)
+            .foregroundStyle(Palette.textTertiary)
+        }
     }
 
     private func binding(for slot: ShareTextSlot) -> Binding<String> {

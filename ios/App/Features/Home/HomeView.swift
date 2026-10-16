@@ -62,6 +62,13 @@ struct HomeView: View {
                         .tourAnchor(.quickTools)
                         .reveal(2)
 
+                    // "Describe your vibe": everyone, Aybik's picks from 13 with writing help on.
+                    if VibeFinderCard.isShown {
+                        VibeFinderCard()
+                            .padding(.horizontal, Metrics.pageGutter)
+                            .reveal(3)
+                    }
+
                     if app.allowsCloudAI {
                         ForEach(Array(orderedCategories.enumerated()), id: \.element) { index, category in
                             Group {
@@ -117,7 +124,7 @@ struct HomeView: View {
             #endif
             #if DEBUG
             .onAppear {
-                if ScreenshotScene.current == .settings || ScreenshotScene.current == .feelGood { app.isSettingsPresented = true }
+                if [.settings, .feelGood, .askAybik].contains(ScreenshotScene.current) { app.isSettingsPresented = true }
                 if ScreenshotScene.current == .invite { showInvite = true }
                 if ScreenshotScene.current == .legal { legalDocument = .privacy }
                 if ScreenshotScene.current == .collection {

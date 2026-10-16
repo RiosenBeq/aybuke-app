@@ -35,7 +35,8 @@ final class AssistTests: XCTestCase {
                                             context: AssistContext(look: "coldGirl")))
         XCTAssertEqual(makeup["task"] as? String, "makeup")
         XCTAssertEqual(makeup["context"] as? [String: String], ["look": "coldGirl"])
-        XCTAssertEqual(Set(AssistTask.allCases.map(\.rawValue)), ["inspire", "magic", "captions", "makeup"])
+        XCTAssertEqual(Set(AssistTask.allCases.map(\.rawValue)),
+                       ["inspire", "magic", "captions", "makeup", "looks", "poll_questions", "card_text", "help"])
     }
 
     func testValidationMirrorsTheServer() {

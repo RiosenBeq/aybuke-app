@@ -23,6 +23,13 @@ struct PollCreateView: View {
     @State private var shareItems: ActivityItems?
     @State private var hasGroup = false
     @State private var copied = false
+    /// "Ideas from Aybik": its questions, and whether it's writing or couldn't.
+    @State private var aybikIdeas: [String] = []
+    /// The request for ideas, and the question it was asked with: changing
+    /// the question or leaving cancels it.
+    @State private var writingIdeas: Task<Void, Never>?
+    @State private var ideasAskedWith = ""
+    @State private var ideasUnavailable = false
     @FocusState private var isQuestionFocused: Bool
 
     enum Step: Equatable {
@@ -70,6 +77,7 @@ struct PollCreateView: View {
         }
         .tint(Palette.accent)
         .interactiveDismissDisabled(step == .sending)
+        .onDisappear(perform: cancelIdeas)
         .sheet(isPresented: $showsConsent) {
             AIConsentView(
                 processors: app.config.consentProcessors,
@@ -203,6 +211,7 @@ struct PollCreateView: View {
                     let clipped = PollQuestion.clipped(typed)
                     if clipped != typed { question = clipped }
                     notice = nil
+                    if isWritingIdeas, clipped != ideasAskedWith { cancelIdeas() }
                 }
             FlowLayout {
                 ForEach(PollQuestion.presets, id: \.self) { preset in
@@ -212,10 +221,84 @@ struct PollCreateView: View {
                         question = question == text ? "" : text
                     }
                 }
+                ForEach(aybikIdeas, id: \.self) { idea in
+                    SelectableChip(verbatim: idea, symbolName: "sparkles", isSelected: question == idea) {
+                        Haptics.selection()
+                        question = question == idea ? "" : idea
+                    }
+                    .transition(reduceMotion ? .opacity : .opacity.combined(with: .scale(scale: 0.9)))
+                    .accessibilityHint(Text("Written by Aybik, our AI helper.", comment: "Under suggested words in the share composer. Aybik is the app's AI helper: keep the name Aybik."))
+                }
+            }
+            if app.usesCloudWriter {
+                aybikIdeasButton
             }
         }
         .padding(16)
         .cardStyle()
+        .animation(reduceMotion ? .easeInOut(duration: 0.2) : Motion.appear, value: aybikIdeas)
+    }
+
+    /// Aybik writes question ideas only when she asks; the note says what it gets.
+    private var aybikIdeasButton: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            Button {
+                writeIdeas()
+            } label: {
+                HStack(spacing: 6) {
+                    if isWritingIdeas {
+                        ProgressView()
+                            .controlSize(.small)
+                    } else {
+                        Image(systemName: "sparkles")
+                            .accessibilityHidden(true)
+                    }
+                    Text("Ideas from Aybik", comment: "Ask friends sheet: a button that asks the app's AI helper for poll questions. Aybik is the app's AI helper: keep the name Aybik.")
+                }
+            }
+            .buttonStyle(.secondary)
+            .disabled(isWritingIdeas || step == .sending)
+            Group {
+                if ideasUnavailable {
+                    Text("Aybik can't write ideas right now. Try one of these.",
+                         comment: "Ask friends sheet: the AI helper didn't answer; the ready-made questions stay. Aybik is the app's AI helper: keep the name Aybik.")
+                } else {
+                    Text("Aybik, our AI helper, gets what you typed and your pictures' titles, never the pictures.",
+                         comment: "Ask friends sheet, under “Ideas from Aybik”: what the app's AI helper receives. Aybik is the app's AI helper: keep the name Aybik.")
+                }
+            }
+            .font(.legibleCaption)
+            .foregroundStyle(Palette.textTertiary)
+            .fixedSize(horizontal: false, vertical: true)
+        }
+        .padding(.top, 2)
+    }
+
+    private var isWritingIdeas: Bool { writingIdeas != nil }
+
+    private func writeIdeas() {
+        guard !isWritingIdeas else { return }
+        Haptics.tap()
+        ideasUnavailable = false
+        let typed = question
+        ideasAskedWith = typed
+        writingIdeas = Task {
+            let ideas = await app.pollQuestionIdeas(typed: typed, draft: draft)
+            guard !Task.isCancelled else { return }
+            writingIdeas = nil
+            let fresh = ideas.filter { idea in !PollQuestion.presets.contains { L10n.core($0) == idea } }
+            if fresh.isEmpty {
+                ideasUnavailable = true
+            } else {
+                aybikIdeas = fresh
+                AccessibilityNotification.Announcement(fresh.joined(separator: ", ")).post()
+            }
+        }
+    }
+
+    private func cancelIdeas() {
+        writingIdeas?.cancel()
+        writingIdeas = nil
     }
 
     private var sendBar: some View {

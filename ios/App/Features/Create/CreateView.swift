@@ -58,6 +58,12 @@ struct CreateView: View {
                 if model.prompt.isEmpty, !app.prompts.draft.isEmpty { model.prompt = app.prompts.draft }
             }
             .onChange(of: model.prompt) { _, prompt in app.prompts.draft = prompt }
+            // A style from Explore's look finder.
+            .task(id: app.pendingCreateStyle) {
+                guard let id = app.pendingCreateStyle else { return }
+                app.pendingCreateStyle = nil
+                model.style = StyleCatalog.style(id: id)
+            }
             // File › New Creation on the Mac: the cursor goes to the prompt.
             .task(id: app.wantsPromptFocus) {
                 guard app.wantsPromptFocus else { return }

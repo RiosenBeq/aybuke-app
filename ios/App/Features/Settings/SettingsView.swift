@@ -18,6 +18,7 @@ struct SettingsView: View {
     @State private var isSigningIn = false
     #if DEBUG
     @State private var showsFeelGoodScene = ScreenshotScene.current == .feelGood
+    @State private var showsAskAybikScene = ScreenshotScene.current == .askAybik
     #endif
 
     var body: some View {
@@ -41,10 +42,12 @@ struct SettingsView: View {
                 languageSection
                 privacySection
                 shareSection
+                helpSection
                 aboutSection
             }
             #if DEBUG
             .navigationDestination(isPresented: $showsFeelGoodScene) { FeelGoodView() }
+            .navigationDestination(isPresented: $showsAskAybikScene) { AskAybikView() }
             #endif
             .scrollContentBackground(.hidden)
             .background(Palette.background.ignoresSafeArea())
@@ -484,6 +487,33 @@ struct SettingsView: View {
                 .environment(app)
                 .pageSheetSizing()
         }
+    }
+
+    /// Ask Aybik and the common questions (only the common questions under
+    /// 13, where the app never asks the server).
+    private var helpSection: some View {
+        Section {
+            NavigationLink {
+                AskAybikView()
+            } label: {
+                if app.allowsCloudAI {
+                    Label {
+                        Text("Ask Aybik", comment: "Settings › Help: the screen where she asks the app's AI helper about the app. Aybik is the app's AI helper: keep the name Aybik.")
+                    } icon: {
+                        Image(systemName: "bubble.left.and.text.bubble.right")
+                    }
+                } else {
+                    Label {
+                        Text("Common questions", comment: "Settings › Help: the list of common questions about the app")
+                    } icon: {
+                        Image(systemName: "questionmark.bubble")
+                    }
+                }
+            }
+        } header: {
+            Text("Help", comment: "Settings: the section header for help with the app")
+        }
+        .listRowBackground(Palette.surface)
     }
 
     private var aboutSection: some View {
