@@ -1,4 +1,4 @@
-# Aybuke — iş durumu (16 Ekim 2026, 19:00)
+# Aybuke — iş durumu (17 Ekim 2026, 00:30)
 
 Bu oturumun açık işleri. Bir sonraki devamda buradan başlayın; ayrıntı `AGENTS.md` §6'da.
 
@@ -12,18 +12,18 @@ Bu oturumun açık işleri. Bir sonraki devamda buradan başlayın; ayrıntı `A
 - **Mağaza görselleri:** 1.1 iPhone ekran görüntüleri 12 dilde (`docs/marketing/app-store/<dil>/`, commit `91adf3c`).
 - **Web sitesi (RiosenBeq/aybuke):** 1.1 özellikleri "Sonraki güncellemede" etiketleriyle (`src/data/release.json` → `liveVersion`), 19 görünüm örneği, yasal metinler eşit.
 
-## Sürüyor
+## Son durum (17 Ekim 00:30)
 
-- **Enhance (Remini benzeri) + 18+ Soft skin** — kod yazıldı, doğrulanıp commit'lenecek. Commit'lenmemiş hâli yedekte: `origin/wip/enhance-backup`.
-- **Mağaza varlıkları** — iPad ve Mac ekran görüntüleri, İngilizce/Türkçe yıl boyu önizleme videosu (After Effects), 13 dilde "Yenilikler". Çıktılar: `docs/marketing/app-store/…`, `docs/marketing/app-preview/`.
+- **1.1 tamam ve TestFlight'ta:** iOS 1.1 (20261016.2312), Mac 1.1 (20261016.2317), profiller ACTIVE. İçinde: Enhance (Quick fix + 4 AI modu), 18+ Soft skin, Aybik'in dört yeni özelliği (look finder, anket soruları, kart yazısı, Aybik'e sor), harf harf açılış animasyonu.
+- **GitHub:** `main` = `63e4bc4` (CI yeşil). Sunucu: migrasyonlar `20261104000000`'e kadar canlı, `assist` güncel. xAI bakiye tahmini 7,83 $.
+- **Mağaza varlıkları hazır (repo):** 12 dilde iPhone/iPad/Mac ekran görüntüleri, İngilizce/Türkçe yıl boyu önizleme videoları (`docs/marketing/app-preview/`), 13 dilde metinler ve 1.1 inceleme notları; araçlar `--version 1.1` alır (`scripts/asc/README.md`).
+- **aybuke.org yenilendi** (site repo `c2b4e80`, `3183467`, `84cfc49`): harf harf wordmark, CSS telefon, karanlık mod, /photo-enhancer sayfası, yasal metinler eşit.
 
-## Bekliyor (sırayla)
+## Bekliyor
 
-1. **Aybik genişletmesi:** vibe ile görünüm bulma (Keşfet), anket sorusu önerisi, kart yazısı önerisi, "Aybik'e sor" yardımcısı; gizlilik metni ve sunucu sınırları.
-2. **Animasyon cilası:** harf harf "aybuke" açılışı, sonuç ve geçiş animasyonları.
-3. **Son denetim + düzeltmeler**, tam test turu, son 1.1 derlemesi (TestFlight), CI yeşil → `main`.
-4. **aybuke.org yeniden tasarım** (animasyon, görseller, SEO; yerel dal `redesign-wip`), sonra siteyi `main`'e.
-5. **1.0 onayı gelince:** 1.1 sürüm kaydı, metinler/görseller/video yüklemesi, derlemeyi bağlayıp incelemeye gönderme; AdMob'u mağaza kaydına bağlama; sitede `liveVersion` "1.1"; `PROMPT_POLISH` açma.
+1. **1.0 onayı** (iOS + Mac `WAITING_FOR_REVIEW`). Bu oturumdaki 2 saatlik takip görevi onay gelince AdMob'u bağlar ve 1.1'i güncelleme olarak gönderir. Oturum kapanırsa yeniden kurun: durum kontrolü → onaylıysa `asc_metadata.py .. --version 1.1 --review-notes`, `asc_screenshots.py .. --version 1.1`, `asc_previews.py .. --version 1.1`, derlemeleri bağla, AFTER_APPROVAL, incelemeye gönder.
+2. **1.0 yayına girince sitede:** "henüz App Store'da değil / e-postayla erken erişim" metnini ve "Uygulamayı indir" düğmelerini App Store bağlantısına çevir.
+3. **1.1 yayına girince:** sitede `src/data/release.json` → `"liveVersion": "1.1"`, build, push; sahip onaylarsa `PROMPT_POLISH` açılır.
 
 ## Sahibe kalanlar
 
