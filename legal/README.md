@@ -21,6 +21,8 @@ Source texts for Aybuke's legal documents, in English (`en/`) and Turkish (`tr/`
 
 Markdown rules (the in-app renderer supports a small subset): one `#` title, `##`/`###` headings, paragraphs, `- ` and `1. ` lists, `> ` summaries, `**bold**`, `*italic*` and links. No tables, HTML, images or nested lists.
 
+Company names: Anthropic, xAI (Grok) and Supabase appear only in the Privacy Policy's sub-processor list (§12) and international transfers (§13) and in the KVKK notice's recipients section (§5). Everywhere else, the AUP included, the texts use role names, explained where they first appear: "our image AI provider", "our safety and writing AI provider" and "our backend hosting provider" (Turkish: "görsel yapay zekâ sağlayıcımız", "güvenlik ve yazım yapay zekâ sağlayıcımız", "arka uç barındırma sağlayıcımız"). "Claude" never appears: the app's AI helper is Aybik.
+
 ## Before you publish
 
 1. **Lawyer review** of all seven documents, in both languages.
