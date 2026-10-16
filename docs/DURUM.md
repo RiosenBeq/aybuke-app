@@ -25,6 +25,11 @@ Bu oturumun açık işleri. Bir sonraki devamda buradan başlayın; ayrıntı `A
 2. **1.0 yayına girince sitede:** "henüz App Store'da değil / e-postayla erken erişim" metnini ve "Uygulamayı indir" düğmelerini App Store bağlantısına çevir.
 3. **1.1 yayına girince:** sitede `src/data/release.json` → `"liveVersion": "1.1"`, build, push; sahip onaylarsa `PROMPT_POLISH` açılır.
 
+## TestFlight (17 Ekim 01:00)
+
+- Kurulum hatası ("The requested app is not available or doesn't exist") ve 15 Ekim'de iOS derlemelerinin birden "expired" olması Apple tarafındaki bilinen **BETA_CONTRACT_MISSING** hatasından: dış test incelemesine gönderim API'de 422 `ENTITY_UNPROCESSABLE.BETA_CONTRACT_MISSING` dönüyor, oysa tüm sözleşmeler aktif. Apple Developer Destek'e talep açıldı: **Case ID 102999056338** (Distribution › TestFlight). Apple düzeltince: "Aybuke Beta" grubu (herkese açık bağlantı https://testflight.apple.com/join/NRjm1BFq, en çok 200 kişi) için 1.1 (20261016.2312 iOS, .2317 macOS) dış beta incelemesine gönderilir; riosenbeq@icloud.com iki grupta da.
+- Beta lisans metni, test bilgileri ve "What to Test" (EN/TR) dolduruldu.
+
 ## Sahibe kalanlar
 
 - Çöp Sepeti'ni boşaltmak (Cursor ve VN verileri, ~14 GB).
