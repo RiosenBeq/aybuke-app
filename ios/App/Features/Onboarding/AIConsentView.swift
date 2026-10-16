@@ -80,6 +80,10 @@ struct AIConsentView: View {
             .padding(.bottom, 12)
         }
         .scrollBounceBehavior(.basedOnSize)
+        #if DEBUG
+        // Screenshot scene `consent -GLConsentScroll bottom`: the providers footnote in view.
+        .defaultScrollAnchor(UserDefaults.standard.string(forKey: "GLConsentScroll") == "bottom" ? .bottom : .top)
+        #endif
         .safeAreaInset(edge: .bottom) {
             if !typeSize.isAccessibilitySize {
                 choices

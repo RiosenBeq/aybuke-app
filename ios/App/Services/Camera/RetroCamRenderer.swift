@@ -232,6 +232,11 @@ final class RetroCamRenderer: @unchecked Sendable {
 
     /// Pauses the tint when frames keep falling behind or the device runs hot.
     private func watchTint(seconds: Double, duration: Double) {
+        #if DEBUG
+        // Not even the tracker's own pacing or the heat check (a busy Mac
+        // reads as hot): it would stop looking for faces.
+        if Self.tintKeepsGoing { return }
+        #endif
         var pause = faces.frameDrawn(at: seconds, duration: duration)
         if seconds - tint.lastHeatCheck >= 1 {
             tint.lastHeatCheck = seconds
@@ -240,9 +245,6 @@ final class RetroCamRenderer: @unchecked Sendable {
                 pause = true
             }
         }
-        #if DEBUG
-        if Self.tintKeepsGoing { pause = false }
-        #endif
         guard pause else { return }
         tint.isPaused = true
         Task { @MainActor [weak self] in self?.onTintPause?() }

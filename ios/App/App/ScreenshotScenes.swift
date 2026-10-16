@@ -54,6 +54,7 @@ enum ScreenshotScene: String, CaseIterable {
     /// Pro try card. With any scene, `-GLAdPacing off` lets an interstitial
     /// follow every save (QA).
     case paywall
+    /// The AI consent sheet; `-GLConsentScroll bottom` scrolls to the providers footnote.
     case consent
     /// Settings for a free member who never bought anything; `-GLPro YES`
     /// for a Pro member, `-GLPurchased YES` for one who bought credits.
