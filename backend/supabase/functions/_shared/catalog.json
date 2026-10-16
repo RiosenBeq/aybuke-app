@@ -1,5 +1,27 @@
 {
-  "_comment" : "Generated from ios/Packages/AppCore (TemplateCatalog/StyleCatalog/MakeupStudio). Do not edit by hand: run scripts/export-catalog.sh.",
+  "_comment" : "Generated from ios/Packages/AppCore (TemplateCatalog/StyleCatalog/MakeupStudio/EnhanceMode). Do not edit by hand: run scripts/export-catalog.sh.",
+  "enhanceModes" : [
+    {
+      "id" : "unblur",
+      "prompt" : "Enhance this photo: make it sharper and more detailed, reduce blur and noise, restore faces naturally and gently improve the lighting. Keep real skin texture, freckles, moles, pores and blemishes; don't retouch or smooth the skin, and don't reshape the face or body. Keep the composition, colors, every person and their identity exactly the same."
+    },
+    {
+      "id" : "restore",
+      "prompt" : "Restore this old photo: remove scratches, dust, spots, creases and tears, bring back faded contrast and detail, and restore faces naturally. If it is black and white, keep it black and white. Keep real skin texture, freckles, moles, pores and blemishes; don't retouch or smooth the skin, and don't reshape the face or body. Keep the composition, colors, every person and their identity exactly the same."
+    },
+    {
+      "id" : "restore_color",
+      "prompt" : "Restore this old photo and add natural, true-to-life color to it: remove scratches, dust, spots, creases and tears, bring back faded detail and restore faces naturally. Keep every skin tone natural and true to the person. Keep real skin texture, freckles, moles, pores and blemishes; don't retouch or smooth the skin, and don't reshape the face or body. Keep the composition, every person and their identity exactly the same."
+    },
+    {
+      "id" : "low_light",
+      "prompt" : "Brighten this photo taken in low light: lift the exposure and shadows naturally, reduce the noise and recover detail, with realistic light and no added glow, haze or bloom. Keep real skin texture, freckles, moles, pores and blemishes; don't retouch or smooth the skin, and don't reshape the face or body. Keep the composition, colors, every person and their identity exactly the same."
+    },
+    {
+      "id" : "hd",
+      "prompt" : "Make this photo crisp and high-definition: recover fine, natural detail and clean edges, and remove compression artifacts and noise, so it still looks like a real photo. Keep real skin texture, freckles, moles, pores and blemishes; don't retouch or smooth the skin, and don't reshape the face or body. Keep the composition, colors, every person and their identity exactly the same."
+    }
+  ],
   "makeup" : {
     "cheeks" : [
       {

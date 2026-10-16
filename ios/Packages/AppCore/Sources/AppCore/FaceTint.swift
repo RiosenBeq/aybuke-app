@@ -33,15 +33,20 @@ public struct FaceLandmarks: Equatable, Sendable {
     public var rightEye: [FacePoint]
     public var nose: [FacePoint]
     public var faceContour: [FacePoint]
+    /// Only Soft skin uses the brows (kept sharp); empty when Vision has none.
+    public var leftEyebrow: [FacePoint]
+    public var rightEyebrow: [FacePoint]
 
     public init(outerLips: [FacePoint], innerLips: [FacePoint] = [], leftEye: [FacePoint], rightEye: [FacePoint],
-                nose: [FacePoint] = [], faceContour: [FacePoint] = []) {
+                nose: [FacePoint] = [], faceContour: [FacePoint] = [], leftEyebrow: [FacePoint] = [], rightEyebrow: [FacePoint] = []) {
         self.outerLips = outerLips
         self.innerLips = innerLips
         self.leftEye = leftEye
         self.rightEye = rightEye
         self.nose = nose
         self.faceContour = faceContour
+        self.leftEyebrow = leftEyebrow
+        self.rightEyebrow = rightEyebrow
     }
 
     /// Halfway between the eyes and the mouth.
@@ -61,7 +66,8 @@ public struct FaceLandmarks: Equatable, Sendable {
     public func mapped(_ transform: (FacePoint) -> FacePoint) -> FaceLandmarks {
         FaceLandmarks(outerLips: outerLips.map(transform), innerLips: innerLips.map(transform),
                       leftEye: leftEye.map(transform), rightEye: rightEye.map(transform),
-                      nose: nose.map(transform), faceContour: faceContour.map(transform))
+                      nose: nose.map(transform), faceContour: faceContour.map(transform),
+                      leftEyebrow: leftEyebrow.map(transform), rightEyebrow: rightEyebrow.map(transform))
     }
 
     /// `fraction` of the way to `target`, point by point; `target` itself when

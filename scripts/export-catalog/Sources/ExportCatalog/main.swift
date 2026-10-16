@@ -85,10 +85,19 @@ let makeup = MakeupExport(
 )
 
 let recipes = TemplateCatalog.all.map { Recipe(id: $0.id, title: $0.title, isPro: $0.isPro, prompt: $0.prompt) }
+
+// Enhance's modes: the app sends only the id, the server writes the instruction.
+struct EnhanceRecipe: Encodable {
+    let id: String
+    let prompt: String
+}
+
+let enhanceModes = EnhanceMode.allCases.map { EnhanceRecipe(id: $0.rawValue, prompt: $0.prompt) }
 let encoder = JSONEncoder()
 encoder.outputFormatting = [.prettyPrinted, .sortedKeys, .withoutEscapingSlashes]
 let payload: [String: AnyEncodable] = [
-    "_comment": AnyEncodable("Generated from ios/Packages/AppCore (TemplateCatalog/StyleCatalog/MakeupStudio). Do not edit by hand: run scripts/export-catalog.sh."),
+    "_comment": AnyEncodable("Generated from ios/Packages/AppCore (TemplateCatalog/StyleCatalog/MakeupStudio/EnhanceMode). Do not edit by hand: run scripts/export-catalog.sh."),
+    "enhanceModes": AnyEncodable(enhanceModes),
     "templates": AnyEncodable(recipes),
     "proStyles": AnyEncodable(StyleCatalog.all.filter(\.isPro).map(\.id)),
     "makeup": AnyEncodable(makeup),

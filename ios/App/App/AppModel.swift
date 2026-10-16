@@ -1979,7 +1979,9 @@ extension AppModel {
             selectedTab = .home
             // `-GLEditorTool <tool>` opens another tool's panel (layout QA).
             let tool = UserDefaults.standard.string(forKey: "GLEditorTool").flatMap(EditorTool.init(rawValue:)) ?? .magicEdit
-            editorLaunch = EditorLaunch(image: tool == .makeup ? ScreenshotFixtures.portraitBefore : ScreenshotFixtures.editorPhoto,
+            // `-GLEditorPhoto <sample>`: another sample photo (with -GLSamplePhotos).
+            let photo = UserDefaults.standard.string(forKey: "GLEditorPhoto").flatMap(ScreenshotFixtures.sample)
+            editorLaunch = EditorLaunch(image: photo ?? (tool == .makeup ? ScreenshotFixtures.portraitBefore : ScreenshotFixtures.editorPhoto),
                                         tool: tool,
                                         prompt: tool == .magicEdit ? String(localized: "Golden hour light") : nil)
         case .result:

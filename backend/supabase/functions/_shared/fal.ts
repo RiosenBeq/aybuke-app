@@ -2,6 +2,7 @@
 // Endpoint ids and JSON shapes: docs/research/tech-and-compliance.md §2.4
 // (from fal's official client types). Never expose a generic proxy to the app:
 // the client only names an *operation*, the server picks the model.
+import type { EnhanceMode } from "./enhance.ts";
 import { HttpError, requireEnv } from "./http.ts";
 
 export type Operation =
@@ -39,6 +40,8 @@ export interface JobInput {
   image?: string;
   mask?: string;
   isPro: boolean;
+  /** Enhance only (enhance.ts). fal's upscaler takes no instruction, so only xAI uses it. */
+  enhanceMode?: EnhanceMode;
 }
 
 /** Builds the model input JSON. Images are passed as data URIs (never stored by us). */

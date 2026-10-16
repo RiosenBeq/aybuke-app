@@ -138,6 +138,13 @@ struct EditorIdeasRow: View {
             }
             .accessibilityLabel("Magic Edit idea: \(text)")
             .accessibilityHint("Puts this idea in the Magic Edit box.")
+        case .enhance(let option):
+            // The photo looks blurry, grainy, dark or old: Enhance with its fix picked.
+            IdeaChip(title: option.title, symbolName: option.symbolName) {
+                Haptics.tap()
+                model.openEnhance(option)
+            }
+            .accessibilityHint(Text("Opens Enhance with this fix picked.", comment: "VoiceOver hint of an Enhance idea under the editor's photo"))
         }
     }
 
@@ -145,12 +152,19 @@ struct EditorIdeasRow: View {
 
     private func suggestions(for insight: PhotoInsight, rotation: Int) -> [LookSuggestion] {
         let all = LookSuggester.suggest(
-            for: insight, date: AppClock.now, audience: app.seasonAudience, freeEffects: Self.freeEffects, rotation: rotation
+            for: insight, date: AppClock.now, audience: app.seasonAudience, freeEffects: Self.freeEffects, rotation: rotation,
+            cloudAI: app.allowsCloudAI
         )
         // Under 13 only the free on-device tools are offered, so no looks or
-        // Magic Edit ideas (see AgeDefaults).
+        // Magic Edit ideas (see AgeDefaults); Enhance's idea is then Quick fix.
         guard !app.allowsCloudAI else { return all }
-        return all.filter { if case .effect = $0 { return true } else { return false } }
+        return all.filter {
+            switch $0 {
+            case .effect: return true
+            case .enhance(let option): return !option.isCloud
+            case .template, .magicEdit: return false
+            }
+        }
     }
 
     /// Applies the next free effect that suits the photo. Never anything

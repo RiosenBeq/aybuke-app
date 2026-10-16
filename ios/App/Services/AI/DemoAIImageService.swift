@@ -35,7 +35,16 @@ final class DemoAIImageService: AIImageService {
                 DemoArt.render(prompt: job.prompt ?? "", style: style, size: size, variant: variant)
             }
         case .enhance:
-            return [try transform(job.sourceImage) { ImageFilters.upscale(ImageFilters.autoEnhance($0), factor: 1.5) }]
+            // A stand-in per mode: brighter for low light, grey kept for a plain restore.
+            return [try transform(job.sourceImage) { input in
+                var image = ImageFilters.autoEnhance(input)
+                switch job.enhanceMode ?? .unblur {
+                case .lowLight: image = image.applyingFilter("CIExposureAdjust", parameters: [kCIInputEVKey: 0.8])
+                case .restore: image = image.applyingFilter("CIPhotoEffectMono")
+                case .unblur, .restoreColor, .hd: break
+                }
+                return image
+            }]
         case .magicEdit:
             return [try transform(job.sourceImage) { ImageFilters.cinematicGrade($0) }]
         case .restyle:

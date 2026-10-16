@@ -20,9 +20,13 @@ public struct GenerationRequest: Codable, Equatable, Sendable {
     /// ("Doesn't look like you? Retry free"). The backend allows one free
     /// retry per result within a short window.
     public var retryOf: String?
+    /// Enhance only: which fix (`EnhanceMode`). The server writes the
+    /// instruction itself; nil means `unblur`, as before 1.1.
+    public var enhanceMode: EnhanceMode?
 
     enum CodingKeys: String, CodingKey {
         case operation, prompt, image, mask
+        case enhanceMode = "enhance_mode"
         case styleID = "style_id"
         case templateID = "template_id"
         case aspectRatio = "aspect_ratio"
@@ -33,7 +37,7 @@ public struct GenerationRequest: Codable, Equatable, Sendable {
     public init(
         operation: AIOperation, prompt: String? = nil, styleID: String? = nil, templateID: String? = nil,
         aspectRatio: AspectRatio? = nil, numOutputs: Int = 1, image: String? = nil, mask: String? = nil,
-        retryOf: String? = nil
+        retryOf: String? = nil, enhanceMode: EnhanceMode? = nil
     ) {
         self.operation = operation
         self.prompt = prompt
@@ -44,6 +48,7 @@ public struct GenerationRequest: Codable, Equatable, Sendable {
         self.image = image
         self.mask = mask
         self.retryOf = retryOf
+        self.enhanceMode = enhanceMode
     }
 
     public static let maxOutputs = 4

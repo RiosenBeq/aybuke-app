@@ -53,6 +53,7 @@ import { admissionError, type AdmitResult } from "../_shared/admission.ts";
 import { type EntitlementStatus, type InstallProof, resolveEntitlement, verifyInstall } from "../_shared/apple.ts";
 import { requireUser, serviceClient } from "../_shared/auth.ts";
 import { askForJson, describeTextHelper, textHelperConfig } from "../_shared/claude-text.ts";
+import { enhanceMode } from "../_shared/enhance.ts";
 import * as fal from "../_shared/fal.ts";
 import { corsHeaders, errorResponse, HttpError, json } from "../_shared/http.ts";
 import {
@@ -112,6 +113,7 @@ interface GenerationRequest {
   image?: unknown;
   mask?: unknown;
   retry_of?: unknown;
+  enhance_mode?: unknown;
 }
 
 interface JobRow {
@@ -245,6 +247,8 @@ async function createJob(
   }
   const image = op !== "text_to_image" ? requireImage(body.image, "Pick a photo first.") : undefined;
   const mask = op === "erase_object" ? requireImage(body.mask, "Brush over what you want to erase.") : undefined;
+  // Enhance: the app names a mode; the instruction is the server's own.
+  const mode = op === "enhance" ? enhanceMode(body.enhance_mode) : undefined;
   const styleId = optionalString(body.style_id, 100);
   const templateId = optionalString(body.template_id, 100);
   if (
@@ -302,7 +306,8 @@ async function createJob(
     }
   }
   // The app already appends the guard; this holds even for a modified client.
-  // Restyle recipes carry their own identity clause, and enhance ignores the prompt.
+  // Restyle recipes carry their own identity clause, and enhance ignores the
+  // prompt: its mode's instruction (enhance.ts) keeps the skin guard.
   if (op === "magic_edit" && !prompt.endsWith(EDIT_GUARD)) prompt += EDIT_GUARD;
 
   // With a try, the same admission plus spending it (only then the wrapper, so
@@ -340,6 +345,7 @@ async function createJob(
     image,
     mask,
     isPro,
+    enhanceMode: mode,
   };
   if (useXAI) {
     background(runXAI(db, jobId, input, await xai.userTag(userId), started));
