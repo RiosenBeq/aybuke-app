@@ -836,6 +836,8 @@ struct VideoEditorView: View {
     /// `-GLAutoEditUsed YES` has today's free one spent (the paywall's reason).
     private func applyScreenshotOptions() async {
         guard ScreenshotScene.current == .video, !model.loadFailed else { return }
+        // Captures and recordings are silent: the test clip's tone stays on the Mac.
+        model.player.isMuted = true
         let defaults = UserDefaults.standard
         if let effect = defaults.string(forKey: "GLEffect").flatMap(RetroEffect.init(rawValue:)) { model.effect = effect }
         if defaults.bool(forKey: "GLCutSilences") { model.cutSilences = true }
