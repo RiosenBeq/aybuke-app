@@ -1,268 +1,1396 @@
 {
   "en": [
-    {"scene": "result", "title": "Say it, watch it *glow*", "subtitle": "Magic Edit: type a change, slide to see before and after", "before": "Before", "after": "After"},
-    {"scene": "makeup", "title": "Makeup is *play*", "subtitle": "Makeup Studio: 20 looks or your own mix. You stay you", "chip": "New"},
-    {"scene": "home", "title": "50+ looks, one *tap* away", "subtitle": "Doll\u00a0Box, Y2K\u00a0Digicam, Bow\u00a0Era, pet portraits and more"},
-    {"scene": "effects", "title": "13 retro effects, *free*", "subtitle": "VHS\u00a0'86, Disposable\u00a0'98, Digicam\u00a0'04 and more, no credits", "chip": "On your device"},
-    {"scene": "textStickers", "title": "Stickers, text & *doodles*", "subtitle": "55 cute stickers, words in six fonts and a doodle pen", "chip": "Free"},
-    {"scene": "create", "title": "Dream it, *create* it", "subtitle": "Pick one of 20 styles, or tap Inspire\u00a0me for an idea"},
-    {"scene": "share-cover", "title": "Be the cover *star*", "subtitle": "Magazine covers, photo strips and story cards to share"},
-    {"scene": "collage", "title": "Photo\u00a0dumps, *sorted*", "subtitle": "Collages from 2 to 9 photos, or a seamless carousel", "chip": "Free"},
-    {"scene": "consent", "title": "Your photos, your *call*", "subtitle": "Explicit consent, on-device tools, never used to train AI"},
-    {"scene": "paywall", "title": "Pricing that plays *fair*", "subtitle": "No weekly plan, packs never expire, failed edits refunded", "chip": "No ads with Pro"}
+    {
+      "scene": "result",
+      "title": "Say it, watch it *glow*",
+      "subtitle": "Magic Edit: type a change, slide to see before and after",
+      "before": "Before",
+      "after": "After"
+    },
+    {
+      "scene": "makeup",
+      "title": "Makeup is *play*",
+      "subtitle": "Makeup Studio: 20 looks or your own mix. You stay you"
+    },
+    {
+      "scene": "glowcam",
+      "title": "Your camera, but *glowier*",
+      "subtitle": "Glow looks, sparkle and a lip tint, live in Retro Cam",
+      "chip": "New"
+    },
+    {
+      "scene": "home",
+      "title": "50+ looks, one *tap* away",
+      "subtitle": "Doll Box, Y2K Digicam, DSLR Portrait, pets and more"
+    },
+    {
+      "scene": "autoedit",
+      "title": "Vertical videos in one *tap*",
+      "subtitle": "Auto edit finds your best moments and adds captions",
+      "chip": "New"
+    },
+    {
+      "scene": "effects",
+      "title": "13 retro effects, *free*",
+      "subtitle": "DSLR '12 blurs the background, VHS '86 brings the 80s",
+      "chip": "On your device"
+    },
+    {
+      "scene": "polls",
+      "title": "Let your friends *vote*",
+      "subtitle": "Which vibe? Two pictures, a private link, 24 hours",
+      "chip": "New"
+    },
+    {
+      "scene": "share-cover",
+      "title": "Be the cover *star*",
+      "subtitle": "Magazine covers, photo strips and story cards to share"
+    },
+    {
+      "scene": "create",
+      "title": "Dream it, *create* it",
+      "subtitle": "Pick one of 20 styles, or let Aybik write the idea"
+    },
+    {
+      "scene": "consent",
+      "title": "Your photos, your *call*",
+      "subtitle": "Nothing leaves your device until you say yes"
+    }
   ],
   "tr": [
-    {"scene": "result", "title": "Söyle, *ışıldasın*", "subtitle": "Sihirli Düzenleme: değişikliği yaz, kaydır, farkı gör", "before": "Öncesi", "after": "Sonrası"},
-    {"scene": "makeup", "title": "Makyaj bir *oyun*", "subtitle": "Makyaj Stüdyosu: 20 görünüm ya da kendi karışımın", "chip": "Yeni"},
-    {"scene": "home", "title": "50+ trend, tek *dokunuşla*", "subtitle": "Doll\u00a0Box, Y2K\u00a0Digicam, evcil dost portreleri ve dahası"},
-    {"scene": "effects", "title": "13 retro efekt, *ücretsiz*", "subtitle": "VHS\u00a0'86, Disposable\u00a0'98, Digicam\u00a0'04 ve dahası, kredisiz", "chip": "Cihazında"},
-    {"scene": "textStickers", "title": "Çıkartma, yazı ve *karalama*", "subtitle": "55 tatlı çıkartma, altı yazı tipi ve karalama kalemi", "chip": "Ücretsiz"},
-    {"scene": "create", "title": "Hayal et, *yarat*", "subtitle": "20 stilden birini seç ya da fikir için İlham\u00a0ver’e dokun"},
-    {"scene": "share-cover", "title": "Kapak *yıldızı* sensin", "subtitle": "Dergi kapakları, fotoğraf şeritleri ve hikâye kartları"},
-    {"scene": "collage", "title": "Photo\u00a0dump *zamanı*", "subtitle": "2–9 fotoğraftan kolaj ya da kesintisiz kaydırmalı gönderi", "chip": "Ücretsiz"},
-    {"scene": "consent", "title": "Fotoğrafların, senin *kararın*", "subtitle": "Onayın olmadan buluta gitmez, yapay zekâ eğitimine girmez"},
-    {"scene": "paywall", "title": "Adil fiyat, *sürpriz* yok", "subtitle": "Haftalık plan yok, süresiz paketler, hatada kredi iadesi", "chip": "Pro'da reklam yok"}
+    {
+      "scene": "result",
+      "title": "Söyle, *ışıldasın*",
+      "subtitle": "Sihirli Düzenleme: değişikliği yaz, kaydır, farkı gör",
+      "before": "Öncesi",
+      "after": "Sonrası"
+    },
+    {
+      "scene": "makeup",
+      "title": "Makyaj bir *oyun*",
+      "subtitle": "Makyaj Stüdyosu: 20 görünüm ya da kendi karışımın"
+    },
+    {
+      "scene": "glowcam",
+      "title": "Kameran artık daha *ışıltılı*",
+      "subtitle": "Retro Cam'de canlı ışıma, parıltı ve dudak tonu",
+      "chip": "Yeni"
+    },
+    {
+      "scene": "home",
+      "title": "50+ trend, tek *dokunuşla*",
+      "subtitle": "Doll Box, Y2K Digicam, DSLR Portrait, evcil dostlar"
+    },
+    {
+      "scene": "autoedit",
+      "title": "Dikey video tek *dokunuşla*",
+      "subtitle": "Otomatik kurgu en iyi anları bulur, altyazı ekler",
+      "chip": "Yeni"
+    },
+    {
+      "scene": "effects",
+      "title": "13 retro efekt, *ücretsiz*",
+      "subtitle": "DSLR '12 arkayı bulanıklaştırır, VHS '86 80'leri getirir",
+      "chip": "Cihazında"
+    },
+    {
+      "scene": "polls",
+      "title": "Arkadaşların *oylasın*",
+      "subtitle": "Hangi vibe? İki fotoğraf, gizli bir bağlantı, 24 saat",
+      "chip": "Yeni"
+    },
+    {
+      "scene": "share-cover",
+      "title": "Kapak *yıldızı* sensin",
+      "subtitle": "Dergi kapakları, fotoğraf şeritleri ve hikâye kartları"
+    },
+    {
+      "scene": "create",
+      "title": "Hayal et, *yarat*",
+      "subtitle": "20 stilden birini seç ya da fikri Aybik yazsın"
+    },
+    {
+      "scene": "consent",
+      "title": "Fotoğrafların, senin *kararın*",
+      "subtitle": "Sen evet demeden hiçbir şey cihazından çıkmaz"
+    }
   ],
   "es": [
-    {"scene": "result", "title": "Pídelo y mira cómo *brilla*", "subtitle": "Edición mágica: escribe un cambio y desliza para comparar", "before": "Antes", "after": "Después"},
-    {"scene": "makeup", "title": "El maquillaje es un *juego*", "subtitle": "Estudio de maquillaje: 20 looks o tu propia mezcla", "chip": "Nuevo"},
-    {"scene": "home", "title": "50+ looks a un *toque*", "subtitle": "Doll\u00a0Box, Y2K\u00a0Digicam, retratos de mascotas y mucho más"},
-    {"scene": "effects", "title": "13 efectos retro, *gratis*", "subtitle": "VHS\u00a0'86, Disposable\u00a0'98, Digicam\u00a0'04 y más, sin créditos", "chip": "En tu dispositivo"},
-    {"scene": "textStickers", "title": "Stickers y *garabatos*", "subtitle": "55 stickers monísimos, texto en seis fuentes y garabatos", "chip": "Gratis"},
-    {"scene": "create", "title": "Imagínalo y *créalo*", "subtitle": "Elige uno de 20 estilos o toca Inspírame si buscas ideas"},
-    {"scene": "share-cover", "title": "Sé la *estrella* de portada", "subtitle": "Portadas, tiras de fotos y tarjetas para historias"},
-    {"scene": "collage", "title": "Tu photo\u00a0dump, *listo*", "subtitle": "Collages de 2 a 9 fotos o un carrusel continuo", "chip": "Gratis"},
-    {"scene": "consent", "title": "Tus fotos, tú *decides*", "subtitle": "Tú das permiso y tus fotos nunca entrenan a la IA"},
-    {"scene": "paywall", "title": "Un precio que juega *limpio*", "subtitle": "Sin plan semanal, packs sin caducidad, reembolso si falla", "chip": "Sin anuncios con Pro"}
+    {
+      "scene": "result",
+      "title": "Pídelo y mira cómo *brilla*",
+      "subtitle": "Edición mágica: escribe un cambio y desliza para comparar",
+      "before": "Antes",
+      "after": "Después"
+    },
+    {
+      "scene": "makeup",
+      "title": "El maquillaje es *juego*",
+      "subtitle": "Estudio de maquillaje: 20 looks o tu propia mezcla"
+    },
+    {
+      "scene": "glowcam",
+      "title": "Tu cámara, más *radiante*",
+      "subtitle": "Looks de resplandor, destellos y tinte de labios en vivo",
+      "chip": "Nuevo"
+    },
+    {
+      "scene": "home",
+      "title": "50+ looks a un *toque*",
+      "subtitle": "Doll Box, Y2K Digicam, DSLR Portrait, mascotas y más"
+    },
+    {
+      "scene": "autoedit",
+      "title": "Videos verticales al *toque*",
+      "subtitle": "La edición automática elige tus mejores momentos",
+      "chip": "Nuevo"
+    },
+    {
+      "scene": "effects",
+      "title": "13 efectos retro, *gratis*",
+      "subtitle": "DSLR '12 desenfoca el fondo, VHS '86 trae los 80",
+      "chip": "En tu dispositivo"
+    },
+    {
+      "scene": "polls",
+      "title": "Que tus amigas *voten*",
+      "subtitle": "¿Qué vibe? Dos fotos, un enlace privado, 24 horas",
+      "chip": "Nuevo"
+    },
+    {
+      "scene": "share-cover",
+      "title": "Sé la *estrella* de portada",
+      "subtitle": "Portadas, tiras de fotos y tarjetas para historias"
+    },
+    {
+      "scene": "create",
+      "title": "Imagínalo y *créalo*",
+      "subtitle": "Elige entre 20 estilos o deja que Aybik escriba la idea"
+    },
+    {
+      "scene": "consent",
+      "title": "Tus fotos, tu *decisión*",
+      "subtitle": "Nada sale de tu dispositivo hasta que digas que sí"
+    }
   ],
   "pt-BR": [
-    {"scene": "result", "title": "Peça e veja *brilhar*", "subtitle": "Edição Mágica: escreva a mudança e deslize para comparar", "before": "Antes", "after": "Depois"},
-    {"scene": "makeup", "title": "Maquiagem é *diversão*", "subtitle": "Estúdio de Maquiagem: 20 looks ou sua própria mistura", "chip": "Novo"},
-    {"scene": "home", "title": "50+ looks em um *toque*", "subtitle": "Doll\u00a0Box, Y2K\u00a0Digicam, retratos de pets e muito mais"},
-    {"scene": "effects", "title": "13 efeitos retrô, *grátis*", "subtitle": "VHS\u00a0'86, Disposable\u00a0'98, Digicam\u00a0'04 e mais, sem créditos", "chip": "No seu aparelho"},
-    {"scene": "textStickers", "title": "Figurinhas e *rabiscos*", "subtitle": "55 figurinhas fofas, texto em seis fontes e rabiscos", "chip": "Grátis"},
-    {"scene": "create", "title": "Imagine e *crie*", "subtitle": "Escolha entre 20 estilos ou toque em Me\u00a0inspire"},
-    {"scene": "share-cover", "title": "Seja a estrela da *capa*", "subtitle": "Capas de revista, tirinhas de fotos e cards de Stories"},
-    {"scene": "collage", "title": "Seu photo\u00a0dump, *pronto*", "subtitle": "Colagens de 2 a 9 fotos ou um carrossel contínuo", "chip": "Grátis"},
-    {"scene": "consent", "title": "Suas fotos, sua *escolha*", "subtitle": "Você autoriza antes, e suas fotos nunca treinam IA"},
-    {"scene": "paywall", "title": "Preço *justo*, sem pegadinha", "subtitle": "Sem plano semanal, pacotes não expiram, falhas reembolsadas", "chip": "Sem anúncios no Pro"}
+    {
+      "scene": "result",
+      "title": "Peça e veja *brilhar*",
+      "subtitle": "Edição Mágica: escreva a mudança e deslize para comparar",
+      "before": "Antes",
+      "after": "Depois"
+    },
+    {
+      "scene": "makeup",
+      "title": "Maquiagem é *diversão*",
+      "subtitle": "Estúdio de Maquiagem: 20 looks ou a sua mistura"
+    },
+    {
+      "scene": "glowcam",
+      "title": "Sua câmera, mais *radiante*",
+      "subtitle": "Luz suave, brilhinhos e cor nos lábios, ao vivo",
+      "chip": "Novo"
+    },
+    {
+      "scene": "home",
+      "title": "50+ looks em um *toque*",
+      "subtitle": "Doll Box, Y2K Digicam, DSLR Portrait, pets e mais"
+    },
+    {
+      "scene": "autoedit",
+      "title": "Vídeo vertical num *toque*",
+      "subtitle": "A edição automática acha os melhores momentos",
+      "chip": "Novo"
+    },
+    {
+      "scene": "effects",
+      "title": "13 efeitos retrô, *grátis*",
+      "subtitle": "DSLR '12 desfoca o fundo, VHS '86 traz os anos 80",
+      "chip": "No seu aparelho"
+    },
+    {
+      "scene": "polls",
+      "title": "Deixe as amigas *votarem*",
+      "subtitle": "Qual vibe? Duas fotos, um link privado, 24 horas",
+      "chip": "Novo"
+    },
+    {
+      "scene": "share-cover",
+      "title": "Seja a *estrela* da capa",
+      "subtitle": "Capas de revista, tiras de fotos e cards para stories"
+    },
+    {
+      "scene": "create",
+      "title": "Imagine e *crie*",
+      "subtitle": "Escolha entre 20 estilos ou deixe a Aybik escrever a ideia"
+    },
+    {
+      "scene": "consent",
+      "title": "Suas fotos, sua *escolha*",
+      "subtitle": "Nada sai do seu aparelho até você dizer sim"
+    }
   ],
   "fr": [
-    {"scene": "result", "title": "Dis-le, regarde-la *briller*", "subtitle": "Retouche magique\u00a0: écris un changement, glisse pour comparer", "before": "Avant", "after": "Après"},
-    {"scene": "makeup", "title": "Joue avec le *maquillage*", "subtitle": "Studio maquillage\u00a0: 20 looks ou ton mix, et tu restes toi", "chip": "Nouveau"},
-    {"scene": "home", "title": "50+ looks en un *geste*", "subtitle": "Doll\u00a0Box, Y2K\u00a0Digicam, portraits d’animaux et bien plus"},
-    {"scene": "effects", "title": "13 effets rétro, *gratuits*", "subtitle": "VHS\u00a0'86, Disposable\u00a0'98, Digicam\u00a0'04 et plus, sans crédits", "chip": "Sur ton appareil"},
-    {"scene": "textStickers", "title": "Stickers, texte et *dessins*", "subtitle": "55 stickers trop mignons, six polices et un crayon à dessin", "chip": "Gratuit"},
-    {"scene": "create", "title": "Imagine-le, *crée-le*", "subtitle": "Choisis parmi 20 styles ou touche Inspire-moi pour une idée"},
-    {"scene": "share-cover", "title": "Fais la *couverture*", "subtitle": "Couvertures de magazine, photomatons et cartes story"},
-    {"scene": "collage", "title": "Ton photo\u00a0dump, *réussi*", "subtitle": "Collages de 2 à 9 photos ou carrousel sans coupure", "chip": "Gratuit"},
-    {"scene": "consent", "title": "Tes photos, ton *choix*", "subtitle": "Ton accord d’abord, et tes photos n’entraînent jamais l’IA"},
-    {"scene": "paywall", "title": "Des prix *honnêtes*", "subtitle": "Pas d’abo hebdo, packs sans expiration, échecs remboursés", "chip": "Sans pub avec Pro"}
+    {
+      "scene": "result",
+      "title": "Dis-le, regarde-la *briller*",
+      "subtitle": "Retouche magique : écris un changement, glisse pour comparer",
+      "before": "Avant",
+      "after": "Après"
+    },
+    {
+      "scene": "makeup",
+      "title": "Le maquillage, un *jeu*",
+      "subtitle": "Studio maquillage : 20 looks ou ton mélange. Tu restes toi"
+    },
+    {
+      "scene": "glowcam",
+      "title": "Ta caméra, en plus *lumineux*",
+      "subtitle": "Lueur, paillettes et teinte des lèvres, en direct",
+      "chip": "Nouveau"
+    },
+    {
+      "scene": "home",
+      "title": "50+ looks en un *geste*",
+      "subtitle": "Doll Box, Y2K Digicam, DSLR Portrait, animaux et plus"
+    },
+    {
+      "scene": "autoedit",
+      "title": "Vidéos verticales en un *tap*",
+      "subtitle": "Le montage auto garde tes meilleurs moments",
+      "chip": "Nouveau"
+    },
+    {
+      "scene": "effects",
+      "title": "13 effets rétro, *gratuits*",
+      "subtitle": "DSLR '12 floute l'arrière-plan, VHS '86 ramène les 80s",
+      "chip": "Sur ton appareil"
+    },
+    {
+      "scene": "polls",
+      "title": "Fais voter tes *amies*",
+      "subtitle": "Quelle vibe ? Deux photos, un lien privé, 24 heures",
+      "chip": "Nouveau"
+    },
+    {
+      "scene": "share-cover",
+      "title": "Fais la *couverture*",
+      "subtitle": "Couvertures de magazine, bandes photo et cartes story"
+    },
+    {
+      "scene": "create",
+      "title": "Imagine-le, *crée-le*",
+      "subtitle": "Choisis parmi 20 styles, ou laisse Aybik écrire l'idée"
+    },
+    {
+      "scene": "consent",
+      "title": "Tes photos, ton *choix*",
+      "subtitle": "Rien ne quitte ton appareil sans ton accord"
+    }
   ],
   "de": [
-    {"scene": "result", "title": "Sag’s,\nsieh es *strahlen*", "subtitle": "Zauber-Edit: Wunsch eintippen, schieben und vergleichen", "before": "Vorher", "after": "Nachher"},
-    {"scene": "makeup", "title": "Make-up zum *Spielen*", "subtitle": "Make-up-Studio: 20 Looks oder dein Mix. Du bleibst du", "chip": "Neu"},
-    {"scene": "home", "title": "50+ Looks mit einem *Tipp*", "subtitle": "Doll\u00a0Box, Y2K-Digicam, Haustier-Porträts und mehr"},
-    {"scene": "effects", "title": "13 Retro-Effekte, *gratis*", "subtitle": "VHS\u00a0'86, Disposable\u00a0'98, Digicam\u00a0'04 und mehr, ohne Credits", "chip": "Auf deinem Gerät"},
-    {"scene": "textStickers", "title": "Sticker & *Kritzeleien*", "subtitle": "55 süße Sticker, sechs Schriften und ein Kritzelstift", "chip": "Gratis"},
-    {"scene": "create", "title": "Träum es, *erschaff* es", "subtitle": "Wähl einen von 20 Stilen oder tipp auf Inspirier\u00a0mich"},
-    {"scene": "share-cover", "title": "Werde zum *Coverstar*", "subtitle": "Magazin-Cover, Fotostreifen und Story-Karten zum Teilen"},
-    {"scene": "collage", "title": "Dein Photo\u00a0Dump, *fertig*", "subtitle": "Collagen aus 2 bis 9 Fotos oder ein nahtloses Karussell", "chip": "Gratis"},
-    {"scene": "consent", "title": "Deine Fotos, deine *Wahl*", "subtitle": "Erst dein Okay, und deine Fotos trainieren nie eine KI"},
-    {"scene": "paywall", "title": "Preise, die *fair* sind", "subtitle": "Kein Wochenabo, Pakete verfallen nie, Fehlversuche erstattet", "chip": "Werbefrei mit Pro"}
+    {
+      "scene": "result",
+      "title": "Sag’s,\nsieh es *strahlen*",
+      "subtitle": "Zauber-Edit: Wunsch eintippen, schieben und vergleichen",
+      "before": "Vorher",
+      "after": "Nachher"
+    },
+    {
+      "scene": "makeup",
+      "title": "Make-up ist *Spiel*",
+      "subtitle": "Make-up-Studio: 20 Looks oder dein eigener Mix"
+    },
+    {
+      "scene": "glowcam",
+      "title": "Kamera an, *Strahlen* an",
+      "subtitle": "Leuchten, Glitzer und Lippentönung, live in Retro Cam",
+      "chip": "Neu"
+    },
+    {
+      "scene": "home",
+      "title": "50+ Looks mit einem *Tipp*",
+      "subtitle": "Doll Box, Y2K Digicam, DSLR Portrait, Haustiere und mehr"
+    },
+    {
+      "scene": "autoedit",
+      "title": "Hochkant-Videos per *Tipp*",
+      "subtitle": "Auto-Schnitt findet deine besten Momente",
+      "chip": "Neu"
+    },
+    {
+      "scene": "effects",
+      "title": "13 Retro-Effekte, *gratis*",
+      "subtitle": "DSLR '12 macht den Hintergrund weich, VHS '86 die 80er",
+      "chip": "Auf deinem Gerät"
+    },
+    {
+      "scene": "polls",
+      "title": "Lass Freunde *abstimmen*",
+      "subtitle": "Welcher Vibe? Zwei Bilder, ein privater Link, 24 Stunden",
+      "chip": "Neu"
+    },
+    {
+      "scene": "share-cover",
+      "title": "Werd zum *Coverstar*",
+      "subtitle": "Magazin-Cover, Fotostreifen und Story-Karten zum Teilen"
+    },
+    {
+      "scene": "create",
+      "title": "Träum es, *erschaff* es",
+      "subtitle": "Wähl aus 20 Stilen oder lass Aybik die Idee schreiben"
+    },
+    {
+      "scene": "consent",
+      "title": "Deine Fotos, deine *Wahl*",
+      "subtitle": "Nichts verlässt dein Gerät, bevor du Ja sagst"
+    }
   ],
   "it": [
-    {"scene": "result", "title": "Dillo e guardala *brillare*", "subtitle": "Modifica magica: scrivi la modifica e scorri per confrontare", "before": "Prima", "after": "Dopo"},
-    {"scene": "makeup", "title": "Il make-up è un *gioco*", "subtitle": "Studio make-up: 20 look o il tuo mix. E resti sempre tu", "chip": "Nuovo"},
-    {"scene": "home", "title": "50+ look in un *tocco*", "subtitle": "Doll\u00a0Box, Digicam\u00a0Y2K, ritratti di animali e tanto altro"},
-    {"scene": "effects", "title": "13 effetti retrò, *gratis*", "subtitle": "VHS\u00a0'86, Disposable\u00a0'98, Digicam\u00a0'04 e altri, senza crediti", "chip": "Sul tuo dispositivo"},
-    {"scene": "textStickers", "title": "Sticker e *scarabocchi*", "subtitle": "55 sticker carinissimi, sei font e una penna per disegnare", "chip": "Gratis"},
-    {"scene": "create", "title": "Sognalo e *crealo*", "subtitle": "Scegli tra 20 stili o tocca Ispirami per avere un’idea"},
-    {"scene": "share-cover", "title": "Sii la star in *copertina*", "subtitle": "Copertine di riviste, strisce di foto e card per le Storie"},
-    {"scene": "collage", "title": "Il tuo photo\u00a0dump, *fatto*", "subtitle": "Collage da 2 a 9 foto o un carosello senza interruzioni", "chip": "Gratis"},
-    {"scene": "consent", "title": "Le tue foto, *decidi* tu", "subtitle": "Prima il tuo consenso, e le tue foto non addestrano l’IA"},
-    {"scene": "paywall", "title": "Prezzi *onesti*, sempre", "subtitle": "Zero piani settimanali, pacchetti senza scadenza, rimborsi", "chip": "Senza pubblicità con Pro"}
+    {
+      "scene": "result",
+      "title": "Dillo e guardala *brillare*",
+      "subtitle": "Modifica magica: scrivi la modifica e scorri per confrontare",
+      "before": "Prima",
+      "after": "Dopo"
+    },
+    {
+      "scene": "makeup",
+      "title": "Il make-up è un *gioco*",
+      "subtitle": "Studio make-up: 20 look o il tuo mix. Resti te stessa"
+    },
+    {
+      "scene": "glowcam",
+      "title": "Fotocamera più *luminosa*",
+      "subtitle": "Bagliore, brillantini e tinta labbra, dal vivo",
+      "chip": "Novità"
+    },
+    {
+      "scene": "home",
+      "title": "50+ look con un *tocco*",
+      "subtitle": "Doll Box, Y2K Digicam, DSLR Portrait, animali e altro"
+    },
+    {
+      "scene": "autoedit",
+      "title": "Video verticali in un *tocco*",
+      "subtitle": "Il montaggio automatico trova i momenti migliori",
+      "chip": "Novità"
+    },
+    {
+      "scene": "effects",
+      "title": "13 effetti retrò, *gratis*",
+      "subtitle": "DSLR '12 sfoca lo sfondo, VHS '86 riporta gli anni '80",
+      "chip": "Sul tuo dispositivo"
+    },
+    {
+      "scene": "polls",
+      "title": "Fai votare le *amiche*",
+      "subtitle": "Che mood? Due foto, un link privato, 24 ore",
+      "chip": "Novità"
+    },
+    {
+      "scene": "share-cover",
+      "title": "Sii la *star* in copertina",
+      "subtitle": "Copertine, strisce di foto e card per le storie"
+    },
+    {
+      "scene": "create",
+      "title": "Immaginalo, *crealo*",
+      "subtitle": "Scegli tra 20 stili o lascia che Aybik scriva l'idea"
+    },
+    {
+      "scene": "consent",
+      "title": "Le tue foto, la tua *scelta*",
+      "subtitle": "Niente lascia il dispositivo finché non dici sì"
+    }
   ],
   "ru": [
-    {"scene": "result", "title": "Скажи — и фото *засияет*", "subtitle": "Волшебная правка: напиши, что изменить, и сравни до и после", "before": "До", "after": "После"},
-    {"scene": "makeup", "title": "Макияж — это *игра*", "subtitle": "Студия макияжа: 20 образов или свой микс. Ты остаёшься собой", "chip": "Новое"},
-    {"scene": "home", "title": "50+ образов в один *тап*", "subtitle": "Doll\u00a0Box, Y2K-мыльница, портреты питомцев и не только"},
-    {"scene": "effects", "title": "Ретро-эффекты *бесплатно*", "subtitle": "13 эффектов от VHS\u00a0'86 до Rainbow\u00a0'17, без кредитов", "chip": "На устройстве"},
-    {"scene": "textStickers", "title": "Стикеры, текст и *рисунки*", "subtitle": "55 милых стикеров, шесть шрифтов и кисть для рисования", "chip": "Бесплатно"},
-    {"scene": "create", "title": "Придумай и *создай*", "subtitle": "Выбери один из 20 стилей или нажми «Вдохнови\u00a0меня»"},
-    {"scene": "share-cover", "title": "Стань звездой *обложки*", "subtitle": "Обложки журналов, фотополоски и карточки для Историй"},
-    {"scene": "collage", "title": "Собери *фотодамп*", "subtitle": "Коллажи из 2–9 фото или бесшовная карусель", "chip": "Бесплатно"},
-    {"scene": "consent", "title": "Твои фото — твоё *решение*", "subtitle": "Только с твоего согласия, и фото не обучают ИИ"},
-    {"scene": "paywall", "title": "Честные *цены*", "subtitle": "Без недельных планов, вечные пакеты, сбой — вернём кредит", "chip": "Без рекламы с Pro"}
+    {
+      "scene": "result",
+      "title": "Скажи — и фото *засияет*",
+      "subtitle": "Волшебная правка: напиши, что изменить, и сравни",
+      "before": "До",
+      "after": "После"
+    },
+    {
+      "scene": "makeup",
+      "title": "Макияж — это *игра*",
+      "subtitle": "Студия макияжа: 20 образов или свой микс"
+    },
+    {
+      "scene": "glowcam",
+      "title": "Камера, которая *сияет*",
+      "subtitle": "Свечение, блёстки и оттенок губ — вживую в Retro Cam",
+      "chip": "Новое"
+    },
+    {
+      "scene": "home",
+      "title": "50+ образов в одно *касание*",
+      "subtitle": "Doll Box, Y2K Digicam, DSLR Portrait, питомцы и не только"
+    },
+    {
+      "scene": "autoedit",
+      "title": "Вертикальное видео *сразу*",
+      "subtitle": "Автомонтаж находит лучшие моменты и ставит субтитры",
+      "chip": "Новое"
+    },
+    {
+      "scene": "effects",
+      "title": "13 ретроэффектов *бесплатно*",
+      "subtitle": "DSLR '12 размывает фон, VHS '86 возвращает 80-е",
+      "chip": "На устройстве"
+    },
+    {
+      "scene": "polls",
+      "title": "Пусть подруги *голосуют*",
+      "subtitle": "Какой вайб? Два фото, личная ссылка, 24 часа",
+      "chip": "Новое"
+    },
+    {
+      "scene": "share-cover",
+      "title": "Стань *звездой* обложки",
+      "subtitle": "Обложки журналов, фотополоски и карточки для историй"
+    },
+    {
+      "scene": "create",
+      "title": "Придумай и *создай*",
+      "subtitle": "Выбери один из 20 стилей или попроси идею у Aybik"
+    },
+    {
+      "scene": "consent",
+      "title": "Твои фото — твоё *решение*",
+      "subtitle": "Ничего не уходит с устройства без твоего «да»"
+    }
   ],
   "ja": [
-    {"scene": "result", "title": "伝えるだけで、*キラッと*変身", "subtitle": "マジック編集：変えたいことを書いて、スライドで比較", "before": "ビフォー", "after": "アフター"},
-    {"scene": "makeup", "title": "メイクは*遊び*", "subtitle": "メイクスタジオ：20のルックか、自分だけのミックス", "chip": "NEW"},
-    {"scene": "home", "title": "50+のルックを*ワンタップ*で", "subtitle": "ドールボックス、Y2Kデジカメ、ペットの肖像画など"},
-    {"scene": "effects", "title": "13のレトロ加工が*無料*", "subtitle": "VHS\u00a0'86、Disposable\u00a0'98、Digicam\u00a0'04など。クレジット不要", "chip": "端末内で処理"},
-    {"scene": "textStickers", "title": "ステッカー、文字、*らくがき*", "subtitle": "かわいいステッカー55種、フォント6種、らくがきペン", "chip": "無料"},
-    {"scene": "create", "title": "想像を*カタチ*に", "subtitle": "20のスタイルから選ぶか、「アイデアをもらう」をタップ"},
-    {"scene": "share-cover", "title": "あなたが*表紙*の主役", "subtitle": "雑誌の表紙、フォトストリップ、ストーリーカードでシェア"},
-    {"scene": "collage", "title": "*フォトダンプ*をつくろう", "subtitle": "2〜9枚の写真でコラージュ、つながるカルーセルも", "chip": "無料"},
-    {"scene": "consent", "title": "あなたの写真、*決めるのはあなた*", "subtitle": "同意してから送信。写真がAIの学習に使われることはありません"},
-    {"scene": "paywall", "title": "*フェア*な料金", "subtitle": "週額プランなし、パックは無期限、失敗した編集はクレジット返却", "chip": "Proなら広告なし"}
+    {
+      "scene": "result",
+      "title": "伝えるだけで、*キラッと*変身",
+      "subtitle": "マジック編集：変えたいことを書いて、スライドで比較",
+      "before": "ビフォー",
+      "after": "アフター"
+    },
+    {
+      "scene": "makeup",
+      "title": "メイクは*遊び*",
+      "subtitle": "メイクスタジオ：20のルックか、自分だけのミックス"
+    },
+    {
+      "scene": "glowcam",
+      "title": "カメラが*グロー*仕様に",
+      "subtitle": "グロー、キラキラ、リップの色をライブで。Retro Camで",
+      "chip": "NEW"
+    },
+    {
+      "scene": "home",
+      "title": "50以上のルックを*ワンタップ*で",
+      "subtitle": "Doll Box、Y2K Digicam、DSLR Portrait、ペットなど"
+    },
+    {
+      "scene": "autoedit",
+      "title": "縦型動画を*ワンタップ*で",
+      "subtitle": "自動編集がベストな瞬間を選んで字幕もつける",
+      "chip": "NEW"
+    },
+    {
+      "scene": "effects",
+      "title": "13のレトロ効果が*無料*",
+      "subtitle": "DSLR '12で背景ぼかし、VHS '86で80年代へ",
+      "chip": "端末内で処理"
+    },
+    {
+      "scene": "polls",
+      "title": "友だちに*投票*してもらおう",
+      "subtitle": "どっちの気分？ 写真2枚、限定リンク、24時間",
+      "chip": "NEW"
+    },
+    {
+      "scene": "share-cover",
+      "title": "表紙の*主役*はあなた",
+      "subtitle": "雑誌の表紙、フォトストリップ、ストーリーカード"
+    },
+    {
+      "scene": "create",
+      "title": "思い描いて、*つくろう*",
+      "subtitle": "20のスタイルから選ぶか、Aybikにアイデアをおまかせ"
+    },
+    {
+      "scene": "consent",
+      "title": "写真のことは*あなた*が決める",
+      "subtitle": "OKするまで、何も端末の外に出ません"
+    }
   ],
   "ko": [
-    {"scene": "result", "title": "말만 하면 *반짝* 변신", "subtitle": "매직 편집: 바꾸고 싶은 걸 쓰고, 밀어서 비교해 보세요", "before": "비포", "after": "애프터"},
-    {"scene": "makeup", "title": "메이크업은 *놀이*", "subtitle": "메이크업 스튜디오: 룩 20가지 또는 나만의 조합. 나는 그대로 나", "chip": "NEW"},
-    {"scene": "home", "title": "50+가지 룩을 *원탭*으로", "subtitle": "인형 박스, Y2K 디카, 반려동물 초상화 등 더 많이"},
-    {"scene": "effects", "title": "레트로 효과 13가지, *무료*", "subtitle": "VHS\u00a0'86, Disposable\u00a0'98, Digicam\u00a0'04 등, 크레딧 필요 없음", "chip": "기기에서 처리"},
-    {"scene": "textStickers", "title": "스티커, 텍스트, *낙서*까지", "subtitle": "귀여운 스티커 55종, 폰트 6종, 낙서 펜까지", "chip": "무료"},
-    {"scene": "create", "title": "상상한 대로 *만들기*", "subtitle": "스타일 20가지 중에 고르거나 ‘아이디어 추천’을 탭하세요"},
-    {"scene": "share-cover", "title": "내가 *커버* 주인공", "subtitle": "매거진 커버, 포토부스 사진, 스토리 카드로 공유"},
-    {"scene": "collage", "title": "*포토 덤프* 만들기", "subtitle": "사진 2~9장으로 콜라주, 이어지는 캐러셀도", "chip": "무료"},
-    {"scene": "consent", "title": "내 사진은 *내가* 정해요", "subtitle": "동의한 경우에만 처리하고, AI 학습에는 절대 쓰지 않아요"},
-    {"scene": "paywall", "title": "*공정한* 가격", "subtitle": "주간 요금제 없음, 팩은 기한 없음, 실패한 편집은 환불", "chip": "Pro는 광고 없음"}
+    {
+      "scene": "result",
+      "title": "말만 하면 *반짝* 변신",
+      "subtitle": "매직 편집: 바꾸고 싶은 걸 쓰고, 밀어서 비교해 보세요",
+      "before": "비포",
+      "after": "애프터"
+    },
+    {
+      "scene": "makeup",
+      "title": "메이크업은 *놀이*",
+      "subtitle": "메이크업 스튜디오: 룩 20가지 또는 나만의 조합"
+    },
+    {
+      "scene": "glowcam",
+      "title": "카메라에 *글로우*를 더해요",
+      "subtitle": "글로우, 반짝이, 립 컬러를 실시간으로. Retro Cam에서",
+      "chip": "NEW"
+    },
+    {
+      "scene": "home",
+      "title": "50가지 이상 룩, *탭* 한 번",
+      "subtitle": "Doll Box, Y2K Digicam, DSLR Portrait, 반려동물까지"
+    },
+    {
+      "scene": "autoedit",
+      "title": "세로 영상, *탭* 한 번",
+      "subtitle": "자동 편집이 베스트 순간을 고르고 자막까지",
+      "chip": "NEW"
+    },
+    {
+      "scene": "effects",
+      "title": "레트로 효과 13가지 *무료*",
+      "subtitle": "DSLR '12로 배경 흐림, VHS '86으로 80년대 감성",
+      "chip": "기기에서 처리"
+    },
+    {
+      "scene": "polls",
+      "title": "친구들에게 *투표*받기",
+      "subtitle": "어떤 분위기? 사진 두 장, 비공개 링크, 24시간",
+      "chip": "NEW"
+    },
+    {
+      "scene": "share-cover",
+      "title": "내가 바로 *커버* 모델",
+      "subtitle": "매거진 커버, 포토 스트립, 스토리 카드로 공유"
+    },
+    {
+      "scene": "create",
+      "title": "상상하고 *만들어요*",
+      "subtitle": "스타일 20가지 중 고르거나 Aybik에게 아이디어를"
+    },
+    {
+      "scene": "consent",
+      "title": "내 사진은 *내가* 정해요",
+      "subtitle": "허락하기 전엔 아무것도 기기 밖으로 나가지 않아요"
+    }
   ],
   "zh-Hans": [
-    {"scene": "result", "title": "说出改变，看它*焕发光彩*", "subtitle": "魔法编辑：写下想要的改变，滑动对比前后", "before": "之前", "after": "之后"},
-    {"scene": "makeup", "title": "化妆就是*好玩*", "subtitle": "妆容工作室：20 种妆容或自由搭配，你还是你", "chip": "新"},
-    {"scene": "home", "title": "50+ 种造型，*一键*搞定", "subtitle": "盒装娃娃、Y2K CCD、宠物肖像等等"},
-    {"scene": "effects", "title": "13 款复古特效，*免费*", "subtitle": "VHS\u00a0'86、Disposable\u00a0'98、Digicam\u00a0'04 等，不耗点数", "chip": "本机处理"},
-    {"scene": "textStickers", "title": "贴纸、文字和*涂鸦*", "subtitle": "55 款可爱贴纸、6 种字体，还有涂鸦笔", "chip": "免费"},
-    {"scene": "create", "title": "想到就能*创作*", "subtitle": "从 20 种风格中选一个，或点“给我灵感”"},
-    {"scene": "share-cover", "title": "你就是*封面*主角", "subtitle": "杂志封面、大头贴和快拍卡片，随心分享"},
-    {"scene": "collage", "title": "做一组*照片合集*", "subtitle": "2–9 张照片拼图，或无缝轮播图", "chip": "免费"},
-    {"scene": "consent", "title": "你的照片，*你做主*", "subtitle": "先征得你同意，照片绝不用于训练 AI"},
-    {"scene": "paywall", "title": "*良心*定价", "subtitle": "没有周订阅，点数包永不过期，失败自动退还", "chip": "Pro 无广告"}
+    {
+      "scene": "result",
+      "title": "说出改变，看它*焕发光彩*",
+      "subtitle": "魔法编辑：写下想要的改变，滑动对比前后",
+      "before": "之前",
+      "after": "之后"
+    },
+    {
+      "scene": "makeup",
+      "title": "化妆就是*好玩*",
+      "subtitle": "妆容工作室：20 种妆容或自由搭配，你还是你"
+    },
+    {
+      "scene": "glowcam",
+      "title": "相机自带*柔光*",
+      "subtitle": "柔光、闪亮和唇色，在 Retro Cam 里实时呈现",
+      "chip": "新功能"
+    },
+    {
+      "scene": "home",
+      "title": "50+ 种造型，*一点*即得",
+      "subtitle": "Doll Box、Y2K Digicam、DSLR Portrait、萌宠等"
+    },
+    {
+      "scene": "autoedit",
+      "title": "竖屏视频*一键*剪好",
+      "subtitle": "自动剪辑挑出精彩瞬间，还能加字幕",
+      "chip": "新功能"
+    },
+    {
+      "scene": "effects",
+      "title": "13 种复古效果，*免费*",
+      "subtitle": "DSLR '12 虚化背景，VHS '86 带你回到 80 年代",
+      "chip": "在设备上处理"
+    },
+    {
+      "scene": "polls",
+      "title": "让朋友们来*投票*",
+      "subtitle": "哪种氛围？两张图、私密链接、24 小时",
+      "chip": "新功能"
+    },
+    {
+      "scene": "share-cover",
+      "title": "你就是封面*主角*",
+      "subtitle": "杂志封面、照片条和快拍卡片，一键分享"
+    },
+    {
+      "scene": "create",
+      "title": "想到就能*创作*",
+      "subtitle": "20 种风格任你选，也可以让 Aybik 帮你写创意"
+    },
+    {
+      "scene": "consent",
+      "title": "你的照片，*你*说了算",
+      "subtitle": "你同意之前，什么都不会离开你的设备"
+    }
   ],
   "id": [
-    {"scene": "result", "title": "Bilang maumu, jadi *glowing*", "subtitle": "Edit Ajaib: tulis perubahannya, geser untuk membandingkan", "before": "Sebelum", "after": "Sesudah"},
-    {"scene": "makeup", "title": "Makeup itu *seru*", "subtitle": "Studio Makeup: 20 look atau racikanmu. Kamu tetap kamu", "chip": "Baru"},
-    {"scene": "home", "title": "50+ look sekali *ketuk*", "subtitle": "Doll\u00a0Box, Y2K\u00a0Digicam, potret hewan peliharaan, dan lainnya"},
-    {"scene": "effects", "title": "13 efek retro, *gratis*", "subtitle": "VHS\u00a0'86, Disposable\u00a0'98, Digicam\u00a0'04, tanpa kredit", "chip": "Di perangkatmu"},
-    {"scene": "textStickers", "title": "Stiker, teks & *coretan*", "subtitle": "55 stiker gemas, enam font, dan pena coretan", "chip": "Gratis"},
-    {"scene": "create", "title": "Bayangkan, lalu *ciptakan*", "subtitle": "Pilih satu dari 20 gaya, atau ketuk Beri\u00a0aku\u00a0ide"},
-    {"scene": "share-cover", "title": "Jadi bintang *sampul*", "subtitle": "Sampul majalah, strip foto, dan kartu cerita untuk dibagikan"},
-    {"scene": "collage", "title": "Bikin *photo\u00a0dump*", "subtitle": "Kolase dari 2–9 foto atau carousel yang menyambung", "chip": "Gratis"},
-    {"scene": "consent", "title": "Fotomu, *keputusanmu*", "subtitle": "Hanya dengan izinmu, dan fotomu tak pernah melatih AI"},
-    {"scene": "paywall", "title": "Harga yang *jujur*", "subtitle": "Tak ada langganan mingguan, paket kredit tanpa kedaluwarsa", "chip": "Tanpa iklan dengan Pro"}
+    {
+      "scene": "result",
+      "title": "Bilang maumu, jadi *glowing*",
+      "subtitle": "Edit Ajaib: tulis perubahannya, geser untuk membandingkan",
+      "before": "Sebelum",
+      "after": "Sesudah"
+    },
+    {
+      "scene": "makeup",
+      "title": "Makeup itu *main-main*",
+      "subtitle": "Studio Makeup: 20 look atau racikanmu sendiri"
+    },
+    {
+      "scene": "glowcam",
+      "title": "Kameramu makin *glowing*",
+      "subtitle": "Pendar, kilau, dan warna bibir, langsung di Retro Cam",
+      "chip": "Baru"
+    },
+    {
+      "scene": "home",
+      "title": "50+ look, sekali *ketuk*",
+      "subtitle": "Doll Box, Y2K Digicam, DSLR Portrait, hewan peliharaan"
+    },
+    {
+      "scene": "autoedit",
+      "title": "Video vertikal sekali *ketuk*",
+      "subtitle": "Edit otomatis memilih momen terbaik dan menambah teks",
+      "chip": "Baru"
+    },
+    {
+      "scene": "effects",
+      "title": "13 efek retro, *gratis*",
+      "subtitle": "DSLR '12 memburamkan latar, VHS '86 membawa era 80-an",
+      "chip": "Di perangkatmu"
+    },
+    {
+      "scene": "polls",
+      "title": "Biar teman yang *memilih*",
+      "subtitle": "Vibe yang mana? Dua foto, tautan pribadi, 24 jam",
+      "chip": "Baru"
+    },
+    {
+      "scene": "share-cover",
+      "title": "Jadi *bintang* sampul",
+      "subtitle": "Sampul majalah, strip foto, dan kartu story untuk dibagikan"
+    },
+    {
+      "scene": "create",
+      "title": "Bayangkan, lalu *buat*",
+      "subtitle": "Pilih dari 20 gaya, atau biar Aybik menulis idenya"
+    },
+    {
+      "scene": "consent",
+      "title": "Fotomu, *keputusanmu*",
+      "subtitle": "Tak ada yang keluar dari perangkatmu sebelum kamu setuju"
+    }
   ],
   "mac": {
     "en": [
-      {"scene": "home", "title": "Aybuke, now on your *Mac*", "subtitle": "Looks, Magic Edit and free tools in one window"},
-      {"scene": "makeup", "title": "Makeup is *play*", "subtitle": "Makeup Studio: 20 looks or your own mix. You stay you", "chip": "New"},
-      {"scene": "result", "title": "Say it, watch it *glow*", "subtitle": "Type a change, then drag to compare before and after", "before": "Before", "after": "After"},
-      {"scene": "create", "title": "Dream it, *create* it", "subtitle": "Pick one of 20 styles, or click Inspire\u00a0me for an idea"},
-      {"scene": "effects", "title": "13 retro effects, *free*", "subtitle": "VHS\u00a0'86 to Rainbow\u00a0'17, right on your Mac, no credits"},
-      {"scene": "share-cover", "title": "Be the cover *star*", "subtitle": "Magazine covers, photo strips and story cards to share"},
-      {"scene": "cutout", "title": "Cut out in one *click*", "subtitle": "Lift people and pets, add a backdrop or make a sticker", "chip": "Free"},
-      {"scene": "hideFaces", "title": "Keep your friends *private*", "subtitle": "Blur, pixelate or cover faces before you share", "chip": "On your Mac"}
+      {
+        "scene": "result",
+        "title": "Say it, watch it *glow*",
+        "subtitle": "Type a change, then drag to compare before and after",
+        "before": "Before",
+        "after": "After"
+      },
+      {
+        "scene": "makeup",
+        "title": "Makeup is *play*",
+        "subtitle": "Makeup Studio: 20 looks or your own mix. You stay you"
+      },
+      {
+        "scene": "glowcam",
+        "title": "Retro Cam with a *glow*",
+        "subtitle": "Glow looks, sparkle and a lip tint with your Mac's camera",
+        "chip": "New"
+      },
+      {
+        "scene": "home",
+        "title": "50+ looks, one *click* away",
+        "subtitle": "Doll Box, Y2K Digicam, DSLR Portrait, pets and more"
+      },
+      {
+        "scene": "autoedit",
+        "title": "Vertical videos in one *click*",
+        "subtitle": "Auto edit finds your best moments and adds captions",
+        "chip": "New"
+      },
+      {
+        "scene": "effects",
+        "title": "13 retro effects, *free*",
+        "subtitle": "DSLR '12 blurs the background, VHS '86 brings the 80s",
+        "chip": "On your Mac"
+      },
+      {
+        "scene": "polls",
+        "title": "Let your friends *vote*",
+        "subtitle": "Which vibe? Two pictures, a private link, 24 hours",
+        "chip": "New"
+      },
+      {
+        "scene": "share-cover",
+        "title": "Be the cover *star*",
+        "subtitle": "Magazine covers, photo strips and story cards to share"
+      },
+      {
+        "scene": "create",
+        "title": "Dream it, *create* it",
+        "subtitle": "Pick one of 20 styles, or let Aybik write the idea"
+      },
+      {
+        "scene": "consent",
+        "title": "Your photos, your *call*",
+        "subtitle": "Nothing leaves your device until you say yes"
+      }
     ],
     "tr": [
-      {"scene": "home", "title": "Aybuke artık *Mac’te*", "subtitle": "Trendler, Sihirli Düzenleme ve ücretsiz araçlar bir arada"},
-      {"scene": "makeup", "title": "Makyaj bir *oyun*", "subtitle": "Makyaj Stüdyosu: 20 görünüm ya da kendi karışımın", "chip": "Yeni"},
-      {"scene": "result", "title": "Söyle, *ışıldasın*", "subtitle": "Değişikliği yaz, sürükle, öncesini ve sonrasını gör", "before": "Öncesi", "after": "Sonrası"},
-      {"scene": "create", "title": "Hayal et, *yarat*", "subtitle": "20 stilden birini seç ya da İlham\u00a0ver’e tıkla"},
-      {"scene": "effects", "title": "13 retro efekt, *ücretsiz*", "subtitle": "VHS\u00a0'86, Rainbow\u00a0'17 ve dahası, Mac’inde, kredisiz"},
-      {"scene": "share-cover", "title": "Kapak *yıldızı* sensin", "subtitle": "Dergi kapakları, fotoğraf şeritleri ve hikâye kartları"},
-      {"scene": "cutout", "title": "Tek tıkla *dekupe*", "subtitle": "Kişileri ve evcil dostları ayır, fon ekle ya da çıkartma yap", "chip": "Ücretsiz"},
-      {"scene": "hideFaces", "title": "Arkadaşlarını *koru*", "subtitle": "Paylaşmadan önce yüzleri bulanıklaştır ya da kapat", "chip": "Mac’inde"}
+      {
+        "scene": "result",
+        "title": "Söyle, *ışıldasın*",
+        "subtitle": "Sihirli Düzenleme: değişikliği yaz, kaydır, farkı gör",
+        "before": "Öncesi",
+        "after": "Sonrası"
+      },
+      {
+        "scene": "makeup",
+        "title": "Makyaj bir *oyun*",
+        "subtitle": "Makyaj Stüdyosu: 20 görünüm ya da kendi karışımın"
+      },
+      {
+        "scene": "glowcam",
+        "title": "Retro Cam'e *ışıma* geldi",
+        "subtitle": "Mac'inin kamerasıyla ışıma, parıltı ve dudak tonu",
+        "chip": "Yeni"
+      },
+      {
+        "scene": "home",
+        "title": "50+ trend, tek *tıkla*",
+        "subtitle": "Doll Box, Y2K Digicam, DSLR Portrait, evcil dostlar"
+      },
+      {
+        "scene": "autoedit",
+        "title": "Dikey video tek *tıkla*",
+        "subtitle": "Otomatik kurgu en iyi anları bulur, altyazı ekler",
+        "chip": "Yeni"
+      },
+      {
+        "scene": "effects",
+        "title": "13 retro efekt, *ücretsiz*",
+        "subtitle": "DSLR '12 arkayı bulanıklaştırır, VHS '86 80'leri getirir",
+        "chip": "Mac'inde"
+      },
+      {
+        "scene": "polls",
+        "title": "Arkadaşların *oylasın*",
+        "subtitle": "Hangi vibe? İki fotoğraf, gizli bir bağlantı, 24 saat",
+        "chip": "Yeni"
+      },
+      {
+        "scene": "share-cover",
+        "title": "Kapak *yıldızı* sensin",
+        "subtitle": "Dergi kapakları, fotoğraf şeritleri ve hikâye kartları"
+      },
+      {
+        "scene": "create",
+        "title": "Hayal et, *yarat*",
+        "subtitle": "20 stilden birini seç ya da fikri Aybik yazsın"
+      },
+      {
+        "scene": "consent",
+        "title": "Fotoğrafların, senin *kararın*",
+        "subtitle": "Sen evet demeden hiçbir şey cihazından çıkmaz"
+      }
     ],
     "es": [
-      {"scene": "home", "title": "Aybuke, ahora en tu *Mac*", "subtitle": "Looks, Edición mágica y herramientas gratis en una ventana"},
-      {"scene": "makeup", "title": "El maquillaje es un *juego*", "subtitle": "Estudio de maquillaje: 20 looks o tu propia mezcla", "chip": "Nuevo"},
-      {"scene": "result", "title": "Pídelo y mira cómo *brilla*", "subtitle": "Escribe un cambio y arrastra para comparar antes y después", "before": "Antes", "after": "Después"},
-      {"scene": "create", "title": "Imagínalo y *créalo*", "subtitle": "Elige uno de 20 estilos o haz clic en Inspírame"},
-      {"scene": "effects", "title": "13 efectos retro, *gratis*", "subtitle": "De VHS\u00a0'86 a Rainbow\u00a0'17, en tu Mac y sin créditos"},
-      {"scene": "share-cover", "title": "Sé la *estrella* de portada", "subtitle": "Portadas, tiras de fotos y tarjetas para historias"},
-      {"scene": "cutout", "title": "Recorta con un *clic*", "subtitle": "Separa personas y mascotas, añade un fondo o haz un sticker", "chip": "Gratis"},
-      {"scene": "hideFaces", "title": "Protege a tus *amigos*", "subtitle": "Difumina, pixela o tapa caras antes de compartir", "chip": "En tu Mac"}
+      {
+        "scene": "result",
+        "title": "Pídelo y mira cómo *brilla*",
+        "subtitle": "Edición mágica: escribe un cambio y desliza para comparar",
+        "before": "Antes",
+        "after": "Después"
+      },
+      {
+        "scene": "makeup",
+        "title": "El maquillaje es *juego*",
+        "subtitle": "Estudio de maquillaje: 20 looks o tu propia mezcla"
+      },
+      {
+        "scene": "glowcam",
+        "title": "Retro Cam con *resplandor*",
+        "subtitle": "Resplandor, destellos y labios con la cámara de tu Mac",
+        "chip": "Nuevo"
+      },
+      {
+        "scene": "home",
+        "title": "50+ looks a un *clic*",
+        "subtitle": "Doll Box, Y2K Digicam, DSLR Portrait, mascotas y más"
+      },
+      {
+        "scene": "autoedit",
+        "title": "Videos verticales en un *clic*",
+        "subtitle": "La edición automática elige tus mejores momentos",
+        "chip": "Nuevo"
+      },
+      {
+        "scene": "effects",
+        "title": "13 efectos retro, *gratis*",
+        "subtitle": "DSLR '12 desenfoca el fondo, VHS '86 trae los 80",
+        "chip": "En tu Mac"
+      },
+      {
+        "scene": "polls",
+        "title": "Que tus amigas *voten*",
+        "subtitle": "¿Qué vibe? Dos fotos, un enlace privado, 24 horas",
+        "chip": "Nuevo"
+      },
+      {
+        "scene": "share-cover",
+        "title": "Sé la *estrella* de portada",
+        "subtitle": "Portadas, tiras de fotos y tarjetas para historias"
+      },
+      {
+        "scene": "create",
+        "title": "Imagínalo y *créalo*",
+        "subtitle": "Elige entre 20 estilos o deja que Aybik escriba la idea"
+      },
+      {
+        "scene": "consent",
+        "title": "Tus fotos, tu *decisión*",
+        "subtitle": "Nada sale de tu dispositivo hasta que digas que sí"
+      }
     ],
     "pt-BR": [
-      {"scene": "home", "title": "Aybuke, agora no seu *Mac*", "subtitle": "Looks, Edição Mágica e ferramentas grátis numa só janela"},
-      {"scene": "makeup", "title": "Maquiagem é *diversão*", "subtitle": "Estúdio de Maquiagem: 20 looks ou sua própria mistura", "chip": "Novo"},
-      {"scene": "result", "title": "Peça e veja *brilhar*", "subtitle": "Escreva a mudança e arraste para comparar antes e depois", "before": "Antes", "after": "Depois"},
-      {"scene": "create", "title": "Imagine e *crie*", "subtitle": "Escolha entre 20 estilos ou clique em Me\u00a0inspire"},
-      {"scene": "effects", "title": "13 efeitos retrô, *grátis*", "subtitle": "De VHS\u00a0'86 a Rainbow\u00a0'17, no seu Mac e sem créditos"},
-      {"scene": "share-cover", "title": "Seja a estrela da *capa*", "subtitle": "Capas de revista, tirinhas de fotos e cards de Stories"},
-      {"scene": "cutout", "title": "Recorte com um *clique*", "subtitle": "Separe pessoas e pets, mude o fundo ou crie uma figurinha", "chip": "Grátis"},
-      {"scene": "hideFaces", "title": "Proteja seus *amigos*", "subtitle": "Desfoque, pixelize ou cubra rostos antes de compartilhar", "chip": "No seu Mac"}
+      {
+        "scene": "result",
+        "title": "Peça e veja *brilhar*",
+        "subtitle": "Edição Mágica: escreva a mudança e deslize para comparar",
+        "before": "Antes",
+        "after": "Depois"
+      },
+      {
+        "scene": "makeup",
+        "title": "Maquiagem é *diversão*",
+        "subtitle": "Estúdio de Maquiagem: 20 looks ou a sua mistura"
+      },
+      {
+        "scene": "glowcam",
+        "title": "Retro Cam com *brilho*",
+        "subtitle": "Luz suave, brilhinhos e lábios com a câmera do Mac",
+        "chip": "Novo"
+      },
+      {
+        "scene": "home",
+        "title": "50+ looks em um *clique*",
+        "subtitle": "Doll Box, Y2K Digicam, DSLR Portrait, pets e mais"
+      },
+      {
+        "scene": "autoedit",
+        "title": "Vídeo vertical num *clique*",
+        "subtitle": "A edição automática acha os melhores momentos",
+        "chip": "Novo"
+      },
+      {
+        "scene": "effects",
+        "title": "13 efeitos retrô, *grátis*",
+        "subtitle": "DSLR '12 desfoca o fundo, VHS '86 traz os anos 80",
+        "chip": "No seu Mac"
+      },
+      {
+        "scene": "polls",
+        "title": "Deixe as amigas *votarem*",
+        "subtitle": "Qual vibe? Duas fotos, um link privado, 24 horas",
+        "chip": "Novo"
+      },
+      {
+        "scene": "share-cover",
+        "title": "Seja a *estrela* da capa",
+        "subtitle": "Capas de revista, tiras de fotos e cards para stories"
+      },
+      {
+        "scene": "create",
+        "title": "Imagine e *crie*",
+        "subtitle": "Escolha entre 20 estilos ou deixe a Aybik escrever a ideia"
+      },
+      {
+        "scene": "consent",
+        "title": "Suas fotos, sua *escolha*",
+        "subtitle": "Nada sai do seu aparelho até você dizer sim"
+      }
     ],
     "fr": [
-      {"scene": "home", "title": "Aybuke arrive sur *Mac*", "subtitle": "Looks, Retouche magique et outils gratuits dans une fenêtre"},
-      {"scene": "makeup", "title": "Joue avec le *maquillage*", "subtitle": "Studio maquillage\u00a0: 20 looks ou ton mix, et tu restes toi", "chip": "Nouveau"},
-      {"scene": "result", "title": "Dis-le, regarde-la *briller*", "subtitle": "Écris un changement, glisse pour comparer avant et après", "before": "Avant", "after": "Après"},
-      {"scene": "create", "title": "Imagine-le, *crée-le*", "subtitle": "Choisis parmi 20 styles ou clique sur Inspire-moi"},
-      {"scene": "effects", "title": "13 effets rétro, *gratuits*", "subtitle": "De VHS\u00a0'86 à Rainbow\u00a0'17, sur ton Mac, sans crédits"},
-      {"scene": "share-cover", "title": "Fais la *couverture*", "subtitle": "Couvertures de magazine, photomatons et cartes story"},
-      {"scene": "cutout", "title": "Détoure en un *clic*", "subtitle": "Isole personnes et animaux, change le fond, crée un sticker", "chip": "Gratuit"},
-      {"scene": "hideFaces", "title": "Protège tes *amis*", "subtitle": "Floute, pixellise ou cache les visages avant de partager", "chip": "Sur ton Mac"}
+      {
+        "scene": "result",
+        "title": "Dis-le, regarde-la *briller*",
+        "subtitle": "Retouche magique : écris un changement, glisse pour comparer",
+        "before": "Avant",
+        "after": "Après"
+      },
+      {
+        "scene": "makeup",
+        "title": "Le maquillage, un *jeu*",
+        "subtitle": "Studio maquillage : 20 looks ou ton mélange. Tu restes toi"
+      },
+      {
+        "scene": "glowcam",
+        "title": "Retro Cam prend la *lueur*",
+        "subtitle": "Lueur, paillettes et lèvres avec la caméra de ton Mac",
+        "chip": "Nouveau"
+      },
+      {
+        "scene": "home",
+        "title": "50+ looks en un *clic*",
+        "subtitle": "Doll Box, Y2K Digicam, DSLR Portrait, animaux et plus"
+      },
+      {
+        "scene": "autoedit",
+        "title": "Vidéos verticales en un *clic*",
+        "subtitle": "Le montage auto garde tes meilleurs moments",
+        "chip": "Nouveau"
+      },
+      {
+        "scene": "effects",
+        "title": "13 effets rétro, *gratuits*",
+        "subtitle": "DSLR '12 floute l'arrière-plan, VHS '86 ramène les 80s",
+        "chip": "Sur ton Mac"
+      },
+      {
+        "scene": "polls",
+        "title": "Fais voter tes *amies*",
+        "subtitle": "Quelle vibe ? Deux photos, un lien privé, 24 heures",
+        "chip": "Nouveau"
+      },
+      {
+        "scene": "share-cover",
+        "title": "Fais la *couverture*",
+        "subtitle": "Couvertures de magazine, bandes photo et cartes story"
+      },
+      {
+        "scene": "create",
+        "title": "Imagine-le, *crée-le*",
+        "subtitle": "Choisis parmi 20 styles, ou laisse Aybik écrire l'idée"
+      },
+      {
+        "scene": "consent",
+        "title": "Tes photos, ton *choix*",
+        "subtitle": "Rien ne quitte ton appareil sans ton accord"
+      }
     ],
     "de": [
-      {"scene": "home", "title": "Aybuke jetzt auf dem *Mac*", "subtitle": "Looks, Zauber-Edit und Gratis-Tools in einem Fenster"},
-      {"scene": "makeup", "title": "Make-up zum *Spielen*", "subtitle": "Make-up-Studio: 20 Looks oder dein Mix. Du bleibst du", "chip": "Neu"},
-      {"scene": "result", "title": "Sag’s,\nsieh es *strahlen*", "subtitle": "Wunsch eintippen, Regler ziehen, vorher und nachher sehen", "before": "Vorher", "after": "Nachher"},
-      {"scene": "create", "title": "Träum es, *erschaff* es", "subtitle": "Wähl einen von 20 Stilen oder klick auf Inspirier\u00a0mich"},
-      {"scene": "effects", "title": "13 Retro-Effekte, *gratis*", "subtitle": "Von VHS\u00a0'86 bis Rainbow\u00a0'17, auf deinem Mac, ohne Credits"},
-      {"scene": "share-cover", "title": "Werde zum *Coverstar*", "subtitle": "Magazin-Cover, Fotostreifen und Story-Karten zum Teilen"},
-      {"scene": "cutout", "title": "Freistellen per *Klick*", "subtitle": "Menschen und Tiere freistellen, Hintergrund oder Sticker", "chip": "Gratis"},
-      {"scene": "hideFaces", "title": "Schütz deine *Freunde*", "subtitle": "Gesichter verpixeln, weichzeichnen oder abdecken", "chip": "Auf deinem Mac"}
+      {
+        "scene": "result",
+        "title": "Sag’s,\nsieh es *strahlen*",
+        "subtitle": "Zauber-Edit: Wunsch eintippen, schieben und vergleichen",
+        "before": "Vorher",
+        "after": "Nachher"
+      },
+      {
+        "scene": "makeup",
+        "title": "Make-up ist *Spiel*",
+        "subtitle": "Make-up-Studio: 20 Looks oder dein eigener Mix"
+      },
+      {
+        "scene": "glowcam",
+        "title": "Retro Cam mit *Leuchten*",
+        "subtitle": "Leuchten, Glitzer und Lippen mit der Kamera deines Macs",
+        "chip": "Neu"
+      },
+      {
+        "scene": "home",
+        "title": "50+ Looks mit einem *Klick*",
+        "subtitle": "Doll Box, Y2K Digicam, DSLR Portrait, Haustiere und mehr"
+      },
+      {
+        "scene": "autoedit",
+        "title": "Hochkant-Videos per *Klick*",
+        "subtitle": "Auto-Schnitt findet deine besten Momente",
+        "chip": "Neu"
+      },
+      {
+        "scene": "effects",
+        "title": "13 Retro-Effekte, *gratis*",
+        "subtitle": "DSLR '12 macht den Hintergrund weich, VHS '86 die 80er",
+        "chip": "Auf deinem Mac"
+      },
+      {
+        "scene": "polls",
+        "title": "Lass Freunde *abstimmen*",
+        "subtitle": "Welcher Vibe? Zwei Bilder, ein privater Link, 24 Stunden",
+        "chip": "Neu"
+      },
+      {
+        "scene": "share-cover",
+        "title": "Werd zum *Coverstar*",
+        "subtitle": "Magazin-Cover, Fotostreifen und Story-Karten zum Teilen"
+      },
+      {
+        "scene": "create",
+        "title": "Träum es, *erschaff* es",
+        "subtitle": "Wähl aus 20 Stilen oder lass Aybik die Idee schreiben"
+      },
+      {
+        "scene": "consent",
+        "title": "Deine Fotos, deine *Wahl*",
+        "subtitle": "Nichts verlässt dein Gerät, bevor du Ja sagst"
+      }
     ],
     "it": [
-      {"scene": "home", "title": "Aybuke ora è su *Mac*", "subtitle": "Look, Modifica magica e strumenti gratis in una finestra"},
-      {"scene": "makeup", "title": "Il make-up è un *gioco*", "subtitle": "Studio make-up: 20 look o il tuo mix. E resti sempre tu", "chip": "Nuovo"},
-      {"scene": "result", "title": "Dillo e guardala *brillare*", "subtitle": "Scrivi la modifica e trascina per confrontare prima e dopo", "before": "Prima", "after": "Dopo"},
-      {"scene": "create", "title": "Sognalo e *crealo*", "subtitle": "Scegli tra 20 stili o fai clic su Ispirami"},
-      {"scene": "effects", "title": "13 effetti retrò, *gratis*", "subtitle": "Da VHS\u00a0'86 a Rainbow\u00a0'17, sul tuo Mac, senza crediti"},
-      {"scene": "share-cover", "title": "Sii la star in *copertina*", "subtitle": "Copertine di riviste, strisce di foto e card per le Storie"},
-      {"scene": "cutout", "title": "Scontorna con un *clic*", "subtitle": "Isola persone e animali, cambia sfondo o crea uno sticker", "chip": "Gratis"},
-      {"scene": "hideFaces", "title": "Proteggi i tuoi *amici*", "subtitle": "Sfoca, pixela o copri i volti prima di condividere", "chip": "Sul tuo Mac"}
+      {
+        "scene": "result",
+        "title": "Dillo e guardala *brillare*",
+        "subtitle": "Modifica magica: scrivi la modifica e scorri per confrontare",
+        "before": "Prima",
+        "after": "Dopo"
+      },
+      {
+        "scene": "makeup",
+        "title": "Il make-up è un *gioco*",
+        "subtitle": "Studio make-up: 20 look o il tuo mix. Resti te stessa"
+      },
+      {
+        "scene": "glowcam",
+        "title": "Retro Cam con *bagliore*",
+        "subtitle": "Bagliore, brillantini e labbra con la fotocamera del Mac",
+        "chip": "Novità"
+      },
+      {
+        "scene": "home",
+        "title": "50+ look con un *clic*",
+        "subtitle": "Doll Box, Y2K Digicam, DSLR Portrait, animali e altro"
+      },
+      {
+        "scene": "autoedit",
+        "title": "Video verticali in un *clic*",
+        "subtitle": "Il montaggio automatico trova i momenti migliori",
+        "chip": "Novità"
+      },
+      {
+        "scene": "effects",
+        "title": "13 effetti retrò, *gratis*",
+        "subtitle": "DSLR '12 sfoca lo sfondo, VHS '86 riporta gli anni '80",
+        "chip": "Sul tuo Mac"
+      },
+      {
+        "scene": "polls",
+        "title": "Fai votare le *amiche*",
+        "subtitle": "Che mood? Due foto, un link privato, 24 ore",
+        "chip": "Novità"
+      },
+      {
+        "scene": "share-cover",
+        "title": "Sii la *star* in copertina",
+        "subtitle": "Copertine, strisce di foto e card per le storie"
+      },
+      {
+        "scene": "create",
+        "title": "Immaginalo, *crealo*",
+        "subtitle": "Scegli tra 20 stili o lascia che Aybik scriva l'idea"
+      },
+      {
+        "scene": "consent",
+        "title": "Le tue foto, la tua *scelta*",
+        "subtitle": "Niente lascia il dispositivo finché non dici sì"
+      }
     ],
     "ru": [
-      {"scene": "home", "title": "Aybuke теперь на *Mac*", "subtitle": "Образы, Волшебная правка и бесплатные функции в одном окне"},
-      {"scene": "makeup", "title": "Макияж — это *игра*", "subtitle": "Студия макияжа: 20 образов или свой микс. Ты остаёшься собой", "chip": "Новое"},
-      {"scene": "result", "title": "Скажи — и фото *засияет*", "subtitle": "Напиши, что изменить, и сравни «до» и «после» слайдером", "before": "До", "after": "После"},
-      {"scene": "create", "title": "Придумай и *создай*", "subtitle": "Выбери один из 20 стилей или нажми «Вдохнови\u00a0меня»"},
-      {"scene": "effects", "title": "Ретро-эффекты *бесплатно*", "subtitle": "13 эффектов от VHS\u00a0'86 до Rainbow\u00a0'17 прямо на Mac"},
-      {"scene": "share-cover", "title": "Стань звездой *обложки*", "subtitle": "Обложки журналов, фотополоски и карточки для Историй"},
-      {"scene": "cutout", "title": "Вырезай в один *клик*", "subtitle": "Вырежи людей и питомцев, смени фон или сделай стикер", "chip": "Бесплатно"},
-      {"scene": "hideFaces", "title": "Береги *друзей*", "subtitle": "Размой, запикселизируй или закрой лица перед публикацией", "chip": "На твоём Mac"}
+      {
+        "scene": "result",
+        "title": "Скажи — и фото *засияет*",
+        "subtitle": "Волшебная правка: напиши, что изменить, и сравни",
+        "before": "До",
+        "after": "После"
+      },
+      {
+        "scene": "makeup",
+        "title": "Макияж — это *игра*",
+        "subtitle": "Студия макияжа: 20 образов или свой микс"
+      },
+      {
+        "scene": "glowcam",
+        "title": "Retro Cam со *свечением*",
+        "subtitle": "Свечение, блёстки и губы — с камерой твоего Mac",
+        "chip": "Новое"
+      },
+      {
+        "scene": "home",
+        "title": "50+ образов в один *клик*",
+        "subtitle": "Doll Box, Y2K Digicam, DSLR Portrait, питомцы и не только"
+      },
+      {
+        "scene": "autoedit",
+        "title": "Вертикальное видео в *клик*",
+        "subtitle": "Автомонтаж находит лучшие моменты и ставит субтитры",
+        "chip": "Новое"
+      },
+      {
+        "scene": "effects",
+        "title": "13 ретроэффектов *бесплатно*",
+        "subtitle": "DSLR '12 размывает фон, VHS '86 возвращает 80-е",
+        "chip": "На твоём Mac"
+      },
+      {
+        "scene": "polls",
+        "title": "Пусть подруги *голосуют*",
+        "subtitle": "Какой вайб? Два фото, личная ссылка, 24 часа",
+        "chip": "Новое"
+      },
+      {
+        "scene": "share-cover",
+        "title": "Стань *звездой* обложки",
+        "subtitle": "Обложки журналов, фотополоски и карточки для историй"
+      },
+      {
+        "scene": "create",
+        "title": "Придумай и *создай*",
+        "subtitle": "Выбери один из 20 стилей или попроси идею у Aybik"
+      },
+      {
+        "scene": "consent",
+        "title": "Твои фото — твоё *решение*",
+        "subtitle": "Ничего не уходит с устройства без твоего «да»"
+      }
     ],
     "ja": [
-      {"scene": "home", "title": "Aybukeが*Mac*に登場", "subtitle": "ルック、マジック編集、無料ツールをひとつのウィンドウで"},
-      {"scene": "makeup", "title": "メイクは*遊び*", "subtitle": "メイクスタジオ：20のルックか、自分だけのミックス", "chip": "NEW"},
-      {"scene": "result", "title": "伝えるだけで、*キラッと*変身", "subtitle": "変えたいことを書いて、ドラッグでビフォー・アフターを比較", "before": "ビフォー", "after": "アフター"},
-      {"scene": "create", "title": "想像を*カタチ*に", "subtitle": "20のスタイルから選ぶか、「アイデアをもらう」をクリック"},
-      {"scene": "effects", "title": "13のレトロ加工が*無料*", "subtitle": "VHS\u00a0'86からRainbow\u00a0'17まで。Macの中で、クレジット不要"},
-      {"scene": "share-cover", "title": "あなたが*表紙*の主役", "subtitle": "雑誌の表紙、フォトストリップ、ストーリーカードでシェア"},
-      {"scene": "cutout", "title": "*ワンクリック*で切り抜き", "subtitle": "人やペットを切り抜いて、背景を変えたりステッカーにしたり", "chip": "無料"},
-      {"scene": "hideFaces", "title": "友だちの顔を*守ろう*", "subtitle": "シェアする前に顔をぼかし、モザイク、スタンプで隠せる", "chip": "Macの中で処理"}
+      {
+        "scene": "result",
+        "title": "伝えるだけで、*キラッと*変身",
+        "subtitle": "マジック編集：変えたいことを書いて、スライドで比較",
+        "before": "ビフォー",
+        "after": "アフター"
+      },
+      {
+        "scene": "makeup",
+        "title": "メイクは*遊び*",
+        "subtitle": "メイクスタジオ：20のルックか、自分だけのミックス"
+      },
+      {
+        "scene": "glowcam",
+        "title": "Retro Camに*グロー*",
+        "subtitle": "Macのカメラで、グロー、キラキラ、リップの色",
+        "chip": "NEW"
+      },
+      {
+        "scene": "home",
+        "title": "50以上のルックを*クリック*で",
+        "subtitle": "Doll Box、Y2K Digicam、DSLR Portrait、ペットなど"
+      },
+      {
+        "scene": "autoedit",
+        "title": "縦型動画を*クリック*で",
+        "subtitle": "自動編集がベストな瞬間を選んで字幕もつける",
+        "chip": "NEW"
+      },
+      {
+        "scene": "effects",
+        "title": "13のレトロ効果が*無料*",
+        "subtitle": "DSLR '12で背景ぼかし、VHS '86で80年代へ",
+        "chip": "Macで処理"
+      },
+      {
+        "scene": "polls",
+        "title": "友だちに*投票*してもらおう",
+        "subtitle": "どっちの気分？ 写真2枚、限定リンク、24時間",
+        "chip": "NEW"
+      },
+      {
+        "scene": "share-cover",
+        "title": "表紙の*主役*はあなた",
+        "subtitle": "雑誌の表紙、フォトストリップ、ストーリーカード"
+      },
+      {
+        "scene": "create",
+        "title": "思い描いて、*つくろう*",
+        "subtitle": "20のスタイルから選ぶか、Aybikにアイデアをおまかせ"
+      },
+      {
+        "scene": "consent",
+        "title": "写真のことは*あなた*が決める",
+        "subtitle": "OKするまで、何も端末の外に出ません"
+      }
     ],
     "ko": [
-      {"scene": "home", "title": "Aybuke, 이제 *Mac*에서", "subtitle": "룩, 매직 편집, 무료 도구를 한 창에서"},
-      {"scene": "makeup", "title": "메이크업은 *놀이*", "subtitle": "메이크업 스튜디오: 룩 20가지 또는 나만의 조합. 나는 그대로 나", "chip": "NEW"},
-      {"scene": "result", "title": "말만 하면 *반짝* 변신", "subtitle": "바꾸고 싶은 걸 쓰고 드래그해서 비포·애프터 비교", "before": "비포", "after": "애프터"},
-      {"scene": "create", "title": "상상한 대로 *만들기*", "subtitle": "스타일 20가지 중에 고르거나 ‘아이디어 추천’을 클릭하세요"},
-      {"scene": "effects", "title": "레트로 효과 13가지, *무료*", "subtitle": "VHS\u00a0'86부터 Rainbow\u00a0'17까지, Mac에서 크레딧 없이"},
-      {"scene": "share-cover", "title": "내가 *커버* 주인공", "subtitle": "매거진 커버, 포토부스 사진, 스토리 카드로 공유"},
-      {"scene": "cutout", "title": "클릭 *한 번*에 누끼", "subtitle": "사람과 반려동물을 따고, 배경을 바꾸거나 스티커로", "chip": "무료"},
-      {"scene": "hideFaces", "title": "친구 얼굴은 *소중하니까*", "subtitle": "공유 전에 얼굴을 흐리게, 모자이크로, 스티커로 가려요", "chip": "Mac에서 처리"}
+      {
+        "scene": "result",
+        "title": "말만 하면 *반짝* 변신",
+        "subtitle": "매직 편집: 바꾸고 싶은 걸 쓰고, 밀어서 비교해 보세요",
+        "before": "비포",
+        "after": "애프터"
+      },
+      {
+        "scene": "makeup",
+        "title": "메이크업은 *놀이*",
+        "subtitle": "메이크업 스튜디오: 룩 20가지 또는 나만의 조합"
+      },
+      {
+        "scene": "glowcam",
+        "title": "Retro Cam에 *글로우*",
+        "subtitle": "Mac 카메라로 글로우, 반짝이, 립 컬러를",
+        "chip": "NEW"
+      },
+      {
+        "scene": "home",
+        "title": "50가지 이상 룩, *클릭* 한 번",
+        "subtitle": "Doll Box, Y2K Digicam, DSLR Portrait, 반려동물까지"
+      },
+      {
+        "scene": "autoedit",
+        "title": "세로 영상, *클릭* 한 번",
+        "subtitle": "자동 편집이 베스트 순간을 고르고 자막까지",
+        "chip": "NEW"
+      },
+      {
+        "scene": "effects",
+        "title": "레트로 효과 13가지 *무료*",
+        "subtitle": "DSLR '12로 배경 흐림, VHS '86으로 80년대 감성",
+        "chip": "Mac에서 처리"
+      },
+      {
+        "scene": "polls",
+        "title": "친구들에게 *투표*받기",
+        "subtitle": "어떤 분위기? 사진 두 장, 비공개 링크, 24시간",
+        "chip": "NEW"
+      },
+      {
+        "scene": "share-cover",
+        "title": "내가 바로 *커버* 모델",
+        "subtitle": "매거진 커버, 포토 스트립, 스토리 카드로 공유"
+      },
+      {
+        "scene": "create",
+        "title": "상상하고 *만들어요*",
+        "subtitle": "스타일 20가지 중 고르거나 Aybik에게 아이디어를"
+      },
+      {
+        "scene": "consent",
+        "title": "내 사진은 *내가* 정해요",
+        "subtitle": "허락하기 전엔 아무것도 기기 밖으로 나가지 않아요"
+      }
     ],
     "zh-Hans": [
-      {"scene": "home", "title": "Aybuke 现已登陆 *Mac*", "subtitle": "风格、魔法编辑和免费工具，一个窗口全搞定"},
-      {"scene": "makeup", "title": "化妆就是*好玩*", "subtitle": "妆容工作室：20 种妆容或自由搭配，你还是你", "chip": "新"},
-      {"scene": "result", "title": "说出改变，看它*焕发光彩*", "subtitle": "写下想要的改变，拖动滑块对比前后", "before": "之前", "after": "之后"},
-      {"scene": "create", "title": "想到就能*创作*", "subtitle": "从 20 种风格中选一个，或点击“给我灵感”"},
-      {"scene": "effects", "title": "13 款复古特效，*免费*", "subtitle": "从 VHS\u00a0'86 到 Rainbow\u00a0'17，在 Mac 上不耗点数"},
-      {"scene": "share-cover", "title": "你就是*封面*主角", "subtitle": "杂志封面、大头贴和快拍卡片，随心分享"},
-      {"scene": "cutout", "title": "*一键*抠图", "subtitle": "抠出人物和宠物，换背景或做成贴纸", "chip": "免费"},
-      {"scene": "hideFaces", "title": "保护好*朋友*", "subtitle": "分享前给人脸打码、模糊或用贴纸遮住", "chip": "Mac 本机处理"}
+      {
+        "scene": "result",
+        "title": "说出改变，看它*焕发光彩*",
+        "subtitle": "魔法编辑：写下想要的改变，滑动对比前后",
+        "before": "之前",
+        "after": "之后"
+      },
+      {
+        "scene": "makeup",
+        "title": "化妆就是*好玩*",
+        "subtitle": "妆容工作室：20 种妆容或自由搭配，你还是你"
+      },
+      {
+        "scene": "glowcam",
+        "title": "Retro Cam 加上*柔光*",
+        "subtitle": "用 Mac 的摄像头拍出柔光、闪亮和唇色",
+        "chip": "新功能"
+      },
+      {
+        "scene": "home",
+        "title": "50+ 种造型，*一点*即得",
+        "subtitle": "Doll Box、Y2K Digicam、DSLR Portrait、萌宠等"
+      },
+      {
+        "scene": "autoedit",
+        "title": "竖屏视频*一键*剪好",
+        "subtitle": "自动剪辑挑出精彩瞬间，还能加字幕",
+        "chip": "新功能"
+      },
+      {
+        "scene": "effects",
+        "title": "13 种复古效果，*免费*",
+        "subtitle": "DSLR '12 虚化背景，VHS '86 带你回到 80 年代",
+        "chip": "在 Mac 上处理"
+      },
+      {
+        "scene": "polls",
+        "title": "让朋友们来*投票*",
+        "subtitle": "哪种氛围？两张图、私密链接、24 小时",
+        "chip": "新功能"
+      },
+      {
+        "scene": "share-cover",
+        "title": "你就是封面*主角*",
+        "subtitle": "杂志封面、照片条和快拍卡片，一键分享"
+      },
+      {
+        "scene": "create",
+        "title": "想到就能*创作*",
+        "subtitle": "20 种风格任你选，也可以让 Aybik 帮你写创意"
+      },
+      {
+        "scene": "consent",
+        "title": "你的照片，*你*说了算",
+        "subtitle": "你同意之前，什么都不会离开你的设备"
+      }
     ],
     "id": [
-      {"scene": "home", "title": "Aybuke kini hadir di *Mac*", "subtitle": "Look, Edit Ajaib, dan alat gratis dalam satu jendela"},
-      {"scene": "makeup", "title": "Makeup itu *seru*", "subtitle": "Studio Makeup: 20 look atau racikanmu. Kamu tetap kamu", "chip": "Baru"},
-      {"scene": "result", "title": "Bilang maumu, jadi *glowing*", "subtitle": "Tulis perubahannya, lalu seret untuk melihat bedanya", "before": "Sebelum", "after": "Sesudah"},
-      {"scene": "create", "title": "Bayangkan, lalu *ciptakan*", "subtitle": "Pilih satu dari 20 gaya, atau klik Beri\u00a0aku\u00a0ide"},
-      {"scene": "effects", "title": "13 efek retro, *gratis*", "subtitle": "Dari VHS\u00a0'86 sampai Rainbow\u00a0'17, di Mac-mu, tanpa kredit"},
-      {"scene": "share-cover", "title": "Jadi bintang *sampul*", "subtitle": "Sampul majalah, strip foto, dan kartu cerita untuk dibagikan"},
-      {"scene": "cutout", "title": "Potong dengan sekali *klik*", "subtitle": "Pisahkan orang dan hewan, ganti latar, atau jadikan stiker", "chip": "Gratis"},
-      {"scene": "hideFaces", "title": "Lindungi *teman-temanmu*", "subtitle": "Blur, pikselkan, atau tutup wajah sebelum berbagi", "chip": "Di Mac-mu"}
+      {
+        "scene": "result",
+        "title": "Bilang maumu, jadi *glowing*",
+        "subtitle": "Edit Ajaib: tulis perubahannya, geser untuk membandingkan",
+        "before": "Sebelum",
+        "after": "Sesudah"
+      },
+      {
+        "scene": "makeup",
+        "title": "Makeup itu *main-main*",
+        "subtitle": "Studio Makeup: 20 look atau racikanmu sendiri"
+      },
+      {
+        "scene": "glowcam",
+        "title": "Retro Cam kini *berpendar*",
+        "subtitle": "Pendar, kilau, dan warna bibir dengan kamera Mac",
+        "chip": "Baru"
+      },
+      {
+        "scene": "home",
+        "title": "50+ look, sekali *klik*",
+        "subtitle": "Doll Box, Y2K Digicam, DSLR Portrait, hewan peliharaan"
+      },
+      {
+        "scene": "autoedit",
+        "title": "Video vertikal sekali *klik*",
+        "subtitle": "Edit otomatis memilih momen terbaik dan menambah teks",
+        "chip": "Baru"
+      },
+      {
+        "scene": "effects",
+        "title": "13 efek retro, *gratis*",
+        "subtitle": "DSLR '12 memburamkan latar, VHS '86 membawa era 80-an",
+        "chip": "Di Mac-mu"
+      },
+      {
+        "scene": "polls",
+        "title": "Biar teman yang *memilih*",
+        "subtitle": "Vibe yang mana? Dua foto, tautan pribadi, 24 jam",
+        "chip": "Baru"
+      },
+      {
+        "scene": "share-cover",
+        "title": "Jadi *bintang* sampul",
+        "subtitle": "Sampul majalah, strip foto, dan kartu story untuk dibagikan"
+      },
+      {
+        "scene": "create",
+        "title": "Bayangkan, lalu *buat*",
+        "subtitle": "Pilih dari 20 gaya, atau biar Aybik menulis idenya"
+      },
+      {
+        "scene": "consent",
+        "title": "Fotomu, *keputusanmu*",
+        "subtitle": "Tak ada yang keluar dari perangkatmu sebelum kamu setuju"
+      }
     ]
   }
 }

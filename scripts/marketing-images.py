@@ -10,8 +10,14 @@ docs/marketing/screenshot-captions.json, captured with -GLScreenshotScene
 
   result.png        result                     before/after slider
   makeup.png        editor -GLEditorTool makeup (-GLMakeupPreset <id>)
-  home.png          home
-  effects.png       effects
+  glowcam.png       camera -GLGlowLook golden -GLGlowSparkle YES -GLGlowLips rosy
+                    -GLGlowCheeks softBlush -GLCameraSample portrait-a -GLCameraSteady YES
+                    -GLTintKeepsGoing YES -GLVisionFixtures <folder> (-GLCameraFixture YES on the Mac)
+  home.png          home -GLDate 2026-08-20    (a day with no season or countdown anywhere)
+  autoedit.png      video -GLVideoLandscape YES -GLCaptions fixture -GLAutoEdit tiktok
+                    -GLAutoEditFraming fixture -GLAutoEditLook golden -GLVideoClean YES -GLVideoSeek 1.2
+  effects.png       effects (-GLEffect dslr12 -GLEffectsPhoto portrait-c -GLVisionFixtures <folder>)
+  polls.png         polls                      "Your polls" with the results fixture
   textStickers.png  textStickers
   create.png        create
   share-cover.png   share -GLShareFormat cover (shareCover.png works too)
@@ -1136,6 +1142,9 @@ LOOKS = {
     "share-cover": Look((PEACH, PINK), (("star", -0.035, 0.3, 0.15, -12), ("heart", 1.035, 0.52, 0.16, 12))),
     "collage": Look((MINT, LILAC), (("camera", 1.04, 0.26, 0.17, 10), ("heart", -0.035, 0.58, 0.14, -10)), glyph="check"),
     "consent": Look((MINT, LILAC), (("sparkles", 1.035, 0.42, 0.13, 6),), glyph="lock"),
+    "glowcam": Look((PINK, BUTTER), (("sparkles", 1.035, 0.22, 0.15, 8), ("lipstick", -0.04, 0.5, 0.17, -6)), glyph="sparkle"),
+    "autoedit": Look((LILAC, PEACH), (("star", -0.035, 0.2, 0.14, -12), ("camera", 1.04, 0.62, 0.17, 10)), glyph="sparkle"),
+    "polls": Look((MINT, PINK), (("heart", 1.035, 0.22, 0.15, 12), ("chromeheart", -0.035, 0.56, 0.15, -10)), glyph="heart"),
     "paywall": Look((BUTTER, PINK), (("heart", 1.035, 0.36, 0.16, 12), ("star", -0.035, 0.62, 0.12, -10)), glyph="heart"),
     "cutout": Look((MINT, PINK), (("star", -0.035, 0.3, 0.14, -10),), glyph="check"),
     "hideFaces": Look((LILAC, PEACH), (("heart", 1.035, 0.3, 0.14, 12),), glyph="lock"),
@@ -1323,15 +1332,19 @@ def tablet_slide(capture: Image.Image, item: dict, lang: str, background: Image.
 
 
 MAC_LOOKS = {
-    "home": Look((PINK, LILAC), (("heart", 0.95, 0.1, 0.075, -12), ("sparkles", 0.06, 0.84, 0.07, 8)), hero=True),
+    "home": Look((LILAC, MINT), (("star", 1.025, 0.32, 0.065, 12), ("chromeheart", -0.025, 0.64, 0.065, -10))),
     "makeup": Look((PINK, LILAC), (("lipstick", -0.025, 0.45, 0.075, 0), ("bow", 1.025, 0.7, 0.065, 10)), glyph="sparkle"),
-    "result": Look((PINK, PEACH), (("heart", 1.025, 0.48, 0.07, -12), ("sparkles", -0.025, 0.7, 0.065, 8))),
+    "result": Look((PINK, PEACH), (("heart", 0.95, 0.1, 0.075, -12), ("sparkles", 0.06, 0.84, 0.07, 8)), hero=True),
     "create": Look((LILAC, PINK), (("sparkles", 1.025, 0.3, 0.07, 6), ("chromeheart", -0.025, 0.66, 0.065, -8)),
                    glyph="sparkle"),
     "effects": Look((PEACH, BUTTER), (("camera", -0.025, 0.32, 0.075, -10), ("star", 1.025, 0.68, 0.06, 14)), glyph="check"),
     "share-cover": Look((PEACH, PINK), (("star", -0.025, 0.36, 0.065, -12), ("heart", 1.025, 0.62, 0.07, 12))),
     "cutout": Look((MINT, PINK), (("butterfly", 1.025, 0.3, 0.07, 10), ("star", -0.025, 0.62, 0.06, -10)), glyph="check"),
     "hideFaces": Look((LILAC, MINT), (("heart", 1.025, 0.42, 0.065, 12),), glyph="lock"),
+    "glowcam": Look((PINK, BUTTER), (("sparkles", 1.025, 0.3, 0.07, 8), ("lipstick", -0.025, 0.64, 0.07, -6)), glyph="sparkle"),
+    "autoedit": Look((LILAC, PEACH), (("star", -0.025, 0.34, 0.06, -12), ("camera", 1.025, 0.66, 0.07, 10)), glyph="sparkle"),
+    "polls": Look((MINT, PINK), (("heart", 1.025, 0.32, 0.065, 12), ("chromeheart", -0.025, 0.66, 0.065, -10)), glyph="heart"),
+    "consent": Look((MINT, LILAC), (("sparkles", 1.025, 0.4, 0.06, 6),), glyph="lock"),
 }
 
 
