@@ -104,14 +104,14 @@ Aybuke 1.1 is here ✨
 Thanks for glowing with us!
 ```
 
-**App Review notes** (3565/4000; for the 1.1 update, iOS and macOS; sent with `asc_metadata.py --version 1.1 --review-notes`)
+**App Review notes** (3616/4000; for the 1.1 update, iOS and macOS; sent with `asc_metadata.py --version 1.1 --review-notes`)
 
 ```text
 Aybuke is an AI photo editor and image generator for iPhone, iPad and Mac. No login is needed; Sign in with Apple is optional (Settings > Account) and only lets credits follow the user to another device. An anonymous backend account is created only at the first consented cloud AI use or a purchase.
 
 New in 1.1, and how to test it:
 A. Consent asks again: 1.1 gives Anthropic a second role, so people who agreed in 1.0 see the consent screen once more before their next cloud action. It names every processor: Supabase (our servers), xAI (Grok Imagine makes the images) and Anthropic, whose Claude model the app calls "Aybik, our AI helper": it checks photos, results and poll pictures for safety and suggests text. Tap "Allow AI processing"; "Not now" keeps every on-device tool working.
-B. Aybik writing help (text only, never a photo, no credits): Create > "Inspire me" or "Make it magic", Makeup Studio > "Describe your vibe", caption ideas on the share screen. Without consent the on-device writer or built-in lists answer.
+B. Aybik writing help (text only, never a photo, no credits): Create > "Inspire me" or "Make it magic", Makeup Studio > "Describe your vibe", and "More ideas from Aybik" under the caption ideas (share screen, Auto edit export). Without consent the on-device writer or built-in lists answer.
 C. Glow (on the device): Explore > Retro Cam > "Glow" under the viewfinder. Pick Natural, Dreamy, Golden, Analog or Moody, tap Sparkle, and Makeup for a lip or blush tint. Light and color only: no smoothing, reshaping or skin-tone change.
 D. Auto edit (on the device): Edit > "Edit a video", pick a clip, then an Auto edit button. It makes a 9:16 cut with framing and captions. One a day is free, then the paywall explains Pro.
 E. Which vibe? polls: My Works > Select two edits or creations > "Ask friends" (also on the share screen). The pictures pass the safety check, then a private link lets anyone vote A or B in a browser for 24 hours, anonymously; then everything is deleted. Results: My Works > Your polls. Questions that rate or compare looks are blocked; a reported poll is closed.
@@ -129,7 +129,7 @@ The essentials:
 Contact: hello@buaze.com
 ```
 
-For the macOS version the same text gets one more paragraph before the contact line (3789/4000 in all):
+For the macOS version the same text gets one more paragraph before the contact line (3840/4000 in all):
 
 ```text
 On the Mac: the same app (Mac Catalyst) with a sidebar and a menu bar; drop a photo on the window to edit it. Retro Cam and Glow use the Mac's camera. No Live Activity, Instagram Stories sharing, ads or Pro try on the Mac.
