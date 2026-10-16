@@ -230,4 +230,164 @@ final class AdsTests: XCTestCase {
             XCTAssertEqual(thrown as? AdRewardError, .dailyCap)
         }
     }
+
+    // MARK: Pro tries (one Pro look or style for a rewarded ad)
+
+    func testProTryItemsComeOnlyFromProLooksAndStyles() {
+        XCTAssertEqual(ProTryItem(paywallSource: "template_doll-box"), .template("doll-box"))
+        XCTAssertEqual(ProTryItem(paywallSource: "style_fantasy"), .style("fantasy"))
+        let free = TemplateCatalog.all.first { !$0.isPro }!
+        XCTAssertNil(ProTryItem(paywallSource: "template_\(free.id)"), "a free look needs no try")
+        let freeStyle = StyleCatalog.all.first { !$0.isPro }!
+        XCTAssertNil(ProTryItem(paywallSource: "style_\(freeStyle.id)"))
+        XCTAssertNil(ProTryItem(paywallSource: "style_nope"), "an unknown style isn't the default one")
+        XCTAssertNil(ProTryItem(paywallSource: "template_nope"))
+        for source in ["create_count", "out_of_credits", "share_watermark", "settings", "template_", "style_"] {
+            XCTAssertNil(ProTryItem(paywallSource: source), source)
+        }
+        for template in TemplateCatalog.all where template.isPro {
+            let item = ProTryItem(paywallSource: "template_\(template.id)")
+            XCTAssertEqual(item?.paywallSource, "template_\(template.id)")
+            XCTAssertEqual(item?.operation, .restyle)
+        }
+        for style in StyleCatalog.all where style.isPro {
+            XCTAssertEqual(ProTryItem(paywallSource: "style_\(style.id)")?.operation, .textToImage)
+        }
+    }
+
+    func testProTryOfferRules() {
+        let policy = ProTryPolicy.standard
+        let now = Date(timeIntervalSince1970: 1_800_000_000)
+        let item = ProTryItem.template("doll-box")
+        let open = ProTryOverview(remainingToday: 1, dailyCap: 1, eligible: true)
+        func offer(isPro: Bool = false, audience: AdAudience? = .teen, outputs: Int = 1, balance: Int = 2,
+                   overview: ProTryOverview? = open, active: [ProTry] = [], pause: AIServicePause? = nil) -> ProTryOffer {
+            policy.offer(for: item, isPro: isPro, audience: audience, outputs: outputs, balance: balance, cost: 1,
+                         overview: overview, active: active, pause: pause, now: now)
+        }
+
+        XCTAssertEqual(offer(), .available(remaining: 1))
+        XCTAssertEqual(offer(audience: .adult), .available(remaining: 1))
+        XCTAssertEqual(offer(isPro: true), .none, "Pro has every look already, and no ads")
+        XCTAssertEqual(offer(audience: nil), .none, "never under 13 (no ad audience)")
+        XCTAssertEqual(offer(outputs: 4), .none, "several images at once stays Pro-only, even with a try")
+        XCTAssertEqual(offer(overview: nil), .none, "only once the server has said")
+        XCTAssertEqual(offer(pause: AIServicePause(freeOnly: true, until: now.addingTimeInterval(600))), .none,
+                       "AI resting: the try couldn't start its job")
+        XCTAssertEqual(offer(pause: AIServicePause(freeOnly: false, until: now.addingTimeInterval(-1))), .available(remaining: 1),
+                       "a pause that ended is no pause")
+        XCTAssertEqual(offer(balance: 0), .needsCredit, "the try's job costs a credit")
+        XCTAssertEqual(offer(overview: ProTryOverview(remainingToday: 0, dailyCap: 1, eligible: false)), .capped)
+        XCTAssertEqual(offer(balance: 0, overview: ProTryOverview(remainingToday: 0, dailyCap: 1, eligible: false)), .capped,
+                       "a credit wouldn't help today")
+        XCTAssertEqual(offer(overview: ProTryOverview(remainingToday: 0, dailyCap: 0, eligible: false)), .none,
+                       "a cap of 0 turns tries off; nothing to explain")
+        XCTAssertEqual(offer(overview: ProTryOverview(remainingToday: 1, dailyCap: 1, eligible: false)), .none,
+                       "the server says no (a block, a cool-down, no verified install)")
+        XCTAssertEqual(offer(overview: ProTryOverview(remainingToday: 1, dailyCap: nil, eligible: true)), .available(remaining: 1),
+                       "an unread cap isn't a cap of 0")
+
+        // A try she already has comes first, as long as it can still start a job.
+        let live = ProTry(item: item, expiresAt: now.addingTimeInterval(20 * 60))
+        XCTAssertEqual(offer(active: [live]), .ready(expiresAt: live.expiresAt))
+        XCTAssertEqual(offer(overview: nil, active: [live]), .ready(expiresAt: live.expiresAt), "known before the server answers")
+        XCTAssertEqual(offer(overview: ProTryOverview(remainingToday: 0, dailyCap: 1, eligible: false), active: [live]),
+                       .ready(expiresAt: live.expiresAt), "today's try is this one")
+        XCTAssertEqual(offer(balance: 0, active: [live]), .needsCredit)
+        XCTAssertEqual(offer(isPro: true, active: [live]), .none)
+        XCTAssertEqual(offer(active: [ProTry(item: .template("figurine"), expiresAt: live.expiresAt)]), .available(remaining: 1),
+                       "a try covers exactly one look")
+        XCTAssertEqual(offer(active: [ProTry(item: .style("doll-box"), expiresAt: live.expiresAt)]), .available(remaining: 1),
+                       "a style's id isn't a look's")
+        let ending = ProTry(item: item, expiresAt: now.addingTimeInterval(10))
+        XCTAssertNil(policy.liveTry(for: item, in: [ending], at: now), "ending within the margin")
+        XCTAssertNil(policy.liveTry(for: item, in: [ProTry(item: item, expiresAt: now.addingTimeInterval(-60))], at: now))
+        XCTAssertEqual(policy.liveTry(for: item, in: [ending, live], at: now), live)
+    }
+
+    func testUnlockTokenRequests() throws {
+        let look = try RequestFactory.adRewardUnlockToken(for: .template("doll-box"), config: config, accessToken: "user-jwt",
+                                                          entitlementJWS: "jws", appTransactionJWS: "app.jws")
+        XCTAssertEqual(look.url?.absoluteString, "https://demo.supabase.co/functions/v1/ad-reward")
+        XCTAssertEqual(look.httpMethod, "POST")
+        XCTAssertEqual(look.value(forHTTPHeaderField: "Authorization"), "Bearer user-jwt")
+        XCTAssertEqual(look.value(forHTTPHeaderField: RequestFactory.entitlementHeader), "jws")
+        XCTAssertEqual(look.value(forHTTPHeaderField: "X-App-Transaction"), "app.jws", "tries are counted per App Store install too")
+        XCTAssertEqual(look.value(forHTTPHeaderField: "Content-Type"), "application/json")
+        XCTAssertEqual(String(data: try XCTUnwrap(look.httpBody), encoding: .utf8), #"{"kind":"unlock","template_id":"doll-box"}"#)
+
+        let style = try RequestFactory.adRewardUnlockToken(for: .style("fantasy"), config: config, accessToken: "user-jwt")
+        let body = try XCTUnwrap(JSONSerialization.jsonObject(with: XCTUnwrap(style.httpBody)) as? [String: String])
+        XCTAssertEqual(body, ["kind": "unlock", "style_id": "fantasy"], "her user id never goes along")
+    }
+
+    func testDecodesUnlockAnswers() throws {
+        let token = try ResponseDecoder.decodeAdRewardToken(data: Data("""
+        {"token":"t1","kind":"unlock","template_id":"doll-box","expires_at":"2026-10-16T12:30:00.123456+00:00",
+         "remaining_today":0,"daily_cap":1}
+        """.utf8), statusCode: 201)
+        XCTAssertEqual(token.kind, "unlock")
+        XCTAssertEqual(token.item, .template("doll-box"))
+        XCTAssertEqual(token.remainingToday, 0)
+        XCTAssertEqual(token.dailyCap, 1)
+        let credit = try ResponseDecoder.decodeAdRewardToken(data: Data(#"{"token":"t","kind":"credit","remaining_today":1}"#.utf8),
+                                                             statusCode: 201)
+        XCTAssertNil(credit.item)
+
+        let granted = try ResponseDecoder.decodeAdRewardStatus(data: Data("""
+        {"token":"t1","kind":"unlock","status":"granted","style_id":"fantasy","remaining_today":0,"daily_cap":1,
+         "credits_remaining":2,"expires_at":"2026-10-16T12:30:00.123456+00:00"}
+        """.utf8), statusCode: 200)
+        XCTAssertEqual(granted.status, .granted)
+        XCTAssertEqual(granted.item, .style("fantasy"))
+        XCTAssertEqual(granted.creditsRemaining, 2)
+        let end = try XCTUnwrap(granted.expiresAt)
+        XCTAssertEqual(end.timeIntervalSince1970, 1_792_153_800.123, accuracy: 0.001)
+
+        let pending = try ResponseDecoder.decodeAdRewardStatus(data: Data("""
+        {"token":"t1","kind":"unlock","status":"pending","template_id":"doll-box","remaining_today":0,"daily_cap":1}
+        """.utf8), statusCode: 200)
+        XCTAssertNil(pending.expiresAt, "a try's end comes with the grant")
+
+        let overview = try ResponseDecoder.decodeAdRewardStatus(data: Data("""
+        {"remaining_today":2,"daily_cap":2,"credits_remaining":1,"eligible":false,
+         "unlock":{"remaining_today":0,"daily_cap":1,"eligible":false,
+                   "active":[{"template_id":"doll-box","expires_at":"2026-10-16T12:30:00Z"},
+                             {"style_id":"fantasy","expires_at":"2026-10-16T12:31:00.5+00:00"},
+                             {"template_id":"doll-box","expires_at":"soon"},
+                             {"expires_at":"2026-10-16T12:30:00Z"}]}}
+        """.utf8), statusCode: 200)
+        XCTAssertEqual(overview.remainingToday, 2, "the top level stays the credit ads")
+        let unlock = try XCTUnwrap(overview.unlock)
+        XCTAssertEqual(unlock.remainingToday, 0)
+        XCTAssertEqual(unlock.dailyCap, 1)
+        XCTAssertFalse(unlock.eligible)
+        XCTAssertEqual(unlock.active.map(\.item), [.template("doll-box"), .style("fantasy")], "unreadable entries are skipped")
+
+        let older = try ResponseDecoder.decodeAdRewardStatus(data: Data(#"{"remaining_today":2,"daily_cap":2,"eligible":true}"#.utf8),
+                                                             statusCode: 200)
+        XCTAssertNil(older.unlock, "a server before tries: no try card")
+        let odd = try ResponseDecoder.decodeAdRewardStatus(data: Data(#"{"remaining_today":2,"unlock":"soon"}"#.utf8), statusCode: 200)
+        XCTAssertNil(odd.unlock, "an unreadable block leaves the credit ads working")
+        XCTAssertEqual(odd.remainingToday, 2)
+    }
+
+    func testServerDates() {
+        XCTAssertEqual(ServerDate.parse("2026-10-16T12:30:00Z")?.timeIntervalSince1970, 1_792_153_800)
+        XCTAssertEqual(ServerDate.parse("2026-10-16T12:30:00.250Z")?.timeIntervalSince1970 ?? 0, 1_792_153_800.25, accuracy: 0.001)
+        XCTAssertEqual(ServerDate.parse("2026-10-16T15:30:00.123456+03:00")?.timeIntervalSince1970 ?? 0, 1_792_153_800.123, accuracy: 0.001)
+        XCTAssertNil(ServerDate.parse("tomorrow"))
+    }
+
+    func testMapsUnlockErrors() {
+        func error(_ status: Int, _ body: String) -> AdRewardError {
+            ResponseDecoder.adRewardError(from: Data(body.utf8), statusCode: status)
+        }
+        XCTAssertEqual(error(409, #"{"error":{"code":"no_credits","message":"x","credits_remaining":0}}"#), .noCredits)
+        XCTAssertEqual(error(409, #"{"error":{"code":"daily_cap","message":"x"}}"#), .dailyCap)
+        XCTAssertEqual(error(400, #"{"error":{"code":"not_unlockable","message":"x"}}"#), .notUnlockable)
+        XCTAssertEqual(error(400, #"{"error":{"code":"bad_request","message":"x"}}"#), .notUnlockable)
+        XCTAssertEqual(error(503, #"{"error":{"code":"ai_paused","message":"x"}}"#), .aiPaused)
+        XCTAssertEqual(error(403, #"{"error":{"code":"not_eligible","message":"x"}}"#), .notEligible)
+    }
 }

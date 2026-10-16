@@ -848,6 +848,10 @@ public enum ResponseDecoder {
             return .rateLimited(retryAfter: wait)
         case "retry_limit":
             return .retryLimit
+        case "pro_required":
+            // A Pro look or style without Pro or a live try of it (a 402, but
+            // not a lack of credits): nothing was booked.
+            return .server(code: "pro_required", message: body?.message ?? "")
         default:
             break
         }

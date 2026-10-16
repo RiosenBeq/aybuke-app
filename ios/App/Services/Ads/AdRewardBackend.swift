@@ -2,10 +2,11 @@ import Foundation
 import AppCore
 
 /// The server side of rewarded ads (`functions/v1/ad-reward`): a single-use
-/// token before each ad, and whether AdMob has confirmed it since. Uses the
-/// session she already has (she ran out of credits on it) and never signs up.
-/// Ad credits belong to the App Store install like the free ones, so the
-/// overview and the token carry StoreKit's AppTransaction.
+/// token before each ad (for a credit, or for a one-time try of a Pro look or
+/// style), and whether AdMob has confirmed it since. Uses the session she
+/// already has (from her cloud jobs) and never signs up. Ad credits and tries
+/// belong to the App Store install like the free credits, so the overview and
+/// the tokens carry StoreKit's AppTransaction.
 final class AdRewardBackend {
     private let config: BackendConfiguration
     private let auth: AuthSessionManager
@@ -38,6 +39,16 @@ final class AdRewardBackend {
         let jws = await entitlementProvider()
         let request = try RequestFactory.adRewardToken(config: config, accessToken: accessToken, entitlementJWS: jws,
                                                        appTransactionJWS: await appTransactions.jws())
+        let (data, response) = try await session.mappedData(for: request)
+        return try ResponseDecoder.decodeAdRewardToken(data: data, statusCode: (response as? HTTPURLResponse)?.statusCode ?? 0)
+    }
+
+    /// A token for an ad that pays a one-time try of a Pro look or style.
+    func issueUnlockToken(for item: ProTryItem) async throws -> AdRewardToken {
+        let accessToken = try await token()
+        let jws = await entitlementProvider()
+        let request = try RequestFactory.adRewardUnlockToken(for: item, config: config, accessToken: accessToken, entitlementJWS: jws,
+                                                             appTransactionJWS: await appTransactions.jws())
         let (data, response) = try await session.mappedData(for: request)
         return try ResponseDecoder.decodeAdRewardToken(data: data, statusCode: (response as? HTTPURLResponse)?.statusCode ?? 0)
     }

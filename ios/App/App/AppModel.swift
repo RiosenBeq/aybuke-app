@@ -41,6 +41,14 @@ struct ConsentRequest: Identifiable {
     let onAccept: () -> Void
 }
 
+/// The Pro look or style that opened the paywall, and how to go on with it if
+/// she watches an ad for a one-time try (`ProTryCard`): the same request
+/// again, through the usual gates.
+struct ProTryRequest {
+    let item: ProTryItem
+    let resume: () -> Void
+}
+
 struct PhotosAccessRequest: Identifiable {
     let id = UUID()
     /// Offers "Share instead" when the caller can share what she tried to save.
@@ -133,6 +141,10 @@ final class AppModel {
     /// credit, and the paywall and the packs say so (`activeAIServicePause`).
     private(set) var aiServicePause: AIServicePause?
     private(set) var paywallSource = "unknown"
+    /// What the paywall's Pro look or style was for, while it's up.
+    private(set) var pendingProTry: ProTryRequest?
+    /// A granted try's request, run once the paywall is gone.
+    @ObservationIgnored private var proTryResume: (() -> Void)?
     var isPhotoPickerPresented = false
     var editorLaunch: EditorLaunch? {
         didSet { if editorLaunch?.tool == .textStickers { GlowTips.noteUsed(.textStickers) } }
@@ -950,6 +962,17 @@ final class AppModel {
     /// A paywall, account prompt or editor closed: a moment later (after a
     /// purchase the account prompt comes first), offer the tour.
     func presentationEnded() {
+        if let resume = proTryResume {
+            // The paywall closed for a try she just got: the look or style
+            // starts now (the photo picker, consent or the job itself), so
+            // no break and no tour on top of it.
+            proTryResume = nil
+            Task {
+                try? await Task.sleep(for: .milliseconds(250))
+                resume()
+            }
+            return
+        }
         // A save in the editor, video editor or collage maker: its break is now.
         naturalBreak()
         guard hasCompletedOnboarding, !tour.hasSeen else { return }
@@ -1050,13 +1073,30 @@ final class AppModel {
 
     // MARK: Paywall
 
-    func presentPaywall(source: String) {
+    /// `proTry`: a Pro look or style she may try once for an ad instead,
+    /// and how to go on with it.
+    func presentPaywall(source: String, proTry: ProTryRequest? = nil) {
         // Never under 13; for teens, never by itself after onboarding.
         guard allowsPurchases, source != "onboarding" || ageDefaults.autoPaywall else { return }
         lastInterruption = Date() // never ask for a rating right after a paywall
         paywallShownThisSession = true
         paywallSource = source
+        pendingProTry = proTry
         isPaywallPresented = true
+    }
+
+    /// She has a try of `item` (an ad just paid for it, or one was waiting):
+    /// the paywall closes and what opened it goes on, through the usual
+    /// gates; the server spends the try with the job it admits.
+    func startProTry(_ item: ProTryItem) {
+        guard isPaywallPresented, let pending = pendingProTry, pending.item == item else {
+            // The paywall closed while Google confirmed the ad: the try waits for her.
+            showToast("Your Pro try is ready ✨ Tap it again to start.", style: .success)
+            return
+        }
+        pendingProTry = nil
+        proTryResume = pending.resume
+        isPaywallPresented = false
     }
 
     // MARK: Gates
@@ -1086,8 +1126,19 @@ final class AppModel {
             return
         }
         if requiresPro && !purchases.isPro {
-            presentPaywall(source: proSource)
-            return
+            // One Pro look or style, one image: a try she watched an ad for
+            // lets it through, and the server spends it on this job.
+            let item = outputs == 1 ? ProTryItem(paywallSource: proSource) : nil
+            if let item, ads.hasActiveTry(for: item) {
+                // On to consent and credits as usual.
+            } else {
+                presentPaywall(source: proSource, proTry: item.map { item in
+                    ProTryRequest(item: item) { [weak self] in
+                        self?.requestAccess(for: operation, outputs: outputs, requiresPro: requiresPro, proSource: proSource, then: action)
+                    }
+                })
+                return
+            }
         }
         if !operation.runsOnDevice && !hasAIConsent {
             // The sheet records consent (with the guardian answer) before this runs.
@@ -1167,8 +1218,11 @@ final class AppModel {
         // verifies `retry_of` in production).
         let cost = job.retryOf == nil ? credits.cost(of: job.operation, outputs: job.numOutputs) : 0
         let charge = try credits.charge(cost)
+        // A free member's Pro look or style rides on a try she watched an ad for.
+        let proTry = purchases.isPro ? nil : job.proTryItem
         do {
             let result = try await ai.perform(job)
+            if let proTry { ads.noteTrySpent(proTry) }
             if let remaining = result.creditsRemaining {
                 credits.sync(serverBalance: remaining)
             }
@@ -1182,6 +1236,12 @@ final class AppModel {
             credits.refund(charge)
             if case AIServiceError.insufficientCredits(let remaining) = error, let remaining {
                 credits.sync(serverBalance: remaining)
+            }
+            // The try ended (or was used) before the server took the job:
+            // nothing was booked. A refunded job gives a try back by itself.
+            if let proTry, case AIServiceError.server(code: "pro_required", _) = error {
+                ads.forgetTry(proTry)
+                throw AIServiceError.server(code: "pro_try_ended", message: "")
             }
             throw error
         }
@@ -1453,8 +1513,11 @@ final class AppModel {
     func startEditing(tool: EditorTool? = nil, template: PhotoTemplate? = nil) {
         let template = allowsCloudAI ? template : nil
         let tool = permittedTool(tool)
-        if let template, template.isPro, !purchases.isPro {
-            presentPaywall(source: "template_\(template.id)")
+        if let template, template.isPro, !purchases.isPro, !ads.hasActiveTry(for: .template(template.id)) {
+            // With a try, the photo picker opens next and the editor runs the look.
+            presentPaywall(source: "template_\(template.id)", proTry: ProTryRequest(item: .template(template.id)) { [weak self] in
+                self?.startEditing(tool: tool, template: template)
+            })
             return
         }
         pendingEditorRequest = EditorRequest(tool: tool, template: template)
@@ -1760,6 +1823,7 @@ final class AppModel {
         "result_not_received": String(localized: "The connection dropped before your result arrived. If it never reaches you, your credit comes back automatically within about an hour."),
         "rate_limited": String(localized: "Too many requests. Please wait a moment."),
         "pro_required": String(localized: "This is part of Pro."),
+        "pro_try_ended": String(localized: "Your Pro try ended before this could start, so no credit was used."),
         "retry_unavailable": String(localized: "This result can't be retried for free anymore."),
         "too_large": String(localized: "That photo is too large. Try a smaller one."),
         "image_invalid": String(localized: "This photo couldn't be read. Try another one."),

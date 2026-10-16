@@ -386,8 +386,10 @@ final class BackendAPITests: XCTestCase {
         XCTAssertEqual(error(429, #"{"error":{"code":"rate_limited","message":"x","retry_after":20}}"#), .rateLimited(retryAfter: 20))
         // The code decides, not the status: a proxy's 503 with the same code is still a rate limit.
         XCTAssertEqual(error(503, #"{"error":{"code":"rate_limited","message":"x","retry_after":20}}"#), .rateLimited(retryAfter: 20))
-        XCTAssertEqual(error(402, #"{"error":{"code":"pro_required","message":"x"}}"#), .insufficientCredits(remaining: nil),
-                       "unchanged")
+        XCTAssertEqual(error(402, #"{"error":{"code":"pro_required","message":"x"}}"#), .server(code: "pro_required", message: "x"),
+                       "a Pro look without Pro or a live try isn't a lack of credits")
+        XCTAssertEqual(error(402, #"{"error":{"code":"insufficient_credits","message":"x","credits_remaining":0}}"#),
+                       .insufficientCredits(remaining: 0))
         let errors: [AIServiceError] = [.cooldown(retryAfter: nil), .cloudBlocked, .aiPaused(retryAfter: nil),
                                         .usageLimit(retryAfter: nil), .appStoreCheckFailed, .retryLimit]
         for message in errors.compactMap(\.errorDescription) {

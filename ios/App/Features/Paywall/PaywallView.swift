@@ -57,6 +57,13 @@ struct PaywallView: View {
                         if reason == .outOfFreeCredits, app.ads.offersRewardedAd {
                             RewardedAdCard { dismiss() }
                         }
+                        // A Pro look or style: try it once for a short ad, if she likes
+                        // (never on the Mac, which has no ads).
+                        #if !targetEnvironment(macCatalyst)
+                        if let proTryItem, app.ads.offersProTry(for: proTryItem) {
+                            ProTryCard(item: proTryItem)
+                        }
+                        #endif
                     }
                     header
                     benefits
@@ -107,6 +114,12 @@ struct PaywallView: View {
         .accessibilityElement(children: .contain)
         .task { await purchases.loadProducts() }
         .task { await app.refreshAIServicePause() }
+        .task {
+            // Today's tries, so the card knows what to offer.
+            if let proTryItem, app.ads.canOfferProTry(for: proTryItem) {
+                await app.ads.refreshProTryOverview()
+            }
+        }
         // Products can arrive late (after "Try again"), so check eligibility then.
         .task(id: purchases.products.count) {
             if let yearly = purchases.yearly {
@@ -184,6 +197,11 @@ struct PaywallView: View {
     /// in one line, so it never feels like a surprise.
     private var reason: PaywallReason? {
         PaywallReason(source: source, isPro: purchases.isPro)
+    }
+
+    /// The Pro look or style that opened it, which a short ad could unlock once.
+    private var proTryItem: ProTryItem? {
+        purchases.isPro ? nil : ProTryItem(paywallSource: source)
     }
 
     private var benefits: some View {

@@ -10,6 +10,11 @@ import AppCore
 ///   the server). The credit comes from the server once
 ///   AdMob confirms the ad (`functions/v1/ad-reward`); the app only shows the
 ///   ad with a single-use token, and polls until the credit lands.
+/// - **Pro try** ("Try this look once · watch a short ad"): on the paywall a
+///   Pro look or style opened, one a day, only with a credit to spend (the
+///   look's job costs one as usual). Same unit, same token and polling; once
+///   the server has the try, the paywall closes and the look or style starts
+///   through the usual gates (`AppModel.startProTry`).
 /// - **Interstitial**: may follow a finished save or share at a natural break
 ///   (nothing else on screen, never during onboarding or the tour), within
 ///   `InterstitialPacing`. It's loaded quietly ahead of time and skipped when
@@ -37,11 +42,38 @@ final class AdCoordinator {
         case offline, noFill, consent, closedEarly, delayed, failed
     }
 
+    /// Where the ad for a Pro try is (`ProTryCard`).
+    enum TryPhase: Equatable {
+        /// Nothing under way: the card shows the offer.
+        case idle
+        /// Consent, the ad itself or the server's token is on its way.
+        case loading
+        /// She watched it: waiting for Google to confirm it to the server.
+        case pending
+        /// The server has the try: the paywall closes and the look starts.
+        case granted
+        case notice(TryNotice)
+    }
+
+    enum TryNotice: Equatable {
+        case offline, noFill, consent, closedEarly, delayed, failed
+        /// The server won't offer a try right now (a block, a cool-down, AI resting).
+        case unavailable
+    }
+
     private(set) var rewardState: RewardState = .available(remaining: nil)
     /// Goes up each time an ad credit lands, so the sheet showing the ad can close.
     private(set) var rewardsLanded = 0
     /// Settings › Ad privacy choices, where Google's privacy options apply.
     private(set) var showsPrivacyChoices = false
+    /// The Pro try's ad, for `tryItem`.
+    private(set) var tryPhase: TryPhase = .idle
+    private(set) var tryItem: ProTryItem?
+    /// `GET /ad-reward`'s `unlock`: today's tries, nil until the server has said.
+    private(set) var tryOverview: ProTryOverview?
+    /// Tries she watched an ad for and hasn't used, until each ends (the
+    /// server's list after each overview, plus the one just granted).
+    private(set) var activeTries: [ProTry] = []
 
     @ObservationIgnored weak var app: AppModel?
     private let config: AdsConfig
@@ -57,6 +89,11 @@ final class AdCoordinator {
     @ObservationIgnored private var breakTask: Task<Void, Never>?
     @ObservationIgnored private var preloadTask: Task<Void, Never>?
     @ObservationIgnored private var lastOverview: Date?
+    @ObservationIgnored private var lastTryOverview: Date?
+    /// A watched try's token while Google's confirmation is late ("delayed"):
+    /// tapping the card asks again.
+    @ObservationIgnored private var lateTry: (token: String, item: ProTryItem)?
+    private let tryPolicy = ProTryPolicy.standard
     /// Google's SDKs have run on this device (consent checked or an ad asked
     /// for): Settings may offer its privacy options, and Delete my data resets
     /// its consent record. Held in memory too, since Delete my data clears
@@ -156,8 +193,11 @@ final class AdCoordinator {
         return app.isOnline && !app.isCloudOffline
     }
 
+    /// A rewarded ad (for a credit or a try) is loading, on screen or waiting
+    /// for Google: no other ad, and no interstitial, meanwhile.
     private var isRewardFlowActive: Bool {
         rewardState == .loading || rewardState == .pending
+            || tryPhase == .loading || tryPhase == .pending || tryPhase == .granted
     }
 
     // MARK: Rewarded
@@ -262,6 +302,9 @@ final class AdCoordinator {
             rewardState = .available(remaining: nil)
         case .notEligible, .unauthorized, .server:
             rewardState = .notice(.failed)
+        case .noCredits, .notUnlockable, .aiPaused:
+            // A try's answers; a credit ad never gets them.
+            rewardState = .notice(.failed)
         }
     }
 
@@ -295,6 +338,233 @@ final class AdCoordinator {
             }
         }
         rewardState = .notice(.delayed)
+    }
+
+    // MARK: Pro tries
+
+    /// Everything a try needs but the server's word: a free member 13+ on
+    /// iPhone or iPad who can see ads, with AI consent and a session (asked
+    /// for with the overview), and a paywall opened by exactly this Pro look
+    /// or style with a job waiting to go on (`AppModel.pendingProTry`).
+    func canOfferProTry(for item: ProTryItem) -> Bool {
+        guard !Platform.isMac else { return false }
+        #if DEBUG
+        if Self.screenshotTry != nil { return true }
+        #endif
+        guard adsPossible, let app, backend != nil, config.activeRewardedUnitID != nil, app.hasAIConsent else { return false }
+        return app.pendingProTry?.item == item
+    }
+
+    /// The try card belongs on the paywall: an ad for this look under way, or
+    /// something to offer or explain.
+    func offersProTry(for item: ProTryItem) -> Bool {
+        guard canOfferProTry(for: item) else { return false }
+        return tryPhase(for: item) != .idle || proTryOffer(for: item) != .none
+    }
+
+    func proTryOffer(for item: ProTryItem) -> ProTryOffer {
+        #if DEBUG
+        if let pinned = Self.screenshotTry { return pinned.offer }
+        #endif
+        guard let app else { return .none }
+        return tryPolicy.offer(for: item, isPro: app.purchases.isPro, audience: audience, balance: app.credits.balance,
+                               cost: app.credits.cost(of: item.operation), overview: tryOverview, active: activeTries,
+                               pause: app.aiServicePause)
+    }
+
+    func tryPhase(for item: ProTryItem) -> TryPhase {
+        #if DEBUG
+        if let pinned = Self.screenshotTry { return pinned.phase }
+        #endif
+        return tryItem == item ? tryPhase : .idle
+    }
+
+    /// The server's tries today (`GET /ad-reward`): how many are left, whether
+    /// she may, and the tries she already has.
+    func refreshProTryOverview(force: Bool = false) async {
+        #if DEBUG
+        if Self.screenshotTry != nil { return }
+        #endif
+        guard let backend, let app, !app.purchases.isPro, adsPossible, app.hasAIConsent, !isRewardFlowActive else { return }
+        if !force, let lastTryOverview, Date().timeIntervalSince(lastTryOverview) < 20, tryOverview != nil { return }
+        guard app.isOnline, !app.isCloudOffline else { return }
+        let asked = Date()
+        guard let overview = try? await backend.overview() else { return }
+        noteServerCap(overview.dailyCap)
+        lastTryOverview = Date()
+        if let balance = overview.creditsRemaining { app.credits.sync(serverBalance: balance, asOf: asked) }
+        tryOverview = overview.unlock
+        // The server's list of her live tries is the one that counts.
+        activeTries = overview.unlock?.active ?? []
+    }
+
+    /// Her try of exactly this look or style can still start a job.
+    func hasActiveTry(for item: ProTryItem) -> Bool {
+        guard let app, !app.purchases.isPro else { return false }
+        return tryPolicy.liveTry(for: item, in: activeTries) != nil
+    }
+
+    /// The card's tap: an ad for a try, Google's late confirmation asked
+    /// again, or a try she already has started.
+    func tapProTry(_ item: ProTryItem) async {
+        #if DEBUG
+        if Self.screenshotTry != nil { return }
+        #endif
+        if case .notice(.delayed) = tryPhase(for: item), let lateTry, lateTry.item == item {
+            setTry(.pending, for: item)
+            await waitForTry(token: lateTry.token, item: item)
+            return
+        }
+        if case .ready = proTryOffer(for: item) {
+            app?.startProTry(item)
+            return
+        }
+        await watchProTryAd(for: item)
+    }
+
+    /// "Try this look once · watch a short ad": consent where it's needed
+    /// (only now, after her tap), the ad, a token for the try, the ad on
+    /// screen with only that token, then the wait for the server's try.
+    private func watchProTryAd(for item: ProTryItem) async {
+        guard canOfferProTry(for: item), !isRewardFlowActive, let app, let audience, let backend,
+              let unitID = config.activeRewardedUnitID, case .available = proTryOffer(for: item) else { return }
+        guard app.isOnline, !app.isCloudOffline else {
+            setTry(.notice(.offline), for: item)
+            return
+        }
+        setTry(.loading, for: item)
+        // AI may have gone on a break since the card appeared: the try couldn't start its job.
+        await app.refreshAIServicePause()
+        guard case .available = proTryOffer(for: item) else {
+            setTry(.idle, for: item)
+            return
+        }
+        markAdsUsed()
+        guard await provider.gatherConsent(audience: audience) else {
+            setTry(.notice(.consent), for: item)
+            return
+        }
+        showsPrivacyChoices = provider.privacyOptionsRequired
+        // Pro, her age or her balance may have changed while Google's form was up.
+        guard canOfferProTry(for: item), case .available = proTryOffer(for: item), self.audience == audience else {
+            setTry(.idle, for: item)
+            return
+        }
+        do {
+            try await provider.loadRewarded(unitID: unitID, audience: audience)
+        } catch {
+            setTry(.notice(app.isOnline ? .noFill : .offline), for: item)
+            return
+        }
+        let token: AdRewardToken
+        do {
+            token = try await backend.issueUnlockToken(for: item)
+        } catch let error as AdRewardError {
+            await refusedTry(error, item: item)
+            return
+        } catch {
+            setTry(.notice(NetworkFailure.isTransient(error) ? .offline : .failed), for: item)
+            return
+        }
+        let outcome = await provider.showRewarded(token: token.token)
+        // Like the credit ad: no interstitial within 4 minutes of this one.
+        pacing.noteRewardedAd(at: Date())
+        savePacing()
+        switch outcome {
+        case .earned:
+            setTry(.pending, for: item)
+            await waitForTry(token: token.token, item: item)
+        case .closedEarly:
+            await backend.release(token: token.token)
+            setTry(.notice(.closedEarly), for: item)
+            await refreshProTryOverview(force: true)
+        case .failed:
+            await backend.release(token: token.token)
+            setTry(.notice(.failed), for: item)
+            await refreshProTryOverview(force: true)
+        }
+    }
+
+    private func refusedTry(_ error: AdRewardError, item: ProTryItem) async {
+        switch error {
+        case .dailyCap:
+            // The card says so: today's try is used.
+            tryOverview = ProTryOverview(remainingToday: 0, dailyCap: tryOverview?.dailyCap, eligible: false,
+                                         active: tryOverview?.active ?? [])
+            setTry(.idle, for: item)
+        case .noCredits:
+            app?.credits.sync(serverBalance: 0)
+            setTry(.idle, for: item)
+        case .aiPaused:
+            await app?.refreshAIServicePause(force: true)
+            setTry(.notice(.unavailable), for: item)
+        case .notEligible, .notUnlockable:
+            setTry(.notice(.unavailable), for: item)
+        case .hasCredits, .unauthorized, .server:
+            setTry(.notice(.failed), for: item)
+        }
+    }
+
+    /// AdMob tells the server, usually within seconds; the app asks until the
+    /// try is there, then the paywall closes and the look or style starts.
+    private func waitForTry(token: String, item: ProTryItem) async {
+        guard let backend else { return }
+        lateTry = nil
+        let started = Date()
+        var delay: Double = 1.5
+        while Date().timeIntervalSince(started) < Self.confirmationWait {
+            try? await Task.sleep(for: .seconds(delay))
+            delay = min(delay + 0.5, 4)
+            let asked = Date()
+            guard let status = try? await backend.status(token: token) else { continue }
+            switch status.status {
+            case .granted:
+                if let balance = status.creditsRemaining { app?.credits.sync(serverBalance: balance, asOf: asked) }
+                if var overview = tryOverview {
+                    overview.remainingToday = status.remainingToday
+                    tryOverview = overview
+                }
+                let expiresAt = status.expiresAt ?? Date().addingTimeInterval(tryPolicy.fallbackLength)
+                activeTries.removeAll { $0.item == item }
+                activeTries.append(ProTry(item: item, expiresAt: expiresAt))
+                setTry(.granted, for: item)
+                Haptics.success()
+                // A moment for "Your try is ready", then on to the look.
+                try? await Task.sleep(for: .milliseconds(700))
+                setTry(.idle, for: item)
+                app?.startProTry(item)
+                return
+            case .capped:
+                tryOverview = ProTryOverview(remainingToday: 0, dailyCap: tryOverview?.dailyCap, eligible: false,
+                                             active: tryOverview?.active ?? [])
+                setTry(.idle, for: item)
+                return
+            case .expired, .unknown:
+                setTry(.notice(.failed), for: item)
+                return
+            case .pending, nil:
+                continue
+            }
+        }
+        lateTry = (token, item)
+        setTry(.notice(.delayed), for: item)
+    }
+
+    /// The try's job was admitted and finished: it's spent.
+    func noteTrySpent(_ item: ProTryItem) {
+        activeTries.removeAll { $0.item == item }
+        lastTryOverview = nil
+    }
+
+    /// The server says the try is gone (ended or spent): the card asks again.
+    func forgetTry(_ item: ProTryItem) {
+        activeTries.removeAll { $0.item == item }
+        lastTryOverview = nil
+    }
+
+    private func setTry(_ phase: TryPhase, for item: ProTryItem) {
+        tryItem = item
+        tryPhase = phase
     }
 
     // MARK: Interstitials
@@ -388,6 +658,8 @@ final class AdCoordinator {
         cancelPending()
         provider.discardAll()
         rewardState = .available(remaining: nil)
+        tryPhase = .idle
+        lateTry = nil
     }
 
     /// Settings: whether to offer Google's privacy options. Asks Google only
@@ -421,6 +693,12 @@ final class AdCoordinator {
         rewardState = .available(remaining: nil)
         showsPrivacyChoices = false
         lastOverview = nil
+        tryPhase = .idle
+        tryItem = nil
+        tryOverview = nil
+        activeTries = []
+        lastTryOverview = nil
+        lateTry = nil
     }
 
     private func markAdsUsed() {
@@ -455,6 +733,29 @@ final class AdCoordinator {
         case "nofill": return .notice(.noFill)
         case "closed": return .notice(.closedEarly)
         case "delayed": return .notice(.delayed)
+        default: return nil
+        }
+    }()
+
+    /// `-GLUnlockState available|loading|pending|granted|capped|nocredits|nofill`
+    /// (also `ready`, `closed`, `delayed`, `offline`, `unavailable`) pins the
+    /// Pro try card, with `paywall -GLPaywallSource template_<id>|style_<id>`
+    /// of a Pro look or style.
+    static let screenshotTry: (offer: ProTryOffer, phase: TryPhase)? = {
+        let open = ProTryOffer.available(remaining: 1)
+        switch UserDefaults.standard.string(forKey: "GLUnlockState") {
+        case "available": return (open, .idle)
+        case "loading": return (open, .loading)
+        case "pending": return (open, .pending)
+        case "granted": return (open, .granted)
+        case "ready": return (.ready(expiresAt: Date().addingTimeInterval(24 * 60)), .idle)
+        case "capped": return (.capped, .idle)
+        case "nocredits": return (.needsCredit, .idle)
+        case "nofill": return (open, .notice(.noFill))
+        case "closed": return (open, .notice(.closedEarly))
+        case "delayed": return (open, .notice(.delayed))
+        case "offline": return (open, .notice(.offline))
+        case "unavailable": return (open, .notice(.unavailable))
         default: return nil
         }
     }()

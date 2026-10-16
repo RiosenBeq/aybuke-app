@@ -41,6 +41,14 @@ struct AIJob {
     var isProOnly: Bool {
         (template?.isPro ?? false) || (style?.isPro ?? false) || numOutputs > 1
     }
+
+    /// The Pro look or style a one-time try could pay for: one image only.
+    var proTryItem: ProTryItem? {
+        guard numOutputs == 1 else { return nil }
+        if let template, template.isPro { return .template(template.id) }
+        if let style, style.isPro { return .style(style.id) }
+        return nil
+    }
 }
 
 struct AIJobResult {
