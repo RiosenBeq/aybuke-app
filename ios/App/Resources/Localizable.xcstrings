@@ -3227,6 +3227,77 @@
         }
       }
     },
+    "An hour before it closes." : {
+      "comment" : "Settings › Notifications: detail under “When my poll is ending”",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eine Stunde vor dem Ende."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Una hora antes de que termine."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Une heure avant la fin."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Satu jam sebelum ditutup."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un’ora prima della chiusura."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "終了の1時間前。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "끝나기 1시간 전."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uma hora antes de acabar."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "За час до конца."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bitmeden bir saat önce."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "结束前一小时。"
+          }
+        }
+      }
+    },
     "Analog" : {
       "comment" : "Name of a one-tap vibe in the editor's Adjust tool: it sets several light and color sliders at once",
       "localizations" : {
@@ -3577,6 +3648,77 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "六月节之夜"
+          }
+        }
+      }
+    },
+    "Ask about the vibe, not about how anyone looks." : {
+      "comment" : "“Which vibe?” polls: her question rates or compares how someone looks. Kind, never blaming.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Frag nach dem Vibe, nicht danach, wie jemand aussieht."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pregunta por el vibe, no por cómo se ve alguien."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pose une question sur la vibe, pas sur l’apparence de quelqu’un."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tanyakan soal vibe-nya, bukan soal penampilan seseorang."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chiedi del mood, non di come appare qualcuno."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "見た目ではなく、雰囲気について聞いてみよう。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "누군가의 외모가 아니라 분위기에 대해 물어보세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pergunte sobre a vibe, não sobre a aparência de alguém."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Спроси про вайб, а не про то, как кто-то выглядит."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kimsenin görünüşünü değil, vibe'ı sor."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "问问氛围，别问谁长得怎么样。"
           }
         }
       }
@@ -5059,7 +5201,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bir bildirimden sonra kapatıldı"
+            "value" : "Şikâyet üzerine kapatıldı"
           }
         },
         "zh-Hans" : {
@@ -5130,7 +5272,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Şu an güncellenemedi. Bunlar son sonuçlar."
+            "value" : "Şu an güncellenemedi. Bunlar en son görülen sonuçlar."
           }
         },
         "zh-Hans" : {
@@ -5638,6 +5780,148 @@
         }
       }
     },
+    "When my poll is ending" : {
+      "comment" : "Settings › Notifications: a reminder an hour before her “Which vibe?” poll ends",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wenn meine Umfrage bald endet"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cuando mi encuesta esté por terminar"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quand mon sondage touche à sa fin"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Saat polling-ku hampir berakhir"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quando il mio sondaggio sta per finire"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "投票がもうすぐ終わるとき"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "내 투표가 곧 끝날 때"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quando minha enquete estiver acabando"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Когда мой опрос скоро закончится"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anketim bitmek üzereyken"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "我的投票快结束时"
+          }
+        }
+      }
+    },
+    "You're offline. Connect to the internet to see your poll." : {
+      "comment" : "A poll link opened while offline or her list couldn't be read",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Du bist offline. Verbinde dich mit dem Internet, um deine Umfrage zu sehen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No tienes conexión. Conéctate a internet para ver tu encuesta."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tu es hors ligne. Connecte-toi à Internet pour voir ton sondage."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kamu sedang offline. Sambungkan ke internet untuk melihat polling-mu."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sei offline. Connettiti a Internet per vedere il tuo sondaggio."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "オフラインです。投票を見るにはインターネットに接続してね。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오프라인 상태예요. 투표를 보려면 인터넷에 연결하세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Você está offline. Conecte-se à internet para ver sua enquete."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нет подключения к интернету. Подключись, чтобы увидеть свой опрос."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Çevrimdışısın. Anketini görmek için internete bağlan."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你已离线。连接网络后才能查看你的投票。"
+          }
+        }
+      }
+    },
     "images" : {
       "comment" : "After a company's name in the AI consent sheet's footnote and Settings' Providers row (“xAI (images), Anthropic (safety checks and Aybik), Supabase (servers)”): what it does for the app, in a word or two, lowercase where the language allows: it creates and edits the images",
       "localizations" : {
@@ -5911,7 +6195,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Şu an çok fazla anket var. Biraz sonra yeniden dene."
+            "value" : "Şu an çok fazla anket yapılıyor. Biraz sonra yeniden dene."
           }
         },
         "zh-Hans" : {
@@ -6266,7 +6550,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Başkalarının görsellerini yalnızca onların onayıyla paylaş."
+            "value" : "Başka kişilerin olduğu görselleri yalnızca onların iznini alarak paylaş."
           }
         },
         "zh-Hans" : {
@@ -6479,7 +6763,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Eserlerim bölümünde iki eser seç ya da paylaşırken “Hangi vibe?” seçeneğini açıp “Arkadaşlarına sor” seçeneğini seç."
+            "value" : "Eserlerim’de iki eser seç ya da paylaşırken “Hangi vibe?” bölümünü açıp “Arkadaşlarına sor”u seç."
           }
         },
         "zh-Hans" : {
@@ -6550,7 +6834,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "İki düzenleme ya da iki eser seç; bir fotoğraf ile onun düzenlemesini değil. Arkadaşların vibe'a oy verir, asla sana değil."
+            "value" : "İki düzenleme ya da iki eser seç; bir fotoğrafla onun düzenlenmiş hâlini değil. Arkadaşların vibe'a oy verir, asla sana değil."
           }
         },
         "zh-Hans" : {
@@ -17255,7 +17539,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bu anket bir bildirimden sonra kapatıldı, bu yüzden kimse açamaz. 24 saati dolunca silinir."
+            "value" : "Bu anket bir şikâyet üzerine kapatıldı, bu yüzden kimse açamaz. 24 saati dolunca silinir."
           }
         },
         "zh-Hans" : {
@@ -20975,7 +21259,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bugünkü anketlerini yaptın. Yarın yenileri ✨"
+            "value" : "Bugünkü anket hakkını doldurdun. Yarın yenileri ✨"
           }
         },
         "zh-Hans" : {

@@ -47,12 +47,14 @@ final class PollsModel {
     @ObservationIgnored private var refreshTask: Task<Void, Never>?
     /// When her list last came back from the server.
     @ObservationIgnored private var lastRead: Date?
+    /// Called with the live polls after a read changed them, so reminders follow.
+    @ObservationIgnored var onLiveChange: (([PollRecord]) -> Void)?
     #if DEBUG
     @ObservationIgnored private(set) var fixture: String?
     #endif
 
-    static let storageKey = "polls.mine.v1"
-    static let explainerKey = "polls.explainerSeen.v1"
+    nonisolated static let storageKey = "polls.mine.v1"
+    nonisolated static let explainerKey = "polls.explainerSeen.v1"
 
     init(backend: PollsBackend?, defaults: UserDefaults?) {
         self.backend = backend
@@ -108,15 +110,19 @@ final class PollsModel {
             isRefreshing = true
             defer { isRefreshing = false }
             do {
+                // A poll made or deleted while this read is on its way isn't on
+                // (or still is on) the list it brings back.
+                let started = Date()
                 let list = try await backend.mine()
                 lastRead = Date()
-                let gone = shelf.merge(list, now: Date())
+                let gone = shelf.merge(list, now: Date(), readStarted: started)
                 remainingToday = list.remainingToday
                 dailyCap = list.dailyCap
                 refreshFailed = false
                 persist()
                 Self.removeThumbnails(of: gone)
                 gone.forEach(forgetThumbnails)
+                onLiveChange?(shelf.live(at: Date()))
             } catch PollError.noSession {
                 // Nothing on the server for this device yet.
                 refreshFailed = false
@@ -310,6 +316,14 @@ final class PollsModel {
 // MARK: - Messages
 
 extension PollsModel {
+    /// A blocked question: the policy's own words, except that a question
+    /// about looks gets a poll's words (the edit message talks about photos).
+    static func questionMessage(reason: String, category: PolicyCategory) -> String {
+        guard category == .appearanceChange else { return L10n.core(reason) }
+        return String(localized: "Ask about the vibe, not about how anyone looks.",
+                      comment: "“Which vibe?” polls: her question rates or compares how someone looks. Kind, never blaming.")
+    }
+
     /// Short and kind, never blame: what happened, and what she can do.
     func message(for error: Error) -> String {
         switch error {
@@ -321,7 +335,7 @@ extension PollsModel {
         case PollError.contentBlocked(let category):
             if let category = category.flatMap(PolicyCategory.init(rawValue:)),
                case .blocked(let reason, _) = ContentPolicy.verdict(for: category) {
-                return L10n.core(reason)
+                return Self.questionMessage(reason: reason, category: category)
             }
             return String(localized: "Try a question about the vibe, like “Which one for Friday?”")
         case PollError.rateLimited(let retryAfter):
@@ -370,7 +384,16 @@ extension AppModel {
     /// when this device doesn't know it yet. Someone else's poll isn't shown.
     func openPoll(_ id: String) async {
         guard offersPolls else { return }
-        if polls.shelf.record(id) == nil { await polls.refresh() }
+        if polls.shelf.record(id) == nil {
+            guard !isCloudOffline else {
+                return showToast("You're offline. Connect to the internet to see your poll.", style: .info)
+            }
+            await polls.refresh()
+            // The read didn't come through: it may well be hers.
+            if polls.shelf.record(id) == nil, polls.refreshFailed {
+                return showToast("You're offline. Connect to the internet to see your poll.", style: .info)
+            }
+        }
         guard polls.shelf.record(id) != nil else {
             showToast("That poll isn't one of yours on this device, or it has ended.", style: .info)
             return
@@ -378,7 +401,7 @@ extension AppModel {
         presentPolls(focus: id)
     }
 
-    /// "Your poll ends in an hour", when notifications are on (never with her question).
+    /// "Your poll ends in an hour", when poll reminders are on (never with her question).
     func notePollMade(_ record: PollRecord) {
         Task { await notifier.schedulePollReminder(id: record.id, expiresAt: record.expiresAt) }
     }

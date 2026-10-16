@@ -317,6 +317,39 @@ final class PollsTests: XCTestCase {
         XCTAssertNil(shelf.record(liveID))
     }
 
+    func testListReadDuringCreateOrDeleteKeepsWhatChangedSince() {
+        let now = Date(timeIntervalSince1970: 2_000_000_000)
+        let url = { (id: String) in URL(string: "https://aybuke.org/p/\(id)")! }
+        let oldID = "Aa1_Xy9-Kq2LmN0p", newID = "Bb1_Xy9-Kq2LmN0p", deletedID = "Cc1_Xy9-Kq2LmN0p"
+        func summary(_ id: String) -> PollSummary {
+            PollSummary(pollID: id, shareURL: url(id), question: nil, createdAt: now.addingTimeInterval(-3600),
+                        expiresAt: now.addingTimeInterval(20 * 3600), status: .live, ai: PollAILabels(), votes: PollVotes(a: 1, b: 1))
+        }
+        var shelf = PollShelf()
+        for id in [oldID, deletedID] {
+            shelf.add(PollCreated(pollID: id, shareURL: url(id), expiresAt: now.addingTimeInterval(20 * 3600), remainingToday: nil),
+                      question: nil, ai: PollAILabels(), now: now.addingTimeInterval(-3600))
+        }
+        // The read goes out, then she makes a poll and deletes another before it answers.
+        let started = now.addingTimeInterval(-5)
+        shelf.add(PollCreated(pollID: newID, shareURL: url(newID), expiresAt: now.addingTimeInterval(24 * 3600), remainingToday: 1),
+                  question: "Which vibe?", ai: PollAILabels(), now: now.addingTimeInterval(-2))
+        shelf.remove(deletedID, now: now.addingTimeInterval(-1))
+        let list = PollList(polls: [summary(oldID), summary(deletedID)], remainingToday: 1, dailyCap: 3)
+        XCTAssertEqual(shelf.merge(list, now: now, readStarted: started), [], "nothing made after the read is dropped")
+        XCTAssertNotNil(shelf.record(newID))
+        XCTAssertNil(shelf.record(deletedID), "a list read before the delete doesn't bring it back")
+        XCTAssertEqual(shelf.records.map(\.id), [newID, oldID])
+
+        // The next read, sent after both, sees the truth.
+        XCTAssertEqual(shelf.merge(PollList(polls: [summary(oldID)]), now: now.addingTimeInterval(60),
+                                   readStarted: now.addingTimeInterval(30)), [newID], "missing from a later read: gone")
+        // Only a delete after the read went out hides a poll from it.
+        XCTAssertEqual(shelf.merge(PollList(polls: [summary(oldID), summary(deletedID)]), now: now.addingTimeInterval(120),
+                                   readStarted: now.addingTimeInterval(90)), [])
+        XCTAssertNotNil(shelf.record(deletedID), "a delete before the read started doesn't filter it")
+    }
+
     func testEndingReminderNeverLandsAtNightOrInSchool() throws {
         var calendar = Calendar(identifier: .gregorian)
         calendar.timeZone = try XCTUnwrap(TimeZone(identifier: "Europe/Istanbul"))

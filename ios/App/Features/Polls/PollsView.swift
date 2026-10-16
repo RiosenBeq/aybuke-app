@@ -68,11 +68,18 @@ struct PollsView: View {
             }
         }
         .tint(Palette.accent)
-        // On open, then every minute while it's on screen.
+        // On open, then every minute while a poll is live and the app is
+        // online (every read is an Edge Function call).
         .task {
+            var first = true
             while !Task.isCancelled {
                 now = Date()
-                await polls.refresh()
+                if !app.isCloudOffline, first || !polls.shelf.live(at: now).isEmpty {
+                    await polls.refresh()
+                } else {
+                    polls.prune()
+                }
+                first = false
                 now = Date()
                 try? await Task.sleep(for: .seconds(60))
             }
@@ -264,7 +271,7 @@ struct PollCard: View {
             PollBar(fraction: share.map { Double($0) / 100 } ?? 0, side: side)
         }
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel(side == .a ? Text("Picture A") : Text("Picture B"))
+        .accessibilityLabel(PollSideTile.accessibilityName(side, madeWithAI: record.ai[side]))
         .accessibilityValue(Text("\(votes) votes") + Text(verbatim: share.map { ", " + $0.formatted(.percent) } ?? ""))
     }
 

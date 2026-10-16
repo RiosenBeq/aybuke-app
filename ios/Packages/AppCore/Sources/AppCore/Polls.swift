@@ -724,6 +724,13 @@ public struct PollRecord: Codable, Equatable, Identifiable, Sendable {
 /// Her polls on this device, newest first.
 public struct PollShelf: Codable, Equatable, Sendable {
     public private(set) var records: [PollRecord]
+    /// When each poll was deleted here, so a list read that started before
+    /// the delete doesn't bring it back. Kept in memory only.
+    private var removedAt: [String: Date] = [:]
+
+    private enum CodingKeys: String, CodingKey {
+        case records
+    }
 
     /// A poll lives 24 hours on the server.
     public static let lifetime: TimeInterval = 24 * 3600
@@ -761,9 +768,16 @@ public struct PollShelf: Codable, Equatable, Sendable {
     /// polls made on another device (without thumbnails), and the ended ones
     /// kept with their last counts. A poll that should still be live but
     /// isn't on the list was deleted or closed: it goes. Returns the ids that went.
+    ///
+    /// `readStarted` is when the read was sent: a poll made after it can't be
+    /// on the list yet and stays, and one deleted after it isn't brought back.
     @discardableResult
-    public mutating func merge(_ list: PollList, now: Date) -> [String] {
-        let byID = Dictionary(list.polls.map { ($0.pollID, $0) }, uniquingKeysWith: { first, _ in first })
+    public mutating func merge(_ list: PollList, now: Date, readStarted: Date? = nil) -> [String] {
+        let started = readStarted ?? now
+        let deletedSince = Set(removedAt.filter { $0.value >= started }.map(\.key))
+        removedAt = removedAt.filter { now.timeIntervalSince($0.value) < Self.lifetime }
+        let polls = list.polls.filter { !deletedSince.contains($0.pollID) }
+        let byID = Dictionary(polls.map { ($0.pollID, $0) }, uniquingKeysWith: { first, _ in first })
         var dropped: [String] = []
         var kept: [PollRecord] = []
         for var record in records {
@@ -776,14 +790,14 @@ public struct PollShelf: Codable, Equatable, Sendable {
                 record.shareURL = summary.shareURL
                 record.updatedAt = now
                 kept.append(record)
-            } else if record.expiresAt.timeIntervalSince(now) <= Self.clockSlack {
+            } else if record.expiresAt.timeIntervalSince(now) <= Self.clockSlack || record.createdAt >= started {
                 kept.append(record)
             } else {
                 dropped.append(record.id)
             }
         }
         let known = Set(records.map(\.id))
-        for summary in list.polls where !known.contains(summary.pollID) {
+        for summary in polls where !known.contains(summary.pollID) {
             kept.append(PollRecord(id: summary.pollID, shareURL: summary.shareURL, question: summary.question,
                                    createdAt: summary.createdAt ?? summary.expiresAt.addingTimeInterval(-Self.lifetime),
                                    expiresAt: summary.expiresAt, status: summary.status, votes: summary.votes,
@@ -794,8 +808,9 @@ public struct PollShelf: Codable, Equatable, Sendable {
         return dropped + prune(now: now)
     }
 
-    public mutating func remove(_ id: String) {
+    public mutating func remove(_ id: String, now: Date = Date()) {
         records.removeAll { $0.id == id }
+        removedAt[id] = now
     }
 
     /// Drops what ended more than a day ago. Returns their ids.

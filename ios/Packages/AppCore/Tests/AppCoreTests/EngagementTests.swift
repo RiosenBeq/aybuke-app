@@ -177,6 +177,15 @@ final class EngagementTests: XCTestCase {
         XCTAssertTrue(GlowNotificationKind.allCases.allSatisfy { !preferences.isOn($0) })
     }
 
+    func testPreferencesSavedBeforePollRemindersStillRead() throws {
+        let saved = Data(#"{"glowReady":true,"creditsBack":false,"weeklyLook":true}"#.utf8)
+        let preferences = try JSONDecoder().decode(GlowNotificationPreferences.self, from: saved)
+        XCTAssertEqual(preferences, GlowNotificationPreferences(glowReady: true, weeklyLook: true))
+        XCTAssertFalse(preferences.isOn(.pollEnding), "a new kind starts off")
+        let again = try JSONDecoder().decode(GlowNotificationPreferences.self, from: JSONEncoder().encode(GlowNotificationPreferences(pollEnding: true)))
+        XCTAssertTrue(again.pollEnding)
+    }
+
     func testJobFinishedCopyNeverQuotesThePrompt() {
         XCTAssertEqual(NotificationPlanner.jobFinished(success: true, isCreate: false).title, "Your edit is ready ✨")
         XCTAssertEqual(NotificationPlanner.jobFinished(success: true, isCreate: true).title, "Your images are ready ✨")

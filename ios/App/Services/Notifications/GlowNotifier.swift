@@ -64,6 +64,7 @@ final class GlowNotifier {
             defaults.set(!on, forKey: Self.readyPingDeclinedKey)
         case .creditsBack: preferences.creditsBack = on
         case .weeklyLook: preferences.weeklyLook = on
+        case .pollEnding: preferences.pollEnding = on
         }
         persist()
         return true
@@ -146,13 +147,13 @@ final class GlowNotifier {
         UNUserNotificationCenter.current().add(UNNotificationRequest(identifier: "glowlit.job.\(UUID().uuidString)", content: content, trigger: nil))
     }
 
-    /// "Your poll ends in an hour": one reminder per poll, only while
-    /// notifications are allowed (it never asks), at the planner's times
+    /// "Your poll ends in an hour": one reminder per poll, only when she
+    /// turned poll reminders on (it never asks), at the planner's times
     /// (never at night or in school hours, or not at all), and never with her
     /// question: it would sit on the Lock Screen.
     func schedulePollReminder(id: String, expiresAt: Date) async {
         await refreshAuthorization()
-        guard isAllowedBySystem, let date = NotificationPlanner.pollEnding(expiresAt: expiresAt, now: Date()) else { return }
+        guard preferences.pollEnding, isAllowedBySystem, let date = NotificationPlanner.pollEnding(expiresAt: expiresAt, now: Date()) else { return }
         let content = UNMutableNotificationContent()
         content.title = String(localized: "Your poll ends in an hour ⏳")
         content.body = Platform.isMac ? String(localized: "Click to see how your friends voted.")
@@ -170,7 +171,23 @@ final class GlowNotifier {
         UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [Self.pollReminderID(id)])
     }
 
-    private static func pollReminderID(_ id: String) -> String { "glowlit.poll-ending.\(id)" }
+    /// Reminders only for the polls still live: one deleted elsewhere, taken
+    /// down after a report or switched off in Settings loses its reminder.
+    func syncPollReminders(live: [PollRecord]) async {
+        let center = UNUserNotificationCenter.current()
+        let keep = preferences.pollEnding ? Set(live.map { Self.pollReminderID($0.id) }) : []
+        let stale = await center.pendingNotificationRequests().map(\.identifier).filter {
+            $0.hasPrefix(Self.pollReminderPrefix) && !keep.contains($0)
+        }
+        center.removePendingNotificationRequests(withIdentifiers: stale)
+        guard preferences.pollEnding else { return }
+        for record in live {
+            await schedulePollReminder(id: record.id, expiresAt: record.expiresAt)
+        }
+    }
+
+    private static let pollReminderPrefix = "glowlit.poll-ending."
+    private static func pollReminderID(_ id: String) -> String { pollReminderPrefix + id }
 
     /// The planner decides when; the words are in the user's language.
     private static func localizedCopy(for item: PlannedNotification, dailyCredits: Int) -> (title: String, body: String) {
@@ -184,7 +201,7 @@ final class GlowNotifier {
             }
             return (String(localized: "This week's look: \(L10n.core(look.title)) ✨"),
                     String(localized: "\(L10n.core(look.subtitle))."))
-        case .glowReady:
+        case .glowReady, .pollEnding:
             return (item.title, item.body)
         }
     }

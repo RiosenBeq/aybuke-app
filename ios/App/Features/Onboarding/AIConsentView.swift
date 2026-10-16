@@ -126,9 +126,10 @@ struct AIConsentView: View {
                 }
                 .accessibilityElement(children: .combine)
             }
+            // Reviewers look for the providers by name: readable, on one line where it fits.
             Text(verbatim: AIProcessor.providersLine(processors))
-                .font(.legibleCaption)
-                .foregroundStyle(Palette.textTertiary)
+                .font(.legibleFootnote)
+                .foregroundStyle(Palette.textSecondary)
                 .fixedSize(horizontal: false, vertical: true)
         }
         .padding(14)

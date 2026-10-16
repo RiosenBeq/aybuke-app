@@ -174,6 +174,8 @@ public enum GlowNotificationKind: String, CaseIterable, Codable, Sendable {
     case creditsBack
     /// One look a week, on Friday afternoon.
     case weeklyLook
+    /// An hour before her "Which vibe?" poll ends (never with her question).
+    case pollEnding
 }
 
 /// What the user agreed to hear about. Everything stays off until she says yes.
@@ -181,11 +183,26 @@ public struct GlowNotificationPreferences: Codable, Equatable, Sendable {
     public var glowReady: Bool
     public var creditsBack: Bool
     public var weeklyLook: Bool
+    public var pollEnding: Bool
 
-    public init(glowReady: Bool = false, creditsBack: Bool = false, weeklyLook: Bool = false) {
+    public init(glowReady: Bool = false, creditsBack: Bool = false, weeklyLook: Bool = false, pollEnding: Bool = false) {
         self.glowReady = glowReady
         self.creditsBack = creditsBack
         self.weeklyLook = weeklyLook
+        self.pollEnding = pollEnding
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case glowReady, creditsBack, weeklyLook, pollEnding
+    }
+
+    /// Preferences saved before a kind existed still read: the new kind is off.
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        glowReady = try container.decodeIfPresent(Bool.self, forKey: .glowReady) ?? false
+        creditsBack = try container.decodeIfPresent(Bool.self, forKey: .creditsBack) ?? false
+        weeklyLook = try container.decodeIfPresent(Bool.self, forKey: .weeklyLook) ?? false
+        pollEnding = try container.decodeIfPresent(Bool.self, forKey: .pollEnding) ?? false
     }
 
     public func isOn(_ kind: GlowNotificationKind) -> Bool {
@@ -193,6 +210,7 @@ public struct GlowNotificationPreferences: Codable, Equatable, Sendable {
         case .glowReady: return glowReady
         case .creditsBack: return creditsBack
         case .weeklyLook: return weeklyLook
+        case .pollEnding: return pollEnding
         }
     }
 }

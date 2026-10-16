@@ -292,6 +292,9 @@ struct SettingsView: View {
                 notificationToggle(.creditsBack, title: "When my free credits are back", detail: "Only after I run out.")
             }
             notificationToggle(.weeklyLook, title: "Look of the week", detail: "Fridays at 5 pm.")
+            if app.offersPolls {
+                notificationToggle(.pollEnding, title: "When my poll is ending", detail: "An hour before it closes.")
+            }
             if app.notifier.authorization == .denied, let settings = URL(string: UIApplication.openNotificationSettingsURLString) {
                 Button(Platform.isMac ? "Allow notifications in System Settings" : "Allow notifications in Settings") { openURL(settings) }
             }

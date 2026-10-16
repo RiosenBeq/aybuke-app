@@ -407,6 +407,10 @@ final class AppModel {
             Task { await Self.syncTrialReminder(trial) }
         }
         notifier.onOpenLink = { [weak self] link in self?.handle(link) }
+        polls.onLiveChange = { [weak self] live in
+            guard let self else { return }
+            Task { await self.notifier.syncPollReminders(live: live) }
+        }
 
         #if DEBUG
         // -GLAgeBand under13|teen13to15|teen16to17|adult|unknown (not saved).
@@ -1529,6 +1533,7 @@ final class AppModel {
                 dailyCredits: credits.policy.freeDailyAllowance,
                 cloudAIAllowed: allowsCloudAI
             )
+            await notifier.syncPollReminders(live: offersPolls ? polls.shelf.live(at: Date()) : [])
         }
     }
 

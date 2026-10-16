@@ -331,8 +331,8 @@ struct PollCreateView: View {
         switch PollQuestion.check(question) {
         case .tooLong:
             return refuse(String(localized: "That's a long question. Try a shorter one."))
-        case .blocked(let reason, _):
-            return refuse(L10n.core(reason))
+        case .blocked(let reason, let category):
+            return refuse(PollsModel.questionMessage(reason: reason, category: category))
         case .ok(let cleaned):
             checked = cleaned
         }
@@ -450,19 +450,27 @@ struct PollSideTile: View {
                 }
             }
             .accessibilityElement(children: .ignore)
-            .accessibilityLabel(side == .a ? Text("Picture A") : Text("Picture B"))
+            .accessibilityLabel(Self.accessibilityName(side, madeWithAI: madeWithAI))
             .accessibilityAddTraits(.isImage)
+    }
+
+    /// "Picture A", and ", Edited with AI" when the label shows on it.
+    static func accessibilityName(_ side: PollSide, madeWithAI: Bool) -> Text {
+        let name = side == .a ? Text("Picture A") : Text("Picture B")
+        return madeWithAI ? name + Text(verbatim: ", ") + Text("Edited with AI") : name
     }
 }
 
 struct PollSideBadge: View {
     let side: PollSide
+    /// Grows with Dynamic Type, so the letter never clips.
+    @ScaledMetric(relativeTo: .subheadline) private var diameter: CGFloat = 28
 
     var body: some View {
         Text(verbatim: side.rawValue.uppercased())
             .font(.system(.subheadline, design: .rounded).weight(.heavy))
             .foregroundStyle(Palette.ink)
-            .frame(width: 28, height: 28)
+            .frame(width: diameter, height: diameter)
             .background(side == .a ? Palette.blush : Palette.auraLilac.opacity(0.85), in: Circle())
             .overlay(Circle().strokeBorder(Palette.white.opacity(0.8), lineWidth: 1.5))
             .accessibilityHidden(true)
