@@ -108,7 +108,7 @@ struct RetroCamReviewView: View {
                     .scaledToFit()
                     .shadow(color: .black.opacity(0.6), radius: 24, y: 12)
                     .developReveal(id: shot.id)
-                    .accessibilityLabel(isBooth ? Text("Your Retro Booth print") : Text("Your photo with \(shot.effect.title)"))
+                    .accessibilityLabel(isBooth ? Text("Your Retro Booth print") : Text("Your photo with \(shot.title)"))
             } else {
                 VStack(spacing: 10) {
                     ProgressView().tint(.white)
@@ -269,7 +269,7 @@ struct RetroCamReviewView: View {
     }
 
     private var libraryTitle: String {
-        guard isBooth else { return shot.effect.title }
+        guard isBooth else { return shot.title }
         return layout == .strip ? String(localized: "Booth strip") : String(localized: "Booth grid")
     }
 

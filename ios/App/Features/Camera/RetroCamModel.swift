@@ -13,12 +13,37 @@ struct RetroCamShot: Identifiable {
 
     let id = UUID()
     let content: Content
-    let effect: RetroEffect
+    /// The effect's or Glow look's name: the Library's title, read by VoiceOver.
+    let title: String
 }
 
-/// Retro Cam and Photo Booth: the live effect preview, the self-timer, the
-/// 3-2-1 booth countdown and the shots. Free and on the device; nothing is
-/// uploaded and no credits are used.
+/// What a shot gets, fixed when it's taken: a retro effect, or a Glow look
+/// with its sparkle where the preview showed it.
+private struct ShotLook: Sendable {
+    let effect: RetroEffect
+    let showsExtra: Bool
+    let glow: GlowCamSettings?
+    /// The frames' clock at the shutter.
+    let seconds: Double
+
+    /// A photo with everything, at full size.
+    func photo(_ still: UIImage) -> UIImage {
+        if let glow { return GlowCamRender.develop(still, settings: glow, seconds: seconds) }
+        return effect.apply(to: still, options: RetroEffect.Options(extra: showsExtra))
+    }
+
+    /// A booth frame: the effect's colour, grain and light (the print has the
+    /// date), or the whole Glow look.
+    func boothFrame(_ still: UIImage) -> UIImage {
+        if let glow { return GlowCamRender.develop(still, settings: glow, seconds: seconds) }
+        guard let input = ImageFilters.ciImage(still) else { return still }
+        return ImageFilters.render(effect.grade(input).cropped(to: input.extent), extent: input.extent) ?? still
+    }
+}
+
+/// Retro Cam and Photo Booth: the live effect preview, Glow Cam's looks, the
+/// self-timer, the 3-2-1 booth countdown and the shots. Free and on the
+/// device; nothing is uploaded and no credits are used.
 @MainActor
 @Observable
 final class RetroCamModel {
@@ -39,6 +64,32 @@ final class RetroCamModel {
         }
     }
 
+    /// Retro effects, or Glow Cam's looks.
+    enum Family: String, CaseIterable, Identifiable {
+        case retro, glow
+
+        var id: String { rawValue }
+
+        var title: LocalizedStringResource {
+            switch self {
+            case .retro: return LocalizedStringResource("Retro", comment: "Retro Cam: the tab of retro effects (80s, 90s, Y2K)")
+            case .glow: return LocalizedStringResource("Glow", comment: "Retro Cam: the tab of Glow looks (light, colour, a makeup tint and sparkle)")
+            }
+        }
+
+        var symbolName: String {
+            switch self {
+            case .retro: return "camera.filters"
+            case .glow: return "sparkles"
+            }
+        }
+    }
+
+    /// Glow Cam's panels over the preview.
+    enum GlowPanel: String {
+        case light, makeup
+    }
+
     /// Colour, grain and light only: no beauty filters, nothing reshapes a
     /// face or body. Glamour's soft focus is left out for that reason, Kira
     /// Kira because its sparkles are placed per photo, not live, and DSLR '12
@@ -50,7 +101,19 @@ final class RetroCamModel {
     var mode: Mode = .photo {
         didSet { renderer.update(look) }
     }
+    private(set) var family: Family = .retro
     private(set) var effect: RetroEffect = .disposable
+    /// Glow Cam's look: light and colour, sparkle and a makeup tint, never retouching.
+    private(set) var glow = GlowCamSettings()
+    var glowPanel: GlowPanel?
+    /// Reduce Motion: Sparkle's glints hold still.
+    var reducesMotion = false {
+        didSet { if reducesMotion != oldValue { renderer.update(look) } }
+    }
+    /// False while the makeup tint is on and no face has been in view for a moment.
+    private(set) var tintSeesFace = true
+    /// Counts the times the tint paused itself to keep the camera smooth.
+    private(set) var tintPauses = 0
     /// The effect's switch (date stamp, letterbox or camcorder display).
     private(set) var showsExtra = true
     /// Self-timer in seconds (0 = off).
@@ -84,18 +147,36 @@ final class RetroCamModel {
     init() {
         renderer = RetroCamRenderer(view: previewView, look: RetroCamRenderer.Look(effect: .disposable, showsExtra: true))
         renderer.onAspectChange = { [weak self] aspect in self?.aspect = aspect }
+        renderer.onFaceChange = { [weak self] seen in self?.tintSeesFace = seen }
+        renderer.onTintPause = { [weak self] in self?.tintPaused() }
     }
 
     /// The effect's switch, when it also works live (not 2016's border).
     /// Booth frames get the effect's colour only: the print has the date.
     var extraOption: RetroEffect.Option? {
-        guard mode == .photo else { return nil }
+        guard mode == .photo, family == .retro else { return nil }
         return effect.option.flatMap { $0.worksOnVideo ? $0 : nil }
     }
 
     /// What the preview shows: exactly what the shot will get.
     private var look: RetroCamRenderer.Look {
-        RetroCamRenderer.Look(effect: effect, showsExtra: showsExtra && mode == .photo)
+        RetroCamRenderer.Look(effect: effect, showsExtra: showsExtra && mode == .photo, glow: family == .glow ? glow : nil,
+                              holdsSparkle: reducesMotion)
+    }
+
+    /// The effect's or Glow look's name.
+    var lookTitle: String {
+        family == .glow ? Self.glowTitle(glow.vibe) : effect.title
+    }
+
+    /// A Glow look's name, the editor's vibe names (nil: Natural).
+    static func glowTitle(_ vibe: AdjustVibe?) -> String {
+        vibe.map { L10n.core($0.name) } ?? String(localized: "Natural")
+    }
+
+    private var shotLook: ShotLook {
+        ShotLook(effect: effect, showsExtra: showsExtra, glow: family == .glow ? glow : nil,
+                 seconds: reducesMotion ? RetroCamRenderer.heldSparkleTime : renderer.clock)
     }
 
     // MARK: Camera
@@ -193,10 +274,86 @@ final class RetroCamModel {
         renderer.update(look)
     }
 
-    /// Swipes on the preview step through the effects.
+    /// Swipes on the preview step through the effects or the Glow looks.
     func step(_ offset: Int) {
-        guard let index = Self.effects.firstIndex(of: effect), Self.effects.indices.contains(index + offset) else { return }
-        select(Self.effects[index + offset])
+        switch family {
+        case .retro:
+            guard let index = Self.effects.firstIndex(of: effect), Self.effects.indices.contains(index + offset) else { return }
+            select(Self.effects[index + offset])
+        case .glow:
+            let looks: [String?] = [nil] + GlowCam.vibeIDs
+            guard let index = looks.firstIndex(of: glow.vibeID), looks.indices.contains(index + offset) else { return }
+            selectGlow(looks[index + offset].flatMap(AdjustVibes.preset(id:)))
+        }
+    }
+
+    // MARK: Glow
+
+    func select(_ family: Family) {
+        guard family != self.family else { return }
+        self.family = family
+        glowPanel = nil
+        Haptics.selection()
+        renderer.update(look)
+    }
+
+    /// A Glow look; nil is Natural.
+    func selectGlow(_ vibe: AdjustVibe?) {
+        guard vibe?.id != glow.vibeID else { return }
+        glow.vibeID = vibe?.id
+        Haptics.selection()
+        renderer.update(look)
+    }
+
+    func setGlowLight(brightness: Double? = nil, contrast: Double? = nil) {
+        if let brightness { glow.brightness = brightness }
+        if let contrast { glow.contrast = contrast }
+        renderer.update(look)
+    }
+
+    func resetGlowLight() {
+        glow.brightness = 0
+        glow.contrast = 0
+        Haptics.selection()
+        renderer.update(look)
+    }
+
+    func toggleSparkle() {
+        glow.sparkle.toggle()
+        Haptics.selection()
+        renderer.update(look)
+    }
+
+    func setLips(_ lips: MakeupLips) {
+        guard lips != glow.lips else { return }
+        if !glow.hasTint { tintSeesFace = true }
+        glow.lips = lips
+        Haptics.selection()
+        renderer.update(look)
+    }
+
+    func setCheeks(_ cheeks: MakeupCheeks) {
+        guard cheeks != glow.cheeks else { return }
+        if !glow.hasTint { tintSeesFace = true }
+        glow.cheeks = cheeks
+        Haptics.selection()
+        renderer.update(look)
+    }
+
+    func toggleGlowPanel(_ panel: GlowPanel) {
+        glowPanel = glowPanel == panel ? nil : panel
+        Haptics.selection()
+    }
+
+    /// The camera fell behind (or ran hot) with the tint on: it goes off, and
+    /// she can turn it on again.
+    private func tintPaused() {
+        guard glow.hasTint else { return }
+        glow.lips = .none
+        glow.cheeks = .none
+        tintSeesFace = true
+        tintPauses += 1
+        renderer.update(look)
     }
 
     func toggleExtra() {
@@ -259,30 +416,30 @@ final class RetroCamModel {
             guard await count(from: timer) else { return }
         }
         guard let still = await snap(maxPixel: 4096, app: app) else { return }
-        let effect = effect
-        let options = RetroEffect.Options(extra: showsExtra)
+        let look = shotLook
+        let title = lookTitle
         isDeveloping = true
-        let developed = await Task.detached(priority: .userInitiated) { effect.apply(to: still, options: options) }.value
+        let developed = await Task.detached(priority: .userInitiated) { look.photo(still) }.value
         isDeveloping = false
         guard !Task.isCancelled else { return }
-        present(RetroCamShot(content: .photo(developed), effect: effect))
+        present(RetroCamShot(content: .photo(developed), title: title))
     }
 
-    /// Four shots with 3-2-1 before each; the effect is graded into every
-    /// frame (date stamps and frames are left to the print).
+    /// Four shots with 3-2-1 before each; the effect or Glow look goes into
+    /// every frame (date stamps and frames are left to the print).
     private func runBooth(app: AppModel) async {
         boothCount = 0
         var frames: [UIImage] = []
         for seconds in PhotoBooth.countdowns(timer: timer) {
             guard await count(from: seconds), let still = await snap(maxPixel: 2048, app: app) else { return }
-            let effect = effect
-            let graded = await Task.detached(priority: .userInitiated) { Self.grade(still, with: effect) }.value
+            let look = shotLook
+            let graded = await Task.detached(priority: .userInitiated) { look.boothFrame(still) }.value
             guard !Task.isCancelled else { return }
             frames.append(graded)
             boothCount = frames.count
         }
         Haptics.success()
-        present(RetroCamShot(content: .booth(frames), effect: effect))
+        present(RetroCamShot(content: .booth(frames), title: lookTitle))
         boothCount = 0
     }
 
@@ -311,11 +468,6 @@ final class RetroCamModel {
         }
     }
 
-    nonisolated private static func grade(_ still: UIImage, with effect: RetroEffect) -> UIImage {
-        guard let input = ImageFilters.ciImage(still) else { return still }
-        return ImageFilters.render(effect.grade(input).cropped(to: input.extent), extent: input.extent) ?? still
-    }
-
     /// The camera rests while she looks at the shot.
     private func present(_ shot: RetroCamShot) {
         self.shot = shot
@@ -330,12 +482,29 @@ final class RetroCamModel {
     #if DEBUG
     /// Screenshots: `-GLEffect <effect>`, `-GLCameraMode booth`,
     /// `-GLCameraTimer 3|10` and `-GLCameraAction shoot|booth`, which presses
-    /// the shutter once the preview runs.
+    /// the shutter once the preview runs. Glow Cam: `-GLGlowLook
+    /// natural|dreamy|golden|analog|moody`, then `-GLGlowSparkle YES`,
+    /// `-GLGlowLips <MakeupLips>`, `-GLGlowCheeks <MakeupCheeks>`,
+    /// `-GLGlowBrightness`/`-GLGlowContrast <-1…1>` and `-GLGlowPanel
+    /// light|makeup`. `-GLCameraSample <sample>` picks the fixture's photo,
+    /// `-GLCameraSteady YES` holds it still, and `-GLVisionFixtures <folder>`
+    /// brings its face landmarks (`RetroCamFixture.savedLandmarks`).
     func applyScreenshotOptions(app: AppModel) async {
         guard ScreenshotScene.current != nil else { return }
         let defaults = UserDefaults.standard
         if let effect = defaults.string(forKey: "GLEffect").flatMap(RetroEffect.init(rawValue:)), Self.effects.contains(effect) {
             select(effect)
+        }
+        if let id = defaults.string(forKey: "GLGlowLook") {
+            family = .glow
+            glow.vibeID = AdjustVibes.preset(id: id)?.id
+            glow.sparkle = defaults.bool(forKey: "GLGlowSparkle")
+            glow.lips = defaults.string(forKey: "GLGlowLips").flatMap(MakeupLips.init(rawValue:)) ?? .none
+            glow.cheeks = defaults.string(forKey: "GLGlowCheeks").flatMap(MakeupCheeks.init(rawValue:)) ?? .none
+            glow.brightness = defaults.double(forKey: "GLGlowBrightness")
+            glow.contrast = defaults.double(forKey: "GLGlowContrast")
+            glowPanel = defaults.string(forKey: "GLGlowPanel").flatMap(GlowPanel.init(rawValue:))
+            renderer.update(look)
         }
         if defaults.string(forKey: "GLCameraMode") == "booth" { mode = .booth }
         let timer = defaults.integer(forKey: "GLCameraTimer")

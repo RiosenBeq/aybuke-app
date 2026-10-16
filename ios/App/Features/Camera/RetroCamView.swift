@@ -1,9 +1,10 @@
 import SwiftUI
 import AppCore
 
-/// Retro Cam: a full-screen camera with the retro effects live, a self-timer
-/// and Photo Booth (four shots, 3-2-1 before each, printed as a strip or a
-/// grid). Dark like a real camera; free and on the device.
+/// Retro Cam: a full-screen camera with the retro effects live, Glow Cam's
+/// looks (light, colour, a makeup tint and sparkle, never retouching), a
+/// self-timer and Photo Booth (four shots, 3-2-1 before each, printed as a
+/// strip or a grid). Dark like a real camera; free and on the device.
 struct RetroCamView: View {
     /// Edit: the shot opens in the editor once the camera has closed.
     let onEdit: (UIImage) -> Void
@@ -67,6 +68,10 @@ struct RetroCamView: View {
             flash = 0.85
             withAnimation(.easeOut(duration: 0.35)) { flash = 0 }
         }
+        .onChange(of: reduceMotion, initial: true) { _, reduce in model.reducesMotion = reduce }
+        .onChange(of: model.tintPauses) { _, _ in
+            app.showToast("Makeup tint turned off to keep the camera smooth.")
+        }
         // Toasts, the share composer and the Photos alert: the root's copy is covered.
         .modifier(AppPresentations(isActive: true))
     }
@@ -77,9 +82,34 @@ struct RetroCamView: View {
         VStack(spacing: 0) {
             topBar
             preview
-            effectStrip
-            bottomBar
+            controls
         }
+    }
+
+    private var isPanelOpen: Bool {
+        model.family == .glow && model.glowPanel != nil
+    }
+
+    /// The looks, modes and shutter. An open Glow panel takes their place,
+    /// so the whole picture stays in view while she picks.
+    private var controls: some View {
+        ZStack(alignment: .top) {
+            VStack(spacing: 0) {
+                familyPicker
+                lookStrip
+                bottomBar
+            }
+            .opacity(isPanelOpen ? 0 : 1)
+            .allowsHitTesting(!isPanelOpen)
+            .accessibilityHidden(isPanelOpen)
+            if isPanelOpen, let panel = model.glowPanel {
+                glowPanel(panel)
+                    .padding(.horizontal, Metrics.gutter)
+                    .padding(.top, 8)
+                    .transition(.move(edge: .bottom).combined(with: .opacity))
+            }
+        }
+        .animation(.snappy(duration: 0.28), value: model.glowPanel)
     }
 
     private var topBar: some View {
@@ -110,6 +140,34 @@ struct RetroCamView: View {
     }
 
     private var preview: some View {
+        livePicture
+            .overlay(alignment: .trailing) {
+                if model.family == .glow, !model.isShooting {
+                    glowRail
+                        .padding(.trailing, 10)
+                        .transition(.opacity)
+                }
+            }
+            .overlay(alignment: .top) {
+                if model.family == .glow, model.glow.hasTint, !model.tintSeesFace, !model.isShooting {
+                    Label("Looking for a face…", systemImage: "face.dashed")
+                        .font(.footnote.weight(.semibold))
+                        .foregroundStyle(.white)
+                        .padding(.horizontal, 14)
+                        .padding(.vertical, 8)
+                        .background(.black.opacity(0.55), in: .pill)
+                        .padding(.top, 14)
+                        .transition(.opacity)
+                }
+            }
+            .animation(.easeInOut(duration: 0.2), value: model.tintSeesFace)
+            .animation(.easeInOut(duration: 0.2), value: model.isShooting)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .padding(.horizontal, 8)
+    }
+
+    /// The camera's picture: exactly what the shot will get.
+    private var livePicture: some View {
         RetroCamPreview(view: model.previewView)
             .aspectRatio(model.aspect, contentMode: .fit)
             .overlay {
@@ -164,6 +222,10 @@ struct RetroCamView: View {
             .animation(.snappy(duration: 0.3), value: model.countdown)
             .clipShape(.card)
             .contentShape(Rectangle())
+            // A tap on the picture closes a Glow panel.
+            .onTapGesture {
+                if model.glowPanel != nil { model.glowPanel = nil }
+            }
             .gesture(
                 DragGesture(minimumDistance: 24).onEnded { value in
                     guard !model.isShooting, abs(value.translation.width) > abs(value.translation.height) else { return }
@@ -171,11 +233,9 @@ struct RetroCamView: View {
                     if value.translation.width > 50 { model.step(-1) }
                 }
             )
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .padding(.horizontal, 8)
             .accessibilityElement()
             .accessibilityLabel(Text("Camera preview"))
-            .accessibilityValue(Text(verbatim: model.effect.title))
+            .accessibilityValue(Text(verbatim: model.lookTitle))
             .accessibilityHint(Text("Swipe up or down to change the effect."))
             .accessibilityAdjustableAction { direction in
                 switch direction {
@@ -204,6 +264,43 @@ struct RetroCamView: View {
         .background(.black.opacity(0.45), in: .pill)
         .padding(.top, 14)
         .animation(.snappy, value: model.boothCount)
+    }
+
+    // MARK: Looks
+
+    /// Retro effects or Glow looks.
+    private var familyPicker: some View {
+        HStack(spacing: 2) {
+            ForEach(RetroCamModel.Family.allCases) { family in
+                let isSelected = model.family == family
+                Button { model.select(family) } label: {
+                    Label { Text(family.title) } icon: { Image(systemName: family.symbolName) }
+                        .font(.subheadline.weight(.bold))
+                        .lineLimit(1)
+                        .fixedSize()
+                        .foregroundStyle(isSelected ? Palette.ink : .white)
+                        .padding(.horizontal, 18)
+                        .frame(minHeight: 36)
+                        .background(isSelected ? Palette.blush : Color.clear, in: .pill)
+                        .contentShape(.pill)
+                }
+                .buttonStyle(.pressable)
+                .macHoverLift()
+                .accessibilityAddTraits(isSelected ? .isSelected : [])
+            }
+        }
+        .padding(3)
+        .background(Color.white.opacity(0.12), in: .pill)
+        .padding(.top, 8)
+        .animation(.snappy(duration: 0.25), value: model.family)
+    }
+
+    @ViewBuilder
+    private var lookStrip: some View {
+        switch model.family {
+        case .retro: effectStrip
+        case .glow: glowStrip
+        }
     }
 
     private var effectStrip: some View {
@@ -242,6 +339,160 @@ struct RetroCamView: View {
             withAnimation(.snappy) { stripPosition = effect }
         }
         .padding(.vertical, 10)
+    }
+
+    /// Natural, then the editor's vibes: the same names and numbers as Adjust.
+    private var glowStrip: some View {
+        ScrollView(.horizontal) {
+            HStack(spacing: 8) {
+                glowChip(nil)
+                ForEach(GlowCam.vibes) { vibe in
+                    glowChip(vibe)
+                }
+            }
+            .padding(.horizontal, Metrics.gutter)
+        }
+        .scrollIndicators(.hidden)
+        .padding(.vertical, 10)
+    }
+
+    private func glowChip(_ vibe: AdjustVibe?) -> some View {
+        let isSelected = model.glow.vibeID == vibe?.id
+        let title = RetroCamModel.glowTitle(vibe)
+        return Button { model.selectGlow(vibe) } label: {
+            VStack(spacing: 2) {
+                Image(systemName: vibe?.symbolName ?? "sun.min")
+                    .font(.footnote.weight(.bold))
+                Text(verbatim: title)
+                    .font(.subheadline.weight(.bold))
+            }
+            .lineLimit(1)
+            .fixedSize()
+            .padding(.horizontal, 16)
+            .frame(minHeight: 48)
+            .foregroundStyle(isSelected ? Palette.ink : .white)
+            .background(isSelected ? Palette.blush : Color.white.opacity(0.12), in: .chip)
+        }
+        .buttonStyle(.pressable)
+        .macHoverLift()
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(Text(verbatim: title))
+        .accessibilityAddTraits(isSelected ? [.isButton, .isSelected] : .isButton)
+    }
+
+    // MARK: Glow tools
+
+    /// Light, sparkle and makeup down the side of the picture, like a social camera.
+    private var glowRail: some View {
+        VStack(spacing: 14) {
+            RailButton(symbol: "sun.max", label: Text("Adjust"), isOn: model.glow.hasLightChange, isOpen: model.glowPanel == .light) {
+                model.toggleGlowPanel(.light)
+            }
+            RailButton(symbol: "sparkle", label: Text("Sparkle"), isOn: model.glow.sparkle) {
+                model.toggleSparkle()
+            }
+            RailButton(symbol: "paintbrush.pointed", label: Text("Makeup"), isOn: model.glow.hasTint, isOpen: model.glowPanel == .makeup) {
+                model.toggleGlowPanel(.makeup)
+            }
+        }
+    }
+
+    private func glowPanel(_ panel: RetroCamModel.GlowPanel) -> some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(spacing: 12) {
+                (panel == .light ? Text("Adjust") : Text("Makeup"))
+                    .font(.headline.weight(.heavy))
+                    .accessibilityAddTraits(.isHeader)
+                Spacer(minLength: 0)
+                if panel == .light, model.glow.hasLightChange {
+                    Button("Reset") { model.resetGlowLight() }
+                        .font(.subheadline.weight(.bold))
+                        .foregroundStyle(Palette.blush)
+                        .buttonStyle(.plain)
+                        .frame(minHeight: 44)
+                }
+                Button { model.glowPanel = nil } label: {
+                    Image(systemName: "checkmark")
+                        .font(.system(size: 16, weight: .bold))
+                        .foregroundStyle(Palette.ink)
+                        .frame(width: 40, height: 40)
+                        .background(Palette.blush, in: Circle())
+                }
+                .buttonStyle(PressableButtonStyle(scale: 0.92))
+                .accessibilityLabel(Text("Done"))
+                .macHelp(Text("Done"))
+            }
+            switch panel {
+            case .light: lightControls
+            case .makeup: makeupControls
+            }
+        }
+        .foregroundStyle(.white)
+        .padding(16)
+        .background(Color.white.opacity(0.1), in: .card)
+        .readableWidth(Metrics.compactWidth, alignment: .center)
+    }
+
+    private var lightControls: some View {
+        VStack(spacing: 6) {
+            lightSlider(Text("Brightness"), symbol: "sun.max", value: Binding(
+                get: { model.glow.brightness },
+                set: { model.setGlowLight(brightness: abs($0) < 0.04 ? 0 : $0) }
+            ))
+            lightSlider(Text("Contrast"), symbol: "circle.lefthalf.filled", value: Binding(
+                get: { model.glow.contrast },
+                set: { model.setGlowLight(contrast: abs($0) < 0.04 ? 0 : $0) }
+            ))
+        }
+    }
+
+    private func lightSlider(_ label: Text, symbol: String, value: Binding<Double>) -> some View {
+        HStack(spacing: 10) {
+            Image(systemName: symbol)
+                .font(.subheadline.weight(.semibold))
+                .frame(width: 22)
+                .accessibilityHidden(true)
+            label
+                .font(.subheadline.weight(.semibold))
+                .lineLimit(1)
+                .minimumScaleFactor(0.8)
+                .frame(width: 96, alignment: .leading)
+                .accessibilityHidden(true)
+            Slider(value: value, in: -1...1) { label }
+                .tint(Palette.blush)
+        }
+        .frame(minHeight: 44)
+    }
+
+    private var makeupControls: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            swatchRow(Text("Lips"), choices: [MakeupLips.none] + GlowCam.lipColors, selected: model.glow.lips) { model.setLips($0) }
+            swatchRow(Text("Cheeks"), choices: [MakeupCheeks.none] + GlowCam.cheekColors, selected: model.glow.cheeks) { model.setCheeks($0) }
+            Text("Just color, made on your device. Your face stays exactly as it is.")
+                .font(.legibleCaption2)
+                .foregroundStyle(.white.opacity(0.7))
+                .fixedSize(horizontal: false, vertical: true)
+        }
+    }
+
+    private func swatchRow<Choice: MakeupChoice>(_ title: Text, choices: [Choice], selected: Choice,
+                                                 select: @escaping (Choice) -> Void) -> some View {
+        VStack(alignment: .leading, spacing: 4) {
+            title
+                .font(.legibleCaption.weight(.bold))
+                .foregroundStyle(.white.opacity(0.8))
+                .accessibilityAddTraits(.isHeader)
+            ScrollView(.horizontal) {
+                HStack(spacing: 8) {
+                    ForEach(choices) { choice in
+                        SwatchButton(hex: choice.swatch, name: L10n.core(choice.name), isSelected: choice == selected) {
+                            select(choice)
+                        }
+                    }
+                }
+            }
+            .scrollIndicators(.hidden)
+        }
     }
 
     private var bottomBar: some View {
@@ -286,7 +537,10 @@ struct RetroCamView: View {
     }
 
     private var shutter: some View {
-        Button { model.shutter(app: app) } label: {
+        Button {
+            model.glowPanel = nil
+            model.shutter(app: app)
+        } label: {
             ZStack {
                 Circle()
                     .strokeBorder(.white, lineWidth: 5)
@@ -408,6 +662,74 @@ private struct CamButton: View {
     }
 }
 
+/// A Glow tool down the side of the picture: a round button with its name
+/// under it; white when it's on, ringed while its panel is open.
+private struct RailButton: View {
+    let symbol: String
+    let label: Text
+    var isOn = false
+    var isOpen = false
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            VStack(spacing: 4) {
+                Image(systemName: symbol)
+                    .font(.system(size: 18, weight: .semibold))
+                    .foregroundStyle(isOn ? Palette.ink : .white)
+                    .frame(width: 44, height: 44)
+                    .background(isOn ? Color.white : Color.black.opacity(0.4), in: Circle())
+                    .overlay(Circle().strokeBorder(Palette.blush, lineWidth: isOpen ? 2.5 : 0))
+                label
+                    .font(.legibleCaption2.weight(.bold))
+                    .foregroundStyle(.white)
+                    .shadow(color: .black.opacity(0.7), radius: 2, y: 1)
+                    .lineLimit(1)
+                    .fixedSize()
+            }
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(PressableButtonStyle(scale: 0.92))
+        .macHoverLift(scale: 1.05)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(label)
+        .accessibilityAddTraits(isOn ? [.isButton, .isSelected] : .isButton)
+        .macHelp(label)
+    }
+}
+
+/// A round makeup colour; "As is" is a crossed-out ring.
+private struct SwatchButton: View {
+    let hex: String?
+    let name: String
+    let isSelected: Bool
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            ZStack {
+                if let hex, let color = UIColor(hexString: hex) {
+                    Circle().fill(Color(uiColor: color))
+                } else {
+                    Circle().fill(Color.white.opacity(0.12))
+                    Image(systemName: "nosign")
+                        .font(.system(size: 17, weight: .semibold))
+                        .foregroundStyle(.white.opacity(0.85))
+                }
+            }
+            .frame(width: 36, height: 36)
+            .padding(4)
+            .overlay(Circle().strokeBorder(isSelected ? Color.white : Color.clear, lineWidth: 2.5))
+            .contentShape(Circle())
+        }
+        .buttonStyle(PressableButtonStyle(scale: 0.9))
+        .macHoverLift(scale: 1.06)
+        .accessibilityLabel(Text(verbatim: name))
+        .accessibilityAddTraits(isSelected ? .isSelected : [])
+        .macHelp(Text(verbatim: name))
+    }
+}
+
 /// Permission and no-camera screens, in the camera's dark look.
 private struct CamNotice<Actions: View>: View {
     let symbol: String
@@ -486,7 +808,7 @@ struct RetroCamHubCard: View {
                     .background(AuraFill(palette: .mint).clipShape(.control))
                 VStack(alignment: .leading, spacing: 3) {
                     TitleWithNewBadge(title: "Retro Cam")
-                    Text("Live retro effects & Retro Booth · free")
+                    Text("Live retro effects, Glow looks & Retro Booth · free")
                         .font(.legibleFootnote)
                         .foregroundStyle(Palette.textSecondary)
                         .fixedSize(horizontal: false, vertical: true)
