@@ -49,8 +49,9 @@ Claude uygulamasında kalıcı zamanlanmış görev **"Aybuke yayın ve TestFlig
 
 Site repo `57bf0b7` (Vercel'de yayında, 144 sayfa 200, axe 0 sorun, IndexNow bildirildi): menüdeki "01 Magic Edit" kartı boş degrade yerine Pink Hair örneğini koyu bir perdeyle gösteriyor (karanlık modda okunmayan beyaz alt yazı düzeldi); Which vibe?, Retro effects ve Video editor sayfalarının üstünde çizim yerine uygulamanın gerçek ekranları, saç rengi sayfasında Pink Hair önce/sonra kaydırıcısı, görselsiz son kart (Adjust vibes) Adjust ekranıyla. Yeni görsel üretilmedi (xAI harcaması yok); hepsi mevcut gerçek ekranlar ve örnek fotoğraflar.
 
+Ardından site repo `f3e1430`: özellik kartlarında hover'da karanlık modda pembeleşip kaybolan etiket ("AI PHOTO EDITOR" vb.) düzeldi; geniş ekranda açıklamalar kesilmeden tam, kartlarda dönen yuvarlak "aç" düğmesi, "Coming in the next update" yumuşak etiket. Açık temada ferahlık: özellik turu ve özellik sayfalarının okuma bölümü pembeden beyaza geçen bantlar, hero görsellerinin arkasında beyaz ışık, SSS beyaz kartta, çipler, ikincil düğmeler ve fiyat kartları beyaz. Karanlık mod aynı. 144 sayfa 200, axe 0 sorun.
+
 ## Sahibe kalanlar
 
-- Çöp Sepeti'ni boşaltmak (Cursor ve VN verileri, ~14 GB).
 - xAI anahtarını yenilemek (sohbete yazıldı); yenisi sunucuya `read -s` ile girilir.
 - Avukatla KVKK/DPA kontrolü; gerçek cihazda TestFlight denemesi.
