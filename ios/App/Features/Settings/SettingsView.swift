@@ -97,7 +97,8 @@ struct SettingsView: View {
             .confirmationDialog("Delete all creations?", isPresented: $confirmDeleteCreations, titleVisibility: .visible) {
                 Button("Delete all", role: .destructive) {
                     app.deleteAllCreations()
-                    app.showToast("Your library is empty now.", style: .success)
+                    // Not "your library": the dialog just said her Photos library stays.
+                    app.showToast("My Works is empty now.", style: .success)
                 }
                 Button("Cancel", role: .cancel) {}
             } message: {
