@@ -84,13 +84,24 @@ struct ImagePlaygroundCreateButton: View {
         }
     }
 
-    /// The URL is temporary: read it right away.
+    /// The URL is temporary: read it right away, off the main actor.
     private func finish(_ url: URL) {
-        guard let data = try? Data(contentsOf: url), let image = UIImage(data: data) else {
-            app.showToast("Couldn't open that image. Please try again.", style: .error)
-            return
+        Task {
+            guard let image = await Self.decode(url) else {
+                app.showToast("Couldn't open that image. Please try again.", style: .error)
+                return
+            }
+            onImage(image)
         }
-        onImage(image)
+    }
+
+    /// Reads and decodes Apple's file in the background (ImageIO, one plain
+    /// upright copy), never on the main actor.
+    private static func decode(_ url: URL) async -> UIImage? {
+        await Task.detached(priority: .userInitiated) { () -> UIImage? in
+            guard let data = try? Data(contentsOf: url) else { return nil }
+            return ImageUtilities.decodedImage(from: data)
+        }.value
     }
 }
 
