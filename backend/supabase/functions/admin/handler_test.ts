@@ -1,17 +1,22 @@
 // deno test admin/
-// The admin API with the database faked: the token and the gate, CORS, each
-// route, strict actions, and answers and logs that name nobody.
+// The admin API with the database and the auth server faked: the token, the
+// owner's session and the gate, CORS, each route, strict actions, and answers
+// and logs that name nobody.
 import assert from "node:assert/strict";
 import {
   type AdminDeps,
   allowedOrigin,
   constantTimeEqual,
   handleAdmin,
+  isAdminUser,
+  jwtClaims,
   parseAction,
+  parseAdminEmails,
   parseDigest,
   redact,
   routeOf,
   scrub,
+  type SessionUser,
   tokenMatches,
 } from "./handler.ts";
 
@@ -27,6 +32,48 @@ async function sha256Hex(text: string): Promise<string> {
   return Array.from(digest, (byte) => byte.toString(16).padStart(2, "0")).join("");
 }
 const TOKEN_SHA256 = await sha256Hex(TOKEN);
+
+const OWNER_EMAIL = "info@nextgenlab.com.tr";
+const OWNER_ID = "0b6c1f2e-4d3a-4f5b-8e7d-9a1b2c3d4e5f";
+const NOW_SECONDS = Math.floor(NOW.getTime() / 1000);
+
+function base64url(text: string): string {
+  return btoa(text).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+}
+
+/** A Supabase access token's shape (the signature is the gateway's business, not the function's). */
+function jwt(claims: Record<string, unknown>): string {
+  return `${base64url(JSON.stringify({ alg: "HS256", typ: "JWT" }))}.${base64url(JSON.stringify(claims))}.c2lnbmF0dXJl`;
+}
+
+/** The owner's session after a password sign-in, with any claim replaced. */
+function ownerJwt(overrides: Record<string, unknown> = {}): string {
+  return jwt({
+    sub: OWNER_ID,
+    role: "authenticated",
+    aud: "authenticated",
+    email: OWNER_EMAIL,
+    is_anonymous: false,
+    exp: NOW_SECONDS + 3600,
+    amr: [{ method: "password", timestamp: NOW_SECONDS - 60 }],
+    ...overrides,
+  });
+}
+
+/** The owner as the auth server knows them, with any field replaced. */
+function ownerUser(overrides: Partial<SessionUser> = {}): SessionUser {
+  return {
+    id: OWNER_ID,
+    email: OWNER_EMAIL,
+    email_confirmed_at: "2026-10-17T08:00:00Z",
+    is_anonymous: false,
+    app_metadata: { provider: "email", providers: ["email"] },
+    ...overrides,
+  };
+}
+
+const ANON_KEY = jwt({ role: "anon", iss: "supabase", exp: NOW_SECONDS + 10 * 365 * 86400 });
+const SESSION_ENV = { ADMIN_EMAILS: " Info@NextGenLab.com.tr ,, someone.else@example.com " };
 
 /** admin_gate() as the migration has it: 60 a minute, 5 misses lock for 15 minutes, the right token forgives. */
 class FakeGate {
@@ -61,13 +108,22 @@ function fake(options: {
   data?: Record<string, unknown>;
   fail?: string[];
   ip?: string | null;
+  /** What the auth server answers for each access token (null: it doesn't accept it; "down": it can't be asked). */
+  users?: Record<string, SessionUser | null | "down">;
 } = {}) {
   const gate = new FakeGate();
   const calls: Call[] = [];
   const logs: Record<string, unknown>[] = [];
+  const authCalls: string[] = [];
   const env = options.env ?? { ADMIN_TOKEN_SHA256: TOKEN_SHA256 };
   const deps: AdminDeps = {
     env: { get: (name) => env[name] },
+    getUser: (token) => {
+      authCalls.push(token);
+      const user = options.users?.[token];
+      if (user === "down") return Promise.reject(new Error("auth unavailable"));
+      return Promise.resolve(user ?? null);
+    },
     rpc: (fn, args) => {
       calls.push({ fn, args });
       if (options.fail?.includes(fn)) return Promise.resolve({ data: null, error: { message: `boom ${USER_ID}` } });
@@ -84,14 +140,21 @@ function fake(options: {
     now: () => NOW,
     log: (entry) => logs.push(entry),
   };
-  return { deps, calls, logs, gate };
+  return { deps, calls, logs, gate, authCalls };
 }
 
 function request(
   path: string,
-  init: { method?: string; token?: string | null; origin?: string | null; body?: unknown; ip?: string } = {},
+  init: {
+    method?: string;
+    token?: string | null;
+    origin?: string | null;
+    body?: unknown;
+    ip?: string;
+    bearer?: string;
+  } = {},
 ): Request {
-  const headers: Record<string, string> = { Authorization: "Bearer anon", apikey: "anon" };
+  const headers: Record<string, string> = { Authorization: `Bearer ${init.bearer ?? "anon"}`, apikey: "anon" };
   if (init.ip) headers["x-test-ip"] = init.ip;
   if (init.token !== null) headers["x-admin-token"] = init.token ?? TOKEN;
   if (init.origin !== null) headers.Origin = init.origin ?? SITE;
@@ -143,14 +206,23 @@ Deno.test("the secret must be 64 hex characters; the token's SHA-256 must match 
   assert.ok(!(await tokenMatches(null, expected)));
 });
 
-Deno.test("without ADMIN_TOKEN_SHA256 every call is a 503 admin_disabled, before the database", async () => {
-  for (const env of [{}, { ADMIN_TOKEN_SHA256: "" }, { ADMIN_TOKEN_SHA256: "not-hex" }] as Record<string, string>[]) {
-    const { deps, calls } = fake({ env });
-    const response = await handleAdmin(request("/overview"), deps);
-    assert.equal(response.status, 503);
-    assert.equal(await errorCode(response), "admin_disabled");
-    assertHeaders(response);
+Deno.test("without ADMIN_TOKEN_SHA256 or ADMIN_EMAILS every call is a 503 admin_disabled, before anything", async () => {
+  const envs: Record<string, string>[] = [
+    {},
+    { ADMIN_TOKEN_SHA256: "" },
+    { ADMIN_TOKEN_SHA256: "not-hex" },
+    { ADMIN_TOKEN_SHA256: "not-hex", ADMIN_EMAILS: " , " },
+  ];
+  for (const env of envs) {
+    const { deps, calls, authCalls } = fake({ env });
+    for (const init of [{}, { token: null, bearer: ownerJwt() }]) {
+      const response = await handleAdmin(request("/overview", init), deps);
+      assert.equal(response.status, 503);
+      assert.equal(await errorCode(response), "admin_disabled");
+      assertHeaders(response);
+    }
     assert.equal(calls.length, 0);
+    assert.equal(authCalls.length, 0);
   }
 });
 
@@ -204,6 +276,210 @@ Deno.test("when the gate can't be asked, everything is refused (fails closed)", 
   assert.equal(response.status, 503);
   assert.equal(await errorCode(response), "unavailable");
   assert.deepEqual(calls.map((c) => c.fn), ["admin_gate"]);
+});
+
+// MARK: - The owner's session
+
+Deno.test("ADMIN_EMAILS is comma-separated, trimmed and read in any case", () => {
+  assert.deepEqual([...parseAdminEmails(SESSION_ENV.ADMIN_EMAILS)], [OWNER_EMAIL, "someone.else@example.com"]);
+  assert.equal(parseAdminEmails(undefined).size, 0);
+  assert.equal(parseAdminEmails(" , ").size, 0);
+});
+
+Deno.test("jwtClaims reads a JWT's payload and refuses anything else", () => {
+  assert.equal(jwtClaims(ownerJwt())?.email, OWNER_EMAIL);
+  assert.equal(jwtClaims(ANON_KEY)?.role, "anon");
+  const notJwts = [
+    "",
+    "anon",
+    "a.b",
+    "a.b.c.d",
+    "a.!!.c",
+    `a.${base64url("[1]")}.c`,
+    `a.${base64url("not json")}.c`,
+    `a.${"x".repeat(9000)}.c`,
+  ];
+  for (const value of notJwts) assert.equal(jwtClaims(value), null, value.slice(0, 40));
+});
+
+Deno.test("isAdminUser: an admin email, confirmed, an email-provider account, not anonymous", () => {
+  const admins = parseAdminEmails(SESSION_ENV.ADMIN_EMAILS);
+  assert.ok(isAdminUser(ownerUser(), admins));
+  assert.ok(isAdminUser(ownerUser({ email: " INFO@nextgenlab.com.tr" }), admins));
+  assert.ok(isAdminUser(ownerUser({ app_metadata: { provider: "apple", providers: ["apple", "email"] } }), admins));
+  const refused = [
+    ownerUser({ email: "girl@example.com" }),
+    ownerUser({ email: null }),
+    ownerUser({ email_confirmed_at: null }),
+    ownerUser({ email_confirmed_at: undefined }),
+    ownerUser({ email_confirmed_at: "" }),
+    ownerUser({ is_anonymous: true }),
+    ownerUser({ app_metadata: { provider: "apple", providers: ["apple"] } }),
+    ownerUser({ app_metadata: undefined }),
+  ];
+  for (const user of refused) assert.ok(!isAdminUser(user, admins), JSON.stringify(user));
+  assert.ok(!isAdminUser(ownerUser(), new Set()), "nobody without ADMIN_EMAILS");
+});
+
+Deno.test("the owner's session admits, checked once with the auth server, and the gate counts it as right", async () => {
+  const token = ownerJwt();
+  for (const env of [SESSION_ENV, { ...SESSION_ENV, ADMIN_TOKEN_SHA256: TOKEN_SHA256 }]) {
+    const { deps, calls, authCalls } = fake({
+      env,
+      users: { [token]: ownerUser() },
+      data: { admin_audit_recent: [], admin_action: { ok: true, result: { outcome: "done" } } },
+    });
+    const audit = await handleAdmin(request("/audit", { token: null, bearer: token }), deps);
+    assert.equal(audit.status, 200);
+    assertHeaders(audit);
+    assert.deepEqual(await audit.json(), { entries: [] });
+    const action = await handleAdmin(
+      request("/action", { token: null, bearer: token, body: { action: "pause_ai" } }),
+      deps,
+    );
+    assert.equal(action.status, 200);
+    assert.deepEqual(await action.json(), { ok: true, result: { outcome: "done" } });
+    assert.deepEqual(authCalls, [token, token]);
+    assert.deepEqual(calls.map((c) => [c.fn, c.args?.p_token_ok]), [
+      ["admin_gate", true],
+      ["admin_audit_recent", undefined],
+      ["admin_gate", true],
+      ["admin_action", undefined],
+    ]);
+  }
+});
+
+Deno.test("someone else's session is a 403 forbidden from its claims alone, counted as a miss", async () => {
+  const sessions = [
+    ownerJwt({ sub: USER_ID, email: "girl@example.com" }),
+    ownerJwt({ email: undefined }),
+    // Anonymous app users, even with the owner's email in the token.
+    jwt({ sub: USER_ID, role: "authenticated", is_anonymous: true, exp: NOW_SECONDS + 3600, amr: [] }),
+    ownerJwt({ is_anonymous: true }),
+    // Opened another way than the email provider's password.
+    ownerJwt({ amr: [{ method: "oauth", timestamp: NOW_SECONDS }] }),
+    ownerJwt({ amr: [{ method: "otp", timestamp: NOW_SECONDS }] }),
+    ownerJwt({ amr: undefined }),
+  ];
+  for (const token of sessions) {
+    const { deps, calls, authCalls } = fake({ env: SESSION_ENV, users: { [token]: ownerUser() } });
+    const response = await handleAdmin(request("/overview", { token: null, bearer: token }), deps);
+    assert.equal(response.status, 403, JSON.stringify(jwtClaims(token)));
+    assert.equal(await errorCode(response), "forbidden");
+    assertHeaders(response);
+    assert.deepEqual(authCalls, [], "refused without asking the auth server");
+    assert.deepEqual(calls.map((c) => [c.fn, c.args?.p_token_ok]), [["admin_gate", false]]);
+  }
+});
+
+Deno.test("a session whose user the auth server doesn't back up is a 403: unconfirmed, another provider…", async () => {
+  const users = [
+    ownerUser({ email_confirmed_at: null }),
+    ownerUser({ app_metadata: { provider: "apple", providers: ["apple"] } }),
+    ownerUser({ email: "girl@example.com" }),
+    ownerUser({ is_anonymous: true }),
+  ];
+  for (const user of users) {
+    const token = ownerJwt();
+    const { deps, calls, authCalls } = fake({ env: SESSION_ENV, users: { [token]: user } });
+    const response = await handleAdmin(request("/overview", { token: null, bearer: token }), deps);
+    assert.equal(response.status, 403, JSON.stringify(user));
+    assert.equal(await errorCode(response), "forbidden");
+    assert.deepEqual(authCalls, [token]);
+    assert.deepEqual(calls.map((c) => [c.fn, c.args?.p_token_ok]), [["admin_gate", false]]);
+  }
+});
+
+Deno.test("an expired, ended or mismatched session is a 401 session_expired, counted as a miss", async () => {
+  const expired = ownerJwt({ exp: NOW_SECONDS });
+  const noExpiry = ownerJwt({ exp: undefined });
+  const noSubject = ownerJwt({ sub: "" });
+  const signedOut = ownerJwt({ session_id: "signed-out" });
+  const someoneElse = ownerJwt({ session_id: "another-user" });
+  const { deps, calls, authCalls } = fake({
+    env: SESSION_ENV,
+    users: { [signedOut]: null, [someoneElse]: ownerUser({ id: USER_ID }) },
+  });
+  for (const token of [expired, noExpiry, noSubject, signedOut, someoneElse]) {
+    const response = await handleAdmin(request("/overview", { token: null, bearer: token }), deps);
+    assert.equal(response.status, 401, JSON.stringify(jwtClaims(token)));
+    assert.equal(await errorCode(response), "session_expired");
+    assertHeaders(response);
+  }
+  assert.deepEqual(authCalls, [signedOut, someoneElse], "expired tokens are refused from their claims");
+  assert.deepEqual(calls.map((c) => [c.fn, c.args?.p_token_ok]), Array(5).fill(["admin_gate", false]));
+});
+
+Deno.test("a bearer that isn't a session (anon key, service role, garbage) leaves the token in charge", async () => {
+  const serviceRole = jwt({ role: "service_role", iss: "supabase", exp: NOW_SECONDS + 3600 });
+  for (const bearer of [ANON_KEY, serviceRole, "anon", "a.b.c"]) {
+    const { deps, authCalls } = fake({ env: { ...SESSION_ENV, ADMIN_TOKEN_SHA256: TOKEN_SHA256 } });
+    const missing = await handleAdmin(request("/audit", { token: null, bearer }), deps);
+    assert.equal(missing.status, 401, bearer.slice(0, 20));
+    assert.equal(await errorCode(missing), "unauthorized");
+    assert.equal((await handleAdmin(request("/audit", { bearer }), deps)).status, 200);
+    assert.deepEqual(authCalls, []);
+  }
+});
+
+Deno.test("the right token admits without the auth server, whatever the bearer; alone, ADMIN_EMAILS takes no token", async () => {
+  const both = fake({ env: { ...SESSION_ENV, ADMIN_TOKEN_SHA256: TOKEN_SHA256 } });
+  assert.equal(
+    (await handleAdmin(request("/audit", { bearer: ownerJwt({ email: "girl@example.com" }) }), both.deps)).status,
+    200,
+  );
+  assert.equal((await handleAdmin(request("/audit", { bearer: ownerJwt({ exp: 1 }) }), both.deps)).status, 200);
+  assert.deepEqual(both.authCalls, []);
+
+  const { deps, calls } = fake({ env: SESSION_ENV });
+  const response = await handleAdmin(request("/audit"), deps);
+  assert.equal(response.status, 401);
+  assert.equal(await errorCode(response), "unauthorized");
+  assert.deepEqual(calls.map((c) => [c.fn, c.args?.p_token_ok]), [["admin_gate", false]]);
+});
+
+Deno.test("when the auth server can't answer: 503 unavailable, nothing counted or read", async () => {
+  const token = ownerJwt();
+  const { deps, calls } = fake({ env: SESSION_ENV, users: { [token]: "down" } });
+  const response = await handleAdmin(request("/overview", { token: null, bearer: token }), deps);
+  assert.equal(response.status, 503);
+  assert.equal(await errorCode(response), "unavailable");
+  assert.equal(response.headers.get("Retry-After"), "30");
+  assert.equal(calls.length, 0);
+});
+
+Deno.test("refused sessions lock the address like wrong tokens; the owner's session forgives earlier misses", async () => {
+  const token = ownerJwt();
+  const other = ownerJwt({ sub: USER_ID, email: "girl@example.com" });
+  const { deps } = fake({ env: SESSION_ENV, users: { [token]: ownerUser() } });
+  const send = async (bearer: string, ip?: string) =>
+    (await handleAdmin(request("/overview", { token: null, bearer, ip }), deps)).status;
+  for (let i = 0; i < 4; i++) assert.equal(await send(other), 403);
+  assert.equal(await send(token), 200, "four misses, then the owner: forgiven");
+  for (let i = 0; i < 5; i++) assert.equal(await send(other), 403);
+  const locked = await handleAdmin(request("/overview", { token: null, bearer: token }), deps);
+  assert.equal(locked.status, 429);
+  assert.equal(await errorCode(locked), "locked_out");
+  assert.equal(locked.headers.get("Retry-After"), "900");
+  assert.equal(await send(token, "198.51.100.9"), 200, "another address");
+});
+
+Deno.test("logs never carry the session, its email or its user", async () => {
+  const token = ownerJwt();
+  const other = ownerJwt({ sub: USER_ID, email: "girl@example.com" });
+  const { deps, logs } = fake({ env: SESSION_ENV, users: { [token]: ownerUser() } });
+  for (const bearer of [token, other, ownerJwt({ exp: NOW_SECONDS - 60 })]) {
+    await handleAdmin(request("/overview", { token: null, bearer }), deps);
+  }
+  assert.deepEqual(logs.map((entry) => entry.outcome).filter((o) => !String(o).startsWith("section_")), [
+    "ok",
+    "forbidden",
+    "session_expired",
+  ]);
+  const logged = JSON.stringify(logs);
+  for (const secret of [token, other, OWNER_EMAIL, "girl@example.com", OWNER_ID, USER_ID, "nextgenlab"]) {
+    assert.ok(!logged.includes(secret), `logged ${secret}`);
+  }
 });
 
 // MARK: - CORS

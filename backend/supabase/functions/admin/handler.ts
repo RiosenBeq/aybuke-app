@@ -6,15 +6,24 @@
 //   GET  /admin/audit       → { entries: [{ at, action, target?, address, outcome }] }   (last 50)
 //   POST /admin/action      { action, target? } → { ok: true, result }
 //
-// Every request carries the public anon key (the gateway's JWT check) and
-// x-admin-token. SHA-256 of the token is compared in constant time with
-// ADMIN_TOKEN_SHA256 (hex); without it every call is a 503 admin_disabled.
-// admin_gate() then counts the request: 60 a minute per address, and 5 wrong
-// or missing tokens within 15 minutes lock the address out for 15 minutes.
+// A request gets in one of two ways:
+//   - the owner's Supabase Auth session: `Authorization: Bearer <access token>`
+//     of a user whose email is in ADMIN_EMAILS (comma-separated, any case),
+//     confirmed, signed in with the email provider's password and not
+//     anonymous. The token's own claims can refuse it (anonymous, another
+//     email, expired); only the auth server's answer (auth.getUser) admits
+//     it. A real session of anyone else is a 403 forbidden.
+//   - x-admin-token, with the public anon key as the bearer: SHA-256 of the
+//     token is compared in constant time with ADMIN_TOKEN_SHA256 (hex).
+// With neither secret set every call is a 503 admin_disabled. admin_gate()
+// then counts the request: 60 a minute per address, and 5 refused requests
+// (a wrong or missing token, an ended session, someone else's session) within
+// 15 minutes lock the address out for 15 minutes.
 // Answers name nobody: users, installs and addresses are short salted tags
 // ('u-', 'i-', 'a-' and 12 hex characters), and a last pass drops anything
 // that still looks like an id, a key, an address or an email. Logs carry the
-// route, the outcome and the time taken, never the token, an id or an address.
+// route, the outcome and the time taken, never a token, an email, an id or an
+// address.
 
 export interface RpcResult {
   data: unknown;
@@ -25,12 +34,28 @@ export interface AdminDeps {
   env: { get(name: string): string | undefined };
   /** A database function, with the service role. */
   rpc(fn: string, args?: Record<string, unknown>): PromiseLike<RpcResult>;
+  /**
+   * The auth server's user for an access token (auth.getUser with the service
+   * role): null when it doesn't accept the token; throws when it can't be asked.
+   */
+  getUser(jwt: string): Promise<SessionUser | null>;
   /** The caller's address bucket (clientIp() in _shared/input.ts). */
   clientIp(req: Request): string | undefined;
   now(): Date;
   /** Route, outcome and timings only. */
   log(entry: Record<string, unknown>): void;
 }
+
+/** The parts of a Supabase Auth user the session check reads. */
+export interface SessionUser {
+  id: string;
+  email?: string | null;
+  email_confirmed_at?: string | null;
+  is_anonymous?: boolean;
+  app_metadata?: { provider?: string; providers?: string[] };
+}
+
+export type SessionVerdict = "none" | "invalid" | "forbidden" | "admin";
 
 export const ACTIONS = ["pause_ai", "resume_ai", "take_down_poll", "restore_poll", "block", "unblock"] as const;
 export type Action = typeof ACTIONS[number];
@@ -42,11 +67,14 @@ const TARGET_TAG = /^[iu]-[0-9a-f]{12}$/;
 const SHORT_HEX = /^[0-9a-f]{12}$/;
 const MAX_TOKEN = 512;
 const MAX_BODY = 1024;
+const MAX_JWT = 8192;
 
 const MESSAGES: Record<string, string> = {
   origin_not_allowed: "This origin can't use the admin API.",
   admin_disabled: "The admin API is off.",
   unauthorized: "Wrong or missing admin token.",
+  session_expired: "Your session has ended. Sign in again.",
+  forbidden: "This account isn't an admin.",
   locked_out: "Too many wrong tokens. Try again later.",
   rate_limited: "Too many requests. Try again in a minute.",
   unavailable: "The admin API can't check requests right now.",
@@ -135,6 +163,65 @@ export async function tokenMatches(token: string | null, expected: Uint8Array): 
     await crypto.subtle.digest("SHA-256", new TextEncoder().encode(given.slice(0, MAX_TOKEN))),
   );
   return constantTimeEqual(digest, expected) && given.length > 0 && given.length <= MAX_TOKEN;
+}
+
+// MARK: - The owner's session
+
+/** ADMIN_EMAILS as a set: comma-separated, trimmed, lowercased, empty entries dropped. */
+export function parseAdminEmails(value: string | undefined): Set<string> {
+  return new Set((value ?? "").split(",").map((email) => email.trim().toLowerCase()).filter((email) => email !== ""));
+}
+
+/** A JWT's payload, not verified, or null when the value isn't a JWT. */
+export function jwtClaims(token: string): Record<string, unknown> | null {
+  const parts = token.split(".");
+  if (parts.length !== 3 || token.length > MAX_JWT || !/^[A-Za-z0-9_-]+$/.test(parts[1])) return null;
+  try {
+    const base64 = parts[1].replace(/-/g, "+").replace(/_/g, "/");
+    const binary = atob(base64 + "=".repeat((4 - base64.length % 4) % 4));
+    return record(JSON.parse(new TextDecoder().decode(Uint8Array.from(binary, (char) => char.charCodeAt(0)))));
+  } catch {
+    return null;
+  }
+}
+
+function normalizedEmail(value: unknown): string {
+  return typeof value === "string" ? value.trim().toLowerCase() : "";
+}
+
+/** The session was opened with a password (amr), not a link, a code or another provider. */
+function openedWithPassword(claims: Record<string, unknown>): boolean {
+  return Array.isArray(claims.amr) && claims.amr.some((entry) => record(entry)?.method === "password");
+}
+
+/** The auth server's user: an admin email, confirmed, an email-provider account, not anonymous. */
+export function isAdminUser(user: SessionUser, admins: Set<string>): boolean {
+  const email = normalizedEmail(user.email);
+  const providers = Array.isArray(user.app_metadata?.providers) ? user.app_metadata.providers : [];
+  return user.is_anonymous !== true && email !== "" && admins.has(email) &&
+    typeof user.email_confirmed_at === "string" && user.email_confirmed_at !== "" &&
+    (user.app_metadata?.provider === "email" || providers.includes("email"));
+}
+
+/**
+ * What the bearer says about the caller: "none" (no session: the anon key, the
+ * service role, nothing), "invalid" (expired, malformed or unknown to the auth
+ * server), "forbidden" (a real session of someone who isn't an admin) or
+ * "admin". Claims alone may refuse; only the auth server admits, and it's asked
+ * only for a token that claims to be an admin's. Throws when it can't answer.
+ */
+export async function checkSession(req: Request, deps: AdminDeps, admins: Set<string>): Promise<SessionVerdict> {
+  const bearer = /^Bearer\s+(\S+)$/i.exec(req.headers.get("Authorization") ?? "")?.[1] ?? "";
+  const claims = bearer ? jwtClaims(bearer) : null;
+  if (!claims || claims.role !== "authenticated") return "none";
+  if (typeof claims.sub !== "string" || claims.sub === "") return "invalid";
+  if (typeof claims.exp !== "number" || claims.exp * 1000 <= deps.now().getTime()) return "invalid";
+  if (claims.is_anonymous === true || !admins.has(normalizedEmail(claims.email)) || !openedWithPassword(claims)) {
+    return "forbidden";
+  }
+  const user = await deps.getUser(bearer);
+  if (!user || user.id !== claims.sub) return "invalid";
+  return isAdminUser(user, admins) ? "admin" : "forbidden";
 }
 
 // MARK: - Answers without PII
@@ -328,20 +415,38 @@ export function routeOf(url: URL): string {
 }
 
 /** Lets the request through the gate, or throws the refusal. */
-async function admit(req: Request, deps: AdminDeps, expected: Uint8Array): Promise<void> {
-  const tokenOk = await tokenMatches(req.headers.get("x-admin-token"), expected);
+async function admit(
+  req: Request,
+  deps: AdminDeps,
+  expected: Uint8Array | undefined,
+  admins: Set<string>,
+): Promise<void> {
+  const tokenOk = expected !== undefined && await tokenMatches(req.headers.get("x-admin-token"), expected);
+  let session: SessionVerdict = "none";
+  if (!tokenOk) {
+    try {
+      session = await checkSession(req, deps, admins);
+    } catch {
+      // The auth server can't say who this is: refuse, and don't count it against the address.
+      throw new AdminError(503, "unavailable", 30);
+    }
+  }
+  const admitted = tokenOk || session === "admin";
   let gate: Record<string, unknown> | null;
   try {
-    gate = record(await call(deps, "admin_gate", { p_ip: deps.clientIp(req) ?? null, p_token_ok: tokenOk }));
+    gate = record(await call(deps, "admin_gate", { p_ip: deps.clientIp(req) ?? null, p_token_ok: admitted }));
   } catch {
-    // Without the gate a wrong token can't be counted: refuse everything.
+    // Without the gate a refusal can't be counted: refuse everything.
     throw new AdminError(503, "unavailable", 30);
   }
-  if (gate?.ok === true && tokenOk) return;
-  const code = typeof gate?.code === "string" && Object.hasOwn(MESSAGES, gate.code) ? gate.code : "unauthorized";
-  const status = code === "locked_out" || code === "rate_limited" ? 429 : 401;
-  const retryAfter = typeof gate?.retry_after === "number" ? gate.retry_after : undefined;
-  throw new AdminError(status, code, status === 429 ? retryAfter ?? 60 : undefined);
+  if (gate?.ok === true && admitted) return;
+  const code = gate?.code;
+  if (code === "locked_out" || code === "rate_limited") {
+    throw new AdminError(429, code, typeof gate?.retry_after === "number" ? gate.retry_after : 60);
+  }
+  if (session === "forbidden") throw new AdminError(403, "forbidden");
+  if (session === "invalid") throw new AdminError(401, "session_expired");
+  throw new AdminError(401, "unauthorized");
 }
 
 export async function handleAdmin(req: Request, deps: AdminDeps): Promise<Response> {
@@ -367,8 +472,9 @@ export async function handleAdmin(req: Request, deps: AdminDeps): Promise<Respon
 
   try {
     const expected = parseDigest(deps.env.get("ADMIN_TOKEN_SHA256"));
-    if (!expected) throw new AdminError(503, "admin_disabled");
-    await admit(req, deps, expected);
+    const admins = parseAdminEmails(deps.env.get("ADMIN_EMAILS"));
+    if (!expected && admins.size === 0) throw new AdminError(503, "admin_disabled");
+    await admit(req, deps, expected, admins);
     const handler = Object.hasOwn(ROUTES, route) ? ROUTES[route] : undefined;
     if (!handler) throw new AdminError(404, "not_found");
     if (req.method !== handler.method) throw new AdminError(405, "method_not_allowed");

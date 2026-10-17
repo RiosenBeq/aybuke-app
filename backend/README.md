@@ -163,7 +163,12 @@ Then add the same `DIGEST_SECRET` as a repository secret on GitHub (Settings ›
 
 ## Admin API
 
-`functions/admin` (migration `20261105100000_admin_api.sql`) feeds the owner's admin page on aybuke.org (website repo `RiosenBeq/aybuke`). JWT verification stays on (`supabase functions deploy admin`, no flag): the page sends the public anon key as `Authorization: Bearer` and `apikey`, and every request carries `x-admin-token`. The function compares SHA-256 of the token with the secret `ADMIN_TOKEN_SHA256` (64 hex characters) in constant time; without it every call gets 503 `admin_disabled`. Then `admin_gate()` counts the request under a salted hash of the address (the last `x-forwarded-for` entry, as everywhere): **60 a minute** (429 `rate_limited`), and **5** wrong or missing tokens within **15 minutes** lock the address out for **15 minutes** (429 `locked_out`, even for the right token; the right token forgives earlier misses). Numbers: `public.admin_policy()`. If the gate can't be asked, everything is refused (503 `unavailable`). CORS answers only `https://aybuke.org`, `https://www.aybuke.org` and `http://localhost:<port>` (any other `Origin` gets 403 `origin_not_allowed`), and every answer carries `Cache-Control: no-store`.
+`functions/admin` (migration `20261105100000_admin_api.sql`) feeds the owner's admin page on aybuke.org (website repo `RiosenBeq/aybuke`). JWT verification stays on (`supabase functions deploy admin`, no flag), and every request carries `apikey` (the public anon key). A request gets in one of two ways:
+
+- **The owner's session** (the page's email + password sign-in, Supabase Auth's password grant): `Authorization: Bearer <access token>` of a user whose email is in the secret `ADMIN_EMAILS` (comma-separated, trimmed, any case), with a confirmed email, an email-provider account, a session opened with the password (the token's `amr`) and not anonymous. The token's own claims can refuse it (anonymous, another email, another sign-in method: 403 `forbidden`; expired: 401 `session_expired`) without asking anyone; only `auth.getUser(token)` with the service role admits it, and it's asked only for a token that claims to be an admin's (a signed-out or unknown session is 401 `session_expired`, a user it doesn't back up, such as an unconfirmed one, 403 `forbidden`; if the auth server can't answer, 503 `unavailable`).
+- **The admin key**: `x-admin-token`, with the anon key as the bearer. The function compares SHA-256 of the token with the secret `ADMIN_TOKEN_SHA256` (64 hex characters) in constant time (401 `unauthorized` otherwise). The right key admits whatever the bearer is, without asking the auth server.
+
+With neither secret set every call gets 503 `admin_disabled`. Then `admin_gate()` counts the request under a salted hash of the address (the last `x-forwarded-for` entry, as everywhere): **60 a minute** (429 `rate_limited`), and **5** refused requests (a wrong or missing key, an ended session, anyone else's real session) within **15 minutes** lock the address out for **15 minutes** (429 `locked_out`, even for the owner; an admitted request forgives earlier misses). Numbers: `public.admin_policy()`. If the gate can't be asked, everything is refused (503 `unavailable`). Logs never carry an email, a token or a user id. CORS answers only `https://aybuke.org`, `https://www.aybuke.org` and `http://localhost:<port>` (any other `Origin` gets 403 `origin_not_allowed`), and every answer carries `Cache-Control: no-store`.
 
 **Contract** (errors are the usual `{ "error": { "code", "message", "retry_after"? } }`, with `Retry-After` on 429):
 
@@ -192,7 +197,23 @@ POST /functions/v1/admin/action  { "action": "…", "target": "…" }   no other
 
 **Tags, not ids.** Installs are `i-` and the first 12 hex characters of their key (already a salted hash; `ops_daily_summary()` shortens them the same way), users `u-` and 12 of `private.keyed_hash('admin_user', id)`, addresses `a-` and 12 of `private.keyed_hash('ip', address)` (the rate limits' key). Block and unblock find the install or user again among strikes, cool-downs, blocks, reports, poll reports and jobs, and act through `ops_block()` / `ops_unblock()` (reason `admin_page`). A last pass in the function drops id-named keys and replaces anything that looks like a UUID, a long hex key, an email or an IP address; logs carry the route, the outcome, the status and the time only. Every action (a not-found one too) is written to `private.admin_audit`: time, action, the target's tag (a poll as `p-` and its first 6 characters), the address's tag and the outcome, kept a year (`sweep_app_store_notifications()`, the daily sweep, deletes older rows, and the gate's counters after a day).
 
-**Setup** (apply the migration first). The token is 48 random bytes made on your Mac; only its SHA-256 goes to Supabase, and the token itself is never committed, printed or pasted into a ticket:
+**Setup** (apply the migration first).
+
+*Email sign-in* (what the page offers first):
+
+1. Supabase dashboard → Authentication → Sign In / Providers → **Email**: enabled, with **Confirm email** on (so nobody can sign up as the admin address without its mailbox). Anonymous sign-ins and Sign in with Apple stay as they are; never turn off "Allow new users to sign up", which the app's anonymous users need.
+2. Authentication → Users → **Add user → Create new user**: `info@nextgenlab.com.tr`, a long password from your password manager, **Auto Confirm User** ticked. The owner does this himself; the password is never pasted anywhere else.
+3. The secret, then a deploy:
+
+```bash
+cd backend
+supabase secrets set ADMIN_EMAILS=info@nextgenlab.com.tr
+supabase functions deploy admin
+```
+
+Another admin is one more address in `ADMIN_EMAILS` (comma-separated) and one more user made the same way; removing an address (or deleting the user) ends that access at the next request. Sessions last as the project's JWT settings say (an hour, refreshed by the page with the refresh token); signing out on the page ends the session.
+
+*Admin key* (a fallback; the page's "Use an admin key instead"). The token is 48 random bytes made on your Mac; only its SHA-256 goes to Supabase, and the token itself is never committed, printed or pasted into a ticket:
 
 ```bash
 cd backend
@@ -202,7 +223,7 @@ printf '%s' "$TOKEN" | pbcopy && unset TOKEN       # paste it into your password
 supabase functions deploy admin
 ```
 
-To rotate, run the same lines again (the old token stops working); `supabase secrets unset ADMIN_TOKEN_SHA256` turns the API off (503).
+To rotate, run the same lines again (the old token stops working); `supabase secrets unset ADMIN_TOKEN_SHA256` turns the key off, and with `ADMIN_EMAILS` unset too the API is off (503).
 
 ## Reports
 
