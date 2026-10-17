@@ -16,6 +16,8 @@ struct AskAybikView: View {
     @State private var asked = ""
     @State private var outcome: HelpOutcome?
     @State private var asking: Task<Void, Never>?
+    /// The wait has lasted long enough to show a placeholder answer.
+    @State private var showsWriting = false
     @FocusState private var isFocused: Bool
 
     /// Long enough for a question, short of the server's 400.
@@ -35,7 +37,9 @@ struct AskAybikView: View {
         List {
             if app.allowsCloudAI {
                 askSection
-                if let outcome {
+                if isAsking {
+                    if showsWriting { writingSection }
+                } else if let outcome {
                     answerSection(outcome)
                 }
             }
@@ -48,6 +52,13 @@ struct AskAybikView: View {
                                            : Text("Common questions", comment: "Settings › Help: the list of common questions about the app"))
         .navigationBarTitleDisplayMode(.inline)
         .animation(reduceMotion ? .easeInOut(duration: 0.2) : Motion.appear, value: outcome)
+        .animation(.easeInOut(duration: 0.2), value: showsWriting)
+        // A placeholder answer only for a wait worth showing: the questions on the device answer at once.
+        .task(id: isAsking) {
+            guard isAsking else { return showsWriting = false }
+            try? await Task.sleep(for: .milliseconds(250))
+            if !Task.isCancelled { showsWriting = true }
+        }
         // Nothing waits for an answer she left.
         .onDisappear(perform: cancel)
         #if DEBUG
@@ -208,6 +219,33 @@ struct AskAybikView: View {
     }
 
     // MARK: The answer
+
+    /// Lines shaped like an answer, glinting while Aybik writes it.
+    private var writingSection: some View {
+        Section {
+            VStack(alignment: .leading, spacing: 10) {
+                Label {
+                    Text(verbatim: "Aybik")
+                        .font(.legibleFootnote.weight(.bold))
+                        .foregroundStyle(Palette.textSecondary)
+                } icon: {
+                    Image(systemName: "sparkles")
+                        .foregroundStyle(Palette.accent)
+                }
+                VStack(alignment: .leading, spacing: 8) {
+                    SkeletonLine()
+                    SkeletonLine()
+                    SkeletonLine(width: 150)
+                }
+                .padding(.vertical, 2)
+                .shimmering()
+            }
+            .padding(.vertical, 6)
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel(Text("Writing…"))
+        }
+        .listRowBackground(Palette.surface)
+    }
 
     @ViewBuilder
     private func answerSection(_ outcome: HelpOutcome) -> some View {

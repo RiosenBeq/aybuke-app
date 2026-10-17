@@ -16,6 +16,8 @@ struct VibeFinderCard: View {
     @State private var asked = ""
     @State private var finding: Task<Void, Never>?
     @State private var outcome: LookFinderOutcome?
+    /// The wait has lasted long enough to show placeholder rows.
+    @State private var showsFinding = false
     /// What the picks are called, read when they came.
     @State private var items: [String: LookFinder.Item] = [:]
     @FocusState private var isFocused: Bool
@@ -55,7 +57,12 @@ struct VibeFinderCard: View {
                 }
             }
             field
-            if let outcome {
+            if isWorking {
+                if showsFinding {
+                    findingPlaceholder
+                        .transition(.opacity)
+                }
+            } else if let outcome {
                 results(outcome)
                     .transition(reduceMotion ? .opacity : .opacity.combined(with: .move(edge: .top)))
             }
@@ -70,6 +77,13 @@ struct VibeFinderCard: View {
         .padding(16)
         .cardStyle()
         .animation(reduceMotion ? .easeInOut(duration: 0.2) : Motion.appear, value: outcome)
+        .animation(.easeInOut(duration: 0.2), value: showsFinding)
+        // Placeholders only for a wait worth showing: a match on the device is instant.
+        .task(id: isWorking) {
+            guard isWorking else { return showsFinding = false }
+            try? await Task.sleep(for: .milliseconds(250))
+            if !Task.isCancelled { showsFinding = true }
+        }
         // Nothing waits for picks she left.
         .onDisappear(perform: cancel)
         #if DEBUG
@@ -161,6 +175,29 @@ struct VibeFinderCard: View {
     }
 
     // MARK: Results
+
+    /// Three rows shaped like the picks, glinting while they're found (the
+    /// button's spinner says so to VoiceOver).
+    private var findingPlaceholder: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            ForEach(0..<3, id: \.self) { index in
+                HStack(spacing: 12) {
+                    RoundedRectangle.control
+                        .fill(Palette.strokeStrong.opacity(0.55))
+                        .frame(width: 44, height: 44)
+                    VStack(alignment: .leading, spacing: 7) {
+                        SkeletonLine(width: 56, height: 8)
+                        SkeletonLine(width: [130, 104, 118][index], height: 11)
+                        SkeletonLine(height: 9)
+                    }
+                }
+                .padding(10)
+                .background(Palette.background, in: .control)
+            }
+        }
+        .shimmering()
+        .accessibilityHidden(true)
+    }
 
     @ViewBuilder
     private func results(_ outcome: LookFinderOutcome) -> some View {

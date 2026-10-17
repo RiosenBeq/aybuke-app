@@ -986,10 +986,13 @@ struct ThumbnailView: View {
     var onMissing: (() -> Void)?
     @Environment(\.scenePhase) private var scenePhase
     @State private var image: UIImage?
+    /// Asked and not yet answered: the tile glints instead of sitting blank.
+    @State private var isLoading = true
 
     var body: some View {
         ZStack {
             Palette.surface
+                .shimmering(isLoading && image == nil)
             if let image {
                 Image(uiImage: image)
                     .resizable()
@@ -1006,7 +1009,9 @@ struct ThumbnailView: View {
     }
 
     private func load() async {
-        switch await ThumbnailCache.shared.load(fileName) {
+        let outcome = await ThumbnailCache.shared.load(fileName)
+        isLoading = false
+        switch outcome {
         case .image(let loaded):
             withAnimation(.easeOut(duration: 0.2)) { image = loaded }
         case .missing:
@@ -1024,6 +1029,8 @@ struct CreationDetailView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
     @State private var image: UIImage?
+    /// The cached thumbnail, shown while the full picture decodes.
+    @State private var preview: UIImage?
     /// The image file is gone; "Remove" takes the row away.
     @State private var isMissing = false
     @State private var confirmDelete = false
@@ -1075,8 +1082,25 @@ struct CreationDetailView: View {
                 }
                 .frame(maxHeight: .infinity)
             } else {
-                ProgressView()
-                    .frame(maxHeight: .infinity)
+                // Her tile's thumbnail at once (My Works just drew it), glinting
+                // until the full picture is decoded; a blank card if it wasn't cached.
+                Group {
+                    if let preview {
+                        Image(uiImage: preview)
+                            .resizable()
+                            .scaledToFit()
+                            .clipShape(.card)
+                    } else {
+                        RoundedRectangle.card
+                            .fill(Palette.surface)
+                            .aspectRatio(4 / 5, contentMode: .fit)
+                    }
+                }
+                .shimmering()
+                .shadow(color: Palette.shadow, radius: 16, y: 8)
+                .padding(.horizontal, Metrics.gutter)
+                .frame(maxHeight: .infinity)
+                .accessibilityHidden(true)
             }
 
             VStack(alignment: .leading, spacing: 4) {
@@ -1141,12 +1165,13 @@ struct CreationDetailView: View {
         }
         .task {
             let name = creation.imageFileName
+            preview = ThumbnailCache.shared.cached(name)
             // Decoded here, off the main thread, rather than when it's first drawn.
             let (loaded, exists) = await Task.detached(priority: .userInitiated) {
                 let loaded = ImageStore.load(name).map { $0.preparingForDisplay() ?? $0 }
                 return (loaded, loaded != nil || ImageStore.exists(name))
             }.value
-            image = loaded
+            withAnimation(.easeOut(duration: 0.2)) { image = loaded }
             isMissing = !exists
         }
         .confirmationDialog("Delete this creation?", isPresented: $confirmDelete, titleVisibility: .visible) {

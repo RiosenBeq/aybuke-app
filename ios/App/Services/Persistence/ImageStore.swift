@@ -187,6 +187,11 @@ final class ThumbnailCache {
         case unreadable
     }
 
+    /// Only what's already in memory: no decoding, so it's fine on the main actor.
+    func cached(_ name: String) -> UIImage? {
+        cache.object(forKey: name as NSString)
+    }
+
     func thumbnail(for name: String, maxPixel: CGFloat = 480) async -> UIImage? {
         if case .image(let image) = await load(name, maxPixel: maxPixel) { return image }
         return nil
