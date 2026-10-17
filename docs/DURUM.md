@@ -1,4 +1,4 @@
-# Aybuke — iş durumu (17 Ekim 2026, 00:30)
+# Aybuke — iş durumu (17 Ekim 2026, 03:30)
 
 Bu oturumun açık işleri. Bir sonraki devamda buradan başlayın; ayrıntı `AGENTS.md` §6'da.
 
@@ -12,7 +12,15 @@ Bu oturumun açık işleri. Bir sonraki devamda buradan başlayın; ayrıntı `A
 - **Mağaza görselleri:** 1.1 iPhone ekran görüntüleri 12 dilde (`docs/marketing/app-store/<dil>/`, commit `91adf3c`).
 - **Web sitesi (RiosenBeq/aybuke):** 1.1 özellikleri "Sonraki güncellemede" etiketleriyle (`src/data/release.json` → `liveVersion`), 19 görünüm örneği, yasal metinler eşit.
 
-## Son durum (17 Ekim 00:30)
+## Son durum (17 Ekim 03:30)
+
+Final 1.1 builds: iOS 20261017.307, Mac 20261017.313 (commit `628976d`, `main` ile aynı, CI yeşil; imza profilleri ACTIVE).
+
+- **Bu derlemelerde ek olarak:** anket küçük resimleri My Works gibi dosya korumalı; "Verilerimi sil" Enhance ipucunu da sıfırlıyor; Image Playground sonucu ve Erase'in tam boy maskesi ana iş parçacığı dışında işleniyor.
+- **Admin paneli:** https://aybuke.org/admin (noindex, no-store, sıkı CSP) → `functions/admin` (JWT açık + `x-admin-token`; sunucuda yalnızca `ADMIN_TOKEN_SHA256`; 5 yanlış denemede 15 dk kilit; işlemler bir yıl denetim kaydında). Anahtar yalnızca sahibin Mac'inde: `~/.config/aybuke/admin-token` (600). Migrasyon `20261105100000_admin_api.sql` canlı.
+- **aybuke.org (site repo `ac34bcd`):** Poppins + Inter (kendi sunucumuzda), uygulamayla aynı köşe ölçüsü, cam kartlar, kaydırma animasyonları, her dilde "kısaca Aybuke" kutusu, yeni 404 ve /maintenance, güvenlik başlıkları (HSTS preload, CSP, DENY), Organization + SoftwareApplication yapılandırılmış veri, llms.txt kısa cevaplar. `release.json`: `onAppStore` (1.0 yayına girince) ve `liveVersion` (1.1 yayına girince).
+
+## Önceki durum (17 Ekim 00:30)
 
 - **1.1 tamam ve TestFlight'ta:** iOS 1.1 (20261016.2312), Mac 1.1 (20261016.2317), profiller ACTIVE. İçinde: Enhance (Quick fix + 4 AI modu), 18+ Soft skin, Aybik'in dört yeni özelliği (look finder, anket soruları, kart yazısı, Aybik'e sor), harf harf açılış animasyonu.
 - **GitHub:** `main` = `63e4bc4` (CI yeşil). Sunucu: migrasyonlar `20261104000000`'e kadar canlı, `assist` güncel. xAI bakiye tahmini 7,83 $.
@@ -23,12 +31,12 @@ Bu oturumun açık işleri. Bir sonraki devamda buradan başlayın; ayrıntı `A
 ## Bekliyor
 
 1. **1.0 onayı** (iOS + Mac `WAITING_FOR_REVIEW`). Bu oturumdaki 2 saatlik takip görevi onay gelince AdMob'u bağlar ve 1.1'i güncelleme olarak gönderir. Oturum kapanırsa yeniden kurun: durum kontrolü → onaylıysa `asc_metadata.py .. --version 1.1 --review-notes`, `asc_screenshots.py .. --version 1.1`, `asc_previews.py .. --version 1.1`, derlemeleri bağla, AFTER_APPROVAL, incelemeye gönder.
-2. **1.0 yayına girince sitede:** "henüz App Store'da değil / e-postayla erken erişim" metnini ve "Uygulamayı indir" düğmelerini App Store bağlantısına çevir.
+2. **1.0 yayına girince sitede:** `src/data/release.json` → `"onAppStore": true`, build, push (App Store düğmeleri ve bağlantıları buna göre değişir).
 3. **1.1 yayına girince:** sitede `src/data/release.json` → `"liveVersion": "1.1"`, build, push; sahip onaylarsa `PROMPT_POLISH` açılır.
 
 ## TestFlight (17 Ekim 01:00)
 
-- Kurulum hatası ("The requested app is not available or doesn't exist") ve 15 Ekim'de iOS derlemelerinin birden "expired" olması Apple tarafındaki bilinen **BETA_CONTRACT_MISSING** hatasından: dış test incelemesine gönderim API'de 422 `ENTITY_UNPROCESSABLE.BETA_CONTRACT_MISSING` dönüyor, oysa tüm sözleşmeler aktif. Apple Developer Destek'e talep açıldı: **Case ID 102999056338** (Distribution › TestFlight). Apple düzeltince: "Aybuke Beta" grubu (herkese açık bağlantı https://testflight.apple.com/join/NRjm1BFq, en çok 200 kişi) için 1.1 (20261016.2312 iOS, .2317 macOS) dış beta incelemesine gönderilir; riosenbeq@icloud.com iki grupta da.
+- Kurulum hatası ("The requested app is not available or doesn't exist") ve 15 Ekim'de iOS derlemelerinin birden "expired" olması Apple tarafındaki bilinen **BETA_CONTRACT_MISSING** hatasından: dış test incelemesine gönderim API'de 422 `ENTITY_UNPROCESSABLE.BETA_CONTRACT_MISSING` dönüyor, oysa tüm sözleşmeler aktif. Apple Developer Destek'e talep açıldı: **Case ID 102999056338** (Distribution › TestFlight). Apple düzeltince: "Aybuke Beta" grubu (herkese açık bağlantı https://testflight.apple.com/join/NRjm1BFq, en çok 200 kişi) için 1.1 (20261017.307 iOS, 20261017.313 macOS) dış beta incelemesine gönderilir; riosenbeq@icloud.com iki grupta da.
 - Beta lisans metni, test bilgileri ve "What to Test" (EN/TR) dolduruldu.
 
 ## Sahibe kalanlar
