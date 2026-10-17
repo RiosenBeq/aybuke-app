@@ -42,10 +42,11 @@ struct RewardedAdCard: View {
                 .padding(14)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .contentShape(Rectangle())
+                .cardStyle()
             }
-            .buttonStyle(.plain)
+            // The whole card squishes a little, like every other card she taps.
+            .buttonStyle(PressableButtonStyle(scale: 0.98))
             .disabled(!isTappable)
-            .cardStyle()
             .accessibilityElement(children: .combine)
             .accessibilityHint(isTappable ? Text("Plays a short video ad. When it ends, you get 1 credit.") : Text(verbatim: ""))
             Text("Optional. Ads come from Google and are never personalized.")

@@ -58,10 +58,11 @@ struct ProTryCard: View {
                 .padding(14)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .contentShape(Rectangle())
+                .cardStyle()
             }
-            .buttonStyle(.plain)
+            // The whole card squishes a little, like every other card she taps.
+            .buttonStyle(PressableButtonStyle(scale: 0.98))
             .disabled(!isTappable)
-            .cardStyle()
             .accessibilityElement(children: .combine)
             .accessibilityHint(hint)
             if showsAdNote {

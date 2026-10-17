@@ -731,7 +731,7 @@ private struct PlanCard: View {
             )
             .shadow(color: Palette.shadow, radius: isSelected ? 14 : 8, y: 5)
         }
-        .buttonStyle(.plain)
+        .buttonStyle(PressableButtonStyle(scale: 0.98))
         .accessibilityAddTraits(isSelected ? .isSelected : [])
     }
 }
@@ -922,7 +922,7 @@ struct CreditPackList: View {
             .padding(14)
             .cardStyle()
         }
-        .buttonStyle(.plain)
+        .buttonStyle(PressableButtonStyle(scale: 0.98))
         .disabled(purchases.isPurchasing || isPending || !purchases.canBuy)
     }
 
