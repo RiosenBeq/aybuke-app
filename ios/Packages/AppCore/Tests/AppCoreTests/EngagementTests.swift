@@ -132,6 +132,41 @@ final class EngagementTests: XCTestCase {
         XCTAssertEqual(try JSONDecoder().decode(EngagementSessions.self, from: JSONEncoder().encode(sessions)), sessions)
     }
 
+    // MARK: Milestones
+
+    func testEachMilestoneSparklesOnlyOnce() {
+        var milestones = Milestones()
+        XCTAssertFalse(milestones.has(.firstSave))
+        XCTAssertTrue(milestones.reach(.firstSave))
+        XCTAssertFalse(milestones.reach(.firstSave), "a second save is just a save")
+        XCTAssertTrue(milestones.has(.firstSave))
+        XCTAssertFalse(milestones.has(.firstPoll), "milestones are independent")
+        XCTAssertTrue(milestones.reach(.firstPoll))
+        XCTAssertFalse(milestones.reach(.firstPoll))
+    }
+
+    func testAnUpdateNeverCelebratesWhatSheAlreadyDid() {
+        let veteran = Milestones(updatingWithExports: 4, hasPolls: true)
+        XCTAssertTrue(veteran.has(.firstSave))
+        XCTAssertTrue(veteran.has(.firstPoll))
+        var saver = Milestones(updatingWithExports: 1, hasPolls: false)
+        XCTAssertFalse(saver.reach(.firstSave))
+        XCTAssertTrue(saver.reach(.firstPoll), "her first poll after the update is still her first")
+        XCTAssertEqual(Milestones(updatingWithExports: 0, hasPolls: false), Milestones())
+    }
+
+    func testMilestonesRoundTripAndSkipUnknownNames() throws {
+        var milestones = Milestones()
+        milestones.reach(.firstPoll)
+        milestones.reach(.firstSave)
+        let data = try JSONEncoder().encode(milestones)
+        XCTAssertEqual(String(decoding: data, as: UTF8.self), #"{"reached":["firstPoll","firstSave"]}"#)
+        XCTAssertEqual(try JSONDecoder().decode(Milestones.self, from: data), milestones)
+        // A later version's milestone doesn't wipe the ones this version knows.
+        let later = Data(#"{"reached":["firstSave","firstCollage"]}"#.utf8)
+        XCTAssertEqual(try JSONDecoder().decode(Milestones.self, from: later), Milestones(reached: [.firstSave]))
+    }
+
     // MARK: Notifications
 
     func testQuietAndSchoolHours() {

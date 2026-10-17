@@ -165,6 +165,56 @@ public struct InviteCardPacing: Codable, Equatable, Sendable {
     }
 }
 
+// MARK: - Milestones
+
+/// Firsts the app marks with a little sparkle: her first creation saved and
+/// her first poll. Each plays once and then never again: no counts, badges,
+/// streaks or reminders come from it. Kept on the device; Delete my data
+/// forgets it like the rest.
+public struct Milestones: Codable, Equatable, Sendable {
+    public enum Kind: String, CaseIterable, Codable, Sendable {
+        case firstSave
+        case firstPoll
+    }
+
+    public private(set) var reached: Set<Kind>
+
+    public init(reached: Set<Kind> = []) {
+        self.reached = reached
+    }
+
+    /// Someone updating from a version without milestones: what she already
+    /// did counts as reached, so no "first" is celebrated late.
+    public init(updatingWithExports exports: Int, hasPolls: Bool) {
+        var reached: Set<Kind> = []
+        if exports > 0 { reached.insert(.firstSave) }
+        if hasPolls { reached.insert(.firstPoll) }
+        self.reached = reached
+    }
+
+    public func has(_ kind: Kind) -> Bool { reached.contains(kind) }
+
+    /// Marks `kind` reached; true only the first time, when it's worth a sparkle.
+    @discardableResult
+    public mutating func reach(_ kind: Kind) -> Bool {
+        reached.insert(kind).inserted
+    }
+
+    private enum CodingKeys: String, CodingKey { case reached }
+
+    // Stored as plain names, sorted, so a name this version doesn't know
+    // (from a later one) is skipped rather than losing every milestone.
+    public init(from decoder: Decoder) throws {
+        let names = try decoder.container(keyedBy: CodingKeys.self).decode([String].self, forKey: .reached)
+        reached = Set(names.compactMap(Kind.init(rawValue:)))
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(reached.map(\.rawValue).sorted(), forKey: .reached)
+    }
+}
+
 // MARK: - Notifications
 
 public enum GlowNotificationKind: String, CaseIterable, Codable, Sendable {
