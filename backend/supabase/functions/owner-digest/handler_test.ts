@@ -73,7 +73,7 @@ Deno.test("the digest covers yesterday (UTC) and leaves out hashed install keys"
   assert.equal(response.status, 200);
   assert.deepEqual(await response.json(), { ok: true, sent: true, day: "2026-10-14" });
   assert.deepEqual(days, ["2026-10-14"]);
-  assert.equal(sent[0].subject, "Aybuke daily · 2026-10-14 · 57 AI jobs · 8 Pro");
+  assert.equal(sent[0].subject, "Daily digest · 14 Oct · 57 AI jobs · 8 Pro");
   for (const value of ["321", "content_blocked", "1.50", "57 / 8,000"]) assert.ok(sent[0].text.includes(value), value);
   assert.ok(!sent[0].html.includes("abcdef123456") && !sent[0].text.includes("abcdef123456"));
 });
@@ -144,7 +144,7 @@ Deno.test("RevenueCat customers waiting are listed with what to do, and the line
       "App User ID: 0B7C1E2A-1111-4C2B-9D3E-0123456789AB",
       "App User ID: 5F00D1E2-2222-4A1B-8C2D-ABCDEF012345",
       "And 1 more: select upper(user_id::text) from public.pending_revenuecat_deletions order by created_at;",
-      "What to do: Delete each customer in RevenueCat › Project Glowlit › Customers",
+      "What to do: Delete each customer in RevenueCat › Project Aybuke › Customers",
       "Then run: select public.ops_mark_revenuecat_deleted(array['0B7C1E2A-1111-4C2B-9D3E-0123456789AB', " +
       "'5F00D1E2-2222-4A1B-8C2D-ABCDEF012345']);",
     ]
@@ -157,7 +157,7 @@ Deno.test("RevenueCat customers waiting are listed with what to do, and the line
 
 Deno.test("nothing waiting is one line; anything but an App User ID is never shown", () => {
   const none = revenueCatSection({ count: 0, oldest: null, app_user_ids: [] });
-  assert.deepEqual(none.rows, [{ label: "Waiting", value: 0 }]);
+  assert.deepEqual(none.rows, [{ label: "Waiting", value: 0, tone: undefined }]);
 
   const odd = revenueCatSection({
     count: 2,
@@ -169,7 +169,7 @@ Deno.test("nothing waiting is one line; anything but an App User ID is never sho
   assert.ok(odd.rows.some((row) => row.label === "And 2 more"));
 
   const unknown = revenueCatSection(undefined);
-  assert.deepEqual(unknown.rows, [{ label: "Waiting", value: undefined }]);
+  assert.deepEqual(unknown.rows, [{ label: "Waiting", value: undefined, tone: undefined }]);
 });
 
 Deno.test("with the key, the digest deletes first, then reports what is left; it never waits long", async () => {

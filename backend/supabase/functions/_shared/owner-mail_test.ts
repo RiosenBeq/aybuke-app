@@ -10,6 +10,9 @@ import {
   DEFAULT_ALERT_FROM,
   DEFAULT_ALERT_TO,
   escapeHtml,
+  FOOTER,
+  formatDay,
+  formatStamp,
   formatWhen,
   renderOwnerMail,
   RESEND_ENDPOINT,
@@ -52,12 +55,45 @@ Deno.test("the mail escapes interpolated values and keeps subjects on one line",
     preheader: "<b>pre</b>",
     eyebrow: "<script>alert(1)</script>",
     headline: "Tom & <Jerry>",
+    summary: "<i>sum</i>",
+    stamp: "<s>now</s>",
     badge: `"quoted"`,
-    stats: [{ label: "<img src=x>", value: "<svg>" }],
-    sections: [{ title: "<h1>", rows: [{ label: "a<b", value: "c>d" }] }],
+    attention: ["<u>look</u>"],
+    stats: [{ label: "<img src=x>", value: "<svg>", note: "<em>n</em>" }],
+    sections: [{
+      title: "<h1>",
+      rows: [{ label: "a<b", value: "c>d" }, { label: "<q>", value: "<code>", kind: "code" }, {
+        label: "<p>",
+        value: "<pre>",
+        kind: "note",
+      }],
+    }],
+    actions: [{ label: "<b>go</b>", url: "https://x.test/?a=1&b=<2>" }],
+    reason: "<small>why</small>",
   });
   assert.equal(mail.subject, "Hi Bcc: someone@example.com");
-  for (const raw of ["<script>", "<img src=x>", "<svg>", "<Jerry>", "<h1>", "a<b", "c>d", "<b>pre</b>"]) {
+  for (
+    const raw of [
+      "<script>",
+      "<img src=x>",
+      "<svg>",
+      "<Jerry>",
+      "<h1>",
+      "a<b",
+      "c>d",
+      "<b>pre</b>",
+      "<i>sum</i>",
+      "<s>now</s>",
+      "<u>look</u>",
+      "<em>n</em>",
+      "<q>",
+      "<code>",
+      "<pre>",
+      "<b>go</b>",
+      "b=<2>",
+      "<small>why</small>",
+    ]
+  ) {
     assert.ok(!mail.html.includes(raw), raw);
   }
   assert.ok(mail.html.includes("&lt;script&gt;alert(1)&lt;/script&gt;"));
@@ -66,7 +102,7 @@ Deno.test("the mail escapes interpolated values and keeps subjects on one line",
   assert.ok(!mail.text.includes("\r"));
 });
 
-Deno.test("the design: 600 px tables, brand colors with a solid fallback, the serif accent and the footer", () => {
+Deno.test("the design: 600 px tables, the blush header with a solid fallback, the live wordmark and the footer", () => {
   const { html, text } = renderOwnerMail(purchaseMail(
     { kind: "pro", productId: "app.glowlit.pro.yearly", environment: "Production", trial: true },
     SUMMARY,
@@ -75,11 +111,23 @@ Deno.test("the design: 600 px tables, brand colors with a solid fallback, the se
   assert.ok(html.includes('width="600"') && html.includes("max-width:600px"));
   assert.ok(html.includes('bgcolor="#F7C1D9"') && html.includes("linear-gradient("));
   assert.ok(html.includes("#F8E0EA") && html.includes("#121212"));
-  assert.match(html, /font-style:italic[^>]*>Aybuke</);
-  assert.ok(
-    html.includes("Owner alert from your Aybuke backend") && text.includes("Owner alert from your Aybuke backend"),
-  );
-  for (const value of ["1,234", "12", "Pro Yearly", "2026-10-15 06:05 UTC", "2026-10-15 09:05 Istanbul"]) {
+  assert.ok(html.includes('<meta name="color-scheme" content="light dark">'));
+  assert.ok(html.includes("@media (prefers-color-scheme:dark)") && html.includes("max-width:480px"));
+  assert.match(html, /font-weight:700;[^>]*>aybuke<\/span>/);
+  assert.ok(text.startsWith("aybuke · New Pro member\n15 Oct, 06:05 UTC\n"));
+  for (const part of [FOOTER, "the first time the backend stores a new Pro subscription"]) {
+    assert.ok(html.includes(part) && text.includes(part), part);
+  }
+  for (
+    const value of [
+      "1,234",
+      "+7 today (UTC)",
+      "9 yearly · 3 monthly",
+      "Pro Yearly, starting with the free trial · Production · 06:05 UTC",
+      "2026-10-15 06:05 UTC",
+      "2026-10-15 09:05 Istanbul",
+    ]
+  ) {
     assert.ok(html.includes(value) && text.includes(value), value);
   }
 });
@@ -102,6 +150,9 @@ Deno.test("a sandbox purchase is labelled a test; plans come from the product id
   );
   assert.equal(planName("app.glowlit.credits.100"), "100 credits");
   assert.deepEqual(formatWhen(AT), { utc: "2026-10-15 06:05 UTC", istanbul: "2026-10-15 09:05 Istanbul" });
+  assert.equal(formatStamp(AT), "15 Oct, 06:05 UTC");
+  assert.deepEqual(formatDay("2026-10-14"), { short: "14 Oct", long: "Wednesday 14 October" });
+  assert.deepEqual(formatDay("not a day"), { short: "not a day", long: "not a day" });
 });
 
 Deno.test("a missing summary shows dashes instead of failing", () => {

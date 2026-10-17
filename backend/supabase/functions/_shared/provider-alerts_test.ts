@@ -90,7 +90,7 @@ Deno.test("a billing refusal pauses AI once and mails the owner once, with how t
     await mail.settled();
     assert.equal(rpcs.filter((name) => name === "pause_ai_for_provider").length, 2);
     assert.equal(mail.mails.length, 1);
-    assert.equal(mail.mails[0].subject, "Aybuke AI paused: xAI balance");
+    assert.equal(mail.mails[0].subject, "AI paused · xAI out of credit");
     const text = String(mail.mails[0].text);
     for (const line of ["console.x.ai", "select public.ops_resume_ai();", "ops_set_provider_balance('xai'"]) {
       assert.ok(text.includes(line), line);
@@ -125,7 +125,7 @@ Deno.test("the low-balance mail goes out once at $2 or less, with the estimate a
   assert.deepEqual(await checkProviderBudget(db, mail.deps), { sent: true });
   assert.equal(await checkProviderBudget(db, mail.deps), undefined, "claimed already");
   assert.equal(mail.mails.length, 1);
-  assert.equal(mail.mails[0].subject, "Aybuke: xAI balance about $1.96 left");
+  assert.equal(mail.mails[0].subject, "xAI balance low · about $1.96 left");
   const text = String(mail.mails[0].text);
   for (
     const line of [
@@ -141,7 +141,7 @@ Deno.test("the low-balance mail goes out once at $2 or less, with the estimate a
   // An estimate below zero still reads as a balance in the subject.
   const overspent = alerts();
   await checkProviderBudget(fakeDb({ budget: budget(-40) }).db, overspent.deps);
-  assert.equal(overspent.mails[0].subject, "Aybuke: xAI balance about $0.00 left");
+  assert.equal(overspent.mails[0].subject, "xAI balance low · about $0.00 left");
 });
 
 Deno.test("above $2, already mailed, unreadable or without a key: nothing is claimed or sent", async () => {

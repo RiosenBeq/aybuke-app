@@ -4,8 +4,10 @@
 // and never delay or fail the request that caused them.
 import type { SupabaseClient } from "npm:@supabase/supabase-js@2.117.3";
 import {
+  formatNumber,
+  formatStamp,
+  formatValue,
   formatWhen,
-  type MailSection,
   ownerAlertsEnabled,
   type OwnerMail,
   renderOwnerMail,
@@ -34,11 +36,6 @@ export type Purchase =
 // The looks of public.ops_members_summary() (20261026000000_ops_members.sql).
 type Json = Record<string, unknown>;
 
-function section(source: unknown, key: string): Json {
-  const value = source && typeof source === "object" ? (source as Json)[key] : undefined;
-  return value && typeof value === "object" ? value as Json : {};
-}
-
 /** A number from the summary, or undefined (shown as a dash) when it isn't one. */
 export function count(source: unknown, ...path: string[]): number | undefined {
   let value: unknown = source;
@@ -58,27 +55,38 @@ export function isSandbox(environment: string): boolean {
   return environment.toLowerCase() !== "production";
 }
 
-/** The four headline numbers. */
-export function summaryStats(summary: unknown): StatCard[] {
-  return [
-    { label: "Members", value: count(summary, "members", "total") },
-    { label: "New today (UTC)", value: count(summary, "members", "new_today") },
-    { label: "Active Pro", value: count(summary, "pro", "active_members") },
-    { label: "Packs sold", value: count(summary, "credit_packs", "packs_sold") },
-  ];
+/** "+7 today": a note from a number, or nothing when the number is missing. */
+function note(value: number | undefined, text: (n: string) => string): string | undefined {
+  return value === undefined ? undefined : text(formatNumber(value));
 }
 
-export function totalsSection(summary: unknown): MailSection {
-  const pro = section(summary, "pro");
-  return {
-    title: "Totals",
-    rows: [
-      { label: "Pro yearly · monthly", value: `${count(pro, "yearly") ?? "–"} · ${count(pro, "monthly") ?? "–"}` },
-      { label: "Credits sold in packs", value: count(summary, "credit_packs", "credits_sold") },
-      { label: "AI jobs (last 7 days)", value: count(summary, "ai_jobs", "last_7_days") },
-      { label: "AI jobs (all time)", value: count(summary, "ai_jobs", "total") },
-    ],
-  };
+/** The four headline numbers of a purchase alert, each with its detail. */
+export function summaryStats(summary: unknown): StatCard[] {
+  const [yearly, monthly] = [count(summary, "pro", "yearly"), count(summary, "pro", "monthly")];
+  return [
+    {
+      label: "Members",
+      value: count(summary, "members", "total"),
+      note: note(count(summary, "members", "new_today"), (n) => `+${n} today (UTC)`),
+    },
+    {
+      label: "Active Pro",
+      value: count(summary, "pro", "active_members"),
+      note: yearly === undefined && monthly === undefined
+        ? undefined
+        : `${formatValue(yearly)} yearly · ${formatValue(monthly)} monthly`,
+    },
+    {
+      label: "Packs sold",
+      value: count(summary, "credit_packs", "packs_sold"),
+      note: note(count(summary, "credit_packs", "credits_sold"), (n) => `${n} credits in all`),
+    },
+    {
+      label: "AI jobs, 7 days",
+      value: count(summary, "ai_jobs", "last_7_days"),
+      note: note(count(summary, "ai_jobs", "total"), (n) => `${n} all time`),
+    },
+  ];
 }
 
 export function purchaseMail(purchase: Purchase, summary: unknown, at: Date): OwnerMail {
@@ -96,14 +104,23 @@ export function purchaseMail(purchase: Purchase, summary: unknown, at: Date): Ow
     { label: "Time in Istanbul", value: when.istanbul },
   ];
   const subject = `${sandbox ? "[TEST] " : ""}${isPro ? "New Pro member" : "Credit pack sold"} · ${plan}`;
+  const trial = isPro && purchase.trial ? ", starting with the free trial" : "";
+  const summaryLine = `${what}${trial} · ${sandbox ? "Sandbox" : "Production"} · ${when.utc.slice(11)}`;
   return {
     subject,
-    preheader: `${what} · ${environment} · ${when.utc}`,
+    preheader: summaryLine,
     eyebrow: isPro ? "New Pro member" : "Credit pack sold",
     headline: isPro ? `Someone just went Pro ${plan}` : `Someone just bought ${plan}`,
+    summary: summaryLine,
+    tone: sandbox ? "info" : "celebrate",
+    stamp: formatStamp(at),
     badge: sandbox ? "Sandbox purchase: a test, no money changed hands" : undefined,
     stats: summaryStats(summary),
-    sections: [{ title: "This purchase", rows }, totalsSection(summary)],
+    sections: [{ title: "This purchase", rows }],
+    reason: isPro
+      ? "You get this the first time the backend stores a new Pro subscription. " +
+        "Renewals, restores and moves to another account send nothing."
+      : "You get this the first time the backend grants a credit pack purchase.",
   };
 }
 
