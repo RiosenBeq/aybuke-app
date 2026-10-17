@@ -51,6 +51,8 @@ Site repo `57bf0b7` (Vercel'de yayında, 144 sayfa 200, axe 0 sorun, IndexNow bi
 
 Ardından site repo `f3e1430`: özellik kartlarında hover'da karanlık modda pembeleşip kaybolan etiket ("AI PHOTO EDITOR" vb.) düzeldi; geniş ekranda açıklamalar kesilmeden tam, kartlarda dönen yuvarlak "aç" düğmesi, "Coming in the next update" yumuşak etiket. Açık temada ferahlık: özellik turu ve özellik sayfalarının okuma bölümü pembeden beyaza geçen bantlar, hero görsellerinin arkasında beyaz ışık, SSS beyaz kartta, çipler, ikincil düğmeler ve fiyat kartları beyaz. Karanlık mod aynı. 144 sayfa 200, axe 0 sorun.
 
+Site repo `a4fb2aa`: sahibin adı yalnızca yasal metinlerde (Kullanım Koşulları, Gizlilik, AUP, KVKK, Künye; veri sorumlusunun kimliği yasal zorunluluk). Altbilgi "© 2026 Aybuke", ana sayfalardaki "Yapan" bilgisi 12 dilde "İstanbul'da bağımsız bir geliştirici", llms.txt ve yapılandırılmış veride yayıncı Aybuke (Organization). Uygulamanın içindeki yasal metinler değişmedi (yeni derleme gerekmez).
+
 ## Sahibe kalanlar
 
 - xAI anahtarını yenilemek (sohbete yazıldı); yenisi sunucuya `read -s` ile girilir.
