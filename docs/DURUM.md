@@ -1,4 +1,4 @@
-# Aybuke — iş durumu (17 Ekim 2026, 03:30)
+# Aybuke — iş durumu (17 Ekim 2026, 08:45)
 
 Bu oturumun açık işleri. Bir sonraki devamda buradan başlayın; ayrıntı `AGENTS.md` §6'da.
 
@@ -14,7 +14,9 @@ Bu oturumun açık işleri. Bir sonraki devamda buradan başlayın; ayrıntı `A
 
 ## Son durum (17 Ekim 03:30)
 
-Final 1.1 builds: iOS 20261017.307, Mac 20261017.313 (commit `628976d`, `main` ile aynı, CI yeşil; imza profilleri ACTIVE).
+Final 1.1 builds: iOS 20261017.815, Mac 20261017.821 (commit `3e1a2a5`, `main` ile aynı, CI yeşil; imza profilleri ACTIVE).
+
+- **Sonra eklenenler (17 Ekim sabah):** ilk kayıt ve ilk ankette tek seferlik ışıltı (`Milestones`), yükleme parıltıları, 44 pt dokunma alanları, satın alma kartlarında basma efekti; admin paneli Filament tarzı ve `info@nextgenlab.com.tr` e-posta/şifre girişiyle (Supabase Auth, `ADMIN_EMAILS`; anahtar girişi yedek); sahibe giden mailler açık/koyu temaya uygun yeni tasarımda; site kartları yeni tasarım ve 15 yeni görsel (xAI bakiye tahmini 6,58 $).
 
 - **Bu derlemelerde ek olarak:** anket küçük resimleri My Works gibi dosya korumalı; "Verilerimi sil" Enhance ipucunu da sıfırlıyor; Image Playground sonucu ve Erase'in tam boy maskesi ana iş parçacığı dışında işleniyor.
 - **Admin paneli:** https://aybuke.org/admin (noindex, no-store, sıkı CSP) → `functions/admin` (JWT açık + `x-admin-token`; sunucuda yalnızca `ADMIN_TOKEN_SHA256`; 5 yanlış denemede 15 dk kilit; işlemler bir yıl denetim kaydında). Anahtar yalnızca sahibin Mac'inde: `~/.config/aybuke/admin-token` (600). Migrasyon `20261105100000_admin_api.sql` canlı.
@@ -36,7 +38,7 @@ Final 1.1 builds: iOS 20261017.307, Mac 20261017.313 (commit `628976d`, `main` i
 
 ## TestFlight (17 Ekim 01:00)
 
-- Kurulum hatası ("The requested app is not available or doesn't exist") ve 15 Ekim'de iOS derlemelerinin birden "expired" olması Apple tarafındaki bilinen **BETA_CONTRACT_MISSING** hatasından: dış test incelemesine gönderim API'de 422 `ENTITY_UNPROCESSABLE.BETA_CONTRACT_MISSING` dönüyor, oysa tüm sözleşmeler aktif. Apple Developer Destek'e talep açıldı: **Case ID 102999056338** (Distribution › TestFlight). Apple düzeltince: "Aybuke Beta" grubu (herkese açık bağlantı https://testflight.apple.com/join/NRjm1BFq, en çok 200 kişi) için 1.1 (20261017.307 iOS, 20261017.313 macOS) dış beta incelemesine gönderilir; riosenbeq@icloud.com iki grupta da.
+- Kurulum hatası ("The requested app is not available or doesn't exist") ve 15 Ekim'de iOS derlemelerinin birden "expired" olması Apple tarafındaki bilinen **BETA_CONTRACT_MISSING** hatasından: dış test incelemesine gönderim API'de 422 `ENTITY_UNPROCESSABLE.BETA_CONTRACT_MISSING` dönüyor, oysa tüm sözleşmeler aktif. Apple Developer Destek'e talep açıldı: **Case ID 102999056338** (Distribution › TestFlight). Apple düzeltince: "Aybuke Beta" grubu (herkese açık bağlantı https://testflight.apple.com/join/NRjm1BFq, en çok 200 kişi) için 1.1 (20261017.815 iOS, 20261017.821 macOS) dış beta incelemesine gönderilir; riosenbeq@icloud.com iki grupta da.
 - Beta lisans metni, test bilgileri ve "What to Test" (EN/TR) dolduruldu.
 
 ## Sahibe kalanlar
