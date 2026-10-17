@@ -45,6 +45,10 @@ Final 1.1 builds: iOS 20261017.815, Mac 20261017.821 (commit `3e1a2a5`, `main` i
 
 Claude uygulamasında kalıcı zamanlanmış görev **"Aybuke yayın ve TestFlight takibi"** (`aybuke-release-watch`, 3 saatte bir; kenar çubuğu › Scheduled). 1.0 onaylanınca 1.1'i (en yeni son derlemeler, şimdi iOS 20261017.815 / Mac 20261017.821) metin, görsel ve videolarıyla güncelleme olarak gönderir, AdMob'u bağlar, sitedeki indirme düğmelerini açar; 1.1 yayına girince sitede `liveVersion` "1.1" yapar; TestFlight beta incelemesini her seferinde yeniden dener. Oturumdaki eski cron işleri silindi (çift gönderim olmasın). Uygulama kapalıyken zamanı gelen çalışma, uygulama açılınca yapılır.
 
+## aybuke.org görselleri (17 Ekim 16:45)
+
+Site repo `57bf0b7` (Vercel'de yayında, 144 sayfa 200, axe 0 sorun, IndexNow bildirildi): menüdeki "01 Magic Edit" kartı boş degrade yerine Pink Hair örneğini koyu bir perdeyle gösteriyor (karanlık modda okunmayan beyaz alt yazı düzeldi); Which vibe?, Retro effects ve Video editor sayfalarının üstünde çizim yerine uygulamanın gerçek ekranları, saç rengi sayfasında Pink Hair önce/sonra kaydırıcısı, görselsiz son kart (Adjust vibes) Adjust ekranıyla. Yeni görsel üretilmedi (xAI harcaması yok); hepsi mevcut gerçek ekranlar ve örnek fotoğraflar.
+
 ## Sahibe kalanlar
 
 - Çöp Sepeti'ni boşaltmak (Cursor ve VN verileri, ~14 GB).
