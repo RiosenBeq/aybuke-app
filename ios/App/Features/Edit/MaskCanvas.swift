@@ -62,6 +62,20 @@ struct EraseRegion: Equatable {
 }
 
 enum MaskRenderer {
+    /// What a full-size mask is drawn from, taken when she taps Try and
+    /// drawn later off the main actor (`render(_:)`).
+    struct Drawing {
+        let strokes: [MaskStroke]
+        let regions: [EraseRegion]
+        let size: CGSize
+    }
+
+    /// Call it off the main actor: picked regions are scaled up to the
+    /// photo's full size.
+    static func render(_ drawing: Drawing) -> UIImage {
+        render(drawing.strokes, regions: drawing.regions, size: drawing.size)
+    }
+
     /// White strokes and picked regions on black, at the image's pixel size
     /// (the format inpainting models expect).
     static func render(_ strokes: [MaskStroke], regions: [EraseRegion] = [], size: CGSize) -> UIImage {

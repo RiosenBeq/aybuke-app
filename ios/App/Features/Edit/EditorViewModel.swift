@@ -451,6 +451,8 @@ final class EditorViewModel {
         var job = AIJob(operation: operation, sourceImage: current)
         // The history step a new makeup look replaces, if any.
         var replacedStep: Int?
+        // Erase's mask, drawn full size off the main actor once she's through the gates.
+        var eraseMask: MaskRenderer.Drawing?
 
         switch tool {
         case .magicEdit:
@@ -500,26 +502,35 @@ final class EditorViewModel {
                 return
             }
             let size = ImageUtilities.pixelSize(of: current)
-            job.mask = MaskRenderer.render(strokes, regions: eraseRegions, size: CGSize(width: size.width, height: size.height))
+            eraseMask = MaskRenderer.Drawing(strokes: strokes, regions: eraseRegions,
+                                             size: CGSize(width: size.width, height: size.height))
         case .removeBackground, .adjust, .effects, .textStickers, .crop, .hideFaces:
             break
         }
 
         app.requestAccess(for: operation, requiresPro: template?.isPro ?? false,
                           proSource: template.map { "template_\($0.id)" } ?? "pro_content") { [weak self] in
-            self?.execute(job, app: app, replacing: replacedStep)
+            self?.execute(job, app: app, replacing: replacedStep, eraseMask: eraseMask)
         }
     }
 
     /// `replacing`: the history step (a makeup look) this result takes the
-    /// place of, when it's still the one on the canvas.
-    private func execute(_ job: AIJob, app: AppModel, replacing replacedStep: Int? = nil) {
+    /// place of, when it's still the one on the canvas. `eraseMask`: Erase's
+    /// strokes and picks as she left them at Try, drawn into the job's mask
+    /// here, off the main actor.
+    private func execute(_ job: AIJob, app: AppModel, replacing replacedStep: Int? = nil,
+                         eraseMask: MaskRenderer.Drawing? = nil) {
         processingTitle = Self.progressTitle(for: job)
         isProcessingInCloud = !job.operation.runsOnDevice
         isProcessing = true
         jobTask = Task {
             defer { isProcessing = false }
+            var job = job
             do {
+                if let eraseMask {
+                    job.mask = await Task.detached(priority: .userInitiated) { MaskRenderer.render(eraseMask) }.value
+                    try Task.checkCancellation()
+                }
                 let result = try await app.run(job, saveToLibrary: false)
                 guard let image = result.images.first else { return }
                 var edited = ImageUtilities.normalized(image)
