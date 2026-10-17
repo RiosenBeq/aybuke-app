@@ -607,6 +607,10 @@ struct CollageView: View {
                 }
                 .buttonStyle(.plain)
                 .accessibilityAddTraits(isActive ? .isSelected : [])
+                // The small labels don't grow with the text size: a long press shows them large.
+                .accessibilityShowsLargeContentViewer {
+                    Label(option.title, systemImage: option.symbolName)
+                }
             }
         }
         .padding(5)

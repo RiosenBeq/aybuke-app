@@ -65,10 +65,13 @@ struct EditorIdeasRow: View {
                     Image(systemName: "xmark")
                         .font(.legibleCaption2.weight(.bold))
                         .foregroundStyle(Palette.textSecondary)
-                        .frame(width: 32, height: 22)
+                        // A 44 pt target that keeps the header's 32 × 22 footprint.
+                        .frame(width: 44, height: 44)
                         .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
+                .padding(.horizontal, -6)
+                .padding(.vertical, -11)
                 .accessibilityLabel("Hide ideas")
                 .macHelp("Hide ideas")
             }

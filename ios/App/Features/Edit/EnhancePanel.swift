@@ -157,10 +157,12 @@ struct EnhanceHintCard: View {
                 Image(systemName: "xmark")
                     .font(.legibleCaption.weight(.bold))
                     .foregroundStyle(Palette.textSecondary)
-                    .frame(width: 32, height: 32)
+                    // A 44 pt target in the card's 32 pt corner.
+                    .frame(width: 44, height: 44)
                     .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
+            .padding(-6)
             .accessibilityLabel("Close")
         }
         .padding(14)
