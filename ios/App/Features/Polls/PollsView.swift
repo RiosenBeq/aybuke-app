@@ -129,6 +129,15 @@ struct PollsView: View {
                 .foregroundStyle(Palette.ink)
                 .frame(width: 72, height: 72)
                 .background(Palette.blush, in: Circle())
+                // The same art as My Works' empty states: a twinkle, a gentle float.
+                .overlay(alignment: .topTrailing) {
+                    Image(systemName: "sparkle")
+                        .font(.system(size: 17, weight: .bold))
+                        .foregroundStyle(Palette.white)
+                        .twinkle()
+                        .offset(x: 3, y: -3)
+                }
+                .floating(distance: 4)
                 .accessibilityHidden(true)
             Text("No polls right now")
                 .font(.sectionTitle)
