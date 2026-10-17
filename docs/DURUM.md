@@ -41,6 +41,10 @@ Final 1.1 builds: iOS 20261017.815, Mac 20261017.821 (commit `3e1a2a5`, `main` i
 - Kurulum hatası ("The requested app is not available or doesn't exist") ve 15 Ekim'de iOS derlemelerinin birden "expired" olması Apple tarafındaki bilinen **BETA_CONTRACT_MISSING** hatasından: dış test incelemesine gönderim API'de 422 `ENTITY_UNPROCESSABLE.BETA_CONTRACT_MISSING` dönüyor, oysa tüm sözleşmeler aktif. Apple Developer Destek'e talep açıldı: **Case ID 102999056338** (Distribution › TestFlight). Apple düzeltince: "Aybuke Beta" grubu (herkese açık bağlantı https://testflight.apple.com/join/NRjm1BFq, en çok 200 kişi) için 1.1 (20261017.815 iOS, 20261017.821 macOS) dış beta incelemesine gönderilir; riosenbeq@icloud.com iki grupta da.
 - Beta lisans metni, test bilgileri ve "What to Test" (EN/TR) dolduruldu.
 
+## Otomatik takip (17 Ekim)
+
+Claude uygulamasında kalıcı zamanlanmış görev **"Aybuke yayın ve TestFlight takibi"** (`aybuke-release-watch`, 3 saatte bir; kenar çubuğu › Scheduled). 1.0 onaylanınca 1.1'i (en yeni son derlemeler, şimdi iOS 20261017.815 / Mac 20261017.821) metin, görsel ve videolarıyla güncelleme olarak gönderir, AdMob'u bağlar, sitedeki indirme düğmelerini açar; 1.1 yayına girince sitede `liveVersion` "1.1" yapar; TestFlight beta incelemesini her seferinde yeniden dener. Oturumdaki eski cron işleri silindi (çift gönderim olmasın). Uygulama kapalıyken zamanı gelen çalışma, uygulama açılınca yapılır.
+
 ## Sahibe kalanlar
 
 - Çöp Sepeti'ni boşaltmak (Cursor ve VN verileri, ~14 GB).
