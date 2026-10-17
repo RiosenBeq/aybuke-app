@@ -274,8 +274,7 @@ struct ResultsView: View {
         Task {
             do {
                 try await PhotoLibrarySaver.save(current, sourceType: provenance.sourceType, watermark: provenance.showsMark(isPro: app.purchases.isPro))
-                app.showToast("Saved to Photos", style: .success)
-                Haptics.success()
+                app.confirmSaved()
                 app.noteFinishedExport()
             } catch {
                 app.handleSaveError(error, shareInstead: sharePayload(for: current))
@@ -296,8 +295,7 @@ struct ResultsView: View {
                 for image in images {
                     try await PhotoLibrarySaver.save(image, sourceType: provenance.sourceType, watermark: watermark)
                 }
-                app.showToast("Saved to Photos", style: .success)
-                Haptics.success()
+                app.confirmSaved()
                 app.noteFinishedExport()
             } catch {
                 app.handleSaveError(error, shareInstead: current.map(sharePayload(for:)))

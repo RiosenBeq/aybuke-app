@@ -248,6 +248,8 @@ final class AppModel {
     @ObservationIgnored private var invitePacing: InviteCardPacing
     /// Her visits (no rating request or invite card in the first).
     @ObservationIgnored private var sessions: EngagementSessions
+    /// Firsts that get one little sparkle: her first saved creation, her first poll.
+    @ObservationIgnored private var milestones = Milestones()
     /// Goes up when it's the moment to ask for a rating: the root view asks StoreKit.
     private(set) var reviewRequests = 0
     /// The invite card is on screen, above the tab bar (`InvitePromptCard`).
@@ -286,6 +288,7 @@ final class AppModel {
         static let reviewPolicy = "review.policy.v1"
         static let invitePacing = "invite.card.v1"
         static let sessions = "engagement.sessions.v1"
+        static let milestones = "engagement.milestones.v1"
         static let appleUserID = "auth.appleUserID"
         static let appearance = "appearance"
         /// A delete request was sent; a later rejected session means it worked.
@@ -294,7 +297,7 @@ final class AppModel {
         /// so the list is complete in one place).
         static let wiped = [
             onboarding, onboardingPaywallPending, consent, ageRecord, interests, successfulSaves, reviewPolicy, invitePacing, sessions,
-            appearance, deletionRequested,
+            milestones, appearance, deletionRequested,
             "credits.wallet.v2", "notifications.preferences.v1", "notifications.readyPingDeclined", "tour.seen.v1",
             PromptHistory.recentKey, PromptHistory.draftKey, MyFiltersStore.key, AdCoordinator.pacingKey, AdCoordinator.usedKey,
             PurchaseManager.purchasedKey, AutoEditQuota.key, PollsModel.storageKey, PollsModel.explainerKey, EnhanceHint.key,
@@ -398,6 +401,9 @@ final class AppModel {
         #endif
         self.ads = AdCoordinator(config: config.ads, backend: adRewards)
         ads.app = self
+        // Someone updating from 1.0 who already saved or polled gets no late "first".
+        milestones = defaults.data(forKey: Keys.milestones).flatMap { try? JSONDecoder().decode(Milestones.self, from: $0) }
+            ?? Milestones(updatingWithExports: reviewPolicy.happyMoments, hasPolls: polls.hasPolls)
         if let sessionChanges {
             Task { [weak self] in
                 for await present in sessionChanges { self?.hasSession = present }
@@ -769,6 +775,7 @@ final class AppModel {
         reviewPolicy = ReviewPromptPolicy(firstSeen: Date())
         invitePacing = InviteCardPacing()
         sessions = EngagementSessions(count: 1)
+        milestones = Milestones()
         isInviteCardVisible = false
         lastExport = nil
         lastInterruption = nil
@@ -1744,6 +1751,27 @@ final class AppModel {
     /// For text that's already localized (or comes from the server).
     func showToast(verbatim text: String, style: ToastMessage.Style = .info) {
         toast = ToastMessage(text: text, style: style)
+    }
+
+    /// A finished save to Photos: the success haptic and toast every save
+    /// shares. The very first one reads a little warmer and sparkles once.
+    func confirmSaved(_ text: LocalizedStringResource = "Saved to Photos") {
+        Haptics.success()
+        guard reachMilestone(.firstSave) else { return showToast(text, style: .success) }
+        toast = ToastMessage(
+            text: String(localized: "Your first creation is in Photos ✨",
+                         comment: "Toast after her very first save to the Photos app (shown once instead of “Saved to Photos”), with a little sparkle"),
+            style: .success,
+            celebrates: true
+        )
+    }
+
+    /// Marks a first (`Milestones`); true only the first time, when it's
+    /// worth a little sparkle.
+    func reachMilestone(_ kind: Milestones.Kind) -> Bool {
+        guard milestones.reach(kind) else { return false }
+        if let data = try? JSONEncoder().encode(milestones) { defaults.set(data, forKey: Keys.milestones) }
+        return true
     }
 
     /// Maps any error to a friendly toast, opening the paywall when relevant.

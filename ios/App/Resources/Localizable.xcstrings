@@ -30493,6 +30493,77 @@
         }
       }
     },
+    "Your first creation is in Photos ✨" : {
+      "comment" : "Toast after her very first save to the Photos app (shown once instead of “Saved to Photos”), with a little sparkle",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deine erste Kreation ist jetzt in Fotos ✨"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tu primera creación ya está en Fotos ✨"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ta première création est dans Photos ✨"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kreasi pertamamu sudah ada di Foto ✨"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La tua prima creazione è in Foto ✨"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "はじめての作品を写真に保存しました ✨"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "첫 작품을 사진 앱에 저장했어요 ✨"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sua primeira criação já está em Fotos ✨"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Твоя первая работа уже в Фото ✨"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "İlk eserin Fotoğraflar'da ✨"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你的第一件作品已保存到相册 ✨"
+          }
+        }
+      }
+    },
     "Your free trial includes %lld credits." : {
       "comment" : "Settings › Credits and the credits sheet, during the free trial; Pro's monthly credits follow.",
       "localizations" : {

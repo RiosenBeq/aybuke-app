@@ -943,8 +943,7 @@ struct EditorView: View {
                                                  watermark: provenance.showsMark(isPro: app.purchases.isPro))
                 await app.saveToLibrary([model.current], operation: model.appliedOperation, title: model.libraryTitle, prompt: nil,
                                         inheritedSourceType: provenance.storedSourceType)
-                app.showToast("Saved to Photos", style: .success)
-                Haptics.success()
+                app.confirmSaved()
                 // An ad, a rating request or the invite card may follow once
                 // the editor closes, never inside it.
                 app.noteFinishedExport()
@@ -990,8 +989,7 @@ struct EditorView: View {
             guard let sticker = await model.cutoutSticker(isPro: app.purchases.isPro) else { return }
             do {
                 try await PhotoLibrarySaver.save(data: sticker.data)
-                Haptics.success()
-                app.showToast("Saved to Photos", style: .success)
+                app.confirmSaved()
             } catch {
                 app.handle(error)
             }

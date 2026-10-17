@@ -636,11 +636,10 @@ struct CollageView: View {
             do {
                 let saved = try await model.save(app: app)
                 guard saved > 0 else { return }
-                Haptics.success()
                 if saved > 1 {
-                    app.showToast("Saved \(saved) slides to Photos", style: .success)
+                    app.confirmSaved("Saved \(saved) slides to Photos")
                 } else {
-                    app.showToast("Saved to Photos", style: .success)
+                    app.confirmSaved()
                 }
                 // An ad, a rating request or the invite card may follow once
                 // the collage maker closes.

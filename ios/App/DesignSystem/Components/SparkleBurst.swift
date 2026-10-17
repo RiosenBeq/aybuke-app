@@ -1,10 +1,13 @@
 import SwiftUI
 
 /// A short burst of hearts and sparkles that celebrates a finished creation.
-/// Plays once each time `trigger` changes; skipped with Reduce Motion.
+/// Plays once each time `trigger` changes, or once as it appears with
+/// `playsOnAppear` (a first save's toast, a first poll); skipped with Reduce
+/// Motion.
 struct SparkleBurst: View {
-    let trigger: Int
+    var trigger = 0
     var colors: [Color] = [Palette.blush, Palette.white, Palette.ink, Palette.blush]
+    var playsOnAppear = false
 
     @State private var particles: [Particle] = []
     @State private var progress: CGFloat = 0
@@ -39,6 +42,7 @@ struct SparkleBurst: View {
         .allowsHitTesting(false)
         .accessibilityHidden(true)
         .onChange(of: trigger) { _, _ in fire() }
+        .onAppear { if playsOnAppear { fire() } }
     }
 
     private func fire() {

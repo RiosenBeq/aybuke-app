@@ -696,8 +696,7 @@ struct LibraryView: View {
                 }
             }
             guard saved > 0 else { return couldNotOpen() }
-            app.showToast("Saved to Photos", style: .success)
-            Haptics.success()
+            app.confirmSaved()
         }
     }
 
@@ -1165,8 +1164,7 @@ struct CreationDetailView: View {
                 // Apple made Image Playground pictures, so they don't carry Aybuke's mark.
                 let provenance = creation.provenance
                 try await PhotoLibrarySaver.save(image, sourceType: provenance.sourceType, watermark: provenance.showsMark(isPro: app.purchases.isPro))
-                app.showToast("Saved to Photos", style: .success)
-                Haptics.success()
+                app.confirmSaved()
             } catch {
                 let provenance = creation.provenance
                 app.handleSaveError(error, shareInstead: SharePayload(image: image, operation: provenance.operation, prompt: creation.prompt,

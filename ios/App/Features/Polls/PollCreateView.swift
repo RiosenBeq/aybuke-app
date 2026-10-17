@@ -23,6 +23,8 @@ struct PollCreateView: View {
     @State private var shareItems: ActivityItems?
     @State private var hasGroup = false
     @State private var copied = false
+    /// Her very first poll: the ready step's sparkles burst once.
+    @State private var isFirstPoll = false
     /// "Ideas from Aybik": its questions, and whether it's writing or couldn't.
     @State private var aybikIdeas: [String] = []
     /// The request for ideas, and the question it was asked with: changing
@@ -344,6 +346,12 @@ struct PollCreateView: View {
                     .foregroundStyle(Palette.ink)
                     .frame(width: 68, height: 68)
                     .background(Palette.blush, in: Circle())
+                    .overlay {
+                        if isFirstPoll {
+                            SparkleBurst(colors: [Palette.auraPink, Palette.auraLilac, Palette.auraButter, Palette.white],
+                                         playsOnAppear: true)
+                        }
+                    }
                     .accessibilityHidden(true)
                 Text(styled: "Your poll is *ready*", size: 25)
                     .foregroundStyle(Palette.textPrimary)
@@ -438,6 +446,7 @@ struct PollCreateView: View {
                 let record = try await app.polls.create(draft, question: checked, isPro: app.purchases.isPro)
                 Haptics.success()
                 app.notePollMade(record)
+                isFirstPoll = app.reachMilestone(.firstPoll)
                 step = .ready(record)
             } catch {
                 step = .compose

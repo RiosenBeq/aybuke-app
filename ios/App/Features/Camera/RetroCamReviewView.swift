@@ -287,8 +287,7 @@ struct RetroCamReviewView: View {
                 try await PhotoLibrarySaver.save(image, sourceType: nil)
                 await app.saveToLibrary([image], operation: nil, title: libraryTitle, prompt: nil)
                 isSaved = true
-                app.showToast("Saved to Photos", style: .success)
-                Haptics.success()
+                app.confirmSaved()
                 // No ad after Retro Cam; a rating request or the invite card
                 // may follow once the camera closes.
                 app.noteFinishedExport(allowsAd: false)

@@ -727,8 +727,7 @@ struct ShareComposerView: View {
         defer { isWorking = false }
         do {
             try await PhotoLibrarySaver.save(rendered, sourceType: payload.provenance.sourceType, watermark: false)
-            Haptics.success()
-            app.showToast("Saved to Photos", style: .success)
+            app.confirmSaved()
             // An ad, a rating request or the invite card may follow once the
             // composer closes.
             app.noteFinishedExport()

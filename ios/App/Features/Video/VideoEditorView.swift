@@ -683,12 +683,12 @@ struct VideoEditorView: View {
             let url = try await model.run(action, isRestart: isRestart)
             switch action {
             case .save:
-                Haptics.success()
                 // An Auto edit's export sheet says it's saved, with the words to post it with.
                 if model.autoEdit.edit != nil, let url {
+                    Haptics.success()
                     showPost(saved: true, file: url)
                 } else {
-                    app.showToast("Video saved to Photos ✨", style: .success)
+                    app.confirmSaved("Video saved to Photos ✨")
                 }
             case .share:
                 guard let url else { return }

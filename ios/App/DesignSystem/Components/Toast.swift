@@ -9,8 +9,12 @@ struct ToastMessage: Identifiable, Equatable {
     let id = UUID()
     let text: String
     var style: Style = .info
+    /// A one-time first (her first saved creation): sparkles burst from the
+    /// icon as it arrives (`AppModel.confirmSaved`).
+    var celebrates = false
 
     fileprivate var symbolName: String {
+        if celebrates { return "sparkles" }
         switch style {
         case .info: return "info.circle.fill"
         case .success: return "checkmark.circle.fill"
@@ -44,7 +48,14 @@ private struct ToastModifier: ViewModifier {
             .overlay(alignment: .top) {
                 if let message {
                     HStack(spacing: 10) {
-                        Image(systemName: message.symbolName).foregroundStyle(message.tint)
+                        Image(systemName: message.symbolName)
+                            .foregroundStyle(message.tint)
+                            .overlay {
+                                if message.celebrates {
+                                    SparkleBurst(colors: [Palette.auraPink, Palette.auraLilac, Palette.auraButter, Palette.auraMint],
+                                                 playsOnAppear: true)
+                                }
+                            }
                         Text(message.text)
                             .font(.subheadline.weight(.semibold))
                             .foregroundStyle(Palette.textPrimary)
