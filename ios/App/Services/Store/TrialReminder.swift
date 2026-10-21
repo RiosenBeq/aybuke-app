@@ -41,10 +41,15 @@ enum TrialReminder {
         let cancelBy = trialEnd.addingTimeInterval(-86_400).formatted(style)
         let content = UNMutableNotificationContent()
         content.title = String(localized: "Your free trial ends \(ends)")
+        // On the Mac, subscriptions are managed in the App Store app, not Settings.
         if let price {
-            content.body = String(localized: "To avoid the \(price) charge, cancel before \(cancelBy) in Settings › Apple Account › Subscriptions.")
+            content.body = Platform.isMac
+                ? String(localized: "To avoid the \(price) charge, cancel before \(cancelBy) in the App Store app › your name › Account Settings › Subscriptions.")
+                : String(localized: "To avoid the \(price) charge, cancel before \(cancelBy) in Settings › Apple Account › Subscriptions.")
         } else {
-            content.body = String(localized: "To avoid being charged, cancel before \(cancelBy) in Settings › Apple Account › Subscriptions.")
+            content.body = Platform.isMac
+                ? String(localized: "To avoid being charged, cancel before \(cancelBy) in the App Store app › your name › Account Settings › Subscriptions.")
+                : String(localized: "To avoid being charged, cancel before \(cancelBy) in Settings › Apple Account › Subscriptions.")
         }
         content.sound = .default
 

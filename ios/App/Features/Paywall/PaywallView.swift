@@ -389,7 +389,10 @@ struct PaywallView: View {
             .font(.legibleFootnote.weight(.semibold))
             .foregroundStyle(Palette.textSecondary)
 
-            Text("Payment is charged to your Apple Account. Subscriptions renew automatically at the price shown unless cancelled at least 24 hours before the end of the current period. Manage or cancel anytime in Settings › Apple Account › Subscriptions.")
+            // The Mac has no Settings › Apple Account: subscriptions live in the App Store app.
+            Text(Platform.isMac
+                 ? "Payment is charged to your Apple Account. Subscriptions renew automatically at the price shown unless cancelled at least 24 hours before the end of the current period. Manage or cancel anytime in the App Store app › your name › Account Settings › Subscriptions."
+                 : "Payment is charged to your Apple Account. Subscriptions renew automatically at the price shown unless cancelled at least 24 hours before the end of the current period. Manage or cancel anytime in Settings › Apple Account › Subscriptions.")
                 .font(.legibleCaption2)
                 .foregroundStyle(Palette.textSecondary)
                 .multilineTextAlignment(.center)
