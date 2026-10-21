@@ -17,13 +17,16 @@ by default each platform's editable version (`asc.resolve_versions`), and
 - `asc_metadata.py <repo> [--version 1.1] [--dry-run] [--review-notes] | --check [--show=<locale>]`:
   pushes `docs/marketing/app-store-metadata.json` (name and subtitle to the editable
   app info; description, keywords, promotional text and What's New to iOS and macOS;
-  What's New is left out where App Store Connect refuses it, as on a first version).
+  What's New is left out only when App Store Connect answers that it can't be edited,
+  as on an app's first version: 409 `STATE_ERROR` "Attribute 'whatsNew' cannot be
+  edited at this time". Any other refusal stops the push).
   The Mac description is made from the iOS one with each locale's `mac` block
   (iPhone-only bullets out, its Mac section in, exact replacements; optional
   `promotionalText` and `whatsNew` for the Mac); `--review-notes` also sends the App
   Review notes from `app-store-listing.md` (the Mac's with its extra paragraph).
-  `--check` runs every check offline: limits, the Mac text, Pro looks named without
-  "Pro", "Glowlit", the review notes and `app-store-listing.md` in sync.
+  `--check` runs every check offline: limits, no emoji in any text it sends (App
+  Store Connect refuses them), the Mac text, Pro looks named without "Pro",
+  "Glowlit", the review notes and `app-store-listing.md` in sync.
   `--season <id> [--dry-run]` pushes only the promotional text from each locale's
   `promoBySeason` (a local season such as `eidAlFitr`, `lunarNewYear`, `carnaval`;
   no review needed), and `--season default` puts the usual text back.

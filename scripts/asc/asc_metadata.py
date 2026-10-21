@@ -7,8 +7,8 @@ Which version records: `--version 1.1` (the version string, on both platforms;
 created when it doesn't exist yet), `--version <version id>` (that record; a
 comma list for both), or by default each platform's editable version (prepare
 for submission, rejected, or developer-rejected). A locale the version lacks is
-added. What's New is left out where App Store Connect refuses it (an app's
-first version).
+added. What's New is left out only where App Store Connect says it can't be
+edited (an app's first version); any other refusal stops the push.
 
 The Mac description is made from the iOS one by `mac_description`, the same
 way every time: bullets about iPhone-only features (widgets, the Lock Screen,
@@ -39,6 +39,7 @@ the dates). Locales without text for that season are left as they are.
 import json
 import re
 import sys
+import unicodedata
 from pathlib import Path
 
 LIMITS = {"name": 30, "subtitle": 30, "keywords": 100, "promotionalText": 170, "description": 4000,
@@ -61,6 +62,19 @@ FLASH = re.compile(r"\bflash\b|flaş|Blitz|вспышк|フラッシュ|플래�
 IOS_SUBSCRIPTIONS = re.compile(r"›[^›\n]{0,15}Apple")
 MAC_SUBSCRIPTIONS = re.compile(r"App Store[^›\n]{0,15}›")
 BULLET = ("•", "-", "·")
+# The emoji presentation selector and the zero-width joiner that glues emoji together.
+EMOJI_JOINERS = {"\ufe0f", "\u200d"}
+
+
+def emoji(text):
+    """The first emoji or pictograph in `text`, else None. App Store Connect
+    refuses them in this app's store text (a73fa27): symbols from U+2600 on
+    (So, Sk: dingbats, emoji, skin tones, flags), and anything in the emoji
+    planes U+1F000–U+1FFFF, where emoji newer than this Python's Unicode data
+    read as unassigned. Typographic marks below U+2600 (• — – → › ’ “ ” × · …)
+    and CJK punctuation are text and pass."""
+    return next((c for c in text if c in EMOJI_JOINERS or 0x1F000 <= ord(c) <= 0x1FFFF
+                 or (ord(c) >= 0x2600 and unicodedata.category(c) in ("So", "Sk"))), None)
 
 
 def season_ids(repo):
@@ -78,7 +92,7 @@ def check_seasons(repo, meta_all):
         for season, text in meta.get("promoBySeason", {}).items():
             if season not in known:
                 raise SystemExit(f"{locale} promoBySeason: {season!r} isn't a season of the app ({', '.join(sorted(known))})")
-            check(locale, {"promotionalText": text})
+            check(f"{locale} promoBySeason {season}", {"promotionalText": text})
             if "Glowlit" in text:
                 raise SystemExit(f"{locale} promoBySeason {season}: says Glowlit (the app is Aybuke)")
 
@@ -120,9 +134,15 @@ def push_season(meta_all, season, dry):
 
 
 def check(locale, fields):
+    """Every text that's pushed: its limit, and no emoji."""
     for key, limit in LIMITS.items():
         if key in fields and fields[key] is not None and len(fields[key]) > limit:
             raise SystemExit(f"{locale} {key} is {len(fields[key])} characters (limit {limit})")
+    for key, value in fields.items():
+        found = emoji(value or "")
+        if found:
+            raise SystemExit(f"{locale} {key}: has the emoji or pictograph {found!r} (U+{ord(found):04X}), "
+                             "which App Store Connect refuses")
 
 
 def mac_description(locale, meta):
@@ -220,8 +240,8 @@ def build(repo, meta_all):
             match = IPHONE_ONLY.search(mac[key]) or FLASH.search(mac[key])
             if match:
                 raise SystemExit(f"{locale} mac {key}: names {match.group(0)!r}; give the locale's mac block a {key}")
-        for fields in (info, ios, mac):
-            check(locale, fields)
+        for label, fields in ((locale, info), (locale, ios), (f"{locale} mac", mac)):
+            check(label, fields)
             for key, value in fields.items():
                 if "Glowlit" in value:
                     raise SystemExit(f"{locale} {key}: says Glowlit (the app is Aybuke)")
@@ -306,16 +326,35 @@ def main():
     print("done" if not dry else "dry run ok")
 
 
+# What App Store Connect answers when What's New is sent for a version that has
+# never been released (an app's first, which has nothing to be new against):
+# 409 STATE_ERROR "Attribute 'whatsNew' cannot be edited at this time". Only that
+# drops What's New. Any other refusal that names it (an invalid value such as an
+# emoji, a length) stops the push: an update can't be submitted without it.
+WHATS_NEW_LOCKED = re.compile(r"attribute '?whatsNew'? can ?not be edited", re.IGNORECASE)
+
+
+def whats_new_locked(error):
+    """True when every error in an `asc.request` failure is that 409 STATE_ERROR."""
+    _, _, body = str(error).partition(" -> 409: ")
+    try:
+        errors = json.loads(body)["errors"]
+    except (ValueError, KeyError, TypeError):
+        return False
+    return bool(errors) and all(isinstance(e, dict) and e.get("code") == "STATE_ERROR"
+                                and WHATS_NEW_LOCKED.search(e.get("detail") or "") for e in errors)
+
+
 def patch_localization(asc, loc_id, fields):
     """What's New can't be set on an app's first version: send the rest then."""
     body = lambda attrs: {"data": {"type": "appStoreVersionLocalizations", "id": loc_id, "attributes": attrs}}
     try:
         asc.patch(f"/v1/appStoreVersionLocalizations/{loc_id}", body(fields))
     except RuntimeError as error:
-        if "whatsNew" not in str(error):
+        if not whats_new_locked(error):
             raise
         asc.patch(f"/v1/appStoreVersionLocalizations/{loc_id}", body({k: v for k, v in fields.items() if k != "whatsNew"}))
-        print("  (What's New not accepted for this version: left out)")
+        print("  (What's New can't be edited on this version, as on an app's first: left out)")
 
 
 def review_notes(repo):

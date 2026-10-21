@@ -90,10 +90,10 @@ ON YOUR MAC
 • A sidebar, a menu bar with keyboard shortcuts, and drag and drop: drop a photo on the window to edit it
 ```
 
-**What's New** (529/4000; version 1.1, iOS and macOS)
+**What's New** (527/4000; version 1.1, iOS and macOS)
 
 ```text
-Aybuke 1.1 is here ✨
+Aybuke 1.1 is here
 • Glow in Retro Cam: live looks, sparkle and a soft lip and blush tint
 • Auto edit: one tap makes a 9:16 vertical video with your best moments and captions (one free a day)
 • Which vibe? polls: friends vote between two pictures through a private link
@@ -104,7 +104,7 @@ Aybuke 1.1 is here ✨
 Thanks for glowing with us!
 ```
 
-**App Review notes** (3616/4000; for the 1.1 update, iOS and macOS; sent with `asc_metadata.py --version 1.1 --review-notes`)
+**App Review notes** (3707/4000; for the 1.1 update, iOS and macOS; sent with `asc_metadata.py --version 1.1 --review-notes`)
 
 ```text
 Aybuke is an AI photo editor and image generator for iPhone, iPad and Mac. No login is needed; Sign in with Apple is optional (Settings > Account) and only lets credits follow the user to another device. An anonymous backend account is created only at the first consented cloud AI use or a purchase.
@@ -120,7 +120,7 @@ G. Also new: the DSLR '12 effect (on-device background blur) and the DSLR Portra
 
 The essentials:
 1. Onboarding has a neutral age step. Under 13 only on-device tools: no cloud AI, purchases or ads.
-2. Credits: 2 free AI credits a day per App Store install (from the signed AppTransaction; Sandbox and TestFlight count); Pro includes 80 a month. "Taking a short break" means a daily cost cap was reached (resets 00:00 UTC).
+2. Credits: 2 free AI credits a day per App Store install (from the signed AppTransaction; Sandbox and TestFlight count); Pro includes 80 a month. "Taking a short break": a daily cost cap (resets 00:00 UTC), a safety pause (up to an hour) or a pause we lift by hand; write to hello@buaze.com and we turn it back on.
 3. Ads (free members 13+, iPhone and iPad): "Watch a short ad · +1 credit" when out of credits (2 a day, granted only by AdMob's signed server callback), the Pro try above, and an occasional interstitial after a finished save or share (not in the first 24 hours, never in the editor; 3 a day at most). Non-personalised, child-directed for teens, no tracking or advertising identifier.
 4. Purchases: two subscriptions and two credit packs (StoreKit 2); please use a Sandbox account. Restore is on the paywall and in Settings.
 5. Safety: prompts and poll questions are filtered on the device and the server in 12 languages. Every result passes xAI's moderation and the Claude check; anything flagged or unchecked is blocked and refunded. Report via "..." > Report this image or the flag beside an edit.
@@ -129,10 +129,10 @@ The essentials:
 Contact: hello@buaze.com
 ```
 
-For the macOS version the same text gets one more paragraph before the contact line (3840/4000 in all):
+For the macOS version the same text gets one more paragraph before the contact line (3985/4000 in all):
 
 ```text
-On the Mac: the same app (Mac Catalyst) with a sidebar and a menu bar; drop a photo on the window to edit it. Retro Cam and Glow use the Mac's camera. No Live Activity, Instagram Stories sharing, ads or Pro try on the Mac.
+On the Mac: the same app (Mac Catalyst) with a sidebar and a menu bar; drop a photo on the window to edit it. Retro Cam, Retro Booth and Glow show only when the Mac has a camera (built-in, USB or Continuity Camera). No Live Activity, Instagram Stories sharing, ads or Pro try.
 ```
 
 **In-app purchase review notes** (sent with `scripts/asc/iap_review_notes.py`; each product's "Review Notes" in App Store Connect)
@@ -262,10 +262,10 @@ MAC'İNDE
 • Kenar çubuğu, klavye kısayollu menü çubuğu ve sürükle bırak: düzenlemek için bir fotoğrafı pencereye bırak
 ```
 
-**What's New** (653/4000; version 1.1, iOS and macOS)
+**What's New** (651/4000; version 1.1, iOS and macOS)
 
 ```text
-Aybuke 1.1 geldi ✨
+Aybuke 1.1 geldi
 • Retro Cam'de ışıma: canlı görünümler, parıltı ve hafif dudak ve allık tonu
 • Otomatik kurgu: tek dokunuşla en iyi anlarından altyazılı 9:16 dikey video (günde bir ücretsiz)
 • Hangi vibe? anketleri: arkadaşların gizli bir bağlantıyla iki fotoğraf arasında oy versin
