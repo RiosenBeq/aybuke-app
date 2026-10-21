@@ -128,7 +128,7 @@ enum CoreStrings {
         String(localized: "Stop-motion charm", comment: "One-tap look description, shown under its name"),
         String(localized: "Pink neon nights", comment: "One-tap look description, shown under its name"),
         String(localized: "Shop-ready product shots", comment: "One-tap look description, shown under its name"),
-        String(localized: "LinkedIn-ready in seconds", comment: "One-tap look description, shown under its name"),
+        String(localized: "Profile-ready in seconds", comment: "One-tap look description, shown under its name"),
         String(localized: "Instant sunset", comment: "One-tap look description, shown under its name"),
         String(localized: "Mall photo-studio glam", comment: "One-tap look description, shown under its name"),
         String(localized: "Retro school-photo lasers", comment: "One-tap look description, shown under its name"),

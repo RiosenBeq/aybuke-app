@@ -142,7 +142,14 @@ struct SettingsView: View {
                 } icon: {
                     Image(systemName: "crown.fill").foregroundStyle(Palette.accent)
                 }
-                Button("Manage subscription") { showManageSubscription = true }
+                // StoreKit's manage-subscriptions sheet isn't supported in Mac Catalyst; the App Store app is.
+                Button("Manage subscription") {
+                    if Platform.isMac, let url = URL(string: "https://apps.apple.com/account/subscriptions") {
+                        openURL(url)
+                    } else {
+                        showManageSubscription = true
+                    }
+                }
             } else {
                 Button {
                     dismiss()

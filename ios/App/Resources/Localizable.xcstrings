@@ -48333,6 +48333,76 @@
         }
       }
     },
+    "Allow photo access for Aybuke in System Settings › Privacy & Security › Photos to save your creations." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erlaube Aybuke den Fotozugriff unter Systemeinstellungen › Datenschutz & Sicherheit › Fotos, um deine Kreationen zu sichern."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Permite que Aybuke acceda a tus fotos en Ajustes del Sistema › Privacidad y seguridad › Fotos para guardar tus creaciones."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autorise Aybuke à accéder à tes photos dans Réglages Système › Confidentialité et sécurité › Photos pour enregistrer tes créations."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Untuk menyimpan kreasimu, izinkan akses foto bagi Aybuke di Pengaturan Sistem › Privasi & Keamanan › Foto."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Per salvare le tue creazioni, consenti l'accesso alle foto ad Aybuke in Impostazioni di Sistema › Privacy e sicurezza › Foto."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "作品を保存するには、システム設定 › プライバシーとセキュリティ › 写真 で、Aybukeの写真へのアクセスを許可してください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "작품을 저장하려면 시스템 설정 › 개인정보 보호 및 보안 › 사진에서 Aybuke의 사진 접근을 허용해 주세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Para salvar suas criações, permita que o Aybuke acesse suas fotos em Ajustes do Sistema › Privacidade e Segurança › Fotos."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Чтобы сохранять работы, разреши Aybuke доступ к фото: Системные настройки › Конфиденциальность и безопасность › Фото."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eserlerini kaydetmek için Sistem Ayarları › Gizlilik ve Güvenlik › Fotoğraflar bölümünden Aybuke'nin fotoğraflarına erişmesine izin ver."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "请前往“系统设置 › 隐私与安全性 › 照片”，允许 Aybuke 访问照片，以便保存你的作品。"
+          }
+        }
+      }
+    },
     "Allow photo access in Settings to save your creations." : {
       "localizations" : {
         "de" : {
@@ -88471,77 +88541,6 @@
         }
       }
     },
-    "LinkedIn-ready in seconds" : {
-      "comment" : "One-tap look description, shown under its name",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "LinkedIn-fertig in Sekunden"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Para LinkedIn en segundos"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Prêt pour LinkedIn en un instant"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Siap LinkedIn dalam sekejap"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pronto per LinkedIn in un attimo"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "数秒でLinkedIn向けの1枚に"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "몇 초 만에 링크드인용 사진"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pronto para o LinkedIn em segundos"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Для резюме за секунды"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Anında LinkedIn'e hazır"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "几秒搞定领英职业照"
-          }
-        }
-      }
-    },
     "Lip gloss" : {
       "comment" : "A sticker of a lip gloss tube (the object only)",
       "localizations" : {
@@ -106737,6 +106736,77 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "产品棚拍"
+          }
+        }
+      }
+    },
+    "Profile-ready in seconds" : {
+      "comment" : "One-tap look description, shown under its name",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "In Sekunden fürs Profil bereit"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Para tu perfil en segundos"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prêt pour ton profil en un instant"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Siap untuk profil dalam sekejap"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pronto per il profilo in un attimo"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "数秒でプロフィール向けの1枚に"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "몇 초 만에 프로필용 사진"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pronto para o perfil em segundos"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Для профиля за секунды"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anında profile hazır"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "几秒搞定职业头像"
           }
         }
       }

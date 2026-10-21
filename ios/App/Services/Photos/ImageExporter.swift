@@ -137,7 +137,10 @@ enum PhotoLibrarySaver {
 
         var errorDescription: String? {
             switch self {
-            case .denied: return String(localized: "Allow photo access in Settings to save your creations.")
+            case .denied:
+                return Platform.isMac
+                    ? String(localized: "Allow photo access for Aybuke in System Settings › Privacy & Security › Photos to save your creations.")
+                    : String(localized: "Allow photo access in Settings to save your creations.")
             case .encodingFailed: return String(localized: "Couldn't prepare the image. Please try again.")
             }
         }

@@ -379,7 +379,7 @@ final class CollageModel {
                 var urls: [URL] = []
                 for (index, slide) in slides.enumerated() {
                     let url = FileManager.default.temporaryDirectory
-                        .appendingPathComponent("glowlit-carousel-\(stamp)-\(index + 1).\(slide.fileExtension)")
+                        .appendingPathComponent("\(Brand.name)-carousel-\(stamp)-\(index + 1).\(slide.fileExtension)")
                     guard (try? slide.data.write(to: url, options: .atomic)) != nil else { return nil }
                     urls.append(url)
                 }

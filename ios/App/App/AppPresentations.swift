@@ -112,15 +112,19 @@ struct AppPresentations: ViewModifier {
                 ),
                 presenting: app.photosAccessRequest
             ) { request in
-                Button("Open Settings") {
+                Button {
                     if let url = PhotosAccessRequest.settingsURL { openURL(url) }
+                } label: {
+                    Platform.isMac ? Text("Open System Settings") : Text("Open Settings")
                 }
                 if let shareInstead = request.shareInstead {
                     Button("Share instead", action: shareInstead)
                 }
                 Button("Cancel", role: .cancel) {}
             } message: { _ in
-                Text("Allow photo access in Settings to save your creations.")
+                Platform.isMac
+                    ? Text("Allow photo access for Aybuke in System Settings › Privacy & Security › Photos to save your creations.")
+                    : Text("Allow photo access in Settings to save your creations.")
             }
             .toast(Binding(
                 get: { isActive ? app.toast : nil },

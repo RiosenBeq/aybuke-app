@@ -352,7 +352,7 @@ public enum TemplateCatalog {
             symbolName: "bag", isPro: true
         ),
         PhotoTemplate(
-            id: "headshot", title: "Pro Headshot", subtitle: "LinkedIn-ready in seconds",
+            id: "headshot", title: "Pro Headshot", subtitle: "Profile-ready in seconds",
             category: .business,
             prompt: "Turn this into a professional headshot of the same person wearing a tailored blazer, soft studio lighting, a neutral light-gray backdrop, shallow depth of field and natural skin texture. \(modestyClause) \(identityClause)",
             symbolName: "person.crop.square", isPro: true
