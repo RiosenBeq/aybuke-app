@@ -16,7 +16,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "6A1B2C3D4E5F600000000030"
-               BuildableName = "Glowlit.app"
+               BuildableName = "Aybuke.app"
                BlueprintName = "Glowlit"
                ReferencedContainer = "container:Glowlit.xcodeproj">
             </BuildableReference>
@@ -45,7 +45,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "6A1B2C3D4E5F600000000030"
-            BuildableName = "Glowlit.app"
+            BuildableName = "Aybuke.app"
             BlueprintName = "Glowlit"
             ReferencedContainer = "container:Glowlit.xcodeproj">
          </BuildableReference>
@@ -65,7 +65,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "6A1B2C3D4E5F600000000030"
-            BuildableName = "Glowlit.app"
+            BuildableName = "Aybuke.app"
             BlueprintName = "Glowlit"
             ReferencedContainer = "container:Glowlit.xcodeproj">
          </BuildableReference>

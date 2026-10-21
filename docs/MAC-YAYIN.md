@@ -342,7 +342,7 @@ xcodebuild build -project ios/Glowlit.xcodeproj -scheme Glowlit -configuration D
   CODE_SIGN_IDENTITY=- CODE_SIGNING_REQUIRED=NO CODE_SIGN_ENTITLEMENTS="$SCR/mac.entitlements" \
   -quiet && echo "MAC AD HOC OK"
 # Not: koşullu ayar ("CODE_SIGN_ENTITLEMENTS[sdk=macosx*]=…") komut satırında yol sanılır ve derleme düşer.
-MACAPP=build/DerivedData/Build/Products/Debug-maccatalyst/Glowlit.app
+MACAPP=build/DerivedData/Build/Products/Debug-maccatalyst/Aybuke.app
 
 # Pencere kimliği bulucu (Screen Recording izni gerekir)
 cat > "$SCR/winid.swift" <<'SWIFT'
@@ -354,13 +354,13 @@ for w in list where ["Aybuke", "Glowlit"].contains(w[kCGWindowOwnerName as Strin
 SWIFT
 
 # Örnek fotoğraflar sandbox kabına kopyalanır (uygulama bir kez açılınca kap oluşur)
-open -n "$MACAPP" --args -GLScreenshotScene home; sleep 6; pkill -x Glowlit
+open -n "$MACAPP" --args -GLScreenshotScene home; sleep 6; pkill -x Aybuke
 SAMPLES="$HOME/Library/Containers/app.glowlit.ios/Data/Library/Caches/samples"
 mkdir -p "$SAMPLES" && cp docs/marketing/samples/*.jpg "$SAMPLES/"
 
 macshot() {  # macshot <sahne ve argümanlar> <WxH> <çıktı.png> [dil]
   local args=$1 size=$2 out=$3 lang=${4:-en}
-  pkill -x Glowlit 2>/dev/null; sleep 1
+  pkill -x Aybuke 2>/dev/null; sleep 1
   open -n "$MACAPP" --args -GLScreenshotScene ${=args} -GLWindowSize "$size" -GLSamplePhotos "$SAMPLES" -AppleLanguages "($lang)"
   sleep 8
   local id=$(swift "$SCR/winid.swift")
@@ -372,7 +372,7 @@ for size in 900x640 1600x1000 2200x1400; do
     macshot "$scene" "$size" ~/Desktop/aybuke-mac-check/${size}-${scene%% *}.png
   done
 done
-pkill -x Glowlit
+pkill -x Aybuke
 open ~/Desktop/aybuke-mac-check
 ```
 
@@ -383,7 +383,7 @@ Bak: her şablon kartı çiziliyor mu, metin kesiliyor mu, kenar çubuğu ve Fil
 ```zsh
 SMALL=$(xcrun simctl list devices available | grep -m1 'iPhone 17e' | grep -oE '[0-9A-F-]{36}')
 xcrun simctl boot "$SMALL" 2>/dev/null; xcrun simctl bootstatus "$SMALL" -b
-xcrun simctl install "$SMALL" build/DerivedData/Build/Products/Debug-iphonesimulator/Glowlit.app
+xcrun simctl install "$SMALL" build/DerivedData/Build/Products/Debug-iphonesimulator/Aybuke.app
 xcrun simctl ui "$SMALL" content_size accessibility-extra-extra-extra-large
 mkdir -p ~/Desktop/aybuke-large-text
 for lang in en de ru; do
@@ -410,7 +410,7 @@ CAP=~/Desktop/aybuke-captures
 # Örnek fotoğrafları korumalı olmayan bir klasöre kopyala: ~/Downloads, ~/Desktop ve ~/Documents macOS'un
 # izinli (TCC) klasörleri; simülatördeki uygulama oradan dosya açarken izin bekler ve sahne boş kalır.
 SAMPLES=/private/tmp/aybuke-samples; mkdir -p $SAMPLES && cp docs/marketing/samples/*.jpg $SAMPLES/
-APP=build/DerivedData/Build/Products/Debug-iphonesimulator/Glowlit.app
+APP=build/DerivedData/Build/Products/Debug-iphonesimulator/Aybuke.app
 IPHONE=50703265-82EF-4CFE-B094-47FFB43025B0   # iPhone 17 Pro Max (bu Mac'te farklıysa 4. bölümdeki listeden)
 IPAD=0ADBB7F6-481C-4F00-AFD0-182E32E685E2     # iPad Pro 13-inch (M5)
 langs=(en tr es pt-BR fr de it ru ja ko zh-Hans id)
@@ -456,7 +456,7 @@ for lang in $langs; do
   mkdir -p "$CAP/mac/$lang"
   for name in ${(k)macscenes}; do macshot "${macscenes[$name]}" 1600x1000 "$CAP/mac/$lang/$name.png" "$lang"; done
 done
-pkill -x Glowlit
+pkill -x Aybuke
 
 # Görselleri üret (Pillow gerekir)
 ~/.venvs/aybuke/bin/python scripts/marketing-images.py "$CAP"

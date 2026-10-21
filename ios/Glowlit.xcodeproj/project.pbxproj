@@ -40,7 +40,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		6A1B2C3D4E5F600000000001 /* Glowlit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Glowlit.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		6A1B2C3D4E5F600000000001 /* Aybuke.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Aybuke.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6A1B2C3D4E5F600000000071 /* Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Debug.xcconfig; sourceTree = "<group>"; };
 		6A1B2C3D4E5F600000000072 /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Release.xcconfig; sourceTree = "<group>"; };
 		6A1B2C3D4E5F600000000073 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -114,7 +114,7 @@
 		6A1B2C3D4E5F600000000021 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				6A1B2C3D4E5F600000000001 /* Glowlit.app */,
+				6A1B2C3D4E5F600000000001 /* Aybuke.app */,
 				6A1B2C3D4E5F6000000000A4 /* GlowlitWidgetsExtension.appex */,
 			);
 			name = Products;
@@ -163,7 +163,7 @@
 				6A1B2C3D4E5F600000000304 /* GoogleUserMessagingPlatform */,
 			);
 			productName = Glowlit;
-			productReference = 6A1B2C3D4E5F600000000001 /* Glowlit.app */;
+			productReference = 6A1B2C3D4E5F600000000001 /* Aybuke.app */;
 			productType = "com.apple.product-type.application";
 		};
 		6A1B2C3D4E5F6000000000A6 /* GlowlitWidgetsExtension */ = {
@@ -437,7 +437,8 @@
 				);
 				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = app.glowlit.ios;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_MODULE_NAME = Glowlit;
+				PRODUCT_NAME = Aybuke;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = YES;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
@@ -479,7 +480,8 @@
 				);
 				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = app.glowlit.ios;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_MODULE_NAME = Glowlit;
+				PRODUCT_NAME = Aybuke;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = YES;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;

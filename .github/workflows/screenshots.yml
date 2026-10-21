@@ -68,7 +68,7 @@ jobs:
           xcrun simctl bootstatus "$UDID" -b
           xcrun simctl status_bar "$UDID" override --time "9:41" --dataNetwork wifi --wifiMode active --wifiBars 3 \
             --cellularMode active --cellularBars 4 --batteryState charged --batteryLevel 100
-          xcrun simctl install "$UDID" build/DerivedData/Build/Products/Debug-iphonesimulator/Glowlit.app
+          xcrun simctl install "$UDID" build/DerivedData/Build/Products/Debug-iphonesimulator/Aybuke.app
           mkdir -p screenshots
           for scene in onboarding home create results edit editor result share library paywall consent settings legal; do
             xcrun simctl terminate "$UDID" app.glowlit.ios >/dev/null 2>&1 || true
