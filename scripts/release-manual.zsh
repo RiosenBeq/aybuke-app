@@ -41,6 +41,12 @@ for PLATFORM in ${=${PLATFORMS:-ios mac}}; do
     CURRENT_PROJECT_VERSION=$BN CODE_SIGN_STYLE=Manual DEVELOPMENT_TEAM=CBTKNY3LFC CODE_SIGN_IDENTITY=$CERT \
     'PROVISIONING_PROFILE_SPECIFIER=$(GL_PROFILE_$(TARGET_NAME))' "GL_PROFILE_Glowlit=$P1" "GL_PROFILE_GlowlitWidgetsExtension=$P2" \
     -quiet >> $LOG 2>&1 || { echo "ARCHIVE FAILED $PLATFORM" | tee -a $LOG; exit 1; }
+  # App Review rejected a Mac build whose installed name was Glowlit (Guideline 2.3.8):
+  # commits before cc35859 (or release/1.0-name-fix for 1.0) still build Glowlit.app.
+  APP=$(find $OUT/Glowlit.xcarchive/Products/Applications -maxdepth 1 -name '*.app' | head -1)
+  PLIST=$APP/Info.plist; [[ -f $APP/Contents/Info.plist ]] && PLIST=$APP/Contents/Info.plist
+  NAME=$(/usr/libexec/PlistBuddy -c 'Print :CFBundleName' "$PLIST" 2>/dev/null)
+  [[ ${APP:t} == Aybuke.app && $NAME == Aybuke ]] || { echo "WRONG APP NAME $PLATFORM: ${APP:t} $NAME" | tee -a $LOG; exit 1; }
   rm -rf $OUT/DerivedData
   cat > $OUT/ExportOptions.plist <<PLIST
 <?xml version="1.0" encoding="UTF-8"?>
