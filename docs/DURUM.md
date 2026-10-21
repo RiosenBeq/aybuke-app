@@ -1,10 +1,17 @@
-# Aybuke — iş durumu (17 Ekim 2026, 08:45)
+# Aybuke — iş durumu (22 Ekim 2026)
 
 Bu oturumun açık işleri. Bir sonraki devamda buradan başlayın; ayrıntı `AGENTS.md` §6'da.
 
+## Mac 1.0 reddi ve yeniden gönderim (22 Ekim 2026)
+
+- **Ret (21 Ekim):** Mac 1.0 (20261015.1233) Guideline 2.3.8 ile reddedildi. Kurulu uygulamanın adı Finder'da, menü çubuğunda ve About/Hide/Quit'te "Glowlit"ti, mağazadaki ad "Aybuke: AI Photo Editor". Neden: uygulama hedefinin `PRODUCT_NAME`'i hedef adıydı (Glowlit.app, çalıştırılabilir dosya ve `CFBundleName` "Glowlit"); String Catalog'daki İngilizce `CFBundleName` "new" durumunda olduğu için `en.lproj/InfoPlist.strings` hiç üretilmiyordu.
+- **Düzeltme:** `PRODUCT_NAME = Aybuke` (Aybuke.app, çalıştırılabilir dosya, `CFBundleName`), `PRODUCT_MODULE_NAME = Glowlit` (Swift modülü aynı), Bundle ID aynı. 1.0 kodu üzerine `release/1.0-name-fix` dalı (`98fc3ce`, `4b6c9fa` + düzeltme), ana dalda `cc35859`. Mac'te çalıştırılarak doğrulandı: menü çubuğu "Aybuke".
+- **Yeniden gönderildi (22 Ekim 00:50):** Mac 1.0, derleme **20261022.26** ile `WAITING_FOR_REVIEW` (aynı gönderim, AFTER_APPROVAL). İnceleme notunun başına düzeltme satırı eklendi; Resolution Center'a cevap yazmak gerekmiyor.
+- **iOS 1.0 değişmedi, sırada kalıyor:** incelemedeki derleme (20261015.1225) iPhone ve iPad'de her yerde "Aybuke" gösteriyor (ana ekran ve iPadOS 26 menü çubuğu `CFBundleDisplayName` kullanıyor; simülatörde 1.0 adlandırmasıyla denendi). Çekip yeniden göndermek 7 günlük sırayı ve sürüme bağlı abonelik/paket öğelerini riske atardı. Yedek: aynı düzeltmeyle iOS 1.0 derlemesi **20261022.46** yüklendi; Apple iOS 1.0'ı herhangi bir nedenle (ör. "expired" görünen derleme) reddederse bu derlemeyle hemen yeniden gönderilir.
+
 ## Yapıldı
 
-- **1.0 incelemede** (iOS + macOS, `WAITING_FOR_REVIEW`, onaylanınca otomatik yayında). Sahibin kararı: 1.0'a dokunulmaz; onay gelince 1.1 **güncelleme** olarak gönderilir. Not: incelemedeki iOS 1.0 derlemesi (20261015.1225) eski, geçersizleşmiş profille imzalı ve App Store Connect'te "expired" görünüyor; Apple reddederse yeni imzalı derlemeyle hemen yeniden gönderilir.
+- **1.0 incelemede** (iOS + macOS, `WAITING_FOR_REVIEW`, onaylanınca otomatik yayında). Sahibin kararı: 1.0'a dokunulmaz; onay gelince 1.1 **güncelleme** olarak gönderilir. Not: incelemedeki iOS 1.0 derlemesi (20261015.1225) eski, geçersizleşmiş profille imzalı ve App Store Connect'te "expired" görünüyor; Apple reddederse yeni imzalı derlemeyle (20261022.46) hemen yeniden gönderilir. Mac 1.0 21 Ekim'de reddedildi ve 22 Ekim'de 20261022.26 ile yeniden gönderildi (yukarıda).
 - **1.1 kodu:** anketler ("Which vibe?", uygulama + sunucu + aybuke.org/p/…), Glow Cam, video Auto edit, DSLR '12 / DSLR Portrait, Adjust vibe'ları ve My filters, 20 makyaj görünümü, Cut out / Erase iyileştirmeleri, editör zoom'u, paylaşım boyutları, Aybik (Claude yazı yardımı; arayüzde "Claude" ve şirket adı geçmez), ülkeye özel mevsimler, inceleme düzeltmeleri, politika (anket sorusu) düzeltmeleri.
 - **Sunucu (Supabase):** migrasyonlar `20261103000001`'e kadar canlı; `ai-image`, `assist`, `polls`, `owner-digest` güncel. xAI bakiye tahmini 8,13 $ (taban 5–6 $).
 - **İmza:** geçersiz profiller silindi; aktif: "Aybuke App Store 2", "Aybuke Mac Catalyst App Store 2", iki widget profili. Yükleme betiği profilleri derlemeden önce kontrol eder.
@@ -14,7 +21,7 @@ Bu oturumun açık işleri. Bir sonraki devamda buradan başlayın; ayrıntı `A
 
 ## Son durum (17 Ekim 03:30)
 
-Final 1.1 builds: iOS 20261017.815, Mac 20261017.821 (commit `3e1a2a5`, `main` ile aynı, CI yeşil; imza profilleri ACTIVE).
+Final 1.1 builds: iOS 20261017.815 (commit `3e1a2a5`), Mac 20261022.52 (commit `cc35859`: aynı içerik, yalnızca uygulama adı Aybuke; imza profilleri ACTIVE). Mac 20261017.821 ve daha eski Mac 1.1 derlemelerinde uygulamanın adı "Glowlit": gönderilmez (2.3.8). iOS 815'te ad sorunu yok (iPhone/iPad görünen adı kullanıyor).
 
 - **Sonra eklenenler (17 Ekim sabah):** ilk kayıt ve ilk ankette tek seferlik ışıltı (`Milestones`), yükleme parıltıları, 44 pt dokunma alanları, satın alma kartlarında basma efekti; admin paneli Filament tarzı ve `info@nextgenlab.com.tr` e-posta/şifre girişiyle (Supabase Auth, `ADMIN_EMAILS`; anahtar girişi yedek); sahibe giden mailler açık/koyu temaya uygun yeni tasarımda; site kartları yeni tasarım ve 15 yeni görsel (xAI bakiye tahmini 6,58 $).
 
