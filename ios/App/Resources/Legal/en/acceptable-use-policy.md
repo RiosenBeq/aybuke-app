@@ -207,6 +207,6 @@ We may update this policy to respond to new risks, changes to the Service or cha
 
 - **Reports, appeals and questions:** [hello@buaze.com](mailto:hello@buaze.com)
 - **Privacy questions and parents' requests:** [hello@buaze.com](mailto:hello@buaze.com)
-- **Company:** Okan Berk Manavoğlu (individual developer), Istanbul, Türkiye, Türkiye
+- **Company:** Okan Berk Manavoğlu (individual developer), Istanbul, Türkiye
 
 Authorities of EU Member States, the European Commission, the European Board for Digital Services and users can reach our single point of contact under Articles 11 and 12 of the EU Digital Services Act at [hello@buaze.com](mailto:hello@buaze.com), in English or Turkish. Our representative in the EU: None appointed. Contact hello@buaze.com for any request..

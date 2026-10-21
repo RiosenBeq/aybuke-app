@@ -16,7 +16,7 @@ Last updated: 16 October 2026
 
 Okan Berk Manavoğlu (individual developer) ("**we**", "**us**" or "**our**") develops and operates the Aybuke app for iPhone, iPad and Mac and its online services (the "**Service**"). We are the controller responsible for your personal data (under Türkiye's KVKK, the *veri sorumlusu*).
 
-- **Address:** Istanbul, Türkiye, Türkiye
+- **Address:** Istanbul, Türkiye
 - **Trade registry / MERSİS number:** None (individual developer)
 - **Privacy contact:** [hello@buaze.com](mailto:hello@buaze.com)
 - **Representative in the EU (Art. 27 GDPR):** None appointed. Contact hello@buaze.com for any request.
@@ -430,7 +430,7 @@ We process personal data in accordance with the Law on the Protection of Persona
 
 **How to apply.** Under the Communiqué on the Procedures and Principles of Application to the Data Controller, you can apply:
 
-- in writing, to Istanbul, Türkiye, Türkiye;
+- in writing, to Istanbul, Türkiye;
 - by email signed with a secure electronic signature or mobile signature, to [hello@buaze.com](mailto:hello@buaze.com); or
 - by email to [hello@buaze.com](mailto:hello@buaze.com) from an email address you have previously notified to us and that is registered in our systems.
 
@@ -510,7 +510,7 @@ We'll update this policy when our practices or the law change. If a change is ma
 
 ## 24. Contact us
 
-- **Controller:** Okan Berk Manavoğlu (individual developer), Istanbul, Türkiye, Türkiye
+- **Controller:** Okan Berk Manavoğlu (individual developer), Istanbul, Türkiye
 - **Privacy requests (including from parents and guardians):** [hello@buaze.com](mailto:hello@buaze.com)
 - **General contact:** [hello@buaze.com](mailto:hello@buaze.com)
 - **EU representative:** None appointed. Contact hello@buaze.com for any request.

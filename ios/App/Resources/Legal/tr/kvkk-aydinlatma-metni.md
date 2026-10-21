@@ -16,7 +16,7 @@ Bu Aydınlatma Metni, 6698 sayılı Kişisel Verilerin Korunması Kanunu ("**KVK
 ## 1. Veri sorumlusu
 
 - **Veri sorumlusu:** Okan Berk Manavoğlu (bireysel geliştirici)
-- **Adres:** İstanbul, Türkiye, Türkiye
+- **Adres:** İstanbul, Türkiye
 - **Ticaret sicili / MERSİS numarası:** Yok (bireysel geliştirici)
 - **E-posta:** [hello@buaze.com](mailto:hello@buaze.com)
 
@@ -118,7 +118,7 @@ haklarına sahipsiniz.
 
 Haklarınızı kullanmak için, Veri Sorumlusuna Başvuru Usul ve Esasları Hakkında Tebliğ uyarınca başvurunuzu Türkçe olarak şu yollarla iletebilirsiniz:
 
-- **Yazılı olarak:** İstanbul, Türkiye, Türkiye adresine ıslak imzalı dilekçeyle;
+- **Yazılı olarak:** İstanbul, Türkiye adresine ıslak imzalı dilekçeyle;
 - **Güvenli elektronik imza veya mobil imza ile:** [hello@buaze.com](mailto:hello@buaze.com) adresine;
 - **E-posta ile:** daha önce bize bildirdiğiniz ve sistemimizde kayıtlı olan e-posta adresinizden [hello@buaze.com](mailto:hello@buaze.com) adresine.
 

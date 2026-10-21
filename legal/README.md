@@ -14,9 +14,10 @@ Source texts for Aybuke's legal documents, in English (`en/`) and Turkish (`tr/`
 ## How it works
 
 1. The texts contain `{{TOKENS}}` such as `{{COMPANY_NAME}}`. Their values live in `legal/config.json` (shared values plus English and Turkish ones, because dates and legal phrases differ by language).
-2. `python3 scripts/build-legal.py` renders two copies:
+2. `python3 scripts/build-legal.py` renders three copies:
    - `ios/App/Resources/Legal/…` — bundled in the app and shown natively, offline, in Settings → Terms, privacy & legal, on the onboarding consent line, the paywall and the AI consent screen;
    - `docs/legal/…` — public copies on GitHub. Use their URLs for App Store Connect (Privacy Policy URL, License Agreement) and `privacyPolicyURL` / `termsURL` in `ios/App/Resources/AppConfig.json` until you host them on your own domain.
+   - `web/legal/…` — HTML for the old GitHub Pages copy: noindex, with a canonical link to the same page on aybuke.org (the live copy, built in the `RiosenBeq/aybuke` repository from these same sources).
 3. CI runs `python3 scripts/build-legal.py --check`, so the copies can't drift from the sources.
 
 Markdown rules (the in-app renderer supports a small subset): one `#` title, `##`/`###` headings, paragraphs, `- ` and `1. ` lists, `> ` summaries, `**bold**`, `*italic*` and links. No tables, HTML, images or nested lists.

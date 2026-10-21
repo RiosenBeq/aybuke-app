@@ -9,7 +9,8 @@ Outputs (generated, do not edit by hand):
                                             documents use glowlit-legal://<id>
   docs/legal/<lang>/<name>.md               public copies on GitHub, with
                                             relative links between documents
-  web/legal/<lang>/<name>.html              pages for the website (web/)
+  web/legal/<lang>/<name>.html              pages for the old GitHub Pages copy
+                                            (web/), canonical on aybuke.org
 """
 
 from __future__ import annotations
@@ -25,6 +26,10 @@ SOURCE = ROOT / "legal"
 APP_OUT = ROOT / "ios" / "App" / "Resources" / "Legal"
 DOCS_OUT = ROOT / "docs" / "legal"
 WEB_OUT = ROOT / "web" / "legal"
+# The live site (RiosenBeq/aybuke) serves the same documents at
+# /legal/<lang>/<name>; web/ is only a fallback copy, so its pages point
+# search engines there and stay out of the index themselves.
+LIVE_SITE = "https://aybuke.org"
 
 # Document id (as used by LegalDocument in the app) → file name per language.
 DOCUMENTS = {
@@ -125,15 +130,17 @@ WEB_PAGE = """<!doctype html>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{title} · Aybuke</title>
 <meta name="description" content="{title} for Aybuke, the AI photo editor made for girls who glow.">
+<meta name="robots" content="noindex">
+<link rel="canonical" href="{canonical}">
 <link rel="icon" href="../../assets/icon.png">
 <link rel="stylesheet" href="../../assets/site.css">
 </head>
 <body class="legal">
-<header class="legal-header"><a class="brand" href="../../index.html"><img src="../../assets/icon.png" alt="" width="32" height="32"> Aybuke</a></header>
+<header class="legal-header"><a class="brand" href="{home}"><img src="../../assets/icon.png" alt="" width="32" height="32"> Aybuke</a></header>
 <main class="legal-body">
 {content}
 </main>
-<footer class="legal-footer"><a href="../../index.html">glowlit</a> · <a href="{terms}">{terms_label}</a> · <a href="{privacy}">{privacy_label}</a></footer>
+<footer class="legal-footer"><a href="{home}">Aybuke</a> · <a href="{terms}">{terms_label}</a> · <a href="{privacy}">{privacy_label}</a></footer>
 </body>
 </html>
 """
@@ -173,6 +180,8 @@ def outputs() -> dict[Path, str]:
             result[WEB_OUT / lang / f"{name}.html"] = WEB_PAGE.format(
                 lang=lang,
                 title=html.escape(title),
+                canonical=f"{LIVE_SITE}/legal/{lang}/{name}",
+                home=f"{LIVE_SITE}/",
                 content=markdown_html(body),
                 terms=web_link("terms", lang),
                 privacy=web_link("privacy", lang),

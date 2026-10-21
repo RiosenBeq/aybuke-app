@@ -16,7 +16,7 @@ Son güncelleme: 16 Ekim 2026
 
 iPhone, iPad ve Mac için Aybuke uygulamasını ve buna bağlı çevrim içi hizmetleri ("**Hizmet**") Okan Berk Manavoğlu (bireysel geliştirici) ("**biz**") geliştirir ve işletir. Kişisel verileriniz bakımından veri sorumlusu biziz (6698 sayılı Kişisel Verilerin Korunması Kanunu, "**KVKK**", anlamında *veri sorumlusu*; GDPR anlamında *controller*).
 
-- **Adres:** İstanbul, Türkiye, Türkiye
+- **Adres:** İstanbul, Türkiye
 - **Ticaret sicili / MERSİS numarası:** Yok (bireysel geliştirici)
 - **Gizlilik iletişim adresi:** [hello@buaze.com](mailto:hello@buaze.com)
 - **AB temsilcisi (GDPR md. 27):** Atanmış temsilci yok. Her talep için hello@buaze.com adresine yazabilirsiniz.
@@ -430,7 +430,7 @@ Kişisel verileri 6698 sayılı Kişisel Verilerin Korunması Kanunu'na ("**KVKK
 
 **Nasıl başvurursunuz?** Veri Sorumlusuna Başvuru Usul ve Esasları Hakkında Tebliğ uyarınca başvurunuzu şu yollarla yapabilirsiniz:
 
-- yazılı olarak İstanbul, Türkiye, Türkiye adresine;
+- yazılı olarak İstanbul, Türkiye adresine;
 - güvenli elektronik imza veya mobil imza ile imzalanmış e-postayla [hello@buaze.com](mailto:hello@buaze.com) adresine veya
 - daha önce bize bildirdiğiniz ve sistemimizde kayıtlı olan e-posta adresinizden [hello@buaze.com](mailto:hello@buaze.com) adresine.
 
@@ -510,7 +510,7 @@ Uygulamalarımız veya kanun değiştiğinde bu politikayı güncelleriz. Öneml
 
 ## 24. Bize ulaşın
 
-- **Veri sorumlusu:** Okan Berk Manavoğlu (bireysel geliştirici), İstanbul, Türkiye, Türkiye
+- **Veri sorumlusu:** Okan Berk Manavoğlu (bireysel geliştirici), İstanbul, Türkiye
 - **Gizlilik talepleri (veli ve vasi talepleri dahil):** [hello@buaze.com](mailto:hello@buaze.com)
 - **Genel iletişim:** [hello@buaze.com](mailto:hello@buaze.com)
 - **AB temsilcisi:** Atanmış temsilci yok. Her talep için hello@buaze.com adresine yazabilirsiniz.

@@ -209,6 +209,6 @@ Yeni risklere, Hizmetteki değişikliklere veya kanundaki değişikliklere yanı
 
 - **Bildirimler, itirazlar ve sorular:** [hello@buaze.com](mailto:hello@buaze.com)
 - **Gizlilik soruları ve veli talepleri:** [hello@buaze.com](mailto:hello@buaze.com)
-- **Şirket:** Okan Berk Manavoğlu (bireysel geliştirici), İstanbul, Türkiye, Türkiye
+- **Şirket:** Okan Berk Manavoğlu (bireysel geliştirici), İstanbul, Türkiye
 
 AB Üye Devletlerinin yetkili makamları, Avrupa Komisyonu, Avrupa Dijital Hizmetler Kurulu ve kullanıcılar, AB Dijital Hizmetler Tüzüğü md. 11 ve 12 kapsamındaki tek irtibat noktamıza İngilizce veya Türkçe olarak [hello@buaze.com](mailto:hello@buaze.com) adresinden ulaşabilir. AB temsilcimiz: Atanmış temsilci yok. Her talep için hello@buaze.com adresine yazabilirsiniz..

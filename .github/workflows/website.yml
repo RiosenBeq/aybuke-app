@@ -1,6 +1,6 @@
 name: Website
 
-# Publishes web/ (landing page + legal pages) to GitHub Pages.
+# Publishes web/ (a redirect to aybuke.org + noindex legal pages) to GitHub Pages.
 # Pages is set to "GitHub Actions" as its source. It deploys on every push that
 # changes the site or the legal documents, and can be run by hand too.
 on:

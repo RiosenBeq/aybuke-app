@@ -1,4 +1,4 @@
-# AdMob authorised sellers for Glowlit (publisher id from the AdMob app id).
+# AdMob authorised sellers for Aybuke (publisher id from the AdMob app id).
 # AdMob reads this at the root of the developer website's domain: see
 # docs/marketing/app-store-connect-setup.md, "Ads".
 google.com, pub-2292230772061554, DIRECT, f08c47fec0942fa0

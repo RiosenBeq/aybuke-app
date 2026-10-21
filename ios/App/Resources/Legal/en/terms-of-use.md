@@ -13,7 +13,7 @@ Last updated: 16 October 2026
 
 ## 1. About these Terms
 
-These Terms of Use ("**Terms**") govern your use of the Aybuke app for iPhone, iPad and Mac and the related online services (together, the "**Service**"). The Service is provided by Okan Berk Manavoğlu (individual developer), Istanbul, Türkiye, Türkiye ("**we**", "**us**" or "**our**"). Our full contact details are in section 26.
+These Terms of Use ("**Terms**") govern your use of the Aybuke app for iPhone, iPad and Mac and the related online services (together, the "**Service**"). The Service is provided by Okan Berk Manavoğlu (individual developer), Istanbul, Türkiye ("**we**", "**us**" or "**our**"). Our full contact details are in section 26.
 
 By downloading, installing or using Aybuke, you agree to these Terms. If you don't agree, please don't use the Service.
 
@@ -496,7 +496,7 @@ These terms apply because you got Aybuke from Apple's App Store. If they conflic
 5. **Product claims.** Okan Berk Manavoğlu (individual developer), not Apple, is responsible for addressing any claims by you or any third party relating to the app or your possession and use of it, including: (i) product liability claims; (ii) any claim that the app fails to conform to any applicable legal or regulatory requirement; and (iii) claims arising under consumer protection, privacy or similar legislation. These Terms don't limit the liability of Okan Berk Manavoğlu (individual developer) to you beyond what is permitted by applicable law.
 6. **Intellectual property.** If a third party claims that the app or your possession and use of it infringes that third party's intellectual property rights, Okan Berk Manavoğlu (individual developer), not Apple, is solely responsible for the investigation, defence, settlement and discharge of that claim.
 7. **Legal compliance.** You represent and warrant that (i) you are not located in a country that is subject to a U.S. Government embargo or that has been designated by the U.S. Government as a "terrorist supporting" country; and (ii) you are not listed on any U.S. Government list of prohibited or restricted parties.
-8. **Developer name and address.** Please direct any questions, complaints or claims about the app to Okan Berk Manavoğlu (individual developer), Istanbul, Türkiye, Türkiye, email [hello@buaze.com](mailto:hello@buaze.com).
+8. **Developer name and address.** Please direct any questions, complaints or claims about the app to Okan Berk Manavoğlu (individual developer), Istanbul, Türkiye, email [hello@buaze.com](mailto:hello@buaze.com).
 9. **Third-party terms.** You must comply with applicable third-party terms of agreement when using the app, for example your wireless data service agreement.
 10. **Third-party beneficiary.** Apple and Apple's subsidiaries are third-party beneficiaries of these Terms. Upon your acceptance of these Terms, Apple will have the right (and will be deemed to have accepted the right) to enforce these Terms against you as a third-party beneficiary.
 
@@ -513,7 +513,7 @@ These terms apply because you got Aybuke from Apple's App Store. If they conflic
 ## 26. Contact us
 
 - **Company:** Okan Berk Manavoğlu (individual developer)
-- **Address:** Istanbul, Türkiye, Türkiye
+- **Address:** Istanbul, Türkiye
 - **Trade registry / MERSİS number:** None (individual developer)
 - **Email:** [hello@buaze.com](mailto:hello@buaze.com)
 - **Privacy questions and parents' requests:** [hello@buaze.com](mailto:hello@buaze.com)

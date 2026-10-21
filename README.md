@@ -90,7 +90,7 @@ Cloud jobs run on xAI Grok Imagine (`grok-imagine-image-2.0` at 1k): low quality
 - **In the app:** the share composer (`ios/App/Features/Share/`, designs in `ios/App/Services/Sharing/ShareDesigns.swift` and `ShareRenderer.swift`) exports a photo, a before/after collage, a 9:16 story card, a "Cover star" 4:5 magazine cover (the masthead tucks behind her head, using on-device Vision person segmentation), a date-stamped photo-booth "Photo strip" or a "Which vibe?" card (two variations of one creation). Free exports carry a small "Made with Aybuke" mark, which Pro removes. Every AI export keeps the IPTC "made with AI" metadata. The composer offers caption ideas written on the device, with hashtags (the AI ones only for AI content). **Stories** works without a Meta App ID: the system share sheet opens with just the image and a hint ("Tap Instagram, then Stories"), and the caption goes to the clipboard. With `instagramAppID` (a Meta App ID) set in `AppConfig.json`, it opens Instagram Stories directly.
 - **Invite card:** "Glow together" (`InviteView`, from Settings and Home) makes a 9:16 story card with the app icon and a QR code that links to the App Store page, or to `websiteURL` until there is one. It's made from brand art only and never includes the user's photos.
 - **Marketing kit:** [docs/marketing/](docs/marketing/README.md) contains App Store copy (EN/TR) with measured character counts, a social media kit, a 30-day launch plan, generated App Store screenshots and social images.
-- **Website:** [web/](web/README.md) is a static landing page with the legal pages, ready for GitHub Pages (`.github/workflows/website.yml`).
+- **Website:** the live site is aybuke.org (repository `RiosenBeq/aybuke`); [web/](web/README.md) only redirects there and keeps noindex copies of the legal pages on GitHub Pages (`.github/workflows/website.yml`).
 
 ## Notifications, ratings and accounts
 
@@ -141,7 +141,7 @@ ios/        SwiftUI app (Glowlit.xcodeproj) + AppCore Swift package (business lo
 backend/    Supabase: Postgres schema, credit ledger and reports; Edge Functions (xAI and fal.ai, Apple JWS, accounts, reports); SQL tests
 legal/      Source texts of the legal documents (EN/TR) and their config
 docs/       Research, brand, product spec, architecture, compliance, roadmap, marketing kit, published legal copies
-web/        Static landing page and legal pages
+web/        Redirect to aybuke.org and noindex legal pages
 scripts/    Tooling: catalog export, core strings for translation, legal build, brand assets, marketing images, README gallery
 .github/    CI (AppCore, Deno, SQL, legal and core-strings sync, Xcode), simulator screenshots, website deploy
 ```

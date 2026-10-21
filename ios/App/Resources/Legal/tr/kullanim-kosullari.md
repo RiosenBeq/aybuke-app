@@ -13,7 +13,7 @@ Son güncelleme: 16 Ekim 2026
 
 ## 1. Bu Koşullar hakkında
 
-İşbu Kullanım Koşulları ("**Koşullar**"), iPhone, iPad ve Mac için Aybuke uygulamasını ve buna bağlı çevrim içi hizmetleri (birlikte "**Hizmet**") kullanımınızı düzenler. Hizmet, Okan Berk Manavoğlu (bireysel geliştirici) (İstanbul, Türkiye, Türkiye) tarafından sunulmaktadır ("**biz**" veya "**Şirket**"). İletişim bilgilerimizin tamamı 26. bölümde yer alır.
+İşbu Kullanım Koşulları ("**Koşullar**"), iPhone, iPad ve Mac için Aybuke uygulamasını ve buna bağlı çevrim içi hizmetleri (birlikte "**Hizmet**") kullanımınızı düzenler. Hizmet, Okan Berk Manavoğlu (bireysel geliştirici) (İstanbul, Türkiye) tarafından sunulmaktadır ("**biz**" veya "**Şirket**"). İletişim bilgilerimizin tamamı 26. bölümde yer alır.
 
 Aybuke uygulamasını indirerek, yükleyerek veya kullanarak bu Koşulları kabul etmiş olursunuz. Kabul etmiyorsanız lütfen Hizmeti kullanmayın.
 
@@ -496,7 +496,7 @@ Bu koşullar, Aybuke uygulamasını Apple App Store'dan edindiğiniz için geçe
 5. **Ürüne ilişkin talepler.** Sizin veya üçüncü kişilerin uygulamaya ya da uygulamaya sahip olmanıza ve onu kullanmanıza ilişkin taleplerini karşılamaktan Apple değil, Okan Berk Manavoğlu (bireysel geliştirici) sorumludur. Bu talepler şunları kapsar: (i) ürün sorumluluğu talepleri; (ii) uygulamanın geçerli herhangi bir yasal veya düzenleyici gerekliliğe uymadığına ilişkin talepler; ve (iii) tüketicinin korunması, gizlilik veya benzeri mevzuattan doğan talepler. Bu Koşullar, Okan Berk Manavoğlu (bireysel geliştirici) sorumluluğunu uygulanacak hukukun izin verdiğinin ötesinde sınırlandırmaz.
 6. **Fikri mülkiyet.** Üçüncü bir kişinin, uygulamanın veya uygulamaya sahip olmanızın ve onu kullanmanızın kendi fikri mülkiyet haklarını ihlal ettiğini iddia etmesi halinde, bu iddianın araştırılmasından, savunulmasından, sulh yoluyla çözülmesinden ve sonuçlandırılmasından Apple değil, yalnızca Okan Berk Manavoğlu (bireysel geliştirici) sorumludur.
 7. **Mevzuata uyum.** (i) ABD Hükümeti tarafından ambargo uygulanan veya ABD Hükümeti tarafından "teröre destek veren" ülke olarak belirlenmiş bir ülkede bulunmadığınızı ve (ii) ABD Hükümeti'nin yasaklı veya kısıtlı taraf listelerinden herhangi birinde yer almadığınızı beyan ve taahhüt edersiniz.
-8. **Geliştiricinin adı ve adresi.** Uygulamaya ilişkin her türlü soru, şikâyet veya talebinizi Okan Berk Manavoğlu (bireysel geliştirici), İstanbul, Türkiye, Türkiye adresine veya [hello@buaze.com](mailto:hello@buaze.com) e-posta adresine iletebilirsiniz.
+8. **Geliştiricinin adı ve adresi.** Uygulamaya ilişkin her türlü soru, şikâyet veya talebinizi Okan Berk Manavoğlu (bireysel geliştirici), İstanbul, Türkiye adresine veya [hello@buaze.com](mailto:hello@buaze.com) e-posta adresine iletebilirsiniz.
 9. **Üçüncü taraf koşulları.** Uygulamayı kullanırken, örneğin kablosuz veri hizmeti sözleşmeniz gibi geçerli üçüncü taraf sözleşme koşullarına uymanız gerekir.
 10. **Lehine hak tanınan üçüncü kişi.** Apple ve Apple'ın bağlı şirketleri, bu Koşullar bakımından lehine hak tanınan üçüncü kişilerdir (üçüncü kişi yararına sözleşme). Bu Koşulları kabul etmenizle birlikte Apple, bu Koşulları lehine hak tanınan üçüncü kişi sıfatıyla size karşı uygulama hakkına sahip olur ve bu hakkı kabul etmiş sayılır.
 
@@ -513,7 +513,7 @@ Bu koşullar, Aybuke uygulamasını Apple App Store'dan edindiğiniz için geçe
 ## 26. İletişim
 
 - **Unvan:** Okan Berk Manavoğlu (bireysel geliştirici)
-- **Adres:** İstanbul, Türkiye, Türkiye
+- **Adres:** İstanbul, Türkiye
 - **Ticaret sicil / MERSİS numarası:** Yok (bireysel geliştirici)
 - **E-posta:** [hello@buaze.com](mailto:hello@buaze.com)
 - **Gizlilik soruları ve veli talepleri:** [hello@buaze.com](mailto:hello@buaze.com)
